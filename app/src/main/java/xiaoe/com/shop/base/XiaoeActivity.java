@@ -81,7 +81,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             Global.g().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    onMainThreaResponse(iRequest,success,entity);
+                    onMainThreadResponse(iRequest,success,entity);
                 }
             });
         }
@@ -94,7 +94,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     }
 
     @Override
-    public void onMainThreaResponse(IRequest iRequest, boolean success, Object entity) {
+    public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
 
     }
     public void ToastCustom(String msg){

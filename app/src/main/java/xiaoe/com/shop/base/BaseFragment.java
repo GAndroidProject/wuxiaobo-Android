@@ -70,7 +70,7 @@ public class BaseFragment extends Fragment implements INetworkResponse {
             Global.g().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    onMainThreaResponse(iRequest,success,entity);
+                    onMainThreadResponse(iRequest,success,entity);
                 }
             });
         }
@@ -89,7 +89,7 @@ public class BaseFragment extends Fragment implements INetworkResponse {
     }
 
     @Override
-    public void onMainThreaResponse(IRequest iRequest, boolean success, Object entity) {
+    public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
 
     }
     public void ToastCustom(String msg){
