@@ -21,6 +21,7 @@ android {
             res.srcDirs =
                 [
                     'src/main/res/layouts/main',
+                    'src/main/res/layouts/custom_toast',
                     'src/main/res/layouts',
                     'src/main/res'
                 ]
