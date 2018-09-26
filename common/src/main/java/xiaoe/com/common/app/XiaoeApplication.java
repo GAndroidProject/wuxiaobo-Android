@@ -2,13 +2,9 @@ package xiaoe.com.common.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2017/7/17.
