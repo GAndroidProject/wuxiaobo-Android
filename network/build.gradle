@@ -33,7 +33,5 @@ dependencies {
     implementation project(':common')
     implementation files('libs/okhttp-3.2.0.jar')
     implementation files('libs/okio-1.6.0.jar')
-    implementation 'com.alibaba:fastjson:1.2.31'
-    implementation 'com.google.code.gson:gson:2.8.2'
 
 }
