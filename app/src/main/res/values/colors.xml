@@ -5,4 +5,11 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="white">#ffffff</color>
+
+    <color name="main_bg_color">#FAFAFC</color><!--主体背景颜色-->
+
+    <color name="tree_item_border">#DBE2EA</color><!--边框颜色-->
+    <color name="main_title_color">#333333</color><!--主要标题颜色-->
+    <color name="secondary_title_color">#999999</color><!--次级标题颜色-->
+    <color name="high_title_color">#1E59F6</color><!--高亮标题颜色-->
 </resources>
