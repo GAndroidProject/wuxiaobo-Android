@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
+
 import xiaoe.com.common.app.Global;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
@@ -25,18 +27,37 @@ import xiaoe.com.shop.R;
  */
 
 public class BaseFragment extends Fragment implements INetworkResponse {
-    private PopupWindow popupWindow;
+    private static PopupWindow popupWindow;
     private TextView mToastText;
     private boolean isFragmentDestroy = false;
-    private Handler mHandler = new Handler(){
+//    private Handler mHandler = new Handler(){
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            if(popupWindow != null){
+//                popupWindow.dismiss();
+//            }
+//        }
+//    };
+
+    private Handler mHandler = new BfHandler(this);
+
+    static class BfHandler extends Handler {
+
+        WeakReference<BaseFragment> wrf;
+
+        BfHandler (BaseFragment baseFragment) {
+            this.wrf = new WeakReference<>(baseFragment);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if(popupWindow != null){
+            if (popupWindow != null) {
                 popupWindow.dismiss();
             }
         }
-    };
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.lang.ref.WeakReference;
+
 import xiaoe.com.common.app.Global;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
@@ -26,11 +28,39 @@ import xiaoe.com.shop.R;
 
 public class XiaoeActivity extends AppCompatActivity implements INetworkResponse{
     private static final String TAG = "XiaoeActivity";
-    private final int DISMISS_POPUP_WINDOW = 1;
-    private final int DISMISS_TOAST = 2;
-    private PopupWindow popupWindow;
+    private static final int DISMISS_POPUP_WINDOW = 1;
+    private static final int DISMISS_TOAST = 2;
+    private static PopupWindow popupWindow;
+    private static Toast toast;
     private TextView mToastText;
-    private Handler mHandler = new Handler(){
+//    private Handler mHandler = new Handler(){
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            if(msg.what == DISMISS_POPUP_WINDOW){
+//                if(popupWindow != null){
+//                    popupWindow.dismiss();
+//                }
+//            }else if(msg.what == DISMISS_TOAST){
+//                if(toast != null){
+//                    toast.cancel();
+//                }
+//            }
+//
+//        }
+//    };
+    private Handler mHandler = new XeHandler(this);
+    private boolean mHasFocus = false;
+    private boolean isActivityDestroy = false;
+
+    static class XeHandler extends Handler {
+
+        WeakReference<XiaoeActivity> wrf;
+
+        XeHandler(XiaoeActivity activity) {
+            wrf = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -43,13 +73,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                     toast.cancel();
                 }
             }
-
         }
-    };
-    private Toast toast;
-    private boolean mHasFocus = false;
-    private boolean isActivityDestroy = false;
-
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

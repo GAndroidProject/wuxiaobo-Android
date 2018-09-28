@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/flow_info_shape">
+    
+    <ImageView
+        android:id="@+id/flow_info_top_bg"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:contentDescription="信息流图片在上组件"/>
+
+    <TextView
+        android:id="@+id/flow_info_top_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textColor="@color/main_title_color"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="40dp" />
+
+    <TextView
+        android:id="@+id/flow_info_top_desc"
+        android:layout_width="234dp"
+        android:layout_height="64dp"
+        android:textSize="26sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_marginTop="9dp"
+        android:layout_marginStart="40dp"/>
+    
+    <TextView
+        android:id="@+id/flow_info_top_price"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:textSize="18sp"
+        android:textColor="#BCA16B"
+        android:layout_marginTop="23dp"
+        android:layout_marginStart="40dp"/>
+</LinearLayout>

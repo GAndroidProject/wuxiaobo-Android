@@ -1,6 +1,7 @@
 package xiaoe.com.network;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -39,8 +40,8 @@ public class NetworkEngine {
     //正式环境url http://api.inside.xiaoe-tech.com
     private final static String FORMAL_URL = "https://api.xiaoe-tech.com/";
     //    private final static String BASE_URL = url;
-    private final static String BASE_URL = XiaoeApplication.isFormalCondition() ? FORMAL_URL : TEST_URL;
-
+//    private final static String BASE_URL = XiaoeApplication.isFormalCondition() ? FORMAL_URL : TEST_URL;
+    private final static String BASE_URL = "http://134.175.39.17:12242/";
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient client;
@@ -144,7 +145,6 @@ public class NetworkEngine {
             return;
         }
         RequestBody formBody = RequestBody.create(JSON, formBodyString);
-
         Request request = new Request.Builder()
                 .url(url)
                 .post(formBody)
@@ -172,13 +172,15 @@ public class NetworkEngine {
 //                    StatusKeepUtil.clearUserInfo();
 //                }
                 String jsonString = body.string();
+                Log.d(TAG, "onResponse: body --- " + jsonString);
                 JSONObject jsonObject = null;
                 String code = "";
                 try {
                     jsonObject = new JSONObject(jsonString);
                     code = jsonObject.getString("code");
+                    Log.d(TAG, "onResponse: code --- " + code);
                 } catch (JSONException e) {
-//                    e.printStackTrace();
+                    e.printStackTrace();
                     body.close();
                     mRequest.onResponse(false, null);
                     return;
@@ -196,7 +198,6 @@ public class NetworkEngine {
                         if(!TextUtils.isEmpty(strData) && !"null".equals(strData)){
                             entityObj = analyticalJSON(strData, gson, mRequest.getEntityClass());
                         }
-//
                     } catch (JSONException e) {
 //                        e.printStackTrace();
                         body.close();
@@ -235,7 +236,7 @@ public class NetworkEngine {
                 objectJSON = gson.fromJson(strJSON, clazz);
             } catch (JsonSyntaxException e) {
 //                Log.d(TAG, "analyticalJSON: "+e.toString());
-//                e.printStackTrace();
+                e.printStackTrace();
             }
             return objectJSON;
         } //否则 json是josnArray对象(json instanceof JSONArray)
