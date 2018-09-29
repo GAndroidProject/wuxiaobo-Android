@@ -1,40 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/flow_info_shape">
+    android:background="@drawable/corners_bg">
     
-    <ImageView
-        android:id="@+id/flow_info_top_bg"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/flow_info_video_bg"
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:contentDescription="信息流图片在上组件"/>
+        android:src="@drawable/demo_top"
+        fresco:roundedCornerRadius="8dp"
+        fresco:roundBottomLeft="false"
+        fresco:roundBottomRight="false"
+        fresco:roundingBorderWidth="1dp"/>
 
     <TextView
-        android:id="@+id/flow_info_top_title"
+        android:id="@+id/flow_info_video_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="13sp"
         android:textColor="@color/main_title_color"
         android:layout_marginTop="20dp"
-        android:layout_marginStart="40dp" />
+        android:layout_marginStart="20dp" />
 
     <TextView
-        android:id="@+id/flow_info_top_desc"
+        android:id="@+id/flow_info_video_desc"
         android:layout_width="234dp"
         android:layout_height="64dp"
         android:textSize="26sp"
         android:textColor="@color/secondary_title_color"
         android:layout_marginTop="9dp"
-        android:layout_marginStart="40dp"/>
+        android:layout_marginStart="20dp"/>
     
     <TextView
-        android:id="@+id/flow_info_top_price"
+        android:id="@+id/flow_info_video_price"
         android:layout_width="wrap_content"
-        android:layout_height="18dp"
+        android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:textColor="#BCA16B"
+        android:textColor="@color/price_color"
         android:layout_marginTop="23dp"
-        android:layout_marginStart="40dp"/>
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="23dp"/>
 </LinearLayout>

@@ -78,9 +78,9 @@ public class HomepageFragment extends BaseFragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayout.VERTICAL);
         List<ComponentInfo> tempData = new ArrayList<ComponentInfo>();
-        ComponentInfo componentInfo_1 = new ComponentInfo(0, "第一个", "第一个内容嘀嘀嘀嘀嘀嘀嘀");
-        ComponentInfo componentInfo_2 = new ComponentInfo(0, "第二个", "第二个内容啊啊啊啊啊啊啊");
-        ComponentInfo componentInfo_3 = new ComponentInfo(1, "新的组件", "新的组件的内容应该不显示", "￥299.00");
+        ComponentInfo componentInfo_1 = new ComponentInfo(0, "图文组件", "我的财富计划新中产必修财富课程");
+        ComponentInfo componentInfo_2 = new ComponentInfo(1, "视频组件", "我的财富计划新中产必修财富课程", "￥299.00");
+        ComponentInfo componentInfo_3 = new ComponentInfo(2, "音频组件", "每天听见吴晓波", "", "10928人在听");
         tempData.add(componentInfo_1);
         tempData.add(componentInfo_2);
         tempData.add(componentInfo_3);

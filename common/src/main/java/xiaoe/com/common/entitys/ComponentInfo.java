@@ -6,6 +6,15 @@ public class ComponentInfo {
     private String title;
     private String desc;
     private String price;
+    private String joined;
+
+    public ComponentInfo(int type, String title, String desc, String price, String joined) {
+        this.type = type;
+        this.title = title;
+        this.desc = desc;
+        this.price = price;
+        this.joined = joined;
+    }
 
     public ComponentInfo(int type, String title, String desc, String price) {
         this.type = type;
@@ -14,8 +23,23 @@ public class ComponentInfo {
         this.price = price;
     }
 
+    public ComponentInfo(int type, String title, String desc) {
+        this.type = type;
+        this.title = title;
+        this.desc = desc;
+    }
+
     public ComponentInfo() {
 
+    }
+
+    public void setJoined(String joined) {
+        this.joined = joined;
+    }
+
+    public String getJoined() {
+
+        return joined;
     }
 
     public void setPrice(String price) {
@@ -25,13 +49,6 @@ public class ComponentInfo {
     public String getPrice() {
 
         return price;
-    }
-
-    public ComponentInfo(int type, String title, String desc) {
-        this.type = type;
-
-        this.title = title;
-        this.desc = desc;
     }
 
     public void setType(int type) {

@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/flow_info_shape">
-    <ImageView
-        android:id="@+id/flow_info_full_bg"
-        android:layout_width="335dp"
+    android:background="@drawable/corners_bg">
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/flow_info_img_text_bg"
+        android:layout_width="match_parent"
         android:layout_height="412dp"
         android:src="@drawable/demo"
         android:layout_gravity="center"
-        android:contentDescription="信息流背景图"/>
+        fresco:roundedCornerRadius="8dp"
+        fresco:roundingBorderWidth="1dp"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/flow_info_full_title"
+            android:id="@+id/flow_info_img_text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="13sp"
             android:textColor="@color/main_title_color"
-            android:layout_marginStart="40dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="18dp"/>
         <TextView
-            android:id="@+id/flow_info_full_desc"
+            android:id="@+id/flow_info_img_text_desc"
             android:layout_width="234dp"
             android:layout_height="wrap_content"
             android:textSize="26sp"
             android:textColor="@color/secondary_title_color"
             android:layout_marginTop="9dp"
-            android:layout_marginStart="40dp" />
+            android:layout_marginStart="20dp" />
     </LinearLayout>
 </FrameLayout>
