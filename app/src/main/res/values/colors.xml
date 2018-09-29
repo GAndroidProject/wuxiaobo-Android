@@ -12,4 +12,6 @@
     <color name="main_title_color">#333333</color><!--主要标题颜色-->
     <color name="secondary_title_color">#999999</color><!--次级标题颜色-->
     <color name="high_title_color">#1E59F6</color><!--高亮标题颜色-->
-	<color name="division_color">#dbdbdb</color><!--高亮标题颜色-->	<color name="price_color">#BCA16B</color><!--价格颜色--></resources>
+	<color name="division_color">#dbdbdb</color><!--高亮标题颜色-->
+    <color name="price_color">#BCA16B</color><!--价格颜色-->
+</resources>
