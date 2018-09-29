@@ -105,7 +105,9 @@ public class BaseFragment extends Fragment implements INetworkResponse {
             popupWindow.dismiss();
             popupWindow = null;
         }
-        mHandler.removeCallbacksAndMessages(null);
+        if(mHandler != null){
+            mHandler.removeCallbacksAndMessages(null);
+        }
         mHandler = null;
     }
 

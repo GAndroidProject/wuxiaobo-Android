@@ -3,12 +3,26 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorPrimary">@color/lucency</item>
+        <item name="colorPrimaryDark">@color/lucency</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
+    </style>
+
+    <!--radioButton的共有布局-->
+    <style name="BottomTabRadioButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:button">@null</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:background">@color/lucency</item>
+        <item name="android:textColor">@drawable/bottom_bar_button_content_color</item>
+        <item name="android:textSize">10sp</item>
     </style>
 
 </resources>

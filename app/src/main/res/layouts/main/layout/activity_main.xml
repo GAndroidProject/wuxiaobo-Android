@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="xiaoe.com.shop.MainActivity">
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/main_container"
+    <xiaoe.com.shop.widget.BottomTabBar
+        android:id="@+id/bottom_tab_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        />
+    <xiaoe.com.shop.widget.ScrollViewPager
+        android:id="@+id/main_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_tab_bar_layout"
+        />
+    <!--<FrameLayout-->
+        <!--android:id="@+id/main_container"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_above="@id/bottom_tab_bar_layout"-->
+        <!--android:visibility="visible"-->
+        <!--&gt;-->
+    <!--</FrameLayout>-->
 
-    </FrameLayout>
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
