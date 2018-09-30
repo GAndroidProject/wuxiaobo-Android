@@ -1,6 +1,8 @@
 package xiaoe.com.shop.business.homepage.ui;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,7 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +43,14 @@ public class HomepageFragment extends BaseFragment {
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.home_title_time)
+    TextView homeTitleTime;
+    @BindView(R.id.home_title_desc)
+    TextView homeTitleDesc;
+    @BindView(R.id.home_title_icon)
+    ImageView homeTitleIcon;
+    @BindView(R.id.home_title_icon_desc)
+    TextView homeTitleIconDesc;
 
     @Nullable
     @Override
@@ -44,7 +58,6 @@ public class HomepageFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_home, null, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getContext();
-        destroyView = false;
         return view;
     }
 
@@ -75,6 +88,10 @@ public class HomepageFragment extends BaseFragment {
     }
 
     public void init() {
+        homeTitleTime.setText("9月4日 星期二");
+        homeTitleDesc.setText("今天");
+        homeTitleIcon.setImageResource(R.drawable.icon_taday_learning);
+        homeTitleIconDesc.setText("我正在学");
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayout.VERTICAL);
         List<ComponentInfo> tempData = new ArrayList<ComponentInfo>();

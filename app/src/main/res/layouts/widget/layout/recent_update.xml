@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recent_update_title"
+        android:textSize="20sp"
+        android:textColor="@color/main_title_color"/>
+
+    <FrameLayout
+        android:id="@+id/recent_update_sub_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/recent_update_avatar"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/icon_taday_learning"
+            android:layout_marginStart="16dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@drawable/corners_bg"
+            android:layout_marginTop="36dp"
+            android:paddingTop="44dp">
+
+            <TextView
+                android:id="@+id/recent_update_sub_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="每天听见吴晓波"
+                android:textSize="18sp"
+                android:textColor="@color/main_title_color"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/division_color"
+                android:layout_below="@id/recent_update_sub_title" />
+
+            <LinearLayout
+                android:id="@+id/recent_update_sub_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/recent_update_sub_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="已更新至09-22期"
+            android:textSize="12sp"
+            android:textColor="@color/secondary_title_color"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"/>
+        <Button
+            android:id="@+id/recent_update_sub_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="收听全部"
+            android:layout_gravity="end"
+            android:layout_marginTop="74dp"
+            android:layout_marginEnd="16dp"/>
+    </FrameLayout>
+</LinearLayout>

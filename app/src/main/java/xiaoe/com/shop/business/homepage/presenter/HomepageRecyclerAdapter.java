@@ -46,7 +46,6 @@ public class HomepageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder: viewType --- " + viewType);
         View view;
         switch (viewType) {
             case FLOW_INFO_IMG_TEXT:

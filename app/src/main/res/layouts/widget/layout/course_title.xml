@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/common_title_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="C O U R S E"
+        android:textSize="12sp"
+        android:textColor="@color/white"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="课程"
+            android:textSize="32sp"
+            android:textColor="@color/white"/>
+
+        <ImageView
+            android:id="@+id/course_title_search"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/search_grey_search"
+            tools:ignore="ContentDescription"
+            android:layout_gravity="end"
+            android:layout_marginEnd="4dp"/>
+    </FrameLayout>
+
+    <com.bigkoo.convenientbanner.ConvenientBanner
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/convenientBanner"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_marginTop="20dp"
+        app:canLoop="true" />
+
+    <xiaoe.com.shop.widget.BottomTabBar
+        android:id="@+id/course_title_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"/>
+</LinearLayout>

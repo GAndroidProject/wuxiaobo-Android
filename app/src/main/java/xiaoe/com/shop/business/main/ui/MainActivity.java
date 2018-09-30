@@ -1,8 +1,13 @@
 package xiaoe.com.shop.business.main.ui;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import xiaoe.com.shop.R;
@@ -23,14 +28,14 @@ public class MainActivity extends AppCompatActivity implements OnBottomTabSelect
         setContentView(R.layout.activity_main);
 
         //状态栏颜色字体(白底黑字)修改 Android6.0+
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            Window window = getWindow();
-//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//            window.setStatusBarColor(Color.WHITE);
-//            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.WHITE);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
         //状态栏颜色字体(白底黑字)修改 MIUI6+
-//        setMiuiStatusBarDarkMode(this,true);
+        //setMiuiStatusBarDarkMode(this,true);
         //状态栏颜色字体(白底黑字)修改 Flyme4+
         //setMeizuStatusBarDarkIcon(this,true);
 
