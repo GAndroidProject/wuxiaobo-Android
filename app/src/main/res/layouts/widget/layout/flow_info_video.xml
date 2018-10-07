@@ -1,46 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/corners_bg">
-    
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/flow_info_video_bg"
+    android:layout_height="wrap_content">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="190dp"
-        android:src="@drawable/demo_top"
-        fresco:roundedCornerRadius="8dp"
-        fresco:roundBottomLeft="false"
-        fresco:roundBottomRight="false"
-        fresco:roundingBorderWidth="1dp"/>
-
-    <TextView
-        android:id="@+id/flow_info_video_title"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="13sp"
-        android:textColor="@color/main_title_color"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp" />
+        android:orientation="vertical"
+        android:background="@drawable/corners_bg"
+        tools:ignore="UselessParent">
 
-    <TextView
-        android:id="@+id/flow_info_video_desc"
-        android:layout_width="234dp"
-        android:layout_height="64dp"
-        android:textSize="26sp"
-        android:textColor="@color/secondary_title_color"
-        android:layout_marginTop="9dp"
-        android:layout_marginStart="20dp"/>
-    
-    <TextView
-        android:id="@+id/flow_info_video_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textColor="@color/price_color"
-        android:layout_marginTop="23dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="23dp"/>
-</LinearLayout>
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/flow_info_video_bg"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:src="@drawable/demo_top"
+            fresco:roundedCornerRadius="8dp"
+            fresco:roundBottomLeft="false"
+            fresco:roundBottomRight="false"
+            fresco:roundingBorderWidth="1dp"/>
+
+        <TextView
+            android:id="@+id/flow_info_video_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/main_title_color"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp" />
+
+        <TextView
+            android:id="@+id/flow_info_video_desc"
+            android:layout_width="234dp"
+            android:layout_height="64dp"
+            android:textSize="26sp"
+            android:textColor="@color/secondary_title_color"
+            android:layout_marginTop="9dp"
+            android:layout_marginStart="20dp"/>
+
+        <TextView
+            android:id="@+id/flow_info_video_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/price_color"
+            android:layout_marginTop="23dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="23dp"/>
+    </LinearLayout>
+</FrameLayout>

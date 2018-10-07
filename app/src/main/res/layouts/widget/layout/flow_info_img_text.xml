@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/corners_bg">
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/flow_info_img_text_bg"
-        android:layout_width="match_parent"
-        android:layout_height="412dp"
-        android:src="@drawable/demo"
-        android:layout_gravity="center"
-        fresco:roundedCornerRadius="8dp"
-        fresco:roundingBorderWidth="1dp"/>
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/corners_bg"
+        tools:ignore="UselessParent">
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/flow_info_img_text_bg"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            fresco:roundedCornerRadius="8dp"
+            fresco:roundingBorderWidth="1dp"
+            fresco:roundBottomLeft="false"
+            fresco:roundBottomRight="false"
+            android:transitionName="share"/>
         <TextView
             android:id="@+id/flow_info_img_text_title"
             android:layout_width="wrap_content"
@@ -23,14 +27,24 @@
             android:textSize="13sp"
             android:textColor="@color/main_title_color"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="18dp"/>
+            android:layout_marginTop="18dp"
+            android:transitionName="text"/>
         <TextView
             android:id="@+id/flow_info_img_text_desc"
             android:layout_width="234dp"
             android:layout_height="wrap_content"
             android:textSize="26sp"
             android:textColor="@color/secondary_title_color"
-            android:layout_marginTop="9dp"
-            android:layout_marginStart="20dp" />
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="24dp"/>
+        <TextView
+            android:id="@+id/flow_info_img_text_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/price_color"
+            android:paddingBottom="24dp"
+            android:layout_marginStart="20dp"/>
     </LinearLayout>
 </FrameLayout>

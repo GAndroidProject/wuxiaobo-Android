@@ -1,45 +1,62 @@
 package xiaoe.com.common.entitys;
 
+import java.util.List;
+
 public class ComponentInfo {
 
-    private int type;
+    // 店铺组件类型
+    private String type;
+    // 组件的子类型，eg: 信息流分为图文、音频、视频
+    private String subType;
+    // 标题
     private String title;
+    // 内容
     private String desc;
+    // 价格
     private String price;
-    private String joined;
-
-    public ComponentInfo(int type, String title, String desc, String price, String joined) {
-        this.type = type;
-        this.title = title;
-        this.desc = desc;
-        this.price = price;
-        this.joined = joined;
-    }
-
-    public ComponentInfo(int type, String title, String desc, String price) {
-        this.type = type;
-        this.title = title;
-        this.desc = desc;
-        this.price = price;
-    }
-
-    public ComponentInfo(int type, String title, String desc) {
-        this.type = type;
-        this.title = title;
-        this.desc = desc;
-    }
+    // 参与人数描述，eg: **人在听
+    private String joinedDesc;
+    // 定制的图片链接
+    private String imgUrl;
+    // 是否购买
+    private boolean hasBuy;
 
     public ComponentInfo() {
 
     }
 
-    public void setJoined(String joined) {
-        this.joined = joined;
+    public void setHasBuy(boolean hasBuy) {
+        this.hasBuy = hasBuy;
     }
 
-    public String getJoined() {
+    public boolean isHasBuy() {
 
-        return joined;
+        return hasBuy;
+    }
+
+    public void setSubType(String subType) {
+        this.subType = subType;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getSubType() {
+
+        return subType;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setJoinedDesc(String joinedDesc) {
+        this.joinedDesc = joinedDesc;
+    }
+
+    public String getJoinedDesc() {
+        return joinedDesc;
     }
 
     public void setPrice(String price) {
@@ -47,11 +64,10 @@ public class ComponentInfo {
     }
 
     public String getPrice() {
-
         return price;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -63,8 +79,7 @@ public class ComponentInfo {
         this.desc = desc;
     }
 
-    public int getType() {
-
+    public String getType() {
         return type;
     }
 

@@ -1,18 +1,13 @@
 package xiaoe.com.shop.business.homepage.ui;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,6 +21,7 @@ import butterknife.Unbinder;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.homepage.presenter.HomepagePresenter;
 import xiaoe.com.shop.business.homepage.presenter.HomepageRecyclerAdapter;
@@ -41,7 +37,7 @@ public class HomepageFragment extends BaseFragment {
 
     private boolean destroyView = false;
 
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.home_recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.home_title_time)
     TextView homeTitleTime;
@@ -95,14 +91,35 @@ public class HomepageFragment extends BaseFragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayout.VERTICAL);
         List<ComponentInfo> tempData = new ArrayList<ComponentInfo>();
-        ComponentInfo componentInfo_1 = new ComponentInfo(0, "图文组件", "我的财富计划新中产必修财富课程");
-        ComponentInfo componentInfo_2 = new ComponentInfo(1, "视频组件", "我的财富计划新中产必修财富课程", "￥299.00");
-        ComponentInfo componentInfo_3 = new ComponentInfo(2, "音频组件", "每天听见吴晓波", "", "10928人在听");
+        ComponentInfo componentInfo_1 = new ComponentInfo();
+        componentInfo_1.setType("flow_info");
+        componentInfo_1.setSubType("imgText");
+        componentInfo_1.setTitle("今日精选");
+        componentInfo_1.setDesc("我的财富计划 新中产必修财富课程");
+        componentInfo_1.setPrice("9.9");
+        componentInfo_1.setHasBuy(false);
+        componentInfo_1.setImgUrl("http://img.zcool.cn/community/0117e2571b8b246ac72538120dd8a4.jpg@1280w_1l_2o_100sh.jpg");
+        ComponentInfo componentInfo_2 = new ComponentInfo();
+        componentInfo_2.setType("flow_info");
+        componentInfo_2.setSubType("audio");
+        componentInfo_2.setTitle("音频组件");
+        componentInfo_2.setDesc("我的财富计划 新中产必修财富课程");
+        componentInfo_2.setPrice("999.99");
+        componentInfo_2.setJoinedDesc("10928");
+        componentInfo_2.setHasBuy(false);
+        ComponentInfo componentInfo_3 = new ComponentInfo();
+        componentInfo_3.setType("flow_info");
+        componentInfo_3.setSubType("video");
+        componentInfo_3.setTitle("视频组件");
+        componentInfo_3.setDesc("每天看见吴晓波");
+        componentInfo_3.setPrice("199.99");
+        componentInfo_3.setImgUrl("http://pic14.nipic.com/20110605/1369025_165540642000_2.jpg");
+        componentInfo_3.setHasBuy(true);
         tempData.add(componentInfo_1);
         tempData.add(componentInfo_2);
         tempData.add(componentInfo_3);
         recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(new HomepageRecyclerAdapter(getActivity(), tempData));
+        recyclerView.setAdapter(new DecorateRecyclerAdapter(getActivity(), tempData));
     }
 
     @Override
@@ -119,4 +136,6 @@ public class HomepageFragment extends BaseFragment {
             unbinder.unbind();
         }
     }
+
+
 }

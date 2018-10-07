@@ -19,6 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".test.TreeActivity"/>
+        <activity
+            android:name=".business.course.ui.CourseDetailActivity"/>
     </application>
 
 </manifest>

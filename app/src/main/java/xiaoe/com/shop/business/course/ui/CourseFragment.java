@@ -1,17 +1,14 @@
 package xiaoe.com.shop.business.course.ui;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -23,7 +20,7 @@ import butterknife.Unbinder;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
-import xiaoe.com.shop.business.course.presenter.CoursePresenter;
+import xiaoe.com.shop.business.course.presenter.CourseRecyclerAdapter;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
 import xiaoe.com.shop.widget.BottomBarButton;
 import xiaoe.com.shop.widget.BottomTabBar;
@@ -40,6 +37,8 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
     CourseTitleView courseTitleContainer;
     @BindView(R.id.course_title_bottom)
     BottomTabBar bottomTabBar;
+    @BindView(R.id.course_recycler_view)
+    RecyclerView recyclerView;
 
     @Nullable
     @Override
@@ -59,11 +58,11 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
     public void init() {
         mContext = getActivity();
 
-        // 暂时写死三张图片
+        // 暂时写死三张图片（初始化头部标题）
         List<String> imageList = new ArrayList<>();
         imageList.add("http://pic.58pic.com/58pic/15/63/07/42Q58PIC42U_1024.jpg");
         imageList.add("http://img.zcool.cn/community/0125fd5770dfa50000018c1b486f15.jpg@1280w_1l_2o_100sh.jpg");
-        imageList.add("res:///" + R.drawable.audio);
+        imageList.add("res:///" + R.drawable.audio_bg);
 
         courseTitleContainer.setImageList(imageList);
 
@@ -75,6 +74,12 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
             radioButton.setButtonText("按钮"+(i + 1));
             bottomTabBar.addTabButton(radioButton.getTabButton());
         }
+
+        // 初始化 RecyclerView
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayout.VERTICAL);
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(new CourseRecyclerAdapter(getActivity(), null));
     }
 
     @Override

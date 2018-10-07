@@ -1,8 +1,6 @@
 package xiaoe.com.shop.business.homepage.presenter;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -90,11 +88,11 @@ public class HomepageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
                 break;
             case FLOW_INFO_AUDIO:
                 FlowInfoAudioHolder ah = (FlowInfoAudioHolder)holder;
-                Uri audioBgUri = Uri.parse("res:///" + R.drawable.audio);
-                Uri audioRingUri = Uri.parse("res:///" + R.drawable.ring);
+                Uri audioBgUri = Uri.parse("res:///" + R.drawable.audio_bg);
+                Uri audioRingUri = Uri.parse("res:///" + R.drawable.audio_ring);
                 ah.flowInfoBg.setImageURI(audioBgUri);
                 ah.flowInfoAvatar.setImageURI(audioRingUri);
-                ah.flowInfoJoined.setText(mComponentData.get(position).getJoined());
+                ah.flowInfoJoined.setText(mComponentData.get(position).getJoinedDesc());
                 ah.flowInfoTitle.setText(mComponentData.get(position).getTitle());
                 ah.flowInfoDesc.setText(mComponentData.get(position).getDesc());
                 break;
@@ -106,7 +104,8 @@ public class HomepageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        return mComponentData.get(position).getType();
+//        return mComponentData.get(position).getType();
+        return super.getItemViewType(position);
     }
 
     class HomepageHolder extends RecyclerView.ViewHolder {
@@ -154,7 +153,7 @@ public class HomepageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         SimpleDraweeView flowInfoBg;
         @BindView(R.id.flow_info_audio_avatar)
         SimpleDraweeView flowInfoAvatar;
-        @BindView(R.id.flow_info_audio_joined)
+        @BindView(R.id.flow_info_audio_joined_desc)
         TextView flowInfoJoined;
         @BindView(R.id.flow_info_audio_title)
         TextView flowInfoTitle;
