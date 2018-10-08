@@ -45,9 +45,5 @@ public class CourseDetailActivity extends XiaoeActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("type", type);
-        resultIntent.putExtra("imgUrl", imgUrl);
-        setResult(100, resultIntent);
     }
 }

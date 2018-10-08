@@ -129,6 +129,12 @@ public class HomepageFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        init();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         destroyView = true;
@@ -136,6 +142,4 @@ public class HomepageFragment extends BaseFragment {
             unbinder.unbind();
         }
     }
-
-
 }

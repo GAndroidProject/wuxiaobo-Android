@@ -10,8 +10,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -83,7 +85,24 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                                 Intent transitionIntent = new Intent(mActivity, CourseDetailActivity.class);
                                 transitionIntent.putExtra("type", DecorateEntityType.FLOW_INFO_IMG_TEXT);
                                 transitionIntent.putExtra("imgUrl", imgUrl);
-                                mActivity.startActivityForResult(transitionIntent, 101, options.toBundle());
+                                mActivity.startActivity(transitionIntent, options.toBundle());
+                            }
+                        });
+                        view.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                switch (event.getAction()) {
+                                    case MotionEvent.ACTION_DOWN:
+                                        // TODO: 放大动画
+                                        break;
+                                    case MotionEvent.ACTION_UP:
+                                        // TODO: 变回原样动画
+                                        v.performClick(); // 解决单击事件冲突
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                return false;
                             }
                         });
                         return new FlowInfoImgTextViewHolder(view);

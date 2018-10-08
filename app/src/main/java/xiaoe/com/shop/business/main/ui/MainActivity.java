@@ -31,14 +31,6 @@ public class MainActivity extends AppCompatActivity implements OnBottomTabSelect
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setSharedElementEnterTransition(
-                    DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP,
-                            ScalingUtils.ScaleType.CENTER_CROP)); // 进入
-            getWindow().setSharedElementReturnTransition(
-                    DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP,
-                            ScalingUtils.ScaleType.CENTER_CROP)); // 返回
-        }
         setContentView(R.layout.activity_main);
 
         //状态栏颜色字体(白底黑字)修改 Android6.0+
@@ -86,21 +78,5 @@ public class MainActivity extends AppCompatActivity implements OnBottomTabSelect
         Log.d(TAG, "onCheckedTab: "+index);
         mainViewPager.setCurrentItem(index);
         Log.d(TAG, "onCheckedTab: I "+mainViewPager.getCurrentItem());
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 100) {
-            if (requestCode == 101) {
-                String type = data.getStringExtra("type");
-                String imgUrl = data.getStringExtra("imgUrl");
-                if (type.equals(DecorateEntityType.FLOW_INFO_IMG_TEXT)) {
-                    // TODO: 设置背景图片
-                    SimpleDraweeView sdv = (SimpleDraweeView) findViewById(R.id.flow_info_img_text_bg);
-                    sdv.setImageURI(imgUrl);
-                }
-            }
-        }
     }
 }

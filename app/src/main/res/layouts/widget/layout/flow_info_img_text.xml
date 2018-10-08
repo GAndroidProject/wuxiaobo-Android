@@ -19,7 +19,7 @@
             fresco:roundingBorderWidth="1dp"
             fresco:roundBottomLeft="false"
             fresco:roundBottomRight="false"
-            android:transitionName="share"/>
+            android:transitionName="share" />
         <TextView
             android:id="@+id/flow_info_img_text_title"
             android:layout_width="wrap_content"
