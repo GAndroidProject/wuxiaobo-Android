@@ -18,7 +18,12 @@ public class DecorateEntityType {
     public static final int GRAPHIC_NAVIGATION = 5; // 图文导航组件
     public static final String GRAPHIC_NAVIGATION_STR = "graphic_navigation";
 
-    public static final String FLOW_INFO_IMG_TEXT = "imgText"; // 信息流图文子类型
-    public static final String FLOW_INFO_AUDIO = "audio"; // 信息流音频子类型
-    public static final String FLOW_INFO_VIDEO = "video"; // 信息流视频子类型
+    // 信息流
+    public static final String FLOW_INFO_IMG_TEXT = "imgText"; // 图文子类型
+    public static final String FLOW_INFO_AUDIO = "audio"; // 音频子类型
+    public static final String FLOW_INFO_VIDEO = "video"; // 视频子类型
+
+    // 知识商品
+    public static final String KNOWLEDGE_LIST = "knowledgeList"; // 列表类型
+    public static final String KNOWLEDGE_GROUP = "knowledgeGroup"; // 分组类型
 }

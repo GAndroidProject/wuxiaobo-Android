@@ -10,7 +10,10 @@ import butterknife.ButterKnife;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
-public class FlowInfoImgTextViewHolder extends BaseViewHolder {
+/**
+ * 图文 ViewHolder
+ */
+class FlowInfoImgTextViewHolder extends BaseViewHolder {
 
     @BindView(R.id.flow_info_img_text_bg)
     SimpleDraweeView flowInfoBg;
@@ -21,7 +24,7 @@ public class FlowInfoImgTextViewHolder extends BaseViewHolder {
     @BindView(R.id.flow_info_img_text_price)
     TextView flowInfoPrice;
 
-    public FlowInfoImgTextViewHolder(View itemView) {
+    FlowInfoImgTextViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }

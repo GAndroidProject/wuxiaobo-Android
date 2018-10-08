@@ -2,6 +2,9 @@ package xiaoe.com.common.entitys;
 
 import java.util.List;
 
+/**
+ * 组件数据实体类
+ */
 public class ComponentInfo {
 
     // 店铺组件类型
@@ -20,9 +23,31 @@ public class ComponentInfo {
     private String imgUrl;
     // 是否购买
     private boolean hasBuy;
+    // 子列表集合
+    private List<RecentUpdateListItem> subList;
+    // 轮播图集合
+    private List<String> shufflingList;
 
     public ComponentInfo() {
 
+    }
+
+    public void setShufflingList(List<String> shufflingList) {
+        this.shufflingList = shufflingList;
+    }
+
+    public List<String> getShufflingList() {
+
+        return shufflingList;
+    }
+
+    public void setSubList(List<RecentUpdateListItem> subList) {
+        this.subList = subList;
+    }
+
+    public List<RecentUpdateListItem> getSubList() {
+
+        return subList;
     }
 
     public void setHasBuy(boolean hasBuy) {

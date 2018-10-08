@@ -5,4 +5,5 @@
     <string name="expand_down">展开</string>
     <string name="expand_top">收起</string>
     <string name="recent_update_title">最近更新</string>
+    <string name="recent_update_btn_txt">收听全部</string>
 </resources>

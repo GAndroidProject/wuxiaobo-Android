@@ -25,7 +25,7 @@ public class CourseDetailActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        // SimpleDraweeView 转场显示图片的设置
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 //            getWindow().setExitTransition(new Explode());//new Slide()  new Fade()

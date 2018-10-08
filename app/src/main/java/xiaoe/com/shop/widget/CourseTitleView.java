@@ -15,6 +15,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.List;
 
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.adapter.decorate.PicViewHolder;
 
 public class CourseTitleView extends LinearLayout {
 
@@ -115,25 +116,6 @@ public class CourseTitleView extends LinearLayout {
     public void stopTurning() {
         if (mConvenientBanner != null) {
             mConvenientBanner.stopTurning();
-        }
-    }
-
-    class PicViewHolder extends Holder<String> {
-
-        private SimpleDraweeView sdView;
-
-        PicViewHolder(View itemView) {
-            super(itemView);
-        }
-
-        @Override
-        protected void initView(View itemView) {
-            sdView = (SimpleDraweeView) itemView;
-        }
-
-        @Override
-        public void updateUI(String data) {
-            sdView.setImageURI(data);
         }
     }
 }

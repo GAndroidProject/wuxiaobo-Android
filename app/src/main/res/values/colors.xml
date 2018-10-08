@@ -15,5 +15,7 @@
     <color name="high_title_color">#1E59F6</color><!--高亮标题颜色-->
 	<color name="division_color">#dbdbdb</color><!--高亮标题颜色-->
     <color name="price_color">#BCA16B</color><!--价格颜色-->
+    <color name="recent_list_color">#666666</color><!--列表item字体颜色-->
+    <color name="knowledge_item_desc_color">#cccccc</color>
 
 </resources>

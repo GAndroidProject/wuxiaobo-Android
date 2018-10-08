@@ -10,7 +10,10 @@ import butterknife.ButterKnife;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
-public class FlowInfoAudioViewHolder extends BaseViewHolder {
+/**
+ * 音频 ViewHolder
+ */
+class FlowInfoAudioViewHolder extends BaseViewHolder {
 
     @BindView(R.id.flow_info_audio_bg)
     SimpleDraweeView flowInfoBg;

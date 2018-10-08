@@ -36,6 +36,8 @@
         android:id="@+id/course_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
     </android.support.v7.widget.RecyclerView>
 </android.support.design.widget.CoordinatorLayout>

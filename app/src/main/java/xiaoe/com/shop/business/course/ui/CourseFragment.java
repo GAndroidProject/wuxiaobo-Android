@@ -17,8 +17,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.common.entitys.ComponentInfo;
+import xiaoe.com.common.entitys.RecentUpdateListItem;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.course.presenter.CourseRecyclerAdapter;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
@@ -79,7 +82,27 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayout.VERTICAL);
         recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(new CourseRecyclerAdapter(getActivity(), null));
+        List<ComponentInfo> tempData = new ArrayList<>();
+        ComponentInfo componentInfo = new ComponentInfo();
+        List<RecentUpdateListItem> itemList = new ArrayList<>();
+        RecentUpdateListItem item_1 = new RecentUpdateListItem();
+        item_1.setListTitle("09-22期 | 为什么哈尔滨超过上海，成为…");
+        item_1.setListPlayState("play");
+        RecentUpdateListItem item_2 = new RecentUpdateListItem();
+        item_2.setListTitle("09-21期 | 你还想海外逃税？国家已出双…");
+        item_2.setListPlayState("play");
+        RecentUpdateListItem item_3 = new RecentUpdateListItem();
+        item_3.setListTitle("09-20期 | 十年后，我希望仍能与你在一起");
+        item_3.setListPlayState("play");
+        itemList.add(item_1);
+        itemList.add(item_2);
+        itemList.add(item_3);
+        componentInfo.setType("recent_update");
+        componentInfo.setTitle("每天听见吴晓波");
+        componentInfo.setDesc("已更新至09-22期");
+        componentInfo.setSubList(itemList);
+        tempData.add(componentInfo);
+        recyclerView.setAdapter(new DecorateRecyclerAdapter(getActivity(), tempData));
     }
 
     @Override

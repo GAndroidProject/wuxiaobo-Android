@@ -13,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
+import com.bigkoo.convenientbanner.holder.Holder;
 
 import java.util.List;
 
@@ -61,10 +63,10 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0,0,0,30);
         currentComponent = mComponentList.get(currentPos);
+        // 获取组件的显示类型
+        String subType = currentComponent.getSubType();
         switch(viewType) {
             case DecorateEntityType.FLOW_INFO:
-                // 需要根据是那种信息流来加载不同的布局
-                String subType = currentComponent.getSubType();
                 switch (subType) {
                     case DecorateEntityType.FLOW_INFO_IMG_TEXT:  // 图文
                         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_img_text, null);
@@ -88,6 +90,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                                 mActivity.startActivity(transitionIntent, options.toBundle());
                             }
                         });
+                        // TODO: 设想在 touch 事件中实现 view 的缩放效果
                         view.setOnTouchListener(new View.OnTouchListener() {
                             @Override
                             public boolean onTouch(View v, MotionEvent event) {
@@ -102,7 +105,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                                     default:
                                         break;
                                 }
-                                return false;
+                                return true;
                             }
                         });
                         return new FlowInfoImgTextViewHolder(view);
@@ -123,11 +126,21 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 }
             case DecorateEntityType.RECENT_UPDATE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_update, null);
-                return null;
+                view.setLayoutParams(layoutParams);
+                return new RecentUpdateViewHolder(view);
             case DecorateEntityType.KNOWLEDGE_COMMODITY:
-                break;
+                switch (subType) {
+                    case DecorateEntityType.KNOWLEDGE_LIST:
+                        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_list, null);
+                        view.setLayoutParams(layoutParams);
+                        return new KnowledgeListViewHolder(view);
+                    case DecorateEntityType.KNOWLEDGE_GROUP:
+                        break;
+                }
             case DecorateEntityType.SHUFFLING_FIGURE:
-                break;
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shuffling_figure, null);
+                view.setLayoutParams(layoutParams);
+                return new ShufflingFigureViewHolder(view);
             case DecorateEntityType.BOOKCASE:
                 break;
             case DecorateEntityType.GRAPHIC_NAVIGATION:
@@ -146,10 +159,10 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             return;
         }
         String price = "";
+        // 需要根据是那种信息流来加载不同的布局
+        String subType = currentComponent.getSubType();
         switch(itemType) {
             case DecorateEntityType.FLOW_INFO:
-                // 需要根据是那种信息流来加载不同的布局
-                String subType = currentComponent.getSubType();
                 switch (subType) {
                     case DecorateEntityType.FLOW_INFO_IMG_TEXT:  // 图文
                         FlowInfoImgTextViewHolder itViewHolder = (FlowInfoImgTextViewHolder) holder;
@@ -181,11 +194,60 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 }
                 break;
             case DecorateEntityType.RECENT_UPDATE:
-
+                RecentUpdateViewHolder recentUpdateViewHolder = (RecentUpdateViewHolder) holder;
+                recentUpdateViewHolder.recentUpdateAvatar.setImageURI("res:///" + R.drawable.audio_ring);
+                recentUpdateViewHolder.recentUpdateSubTitle.setText(currentComponent.getTitle());
+                recentUpdateViewHolder.recentUpdateSubDesc.setText(currentComponent.getDesc());
+                recentUpdateViewHolder.recentUpdateSubBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    Toast.makeText(mActivity, "点击了按钮", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                // 加载 ListView 的数据
+                RecentUpdateListAdapter adapter = new RecentUpdateListAdapter(mActivity, currentComponent.getSubList());
+                recentUpdateViewHolder.recentUpdateSubList.setAdapter(adapter);
+                setListViewHeightBasedOnChildren(recentUpdateViewHolder.recentUpdateSubList);
                 break;
             case DecorateEntityType.KNOWLEDGE_COMMODITY:
+                switch (subType) {
+                    case DecorateEntityType.KNOWLEDGE_LIST:
+                        KnowledgeListViewHolder knowledgeListViewHolder = (KnowledgeListViewHolder) holder;
+                        knowledgeListViewHolder.knowledgeTitle.setText(currentComponent.getTitle());
+                        knowledgeListViewHolder.knowledgeIcon.setImageURI(currentComponent.getImgUrl());
+                        if (TextUtils.isEmpty(currentComponent.getPrice())) { // 无价格，将 desc 文案设置在左边的 textView 中，右边的 textView 内容置空
+                            knowledgeListViewHolder.knowledgeDesc.setText("");
+                            knowledgeListViewHolder.knowledgePrice.setText(currentComponent.getDesc());
+                            knowledgeListViewHolder.knowledgePrice.setTextColor(mActivity.getResources().getColor(R.color.knowledge_item_desc_color));
+                        } else { // 有价格
+                            if (currentComponent.isHasBuy()) { // 买了
+                                knowledgeListViewHolder.knowledgePrice.setText("已购");
+                                knowledgeListViewHolder.knowledgePrice.setTextColor(mActivity.getResources().getColor(R.color.knowledge_item_desc_color));
+                                knowledgeListViewHolder.knowledgeDesc.setText(currentComponent.getDesc());
+                            } else { // 没买
+                                knowledgeListViewHolder.knowledgeDesc.setText(currentComponent.getDesc());
+                                knowledgeListViewHolder.knowledgePrice.setText(currentComponent.getPrice());
+                            }
+                        }
+                        break;
+                    case DecorateEntityType.KNOWLEDGE_GROUP:
+                        break;
+                }
                 break;
             case DecorateEntityType.SHUFFLING_FIGURE:
+                ShufflingFigureViewHolder shufflingFigureViewHolder = (ShufflingFigureViewHolder) holder;
+                shufflingFigureViewHolder.convenientBanner.setPages(new CBViewHolderCreator() {
+                    @Override
+                    public Holder createHolder(View itemView) {
+                        return new PicViewHolder(itemView);
+                    }
+
+                    @Override
+                    public int getLayoutId() {
+                        return R.layout.sd_layout;
+                    }
+                }, currentComponent.getShufflingList());
+                shufflingFigureViewHolder.convenientBanner.startTurning(2000);
                 break;
             case DecorateEntityType.BOOKCASE:
                 break;
@@ -196,6 +258,32 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         }
     }
 
+    /**
+     * 根据 ListView 的子项计算高度
+     * @param recentUpdateSubList 需要计算的 ListView
+     */
+    private void setListViewHeightBasedOnChildren(ListView recentUpdateSubList) {
+        // 获取 ListView 对应的 Adapter
+        ListAdapter adapter = recentUpdateSubList.getAdapter();
+        if (adapter == null) {
+            return;
+        }
+        int totalHeight = 0;
+        for(int i = 0, len = adapter.getCount(); i < len; i++) {
+            // 拿到每个 View
+            View listItem = adapter.getView(i, null, recentUpdateSubList);
+            // 计算宽高
+            listItem.measure(0, 0);
+            // 统计所有子项的总高度
+            totalHeight += listItem.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = recentUpdateSubList.getLayoutParams();
+        // listView.getDividerHeight()获取子项间分隔符占用的高度
+        // params.height最后得到整个ListView完整显示需要的高度
+        params.height = totalHeight + (recentUpdateSubList.getDividerHeight() * (adapter.getCount() - 1));
+        recentUpdateSubList.setLayoutParams(params);
+    }
+
     @Override
     public int getItemCount() {
         return mComponentList.size();
@@ -204,9 +292,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     @Override
     public int getItemViewType(int position) {
         currentPos = position;
-        if (currentComponent == null) {
-            currentComponent = mComponentList.get(position);
-        }
+        currentComponent = mComponentList.get(position);
         String type = currentComponent.getType();
         switch (type) {
             case DecorateEntityType.FLOW_INFO_STR:

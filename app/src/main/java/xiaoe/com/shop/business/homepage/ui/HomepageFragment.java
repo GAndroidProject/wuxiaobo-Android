@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.ComponentInfo;
+import xiaoe.com.common.entitys.RecentUpdateListItem;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
@@ -47,7 +48,6 @@ public class HomepageFragment extends BaseFragment {
     @BindView(R.id.home_title_icon_desc)
     TextView homeTitleIconDesc;
     private DecorateRecyclerAdapter adapter;
-    private DecorateRecyclerAdapter adapter1;
 
     @Nullable
     @Override
@@ -116,12 +116,39 @@ public class HomepageFragment extends BaseFragment {
         componentInfo_3.setPrice("199.99");
         componentInfo_3.setImgUrl("http://pic14.nipic.com/20110605/1369025_165540642000_2.jpg");
         componentInfo_3.setHasBuy(true);
+        ComponentInfo componentInfo_4 = new ComponentInfo();
+        componentInfo_4.setType("shuffling_figure");
+        List<String> urlList = new ArrayList<>();
+        urlList.add("http://pic.58pic.com/58pic/15/63/07/42Q58PIC42U_1024.jpg");
+        urlList.add("http://img.zcool.cn/community/0125fd5770dfa50000018c1b486f15.jpg@1280w_1l_2o_100sh.jpg");
+        urlList.add("res:///" + R.drawable.audio_bg);
+        componentInfo_4.setShufflingList(urlList);
+        ComponentInfo componentInfo_5 = new ComponentInfo();
+        List<RecentUpdateListItem> itemList = new ArrayList<>();
+        RecentUpdateListItem item_1 = new RecentUpdateListItem();
+        item_1.setListTitle("09-22期 | 为什么哈哈哈哈哈哈哈，成为…");
+        item_1.setListPlayState("play");
+        RecentUpdateListItem item_2 = new RecentUpdateListItem();
+        item_2.setListTitle("09-21期 | 你还想海外逃税？国家哒哒哒…");
+        item_2.setListPlayState("play");
+        RecentUpdateListItem item_3 = new RecentUpdateListItem();
+        item_3.setListTitle("09-20期 | 十年后，我希望仍能与你在一起");
+        item_3.setListPlayState("play");
+        itemList.add(item_1);
+        itemList.add(item_2);
+        itemList.add(item_3);
+        componentInfo_5.setType("recent_update");
+        componentInfo_5.setTitle("每天听见吴晓波");
+        componentInfo_5.setDesc("已更新至09-22期");
+        componentInfo_5.setSubList(itemList);
         tempData.add(componentInfo_1);
         tempData.add(componentInfo_2);
         tempData.add(componentInfo_3);
+        tempData.add(componentInfo_4);
+        tempData.add(componentInfo_5);
         recyclerView.setLayoutManager(llm);
-        adapter1 = new DecorateRecyclerAdapter(getActivity(), tempData);
-        recyclerView.setAdapter(adapter1);
+        adapter = new DecorateRecyclerAdapter(getActivity(), tempData);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
