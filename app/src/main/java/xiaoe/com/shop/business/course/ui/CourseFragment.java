@@ -65,7 +65,7 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
         List<String> imageList = new ArrayList<>();
         imageList.add("http://pic.58pic.com/58pic/15/63/07/42Q58PIC42U_1024.jpg");
         imageList.add("http://img.zcool.cn/community/0125fd5770dfa50000018c1b486f15.jpg@1280w_1l_2o_100sh.jpg");
-        imageList.add("res:///" + R.drawable.audio_bg);
+        imageList.add("res:///" + R.mipmap.audio_bg);
 
         courseTitleContainer.setImageList(imageList);
 

@@ -27,6 +27,7 @@ import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.course.ui.CourseDetailActivity;
 
 /**
@@ -111,10 +112,22 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         return new FlowInfoImgTextViewHolder(view);
                     case DecorateEntityType.FLOW_INFO_AUDIO:  // 音频
                         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_audio, null);
+                        final View audioBG = view.findViewById(R.id.flow_info_audio_bg);
                         view.setLayoutParams(layoutParams);
                         if (currentComponent.isHasBuy()) {
                             view.findViewById(R.id.flow_info_img_text_price).setVisibility(View.GONE);
                         }
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ActivityOptions options =
+                                        ActivityOptions.makeSceneTransitionAnimation(mActivity,
+                                                Pair.create(audioBG, "audio_bg_share"));
+                                Intent audioIntent = new Intent(mActivity, AudioActivity.class);
+                                mActivity.startActivity(audioIntent, options.toBundle());
+//                                mActivity.startActivity(audioIntent);
+                            }
+                        });
                         return new FlowInfoAudioViewHolder(view);
                     case DecorateEntityType.FLOW_INFO_VIDEO:  // 视频
                         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_video, null);
@@ -174,8 +187,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         break;
                     case DecorateEntityType.FLOW_INFO_AUDIO:  // 音频
                         FlowInfoAudioViewHolder audioViewHolder = (FlowInfoAudioViewHolder) holder;
-                        audioViewHolder.flowInfoBg.setImageURI(Uri.parse("res:///" + R.drawable.audio_bg));
-                        audioViewHolder.flowInfoAvatar.setImageURI(Uri.parse("res:///" + R.drawable.audio_ring));
+                        audioViewHolder.flowInfoBg.setImageURI(Uri.parse("res:///" + R.mipmap.audio_bg));
+                        audioViewHolder.flowInfoAvatar.setImageURI(Uri.parse("res:///" + R.mipmap.audio_ring));
                         audioViewHolder.flowInfoTitle.setText(currentComponent.getTitle());
                         audioViewHolder.flowInfoDesc.setText(currentComponent.getDesc());
                         audioViewHolder.flowInfoPrice.setText(currentComponent.getPrice());
@@ -195,7 +208,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 break;
             case DecorateEntityType.RECENT_UPDATE:
                 RecentUpdateViewHolder recentUpdateViewHolder = (RecentUpdateViewHolder) holder;
-                recentUpdateViewHolder.recentUpdateAvatar.setImageURI("res:///" + R.drawable.audio_ring);
+                recentUpdateViewHolder.recentUpdateAvatar.setImageURI("res:///" + R.mipmap.audio_ring);
                 recentUpdateViewHolder.recentUpdateSubTitle.setText(currentComponent.getTitle());
                 recentUpdateViewHolder.recentUpdateSubDesc.setText(currentComponent.getDesc());
                 recentUpdateViewHolder.recentUpdateSubBtn.setOnClickListener(new View.OnClickListener() {

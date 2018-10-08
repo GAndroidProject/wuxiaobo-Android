@@ -51,7 +51,7 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 //        int viewType = getItemViewType(position);
         RecentUpdateHolder rh = (RecentUpdateHolder) holder;
-        rh.mRecentUpdateAvatar.setImageURI("res:///" + R.drawable.audio_ring);
+        rh.mRecentUpdateAvatar.setImageURI("res:///" + R.mipmap.audio_ring);
         rh.mRecentUpdateSubTitle.setText("每天听见吴晓波");
         rh.mRecentUpdateSubDesc.setText("已更新至09-22期");
         rh.mRecentUpdateSubBtn.setOnClickListener(new View.OnClickListener() {

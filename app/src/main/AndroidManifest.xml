@@ -21,6 +21,7 @@
         <activity android:name=".test.TreeActivity"/>
         <activity
             android:name=".business.course.ui.CourseDetailActivity"/>
+        <activity android:name=".business.audio.ui.AudioActivity"/>
     </application>
 
 </manifest>

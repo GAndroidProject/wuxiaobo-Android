@@ -3,14 +3,18 @@ package xiaoe.com.shop.business.homepage.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,7 +125,7 @@ public class HomepageFragment extends BaseFragment {
         List<String> urlList = new ArrayList<>();
         urlList.add("http://pic.58pic.com/58pic/15/63/07/42Q58PIC42U_1024.jpg");
         urlList.add("http://img.zcool.cn/community/0125fd5770dfa50000018c1b486f15.jpg@1280w_1l_2o_100sh.jpg");
-        urlList.add("res:///" + R.drawable.audio_bg);
+        urlList.add("res:///" + R.mipmap.audio_bg);
         componentInfo_4.setShufflingList(urlList);
         ComponentInfo componentInfo_5 = new ComponentInfo();
         List<RecentUpdateListItem> itemList = new ArrayList<>();
@@ -149,6 +153,18 @@ public class HomepageFragment extends BaseFragment {
         recyclerView.setLayoutManager(llm);
         adapter = new DecorateRecyclerAdapter(getActivity(), tempData);
         recyclerView.setAdapter(adapter);
+        getActivity().setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+                Log.d(TAG, "onSharedElementEnd: ");
+                for (View view : sharedElements) {
+                    if (view instanceof SimpleDraweeView) {
+                        view.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
     }
 
     @Override

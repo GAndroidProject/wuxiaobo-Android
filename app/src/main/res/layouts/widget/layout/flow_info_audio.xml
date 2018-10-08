@@ -15,11 +15,13 @@
             android:id="@+id/flow_info_audio_bg"
             android:layout_width="match_parent"
             android:layout_height="189dp"
-            android:src="@drawable/audio_bg"
+            android:src="@mipmap/audio_bg"
+            android:transitionName="audio_bg_share"
             fresco:roundedCornerRadius="8dp"
             fresco:roundingBorderWidth="1dp"
             fresco:roundBottomLeft="false"
-            fresco:roundBottomRight="false"/>
+            fresco:roundBottomRight="false"
+            />
 
         <TextView
             android:id="@+id/flow_info_audio_joined_desc"
@@ -35,7 +37,7 @@
             android:id="@+id/flow_info_audio_avatar"
             android:layout_width="190dp"
             android:layout_height="190dp"
-            android:src="@drawable/audio_ring"
+            android:src="@mipmap/audio_ring"
             android:layout_marginTop="14dp"
             android:layout_alignParentEnd="true"
             fresco:roundedCornerRadius="95dp"/>

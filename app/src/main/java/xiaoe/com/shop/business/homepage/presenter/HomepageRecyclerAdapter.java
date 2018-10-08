@@ -88,8 +88,8 @@ public class HomepageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
                 break;
             case FLOW_INFO_AUDIO:
                 FlowInfoAudioHolder ah = (FlowInfoAudioHolder)holder;
-                Uri audioBgUri = Uri.parse("res:///" + R.drawable.audio_bg);
-                Uri audioRingUri = Uri.parse("res:///" + R.drawable.audio_ring);
+                Uri audioBgUri = Uri.parse("res:///" + R.mipmap.audio_bg);
+                Uri audioRingUri = Uri.parse("res:///" + R.mipmap.audio_ring);
                 ah.flowInfoBg.setImageURI(audioBgUri);
                 ah.flowInfoAvatar.setImageURI(audioRingUri);
                 ah.flowInfoJoined.setText(mComponentData.get(position).getJoinedDesc());
