@@ -243,4 +243,15 @@ public class Global
     public void requestPermissions(Activity activity, String[] permissions){
         ActivityCompat.requestPermissions(activity,permissions,1);
     }
+
+    //全局颜色，默认白色
+    private String globalColor = "#ffffff";
+
+    public String getGlobalColor() {
+        return globalColor;
+    }
+
+    public void setGlobalColor(String globalColor) {
+        this.globalColor = globalColor;
+    }
 }

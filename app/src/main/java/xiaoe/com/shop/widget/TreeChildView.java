@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import xiaoe.com.shop.R;
-import xiaoe.com.shop.utils.Dp2Px2SpUils;
+import xiaoe.com.shop.utils.Dp2Px2SpUtil;
 
 public class TreeChildView extends RelativeLayout {
     private String TAG = "TreeChildView";
@@ -20,7 +20,7 @@ public class TreeChildView extends RelativeLayout {
         LayoutParams layoutParams = (LayoutParams) container.getLayoutParams();
         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        int margin = Dp2Px2SpUils.dp2px(context, 16);
+        int margin = Dp2Px2SpUtil.dp2px(context, 16);
         layoutParams.setMargins(0, margin, 0, margin);
         container.setLayoutParams(layoutParams);
 

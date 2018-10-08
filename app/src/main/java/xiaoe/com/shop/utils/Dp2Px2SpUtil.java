@@ -7,7 +7,7 @@ import android.util.TypedValue;
  * Created by Administrator on 2017/3/3.
  */
 
-public class Dp2Px2SpUils {
+public class Dp2Px2SpUtil {
     /**
      * dp转px
      *

@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import xiaoe.com.common.app.Global;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
+import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.BottomBarButton;
 import xiaoe.com.shop.widget.BottomTabBar;
 import xiaoe.com.shop.widget.ScrollViewPager;
@@ -28,29 +29,18 @@ public class MainActivity extends AppCompatActivity implements OnBottomTabSelect
         setContentView(R.layout.activity_main);
 
         //状态栏颜色字体(白底黑字)修改 Android6.0+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.WHITE);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }else{
+            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
         }
-        //状态栏颜色字体(白底黑字)修改 MIUI6+
-        //setMiuiStatusBarDarkMode(this,true);
-        //状态栏颜色字体(白底黑字)修改 Flyme4+
-        //setMeizuStatusBarDarkIcon(this,true);
-
-//        HomepageFragment homepageFragment = new HomepageFragment();
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.main_container, homepageFragment);
-//
-//        fragmentTransaction.commit();
-
         initView();
 
     }
 
     private void initView() {
+        RelativeLayout mainActivityRootView = (RelativeLayout) findViewById(R.id.main_activity_root_view);
+        mainActivityRootView.setBackgroundColor(Color.parseColor(Global.g().getGlobalColor()));
         bottomTabBar = (BottomTabBar) findViewById(R.id.bottom_tab_bar_layout);
         bottomTabBar.setBottomTabBarOrientation(LinearLayout.HORIZONTAL);
         bottomTabBar.setTabBarWeightSum(3);
