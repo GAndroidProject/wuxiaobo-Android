@@ -62,7 +62,7 @@
                 android:id="@+id/recent_update_avatar"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                android:src="@drawable/icon_taday_learning"
+                android:src="@mipmap/icon_taday_learning"
                 android:layout_marginStart="16dp"
                 fresco:roundedCornerRadius="8dp"
                 fresco:roundingBorderWidth="1dp"/>

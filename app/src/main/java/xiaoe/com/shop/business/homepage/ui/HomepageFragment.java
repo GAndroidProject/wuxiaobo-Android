@@ -24,7 +24,6 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.homepage.presenter.HomepagePresenter;
-import xiaoe.com.shop.business.homepage.presenter.HomepageRecyclerAdapter;
 
 public class HomepageFragment extends BaseFragment {
 
@@ -47,6 +46,8 @@ public class HomepageFragment extends BaseFragment {
     ImageView homeTitleIcon;
     @BindView(R.id.home_title_icon_desc)
     TextView homeTitleIconDesc;
+    private DecorateRecyclerAdapter adapter;
+    private DecorateRecyclerAdapter adapter1;
 
     @Nullable
     @Override
@@ -86,7 +87,7 @@ public class HomepageFragment extends BaseFragment {
     public void init() {
         homeTitleTime.setText("9月4日 星期二");
         homeTitleDesc.setText("今天");
-        homeTitleIcon.setImageResource(R.drawable.icon_taday_learning);
+        homeTitleIcon.setImageResource(R.mipmap.icon_taday_learning);
         homeTitleIconDesc.setText("我正在学");
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayout.VERTICAL);
@@ -119,7 +120,8 @@ public class HomepageFragment extends BaseFragment {
         tempData.add(componentInfo_2);
         tempData.add(componentInfo_3);
         recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(new DecorateRecyclerAdapter(getActivity(), tempData));
+        adapter1 = new DecorateRecyclerAdapter(getActivity(), tempData);
+        recyclerView.setAdapter(adapter1);
     }
 
     @Override
@@ -131,7 +133,7 @@ public class HomepageFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        init();
+//        init();
     }
 
     @Override

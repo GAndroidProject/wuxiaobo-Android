@@ -1,6 +1,5 @@
 package xiaoe.com.shop.business.main.ui;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,11 +10,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.view.DraweeTransition;
-import com.facebook.drawee.view.SimpleDraweeView;
-
-import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;

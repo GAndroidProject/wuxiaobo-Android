@@ -29,7 +29,7 @@
             android:id="@+id/course_title_search"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/search_grey_search"
+            android:src="@mipmap/search_grey_search"
             tools:ignore="ContentDescription"
             android:layout_gravity="end"
             android:layout_marginEnd="4dp"/>
