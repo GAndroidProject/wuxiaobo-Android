@@ -23,13 +23,24 @@ public class ComponentInfo {
     private String imgUrl;
     // 是否购买
     private boolean hasBuy;
-    // 子列表集合
+    // 最近更新子列表集合
     private List<RecentUpdateListItem> subList;
     // 轮播图集合
     private List<String> shufflingList;
+    // 知识商品分组子列表集合
+    private List<KnowledgeCommodityItem> knowledgeCommodityItemList;
 
     public ComponentInfo() {
 
+    }
+
+    public void setKnowledgeCommodityItemList(List<KnowledgeCommodityItem> knowledgeCommodityItemList) {
+        this.knowledgeCommodityItemList = knowledgeCommodityItemList;
+    }
+
+    public List<KnowledgeCommodityItem> getKnowledgeCommodityItemList() {
+
+        return knowledgeCommodityItemList;
     }
 
     public void setShufflingList(List<String> shufflingList) {

@@ -1,4 +1,4 @@
-package xiaoe.com.shop.adapter.decorate;
+package xiaoe.com.shop.adapter.decorate.recent_update;
 
 import android.view.View;
 import android.widget.Button;
@@ -15,20 +15,20 @@ import xiaoe.com.shop.base.BaseViewHolder;
 /**
  * 最近更新 ViewHolder
  */
-class RecentUpdateViewHolder extends BaseViewHolder {
+public class RecentUpdateViewHolder extends BaseViewHolder {
 
     @BindView(R.id.recent_update_sub_list)
-    ListView recentUpdateSubList;
+    public ListView recentUpdateListView;
     @BindView(R.id.recent_update_avatar)
-    SimpleDraweeView recentUpdateAvatar;
+    public SimpleDraweeView recentUpdateAvatar;
     @BindView(R.id.recent_update_sub_title)
-    TextView recentUpdateSubTitle;
+    public TextView recentUpdateSubTitle;
     @BindView(R.id.recent_update_sub_desc)
-    TextView recentUpdateSubDesc;
+    public TextView recentUpdateSubDesc;
     @BindView(R.id.recent_update_sub_btn)
-    Button recentUpdateSubBtn;
+    public Button recentUpdateSubBtn;
 
-    RecentUpdateViewHolder(View itemView) {
+    public RecentUpdateViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }

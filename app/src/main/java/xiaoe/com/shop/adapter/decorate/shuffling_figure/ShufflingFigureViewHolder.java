@@ -1,4 +1,4 @@
-package xiaoe.com.shop.adapter.decorate;
+package xiaoe.com.shop.adapter.decorate.shuffling_figure;
 
 import android.view.View;
 
@@ -12,7 +12,7 @@ import xiaoe.com.shop.base.BaseViewHolder;
 public class ShufflingFigureViewHolder extends BaseViewHolder {
 
     @BindView(R.id.shuffling_figure)
-    ConvenientBanner convenientBanner;
+    public ConvenientBanner convenientBanner;
 
     public ShufflingFigureViewHolder(View itemView) {
         super(itemView);

@@ -1,4 +1,4 @@
-package xiaoe.com.shop.adapter.decorate;
+package xiaoe.com.shop.adapter.decorate.flow_info;
 
 import android.view.View;
 import android.widget.TextView;
@@ -13,22 +13,22 @@ import xiaoe.com.shop.base.BaseViewHolder;
 /**
  * 音频 ViewHolder
  */
-class FlowInfoAudioViewHolder extends BaseViewHolder {
+public class FlowInfoAudioViewHolder extends BaseViewHolder {
 
     @BindView(R.id.flow_info_audio_bg)
-    SimpleDraweeView flowInfoBg;
+    public SimpleDraweeView flowInfoBg;
     @BindView(R.id.flow_info_audio_avatar)
-    SimpleDraweeView flowInfoAvatar;
+    public SimpleDraweeView flowInfoAvatar;
     @BindView(R.id.flow_info_audio_joined_desc)
-    TextView flowInfoJoinedDesc;
+    public TextView flowInfoJoinedDesc;
     @BindView(R.id.flow_info_audio_title)
-    TextView flowInfoTitle;
+    public TextView flowInfoTitle;
     @BindView(R.id.flow_info_audio_desc)
-    TextView flowInfoDesc;
+    public TextView flowInfoDesc;
     @BindView(R.id.flow_info_audio_price)
-    TextView flowInfoPrice;
+    public TextView flowInfoPrice;
 
-    FlowInfoAudioViewHolder(View itemView) {
+    public FlowInfoAudioViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }

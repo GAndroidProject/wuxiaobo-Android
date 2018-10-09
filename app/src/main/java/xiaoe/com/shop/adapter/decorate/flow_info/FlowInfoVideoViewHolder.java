@@ -1,4 +1,4 @@
-package xiaoe.com.shop.adapter.decorate;
+package xiaoe.com.shop.adapter.decorate.flow_info;
 
 import android.view.View;
 import android.widget.TextView;
@@ -13,18 +13,18 @@ import xiaoe.com.shop.base.BaseViewHolder;
 /**
  * 视频 ViewHolder
  */
-class FlowInfoVideoViewHolder extends BaseViewHolder {
+public class FlowInfoVideoViewHolder extends BaseViewHolder {
 
     @BindView(R.id.flow_info_video_bg)
-    SimpleDraweeView flowInfoBg;
+    public SimpleDraweeView flowInfoBg;
     @BindView(R.id.flow_info_video_title)
-    TextView flowInfoTitle;
+    public TextView flowInfoTitle;
     @BindView(R.id.flow_info_video_desc)
-    TextView flowInfoDesc;
+    public TextView flowInfoDesc;
     @BindView(R.id.flow_info_video_price)
-    TextView flowInfoPrice;
+    public TextView flowInfoPrice;
 
-    FlowInfoVideoViewHolder(View itemView) {
+    public FlowInfoVideoViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }

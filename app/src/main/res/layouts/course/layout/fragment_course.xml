@@ -23,13 +23,13 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp">
             </xiaoe.com.shop.widget.CourseTitleView>
-            <!--<android.support.v7.widget.Toolbar-->
-            <!--android:id="@+id/tool_bar"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:layout_collapseMode="pin">-->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/course_tool_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="pin">
 
-            <!--</android.support.v7.widget.Toolbar>-->
+            </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
     <android.support.v7.widget.RecyclerView

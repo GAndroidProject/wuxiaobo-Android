@@ -16,6 +16,7 @@
 	<color name="division_color">#dbdbdb</color><!--高亮标题颜色-->
     <color name="price_color">#BCA16B</color><!--价格颜色-->
     <color name="recent_list_color">#666666</color><!--列表item字体颜色-->
-    <color name="knowledge_item_desc_color">#cccccc</color>
-
+    <color name="knowledge_item_desc_color">#cccccc</color><!--知识商品列表样式描述字体颜色-->
+    <color name="recent_update_btn_normal">#407FFB</color><!--最近更新按钮正常状态-->
+    <color name="recent_update_btn_pressed">#1E59F6</color><!--最近更新按钮按下状态-->
 </resources>

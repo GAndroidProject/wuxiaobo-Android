@@ -10,12 +10,11 @@ import android.widget.LinearLayout;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
 import xiaoe.com.shop.R;
-import xiaoe.com.shop.adapter.decorate.PicViewHolder;
+import xiaoe.com.shop.adapter.decorate.shuffling_figure.PicViewHolder;
 
 public class CourseTitleView extends LinearLayout {
 

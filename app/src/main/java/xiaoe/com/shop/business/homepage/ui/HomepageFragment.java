@@ -23,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.ComponentInfo;
+import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
@@ -96,6 +97,7 @@ public class HomepageFragment extends BaseFragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayout.VERTICAL);
         List<ComponentInfo> tempData = new ArrayList<ComponentInfo>();
+        // 信息流假数据
         ComponentInfo componentInfo_1 = new ComponentInfo();
         componentInfo_1.setType("flow_info");
         componentInfo_1.setSubType("imgText");
@@ -120,13 +122,16 @@ public class HomepageFragment extends BaseFragment {
         componentInfo_3.setPrice("199.99");
         componentInfo_3.setImgUrl("http://pic14.nipic.com/20110605/1369025_165540642000_2.jpg");
         componentInfo_3.setHasBuy(true);
+        // 轮播图假数据
         ComponentInfo componentInfo_4 = new ComponentInfo();
         componentInfo_4.setType("shuffling_figure");
         List<String> urlList = new ArrayList<>();
         urlList.add("http://pic.58pic.com/58pic/15/63/07/42Q58PIC42U_1024.jpg");
         urlList.add("http://img.zcool.cn/community/0125fd5770dfa50000018c1b486f15.jpg@1280w_1l_2o_100sh.jpg");
         urlList.add("res:///" + R.mipmap.audio_bg);
+        urlList.add("http://img05.tooopen.com/images/20141020/sy_73154627197.jpg");
         componentInfo_4.setShufflingList(urlList);
+        // 最近更新假数据
         ComponentInfo componentInfo_5 = new ComponentInfo();
         List<RecentUpdateListItem> itemList = new ArrayList<>();
         RecentUpdateListItem item_1 = new RecentUpdateListItem();
@@ -145,11 +150,76 @@ public class HomepageFragment extends BaseFragment {
         componentInfo_5.setTitle("每天听见吴晓波");
         componentInfo_5.setDesc("已更新至09-22期");
         componentInfo_5.setSubList(itemList);
+        // 知识商品假数据 -- 列表形式
+        ComponentInfo componentInfo_6 = new ComponentInfo();
+        componentInfo_6.setType("knowledge_commodity");
+        componentInfo_6.setSubType("knowledgeList");
+        List<KnowledgeCommodityItem> listItems = new ArrayList<>();
+        // 有价格没买
+        KnowledgeCommodityItem listItem_1 = new KnowledgeCommodityItem();
+        listItem_1.setItemTitle("我的财富计划新中产必修理财课程");
+        listItem_1.setItemImg("http://img05.tooopen.com/images/20141020/sy_73154627197.jpg");
+        listItem_1.setItemPrice("￥999.99");
+        listItem_1.setHasBuy(false);
+        listItem_1.setItemDesc("已更新至135期");
+        // 有价格买了
+        KnowledgeCommodityItem listItem_2 = new KnowledgeCommodityItem();
+        listItem_2.setItemTitle("我的财富计划新中产必修理财课程杀杀杀");
+        listItem_2.setItemImg("http://img.zcool.cn/community/01f39a59a7affba801211d25185cd3.jpg@1280w_1l_2o_100sh.jpg");
+        listItem_2.setItemPrice("￥85.55");
+        listItem_2.setHasBuy(true);
+        listItem_2.setItemDesc("已更新至120期");
+        // 没有价格，免费的
+        KnowledgeCommodityItem listItem_3 = new KnowledgeCommodityItem();
+        listItem_3.setItemTitle("我的财富计划新中产必修理财课程哒哒哒");
+        listItem_3.setItemImg("http://img.zcool.cn/community/01951d55dd8f336ac7251df845a2ae.jpg");
+        listItem_3.setItemDesc("已更新至101期");
+        listItems.add(listItem_1);
+        listItems.add(listItem_2);
+        listItems.add(listItem_3);
+        componentInfo_6.setKnowledgeCommodityItemList(listItems);
+        // 知识商品假数据 -- 分组形式
+        ComponentInfo componentInfo_7 = new ComponentInfo();
+        componentInfo_7.setType("knowledge_commodity");
+        componentInfo_7.setSubType("knowledgeGroup");
+        componentInfo_7.setTitle("学会管理自己的财富");
+        componentInfo_7.setDesc("查看更多");
+        List<KnowledgeCommodityItem> groupItems = new ArrayList<>();
+        KnowledgeCommodityItem groupItem_1 = new KnowledgeCommodityItem();
+        groupItem_1.setItemTitle("我的财富计划 新中产必修理财课程");
+        groupItem_1.setItemImg("http://pic15.nipic.com/20110619/7763155_101852942332_2.jpg");
+        groupItem_1.setHasBuy(false);
+        groupItem_1.setItemDesc("已更新至135期");
+        groupItem_1.setItemPrice("￥980.08");
+        KnowledgeCommodityItem groupItem_2 = new KnowledgeCommodityItem();
+        groupItem_2.setItemTitle("我的财富计划");
+        groupItem_2.setItemImg("http://pic38.nipic.com/20140212/17942401_101320663138_2.jpg");
+        groupItem_2.setHasBuy(true);
+        groupItem_2.setItemPrice("￥555.21");
+        groupItem_2.setItemDesc("187次播放");
+        KnowledgeCommodityItem groupItem_3 = new KnowledgeCommodityItem();
+        groupItem_3.setItemTitle("学会规划自己的职场 必修理财课程");
+        groupItem_3.setItemImg("http://gbres.dfcfw.com/Files/picture/20170925/9B00CEC6F06B756A4A9C256E870A324B.jpg");
+        groupItem_3.setHasBuy(false);
+        groupItem_3.setItemDesc("已更新至134期");
+        KnowledgeCommodityItem groupItem_4 = new KnowledgeCommodityItem();
+        groupItem_4.setItemTitle("这个文案是测试的，随便搞搞");
+        groupItem_4.setItemImg("http://img.zcool.cn/community/01a9e45a60510ca8012113c7899c89.jpg@1280w_1l_2o_100sh.jpg");
+        groupItem_4.setHasBuy(true);
+        groupItem_4.setItemPrice("￥123.12");
+        groupItem_4.setItemDesc("130次播放");
+        groupItems.add(groupItem_1);
+        groupItems.add(groupItem_2);
+        groupItems.add(groupItem_3);
+        groupItems.add(groupItem_4);
+        componentInfo_7.setKnowledgeCommodityItemList(groupItems);
         tempData.add(componentInfo_1);
         tempData.add(componentInfo_2);
         tempData.add(componentInfo_3);
         tempData.add(componentInfo_4);
         tempData.add(componentInfo_5);
+        tempData.add(componentInfo_6);
+        tempData.add(componentInfo_7);
         recyclerView.setLayoutManager(llm);
         adapter = new DecorateRecyclerAdapter(getActivity(), tempData);
         recyclerView.setAdapter(adapter);

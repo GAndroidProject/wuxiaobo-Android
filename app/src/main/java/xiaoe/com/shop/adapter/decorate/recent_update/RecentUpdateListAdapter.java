@@ -1,9 +1,8 @@
-package xiaoe.com.shop.adapter.decorate;
+package xiaoe.com.shop.adapter.decorate.recent_update;
 
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,13 +57,13 @@ public class RecentUpdateListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final ListViewHolder viewHolder;
+        final RecentUpdateHolder viewHolder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.recent_update_list_item, parent ,false);
-            viewHolder = new ListViewHolder(convertView);
+            viewHolder = new RecentUpdateHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ListViewHolder) convertView.getTag();
+            viewHolder = (RecentUpdateHolder) convertView.getTag();
         }
         viewHolder.listTitle.setText(mItemList.get(position).getListTitle());
         String playState = mItemList.get(position).getListPlayState();
@@ -76,26 +75,26 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         viewHolder.listIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mItemList.get(position).getListPlayState().equals("play")) { // 暂停，点击后换成播放中状态
-                    viewHolder.listIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
-                    mItemList.get(position).setListPlayState("stop");
-                } else if (mItemList.get(position).getListPlayState().equals("stop")) { // 播放中，点击后换成准备播放状态
-                    viewHolder.listIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
-                    mItemList.get(position).setListPlayState("play");
-                }
+            if (mItemList.get(position).getListPlayState().equals("play")) { // 暂停，点击后换成播放中状态
+                viewHolder.listIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
+                mItemList.get(position).setListPlayState("stop");
+            } else if (mItemList.get(position).getListPlayState().equals("stop")) { // 播放中，点击后换成准备播放状态
+                viewHolder.listIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
+                mItemList.get(position).setListPlayState("play");
+            }
             }
         });
         return convertView;
     }
 
-    class ListViewHolder {
+    class RecentUpdateHolder {
 
         @BindView(R.id.recent_update_list_title)
         TextView listTitle;
         @BindView(R.id.recent_update_list_icon)
         SimpleDraweeView listIcon;
 
-        ListViewHolder(View itemView) {
+        RecentUpdateHolder(View itemView) {
             ButterKnife.bind(this, itemView);
         }
     }
