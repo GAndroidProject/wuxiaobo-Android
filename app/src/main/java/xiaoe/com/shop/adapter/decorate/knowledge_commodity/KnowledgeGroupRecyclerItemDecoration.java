@@ -26,8 +26,14 @@ public class KnowledgeGroupRecyclerItemDecoration extends RecyclerView.ItemDecor
         super.getItemOffsets(outRect, view, parent, state);
         outRect.bottom = itemSpace;
         if (parent.getChildLayoutPosition(view) % itemNum == 0) {
+            outRect.top = itemSpace;
+            outRect.right = itemSpace;
+            outRect.bottom = 0;
             outRect.left = 0;
         } else {
+            outRect.top = itemSpace;
+            outRect.right = 0;
+            outRect.bottom = 0;
             outRect.left = itemSpace;
         }
     }

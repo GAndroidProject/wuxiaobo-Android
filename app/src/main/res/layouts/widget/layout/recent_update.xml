@@ -11,6 +11,7 @@
         android:orientation="vertical"
         tools:ignore="UselessParent">
         <TextView
+            android:id="@+id/recent_update_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/recent_update_title"

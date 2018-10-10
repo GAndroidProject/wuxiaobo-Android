@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +25,8 @@ import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
-import xiaoe.com.shop.business.course.presenter.CourseRecyclerAdapter;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
-import xiaoe.com.shop.widget.BottomBarButton;
-import xiaoe.com.shop.widget.BottomTabBar;
-import xiaoe.com.shop.widget.CourseTitleView;
+import xiaoe.com.shop.widget.SearchView;
 
 public class CourseFragment extends BaseFragment implements OnBottomTabSelectListener {
 
@@ -37,11 +36,14 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
     private Context mContext;
 
     @BindView(R.id.course_title_container)
-    CourseTitleView courseTitleContainer;
-    @BindView(R.id.course_title_bottom)
-    BottomTabBar bottomTabBar;
+    SearchView courseTitleContainer;
+//    @BindView(R.id.course_title_bottom)
+//    BottomTabBar bottomTabBar;
     @BindView(R.id.course_recycler_view)
     RecyclerView recyclerView;
+
+    @BindView(R.id.course_background)
+    SimpleDraweeView simpleDraweeView;
 
     @Nullable
     @Override
@@ -60,24 +62,24 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
 
     public void init() {
         mContext = getActivity();
-
+        simpleDraweeView.setImageURI("http://txt25-2.book118.com/2017/1105/book138977/138976472.jpg");
         // 暂时写死三张图片（初始化头部标题）
-        List<String> imageList = new ArrayList<>();
-        imageList.add("http://pic.58pic.com/58pic/15/63/07/42Q58PIC42U_1024.jpg");
-        imageList.add("http://img.zcool.cn/community/0125fd5770dfa50000018c1b486f15.jpg@1280w_1l_2o_100sh.jpg");
-        imageList.add("res:///" + R.mipmap.audio_bg);
-        imageList.add("http://img05.tooopen.com/images/20141020/sy_73154627197.jpg");
+//        List<String> imageList = new ArrayList<>();
+//        imageList.add("http://pic.58pic.com/58pic/15/63/07/42Q58PIC42U_1024.jpg");
+//        imageList.add("http://img.zcool.cn/community/0125fd5770dfa50000018c1b486f15.jpg@1280w_1l_2o_100sh.jpg");
+//        imageList.add("res:///" + R.mipmap.audio_bg);
+//        imageList.add("http://img05.tooopen.com/images/20141020/sy_73154627197.jpg");
 
-        courseTitleContainer.setImageList(imageList);
+//        courseTitleContainer.setImageList(imageList);
 
-        bottomTabBar.setBottomTabBarOrientation(LinearLayout.HORIZONTAL);
-        bottomTabBar.setTabBarWeightSum(4);
-        bottomTabBar.setBottomTabSelectListener(this);
-        for (int i = 0; i < 4; i++){
-            BottomBarButton radioButton = new BottomBarButton(getActivity());
-            radioButton.setButtonText("按钮"+(i + 1));
-            bottomTabBar.addTabButton(radioButton.getTabButton());
-        }
+//        bottomTabBar.setBottomTabBarOrientation(LinearLayout.HORIZONTAL);
+//        bottomTabBar.setTabBarWeightSum(4);
+//        bottomTabBar.setBottomTabSelectListener(this);
+//        for (int i = 0; i < 4; i++){
+//            BottomBarButton radioButton = new BottomBarButton(getActivity());
+//            radioButton.setButtonText("按钮"+(i + 1));
+//            bottomTabBar.addTabButton(radioButton.getTabButton());
+//        }
 
         // 初始化 RecyclerView
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -117,17 +119,17 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
     @Override
     public void onResume() {
         super.onResume();
-        if (courseTitleContainer != null) {
-            courseTitleContainer.startTurning(2000);
-        }
+//        if (courseTitleContainer != null) {
+//            courseTitleContainer.startTurning(2000);
+//        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (courseTitleContainer != null) {
-            courseTitleContainer.stopTurning();
-        }
+//        if (courseTitleContainer != null) {
+//            courseTitleContainer.stopTurning();
+//        }
     }
 
     @Override

@@ -17,11 +17,16 @@ public class DecorateEntityType {
     public static final String BOOKCASE_STR = "bookcase";
     public static final int GRAPHIC_NAVIGATION = 5; // 图文导航组件
     public static final String GRAPHIC_NAVIGATION_STR = "graphic_navigation";
+    public static final int SEARCH = 6; // 搜索组件
+    public static final String SEARCH_STR = "search";
 
     // 信息流
-    public static final String FLOW_INFO_IMG_TEXT = "imgText"; // 图文子类型
-    public static final String FLOW_INFO_AUDIO = "audio"; // 音频子类型
-    public static final String FLOW_INFO_VIDEO = "video"; // 视频子类型
+    public static final int FLOW_INFO_IMG_TEXT = 0;
+    public static final String FLOW_INFO_IMG_TEXT_STR = "imgText"; // 图文子类型
+    public static final int FLOW_INFO_AUDIO = 1;
+    public static final String FLOW_INFO_AUDIO_STR = "audio"; // 音频子类型
+    public static final int FLOW_INFO_VIDEO = 2;
+    public static final String FLOW_INFO_VIDEO_STR = "video"; // 视频子类型
 
     // 知识商品
     public static final String KNOWLEDGE_LIST = "knowledgeList"; // 列表类型

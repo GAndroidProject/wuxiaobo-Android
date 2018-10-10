@@ -21,7 +21,7 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
     private Context mContext;
     private Activity mActivity;
     // 知识商品分组 item 实体类列表
-    private List<KnowledgeCommodityItem> itemList;
+    private List<KnowledgeCommodityItem> mItemList;
 
     // 当前下标
     private int currentPos = 0;
@@ -30,18 +30,18 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
 
     public KnowledgeGroupRecyclerAdapter(Context context, List<KnowledgeCommodityItem> list) {
         this.mContext = context;
-        this.itemList = list;
+        this.mItemList = list;
     }
 
     public KnowledgeGroupRecyclerAdapter(Activity activity, List<KnowledgeCommodityItem> list) {
         this.mActivity = activity;
-        this.itemList = list;
+        this.mItemList = list;
     }
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group_item, null);
-        currentItem = itemList.get(currentPos);
+        currentItem = mItemList.get(currentPos);
         return new KnowledgeItemViewHolder(view);
     }
 
@@ -68,7 +68,7 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
 
     @Override
     public int getItemCount() {
-        return itemList == null ? 0 : itemList.size();
+        return mItemList == null ? 0 : mItemList.size();
     }
 
     @Override

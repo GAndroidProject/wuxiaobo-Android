@@ -6,13 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -24,10 +27,16 @@ import java.util.List;
 
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.flow_info.FlowInfoAudioViewHolder;
 import xiaoe.com.shop.adapter.decorate.flow_info.FlowInfoImgTextViewHolder;
+import xiaoe.com.shop.adapter.decorate.flow_info.FlowInfoRecyclerAdapter;
 import xiaoe.com.shop.adapter.decorate.flow_info.FlowInfoVideoViewHolder;
+import xiaoe.com.shop.adapter.decorate.flow_info.FlowInfoViewHolder;
+import xiaoe.com.shop.adapter.decorate.graphic_navigation.GraphicNavItemDecoration;
+import xiaoe.com.shop.adapter.decorate.graphic_navigation.GraphicNavRecyclerAdapter;
+import xiaoe.com.shop.adapter.decorate.graphic_navigation.GraphicNavViewHolder;
 import xiaoe.com.shop.adapter.decorate.knowledge_commodity.KnowledgeGroupRecyclerAdapter;
 import xiaoe.com.shop.adapter.decorate.knowledge_commodity.KnowledgeGroupRecyclerItemDecoration;
 import xiaoe.com.shop.adapter.decorate.knowledge_commodity.KnowledgeGroupViewHolder;
@@ -69,67 +78,20 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public BaseViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+        if (viewType == -1) {
+            return null;
+        }
         View view = null;
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0,0,0,30);
+        layoutParams.setMargins(0,0,0,Dp2Px2SpUtil.dp2px(mActivity, 30));
         currentComponent = mComponentList.get(currentPos);
         // 获取组件的显示类型
         String subType = currentComponent.getSubType();
         switch(viewType) {
             case DecorateEntityType.FLOW_INFO:
-                switch (subType) {
-                    case DecorateEntityType.FLOW_INFO_IMG_TEXT:  // 图文
-                        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_img_text, null);
-                        view.setLayoutParams(layoutParams);
-                        if (currentComponent.isHasBuy()) { // 买了，价格就不显示
-                            view.findViewById(R.id.flow_info_img_text_price).setVisibility(View.GONE);
-                        }
-                        final View imageView = view.findViewById(R.id.flow_info_img_text_bg);
-                        final View textView = view.findViewById(R.id.flow_info_img_text_title);
-                        final String imgUrl = currentComponent.getImgUrl();
-                        view.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                            ActivityOptions options =
-                                ActivityOptions.makeSceneTransitionAnimation(mActivity,
-                                    Pair.create(imageView, "share"),
-                                    Pair.create(textView, "text"));
-                            Intent transitionIntent = new Intent(mActivity, CourseDetailActivity.class);
-                            transitionIntent.putExtra("type", DecorateEntityType.FLOW_INFO_IMG_TEXT);
-                            transitionIntent.putExtra("imgUrl", imgUrl);
-                            mActivity.startActivity(transitionIntent, options.toBundle());
-                            }
-                        });
-                        // TODO: 设想在 touch 事件中实现 view 的缩放效果
-                        return new FlowInfoImgTextViewHolder(view);
-                    case DecorateEntityType.FLOW_INFO_AUDIO:  // 音频
-                        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_audio, null);
-                        final View audioBG = view.findViewById(R.id.flow_info_audio_bg);
-                        final View audioTitle = view.findViewById(R.id.flow_info_audio_desc);
-                        view.setLayoutParams(layoutParams);
-                        if (currentComponent.isHasBuy()) {
-                            view.findViewById(R.id.flow_info_img_text_price).setVisibility(View.GONE);
-                        }
-                        view.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                ActivityOptions options =
-                                    ActivityOptions.makeSceneTransitionAnimation(mActivity,
-                                        Pair.create(audioBG, "audio_bg_share"),
-                                        Pair.create(audioTitle, "share_audio_title"));
-                                Intent audioIntent = new Intent(mActivity, AudioActivity.class);
-                                mActivity.startActivity(audioIntent, options.toBundle());
-                            }
-                        });
-                        return new FlowInfoAudioViewHolder(view);
-                    case DecorateEntityType.FLOW_INFO_VIDEO:  // 视频
-                        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_video, null);
-                        view.setLayoutParams(layoutParams);
-                        if (currentComponent.isHasBuy()) {
-                            view.findViewById(R.id.flow_info_video_price).setVisibility(View.GONE);
-                        }
-                        return new FlowInfoVideoViewHolder(view);
-                }
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info, null);
+                view.setLayoutParams(layoutParams);
+                return new FlowInfoViewHolder(view);
             case DecorateEntityType.RECENT_UPDATE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_update, null);
                 view.setLayoutParams(layoutParams);
@@ -152,6 +114,13 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.BOOKCASE: // 书架的 case 本次不做
                 break;
             case DecorateEntityType.GRAPHIC_NAVIGATION:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.graphic_navigation, null);
+                layoutParams.gravity = Gravity.CENTER;
+                view.setLayoutParams(layoutParams);
+                return new GraphicNavViewHolder(view);
+            case DecorateEntityType.SEARCH:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search, null);
+                view.setLayoutParams(layoutParams);
                 break;
             default:
                 break;
@@ -166,40 +135,22 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             Log.d(TAG, "onBindViewHolder: error return -1");
             return;
         }
-        String price = "";
         // 需要根据是那种信息流来加载不同的布局
         String subType = currentComponent.getSubType();
         switch(itemType) {
             case DecorateEntityType.FLOW_INFO:
-                switch (subType) {
-                    case DecorateEntityType.FLOW_INFO_IMG_TEXT:  // 图文
-                        FlowInfoImgTextViewHolder itViewHolder = (FlowInfoImgTextViewHolder) holder;
-                        itViewHolder.flowInfoBg.setImageURI(currentComponent.getImgUrl());
-                        itViewHolder.flowInfoTitle.setText(currentComponent.getTitle());
-                        itViewHolder.flowInfoDesc.setText(currentComponent.getDesc());
-                        price = "￥" + currentComponent.getPrice();
-                        itViewHolder.flowInfoPrice.setText(price);
-                        break;
-                    case DecorateEntityType.FLOW_INFO_AUDIO:  // 音频
-                        FlowInfoAudioViewHolder audioViewHolder = (FlowInfoAudioViewHolder) holder;
-                        audioViewHolder.flowInfoBg.setImageURI(Uri.parse("res:///" + R.mipmap.audio_bg));
-                        audioViewHolder.flowInfoAvatar.setImageURI(Uri.parse("res:///" + R.mipmap.audio_ring));
-                        audioViewHolder.flowInfoTitle.setText(currentComponent.getTitle());
-                        audioViewHolder.flowInfoDesc.setText(currentComponent.getDesc());
-                        audioViewHolder.flowInfoPrice.setText(currentComponent.getPrice());
-                        String joinedDesc = currentComponent.getJoinedDesc() + "人在听";
-                        audioViewHolder.flowInfoJoinedDesc.setText(joinedDesc);
-                        price = "￥" + currentComponent.getPrice();
-                        audioViewHolder.flowInfoPrice.setText(price);
-                        break;
-                    case DecorateEntityType.FLOW_INFO_VIDEO:  // 视频
-                        FlowInfoVideoViewHolder videoViewHolder = (FlowInfoVideoViewHolder) holder;
-                        videoViewHolder.flowInfoBg.setImageURI(currentComponent.getImgUrl());
-                        videoViewHolder.flowInfoTitle.setText(currentComponent.getTitle());
-                        videoViewHolder.flowInfoDesc.setText(currentComponent.getDesc());
-                        videoViewHolder.flowInfoPrice.setText(currentComponent.getPrice());
-                        break;
-                }
+                FlowInfoViewHolder flowInfoViewHolder = (FlowInfoViewHolder) holder;
+                flowInfoViewHolder.flowInfoTitle.setText(currentComponent.getTitle());
+                flowInfoViewHolder.flowInfoDesc.setText(currentComponent.getDesc());
+                flowInfoViewHolder.flowInfoIcon.setImageURI(currentComponent.getImgUrl());
+                flowInfoViewHolder.flowInfoIconDesc.setText(currentComponent.getJoinedDesc());
+                LinearLayoutManager llm = new LinearLayoutManager(mActivity);
+                llm.setOrientation(LinearLayout.VERTICAL);
+                flowInfoViewHolder.flowInfoRecycler.setLayoutManager(llm);
+                FlowInfoRecyclerAdapter flowInfoRecyclerAdapter = new FlowInfoRecyclerAdapter(mActivity, currentComponent.getFlowInfoItemList());
+                // recyclerView 取消滑动
+                flowInfoViewHolder.flowInfoRecycler.setNestedScrollingEnabled(false);
+                flowInfoViewHolder.flowInfoRecycler.setAdapter(flowInfoRecyclerAdapter);
                 break;
             case DecorateEntityType.RECENT_UPDATE:
                 RecentUpdateViewHolder recentUpdateViewHolder = (RecentUpdateViewHolder) holder;
@@ -231,6 +182,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         knowledgeGroupViewHolder.groupMore.setText(currentComponent.getDesc());
                         GridLayoutManager lm = new GridLayoutManager(mActivity, 2);
                         knowledgeGroupViewHolder.groupRecyclerView.setLayoutManager(lm);
+                        // recyclerView 取消滑动
+                        knowledgeGroupViewHolder.groupRecyclerView.setNestedScrollingEnabled(false);
                         knowledgeGroupViewHolder.groupRecyclerView.addItemDecoration(new KnowledgeGroupRecyclerItemDecoration(15, 2));
                         KnowledgeGroupRecyclerAdapter groupAdapter = new KnowledgeGroupRecyclerAdapter(mActivity, currentComponent.getKnowledgeCommodityItemList());
                         knowledgeGroupViewHolder.groupRecyclerView.setAdapter(groupAdapter);
@@ -255,6 +208,13 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.BOOKCASE:
                 break;
             case DecorateEntityType.GRAPHIC_NAVIGATION:
+                GraphicNavViewHolder graphicNavViewHolder = (GraphicNavViewHolder) holder;
+                GridLayoutManager graphicNavGlm = new GridLayoutManager(mActivity, currentComponent.getGraphicNavItemList().size());
+                GraphicNavRecyclerAdapter graphicNavRecyclerAdapter = new GraphicNavRecyclerAdapter(mActivity, currentComponent.getGraphicNavItemList());
+                graphicNavViewHolder.graphicNavRecycler.setLayoutManager(graphicNavGlm);
+                graphicNavViewHolder.graphicNavRecycler.addItemDecoration(new GraphicNavItemDecoration(mActivity));
+                graphicNavViewHolder.graphicNavRecycler.setNestedScrollingEnabled(false);
+                graphicNavViewHolder.graphicNavRecycler.setAdapter(graphicNavRecyclerAdapter);
                 break;
             default:
                 break;
@@ -310,6 +270,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return DecorateEntityType.BOOKCASE;
             case DecorateEntityType.GRAPHIC_NAVIGATION_STR:
                 return DecorateEntityType.GRAPHIC_NAVIGATION;
+            case DecorateEntityType.SEARCH_STR:
+                return DecorateEntityType.SEARCH;
             default:
                 return -1;
         }

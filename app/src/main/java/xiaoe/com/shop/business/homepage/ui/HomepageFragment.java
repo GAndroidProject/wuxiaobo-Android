@@ -3,6 +3,7 @@ package xiaoe.com.shop.business.homepage.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.ComponentInfo;
+import xiaoe.com.common.entitys.DecorateEntityType;
+import xiaoe.com.common.entitys.FlowInfoItem;
+import xiaoe.com.common.entitys.GraphicNavItem;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
 import xiaoe.com.network.requests.IRequest;
@@ -42,16 +46,11 @@ public class HomepageFragment extends BaseFragment {
 
     private boolean destroyView = false;
 
+    @BindView(R.id.home_app_bar)
+    AppBarLayout homeAppBar;
     @BindView(R.id.home_recycler_view)
     RecyclerView recyclerView;
-    @BindView(R.id.home_title_time)
-    TextView homeTitleTime;
-    @BindView(R.id.home_title_desc)
-    TextView homeTitleDesc;
-    @BindView(R.id.home_title_icon)
-    ImageView homeTitleIcon;
-    @BindView(R.id.home_title_icon_desc)
-    TextView homeTitleIconDesc;
+
     private DecorateRecyclerAdapter adapter;
 
     @Nullable
@@ -90,38 +89,67 @@ public class HomepageFragment extends BaseFragment {
     }
 
     public void init() {
-        homeTitleTime.setText("9月4日 星期二");
-        homeTitleDesc.setText("今天");
-        homeTitleIcon.setImageResource(R.mipmap.icon_taday_learning);
-        homeTitleIconDesc.setText("我正在学");
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayout.VERTICAL);
         List<ComponentInfo> tempData = new ArrayList<ComponentInfo>();
         // 信息流假数据
         ComponentInfo componentInfo_1 = new ComponentInfo();
         componentInfo_1.setType("flow_info");
-        componentInfo_1.setSubType("imgText");
-        componentInfo_1.setTitle("今日精选");
-        componentInfo_1.setDesc("我的财富计划 新中产必修财富课程");
-        componentInfo_1.setPrice("9.9");
-        componentInfo_1.setHasBuy(false);
-        componentInfo_1.setImgUrl("http://img.zcool.cn/community/0117e2571b8b246ac72538120dd8a4.jpg@1280w_1l_2o_100sh.jpg");
+        componentInfo_1.setTitle("10月10日 星期三");
+        componentInfo_1.setDesc("今天");
+        componentInfo_1.setJoinedDesc("我正在学");
+        componentInfo_1.setImgUrl("res:///" + R.mipmap.icon_taday_learning);
+        List<FlowInfoItem> flowInfoItemList = new ArrayList<>();
+        FlowInfoItem flowInfoItem_1 = new FlowInfoItem();
+        flowInfoItem_1.setItemType("imgText");
+        flowInfoItem_1.setItemTitle("今日精选");
+        flowInfoItem_1.setItemDesc("我的财富计划 新中产必修财富课程");
+        flowInfoItem_1.setItemPrice("￥9.9");
+        flowInfoItem_1.setItemHasBuy(false);
+        flowInfoItem_1.setItemImg("http://pic.58pic.com/58pic/15/62/48/98Z58PICyiN_1024.jpg");
+//        ComponentInfo componentInfo_2 = new ComponentInfo();
+        FlowInfoItem flowInfoItem_2 = new FlowInfoItem();
+//        componentInfo_2.setType("flow_info");
+        flowInfoItem_2.setItemType("audio");
+        flowInfoItem_2.setItemTitle("音频组件");
+        flowInfoItem_2.setItemDesc("我的财富计划 新中产必修财富课程");
+        flowInfoItem_2.setItemPrice("￥999");
+        flowInfoItem_2.setItemJoinedDesc("10928");
+        flowInfoItem_2.setItemHasBuy(false);
+//        ComponentInfo componentInfo_3 = new ComponentInfo();
+        FlowInfoItem flowInfoItem_3 = new FlowInfoItem();
+//        componentInfo_3.setType("flow_info");
+        flowInfoItem_3.setItemType("video");
+        flowInfoItem_3.setItemTitle("视频组件");
+        flowInfoItem_3.setItemDesc("每天看见吴晓波");
+        flowInfoItem_3.setItemPrice("199.99");
+        flowInfoItem_3.setItemImg("http://pic14.nipic.com/20110605/1369025_165540642000_2.jpg");
+        flowInfoItem_3.setItemHasBuy(true);
+        flowInfoItemList.add(flowInfoItem_1);
+        flowInfoItemList.add(flowInfoItem_2);
+        flowInfoItemList.add(flowInfoItem_3);
+        componentInfo_1.setFlowInfoItemList(flowInfoItemList);
+        // 导航假数据
         ComponentInfo componentInfo_2 = new ComponentInfo();
-        componentInfo_2.setType("flow_info");
-        componentInfo_2.setSubType("audio");
-        componentInfo_2.setTitle("音频组件");
-        componentInfo_2.setDesc("我的财富计划 新中产必修财富课程");
-        componentInfo_2.setPrice("999.99");
-        componentInfo_2.setJoinedDesc("10928");
-        componentInfo_2.setHasBuy(false);
-        ComponentInfo componentInfo_3 = new ComponentInfo();
-        componentInfo_3.setType("flow_info");
-        componentInfo_3.setSubType("video");
-        componentInfo_3.setTitle("视频组件");
-        componentInfo_3.setDesc("每天看见吴晓波");
-        componentInfo_3.setPrice("199.99");
-        componentInfo_3.setImgUrl("http://pic14.nipic.com/20110605/1369025_165540642000_2.jpg");
-        componentInfo_3.setHasBuy(true);
+        componentInfo_2.setType("graphic_navigation");
+        List<GraphicNavItem> graphicNavItemList = new ArrayList<>();
+        GraphicNavItem graphicNavItem_1 = new GraphicNavItem();
+        graphicNavItem_1.setNavIcon("http://img.zcool.cn/community/01cfce5568d52b000001271602961c.jpg");
+        graphicNavItem_1.setNavContent("财富");
+        GraphicNavItem graphicNavItem_2 = new GraphicNavItem();
+        graphicNavItem_2.setNavIcon("http://pic.58pic.com/58pic/16/06/44/80p58PICC63_1024.jpg");
+        graphicNavItem_2.setNavContent("职场");
+        GraphicNavItem graphicNavItem_3 = new GraphicNavItem();
+        graphicNavItem_3.setNavIcon("http://img.7139.com/file/201206/13d9d950c768fc04063c29d931cdec65.gif");
+        graphicNavItem_3.setNavContent("见识");
+        GraphicNavItem graphicNavItem_4 = new GraphicNavItem();
+        graphicNavItem_4.setNavIcon("http://img1.imgtn.bdimg.com/it/u=1053527111,2904695431&fm=214&gp=0.jpg");
+        graphicNavItem_4.setNavContent("家庭");
+        graphicNavItemList.add(graphicNavItem_1);
+        graphicNavItemList.add(graphicNavItem_2);
+        graphicNavItemList.add(graphicNavItem_3);
+        graphicNavItemList.add(graphicNavItem_4);
+        componentInfo_2.setGraphicNavItemList(graphicNavItemList);
         // 轮播图假数据
         ComponentInfo componentInfo_4 = new ComponentInfo();
         componentInfo_4.setType("shuffling_figure");
@@ -190,7 +218,7 @@ public class HomepageFragment extends BaseFragment {
         groupItem_1.setItemImg("http://pic15.nipic.com/20110619/7763155_101852942332_2.jpg");
         groupItem_1.setHasBuy(false);
         groupItem_1.setItemDesc("已更新至135期");
-        groupItem_1.setItemPrice("￥980.08");
+        groupItem_1.setItemPrice("￥980");
         KnowledgeCommodityItem groupItem_2 = new KnowledgeCommodityItem();
         groupItem_2.setItemTitle("我的财富计划");
         groupItem_2.setItemImg("http://pic38.nipic.com/20140212/17942401_101320663138_2.jpg");
@@ -215,12 +243,17 @@ public class HomepageFragment extends BaseFragment {
         componentInfo_7.setKnowledgeCommodityItemList(groupItems);
         tempData.add(componentInfo_1);
         tempData.add(componentInfo_2);
-        tempData.add(componentInfo_3);
+//        tempData.add(componentInfo_3);
         tempData.add(componentInfo_4);
         tempData.add(componentInfo_5);
         tempData.add(componentInfo_6);
         tempData.add(componentInfo_7);
         recyclerView.setLayoutManager(llm);
+        for(ComponentInfo item: tempData) {
+            if (!item.getType().equals(DecorateEntityType.SEARCH_STR)) { // 没有搜索框就把顶部的折叠组件隐藏
+                homeAppBar.setVisibility(View.GONE);
+            }
+        }
         adapter = new DecorateRecyclerAdapter(getActivity(), tempData);
         recyclerView.setAdapter(adapter);
         getActivity().setExitSharedElementCallback(new SharedElementCallback() {

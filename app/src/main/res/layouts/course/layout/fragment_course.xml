@@ -1,43 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
-            android:layout_width="match_parent"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/course_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/course_app_bar"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="false"
-            android:background="@color/colorPrimary"
-            android:paddingTop="30dp">
-            <!-- 自定义的布局信息 -->
-            <xiaoe.com.shop.widget.CourseTitleView
-                android:id="@+id/course_title_container"
+            android:layout_width="match_parent"
+            android:background="@color/lucency">
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/course_collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp">
-            </xiaoe.com.shop.widget.CourseTitleView>
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/course_tool_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_collapseMode="pin">
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:titleEnabled="false"
+                android:paddingTop="30dp">
+                <!-- 自定义的布局信息 -->
+                <xiaoe.com.shop.widget.SearchView
+                    android:id="@+id/course_title_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+                </xiaoe.com.shop.widget.SearchView>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/course_tool_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_collapseMode="pin">
 
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/course_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    </android.support.v7.widget.RecyclerView>
-</android.support.design.widget.CoordinatorLayout>
+                </android.support.v7.widget.Toolbar>
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/course_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        </android.support.v7.widget.RecyclerView>
+    </android.support.design.widget.CoordinatorLayout>
+</FrameLayout>

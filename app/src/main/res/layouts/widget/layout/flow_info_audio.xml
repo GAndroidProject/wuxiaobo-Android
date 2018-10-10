@@ -8,14 +8,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/corners_bg"
+        android:background="@drawable/corners_bg_with_border"
         tools:ignore="UselessParent">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/flow_info_audio_bg"
             android:layout_width="match_parent"
             android:layout_height="190dp"
-            android:src="@mipmap/audio_bg"
+            android:layout_margin="1dp"
             android:transitionName="audio_bg_share"
             fresco:roundedCornerRadius="8dp"
             fresco:roundingBorderWidth="1dp"
@@ -26,15 +26,15 @@
             android:id="@+id/flow_info_audio_joined_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:textColor="@color/main_title_color"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="21dp"
+            android:layout_marginTop="22dp"
             tools:ignore="RelativeOverlap" />
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/flow_info_audio_avatar"
-            android:layout_width="175dp"
+            android:layout_width="176dp"
             android:layout_height="190dp"
             android:src="@mipmap/audio_ring"
             android:layout_marginTop="14dp"
@@ -44,7 +44,7 @@
             android:id="@+id/flow_info_audio_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:textColor="@color/main_title_color"
             android:layout_below="@id/flow_info_audio_bg"
             android:layout_marginTop="22dp"
@@ -53,12 +53,12 @@
 
         <TextView
             android:id="@+id/flow_info_audio_desc"
-            android:layout_width="wrap_content"
+            android:layout_width="234dp"
             android:layout_height="wrap_content"
             android:textSize="26sp"
             android:textColor="@color/main_title_color"
             android:layout_below="@id/flow_info_audio_title"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
             android:transitionName="share_audio_title"
             />

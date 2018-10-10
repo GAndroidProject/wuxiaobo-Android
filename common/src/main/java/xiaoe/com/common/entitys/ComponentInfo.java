@@ -29,9 +29,30 @@ public class ComponentInfo {
     private List<String> shufflingList;
     // 知识商品分组子列表集合
     private List<KnowledgeCommodityItem> knowledgeCommodityItemList;
+    // 信息流分组子列表集合
+    private List<FlowInfoItem> flowInfoItemList;
+    // 导航子列表集合
+    private List<GraphicNavItem> graphicNavItemList;
 
-    public ComponentInfo() {
+    public ComponentInfo() { }
 
+
+    public void setGraphicNavItemList(List<GraphicNavItem> graphicNavItemList) {
+        this.graphicNavItemList = graphicNavItemList;
+    }
+
+    public List<GraphicNavItem> getGraphicNavItemList() {
+
+        return graphicNavItemList;
+    }
+
+    public void setFlowInfoItemList(List<FlowInfoItem> flowInfoItemList) {
+        this.flowInfoItemList = flowInfoItemList;
+    }
+
+    public List<FlowInfoItem> getFlowInfoItemList() {
+
+        return flowInfoItemList;
     }
 
     public void setKnowledgeCommodityItemList(List<KnowledgeCommodityItem> knowledgeCommodityItemList) {
