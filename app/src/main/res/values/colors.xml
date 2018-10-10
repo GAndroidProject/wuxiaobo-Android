@@ -19,4 +19,10 @@
     <color name="knowledge_item_desc_color">#cccccc</color><!--知识商品列表样式描述字体颜色-->
     <color name="recent_update_btn_normal">#407FFB</color><!--最近更新按钮正常状态-->
     <color name="recent_update_btn_pressed">#1E59F6</color><!--最近更新按钮按下状态-->
+    <color name="audio_page_bg_color">#F3F6F9</color><!--音频页面背景颜色-->
+    <color name="btn_speed_border_color">#808494</color><!--倍速播放按钮边框-->
+    <color name="btn_speed_bg_color">#0d64666F</color><!--倍速播放按钮边框-->
+    <color name="audio_seek_bar_secondary_progress">#BABDC7</color><!--音频播放进度条颜色-->
+    <color name="audio_seek_bar_progress">#4B4D55</color><!--音频播放进度条进度颜色-->
+
 </resources>

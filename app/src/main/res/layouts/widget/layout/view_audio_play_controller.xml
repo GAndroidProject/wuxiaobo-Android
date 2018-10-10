@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <RelativeLayout
+        android:id="@+id/play_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/id_current_play_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="@color/recent_list_color"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/id_total_play_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="00:00"
+            android:textColor="@color/recent_list_color"
+            android:textSize="10sp" />
+
+        <SeekBar
+            android:id="@+id/id_play_seek_bar"
+            style="@style/audio_play_seek_bar_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/id_total_play_time"
+            android:layout_toEndOf="@id/id_current_play_time"
+            android:maxHeight="2dp" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/play_progress"
+        android:layout_marginTop="24dp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        >
+        <ImageView
+            android:id="@+id/audio_play_back"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:src="@mipmap/audio_second_back"
+            />
+        <ImageView
+            android:id="@+id/audio_play_last"
+            android:layout_width="20dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="48dp"
+            android:src="@mipmap/audio_show_last"
+            />
+        <ImageView
+            android:id="@+id/audio_play"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="40dp"
+            android:src="@mipmap/audio_play"
+            />
+        <ImageView
+            android:id="@+id/audio_play_next"
+            android:layout_width="20dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="40dp"
+            android:src="@mipmap/audio_show_next"
+            />
+        <ImageView
+            android:id="@+id/audio_play_forward"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginStart="48dp"
+            android:src="@mipmap/audio_second_forward"
+            />
+    </LinearLayout>
+</RelativeLayout>

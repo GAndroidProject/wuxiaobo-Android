@@ -234,6 +234,18 @@ public class HomepageFragment extends BaseFragment {
                     }
                 }
             }
+
+            @Override
+            public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                super.onSharedElementStart(sharedElementNames, sharedElements, sharedElementSnapshots);
+                Log.d(TAG, "onSharedElementStart: ");
+            }
+
+            @Override
+            public void onSharedElementsArrived(List<String> sharedElementNames, List<View> sharedElements, OnSharedElementsReadyListener listener) {
+                super.onSharedElementsArrived(sharedElementNames, sharedElements, listener);
+                Log.d(TAG, "onSharedElementsArrived: ");
+            }
         });
     }
 

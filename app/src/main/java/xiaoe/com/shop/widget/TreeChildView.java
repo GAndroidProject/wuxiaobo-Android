@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import xiaoe.com.shop.R;
-import xiaoe.com.shop.utils.Dp2Px2SpUtil;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 
 public class TreeChildView extends RelativeLayout {
     private String TAG = "TreeChildView";

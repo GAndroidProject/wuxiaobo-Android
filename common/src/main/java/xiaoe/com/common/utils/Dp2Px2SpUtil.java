@@ -1,4 +1,4 @@
-package xiaoe.com.shop.utils;
+package xiaoe.com.common.utils;
 
 import android.content.Context;
 import android.util.TypedValue;

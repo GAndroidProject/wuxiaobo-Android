@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -106,6 +105,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     case DecorateEntityType.FLOW_INFO_AUDIO:  // 音频
                         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_audio, null);
                         final View audioBG = view.findViewById(R.id.flow_info_audio_bg);
+                        final View audioTitle = view.findViewById(R.id.flow_info_audio_desc);
                         view.setLayoutParams(layoutParams);
                         if (currentComponent.isHasBuy()) {
                             view.findViewById(R.id.flow_info_img_text_price).setVisibility(View.GONE);
@@ -113,11 +113,12 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         view.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                            ActivityOptions options =
-                                ActivityOptions.makeSceneTransitionAnimation(mActivity,
-                                    Pair.create(audioBG, "audio_bg_share"));
-                            Intent audioIntent = new Intent(mActivity, AudioActivity.class);
-                            mActivity.startActivity(audioIntent, options.toBundle());
+                                ActivityOptions options =
+                                    ActivityOptions.makeSceneTransitionAnimation(mActivity,
+                                        Pair.create(audioBG, "audio_bg_share"),
+                                        Pair.create(audioTitle, "share_audio_title"));
+                                Intent audioIntent = new Intent(mActivity, AudioActivity.class);
+                                mActivity.startActivity(audioIntent, options.toBundle());
                             }
                         });
                         return new FlowInfoAudioViewHolder(view);

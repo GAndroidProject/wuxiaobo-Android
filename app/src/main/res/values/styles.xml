@@ -9,7 +9,7 @@
         <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
         <!--<item name="android:windowTranslucentStatus">true</item>-->
         <!--<item name="android:windowTranslucentNavigation">true</item>-->
-        <item name="android:windowContentTransitions">true</item>
+        <!--<item name="android:windowContentTransitions">true</item>-->
     </style>
 
     <!--radioButton的共有布局-->
@@ -24,6 +24,12 @@
         <item name="android:background">@color/lucency</item>
         <item name="android:textColor">@drawable/bottom_bar_button_content_color</item>
         <item name="android:textSize">10sp</item>
+    </style>
+
+    <!--音频播放控制器样式-->
+    <style name="audio_play_seek_bar_style" parent="Base.Widget.AppCompat.SeekBar">
+        <item name="android:progressDrawable">@drawable/audio_play_seek_bar</item>
+        <item name="android:thumb">@drawable/audio_seek_bar_thum_selector</item>
     </style>
 
 </resources>

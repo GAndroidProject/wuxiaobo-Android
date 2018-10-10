@@ -48,7 +48,8 @@
             android:textColor="@color/main_title_color"
             android:layout_below="@id/flow_info_audio_bg"
             android:layout_marginTop="22dp"
-            android:layout_marginStart="20dp"/>
+            android:layout_marginStart="20dp"
+            />
 
         <TextView
             android:id="@+id/flow_info_audio_desc"
@@ -58,7 +59,9 @@
             android:textColor="@color/main_title_color"
             android:layout_below="@id/flow_info_audio_title"
             android:layout_marginTop="9dp"
-            android:layout_marginStart="20dp"/>
+            android:layout_marginStart="20dp"
+            android:transitionName="share_audio_title"
+            />
 
         <TextView
             android:id="@+id/flow_info_audio_price"
