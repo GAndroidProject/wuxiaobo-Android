@@ -3,6 +3,9 @@
     package="xiaoe.com.shop">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <application
         android:name="xiaoe.com.common.app.XiaoeApplication"
         android:allowBackup="true"
@@ -22,6 +25,7 @@
         <activity
             android:name=".business.course.ui.CourseDetailActivity"/>
         <activity android:name=".business.audio.ui.AudioActivity"/>
+        <service android:name=".business.audio.presenter.AudioMediaPlayer"/>
     </application>
 
 </manifest>

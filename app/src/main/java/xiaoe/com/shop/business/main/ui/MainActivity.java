@@ -1,9 +1,9 @@
 package xiaoe.com.shop.business.main.ui;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -12,13 +12,15 @@ import android.widget.RelativeLayout;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
+import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
 import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.BottomBarButton;
 import xiaoe.com.shop.widget.BottomTabBar;
 import xiaoe.com.shop.widget.ScrollViewPager;
 
-public class MainActivity extends AppCompatActivity implements OnBottomTabSelectListener {
+public class MainActivity extends XiaoeActivity implements OnBottomTabSelectListener {
     private static final String TAG = "MainActivity";
     private BottomTabBar bottomTabBar;
     private ScrollViewPager mainViewPager;
@@ -35,7 +37,9 @@ public class MainActivity extends AppCompatActivity implements OnBottomTabSelect
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
         }
         initView();
-
+        initPermission();
+        Intent audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
+        startService(audioPlayServiceIntent);
     }
 
     private void initView() {
@@ -55,6 +59,11 @@ public class MainActivity extends AppCompatActivity implements OnBottomTabSelect
         mainViewPager.setScroll(true);
         mainViewPager.setAdapter(new MainFragmentStatePagerAdapter(getSupportFragmentManager()));
         mainViewPager.setOffscreenPageLimit(3);
+    }
+
+    @Override
+    public void initPermission() {
+        super.initPermission();
     }
 
     @Override

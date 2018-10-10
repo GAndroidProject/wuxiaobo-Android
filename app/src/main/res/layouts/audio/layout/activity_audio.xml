@@ -74,25 +74,39 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/audio_page_close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@mipmap/audio_white_back"
+            />
+    </RelativeLayout>
+    <RelativeLayout
         android:id="@+id/audio_poster_wrap"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_above="@id/controller_wrap"
+        android:layout_below="@id/audio_page_close_btn"
         >
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/audio_bg"
             android:layout_width="match_parent"
             android:layout_height="190dp"
-            fresco:actualImageScaleType="focusCrop"
+            fresco:actualImageScaleType="fitCenter"
             android:transitionName="audio_bg_share"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
             />
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/audio_ring"
             android:layout_width="190dp"
             android:layout_height="190dp"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
             fresco:actualImageScaleType="fitCenter"
             />
         <TextView
@@ -120,18 +134,6 @@
             android:drawablePadding="5dp"
             android:textColor="@color/secondary_title_color"
             android:textSize="14sp"
-            />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/audio_page_close_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="20dp"
-            android:src="@mipmap/audio_white_back"
             />
     </RelativeLayout>
 </RelativeLayout>

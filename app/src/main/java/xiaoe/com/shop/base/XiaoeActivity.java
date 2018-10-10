@@ -1,11 +1,16 @@
 package xiaoe.com.shop.base;
 
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +19,10 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
@@ -156,5 +162,21 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         }
         mHandler.removeCallbacksAndMessages(null);
         mHandler = null;
+    }
+
+    public void initPermission() {
+        ArrayList<String> permissionList = new ArrayList<String>();
+        for(int i = 0; i < Constants.permissions.length ; i++){
+            String permissions = Constants.permissions[i];
+            Log.d(TAG, "initPermission: "+ ContextCompat.checkSelfPermission(this, permissions)+" ; "+i);
+            if (ContextCompat.checkSelfPermission(this, permissions) != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(permissions);
+            }
+        }
+        Log.d(TAG, "initPermission: ");
+        String[] permission = permissionList.toArray(new String[permissionList.size()]);
+        if(Build.VERSION.SDK_INT > 22 && permission.length > 0){
+            ActivityCompat.requestPermissions(this,permission,1);
+        }
     }
 }

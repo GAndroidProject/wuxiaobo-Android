@@ -1,44 +1,178 @@
 package xiaoe.com.shop.business.audio.presenter;
 
+import android.app.Service;
+import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 
-public class AudioMediaPlayer implements MediaPlayer.OnPreparedListener, MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnErrorListener {
+import org.greenrobot.eventbus.EventBus;
+
+import java.io.IOException;
+
+import xiaoe.com.shop.events.AudioPlayEvent;
+
+public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnCompletionListener,
+        MediaPlayer.OnErrorListener {
     private static final String TAG = "AudioMediaPlayer";
-    private MediaPlayer mediaPlayer;
-    private static AudioMediaPlayer mInstance;
-    private AudioMediaPlayer(){
-        mediaPlayer = new MediaPlayer();
+    private static MediaPlayer mediaPlayer;
+    private static AudioPlayEvent event;
+    private static AudioPlayUtil.Audio audio = null;
+    private static boolean isStop = true;//是否是停止（已经释放资源），
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        init();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    private void init() {
+        if(mediaPlayer == null){
+            mediaPlayer = new MediaPlayer();
+        }
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //设置准备播放资源监听
         mediaPlayer.setOnPreparedListener(this);
         //设置定位播放监听
         mediaPlayer.setOnSeekCompleteListener(this);
+        mediaPlayer.setOnCompletionListener(this);
         //设置
         mediaPlayer.setOnErrorListener(this);
+
+         event = new AudioPlayEvent();
     }
-    public static AudioMediaPlayer getInstance(){
-        if(mInstance == null){
-            //加上锁
-            synchronized (AudioMediaPlayer.class){
-                if(mInstance == null){
-                    mInstance = new AudioMediaPlayer();
-                }
-            }
-        }
-        return mInstance;
-    }
+
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-
+        mediaPlayer.start();
+        event.setState(AudioPlayEvent.PLAY);
+        EventBus.getDefault().post(event);
     }
 
     @Override
     public void onSeekComplete(MediaPlayer mp) {
+        if(isPlaying()){
+            event.setState(AudioPlayEvent.PLAY);
+        }else{
+            event.setState(AudioPlayEvent.PAUSE);
+        }
+        EventBus.getDefault().post(event);
+    }
 
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        event.setState(AudioPlayEvent.STOP);
+        EventBus.getDefault().post(event);
+        isStop = true;
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        event.setState(AudioPlayEvent.STOP);
+        EventBus.getDefault().post(event);
         return false;
     }
+
+
+    /**
+     * 开始播放
+     */
+    public static void start(){
+        if(audio == null){
+            return;
+        }
+        mediaPlayer.reset();
+        try {
+            mediaPlayer.setDataSource(audio.getUrl());
+        } catch (IOException e) {
+//            e.printStackTrace();
+        }
+        mediaPlayer.prepareAsync();
+        event.setState(AudioPlayEvent.LOADING);
+        EventBus.getDefault().post(event);
+        isStop = false;
+    }
+    public static boolean isPlaying(){
+        if(mediaPlayer == null){
+            return  false;
+        }
+        return mediaPlayer.isPlaying();
+    }
+    //播放，如果是播放中就执行暂停，否则播放
+    public static void play() {
+        if(mediaPlayer == null){
+            return;
+        }
+        if(mediaPlayer.isPlaying()){
+            mediaPlayer.pause();
+            event.setState(AudioPlayEvent.PAUSE);
+        } else {
+            mediaPlayer.start();
+            event.setState(AudioPlayEvent.PLAY);
+        }
+        EventBus.getDefault().post(event);
+    }
+    public static void stop() {
+        if(mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+        event.setState(AudioPlayEvent.STOP);
+        EventBus.getDefault().post(event);
+        isStop = true;
+    }
+    public static void seekTo(int msec){
+        if(mediaPlayer != null){
+            mediaPlayer.seekTo(msec);
+        }
+        event.setState(AudioPlayEvent.LOADING);
+        EventBus.getDefault().post(event);
+    }
+    public static void release(){
+        if(mediaPlayer != null){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+        event.setState(AudioPlayEvent.STOP);
+        EventBus.getDefault().post(event);
+        isStop = true;
+    }
+    public static int getDuration(){
+        if(mediaPlayer != null){
+            return  mediaPlayer.getDuration();
+        }
+        return  -1;
+    }
+
+    public static int getCurrentPosition(){
+        if(mediaPlayer != null){
+            return mediaPlayer.getCurrentPosition();
+        }
+        return  -1;
+    }
+
+    public static AudioPlayUtil.Audio getAudio() {
+        return audio;
+    }
+
+    public static void setAudio(AudioPlayUtil.Audio audio) {
+        AudioMediaPlayer.audio = audio;
+    }
+
+    public static boolean isStop() {
+        return isStop;
+    }
+
 }
