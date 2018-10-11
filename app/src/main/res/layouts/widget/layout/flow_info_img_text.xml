@@ -19,7 +19,7 @@
             fresco:roundingBorderWidth="1dp"
             fresco:roundBottomLeft="false"
             fresco:roundBottomRight="false"
-            android:transitionName="share" />
+            android:transitionName="@string/share_img" />
         <TextView
             android:id="@+id/flow_info_img_text_title"
             android:layout_width="wrap_content"
@@ -28,16 +28,18 @@
             android:textColor="@color/main_title_color"
             android:layout_marginStart="20dp"
             android:layout_marginTop="18dp"
-            android:transitionName="text"/>
+            android:transitionName="@string/share_txt"/>
         <TextView
             android:id="@+id/flow_info_img_text_desc"
-            android:layout_width="234dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="26sp"
             android:textColor="@color/main_title_color"
             android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="24dp"
+            android:maxLines="2"
+            android:ellipsize="end"/>
         <TextView
             android:id="@+id/flow_info_img_text_price"
             android:layout_width="wrap_content"

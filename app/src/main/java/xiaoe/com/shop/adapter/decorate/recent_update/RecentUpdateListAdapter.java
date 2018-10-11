@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -65,23 +67,29 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         } else {
             viewHolder = (RecentUpdateHolder) convertView.getTag();
         }
-        viewHolder.listTitle.setText(mItemList.get(position).getListTitle());
+        viewHolder.itemTitle.setText(mItemList.get(position).getListTitle());
         String playState = mItemList.get(position).getListPlayState();
         if (playState.equals("play")) {
-            viewHolder.listIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
+            viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
         } else if (playState.equals("stop")) {
-            viewHolder.listIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
+            viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
         }
-        viewHolder.listIcon.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             if (mItemList.get(position).getListPlayState().equals("play")) { // 暂停，点击后换成播放中状态
-                viewHolder.listIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
+                viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
                 mItemList.get(position).setListPlayState("stop");
             } else if (mItemList.get(position).getListPlayState().equals("stop")) { // 播放中，点击后换成准备播放状态
-                viewHolder.listIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
+                viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
                 mItemList.get(position).setListPlayState("play");
             }
+            }
+        });
+        viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "recent item click...", Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;
@@ -89,10 +97,12 @@ public class RecentUpdateListAdapter extends BaseAdapter {
 
     class RecentUpdateHolder {
 
-        @BindView(R.id.recent_update_list_title)
-        TextView listTitle;
-        @BindView(R.id.recent_update_list_icon)
-        SimpleDraweeView listIcon;
+        @BindView(R.id.recent_update_item_wrap)
+        RelativeLayout itemWrap;
+        @BindView(R.id.recent_update_item_title)
+        TextView itemTitle;
+        @BindView(R.id.recent_update_item_icon)
+        SimpleDraweeView itemIcon;
 
         RecentUpdateHolder(View itemView) {
             ButterKnife.bind(this, itemView);

@@ -18,7 +18,6 @@ public class SearchView extends LinearLayout {
     private Context mContext;
 
     private LinearLayout mContainer;
-//    private ConvenientBanner mConvenientBanner;
     private ImageView mCourseSearch;
 
     // 轮播图链接集合
@@ -50,11 +49,6 @@ public class SearchView extends LinearLayout {
 
     private void initView(Context context) {
         mContainer = (LinearLayout) View.inflate(context, R.layout.search, this);
-//        mConvenientBanner = (ConvenientBanner) mContainer.findViewById(R.id.convenientBanner);
-//        mCourseSearch = (ImageView) mContainer.findViewById(R.id.course_title_search);
-//        if (imageList == null) {
-//            mConvenientBanner.setVisibility(GONE);
-//        }
     }
 
     public void setSearchIconClickListener (OnClickListener listener) {
@@ -70,46 +64,4 @@ public class SearchView extends LinearLayout {
 //        initConvenientBanner();
 //    }
 
-//    private void initConvenientBanner() {
-//        if (mConvenientBanner != null) {
-//            if (imageList != null) {
-//                mConvenientBanner.setVisibility(View.VISIBLE);
-//                mConvenientBanner.setPages(new CBViewHolderCreator() {
-//                    @Override
-//                    public Holder createHolder(View itemView) {
-//                        return new PicViewHolder(itemView);
-//                    }
-//
-//                    @Override
-//                    public int getLayoutId() {
-//                        return R.layout.sd_layout;
-//                    }
-//                }, imageList);
-//            } else {
-//                mConvenientBanner.setVisibility(View.GONE);
-//            }
-//        }
-//    }
-
-    /**
-     * onPause 时停止轮播
-     * onResume 时开始轮播
-     * 开始轮播
-     */
-//    public void startTurning(long time) {
-//        if (mConvenientBanner != null) {
-//            mConvenientBanner.startTurning(time);
-//        }
-//    }
-
-    /**
-     * onPause 时停止轮播
-     * onResume 时开始轮播
-     * 停止轮播
-     */
-//    public void stopTurning() {
-//        if (mConvenientBanner != null) {
-//            mConvenientBanner.stopTurning();
-//        }
-//    }
 }

@@ -1,6 +1,7 @@
 package xiaoe.com.shop.adapter.decorate.knowledge_commodity;
 
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -12,6 +13,8 @@ import xiaoe.com.shop.base.BaseViewHolder;
 
 public class KnowledgeItemViewHolder extends BaseViewHolder {
 
+    @BindView(R.id.knowledge_group_item_wrap)
+    FrameLayout itemWrap;
     @BindView(R.id.knowledge_group_item_icon)
     SimpleDraweeView itemIcon;
     @BindView(R.id.knowledge_group_item_title)

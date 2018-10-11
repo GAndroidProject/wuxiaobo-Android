@@ -24,7 +24,7 @@ public class FlowInfoVideoViewHolder extends BaseViewHolder {
     @BindView(R.id.flow_info_video_price)
     public TextView flowInfoPrice;
 
-    public FlowInfoVideoViewHolder(View itemView) {
+    FlowInfoVideoViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }

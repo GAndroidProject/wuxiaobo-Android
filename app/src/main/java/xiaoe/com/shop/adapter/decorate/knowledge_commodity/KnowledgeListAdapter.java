@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -21,14 +23,13 @@ import xiaoe.com.shop.R;
 public class KnowledgeListAdapter extends BaseAdapter {
 
     private List<KnowledgeCommodityItem> mItemList;
-    private Activity mActivity;
     private Context mContext;
     private LayoutInflater mInflater;
 
     public KnowledgeListAdapter(Activity activity, List<KnowledgeCommodityItem> itemList) {
-        this.mActivity = activity;
+        this.mContext = activity;
         this.mItemList = itemList;
-        this.mInflater = LayoutInflater.from(mActivity);
+        this.mInflater = LayoutInflater.from(mContext);
     }
 
     public KnowledgeListAdapter(Context context, List<KnowledgeCommodityItem> itemList) {
@@ -67,29 +68,37 @@ public class KnowledgeListAdapter extends BaseAdapter {
         if (TextUtils.isEmpty(mItemList.get(position).getItemPrice())) { // 无价格，将 desc 文案设置在左边的 textView 中，右边的 textView 内容置空
             viewHolder.itemDesc.setText("");
             viewHolder.itemPrice.setText(mItemList.get(position).getItemDesc());
-            viewHolder.itemPrice.setTextColor(mActivity.getResources().getColor(R.color.knowledge_item_desc_color));
+            viewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
         } else { // 有价格
             if (mItemList.get(position).isHasBuy()) { // 买了
                 viewHolder.itemPrice.setText("已购");
-                viewHolder.itemPrice.setTextColor(mActivity.getResources().getColor(R.color.knowledge_item_desc_color));
+                viewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
                 viewHolder.itemDesc.setText(mItemList.get(position).getItemDesc());
             } else { // 没买
                 viewHolder.itemDesc.setText(mItemList.get(position).getItemDesc());
                 viewHolder.itemPrice.setText(mItemList.get(position).getItemPrice());
             }
         }
+        viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "点击item..", Toast.LENGTH_SHORT).show();
+            }
+        });
         return convertView;
     }
 
     class KnowledgeHolder {
 
-        @BindView(R.id.knowledge_list_icon)
+        @BindView(R.id.knowledge_list_item_wrap)
+        RelativeLayout itemWrap;
+        @BindView(R.id.knowledge_list_item_icon)
         SimpleDraweeView itemIcon;
-        @BindView(R.id.knowledge_list_title)
+        @BindView(R.id.knowledge_list_item_title)
         TextView itemTitle;
-        @BindView(R.id.knowledge_list_price)
+        @BindView(R.id.knowledge_list_item_price)
         TextView itemPrice;
-        @BindView(R.id.knowledge_list_desc)
+        @BindView(R.id.knowledge_list_item_desc)
         TextView itemDesc;
 
         KnowledgeHolder(View itemView) {

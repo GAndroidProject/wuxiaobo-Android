@@ -1,6 +1,7 @@
 package xiaoe.com.shop.adapter.decorate.graphic_navigation;
 
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -12,6 +13,8 @@ import xiaoe.com.shop.base.BaseViewHolder;
 
 class GraphicNavItemViewHolder extends BaseViewHolder {
 
+    @BindView(R.id.graphic_item_wrap)
+    LinearLayout itemWrap;
     @BindView(R.id.graphic_item_icon)
     SimpleDraweeView itemIcon;
     @BindView(R.id.graphic_item_content)

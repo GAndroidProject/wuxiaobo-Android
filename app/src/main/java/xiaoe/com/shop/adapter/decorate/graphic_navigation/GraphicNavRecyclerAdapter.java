@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -17,7 +18,6 @@ import xiaoe.com.shop.base.BaseViewHolder;
 public class GraphicNavRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private Context mContext;
-    private Activity mActivity;
     private List<GraphicNavItem> mItemList;
 
     public GraphicNavRecyclerAdapter(Context context, List<GraphicNavItem> itemList) {
@@ -26,7 +26,7 @@ public class GraphicNavRecyclerAdapter extends RecyclerView.Adapter<BaseViewHold
     }
 
     public GraphicNavRecyclerAdapter(Activity activity, List<GraphicNavItem> itemList) {
-        this.mActivity = activity;
+        this.mContext = activity;
         this.mItemList = itemList;
     }
 
@@ -38,9 +38,16 @@ public class GraphicNavRecyclerAdapter extends RecyclerView.Adapter<BaseViewHold
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        final int innerPos = position;
         GraphicNavItemViewHolder graphicNavItemViewHolder = (GraphicNavItemViewHolder) holder;
         graphicNavItemViewHolder.itemIcon.setImageURI(mItemList.get(position).getNavIcon());
         graphicNavItemViewHolder.itemContent.setText(mItemList.get(position).getNavContent());
+        graphicNavItemViewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "导航item -- " + mItemList.get(innerPos).getNavContent() , Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

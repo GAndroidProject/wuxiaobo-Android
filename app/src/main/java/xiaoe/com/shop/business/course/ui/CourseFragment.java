@@ -3,6 +3,7 @@ package xiaoe.com.shop.business.course.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.ComponentInfo;
+import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
@@ -35,12 +37,12 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
     private Unbinder unbinder;
     private Context mContext;
 
-    @BindView(R.id.course_title_container)
-    SearchView courseTitleContainer;
-//    @BindView(R.id.course_title_bottom)
-//    BottomTabBar bottomTabBar;
-    @BindView(R.id.course_recycler_view)
-    RecyclerView recyclerView;
+    @BindView(R.id.course_app_bar)
+    AppBarLayout courseAppBar;
+    @BindView(R.id.course_title_recycler)
+    RecyclerView courseTitleRecyclerView;
+    @BindView(R.id.course_content_recycler)
+    RecyclerView courseContentRecyclerView;
 
     @BindView(R.id.course_background)
     SimpleDraweeView simpleDraweeView;
@@ -63,29 +65,19 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
     public void init() {
         mContext = getActivity();
         simpleDraweeView.setImageURI("http://txt25-2.book118.com/2017/1105/book138977/138976472.jpg");
-        // 暂时写死三张图片（初始化头部标题）
-//        List<String> imageList = new ArrayList<>();
-//        imageList.add("http://pic.58pic.com/58pic/15/63/07/42Q58PIC42U_1024.jpg");
-//        imageList.add("http://img.zcool.cn/community/0125fd5770dfa50000018c1b486f15.jpg@1280w_1l_2o_100sh.jpg");
-//        imageList.add("res:///" + R.mipmap.audio_bg);
-//        imageList.add("http://img05.tooopen.com/images/20141020/sy_73154627197.jpg");
-
-//        courseTitleContainer.setImageList(imageList);
-
-//        bottomTabBar.setBottomTabBarOrientation(LinearLayout.HORIZONTAL);
-//        bottomTabBar.setTabBarWeightSum(4);
-//        bottomTabBar.setBottomTabSelectListener(this);
-//        for (int i = 0; i < 4; i++){
-//            BottomBarButton radioButton = new BottomBarButton(getActivity());
-//            radioButton.setButtonText("按钮"+(i + 1));
-//            bottomTabBar.addTabButton(radioButton.getTabButton());
-//        }
-
+        List<ComponentInfo> tempData = new ArrayList<>();
+        // 搜索框假数据
+        ComponentInfo componentInfo_title = new ComponentInfo();
+        componentInfo_title.setTitle("课程");
+        componentInfo_title.setType("search");
+        tempData.add(componentInfo_title);
+        LinearLayoutManager llm_1 = new LinearLayoutManager(getActivity());
+        llm_1.setOrientation(LinearLayout.VERTICAL);
+        courseTitleRecyclerView.setLayoutManager(llm_1);
         // 初始化 RecyclerView
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayout.VERTICAL);
-        recyclerView.setLayoutManager(llm);
-        List<ComponentInfo> tempData = new ArrayList<>();
+        courseContentRecyclerView.setLayoutManager(llm);
         ComponentInfo componentInfo = new ComponentInfo();
         List<RecentUpdateListItem> itemList = new ArrayList<>();
         RecentUpdateListItem item_1 = new RecentUpdateListItem();
@@ -105,7 +97,17 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
         componentInfo.setDesc("已更新至09-22期");
         componentInfo.setSubList(itemList);
         tempData.add(componentInfo);
-        recyclerView.setAdapter(new DecorateRecyclerAdapter(getActivity(), tempData));
+        if (tempData.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) {
+            courseAppBar.setVisibility(View.VISIBLE);
+            List<ComponentInfo> titleData = new ArrayList<>();
+            titleData.add(tempData.get(0));
+            DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
+            courseTitleRecyclerView.setAdapter(dra);
+            tempData.remove(0);
+        } else {
+            courseAppBar.setVisibility(View.GONE);
+        }
+        courseContentRecyclerView.setAdapter(new DecorateRecyclerAdapter(getActivity(), tempData));
     }
 
     @Override
@@ -119,17 +121,11 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
     @Override
     public void onResume() {
         super.onResume();
-//        if (courseTitleContainer != null) {
-//            courseTitleContainer.startTurning(2000);
-//        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        if (courseTitleContainer != null) {
-//            courseTitleContainer.stopTurning();
-//        }
     }
 
     @Override

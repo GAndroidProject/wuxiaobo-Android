@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="190dp"
             android:layout_margin="1dp"
-            android:transitionName="audio_bg_share"
+            android:transitionName="@string/share_img"
             fresco:roundedCornerRadius="8dp"
             fresco:roundingBorderWidth="1dp"
             fresco:roundBottomLeft="false"
@@ -35,10 +35,11 @@
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/flow_info_audio_avatar"
             android:layout_width="176dp"
-            android:layout_height="190dp"
+            android:layout_height="194dp"
             android:src="@mipmap/audio_ring"
             android:layout_marginTop="14dp"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:transitionName="@string/share_img"/>
 
         <TextView
             android:id="@+id/flow_info_audio_title"
@@ -53,7 +54,7 @@
 
         <TextView
             android:id="@+id/flow_info_audio_desc"
-            android:layout_width="234dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="26sp"
             android:textColor="@color/main_title_color"
@@ -61,7 +62,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
             android:transitionName="share_audio_title"
-            />
+            android:maxLines="2"
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/flow_info_audio_price"

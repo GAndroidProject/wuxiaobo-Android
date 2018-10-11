@@ -33,9 +33,20 @@ public class ComponentInfo {
     private List<FlowInfoItem> flowInfoItemList;
     // 导航子列表集合
     private List<GraphicNavItem> graphicNavItemList;
+    // 是否需要渲染
+    private boolean needDecorate = true;
 
     public ComponentInfo() { }
 
+
+    public void setNeedDecorate(boolean needDecorate) {
+        this.needDecorate = needDecorate;
+    }
+
+    public boolean isNeedDecorate() {
+
+        return needDecorate;
+    }
 
     public void setGraphicNavItemList(List<GraphicNavItem> graphicNavItemList) {
         this.graphicNavItemList = graphicNavItemList;

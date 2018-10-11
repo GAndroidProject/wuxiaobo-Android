@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -19,7 +20,6 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
     private static final String TAG = "KnowledgeGroupRecyclerA";
 
     private Context mContext;
-    private Activity mActivity;
     // 知识商品分组 item 实体类列表
     private List<KnowledgeCommodityItem> mItemList;
 
@@ -34,7 +34,7 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
     }
 
     public KnowledgeGroupRecyclerAdapter(Activity activity, List<KnowledgeCommodityItem> list) {
-        this.mActivity = activity;
+        this.mContext = activity;
         this.mItemList = list;
     }
 
@@ -53,17 +53,23 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
         if (TextUtils.isEmpty(currentItem.getItemPrice())) { // 无价格，将 desc 文案设置在左边的 textView 中，右边的 textView 内容置空
             knowledgeItemViewHolder.itemDesc.setText("");
             knowledgeItemViewHolder.itemPrice.setText(currentItem.getItemDesc());
-            knowledgeItemViewHolder.itemPrice.setTextColor(mActivity.getResources().getColor(R.color.knowledge_item_desc_color));
+            knowledgeItemViewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
         } else {
             if (currentItem.isHasBuy()) { // 买了
                 knowledgeItemViewHolder.itemPrice.setText("已购");
-                knowledgeItemViewHolder.itemPrice.setTextColor(mActivity.getResources().getColor(R.color.knowledge_item_desc_color));
+                knowledgeItemViewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
                 knowledgeItemViewHolder.itemDesc.setText(currentItem.getItemDesc());
             } else { // 没买
                 knowledgeItemViewHolder.itemPrice.setText(currentItem.getItemPrice());
                 knowledgeItemViewHolder.itemDesc.setText(currentItem.getItemDesc());
             }
         }
+        knowledgeItemViewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "item click", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

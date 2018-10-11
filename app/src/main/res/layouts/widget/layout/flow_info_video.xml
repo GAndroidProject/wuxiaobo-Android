@@ -30,16 +30,19 @@
             android:textSize="14sp"
             android:textColor="@color/main_title_color"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp" />
+            android:layout_marginStart="20dp"/>
 
         <TextView
             android:id="@+id/flow_info_video_desc"
-            android:layout_width="234dp"
-            android:layout_height="64dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textSize="26sp"
             android:textColor="@color/main_title_color"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="20dp"/>
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="16dp"
+            android:maxLines="2"
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/flow_info_video_price"

@@ -1,19 +1,23 @@
 package xiaoe.com.shop.business.homepage.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -48,8 +52,14 @@ public class HomepageFragment extends BaseFragment {
 
     @BindView(R.id.home_app_bar)
     AppBarLayout homeAppBar;
-    @BindView(R.id.home_recycler_view)
-    RecyclerView recyclerView;
+    @BindView(R.id.home_head_recycler)
+    RecyclerView homeTitleRecyclerView;
+    @BindView(R.id.home_content_recycler)
+    RecyclerView homeContentRecyclerView;
+    @BindView(R.id.home_collapsing_toolbar)
+    CollapsingToolbarLayout homeCollLayout;
+    @BindView(R.id.home_tool_bar)
+    Toolbar homeToolBar;
 
     private DecorateRecyclerAdapter adapter;
 
@@ -92,6 +102,14 @@ public class HomepageFragment extends BaseFragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayout.VERTICAL);
         List<ComponentInfo> tempData = new ArrayList<ComponentInfo>();
+        // 搜索框假数据
+//        ComponentInfo componentInfo = new ComponentInfo();
+//        componentInfo.setTitle("课程");
+//        componentInfo.setType("search");
+//        tempData.add(componentInfo);
+//        LinearLayoutManager llm_1 = new LinearLayoutManager(getActivity());
+//        llm.setOrientation(LinearLayout.VERTICAL);
+//        homeTitleRecyclerView.setLayoutManager(llm_1);
         // 信息流假数据
         ComponentInfo componentInfo_1 = new ComponentInfo();
         componentInfo_1.setType("flow_info");
@@ -107,23 +125,19 @@ public class HomepageFragment extends BaseFragment {
         flowInfoItem_1.setItemPrice("￥9.9");
         flowInfoItem_1.setItemHasBuy(false);
         flowInfoItem_1.setItemImg("http://pic.58pic.com/58pic/15/62/48/98Z58PICyiN_1024.jpg");
-//        ComponentInfo componentInfo_2 = new ComponentInfo();
         FlowInfoItem flowInfoItem_2 = new FlowInfoItem();
-//        componentInfo_2.setType("flow_info");
         flowInfoItem_2.setItemType("audio");
         flowInfoItem_2.setItemTitle("音频组件");
         flowInfoItem_2.setItemDesc("我的财富计划 新中产必修财富课程");
         flowInfoItem_2.setItemPrice("￥999");
         flowInfoItem_2.setItemJoinedDesc("10928");
         flowInfoItem_2.setItemHasBuy(false);
-//        ComponentInfo componentInfo_3 = new ComponentInfo();
         FlowInfoItem flowInfoItem_3 = new FlowInfoItem();
-//        componentInfo_3.setType("flow_info");
         flowInfoItem_3.setItemType("video");
         flowInfoItem_3.setItemTitle("视频组件");
         flowInfoItem_3.setItemDesc("每天看见吴晓波");
         flowInfoItem_3.setItemPrice("199.99");
-        flowInfoItem_3.setItemImg("http://pic14.nipic.com/20110605/1369025_165540642000_2.jpg");
+        flowInfoItem_3.setItemImg("http://pic6.nipic.com/20100417/4578581_140045259657_2.jpg");
         flowInfoItem_3.setItemHasBuy(true);
         flowInfoItemList.add(flowInfoItem_1);
         flowInfoItemList.add(flowInfoItem_2);
@@ -134,16 +148,16 @@ public class HomepageFragment extends BaseFragment {
         componentInfo_2.setType("graphic_navigation");
         List<GraphicNavItem> graphicNavItemList = new ArrayList<>();
         GraphicNavItem graphicNavItem_1 = new GraphicNavItem();
-        graphicNavItem_1.setNavIcon("http://img.zcool.cn/community/01cfce5568d52b000001271602961c.jpg");
+        graphicNavItem_1.setNavIcon("res:///" + R.mipmap.class_fundation);
         graphicNavItem_1.setNavContent("财富");
         GraphicNavItem graphicNavItem_2 = new GraphicNavItem();
-        graphicNavItem_2.setNavIcon("http://pic.58pic.com/58pic/16/06/44/80p58PICC63_1024.jpg");
+        graphicNavItem_2.setNavIcon("res:///" + R.mipmap.class_bussines);
         graphicNavItem_2.setNavContent("职场");
         GraphicNavItem graphicNavItem_3 = new GraphicNavItem();
-        graphicNavItem_3.setNavIcon("http://img.7139.com/file/201206/13d9d950c768fc04063c29d931cdec65.gif");
+        graphicNavItem_3.setNavIcon("res:///" + R.mipmap.class_knowle);
         graphicNavItem_3.setNavContent("见识");
         GraphicNavItem graphicNavItem_4 = new GraphicNavItem();
-        graphicNavItem_4.setNavIcon("http://img1.imgtn.bdimg.com/it/u=1053527111,2904695431&fm=214&gp=0.jpg");
+        graphicNavItem_4.setNavIcon("res:///" + R.mipmap.class_family);
         graphicNavItem_4.setNavContent("家庭");
         graphicNavItemList.add(graphicNavItem_1);
         graphicNavItemList.add(graphicNavItem_2);
@@ -154,22 +168,22 @@ public class HomepageFragment extends BaseFragment {
         ComponentInfo componentInfo_4 = new ComponentInfo();
         componentInfo_4.setType("shuffling_figure");
         List<String> urlList = new ArrayList<>();
+//        urlList.add("res:///" + R.mipmap.audio_bg);
+        urlList.add("http://img05.tooopen.com/images/20141020/sy_73154627197.jpg");
         urlList.add("http://pic.58pic.com/58pic/15/63/07/42Q58PIC42U_1024.jpg");
         urlList.add("http://img.zcool.cn/community/0125fd5770dfa50000018c1b486f15.jpg@1280w_1l_2o_100sh.jpg");
-        urlList.add("res:///" + R.mipmap.audio_bg);
-        urlList.add("http://img05.tooopen.com/images/20141020/sy_73154627197.jpg");
         componentInfo_4.setShufflingList(urlList);
         // 最近更新假数据
         ComponentInfo componentInfo_5 = new ComponentInfo();
         List<RecentUpdateListItem> itemList = new ArrayList<>();
         RecentUpdateListItem item_1 = new RecentUpdateListItem();
-        item_1.setListTitle("09-22期 | 为什么哈哈哈哈哈哈哈，成为…");
+        item_1.setListTitle("09-22期 | 为什么哈哈哈哈哈哈哈，成为哒哒哒");
         item_1.setListPlayState("play");
         RecentUpdateListItem item_2 = new RecentUpdateListItem();
-        item_2.setListTitle("09-21期 | 你还想海外逃税？国家哒哒哒…");
+        item_2.setListTitle("09-21期 | 你还想海外逃税？国家哒哒哒");
         item_2.setListPlayState("play");
         RecentUpdateListItem item_3 = new RecentUpdateListItem();
-        item_3.setListTitle("09-20期 | 十年后，我希望仍能与你在一起");
+        item_3.setListTitle("09-20期 | 十年后，我希望仍能与你在一起得到");
         item_3.setListPlayState("play");
         itemList.add(item_1);
         itemList.add(item_2);
@@ -248,14 +262,21 @@ public class HomepageFragment extends BaseFragment {
         tempData.add(componentInfo_5);
         tempData.add(componentInfo_6);
         tempData.add(componentInfo_7);
-        recyclerView.setLayoutManager(llm);
-        for(ComponentInfo item: tempData) {
-            if (!item.getType().equals(DecorateEntityType.SEARCH_STR)) { // 没有搜索框就把顶部的折叠组件隐藏
-                homeAppBar.setVisibility(View.GONE);
-            }
+        homeContentRecyclerView.setLayoutManager(llm);
+        if (tempData.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) { // 标题在头顶
+            List<ComponentInfo> titleData = new ArrayList<>();
+            homeAppBar.setVisibility(View.VISIBLE);
+            titleData.add(tempData.get(0));
+            DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
+            homeTitleRecyclerView.setAdapter(dra);
+            tempData.remove(0);
+        } else {
+            homeAppBar.setVisibility(View.GONE);
         }
+
         adapter = new DecorateRecyclerAdapter(getActivity(), tempData);
-        recyclerView.setAdapter(adapter);
+        homeContentRecyclerView.setAdapter(adapter);
+
         getActivity().setExitSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {

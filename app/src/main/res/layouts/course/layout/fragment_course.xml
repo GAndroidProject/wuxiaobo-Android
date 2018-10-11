@@ -22,15 +22,14 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:titleEnabled="false"
-                android:paddingTop="30dp">
+                android:paddingTop="28dp">
                 <!-- 自定义的布局信息 -->
-                <xiaoe.com.shop.widget.SearchView
-                    android:id="@+id/course_title_container"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/course_title_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
-                </xiaoe.com.shop.widget.SearchView>
+                    android:paddingEnd="20dp"/>
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/course_tool_bar"
                     android:layout_width="wrap_content"
@@ -42,7 +41,7 @@
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/course_recycler_view"
+            android:id="@+id/course_content_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="12dp"

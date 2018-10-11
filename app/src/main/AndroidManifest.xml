@@ -23,7 +23,7 @@
         </activity>
         <activity android:name=".test.TreeActivity"/>
         <activity
-            android:name=".business.course.ui.CourseDetailActivity"/>
+            android:name=".business.course.ui.CourseItemActivity"/>
         <activity android:name=".business.audio.ui.AudioActivity"/>
         <service android:name=".business.audio.presenter.AudioMediaPlayer"/>
     </application>

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -20,14 +21,13 @@ import xiaoe.com.common.entitys.FlowInfoItem;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
-import xiaoe.com.shop.business.course.ui.CourseDetailActivity;
+import xiaoe.com.shop.business.course.ui.CourseItemActivity;
 
 public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private static final String TAG = "FlowInfoRecyclerAdapter";
 
     private Context mContext;
-    private Activity mActivity;
     private List<FlowInfoItem> mItemList;
 
     private int currentPos;
@@ -39,7 +39,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     }
 
     public FlowInfoRecyclerAdapter(Activity activity, List<FlowInfoItem> list) {
-        this.mActivity = activity;
+        this.mContext = activity;
         this.mItemList = list;
     }
 
@@ -60,28 +60,28 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     view.findViewById(R.id.flow_info_img_text_price).setVisibility(View.GONE);
                 }
                 view.setLayoutParams(layoutParams);
-                final View imageView = view.findViewById(R.id.flow_info_img_text_bg);
-                final View textView = view.findViewById(R.id.flow_info_img_text_title);
+                final View imgTxtBg = view.findViewById(R.id.flow_info_img_text_bg);
+                final View imgTxtTitle = view.findViewById(R.id.flow_info_img_text_title);
                 final String imgUrl = currentItem.getItemImg();
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                     ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(mActivity,
-                            Pair.create(imageView, "share"),
-                            Pair.create(textView, "text"));
-                    Intent transitionIntent = new Intent(mActivity, CourseDetailActivity.class);
+                        ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+                            Pair.create(imgTxtBg, mContext.getResources().getString(R.string.share_img)),
+                            Pair.create(imgTxtTitle, mContext.getResources().getString(R.string.share_txt)));
+                    Intent transitionIntent = new Intent(mContext, CourseItemActivity.class);
                     transitionIntent.putExtra("type", DecorateEntityType.FLOW_INFO_IMG_TEXT_STR);
                     transitionIntent.putExtra("imgUrl", imgUrl);
-                    mActivity.startActivity(transitionIntent, options.toBundle());
+                    mContext.startActivity(transitionIntent, options.toBundle());
                     }
                 });
-                // TODO: 设想在 touch 事件中实现 view 的缩放效果
                 return new FlowInfoImgTextViewHolder(view);
             case DecorateEntityType.FLOW_INFO_AUDIO: // 音频
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_audio, null);
                 view.setLayoutParams(layoutParams);
                 final View audioBG = view.findViewById(R.id.flow_info_audio_bg);
+                final View audioRing = view.findViewById(R.id.flow_info_audio_avatar);
                 if (currentItem.isItemHasBuy()) {
                     view.findViewById(R.id.flow_info_img_text_price).setVisibility(View.GONE);
                 }
@@ -89,10 +89,11 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     @Override
                     public void onClick(View v) {
                     ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(mActivity,
-                            Pair.create(audioBG, "audio_bg_share"));
-                    Intent audioIntent = new Intent(mActivity, AudioActivity.class);
-                    mActivity.startActivity(audioIntent, options.toBundle());
+                        ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+                            Pair.create(audioBG, mContext.getResources().getString(R.string.share_img)),
+                            Pair.create(audioRing, mContext.getResources().getString(R.string.share_img)));
+                    Intent audioIntent = new Intent(mContext, AudioActivity.class);
+                    mContext.startActivity(audioIntent, options.toBundle());
                     }
                 });
                 return new FlowInfoAudioViewHolder(view);
@@ -102,6 +103,13 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 if (currentItem.isItemHasBuy()) {
                     view.findViewById(R.id.flow_info_video_price).setVisibility(View.GONE);
                 }
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO: 视频页面跳转
+                        Toast.makeText(mContext, "点击视频组件...", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 return new FlowInfoVideoViewHolder(view);
         }
         return null;
