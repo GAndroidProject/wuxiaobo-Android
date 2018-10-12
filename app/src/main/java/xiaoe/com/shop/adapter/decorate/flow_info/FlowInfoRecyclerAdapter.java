@@ -90,7 +90,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     public void onClick(View v) {
                     ActivityOptions options =
                         ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
-                            Pair.create(audioBG, mContext.getResources().getString(R.string.share_img)),
+                            Pair.create(audioBG, "share_img_audio_bg"),
                             Pair.create(audioRing, mContext.getResources().getString(R.string.share_img)));
                     Intent audioIntent = new Intent(mContext, AudioActivity.class);
                     mContext.startActivity(audioIntent, options.toBundle());

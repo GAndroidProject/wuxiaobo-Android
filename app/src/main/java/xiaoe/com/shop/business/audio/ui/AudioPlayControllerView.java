@@ -119,9 +119,6 @@ public class AudioPlayControllerView extends FrameLayout implements View.OnClick
         List<AudioPlayUtil.Audio> playList = AudioPlayUtil.getInstance().getAudioList();
         AudioPlayUtil.Audio playAudio = AudioMediaPlayer.getAudio();
         int indexNext = playAudio.getIndex() + 1;
-        Log.d(TAG, "playNext: "+indexNext);
-        Log.d(TAG, "size: "+playList.size());
-        Log.d(TAG, "index: "+playAudio.getIndex());
         if(indexNext >= playList.size()){
             indexNext = 0;
         }
@@ -137,7 +134,6 @@ public class AudioPlayControllerView extends FrameLayout implements View.OnClick
         if(indexLast < 0){
             indexLast = playList.size() - 1;
         }
-        Log.d(TAG, "playLast: "+indexLast);
         AudioMediaPlayer.setAudio(playList.get(indexLast));
         AudioMediaPlayer.stop();
         audioPlay();

@@ -5,4 +5,12 @@
         <attr name="scrollId" format="integer"/>
         <attr name="maxZoom" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="AudioDetailsSwitchLayout">
+        <attr name="header_view" format="reference"/>
+        <attr name="target_view" format="reference"/>
+        <attr name="hover_view" format="reference"/>
+        <attr name="header_init_offset" format="dimension"/>
+        <attr name="target_end_offset" format="dimension"/>
+        <attr name="target_init_offset" format="dimension"/>
+    </declare-styleable>
 </resources>
