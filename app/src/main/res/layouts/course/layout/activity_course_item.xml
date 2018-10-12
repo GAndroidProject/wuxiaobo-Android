@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<xiaoe.com.shop.widget.PushScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_detail_wrap"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:fillViewport="true"
+    app:scrollId="@+id/item_detail_bg"
+    app:maxZoom="120dp">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/item_detail_bg"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:src="@mipmap/ic_launcher"
-            android:transitionName="@string/share_img"/>
+            android:transitionName="@string/share_img" />
 
         <ImageView
             android:id="@+id/item_detail_back"
@@ -24,11 +31,7 @@
             android:layout_marginStart="14dp"
             android:layout_marginTop="10dp"
             tools:ignore="ContentDescription" />
-    </FrameLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
         <TextView
             android:id="@+id/item_detail_classify"
             android:layout_width="wrap_content"
@@ -36,9 +39,10 @@
             android:layout_marginStart="14dp"
             android:layout_marginTop="14dp"
             android:text="今日精选"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:textColor="@color/main_title_color"
-            android:transitionName="@string/share_txt"/>
+            android:layout_below="@id/item_detail_bg"
+            android:transitionName="@string/share_txt" />
 
         <TextView
             android:id="@+id/item_detail_title"
@@ -61,7 +65,8 @@
             android:src="@mipmap/video_collect"
             tools:ignore="ContentDescription"
             android:layout_marginTop="18dp"
-            android:layout_toStartOf="@id/item_detail_share"/>
+            android:layout_toStartOf="@id/item_detail_share"
+            android:layout_below="@id/item_detail_bg"/>
 
         <ImageView
             android:id="@+id/item_detail_share"
@@ -92,7 +97,7 @@
             android:layout_height="68dp"
             android:layout_below="@id/item_detail_desc"
             fresco:failureImage="@mipmap/audio_share"/>
-        
+
         <TextView
             android:id="@+id/item_detail_btn"
             android:layout_width="wrap_content"
@@ -109,19 +114,24 @@
             android:layout_marginBottom="14dp"
             android:layout_marginEnd="14dp"
             android:background="@drawable/recent_update_btn_selector"/>
+
+        <TextView
+            android:id="@+id/item_detail_org_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="64dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="16dp"
+            android:paddingBottom="20dp"
+            android:layout_below="@id/item_detail_desc_img"/>
+
+        <xiaoe.com.shop.widget.CommonBuyView
+            android:id="@+id/item_detail_buy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/item_detail_org_content"/>
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/item_detail_org_content"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-</LinearLayout>
+</xiaoe.com.shop.widget.PushScrollView>

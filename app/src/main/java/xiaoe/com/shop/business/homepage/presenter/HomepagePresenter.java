@@ -21,8 +21,10 @@ public class HomepagePresenter implements IBizCallback {
     }
 
     public void requestData() {
-        HomepageRequest hp = new HomepageRequest("test/test_app", TestInfo.class, this);
-        hp.addRequestParam("app_id", "123456");
+        HomepageRequest hp = new HomepageRequest("api/xe.shop.page.get/1.0.0", TestInfo.class, this);
+        hp.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
+        hp.addRequestParam("shop_id", "apppcHqlTPT3482");
+        hp.addRequestParam("micro_page_id", 0);
         NetworkEngine.getInstance().sendRequest(hp);
     }
 }

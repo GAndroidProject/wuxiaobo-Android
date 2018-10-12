@@ -82,8 +82,8 @@ public class HomepageFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 网络请求数据代码
-//        HomepagePresenter hp = new HomepagePresenter(this);
-//        hp.requestData();
+        HomepagePresenter hp = new HomepagePresenter(this);
+        hp.requestData();
 
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
 //        toolbar.setNavigationIcon(R.mipmap.ic_launcher);

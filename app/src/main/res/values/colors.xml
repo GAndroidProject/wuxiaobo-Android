@@ -24,5 +24,7 @@
     <color name="btn_speed_bg_color">#0d64666F</color><!--倍速播放按钮边框-->
     <color name="audio_seek_bar_secondary_progress">#BABDC7</color><!--音频播放进度条颜色-->
     <color name="audio_seek_bar_progress">#4B4D55</color><!--音频播放进度条进度颜色-->
+    <color name="layout_line">#B3BCC5</color><!--边框线颜色-->
+    <color name="vip_btn_bg">#1AB09B76</color><!--超级会员按钮背景颜色-->
 
 </resources>

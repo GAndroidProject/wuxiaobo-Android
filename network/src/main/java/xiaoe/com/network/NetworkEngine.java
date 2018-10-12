@@ -36,7 +36,8 @@ import xiaoe.com.network.utils.ThreadPoolUtils;
 public class NetworkEngine {
     private static final String TAG = "NetworkEngine";
     //测试环境url http://demo.h5.inside.xiaoe-tech.com/openapp/login
-    private final static String TEST_URL = "http://api.inside.xiaoe-tech.com/";
+//    private final static String TEST_URL = "http://api.inside.xiaoe-tech.com/";
+    private final static String TEST_URL = "http://134.175.39.17:9380";
     //正式环境url http://api.inside.xiaoe-tech.com
     private final static String FORMAL_URL = "https://api.xiaoe-tech.com/";
     //    private final static String BASE_URL = url;
