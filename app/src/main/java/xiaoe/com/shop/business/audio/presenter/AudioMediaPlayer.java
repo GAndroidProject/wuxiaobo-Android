@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.util.List;
 
 import xiaoe.com.shop.events.AudioPlayEvent;
 
@@ -161,6 +162,37 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             return mediaPlayer.getCurrentPosition();
         }
         return  -1;
+    }
+
+
+    public static void playNext() {
+        List<AudioPlayUtil.Audio> playList = AudioPlayUtil.getInstance().getAudioList();
+        int indexNext = audio.getIndex() + 1;
+        if(indexNext >= playList.size()){
+            indexNext = 0;
+        }
+        setAudio(playList.get(indexNext));
+        stop();
+        if(isStop){
+            start();
+        }else{
+            play();
+        }
+    }
+
+    public static void playLast() {
+        List<AudioPlayUtil.Audio> playList = AudioPlayUtil.getInstance().getAudioList();
+        int indexLast = audio.getIndex() - 1;
+        if(indexLast < 0){
+            indexLast = playList.size() - 1;
+        }
+        setAudio(playList.get(indexLast));
+        stop();
+        if(isStop){
+            start();
+        }else{
+            play();
+        }
     }
 
     public static AudioPlayUtil.Audio getAudio() {

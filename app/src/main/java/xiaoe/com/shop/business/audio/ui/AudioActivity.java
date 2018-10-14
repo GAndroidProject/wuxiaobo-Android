@@ -56,6 +56,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private TextView btnSpeedPlay;
     private AudioPlayControllerView audioPlayController;
     private ObjectAnimator diskRotate;
+    private AudioHoverControllerLayout audioHoverPlayController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,6 +101,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         btnSpeedPlay = (TextView) findViewById(R.id.audio_speed_play);
         //音频播放控制器
         audioPlayController = (AudioPlayControllerView) findViewById(R.id.audio_play_controller);
+
+        audioHoverPlayController = (AudioHoverControllerLayout) findViewById(R.id.audio_hover_controller);
     }
     private void initDatas() {
         AudioPlayUtil audioPlayUtil = AudioPlayUtil.getInstance();
@@ -174,16 +177,19 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 break;
             case AudioPlayEvent.PLAY:
                 audioPlayController.setPlayState(true);
+                audioHoverPlayController.setPlayState(true);
                 audioPlayController.setTotalDuration(AudioMediaPlayer.getDuration());
                 setDiskRotateAnimator(true);
                 mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS,100);
                 break;
             case AudioPlayEvent.PAUSE:
                 audioPlayController.setPlayState(false);
+                audioHoverPlayController.setPlayState(false);
                 setDiskRotateAnimator(false);
                 break;
             case AudioPlayEvent.STOP:
                 audioPlayController.setPlayState(false);
+                audioHoverPlayController.setPlayState(false);
                 setDiskRotateAnimator(false);
                 break;
             default:

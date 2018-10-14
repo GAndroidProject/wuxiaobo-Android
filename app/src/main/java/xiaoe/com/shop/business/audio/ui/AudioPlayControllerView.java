@@ -11,12 +11,9 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.util.List;
-
 import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
-import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 
 public class AudioPlayControllerView extends FrameLayout implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "PlayControllerView";
@@ -116,27 +113,11 @@ public class AudioPlayControllerView extends FrameLayout implements View.OnClick
     }
 
     private void playNext() {
-        List<AudioPlayUtil.Audio> playList = AudioPlayUtil.getInstance().getAudioList();
-        AudioPlayUtil.Audio playAudio = AudioMediaPlayer.getAudio();
-        int indexNext = playAudio.getIndex() + 1;
-        if(indexNext >= playList.size()){
-            indexNext = 0;
-        }
-        AudioMediaPlayer.setAudio(playList.get(indexNext));
-        AudioMediaPlayer.stop();
-        audioPlay();
+        AudioMediaPlayer.playNext();
     }
 
     private void playLast() {
-        List<AudioPlayUtil.Audio> playList = AudioPlayUtil.getInstance().getAudioList();
-        AudioPlayUtil.Audio playAudio = AudioMediaPlayer.getAudio();
-        int indexLast = playAudio.getIndex() - 1;
-        if(indexLast < 0){
-            indexLast = playList.size() - 1;
-        }
-        AudioMediaPlayer.setAudio(playList.get(indexLast));
-        AudioMediaPlayer.stop();
-        audioPlay();
+        AudioMediaPlayer.playLast();
     }
 
     private void audioSeekTo(int i) {

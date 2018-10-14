@@ -66,6 +66,7 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
     private boolean isShowDetail = false;
     private boolean mIsDragging;
     private boolean mIsScroller = false;
+    private Context mContext;
 
     public AudioDetailsSwitchLayout(Context context) {
         this(context, null);
@@ -73,6 +74,7 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
 
     public AudioDetailsSwitchLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.AudioDetailsSwitchLayout, 0, 0);
         mHeaderViewId = array.getResourceId(R.styleable.AudioDetailsSwitchLayout_header_view, 0);
         mTargetViewId = array.getResourceId(R.styleable.AudioDetailsSwitchLayout_target_view, 0);
@@ -170,7 +172,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Log.d(TAG, "onLayout: ****");
         final int width = getMeasuredWidth();
         final int height = getMeasuredHeight();
         if (getChildCount() == 0) {
@@ -194,7 +195,9 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
 
         mHoverViewWidth = mHoverView.getMeasuredWidth();
         mHoverViewHeight = mHoverView.getMeasuredHeight();
-        mHoverView.layout((width - mHoverViewWidth) / 2, -mHoverViewHeight, (width / 2 + mHoverViewWidth /2), 0);
+        mHoverView.layout(Dp2Px2SpUtil.dp2px(mContext, 64), -mHoverViewHeight, (width / 2 + mHoverViewWidth /2), 0);
+        mHoverView.layout(0, -mHoverViewHeight, (width / 2 + mHoverViewWidth /2), 0);
+        Log.d(TAG, "onLayout: "+mHeaderView.getWidth());
     }
 
     @Override
@@ -461,6 +464,7 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
         if (mTargetCurrentOffset <= mTargetInitOffset && mTargetCurrentOffset >= mTargetEndOffset) {
             int total = mTargetInitOffset - mTargetEndOffset;
             float percent =  (mTargetCurrentOffset - mTargetEndOffset) * 1.0f / total;
+            mHeaderView.setAlpha(percent);
             ViewCompat.setTranslationY(mHoverView, mHoverViewHeight * (1-percent));
         }
     }

@@ -11,19 +11,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:target_view="@+id/move_text"
-        app:header_view="@+id/sss"
+        app:header_view="@+id/header_content_controller"
         app:header_init_offset="500dp"
-        app:target_end_offset="60dp"
+        app:target_end_offset="64dp"
         app:hover_view="@+id/view_hover"
         >
-        <View
-            android:id="@+id/view_hover"
-            android:background="@color/colorAccent"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"/>
 
         <RelativeLayout
-            android:id="@+id/sss"
+            android:id="@+id/view_hover"
+            android:layout_width="match_parent"
+            android:layout_height="64dp">
+            <xiaoe.com.shop.business.audio.ui.AudioHoverControllerLayout
+                android:id="@+id/audio_hover_controller"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="64dp"
+                android:background="@color/audio_page_bg_color"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/header_content_controller"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
@@ -92,27 +100,27 @@
 
                 </LinearLayout>
             </LinearLayout>
-            <RelativeLayout
-                android:id="@+id/audio_page_close_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:src="@mipmap/audio_white_back"
-                    />
-            </RelativeLayout>
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/audio_page_close_btn"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content">-->
+                <!--<ImageView-->
+                    <!--android:layout_width="24dp"-->
+                    <!--android:layout_height="24dp"-->
+                    <!--android:layout_marginTop="20dp"-->
+                    <!--android:layout_marginStart="20dp"-->
+                    <!--android:layout_marginEnd="20dp"-->
+                    <!--android:src="@mipmap/audio_white_back"-->
+                    <!--/>-->
+            <!--</RelativeLayout>-->
             <RelativeLayout
                 android:id="@+id/audio_poster_wrap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_above="@id/controller_wrap"
-                android:layout_below="@id/audio_page_close_btn"
                 >
+                <!--android:layout_below="@id/audio_page_close_btn"-->
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/audio_bg"
                     android:layout_width="match_parent"
@@ -179,5 +187,17 @@
 
     </xiaoe.com.shop.business.audio.ui.AudioDetailsSwitchLayout>
 
-
+    <RelativeLayout
+        android:id="@+id/audio_page_close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@mipmap/audio_white_back"
+            />
+    </RelativeLayout>
 </RelativeLayout>
