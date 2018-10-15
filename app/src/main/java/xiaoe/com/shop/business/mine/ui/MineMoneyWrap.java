@@ -95,17 +95,21 @@ public class MineMoneyWrap extends FrameLayout {
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
             super.onDraw(c, parent, state);
             if (mOrientation == GridLayoutManager.HORIZONTAL) {
-                Log.d(TAG, "onDraw: horizontal");
                 drawHorizontal(c, parent);
             } else {
-                Log.d(TAG, "onDraw: vertical");
                 drawVertical(c, parent);
             }
         }
 
+        /**
+         * gridLayoutManager 绘制水平方向的分割线
+         * @param canvas 画布
+         * @param parent recyclerView
+         */
         private void drawHorizontal(Canvas canvas, RecyclerView parent) {
             int top = parent.getPaddingTop();
             int bottom = parent.getHeight() - parent.getPaddingBottom();
+            // parent.getChildCount() // 这个方法可以获取 RecyclerView 的子 View 的个数，有了这个总数可以循环给每一个子 view 绘制，但是这里只有两个，所以直接选第一个进行绘制
             View child = parent.getChildAt(0);
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
             int left = child.getRight() + params.rightMargin;
@@ -118,6 +122,11 @@ public class MineMoneyWrap extends FrameLayout {
             mDivider.draw(canvas);
         }
 
+        /**
+         * 绘制 gridLayoutManager 绘制垂直方向的分割线
+         * @param canvas 画布
+         * @param parent recyclerView
+         */
         private void drawVertical(Canvas canvas, RecyclerView parent) {
             int left = parent.getPaddingLeft();
             int right = parent.getWidth() - parent.getPaddingRight();
