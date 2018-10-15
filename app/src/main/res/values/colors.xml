@@ -26,5 +26,9 @@
     <color name="audio_seek_bar_progress">#4B4D55</color><!--音频播放进度条进度颜色-->
     <color name="layout_line">#B3BCC5</color><!--边框线颜色-->
     <color name="vip_btn_bg">#1AB09B76</color><!--超级会员按钮背景颜色-->
+    
+    <color name="menu_floating_bg">#30000000</color> <!--菜单浮窗背景 -->
+
+    <color name="line">#DBE2EA</color><!--分割线颜色-->
 
 </resources>

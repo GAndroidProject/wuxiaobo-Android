@@ -24,8 +24,10 @@ import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.events.AudioPlayEvent;
+import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
+import xiaoe.com.shop.widget.ContentMenuLayout;
 
-public class AudioActivity extends XiaoeActivity implements View.OnClickListener {
+public class AudioActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener {
     private static final String TAG = "AudioActivity";
     private final int MSG_VIEW_STATE = 10001;
     private final int MSG_PLAY_PROGRESS = 10002;
@@ -57,6 +59,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private AudioPlayControllerView audioPlayController;
     private ObjectAnimator diskRotate;
     private AudioHoverControllerLayout audioHoverPlayController;
+    private ContentMenuLayout contentMenuLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,8 +104,11 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         btnSpeedPlay = (TextView) findViewById(R.id.audio_speed_play);
         //音频播放控制器
         audioPlayController = (AudioPlayControllerView) findViewById(R.id.audio_play_controller);
-
+        //悬浮播放控制器
         audioHoverPlayController = (AudioHoverControllerLayout) findViewById(R.id.audio_hover_controller);
+        audioHoverPlayController.setOnMenuListener(this);
+        //菜单栏
+        contentMenuLayout = (ContentMenuLayout) findViewById(R.id.content_menu_layout);
     }
     private void initDatas() {
         AudioPlayUtil audioPlayUtil = AudioPlayUtil.getInstance();
@@ -210,5 +216,12 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onClickMoreMenu(View view) {
+        if(view.getId() == R.id.hover_audio_more){
+            contentMenuLayout.setVisibility(View.VISIBLE);
+        }
     }
 }

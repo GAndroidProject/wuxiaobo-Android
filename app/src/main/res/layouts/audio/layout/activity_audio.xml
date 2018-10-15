@@ -200,4 +200,10 @@
             android:src="@mipmap/audio_white_back"
             />
     </RelativeLayout>
+    <xiaoe.com.shop.widget.ContentMenuLayout
+        android:id="@+id/content_menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
 </RelativeLayout>

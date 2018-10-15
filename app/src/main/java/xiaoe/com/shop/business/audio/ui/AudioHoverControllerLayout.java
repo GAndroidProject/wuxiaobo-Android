@@ -9,15 +9,17 @@ import android.widget.ImageView;
 
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
 
 public class AudioHoverControllerLayout extends FrameLayout implements View.OnClickListener {
-
+    private static final String TAG = "AudioHoverControllerLay";
     private View rootView;
     private ImageView audioDisk;
     private ImageView btnLast;
     private ImageView btnPlay;
     private ImageView btnNext;
     private ImageView btnMore;
+    private OnClickMoreMenuListener menuListener;
 
     public AudioHoverControllerLayout(Context context) {
         this(context,null);
@@ -61,6 +63,9 @@ public class AudioHoverControllerLayout extends FrameLayout implements View.OnCl
         AudioMediaPlayer.playNext();
     }
 
+    public void setOnMenuListener(OnClickMoreMenuListener listener){
+        this.menuListener = listener;
+    }
 
     @Override
     public void onClick(View v) {
@@ -73,6 +78,11 @@ public class AudioHoverControllerLayout extends FrameLayout implements View.OnCl
                 break;
             case R.id.hover_audio_next:
                 next();
+                break;
+            case R.id.hover_audio_more:
+                if(menuListener != null){
+                    menuListener.onClickMoreMenu(v);
+                }
                 break;
             default:
                 break;

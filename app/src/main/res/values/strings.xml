@@ -16,4 +16,12 @@
 
     <string name="share_img">share_img</string>
     <string name="share_txt">share_txt</string>
+
+    <string name="share_title">分享</string>
+    <string name="collect_title">收藏</string>
+    <string name="download_title">下载</string>
+    <string name="comment_title">评论</string>
+
+    <string name="confirm_title">确 定</string>
+    <string name="cancel_title">取 消</string>
 </resources>
