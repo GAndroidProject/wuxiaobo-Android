@@ -82,7 +82,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
         viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "点击item..", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "点击item..", Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;

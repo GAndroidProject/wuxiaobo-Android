@@ -306,7 +306,7 @@ public class HomepageFragment extends BaseFragment {
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-//        Log.d(TAG, "onMainThreadResponse: isSuccess --- " + success);
+        Log.d(TAG, "onMainThreadResponse: isSuccess --- " + success);
     }
 
     @Override

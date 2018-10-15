@@ -16,12 +16,18 @@
 
     <string name="share_img">share_img</string>
     <string name="share_txt">share_txt</string>
-
-    <string name="share_title">分享</string>
+	<string name="share_title">分享</string>
     <string name="collect_title">收藏</string>
     <string name="download_title">下载</string>
     <string name="comment_title">评论</string>
 
     <string name="confirm_title">确 定</string>
-    <string name="cancel_title">取 消</string>
-</resources>
+    <string name="cancel_title">取 消</string>	<string name="mine_title_msg">title_msg</string>
+    <string name="mine_title_setting">title_setting</string>
+    <string name="vip_item_checked">vip_item_checked</string>
+    <string name="super_vip">超级会员免费</string>
+    <string name="deadline_title">有效期至：</string>
+    <string name="renewal">续费 ></string>
+    <string name="wxb_logo">wxb_logo</string>
+    <string name="more_equity">更多权益 >></string>
+    <string name="super_vip_title">超级会员权益</string></resources>

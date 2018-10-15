@@ -10,6 +10,7 @@ import java.util.List;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.course.ui.CourseFragment;
 import xiaoe.com.shop.business.homepage.ui.HomepageFragment;
+import xiaoe.com.shop.business.mine.ui.MineFragment;
 
 /**
  * Created by Administrator on 2017/7/17.
@@ -22,10 +23,10 @@ public class MainFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         HomepageFragment homepageFragment = new HomepageFragment();
         CourseFragment courseFragment = new CourseFragment();
-        HomepageFragment homepageFragment1 = new HomepageFragment();
+        MineFragment mineFragment = new MineFragment();
         list.add(homepageFragment);
         list.add(courseFragment);
-        list.add(homepageFragment1);
+        list.add(mineFragment);
     }
 
     @Override

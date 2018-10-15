@@ -30,7 +30,7 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
 import xiaoe.com.shop.widget.SearchView;
 
-public class CourseFragment extends BaseFragment implements OnBottomTabSelectListener {
+public class CourseFragment extends BaseFragment {
 
     private static final String TAG = "CourseFragment";
 
@@ -140,10 +140,5 @@ public class CourseFragment extends BaseFragment implements OnBottomTabSelectLis
         if (unbinder != null) {
             unbinder.unbind();
         }
-    }
-
-    @Override
-    public void onCheckedTab(int index) {
-        Log.d(TAG, "onCheckedTab: index ---- " + index);
     }
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/audio_page_bg_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/recent_update_btn_pressed">
+
+        <xiaoe.com.shop.business.mine.ui.MineTitleView
+            android:id="@+id/mine_title_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="28dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"/>
+
+        <xiaoe.com.shop.business.mine.ui.MineMsgView
+            android:id="@+id/mine_msg_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="32dp"
+            android:paddingBottom="68dp"/>
+
+    </LinearLayout>
+
+    <xiaoe.com.shop.business.mine.ui.MineVipCard
+        android:id="@+id/mine_vip_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_marginTop="-36dp"/>
+
+    <xiaoe.com.shop.business.mine.ui.MineMoneyWrap
+        android:id="@+id/mine_money_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

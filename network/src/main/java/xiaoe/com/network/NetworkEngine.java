@@ -36,13 +36,13 @@ import xiaoe.com.network.utils.ThreadPoolUtils;
 public class NetworkEngine {
     private static final String TAG = "NetworkEngine";
     //测试环境url http://demo.h5.inside.xiaoe-tech.com/openapp/login
-//    private final static String TEST_URL = "http://api.inside.xiaoe-tech.com/";
-    private final static String TEST_URL = "http://134.175.39.17:9380";
+    private final static String TEST_URL = "http://api.inside.xiaoe-tech.com/";
     //正式环境url http://api.inside.xiaoe-tech.com
     private final static String FORMAL_URL = "https://api.xiaoe-tech.com/";
     //    private final static String BASE_URL = url;
 //    private final static String BASE_URL = XiaoeApplication.isFormalCondition() ? FORMAL_URL : TEST_URL;
-    private final static String BASE_URL = "http://134.175.39.17:12242/";
+//    private final static String BASE_URL = "http://134.175.39.17:12242/";
+    private final static String BASE_URL = "http://134.175.39.17:9380/";
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient client;
