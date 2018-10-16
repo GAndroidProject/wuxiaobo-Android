@@ -2,6 +2,7 @@ package xiaoe.com.shop.adapter.decorate.knowledge_commodity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.business.column.ui.ColumnActivity;
 
 public class KnowledgeListAdapter extends BaseAdapter {
 
@@ -83,6 +85,8 @@ public class KnowledgeListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
             Toast.makeText(mContext, "点击item..", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mContext, ColumnActivity.class);
+                mContext.startActivity(intent);
             }
         });
         return convertView;

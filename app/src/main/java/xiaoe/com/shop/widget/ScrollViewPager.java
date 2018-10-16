@@ -3,16 +3,52 @@ package xiaoe.com.shop.widget;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 
 public class ScrollViewPager extends ViewPager {
+    private static final String TAG = "ScrollViewPager";
     private boolean isScroll;
+    private boolean isNeedMeasure = false;
     public ScrollViewPager(Context context, AttributeSet attrs){
         super(context, attrs);
     }
     public ScrollViewPager(Context context) {
         super(context);
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.d(TAG, "onMeasure: ----------");
+
+        Log.d(TAG, "onMeasure: **"+getChildCount()+" ; "+getCurrentItem());
+        int height = 0;
+        if(isNeedMeasure){
+            View child = getChildAt(getCurrentItem());
+            if(child != null){
+                child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+                int h = child.getMeasuredHeight();
+                if (h > height)height = h;
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+            }
+        }
+        for (int i = 0; i < getChildCount(); i++) {
+//
+//            View child = getChildAt(i);
+//            child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+//            int h = child.getMeasuredHeight();
+//            if (h > height)height = h;
+        }
+
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    public void setNeedMeasure(boolean needMeasure) {
+        isNeedMeasure = needMeasure;
+    }
+
     /**
      * 1.dispatchTouchEvent一般情况不做处理
      *,如果修改了默认的返回值,子孩子都无法收到事件

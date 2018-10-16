@@ -3,12 +3,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-
+    <!--公共颜色  start-->
     <color name="white">#ffffff</color><!--白色-->
     <color name="black">#000000</color><!--黑色-->
 
     <color name="main_bg_color">#FAFAFC</color><!--主体背景颜色-->
     <color name="lucency">#00ffffff</color><!--透明-->
+    <color name="line">#DBE2EA</color><!--分割线颜色-->
+
+    <!--公共颜色  end-->
 
     <color name="tree_item_border">#DBE2EA</color><!--边框颜色-->
     <color name="main_title_color">#333333</color><!--主要标题颜色-->
@@ -29,5 +32,8 @@
     <color name="vip_btn_bg">#1AB09B76</color><!--超级会员按钮背景颜色-->
 	<color name="menu_floating_bg">#30000000</color> <!--菜单浮窗背景 -->
 	<color name="mine_super_vip_bg">#FFD753</color>
-	<color name="line">#DBE2EA</color><!--分割线颜色-->
+
+    <color name="btn_column_menu">#C0C6D6</color><!--专栏页  菜单按钮未选择颜色-->
+    <color name="btn_column_menu_valid">#1E59F6</color><!--专栏页  菜单按钮选择颜色-->
+
 </resources>

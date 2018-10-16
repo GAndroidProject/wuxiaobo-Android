@@ -40,4 +40,7 @@
     <string name="learning_tab_more">查看全部</string>
 
     <string name="setting_title">个人资料</string>
+
+    <string name="column_detail">课程简介</string>
+    <string name="column_directory">课程大纲</string>
 </resources>
