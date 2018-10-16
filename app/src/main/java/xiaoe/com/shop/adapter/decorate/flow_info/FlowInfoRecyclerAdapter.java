@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -22,6 +21,7 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.course.ui.CourseItemActivity;
+import xiaoe.com.shop.business.video.ui.VideoActivity;
 
 public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -98,7 +98,9 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 });
                 return new FlowInfoAudioViewHolder(view);
             case DecorateEntityType.FLOW_INFO_VIDEO: // 视频
+                final String videoImageUrl = currentItem.getItemImg();
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_video, null);
+                final View videoBG = view.findViewById(R.id.flow_info_video_bg);
                 view.setLayoutParams(layoutParams);
                 if (currentItem.isItemHasBuy()) {
                     view.findViewById(R.id.flow_info_video_price).setVisibility(View.GONE);
@@ -106,8 +108,12 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO: 视频页面跳转
-                        Toast.makeText(mContext, "点击视频组件...", Toast.LENGTH_SHORT).show();
+                        ActivityOptions options =
+                                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+                                        Pair.create(videoBG, "share_video_preview"));
+                        Intent videoIntent = new Intent(mContext, VideoActivity.class);
+                        videoIntent.putExtra("videoImageUrl", videoImageUrl);
+                        mContext.startActivity(videoIntent, options.toBundle());
                     }
                 });
                 return new FlowInfoVideoViewHolder(view);

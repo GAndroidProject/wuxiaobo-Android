@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/video_layout"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <SurfaceView
+        android:id="@+id/id_video_surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/id_preview_img"
+        fresco:actualImageScaleType="focusCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:transitionName="share_video_preview" />
+    <RelativeLayout
+        android:id="@+id/play_controller_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/id_come_back_control"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/black_down_gradual_change">
+
+            <ImageView
+                android:id="@+id/id_btn_come_back"
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:src="@mipmap/detail_white_back" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/id_play_progress_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            >
+            <ImageView
+                android:id="@+id/id_video_progress_play"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:padding="5dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/btn_video_pause" />
+
+            <TextView
+                android:id="@+id/id_current_play_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/id_video_progress_play"
+                android:text="00:00"
+                android:textColor="@color/audio_page_bg_color"
+                android:textSize="12sp" />
+
+
+            <SeekBar
+                android:id="@+id/id_play_seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/id_total_play_time"
+                android:layout_toEndOf="@+id/id_current_play_time"
+                android:maxHeight="2dp"
+                style="@style/video_play_seek_bar_style" />
+
+            <TextView
+                android:id="@+id/id_total_play_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@+id/id_full_screen_play"
+                android:text="00:00"
+                android:textColor="@color/audio_page_bg_color"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/id_full_screen_play"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:padding="5dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:clickable="true"
+                android:src="@mipmap/btn_fullscreen" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/id_btn_playVideo"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/icon_play_video_loading" />
+
+</RelativeLayout>

@@ -25,6 +25,12 @@
         <activity
             android:name=".business.course.ui.CourseItemActivity"/>
         <activity android:name=".business.audio.ui.AudioActivity"/>
+        <activity android:name=".business.video.ui.VideoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            />
+
         <service android:name=".business.audio.presenter.AudioMediaPlayer"/>
     </application>
 
