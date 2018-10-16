@@ -1,12 +1,14 @@
 package xiaoe.com.shop.business.mine.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -21,11 +23,13 @@ import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
-import xiaoe.com.shop.business.main.presenter.MinePresenter;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
+import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
+import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
+import xiaoe.com.shop.business.setting.ui.SettingActivity;
 
-public class MineFragment extends BaseFragment implements View.OnClickListener {
+public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private static final String TAG = "MineFragment";
 
@@ -39,7 +43,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.mine_vip_view)
     MineVipCard mineVipCard;
     @BindView(R.id.mine_money_view)
-    MineMoneyWrap mineMoneyWrap;
+    MineMoneyWrapView mineMoneyWrapView;
+    @BindView(R.id.mine_learning_view)
+    MineLearningWrapView mineLearningWrapView;
 
     @Nullable
     @Override
@@ -75,14 +81,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             int top = Dp2Px2SpUtil.dp2px(getActivity(), 16);
             int right = Dp2Px2SpUtil.dp2px(getActivity(), 20);
             layoutParams.setMargins(left,top,right,0);
-            mineMoneyWrap.setLayoutParams(layoutParams);
+            mineMoneyWrapView.setLayoutParams(layoutParams);
         } else if (mineVipCard.getVisibility() == View.GONE) { // 超级会员卡片不存在
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             int left = Dp2Px2SpUtil.dp2px(getActivity(), 20);
             int top = Dp2Px2SpUtil.dp2px(getActivity(), -36);
             int right = Dp2Px2SpUtil.dp2px(getActivity(), 20);
             layoutParams.setMargins(left, top, right ,0);
-            mineMoneyWrap.setLayoutParams(layoutParams);
+            mineMoneyWrapView.setLayoutParams(layoutParams);
         }
         // 金钱容器假数据
         List<MineMoneyItemInfo> itemInfoList = new ArrayList<>();
@@ -95,7 +101,17 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         itemInfoList.add(item_1);
         itemInfoList.add(item_2);
         MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(getActivity(), itemInfoList);
-        mineMoneyWrap.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
+        mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
+        // 我正在学假数据
+        // TODO: 根据是否登录显示正在学的 item
+        // mineLearningWrap.setLearningContainerVisibility(View.GONE);
+        mineLearningWrapView.setLearningIconURI("http://pic13.nipic.com/20110331/3032951_224550202000_2.jpg");
+        mineLearningWrapView.setLearningTitle("我的财富计划");
+        mineLearningWrapView.setLearningUpdate("已更新至07-22期");
+        // TODO: 如果没有登录或者登录了没有在学课程就需要将登录描述显示出来否则隐藏
+        mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
+        MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
+        mineLearningWrapView.setLearningListAdapter(learningListAdapter);
     }
 
     private void initListener() {
@@ -104,6 +120,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         mineMsgView.setBuyVipClickListener(this);
         mineVipCard.setBtnRenewalClickListener(this);
         mineVipCard.setMoreEquityClickListener(this);
+        if (mineLearningWrapView.getLearningContainerVisibility() == View.VISIBLE) { // 可见就设置点击事件
+            mineLearningWrapView.setLearningContainerClickListener(this);
+        }
+        mineLearningWrapView.setLearningMoreClickListener(this);
+        mineLearningWrapView.setLearningListItemClickListener(this);
+        mineVipCard.setCardContainerClickListener(this);
     }
 
     @Override
@@ -140,12 +162,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        Intent intent = null;
         switch (v.getId()) {
             case R.id.mine_title_msg:
                 Toast.makeText(getActivity(), "点击信息按钮", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.mine_title_setting:
-                Toast.makeText(getActivity(), "点击设置按钮", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), SettingActivity.class);
+                getActivity().startActivity(intent);
                 break;
             case R.id.title_buy_vip:
                 Toast.makeText(getActivity(), "成为超级会员", Toast.LENGTH_SHORT).show();
@@ -155,6 +179,38 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.card_renewal:
                 Toast.makeText(getActivity(), "点击续费按钮", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.learning_more:
+                Toast.makeText(getActivity(), "点击查看全部按钮", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.learning_item_container:
+                intent = new Intent(getActivity(), MineLearningActivity.class);
+                intent.putExtra("pageTitle", "我正在学");
+                getActivity().startActivity(intent);
+                break;
+            case R.id.card_container:
+                Toast.makeText(getActivity(), "超级会员卡片", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = null;
+        switch (position) {
+            case 0:
+                Toast.makeText(getActivity(), "我的任务", Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
+                intent = new Intent(getActivity(), MineLearningActivity.class);
+                intent.putExtra("pageTitle", "我的收藏");
+                getActivity().startActivity(intent);
+                break;
+            case 2:
+                Toast.makeText(getActivity(), "离线缓存", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                //TODO: 异常判断
                 break;
         }
     }

@@ -21,38 +21,35 @@ import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
 
-public class MineMoneyWrap extends FrameLayout {
+public class MineMoneyWrapView extends FrameLayout {
 
     private static final String TAG = "MineMoneyWrap";
 
     private Context mContext;
     private RecyclerView moneyRecycler;
 
-    public MineMoneyWrap(@NonNull Context context) {
+    public MineMoneyWrapView(@NonNull Context context) {
         super(context);
-        mContext = context;
         init(context);
     }
 
-    public MineMoneyWrap(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public MineMoneyWrapView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
         init(context);
     }
 
-    public MineMoneyWrap(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MineMoneyWrapView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContext = context;
         init(context);
     }
 
-    public MineMoneyWrap(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MineMoneyWrapView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mContext = context;
         init(context);
     }
 
     private void init(Context context) {
+        mContext = context;
         View view = View.inflate(context, R.layout.money_wrap, this);
         moneyRecycler = (RecyclerView) view.findViewById(R.id.mine_money_recycler);
     }

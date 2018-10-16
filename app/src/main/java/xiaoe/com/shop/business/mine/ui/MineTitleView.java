@@ -20,29 +20,26 @@ public class MineTitleView extends RelativeLayout {
 
     public MineTitleView(Context context) {
         super(context);
-        mContext = context;
         init(context);
     }
 
     public MineTitleView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
         init(context);
     }
 
     public MineTitleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContext = context;
         init(context);
     }
 
     public MineTitleView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mContext = context;
         init(context);
     }
 
     private void init(Context context) {
+        mContext = context;
         View view = View.inflate(context, R.layout.mine_title, this);
         titleMsg = (ImageView) view.findViewById(R.id.mine_title_msg);
         titleSetting = (ImageView) view.findViewById(R.id.mine_title_setting);

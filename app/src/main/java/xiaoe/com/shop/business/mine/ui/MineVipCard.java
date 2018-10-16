@@ -8,6 +8,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import xiaoe.com.common.utils.MeasureUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
 
@@ -23,6 +24,8 @@ public class MineVipCard extends RelativeLayout {
     private TextView card_deadline;
     // 权益列表
     private ListView card_equity_list;
+    // 容器
+    private RelativeLayout card_container;
 
     public MineVipCard(Context context) {
         super(context);
@@ -45,11 +48,13 @@ public class MineVipCard extends RelativeLayout {
     }
 
     private void init(Context context) {
+        mContext = context;
         View view = View.inflate(context, R.layout.mine_vip_card, this);
         card_renewal = (Button) view.findViewById(R.id.card_renewal);
         card_equity_more = (TextView) view.findViewById(R.id.card_equity_more);
         card_deadline = (TextView) view.findViewById(R.id.card_deadline);
         card_equity_list = (ListView) view.findViewById(R.id.card_equity_list);
+        card_container = (RelativeLayout) view.findViewById(R.id.card_container);
     }
 
     public void setBtnRenewalClickListener(OnClickListener listener) {
@@ -66,5 +71,10 @@ public class MineVipCard extends RelativeLayout {
 
     public void setEquityListAdapter(MineEquityListAdapter adapter) {
         card_equity_list.setAdapter(adapter);
+        MeasureUtil.setListViewHeightBasedOnChildren(card_equity_list);
+    }
+
+    public void setCardContainerClickListener(OnClickListener listener) {
+        card_container.setOnClickListener(listener);
     }
 }

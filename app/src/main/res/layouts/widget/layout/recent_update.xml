@@ -54,7 +54,10 @@
                     android:id="@+id/recent_update_sub_list"
                     android:layout_below="@id/ru_division_line"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:layerType="software"
+                    android:divider="@drawable/list_dotted_line"
+                    android:dividerHeight="30dp"/>
             </RelativeLayout>
 
             <com.facebook.drawee.view.SimpleDraweeView

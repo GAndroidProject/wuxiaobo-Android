@@ -28,6 +28,7 @@ import java.util.List;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
+import xiaoe.com.common.utils.MeasureUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.flow_info.FlowInfoRecyclerAdapter;
 import xiaoe.com.shop.adapter.decorate.flow_info.FlowInfoViewHolder;
@@ -161,7 +162,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 // 加载 ListView 的数据
                 RecentUpdateListAdapter adapter = new RecentUpdateListAdapter(mContext, currentComponent.getSubList());
                 recentUpdateViewHolder.recentUpdateListView.setAdapter(adapter);
-                setListViewHeightBasedOnChildren(recentUpdateViewHolder.recentUpdateListView);
+                MeasureUtil.setListViewHeightBasedOnChildren(recentUpdateViewHolder.recentUpdateListView);
                 break;
             case DecorateEntityType.KNOWLEDGE_COMMODITY:
                 switch (subType) {
@@ -169,7 +170,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         KnowledgeListViewHolder knowledgeListViewHolder = (KnowledgeListViewHolder) holder;
                         KnowledgeListAdapter knowledgeListAdapter = new KnowledgeListAdapter(mContext, currentComponent.getKnowledgeCommodityItemList());
                         knowledgeListViewHolder.knowledgeListView.setAdapter(knowledgeListAdapter);
-                        setListViewHeightBasedOnChildren(knowledgeListViewHolder.knowledgeListView);
+                        MeasureUtil.setListViewHeightBasedOnChildren(knowledgeListViewHolder.knowledgeListView);
                         break;
                     case DecorateEntityType.KNOWLEDGE_GROUP:
                         KnowledgeGroupViewHolder knowledgeGroupViewHolder = (KnowledgeGroupViewHolder) holder;
@@ -230,32 +231,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             default:
                 break;
         }
-    }
-
-    /**
-     * 根据 ListView 的子项计算高度
-     * @param recentUpdateSubList 需要计算的 ListView
-     */
-    private void setListViewHeightBasedOnChildren(ListView recentUpdateSubList) {
-        // 获取 ListView 对应的 Adapter
-        ListAdapter adapter = recentUpdateSubList.getAdapter();
-        if (adapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for(int i = 0, len = adapter.getCount(); i < len; i++) {
-            // 拿到每个 View
-            View listItem = adapter.getView(i, null, recentUpdateSubList);
-            // 计算宽高
-            listItem.measure(0, 0);
-            // 统计所有子项的总高度
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = recentUpdateSubList.getLayoutParams();
-        // listView.getDividerHeight()获取子项间分隔符占用的高度
-        // params.height最后得到整个ListView完整显示需要的高度
-        params.height = totalHeight + (recentUpdateSubList.getDividerHeight() * (adapter.getCount() - 1));
-        recentUpdateSubList.setLayoutParams(params);
     }
 
     @Override

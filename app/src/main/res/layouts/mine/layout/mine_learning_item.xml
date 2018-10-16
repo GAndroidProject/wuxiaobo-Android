@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/corners_bg_with_border">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/learning_item_icon"
+        android:layout_width="160dp"
+        android:layout_height="120dp"
+        fresco:roundedCornerRadius="8dp"
+        fresco:roundingBorderWidth="1dp"
+        fresco:roundBottomRight="false"
+        fresco:roundTopRight="false"
+        android:padding="1dp"/>
+
+    <TextView
+        android:id="@+id/learning_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/learning_item_icon"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="12dp"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <TextView
+        android:id="@+id/learning_item_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/learning_item_icon"
+        android:layout_marginStart="14dp"
+        android:layout_alignBottom="@id/learning_item_icon"
+        android:layout_marginBottom="14dp"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+</RelativeLayout>

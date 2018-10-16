@@ -22,29 +22,26 @@ public class MineMsgView extends RelativeLayout {
 
     public MineMsgView(Context context) {
         super(context);
-        mContext = context;
         init(context);
     }
 
     public MineMsgView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
         init(context);
     }
 
     public MineMsgView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContext = context;
         init(context);
     }
 
     public MineMsgView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        mContext = context;
         init(context);
     }
 
     private void init(Context context) {
+        mContext = context;
         View view = View.inflate(context, R.layout.mine_msg, this);
         title_nickname = (TextView) view.findViewById(R.id.title_nickname);
         title_avatar = (SimpleDraweeView) view.findViewById(R.id.title_avatar);
