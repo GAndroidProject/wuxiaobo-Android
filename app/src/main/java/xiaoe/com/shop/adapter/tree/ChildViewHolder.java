@@ -30,7 +30,7 @@ public class ChildViewHolder extends BaseViewHolder {
 	public ChildViewHolder(Context context, View itemView) {
 		super(itemView);
 		text = (TextView) itemView.findViewById(R.id.text);
-		relativeLayout = (RelativeLayout) itemView.findViewById(R.id.container);
+		relativeLayout = (RelativeLayout) itemView.findViewById(R.id.temp_container);
 	}
 
 	public void bindView(final ItemData itemData, int position) {

@@ -9,9 +9,16 @@ import xiaoe.com.network.requests.SettingRequest;
 public class SettingPresenter implements IBizCallback {
 
     private INetworkResponse inr;
+    private String cmd;
 
     public SettingPresenter(INetworkResponse inr) {
         this.inr = inr;
+        this.cmd = ""; // 默认接口
+    }
+
+    public SettingPresenter(String cmd, INetworkResponse inr) {
+        this.inr = inr;
+        this.cmd = cmd;
     }
 
     @Override
@@ -20,7 +27,7 @@ public class SettingPresenter implements IBizCallback {
     }
 
     public void requestData() {
-        SettingRequest settingRequest = new SettingRequest("", null, this);
+        SettingRequest settingRequest = new SettingRequest(cmd, null, this);
         settingRequest.addRequestParam("add_id", "12345");
         NetworkEngine.getInstance().sendRequest(settingRequest);
     }

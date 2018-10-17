@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/audio_page_bg_color"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_collapseMode="pin">
+
+        <ImageView
+            android:id="@+id/person_edit_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="ContentDescription"
+            android:src="@mipmap/download_back"/>
+
+        <TextView
+            android:id="@+id/person_edit_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_person_title"
+            android:textSize="18sp"
+            android:textColor="@color/main_title_color"
+            android:layout_gravity="center_horizontal"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <EditText
+        android:id="@+id/person_edit_content"
+        android:labelFor="@id/person_edit_content"
+        android:layout_width="match_parent"
+        android:inputType="text"
+        android:layout_height="56dp"
+        android:textSize="16sp"
+        android:textColor="@color/main_title_color"
+        android:layout_marginTop="8dp"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:paddingStart="22dp"
+        android:paddingEnd="22dp"/>
+
+    <Button
+        android:id="@+id/person_edit_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:background="@drawable/person_submit_bg"
+        android:text="@string/setting_submit"
+        android:textColor="@color/white"
+        android:textSize="16sp"/>
+</LinearLayout>

@@ -54,6 +54,10 @@ public class MineMsgView extends RelativeLayout {
         }
     }
 
+    public void setAvatarClickListener(OnClickListener listener) {
+        title_avatar.setOnClickListener(listener);
+    }
+
     public void setNickName(String nickName) {
         if (title_nickname != null) {
             title_nickname.setText(nickName);

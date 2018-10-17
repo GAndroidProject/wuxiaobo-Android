@@ -36,4 +36,5 @@
     <color name="btn_column_menu">#C0C6D6</color><!--专栏页  菜单按钮未选择颜色-->
     <color name="btn_column_menu_valid">#1E59F6</color><!--专栏页  菜单按钮选择颜色-->
 
+    <color name="btn_account_logout">#E26969</color><!-- 退出登录按钮背景颜色 -->
 </resources>

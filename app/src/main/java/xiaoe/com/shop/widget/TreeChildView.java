@@ -16,7 +16,7 @@ public class TreeChildView extends RelativeLayout {
     public TreeChildView(Context context) {
         super(context);
         View rootView = View.inflate(context, R.layout.item_recycler_tree_child, this);
-        RelativeLayout container = (RelativeLayout) rootView.findViewById(R.id.container);
+        RelativeLayout container = (RelativeLayout) rootView.findViewById(R.id.temp_container);
         LayoutParams layoutParams = (LayoutParams) container.getLayoutParams();
         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;

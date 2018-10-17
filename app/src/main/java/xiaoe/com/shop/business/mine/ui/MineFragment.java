@@ -27,7 +27,8 @@ import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
-import xiaoe.com.shop.business.setting.ui.SettingActivity;
+import xiaoe.com.shop.business.setting.ui.SettingAccountActivity;
+import xiaoe.com.shop.business.setting.ui.SettingPersonActivity;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -118,6 +119,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mineTitleView.setMsgClickListener(this);
         mineTitleView.setSettingListener(this);
         mineMsgView.setBuyVipClickListener(this);
+        mineMsgView.setAvatarClickListener(this);
         mineVipCard.setBtnRenewalClickListener(this);
         mineVipCard.setMoreEquityClickListener(this);
         if (mineLearningWrapView.getLearningContainerVisibility() == View.VISIBLE) { // 可见就设置点击事件
@@ -168,7 +170,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 Toast.makeText(getActivity(), "点击信息按钮", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.mine_title_setting:
-                intent = new Intent(getActivity(), SettingActivity.class);
+                intent = new Intent(getActivity(), SettingAccountActivity.class);
+                getActivity().startActivity(intent);
+                break;
+            case R.id.title_avatar:
+                intent = new Intent(getActivity(), SettingPersonActivity.class);
+                intent.putExtra("avatar", "http://pic13.nipic.com/20110331/3032951_224550202000_2.jpg");
                 getActivity().startActivity(intent);
                 break;
             case R.id.title_buy_vip:

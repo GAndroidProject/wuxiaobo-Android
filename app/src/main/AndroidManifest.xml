@@ -33,7 +33,9 @@
         <activity android:name=".business.column.ui.ColumnActivity"/>
         <service android:name=".business.audio.presenter.AudioMediaPlayer"/>
         <activity android:name=".business.mine_learning.ui.MineLearningActivity"/>
-        <activity android:name=".business.setting.ui.SettingActivity"/>
+        <activity android:name=".business.setting.ui.SettingPersonActivity"/>
+        <activity android:name=".business.setting.ui.SettingPersonItemActivity"/>
+        <activity android:name=".business.setting.ui.SettingAccountActivity"/>
     </application>
 
 </manifest>

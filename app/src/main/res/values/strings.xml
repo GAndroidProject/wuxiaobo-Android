@@ -39,7 +39,10 @@
     <string name="learning_tab_title">我正在学</string>
     <string name="learning_tab_more">查看全部</string>
 
-    <string name="setting_title">个人资料</string>
+    <string name="setting_account_title">设置</string>
+    <string name="setting_person_title">个人资料</string>
+    <string name="setting_submit">保存</string>
+    <string name="setting_logout">退出登录</string>
 
     <string name="column_detail">课程简介</string>
     <string name="column_directory">课程大纲</string>
