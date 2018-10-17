@@ -56,7 +56,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final KnowledgeHolder viewHolder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.knowledge_commodity_list_item, parent, false);
@@ -86,6 +86,8 @@ public class KnowledgeListAdapter extends BaseAdapter {
             public void onClick(View v) {
             Toast.makeText(mContext, "点击item..", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(mContext, ColumnActivity.class);
+                boolean isBigColumn = position % 2 == 0 ? true : false;
+                intent.putExtra("isBigColumn", isBigColumn);
                 mContext.startActivity(intent);
             }
         });

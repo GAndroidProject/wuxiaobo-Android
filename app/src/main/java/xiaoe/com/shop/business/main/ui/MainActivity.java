@@ -4,22 +4,23 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import xiaoe.com.common.app.Global;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
 import xiaoe.com.shop.utils.StatusBarUtil;
-import xiaoe.com.shop.widget.BottomBarButton;
 import xiaoe.com.shop.widget.BottomTabBar;
 import xiaoe.com.shop.widget.ScrollViewPager;
 
@@ -55,16 +56,28 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         bottomTabBar.setBottomTabBarOrientation(LinearLayout.HORIZONTAL);
         bottomTabBar.setTabBarWeightSum(3);
         bottomTabBar.setBottomTabSelectListener(this);
-        for (int i = 0; i < 3; i++){
-            BottomBarButton radioButton = new BottomBarButton(this);
-            radioButton.setButtonText("按钮"+(i + 1));
-            bottomTabBar.addTabButton(radioButton.getTabButton());
-        }
+        List<String> buttonNames = new ArrayList<String>();
+        buttonNames.add("今日");
+        buttonNames.add("课程");
+        buttonNames.add("我的");
+        List<Integer> buttonCheckedIcons = new ArrayList<Integer>();
+        buttonCheckedIcons.add(R.mipmap.today_selected);
+        buttonCheckedIcons.add(R.mipmap.class_selected);
+        buttonCheckedIcons.add(R.mipmap.profile_selected);
+        List<Integer> buttonIcons = new ArrayList<Integer>();
+        buttonIcons.add(R.mipmap.today_default);
+        buttonIcons.add(R.mipmap.class_default);
+        buttonIcons.add(R.mipmap.profile_default);
+        bottomTabBar.addTabButton(3, buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
 
         mainViewPager = (ScrollViewPager) findViewById(R.id.main_view_pager);
-        mainViewPager.setScroll(true);
+        mainViewPager.setScroll(false);
         mainViewPager.setAdapter(new MainFragmentStatePagerAdapter(getSupportFragmentManager()));
         mainViewPager.setOffscreenPageLimit(3);
+
+        MiniAudioPlayControllerLayout miniAudioPlayController = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
+        setMiniAudioPlayController(miniAudioPlayController);
+        setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
     }
 
     @Override

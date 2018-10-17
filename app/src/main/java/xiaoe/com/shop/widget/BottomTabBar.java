@@ -5,20 +5,21 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.LinearLayout;
 
 import java.util.List;
 
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
 
-public class BottomTabBar extends FrameLayout {
+public class BottomTabBar extends FrameLayout implements View.OnClickListener {
     private String TAG = "BottomTabBar";
     private Context mContext;
     private View rootView;
-    private RadioGroup bottomTabBar;
+    private LinearLayout bottomTabBar;
+    private OnBottomTabSelectListener bottomTabSelectListener;
 
     public BottomTabBar(@NonNull Context context) {
         super(context);
@@ -34,22 +35,11 @@ public class BottomTabBar extends FrameLayout {
 
     private void initView(Context context) {
         rootView = View.inflate(context, R.layout.layout_bottom_tab_bar, this);
-        bottomTabBar = (RadioGroup) rootView.findViewById(R.id.bottom_tab_bar);
-
+        bottomTabBar = (LinearLayout) rootView.findViewById(R.id.bottom_tab_bar);
     }
+
     public void setBottomTabSelectListener(final OnBottomTabSelectListener listener){
-        bottomTabBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                for (int i = 0; i < group.getChildCount(); i++){
-                    RadioButton childView = (RadioButton) group.getChildAt(i);
-                    if(childView.getId() == checkedId){
-                        listener.onCheckedTab(i);
-                        break;
-                    }
-                }
-            }
-        });
+        this.bottomTabSelectListener = listener;
     }
     /**
      * 设置按钮的排布
@@ -67,30 +57,68 @@ public class BottomTabBar extends FrameLayout {
         bottomTabBar.setWeightSum(weightSum);
     }
 
-    /**
-     * 添加一个tab
-     * @param tab
-     */
-    public void addTabButton(View tab){
-        bottomTabBar.addView(tab);
-    }
+    public void addTabButtonIconByUrl(int count, List<String> buttonNames, List<String> buttonIcons){
 
-    /**
-     * 指定位置添加
-     * @param tab
-     * @param index
-     */
-    public void addTabButton(View tab, int index){
-        bottomTabBar.addView(tab,index);
     }
+    public void addTabButton(int count, List<String> buttonNames, List<Integer> buttonIcons, List<Integer> buttonCheckedIcons, int textColor, int textCheckedColor){
+        int[] ids = {R.id.bottom_bar_button_1,R.id.bottom_bar_button_2,R.id.bottom_bar_button_3,R.id.bottom_bar_button_4};
+        for (int i = 0; i < count; i++){
+            BottomBarButton bottomBarButton = new BottomBarButton(mContext);
 
-    /**
-     * 添加一组tab
-     * @param tabs
-     */
-    public void addTabButton(List<View> tabs){
-        for (int i = 0; i < tabs.size(); i++){
-            bottomTabBar.addView(tabs.get(i));
+            bottomBarButton.setId(ids[i]);
+            bottomBarButton.setButtonText(buttonNames.get(i));
+            bottomBarButton.setButtonNameColor(textColor,textCheckedColor);
+            bottomBarButton.setButtonImageResource(buttonIcons.get(i), buttonCheckedIcons.get(i));
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+            lp.weight = 1;
+            bottomBarButton.setLayoutParams(lp);
+            bottomBarButton.setOnClickListener(this);
+            if(i == 0){
+                bottomBarButton.setButtonChecked(true);
+            }else{
+                bottomBarButton.setButtonChecked(false);
+            }
+            bottomTabBar.addView(bottomBarButton);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.bottom_bar_button_1:
+                if(bottomTabSelectListener != null){
+                    setCheckedButton(0);
+                }
+                break;
+            case R.id.bottom_bar_button_2:
+                if(bottomTabSelectListener != null){
+                    setCheckedButton(1);
+                }
+                break;
+            case R.id.bottom_bar_button_3:
+                if(bottomTabSelectListener != null){
+                    setCheckedButton(2);
+                }
+                break;
+            case R.id.bottom_bar_button_4:
+                if(bottomTabSelectListener != null){
+                    setCheckedButton(3);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    private void setCheckedButton(int index){
+        for (int i = 0; i < bottomTabBar.getChildCount(); i++){
+            if(index == i){
+                continue;
+            }
+            BottomBarButton bottomBarButton = (BottomBarButton) bottomTabBar.getChildAt(i);
+            bottomBarButton.setButtonChecked(false);
+        }
+        BottomBarButton bottomBarButton = (BottomBarButton) bottomTabBar.getChildAt(index);
+        bottomBarButton.setButtonChecked(true);
+        bottomTabSelectListener.onCheckedTab(index);
     }
 }

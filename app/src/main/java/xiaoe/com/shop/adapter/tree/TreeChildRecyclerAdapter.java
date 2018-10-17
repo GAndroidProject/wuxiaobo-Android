@@ -57,20 +57,6 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 		return mDataSet.size();
 	}
 
-	private int getChildrenCount(ItemData item) {
-		List<ItemData> list = new ArrayList<ItemData>();
-		return list.size();
-	}
-
-	private void printChild(ItemData item, List<ItemData> list) {
-		list.add(item);
-		if (item.getChildren() != null) {
-			for (int i = 0; i < item.getChildren().size(); i++) {
-				printChild(item.getChildren().get(i), list);
-			}
-		}
-	}
-
 	/**
 	 * 从position开始删除，删除
 	 * 

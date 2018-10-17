@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ScrollView
+    <xiaoe.com.shop.widget.CustomScrollView
+        android:id="@+id/column_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/common_buy_layout"
@@ -130,7 +131,53 @@
                 />
         </RelativeLayout>
 
-    </ScrollView>
+    </xiaoe.com.shop.widget.CustomScrollView>
+    
+    <RelativeLayout
+        android:id="@+id/column_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        >
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="24dp"
+            android:src="@mipmap/detail_white_back"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:layout_toStartOf="@id/btn_tool_bar_collect"
+            android:layout_toEndOf="@id/btn_back"
+            android:textColor="@color/main_title_color"
+            android:textSize="18sp"
+            />
+
+        <ImageView
+            android:id="@+id/btn_tool_bar_collect"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/video_collect"
+            android:layout_toStartOf="@+id/btn_tool_bar_share"
+            android:layout_marginStart="20dp"
+            />
+        <ImageView
+            android:id="@+id/btn_tool_bar_share"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/audio_share"
+            android:layout_alignParentEnd="true"
+            />
+    </RelativeLayout>
 
     <xiaoe.com.shop.widget.CommonBuyView
         android:id="@+id/common_buy_layout"

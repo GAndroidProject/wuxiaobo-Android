@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="66dp"
+    android:layout_alignParentBottom="true"
+    android:background="@drawable/mini_audio_play_controller_bg"
+    >
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/detail_bg_wave"
+        />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/detail_bg_wave"
+        />
+
+    <ImageView
+        android:id="@+id/id_audio_mini_close"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:paddingStart="12dp"
+        android:paddingEnd="7dp"
+        android:scaleType="centerInside"
+        android:src="@mipmap/audiolist_cancle" />
+
+    <RelativeLayout
+        android:id="@+id/id_btn_play_state"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <ImageView
+            android:id="@+id/id_img_state"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:scaleType="center"
+            android:src="@mipmap/audiolist_play" />
+        <xiaoe.com.shop.widget.TasksCompletedView
+            android:id="@+id/id_audio_play_progress"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_centerInParent="true"
+            app:radius="14dp"
+            app:strokeWidth="2dp"
+            app:ringColor="@color/white"
+            />
+        <!--<com.xiaoe_tech.at_ten.widget.TasksCompletedView-->
+            <!--android:id="@+id/id_audio_play_progress"-->
+            <!--widget:radius="14dp"-->
+            <!--widget:ringColor="@color/white"-->
+            <!--widget:strokeWidth="2dp"-->
+            <!--android:layout_width="33dp"-->
+            <!--android:layout_height="33dp"-->
+            <!--android:layout_centerInParent="true" />-->
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/id_audio_disk"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@id/id_audio_mini_close"
+        android:src="@mipmap/detail_disk"
+        />
+    <RelativeLayout
+        android:id="@+id/id_audio_img_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/id_btn_play_state"
+        android:layout_toEndOf="@id/id_audio_disk">
+
+        <ImageView
+            android:id="@+id/mini_swipe_up"
+            android:layout_width="20dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/audiolist_swipeup"
+            />
+
+        <TextView
+            android:id="@+id/id_audio_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mini_swipe_up"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:text="dddd"
+            />
+
+        <TextView
+            android:id="@+id/id_audio_summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_audio_title"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:text="88888"/>
+    </RelativeLayout>
+</RelativeLayout>

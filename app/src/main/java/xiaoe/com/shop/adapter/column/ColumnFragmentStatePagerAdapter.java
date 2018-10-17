@@ -10,6 +10,7 @@ import java.util.List;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.column.ui.ColumnDetailFragment;
 import xiaoe.com.shop.business.column.ui.ColumnDirectoryFragment;
+import xiaoe.com.shop.business.column.ui.LittleColumnDirectoryFragment;
 
 /**
  * Created by Administrator on 2017/7/17.
@@ -18,12 +19,19 @@ import xiaoe.com.shop.business.column.ui.ColumnDirectoryFragment;
 public class ColumnFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     private final String TAG = "ColumnStatePagerAdapter";
     private List<BaseFragment> list = new ArrayList<BaseFragment>();
-    public ColumnFragmentStatePagerAdapter(FragmentManager fm) {
+    public ColumnFragmentStatePagerAdapter(FragmentManager fm, boolean bigColumn) {
         super(fm);
+
         ColumnDetailFragment columnDetailFragment = new ColumnDetailFragment();
-        ColumnDirectoryFragment columnDirectoryFragment = new ColumnDirectoryFragment();
         list.add(columnDetailFragment);
-        list.add(columnDirectoryFragment);
+        if(bigColumn){
+            ColumnDirectoryFragment columnDirectoryFragment = new ColumnDirectoryFragment();
+            list.add(columnDirectoryFragment);
+        }else{
+            LittleColumnDirectoryFragment littleColumnDirectoryFragment = new LittleColumnDirectoryFragment();
+            list.add(littleColumnDirectoryFragment);
+        }
+
     }
 
     @Override

@@ -46,4 +46,7 @@
 
     <string name="column_detail">课程简介</string>
     <string name="column_directory">课程大纲</string>
+
+    <string name="batch_download_text">批量下载</string>
+    <string name="all_play_text">批量下载</string>
 </resources>

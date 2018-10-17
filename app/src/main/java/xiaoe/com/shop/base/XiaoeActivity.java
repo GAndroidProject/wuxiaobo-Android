@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
@@ -27,6 +28,8 @@ import xiaoe.com.common.app.Global;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.anim.TranslationAnimator;
+import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 
 /**
  * Created by Administrator on 2017/7/17.
@@ -39,6 +42,9 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private static PopupWindow popupWindow;
     private static Toast toast;
     private TextView mToastText;
+    private int miniPlayerAnimHeight = 0;//音频迷你播放器动画滑动的高度
+    private int actionDownY = 0;//手指按下屏幕Y轴坐标
+    private MiniAudioPlayControllerLayout miniAudioPlayController;//音频迷你播放器
 //    private Handler mHandler = new Handler(){
 //        @Override
 //        public void handleMessage(Message msg) {
@@ -137,6 +143,33 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         }
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        if (AudioMediaPlayer.isPlaying()) {
+        if (true && miniAudioPlayController != null) {
+            int action = ev.getAction();
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    actionDownY = (int) ev.getY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (actionDownY - ev.getY() < -5) {
+                        TranslationAnimator.getInstance()
+                                .setAnimator(miniAudioPlayController)
+                                .brak(miniPlayerAnimHeight);
+                    } else if(actionDownY - ev.getY() > 5) {
+                        TranslationAnimator.getInstance()
+                                .setAnimator(miniAudioPlayController)
+                                .remove(miniPlayerAnimHeight);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
     /**
      * 在弹出对话框时，显示popupWindow，则popupWindow会在对话框下面（被对话框盖住）
      * 是方法是让popupWindow显示在对话上面
@@ -178,5 +211,13 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         if(Build.VERSION.SDK_INT > 22 && permission.length > 0){
             ActivityCompat.requestPermissions(this,permission,1);
         }
+    }
+
+    public void setMiniPlayerAnimHeight(int miniPlayerAnimHeight) {
+        this.miniPlayerAnimHeight = miniPlayerAnimHeight;
+    }
+
+    public void setMiniAudioPlayController(MiniAudioPlayControllerLayout miniAudioPlayController) {
+        this.miniAudioPlayController = miniAudioPlayController;
     }
 }
