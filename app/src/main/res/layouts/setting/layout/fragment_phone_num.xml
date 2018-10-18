@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/phone_num_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setting_phone_num_title"
+        android:textColor="@color/secondary_title_color"
+        android:textSize="16sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"/>
+
+    <xiaoe.com.shop.widget.CodeVerifyView
+        android:id="@+id/phone_num_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:cv_inputType="number"
+        app:cv_number="4"
+        app:cv_text_color="@android:color/black"
+        app:cv_text_size="16sp"
+        app:cv_width="48dp"
+        app:cv_height="56dp"/>
+
+    <TextView
+        android:id="@+id/phone_num_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/secondary_title_color"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white"/>
+
+</LinearLayout>

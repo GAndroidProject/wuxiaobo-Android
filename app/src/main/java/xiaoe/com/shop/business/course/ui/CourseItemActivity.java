@@ -177,7 +177,7 @@ public class CourseItemActivity extends XiaoeActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == 0) {
+            if (msg.what == 0 && msg.obj != null) {
                 ((CourseItemActivity) weakReference.get()).itemOrgContent.setText((CharSequence) msg.obj);
                 ((CourseItemActivity) weakReference.get()).itemOrgContent.setClickable(true);
                 ((CourseItemActivity) weakReference.get()).itemOrgContent.setMovementMethod(LinkMovementMethod.getInstance());

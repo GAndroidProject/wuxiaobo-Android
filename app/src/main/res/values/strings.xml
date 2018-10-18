@@ -43,6 +43,21 @@
     <string name="setting_person_title">个人资料</string>
     <string name="setting_submit">保存</string>
     <string name="setting_logout">退出登录</string>
+    <string name="setting_msg_title">接受新消息通知</string>
+    <string name="setting_msg_content">开启后，可及时接受到定于课程的更新通知和活动消息</string>
+    <string name="setting_suggestion_hint">输入您的问题和意见</string>
+    <string name="setting_suggestion_num_default">0 / 1000</string><!-- 默认显示 -->
+    <string name="setting_suggestion_num">%1$d / 1000</string> <!-- 第一个参数为数字 -->
+    <string name="setting_phone_head">当前手机号</string>
+    <string name="setting_phone_submit">通过短信验证码验证</string>
+    <string name="setting_phone_desc">更换手机号不会影响账户余额和已购产品</string>
+    <string name="setting_pwd_set_now">请输入现有密码</string>
+    <string name="setting_pwd_set_btn">下一步</string>
+    <string name="setting_pwd_set_phone">通过短信验证码验证</string>
+    <string name="setting_pwd_limit">密码长度6–12位</string>
+    <string name="setting_pwd_new_submit">完成修改</string>
+    <string name="setting_phone_num_title">已向 %1$s 发送验证码</string> <!-- 第一个参数为字符串 -->
+    <string name="setting_phone_num_desc">重新获取（%1$ds）</string><!-- 第一个参数为数字 -->
 
     <string name="column_detail">课程简介</string>
     <string name="column_directory">课程大纲</string>

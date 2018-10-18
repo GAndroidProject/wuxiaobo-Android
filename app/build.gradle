@@ -61,4 +61,5 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     implementation 'com.youth.banner:banner:1.4.10'
+    implementation 'com.github.zcweng:switch-button:0.0.3@aar'
 }

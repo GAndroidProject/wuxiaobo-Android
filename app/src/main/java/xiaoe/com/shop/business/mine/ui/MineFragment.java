@@ -23,6 +23,7 @@ import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
+import xiaoe.com.shop.business.course.ui.CourseItemActivity;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
@@ -188,11 +189,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 Toast.makeText(getActivity(), "点击续费按钮", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.learning_more:
-                Toast.makeText(getActivity(), "点击查看全部按钮", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.learning_item_container:
                 intent = new Intent(getActivity(), MineLearningActivity.class);
                 intent.putExtra("pageTitle", "我正在学");
+                getActivity().startActivity(intent);
+                break;
+            case R.id.learning_item_container:
+                // TODO: 根据不同类型跳转到对应的详情页
+                intent = new Intent(getActivity(), CourseItemActivity.class);
                 getActivity().startActivity(intent);
                 break;
             case R.id.card_container:
@@ -209,12 +212,18 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 Toast.makeText(getActivity(), "我的任务", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
+                Toast.makeText(getActivity(), "优惠券", Toast.LENGTH_SHORT).show();
+                break;
+            case 2:
                 intent = new Intent(getActivity(), MineLearningActivity.class);
                 intent.putExtra("pageTitle", "我的收藏");
                 getActivity().startActivity(intent);
                 break;
-            case 2:
+            case 3:
                 Toast.makeText(getActivity(), "离线缓存", Toast.LENGTH_SHORT).show();
+                break;
+            case 4:
+                Toast.makeText(getActivity(), "兑换码", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 //TODO: 异常判断

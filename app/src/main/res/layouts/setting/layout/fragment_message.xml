@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/audio_page_bg_color">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_msg_title"
+            android:textSize="16sp"
+            android:textColor="@color/main_title_color"
+            android:layout_gravity="start|center"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
+
+
+        <com.suke.widget.SwitchButton
+            android:id="@+id/message_switch"
+            android:layout_width="52dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|center"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            app:sb_show_indicator="false"
+            app:sb_checked_color="@color/recent_update_btn_pressed"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setting_msg_content"
+        android:textSize="12sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

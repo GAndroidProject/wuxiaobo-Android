@@ -106,14 +106,14 @@ public class LinearDividerDecoration extends RecyclerView.ItemDecoration {
         final int right = parent.getWidth() - parent.getPaddingRight();
         final int childCount = parent.getChildCount();
         // 因为采用了空处理，所以最后两个 item 都不画分割线
-        for (int i = 0; i < childCount - 2; i++) {
+        for (int i = 0; i < childCount - 1; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
             final int top = child.getBottom() + params.bottomMargin;
             final int bottom = top + mDivider.getIntrinsicHeight();
             if (inset > 0) {
                 // 第五个元素需要一个 margin，不画线
-                if (i == 4) {
+                if (parent.getChildAdapterPosition(child) == 4) {
                     continue;
                 } else {
                     c.drawRect(left, top, right, bottom, paint);

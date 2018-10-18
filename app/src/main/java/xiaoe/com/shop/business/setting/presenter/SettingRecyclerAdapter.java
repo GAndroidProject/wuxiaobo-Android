@@ -3,6 +3,7 @@ package xiaoe.com.shop.business.setting.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,19 +32,11 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
     private int currentPos;
     private SettingItemInfo currentItem;
     private OnItemClickListener onItemClickListener;
-    private boolean needBottomMargin = true;
 
     // 默认会有底部 margin
     public SettingRecyclerAdapter(Context context, List<SettingItemInfo> itemList) {
         this.mContext = context;
         this.itemList = itemList;
-    }
-
-    // 是否需要隐藏底部的 margin
-    public SettingRecyclerAdapter(Context context, List<SettingItemInfo> itemList, boolean needBottomMargin) {
-        this.mContext = context;
-        this.itemList = itemList;
-        this.needBottomMargin = needBottomMargin;
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -59,19 +52,27 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(BaseViewHolder holder, final int position) {
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
         SettingItemViewHolder viewHolder = (SettingItemViewHolder) holder;
+        final int tempPos = viewHolder.getAdapterPosition();
         if (position == itemList.size()) { // 最后一个空项，什么都不显示
             viewHolder.itemContainer.setVisibility(View.GONE);
             return;
         } else {
             currentItem = itemList.get(currentPos);
         }
-        if (currentPos == 0) { // 是头像
-            viewHolder.itemIcon.setVisibility(View.VISIBLE);
-            viewHolder.itemContent.setVisibility(View.GONE);
-            viewHolder.itemTitle.setText(currentItem.getItemTitle());
-            viewHolder.itemIcon.setImageURI(currentItem.getItemIcon());
+        if (currentPos == 0) { // 是头像，约定如果有 title 会优先显示 title
+            if (TextUtils.isEmpty(currentItem.getItemTitle())) {
+                viewHolder.itemIcon.setVisibility(View.VISIBLE);
+                viewHolder.itemContent.setVisibility(View.GONE);
+                viewHolder.itemTitle.setText(currentItem.getItemTitle());
+                viewHolder.itemIcon.setImageURI(currentItem.getItemIcon());
+            } else {
+                viewHolder.itemIcon.setVisibility(View.GONE);
+                viewHolder.itemContent.setVisibility(View.VISIBLE);
+                viewHolder.itemTitle.setText(currentItem.getItemTitle());
+                viewHolder.itemContent.setText(currentItem.getItemContent());
+            }
         } else {
             itemList.size(); // 其他内容
             viewHolder.itemIcon.setVisibility(View.GONE);
@@ -79,12 +80,12 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
             viewHolder.itemTitle.setText(currentItem.getItemTitle());
             viewHolder.itemContent.setText(currentItem.getItemContent());
         }
-        if (currentPos != itemList.size()) { // 除去最后一个外其他都添加点击事件
+        if (currentPos != itemList.size()) {
             viewHolder.itemContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (onItemClickListener != null) {
-                        onItemClickListener.onItemClick(v, position);
+                        onItemClickListener.onItemClick(v, tempPos);
                     }
                 }
             });
@@ -93,11 +94,7 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
     @Override
     public int getItemCount() {
-        if (needBottomMargin) {
-            return itemList == null ? 0 : itemList.size() + 1;
-        } else {
-            return itemList == null ? 0 : itemList.size();
-        }
+        return itemList == null ? 0 : itemList.size();
     }
 
     @Override

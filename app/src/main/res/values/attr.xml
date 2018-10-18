@@ -20,4 +20,30 @@
         <attr name="circleColor" format="color"/>
         <attr name="ringColor" format="color"/>
     </declare-styleable>
+
+    <!-- 自定义验证码输入框-->
+    <declare-styleable name="CodeVerifyView">
+
+        <!--输入框的数量-->
+        <attr name="cv_number" format="integer" />
+        <!--输入类型-->
+        <attr name="cv_inputType">
+            <enum name="number" value="0" />
+            <enum name="numberPassword" value="1" />
+            <enum name="text" value="2" />
+            <enum name="textPassword" value="3" />
+        </attr>
+        <!--输入框的宽度-->
+        <attr name="cv_width" format="dimension|reference" />
+        <!-- 输入框的高度 -->
+        <attr name="cv_height" format="dimension|reference" />
+        <!--输入框文字颜色-->
+        <attr name="cv_text_color" format="color|reference" />
+        <!--输入框文字大小-->
+        <attr name="cv_text_size" format="dimension|reference" />
+        <!--输入框背景-->
+        <attr name="cv_bg" format="reference" />
+        <!--光标样式-->
+        <attr name="cv_cursor" format="reference" />
+    </declare-styleable>
 </resources>
