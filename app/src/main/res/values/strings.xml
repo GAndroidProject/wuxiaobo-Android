@@ -57,11 +57,36 @@
     <string name="setting_pwd_limit">密码长度6–12位</string>
     <string name="setting_pwd_new_submit">完成修改</string>
     <string name="setting_phone_num_title">已向 %1$s 发送验证码</string> <!-- 第一个参数为字符串 -->
-    <string name="setting_phone_num_desc">重新获取（%1$ds）</string><!-- 第一个参数为数字 -->
+    <string name="setting_phone_num_desc">重新获取（%1$ds）</string><!-- 第一个参数为数字，s 为秒 -->
 
     <string name="column_detail">课程简介</string>
     <string name="column_directory">课程大纲</string>
 
     <string name="batch_download_text">批量下载</string>
     <string name="all_play_text">批量下载</string>
+
+    <string name="login_register_title">注册</string>
+    <string name="login_main_title">登录</string>
+    <string name="login_main_phone_head">+86</string>
+    <string name="login_main_phone_content_hint">请输入手机号</string>
+    <string name="login_main_phone_submit">获取验证码</string>
+    <string name="login_main_phone_pwd">账号密码登录</string>
+    <string name="login_main_phone_we_chat">微信登录</string>
+    <string name="login_main_phone_tourist">游客登录</string>
+    <string name="login_register_desc">注册即表示您已阅读并同意</string>
+    <string name="login_register_desc_content">服务条款</string>
+    <string name="login_code_title">输入验证码</string>
+    <string name="login_code_desc">已向 %1$s 发送验证码</string><!-- 第一个参数为数字 -->
+    <string name="login_code_desc_title">重新获取</string>
+    <string name="login_code_desc_content">(%1$ds)</string> <!-- 第一个参数为数字 -->
+    <string name="login_pwd_title">密码登录</string>
+    <string name="login_pwd_pass_word">请输入密码</string>
+    <string name="login_pwd_forget">忘记密码</string>
+    <string name="login_pwd_error">手机号格式错误，请重新输入</string>
+    <string name="login_pwd_find">找回密码</string>
+    <string name="login_set_pwd_title">设置新密码</string>
+    <string name="login_set_pwd_complete">完成</string>
+    <string name="login_we_chat_title">绑定微信</string>
+    <string name="login_we_chat_desc">绑定微信号，同步微信课程</string>
+    <string name="login_we_chat_submit">去绑定</string>
 </resources>

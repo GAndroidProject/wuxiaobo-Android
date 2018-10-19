@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_pwd_title"
+        android:textSize="32sp"
+        android:textColor="@color/main_title_color"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"/>
+
+    <include
+        layout="@layout/input_phone_num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"/>
+
+    <TextView
+        android:id="@+id/login_pwd_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_pwd_error"
+        android:textSize="14sp"
+        android:textColor="@color/login_error"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/login_pwd_pass_word"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:layout_marginTop="28dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:hint="@string/login_pwd_pass_word"
+        android:maxLength="12"
+        android:drawableEnd="@mipmap/icon_hide"/>
+
+    <Button
+        android:id="@+id/login_pwd_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_main_title"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:background="@drawable/submit_disabled_bg"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="28dp"
+        android:alpha="0.6"/>
+
+    <TextView
+        android:id="@+id/login_pwd_forget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_pwd_forget"
+        android:textSize="16sp"
+        android:textColor="@color/main_title_color"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="32dp"/>
+
+</LinearLayout>

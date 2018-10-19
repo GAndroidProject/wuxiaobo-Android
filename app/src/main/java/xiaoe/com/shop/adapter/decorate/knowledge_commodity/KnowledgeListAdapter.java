@@ -1,6 +1,5 @@
 package xiaoe.com.shop.adapter.decorate.knowledge_commodity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -27,12 +26,6 @@ public class KnowledgeListAdapter extends BaseAdapter {
     private List<KnowledgeCommodityItem> mItemList;
     private Context mContext;
     private LayoutInflater mInflater;
-
-    public KnowledgeListAdapter(Activity activity, List<KnowledgeCommodityItem> itemList) {
-        this.mContext = activity;
-        this.mItemList = itemList;
-        this.mInflater = LayoutInflater.from(mContext);
-    }
 
     public KnowledgeListAdapter(Context context, List<KnowledgeCommodityItem> itemList) {
         this.mContext = context;

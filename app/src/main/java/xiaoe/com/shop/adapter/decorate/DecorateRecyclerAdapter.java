@@ -46,6 +46,8 @@ import xiaoe.com.shop.adapter.decorate.search.SearchViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingFigureViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingImageLoader;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.business.main.ui.MainActivity;
+import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 
 /**
  * 店铺装修组件显示列表适配器
@@ -64,11 +66,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     public DecorateRecyclerAdapter(Context context, List<ComponentInfo> componentList) {
         this.mContext = context;
-        this.mComponentList = componentList;
-    }
-
-    public DecorateRecyclerAdapter(Activity activity, List<ComponentInfo> componentList) {
-        this.mContext = activity;
         this.mComponentList = componentList;
     }
 
@@ -147,6 +144,14 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 // recyclerView 取消滑动
                 flowInfoViewHolder.flowInfoRecycler.setNestedScrollingEnabled(false);
                 flowInfoViewHolder.flowInfoRecycler.setAdapter(flowInfoRecyclerAdapter);
+                flowInfoViewHolder.flowInfoLearnWrap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext, MineLearningActivity.class);
+                        intent.putExtra("pageTitle", "我正在学");
+                        mContext.startActivity(intent);
+                    }
+                });
                 break;
             case DecorateEntityType.RECENT_UPDATE:
                 RecentUpdateViewHolder recentUpdateViewHolder = (RecentUpdateViewHolder) holder;

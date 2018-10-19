@@ -33,6 +33,7 @@ android {
                     'src/main/res/layouts/setting',
                     'src/main/res/layouts/widget',
                     'src/main/res/layouts/tree',
+                    'src/main/res/layouts/login',
                     'src/main/res/layouts',
                     'src/main/res'
                 ]

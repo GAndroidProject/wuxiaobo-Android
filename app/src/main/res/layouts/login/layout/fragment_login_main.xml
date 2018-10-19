@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_main_title"
+        android:textSize="32sp"
+        android:textColor="@color/main_title_color"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"/>
+
+    <include
+        layout="@layout/input_phone_num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"/>
+
+    <TextView
+        android:id="@+id/login_pwd_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_pwd_error"
+        android:textSize="14sp"
+        android:textColor="@color/login_error"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/login_main_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/submit_disabled_bg"
+        android:text="@string/login_main_phone_submit"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:alpha="0.6"/>
+
+    <TextView
+        android:id="@+id/login_main_pwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_main_phone_pwd"
+        android:textSize="16sp"
+        android:textColor="@color/recent_list_color"
+        android:layout_gravity="end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="32dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="28dp"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/login_main_we_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_main_phone_we_chat"
+            android:textSize="16sp"
+            android:textColor="@color/recent_list_color"
+            android:layout_gravity="center"
+            android:layout_marginEnd="16dp"
+            android:drawableStart="@mipmap/confirmorder_wechat"
+            android:drawablePadding="8dp"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="12dp"
+            android:background="@color/recent_list_color"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/login_main_tourist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_main_phone_tourist"
+            android:textSize="16sp"
+            android:textColor="@color/recent_list_color"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:drawableStart="@mipmap/profile_default"
+            android:drawablePadding="8dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

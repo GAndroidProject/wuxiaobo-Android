@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_we_chat_title"
+        android:textSize="32sp"
+        android:textColor="@color/main_title_color"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_we_chat_desc"
+        android:textSize="14sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"/>
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="70dp"
+        android:src="@mipmap/share_wechat"
+        tools:ignore="ContentDescription" />
+
+    <Button
+        android:id="@+id/login_we_chat_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/login_we_chat_submit"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:background="@drawable/person_submit_bg"/>
+
+</LinearLayout>

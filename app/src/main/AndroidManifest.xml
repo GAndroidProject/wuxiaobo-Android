@@ -14,16 +14,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".business.main.ui.MainActivity">
+        <activity android:name=".business.login.ui.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".business.main.ui.MainActivity"/>
         <activity android:name=".test.TreeActivity"/>
-        <activity
-            android:name=".business.course.ui.CourseItemActivity"/>
+        <activity android:name=".business.course.ui.CourseItemActivity"/>
         <activity android:name=".business.audio.ui.AudioActivity"/>
         <activity android:name=".business.video.ui.VideoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"

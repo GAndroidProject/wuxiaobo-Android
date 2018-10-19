@@ -2,6 +2,7 @@ package xiaoe.com.shop.adapter.decorate.flow_info;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -13,6 +14,8 @@ import xiaoe.com.shop.base.BaseViewHolder;
 
 public class FlowInfoViewHolder extends BaseViewHolder {
 
+    @BindView(R.id.flow_info_head_learn)
+    public LinearLayout flowInfoLearnWrap;
     @BindView(R.id.flow_info_head_title)
     public TextView flowInfoTitle;
     @BindView(R.id.flow_info_head_desc)

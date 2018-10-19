@@ -42,4 +42,5 @@
 
     <color name="edit_cursor">#3B86FD</color><!-- 光标颜色 -->
 
+    <color name="login_error">#F6524E</color><!--登录异常颜色-->
 </resources>

@@ -30,12 +30,6 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
 
-    public RecentUpdateListAdapter(Activity mActivity, List<RecentUpdateListItem> itemList) {
-        this.mItemList = itemList;
-        this.mActivity = mActivity;
-        this.mInflater = LayoutInflater.from(mActivity);
-    }
-
     public RecentUpdateListAdapter(Context mContext, List<RecentUpdateListItem> itemList) {
         this.mItemList = itemList;
         this.mContext = mContext;

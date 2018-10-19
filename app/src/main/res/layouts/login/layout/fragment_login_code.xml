@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_code_title"
+        android:textSize="32sp"
+        android:textColor="@color/main_title_color"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"/>
+
+    <TextView
+        android:id="@+id/login_register_code_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_code_desc"
+        android:textSize="14sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"/>
+
+    <xiaoe.com.shop.widget.CodeVerifyView
+        android:id="@+id/login_register_code_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        app:cv_inputType="number"
+        app:cv_number="4"
+        app:cv_text_color="@android:color/black"
+        app:cv_text_size="16sp"
+        app:cv_width="48dp"
+        app:cv_height="56dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginStart="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/login_register_code_obtain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_code_desc_title"
+            android:textSize="16sp"
+            android:textColor="@color/edit_cursor"/>
+
+        <TextView
+            android:id="@+id/login_register_code_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_code_desc_content"
+            android:textSize="16sp"
+            android:textColor="@color/secondary_title_color"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</LinearLayout>

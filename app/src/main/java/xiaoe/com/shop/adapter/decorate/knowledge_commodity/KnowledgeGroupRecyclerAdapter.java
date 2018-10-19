@@ -33,11 +33,6 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
         this.mItemList = list;
     }
 
-    public KnowledgeGroupRecyclerAdapter(Activity activity, List<KnowledgeCommodityItem> list) {
-        this.mContext = activity;
-        this.mItemList = list;
-    }
-
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group_item, null);

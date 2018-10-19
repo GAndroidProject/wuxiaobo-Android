@@ -1,6 +1,5 @@
 package xiaoe.com.shop.adapter.decorate.graphic_navigation;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,11 +21,6 @@ public class GraphicNavRecyclerAdapter extends RecyclerView.Adapter<BaseViewHold
 
     public GraphicNavRecyclerAdapter(Context context, List<GraphicNavItem> itemList) {
         this.mContext = context;
-        this.mItemList = itemList;
-    }
-
-    public GraphicNavRecyclerAdapter(Activity activity, List<GraphicNavItem> itemList) {
-        this.mContext = activity;
         this.mItemList = itemList;
     }
 

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_pwd_find"
+        android:textSize="32sp"
+        android:textColor="@color/main_title_color"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"/>
+
+    <include
+        layout="@layout/input_phone_num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"/>
+
+    <TextView
+        android:id="@+id/login_pwd_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_pwd_error"
+        android:textSize="14sp"
+        android:textColor="@color/login_error"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/login_find_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_main_phone_submit"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:background="@drawable/submit_disabled_bg"
+        android:alpha="0.6"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="28dp"/>
+
+</LinearLayout>

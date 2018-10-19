@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/audio_page_bg_color">
+    android:background="@color/white">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
@@ -15,27 +15,29 @@
         android:background="@color/white">
 
         <ImageView
-            android:id="@+id/setting_account_edit_back"
+            android:id="@+id/login_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:ignore="ContentDescription"
             android:src="@mipmap/download_back"/>
 
         <TextView
-            android:id="@+id/setting_account_edit_title"
+            android:id="@+id/login_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/setting_account_title"
-            android:textSize="18sp"
+            android:text="@string/login_register_title"
+            android:textSize="16sp"
             android:textColor="@color/main_title_color"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="end"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="20dp"/>
 
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
-        android:id="@+id/account_container"
+        android:id="@+id/login_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"/>
 
 </LinearLayout>

@@ -8,44 +8,44 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/setting_pwd_limit"
-        android:textSize="16sp"
-        android:textColor="@color/secondary_title_color"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="20dp"/>
-    
-    <EditText
-        android:id="@+id/pwd_new_content"
-        android:labelFor="@id/pwd_new_content"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:inputType="textPassword"
-        android:paddingTop="18dp"
-        android:paddingBottom="18dp"
-        android:textSize="16sp"
+        android:text="@string/login_set_pwd_title"
+        android:textSize="32sp"
         android:textColor="@color/main_title_color"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:drawableEnd="@mipmap/icon_hide"
-        android:layout_marginTop="26dp"
-        android:maxLength="12"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"/>
 
-    <Button
-        android:id="@+id/pwd_new_submit"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setting_pwd_limit"
+        android:textSize="14sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_marginTop="28dp"
+        android:layout_marginStart="20dp"/>
+
+    <EditText
+        android:id="@+id/login_set_pwd_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/setting_pwd_new_submit"
+        android:inputType="textPassword"
+        android:hint="@string/login_pwd_pass_word"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="28dp"
+        android:drawableEnd="@mipmap/icon_show"/>
+
+    <Button
+        android:id="@+id/login_set_pwd_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_set_pwd_complete"
         android:textSize="16sp"
         android:textColor="@color/white"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:background="@drawable/person_submit_bg"
-        android:layout_marginTop="32dp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/white"/>
+        android:layout_marginTop="32dp"
+        android:background="@drawable/person_submit_bg"/>
 
 </LinearLayout>

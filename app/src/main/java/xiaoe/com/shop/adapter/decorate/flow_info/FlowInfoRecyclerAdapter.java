@@ -38,11 +38,6 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         this.mItemList = list;
     }
 
-    public FlowInfoRecyclerAdapter(Activity activity, List<FlowInfoItem> list) {
-        this.mContext = activity;
-        this.mItemList = list;
-    }
-
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == -1) {

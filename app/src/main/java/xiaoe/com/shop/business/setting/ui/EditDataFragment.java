@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +36,8 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
 import xiaoe.com.shop.business.setting.presenter.OnItemClickListener;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
+import xiaoe.com.shop.business.setting.presenter.SettingTimeCount;
+import xiaoe.com.shop.widget.CodeVerifyView;
 
 public class EditDataFragment extends BaseFragment implements OnItemClickListener {
 
@@ -44,7 +46,7 @@ public class EditDataFragment extends BaseFragment implements OnItemClickListene
     private Unbinder unbinder;
     private Context mContext;
     private boolean destroyView = false;
-    private View viewWrap;
+    protected View viewWrap;
 
     private int layoutId = -1;
     private List<SettingItemInfo> itemList;
@@ -115,6 +117,9 @@ public class EditDataFragment extends BaseFragment implements OnItemClickListene
                 break;
             case R.layout.fragment_pwd_new:
                 initPwdNewFragment();
+                break;
+            case R.layout.fragment_phone_num:
+                initPhoneNumFragment();
                 break;
         }
     }
@@ -220,6 +225,7 @@ public class EditDataFragment extends BaseFragment implements OnItemClickListene
         phoneSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                settingAccountActivity.accountTitle.setText("修改密码");
                 settingAccountActivity.replaceFragment(SettingAccountActivity.PHONE_NUM);
             }
         });
@@ -277,12 +283,16 @@ public class EditDataFragment extends BaseFragment implements OnItemClickListene
                 }
                 if (event.getX() > newPwd.getWidth() - newPwd.getPaddingEnd() - drawable.getIntrinsicWidth()) {
                     if (newPwd.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD + InputType.TYPE_CLASS_TEXT) {
-                        // 可以设置右边的图
-//                        newPwd.setCompoundDrawables(null, null, null, null);
+                        // 设置隐藏按钮
+                        Drawable right = getActivity().getResources().getDrawable(R.mipmap.icon_hide);
+                        right.setBounds(0, 0, right.getMinimumWidth(), drawable.getMinimumHeight());
+                        newPwd.setCompoundDrawables(null, null, right, null);
                         newPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     } else {
-                        // 设置另一张
-//                        newPwd.setCompoundDrawables(null, null, null, null);
+                        // 设置显示按钮
+                        Drawable right = getActivity().getResources().getDrawable(R.mipmap.icon_show);
+                        right.setBounds(0, 0, right.getMinimumWidth(), drawable.getMinimumHeight());
+                        newPwd.setCompoundDrawables(null, null, right, null);
                         newPwd.setInputType(InputType.TYPE_CLASS_TEXT |InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     }
                     return true;
@@ -305,6 +315,47 @@ public class EditDataFragment extends BaseFragment implements OnItemClickListene
                 newPwd.setText("");
                 settingAccountActivity.accountTitle.setText("设置");
                 settingAccountActivity.replaceFragment(SettingAccountActivity.MAIN);
+            }
+        });
+    }
+
+    protected CodeVerifyView phoneNumContent;
+
+    private void initPhoneNumFragment() {
+        final SettingTimeCount settingTimeCount = new SettingTimeCount(getActivity(), 60000, 1000, viewWrap);
+
+        TextView phoneNumTitle = (TextView) viewWrap.findViewById(R.id.phone_num_title);
+        phoneNumContent = (CodeVerifyView) viewWrap.findViewById(R.id.phone_num_content);
+        final TextView phoneNumDesc = (TextView) viewWrap.findViewById(R.id.phone_num_desc);
+        phoneNumTitle.setText(String.format(getActivity().getResources().getString(R.string.setting_phone_num_title), "18814182578"));
+        phoneNumDesc.setText("获取验证码");
+        phoneNumContent.setOnCodeFinishListener(new CodeVerifyView.OnCodeFinishListener() {
+            @Override
+            public void onComplete(String content) {
+                // content 为用户输入的验证码
+                // TODO: 获取后台返回的验证码与用户输入的作比较，默认 1234
+                if (content.equals("1234")) {
+                    phoneNumContent.clearAllEditText();
+                    settingAccountActivity.accountTitle.setText("账号设置");
+                    // 关掉 SettingTimeCount
+                    settingTimeCount.cancel();
+                    settingAccountActivity.replaceFragment(SettingAccountActivity.ACCOUNT);
+                    if (imm != null && imm.isActive()) {
+                        View view = getActivity().getCurrentFocus();
+                        if (view != null) {
+                            IBinder iBinder = view.getWindowToken();
+                            imm.hideSoftInputFromWindow(iBinder, InputMethodManager.HIDE_NOT_ALWAYS);
+                        }
+                    }
+                } else {
+                    phoneNumContent.setErrorBg(R.drawable.cv_error_bg);
+                }
+            }
+        });
+        phoneNumDesc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                settingTimeCount.start();
             }
         });
     }
@@ -347,39 +398,6 @@ public class EditDataFragment extends BaseFragment implements OnItemClickListene
                     Toast.makeText(getActivity(), "服务协议", Toast.LENGTH_SHORT).show();
                     break;
             }
-        }
-    }
-
-    class TimeCount extends CountDownTimer {
-
-        View container;
-
-        /**
-         * @param millisInFuture    The number of millis in the future from the call
-         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
-         *                          is called.
-         * @param countDownInterval The interval along the way to receive
-         *                          {@link #onTick(long)} callbacks.
-         */
-        public TimeCount(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        public TimeCount(long millisInFuture, long countDownInterval, View viewWrap) {
-            super(millisInFuture, countDownInterval);
-            this.container = viewWrap;
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            TextView tv = (TextView) container.findViewById(R.id.phone_num_desc);
-            tv.setClickable(false);
-            tv.setText(String.format(getActivity().getResources().getString(R.string.setting_phone_num_desc), millisUntilFinished));
-        }
-
-        @Override
-        public void onFinish() {
-
         }
     }
 }

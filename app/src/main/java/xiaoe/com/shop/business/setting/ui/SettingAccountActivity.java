@@ -24,7 +24,9 @@ import xiaoe.com.common.utils.CacheManagerUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
 import xiaoe.com.shop.utils.StatusBarUtil;
+import xiaoe.com.shop.widget.CodeVerifyView;
 
 public class SettingAccountActivity extends XiaoeActivity {
 
@@ -54,6 +56,7 @@ public class SettingAccountActivity extends XiaoeActivity {
     // 软键盘
     InputMethodManager imm;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +70,11 @@ public class SettingAccountActivity extends XiaoeActivity {
             Global.g().setGlobalColor("#000000");
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
         }
+
+        // 网络请求
+        // SettingPresenter settingPresenter = new SettingPresenter(this);
+        // settingPresenter.requestData();
+
         currentFragment = new MainAccountFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.account_container, currentFragment, MAIN).commit();
         init();
@@ -107,6 +115,11 @@ public class SettingAccountActivity extends XiaoeActivity {
                 case PWD_NOW:
                 case PHONE_NUM:
                     accountTitle.setText("账号设置");
+                    // 返回也要清空
+                    CodeVerifyView verifyView = ((EditDataFragment) currentFragment).phoneNumContent;
+                    if (verifyView != null && verifyView.hasContent()){
+                        verifyView.clearAllEditText();
+                    }
                     replaceFragment(ACCOUNT);
                     break;
                 case PWD_NEW:
@@ -256,6 +269,9 @@ public class SettingAccountActivity extends XiaoeActivity {
                     break;
                 case PWD_NEW:
                     accountTitle.setText("设置新密码");
+                    break;
+                case PHONE_NUM:
+                    accountTitle.setText("修改密码");
                     break;
                 case WE_CHAT:
                     accountTitle.setText("绑定微信");

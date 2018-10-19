@@ -1,5 +1,6 @@
 package xiaoe.com.shop.widget;
 
+import android.text.TextUtils;
 import android.widget.LinearLayout;
 
 import android.annotation.SuppressLint;
@@ -15,7 +16,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
@@ -71,6 +71,8 @@ public class CodeVerifyView extends LinearLayout implements TextWatcher, View.On
     private int mEtTextBg;
 
     private int mCursorDrawable;
+
+    private EditText[] editTexts;
 
     public OnCodeFinishListener getOnCodeFinishListener() {
         return onCodeFinishListener;
@@ -163,7 +165,7 @@ public class CodeVerifyView extends LinearLayout implements TextWatcher, View.On
         mEtHeight = typedArray.getDimensionPixelSize(R.styleable.CodeVerifyView_cv_height, 120);
         mEtTextColor = typedArray.getColor(R.styleable.CodeVerifyView_cv_text_color, Color.BLACK);
         mEtTextSize = typedArray.getDimensionPixelSize(R.styleable.CodeVerifyView_cv_text_size, 16);
-        mEtTextBg = typedArray.getResourceId(R.styleable.CodeVerifyView_cv_bg, R.drawable.cv_login_code);
+        mEtTextBg = typedArray.getResourceId(R.styleable.CodeVerifyView_cv_bg, R.drawable.cv_normal_selector);
         mCursorDrawable = typedArray.getResourceId(R.styleable.CodeVerifyView_cv_cursor, R.drawable.cv_cursor);
 
         //释放资源
@@ -173,8 +175,10 @@ public class CodeVerifyView extends LinearLayout implements TextWatcher, View.On
 
     @SuppressLint("ResourceAsColor")
     private void initView() {
+        editTexts = new EditText[mEtNumber];
         for (int i = 0; i < mEtNumber; i++) {
             EditText editText = new EditText(mContext);
+            editTexts[i] = editText;
             initEditText(editText, i);
             addView(editText);
             if (i == 0) { //设置第一个editText获取焦点
@@ -329,6 +333,52 @@ public class CodeVerifyView extends LinearLayout implements TextWatcher, View.On
         if (hasFocus) {
             focus();
         }
+    }
+
+    /**
+     * 清空每个 EditText
+     */
+    public void clearAllEditText() {
+        if (editTexts != null && editTexts.length > 0) {
+            for (EditText et : editTexts) {
+                et.setText("");
+            }
+        }
+    }
+
+    public void setErrorBg(int error_bg) {
+        if (editTexts != null && editTexts.length > 0) {
+            for (final EditText et : editTexts) {
+                et.setBackground(mContext.getResources().getDrawable(error_bg));
+                et.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        et.setBackground(mContext.getResources().getDrawable(R.drawable.cv_normal_selector));
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    public boolean hasContent() {
+        if (editTexts != null && editTexts.length > 0) {
+            for (EditText et : editTexts) {
+                if (!TextUtils.isEmpty(et.getText().toString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public interface OnCodeFinishListener {
