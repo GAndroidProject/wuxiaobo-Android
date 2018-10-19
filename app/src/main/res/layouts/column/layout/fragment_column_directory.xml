@@ -2,9 +2,50 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/directory_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/main_title_color"
+            android:text="@string/column_directory"
+            android:layout_centerVertical="true"
+            />
+        <LinearLayout
+            android:id="@+id/btn_batch_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_all_play"
+            >
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@mipmap/audio_download"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/batch_download_text"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/directory_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@id/directory_bar"
+        />
 
 </RelativeLayout>

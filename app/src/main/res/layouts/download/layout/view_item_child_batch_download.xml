@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/temp_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="1dp"
+    >
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/line"
+        android:visibility="gone"
+        />
+    <RelativeLayout
+        android:id="@+id/title_warp"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_below="@id/line_0"
+        >
+        <RelativeLayout
+            android:id="@+id/btn_select"
+            android:layout_width="30dp"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/select_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/download_tocheck"
+                />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@id/btn_select"
+            android:layout_toStartOf="@+id/item_time"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:text="小专栏"
+            android:textColor="@color/main_title_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/item_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="12sp"
+            android:textColor="@color/secondary_title_color"
+            android:text="09:00"
+            />
+
+    </RelativeLayout>
+</RelativeLayout>

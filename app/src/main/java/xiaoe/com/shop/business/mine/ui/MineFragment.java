@@ -24,6 +24,7 @@ import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.course.ui.CourseItemActivity;
+import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
@@ -221,6 +222,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case 3:
                 Toast.makeText(getActivity(), "离线缓存", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), OffLineCacheActivity.class);
+                startActivity(intent);
                 break;
             case 4:
                 Toast.makeText(getActivity(), "兑换码", Toast.LENGTH_SHORT).show();

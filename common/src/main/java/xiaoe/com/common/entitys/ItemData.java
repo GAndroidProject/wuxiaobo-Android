@@ -22,6 +22,7 @@ public class ItemData implements Comparable<ItemData> {
 	private List<ItemData> children;
 
 	private boolean expand;// 是否展开
+	private boolean isSelect = false; //是否选择
 
 	public boolean isExpand() {
 		return expand;
@@ -29,6 +30,14 @@ public class ItemData implements Comparable<ItemData> {
 
 	public void setExpand(boolean expand) {
 		this.expand = expand;
+	}
+
+	public boolean isSelect() {
+		return isSelect;
+	}
+
+	public void setSelect(boolean select) {
+		isSelect = select;
 	}
 
 	public int getType() {

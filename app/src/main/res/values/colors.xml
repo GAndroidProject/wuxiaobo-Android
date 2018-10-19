@@ -9,7 +9,7 @@
 
     <color name="main_bg_color">#FAFAFC</color><!--主体背景颜色-->
     <color name="lucency">#00ffffff</color><!--透明-->
-    <color name="line">#DBE2EA</color><!--分割线颜色-->
+    <color name="line">#DBDBDB</color><!--分割线颜色-->
 
     <!--公共颜色  end-->
 
@@ -43,4 +43,6 @@
     <color name="edit_cursor">#3B86FD</color><!-- 光标颜色 -->
 
     <color name="login_error">#F6524E</color><!--登录异常颜色-->
+    <color name="delete_red">#E95454</color>
+
 </resources>
