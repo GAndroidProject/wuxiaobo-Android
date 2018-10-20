@@ -1,5 +1,6 @@
 package xiaoe.com.shop.base;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -29,6 +30,7 @@ import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.TranslationAnimator;
+import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 
 /**
@@ -219,5 +221,12 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
     public void setMiniAudioPlayController(MiniAudioPlayControllerLayout miniAudioPlayController) {
         this.miniAudioPlayController = miniAudioPlayController;
+        this.miniAudioPlayController.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(XiaoeActivity.this, AudioActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

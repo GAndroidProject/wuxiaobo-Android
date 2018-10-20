@@ -16,7 +16,7 @@
         android:id="@+id/title_warp"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_below="@id/line_0"
+        android:layout_below="@id/line"
         >
         <RelativeLayout
             android:id="@+id/btn_select"

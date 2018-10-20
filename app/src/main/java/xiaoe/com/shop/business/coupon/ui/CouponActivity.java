@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,7 +17,6 @@ import xiaoe.com.common.app.Global;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
-import xiaoe.com.shop.business.coupon.presenter.CouponPresenter;
 import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class CouponActivity extends XiaoeActivity {
@@ -37,7 +35,7 @@ public class CouponActivity extends XiaoeActivity {
 
     Fragment currentFragment;
 
-    boolean hasCoupon;
+    boolean hasCoupon = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,10 +62,11 @@ public class CouponActivity extends XiaoeActivity {
     private void initView() {
         if (hasCoupon) {
             Log.d(TAG, "onCreate: 有优惠券的情况...");
+            currentFragment = CouponFragment.newInstance(R.layout.fragment_coupone);
         } else {
-            currentFragment = CouponFragment.newInstance(R.layout.fragment_coupone_empty);
-            getSupportFragmentManager().beginTransaction().add(R.id.coupon_content_wrap, currentFragment, EMPTY_CONTENT).commit();
+            currentFragment = EmptyCouponFragment.newInstance(R.layout.fragment_coupone_empty);
         }
+        getSupportFragmentManager().beginTransaction().add(R.id.coupon_content_wrap, currentFragment, EMPTY_CONTENT).commit();
     }
 
     private void initListener() {

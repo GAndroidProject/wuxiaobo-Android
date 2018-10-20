@@ -121,4 +121,7 @@
     <string name="cd_key_submit">立即兑换</string>
     <string name="cd_key_digits">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="cd_key_error">兑换码不存在，请重新输入</string>
+
+    <string name="no_threshold_coupon">无门槛使用</string>
+    <string name="use_coupon">去使用</string>
 </resources>

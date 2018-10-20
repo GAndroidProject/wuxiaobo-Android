@@ -5,18 +5,18 @@
     android:layout_height="wrap_content"
     android:paddingBottom="1dp"
     android:layout_marginBottom="10dp"
+    android:background="@drawable/top_bottom_border"
     >
-    <View
-        android:id="@+id/line_0"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/line"
-        />
+    <!--<View-->
+        <!--android:id="@+id/line_0"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1px"-->
+        <!--android:background="@color/line"-->
+        <!--/>-->
     <RelativeLayout
         android:id="@+id/title_warp"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_below="@id/line_0"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         >
@@ -122,11 +122,11 @@
             android:layout_centerVertical="true"
             android:src="@mipmap/expand_top" />
     </RelativeLayout>
-    <View
-        android:id="@+id/line_3"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/line"
-        android:layout_below="@id/expand_top_btn"
-        />
+    <!--<View-->
+        <!--android:id="@+id/line_3"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1px"-->
+        <!--android:background="@color/line"-->
+        <!--android:layout_below="@id/expand_top_btn"-->
+        <!--/>-->
 </RelativeLayout>
