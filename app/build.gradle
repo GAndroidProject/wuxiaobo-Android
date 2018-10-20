@@ -39,6 +39,7 @@ android {
                     'src/main/res/layouts/login',
                     'src/main/res/layouts/course_more',
                     'src/main/res/layouts/coupon',
+                    'src/main/res/layouts/cdkey',
                     'src/main/res/layouts/navigate_detail',
                     'src/main/res/layouts',
                     'src/main/res'

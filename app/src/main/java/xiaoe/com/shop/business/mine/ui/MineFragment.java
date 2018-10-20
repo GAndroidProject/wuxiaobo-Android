@@ -23,6 +23,7 @@ import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
+import xiaoe.com.shop.business.cdkey.ui.CdKeyActivity;
 import xiaoe.com.shop.business.coupon.ui.CouponActivity;
 import xiaoe.com.shop.business.course.ui.CourseItemActivity;
 import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
@@ -210,25 +211,25 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = null;
         switch (position) {
-            case 0:
+            case 0: // 我的任务
                 Toast.makeText(getActivity(), "我的任务", Toast.LENGTH_SHORT).show();
                 break;
-            case 1:
+            case 1: // 优惠券
                 intent = new Intent(getActivity(), CouponActivity.class);
                 startActivity(intent);
                 break;
-            case 2:
+            case 2: // 我的收藏
                 intent = new Intent(getActivity(), MineLearningActivity.class);
                 intent.putExtra("pageTitle", "我的收藏");
                 getActivity().startActivity(intent);
                 break;
-            case 3:
-                Toast.makeText(getActivity(), "离线缓存", Toast.LENGTH_SHORT).show();
+            case 3: // 离线缓存
                 intent = new Intent(getActivity(), OffLineCacheActivity.class);
                 startActivity(intent);
                 break;
-            case 4:
-                Toast.makeText(getActivity(), "兑换码", Toast.LENGTH_SHORT).show();
+            case 4: // 兑换码
+                intent = new Intent(getActivity(), CdKeyActivity.class);
+                startActivity(intent);
                 break;
             default:
                 //TODO: 异常判断

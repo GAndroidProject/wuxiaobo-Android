@@ -99,6 +99,15 @@ public class LoginPageFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        destroyView = true;
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+    }
+
     private void initView() {
         switch (layoutId) {
             case R.layout.fragment_login_main:

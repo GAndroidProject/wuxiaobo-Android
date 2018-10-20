@@ -63,4 +63,13 @@ public class CouponFragment extends BaseFragment {
 
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        destroyView = true;
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+    }
 }

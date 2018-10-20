@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/line_bg">
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin">
+
+            <ImageView
+                android:id="@+id/cd_key_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="ContentDescription"
+                android:src="@mipmap/download_back"/>
+
+            <TextView
+                android:id="@+id/cd_key_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cd_key_title"
+                android:textSize="16sp"
+                android:textColor="@color/main_title_color"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="20dp"/>
+
+        </android.support.v7.widget.Toolbar>
+
+        <EditText
+            android:id="@+id/cd_key_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/cd_key_hint"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_gravity="bottom"
+            android:inputType="number"
+            android:digits="@string/cd_key_digits"/>
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/cd_key_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cd_key_submit"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:background="@drawable/person_submit_bg"
+        android:alpha="0.6"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="56dp"
+        android:enabled="false"/>
+
+</LinearLayout>

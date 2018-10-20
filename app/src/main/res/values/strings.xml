@@ -115,4 +115,10 @@
     <string name="search_content_empty">无搜索结果</string>
     <string name="send_text">发送</string>
     <string name="reply_comment_text">回复评论</string>
+
+    <string name="cd_key_title">兑换码</string>
+    <string name="cd_key_hint">请输入兑换码</string>
+    <string name="cd_key_submit">立即兑换</string>
+    <string name="cd_key_digits">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="cd_key_error">兑换码不存在，请重新输入</string>
 </resources>

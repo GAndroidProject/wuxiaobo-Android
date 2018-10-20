@@ -86,6 +86,15 @@ public class SearchPageFragment extends BaseFragment implements OnTabClickListen
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        destroyView = true;
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+    }
+
     private void initSearchMainFragment() {
         historyContentView = (SearchContentView) viewWrap.findViewById(R.id.history_content);
         historyContentView.setTitleStartText("历史搜索");
