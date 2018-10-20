@@ -35,23 +35,31 @@ public class ContentMenuLayout extends FrameLayout implements View.OnClickListen
         menuBG = rootView.findViewById(R.id.menu_bg);
         menuBG.setOnClickListener(this);
         btnShare = (LinearLayout) rootView.findViewById(R.id.btn_share);
-        btnShare.setOnClickListener(this);
         btnCollect = (LinearLayout) rootView.findViewById(R.id.btn_collect);
-        btnCollect.setOnClickListener(this);
         btnDownload = (LinearLayout) rootView.findViewById(R.id.btn_download);
-        btnDownload.setOnClickListener(this);
         btnComment = (LinearLayout) rootView.findViewById(R.id.btn_comment);
-        btnComment.setOnClickListener(this);
         btnCancel = (TextView) rootView.findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(this);
     }
 
+    public void setButtonClickListener(OnClickListener listener){
+        if(listener == null){
+            return;
+        }
+        btnComment.setOnClickListener(listener);
+        btnDownload.setOnClickListener(listener);
+        btnCollect.setOnClickListener(listener);
+        btnShare.setOnClickListener(listener);
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.menu_bg:
+            case R.id.btn_cancel:
                 setVisibility(View.GONE);
+                break;
+            default:
                 break;
         }
     }

@@ -74,6 +74,7 @@
                         android:src="@mipmap/audio_detail"
                         />
                     <ImageView
+                        android:id="@+id/btn_audio_comment"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@mipmap/audio_comment"
@@ -100,19 +101,6 @@
 
                 </LinearLayout>
             </LinearLayout>
-            <!--<RelativeLayout-->
-                <!--android:id="@+id/audio_page_close_btn"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content">-->
-                <!--<ImageView-->
-                    <!--android:layout_width="24dp"-->
-                    <!--android:layout_height="24dp"-->
-                    <!--android:layout_marginTop="20dp"-->
-                    <!--android:layout_marginStart="20dp"-->
-                    <!--android:layout_marginEnd="20dp"-->
-                    <!--android:src="@mipmap/audio_white_back"-->
-                    <!--/>-->
-            <!--</RelativeLayout>-->
             <RelativeLayout
                 android:id="@+id/audio_poster_wrap"
                 android:layout_width="match_parent"

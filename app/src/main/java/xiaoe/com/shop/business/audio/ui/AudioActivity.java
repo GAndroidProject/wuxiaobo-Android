@@ -1,6 +1,7 @@
 package xiaoe.com.shop.business.audio.ui;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ import xiaoe.com.shop.anim.ViewAnim;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
+import xiaoe.com.shop.business.comment.ui.CommentActivity;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
 import xiaoe.com.shop.widget.ContentMenuLayout;
@@ -109,6 +112,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         audioHoverPlayController.setOnMenuListener(this);
         //菜单栏
         contentMenuLayout = (ContentMenuLayout) findViewById(R.id.content_menu_layout);
+        contentMenuLayout.setButtonClickListener(this);
+
+        ImageView btnAudioComment = (ImageView) findViewById(R.id.btn_audio_comment);
+        btnAudioComment.setOnClickListener(this);
     }
     private void initDatas() {
         AudioPlayUtil audioPlayUtil = AudioPlayUtil.getInstance();
@@ -170,6 +177,11 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         switch (v.getId()){
             case R.id.audio_page_close_btn:
                 onBackPressed();
+                break;
+            case R.id.btn_audio_comment:
+            case R.id.btn_comment:
+                Intent intent = new Intent(this, CommentActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;

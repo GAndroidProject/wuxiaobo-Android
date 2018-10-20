@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:focusableInTouchMode="true"
+    >
     <RelativeLayout
         android:id="@+id/tool_bar"
         android:layout_width="match_parent"
@@ -14,10 +17,11 @@
             android:src="@mipmap/download_back"
             />
         <TextView
+            android:id="@+id/cache_column_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toEndOf="@id/btn_back"
-            android:layout_toStartOf="@+id/batch_delete"
+            android:layout_toStartOf="@+id/btn_batch_delete"
             android:gravity="center"
             android:maxLines="1"
             android:textSize="18sp"
@@ -25,7 +29,7 @@
             android:textColor="@color/main_title_color"
             />
         <TextView
-            android:id="@+id/batch_delete"
+            android:id="@+id/btn_batch_delete"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="20dp"
@@ -41,6 +45,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
         android:layout_below="@id/tool_bar"
         android:layout_above="@id/line_3"
         />

@@ -23,6 +23,7 @@ android {
                     'src/main/res/layouts/test',
                     'src/main/res/layouts/main',
                     'src/main/res/layouts/download',
+                    'src/main/res/layouts/comment',
                     'src/main/res/layouts/column',
                     'src/main/res/layouts/video',
                     'src/main/res/layouts/audio',

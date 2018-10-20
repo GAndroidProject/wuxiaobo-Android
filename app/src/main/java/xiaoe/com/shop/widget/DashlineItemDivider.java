@@ -29,7 +29,7 @@ public class DashlineItemDivider extends RecyclerView.ItemDecoration {
         final int right = parent.getWidth() - paddingRight;
 
         final int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount; i++) {
+        for (int i = 0; i < childCount - 1; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
                     .getLayoutParams();
@@ -40,10 +40,11 @@ public class DashlineItemDivider extends RecyclerView.ItemDecoration {
             Paint paint = new Paint();
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(XiaoeApplication.getmContext().getResources().getColor(R.color.line));
+            paint.setStrokeWidth(2);
             Path path = new Path();
             path.moveTo(left, top);
             path.lineTo(right,top);
-            PathEffect effects = new DashPathEffect(new float[]{10,5,5,5},2);//此处单位是像素不是dp  注意 请自行转化为dp
+            PathEffect effects = new DashPathEffect(new float[]{5,5,5,5},2);//此处单位是像素不是dp  注意 请自行转化为dp
             paint.setPathEffect(effects);
             c.drawPath(path, paint);
         }
