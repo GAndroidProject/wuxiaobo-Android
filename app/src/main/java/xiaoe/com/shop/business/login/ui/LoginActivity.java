@@ -20,6 +20,7 @@ import xiaoe.com.common.app.Global;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.business.login.presenter.LoginTimeCount;
 import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.CodeVerifyView;
 
@@ -108,13 +109,7 @@ public class LoginActivity extends XiaoeActivity {
                 // 换页之前将 editText 的内容清掉
                 ((EditText)((LoginPageFragment)currentFragment).viewWrap.findViewById(R.id.login_input_num_content)).setText("");
                 // 如果软件盘在的话，就把软键盘隐藏
-                if (imm != null && imm.isActive()) {
-                    View view = LoginActivity.this.getCurrentFocus();
-                    if (view != null) {
-                        IBinder iBinder = view.getWindowToken();
-                        imm.hideSoftInputFromWindow(iBinder, InputMethodManager.HIDE_NOT_ALWAYS);
-                    }
-                }
+                toggleSoftKeyboard();
                 replaceFragment(REGISTER);
             }
         });
@@ -122,13 +117,7 @@ public class LoginActivity extends XiaoeActivity {
 
     @Override
     public void onBackPressed() {
-        if (imm != null && imm.isActive()) {
-            View view = this.getCurrentFocus();
-            if (view != null) {
-                IBinder iBinder = view.getWindowToken();
-                imm.hideSoftInputFromWindow(iBinder, InputMethodManager.HIDE_NOT_ALWAYS);
-            }
-        }
+        toggleSoftKeyboard();
         if (currentFragment != null) {
             switch (currentFragment.getTag()) {
                 case REGISTER:
@@ -140,6 +129,7 @@ public class LoginActivity extends XiaoeActivity {
                     break;
                 case CODE:
                     ((CodeVerifyView) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_register_code_content)).clearAllEditText();
+                    // TODO: 停掉 time count
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
                     replaceFragment(MAIN);
@@ -156,7 +146,19 @@ public class LoginActivity extends XiaoeActivity {
                     ((EditText) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_input_num_content)).setText("");
                     replaceFragment(PWD);
                     break;
+                case SET_PWD:
+                    ((EditText) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_set_pwd_content)).setText("");
+                    loginBack.setVisibility(View.GONE);
+                    loginRegister.setVisibility(View.VISIBLE);
+                    replaceFragment(MAIN);
+                    break;
                 case WE_CHAT:
+                    loginBack.setVisibility(View.GONE);
+                    loginRegister.setVisibility(View.VISIBLE);
+                    replaceFragment(MAIN);
+                    break;
+                case BIND_PHONE:
+                    ((EditText) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_input_num_content)).setText("");
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
                     replaceFragment(MAIN);
@@ -183,6 +185,9 @@ public class LoginActivity extends XiaoeActivity {
                     currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_code, phoneNum);
                     break;
                 case BIND_PHONE: // 绑定手机页
+                    loginBack.setVisibility(View.VISIBLE);
+                    loginRegister.setVisibility(View.GONE);
+                    currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_bind_phone);
                     break;
                 case PWD: // 密码登录页
                     loginBack.setVisibility(View.VISIBLE);
@@ -225,10 +230,9 @@ public class LoginActivity extends XiaoeActivity {
                 case FIND_PWD:
                 case SET_PWD:
                 case WE_CHAT:
+                case BIND_PHONE:
                     loginBack.setVisibility(View.VISIBLE);
                     loginRegister.setVisibility(View.GONE);
-                    break;
-                case BIND_PHONE:
                     break;
             }
             getSupportFragmentManager().beginTransaction().show(currentFragment).commit();
@@ -239,5 +243,18 @@ public class LoginActivity extends XiaoeActivity {
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
         Log.d(TAG, "onMainThreadResponse: success --- " + success);
+    }
+
+    /**
+     * 如果软键盘弹出，就关闭软键盘
+     */
+    private void toggleSoftKeyboard() {
+        if (imm != null && imm.isActive()) {
+            View view = getCurrentFocus();
+            if (view != null) {
+                IBinder iBinder = view.getWindowToken();
+                imm.hideSoftInputFromWindow(iBinder, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ package xiaoe.com.shop.adapter.decorate.recent_update;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.business.audio.ui.AudioActivity;
 
 /**
  * 最近更新列表适配器
@@ -83,7 +85,8 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "recent item click...", Toast.LENGTH_SHORT).show();
+                Intent audioIntent = new Intent(mContext, AudioActivity.class);
+                mContext.startActivity(audioIntent);
             }
         });
         return convertView;

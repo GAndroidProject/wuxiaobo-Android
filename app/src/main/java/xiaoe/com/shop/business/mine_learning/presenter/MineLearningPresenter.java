@@ -5,7 +5,7 @@ import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.MineCollectionRequest;
+import xiaoe.com.network.requests.MineLearningRequest;
 
 public class MineLearningPresenter implements IBizCallback {
 
@@ -28,8 +28,8 @@ public class MineLearningPresenter implements IBizCallback {
     }
 
     public void requestData() {
-        MineCollectionRequest mineCollectionRequest = new MineCollectionRequest(cmd, TestInfo.class, this);
-        mineCollectionRequest.addRequestParam("app_id", "123456");
-        NetworkEngine.getInstance().sendRequest(mineCollectionRequest);
+        MineLearningRequest mineLearningRequest = new MineLearningRequest(cmd, TestInfo.class, this);
+        mineLearningRequest.addRequestParam("app_id", "123456");
+        NetworkEngine.getInstance().sendRequest(mineLearningRequest);
     }
 }

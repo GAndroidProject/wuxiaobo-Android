@@ -77,7 +77,6 @@ public class KnowledgeListAdapter extends BaseAdapter {
         viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Toast.makeText(mContext, "点击item..", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(mContext, ColumnActivity.class);
                 boolean isBigColumn = position % 2 == 0 ? true : false;
                 intent.putExtra("isBigColumn", isBigColumn);

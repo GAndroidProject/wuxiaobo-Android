@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -208,9 +209,9 @@ public class CourseFragment extends BaseFragment {
             titleData.add(tempData.get(2));
             DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
             courseTitleRecyclerView.setAdapter(dra);
-            tempData.remove(0);
-            tempData.remove(1);
-            tempData.remove(2);
+            tempData.remove(componentInfo_title);
+            tempData.remove(componentInfo_shuffling);
+            tempData.remove(componentInfo_navigator);
         } else {
             courseAppBar.setVisibility(View.GONE);
         }

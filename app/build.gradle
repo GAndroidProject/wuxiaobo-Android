@@ -32,9 +32,12 @@ android {
                     'src/main/res/layouts/mine',
                     'src/main/res/layouts/mine_learning',
                     'src/main/res/layouts/setting',
+                    'src/main/res/layouts/search',
                     'src/main/res/layouts/widget',
                     'src/main/res/layouts/tree',
                     'src/main/res/layouts/login',
+                    'src/main/res/layouts/course_more',
+                    'src/main/res/layouts/coupon',
                     'src/main/res/layouts',
                     'src/main/res'
                 ]

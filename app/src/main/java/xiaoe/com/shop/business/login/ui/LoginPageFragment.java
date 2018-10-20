@@ -122,6 +122,8 @@ public class LoginPageFragment extends BaseFragment {
             case R.layout.fragment_login_we_chat:
                 initLoginWeChatFragment();
                 break;
+            case R.layout.fragment_login_bind_phone:
+                initLoginBindPhoneFragment();
         }
     }
 
@@ -153,6 +155,7 @@ public class LoginPageFragment extends BaseFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO: 需要优化输入逻辑
                 if (s.length() == 11) {
                     mainPhoneSubmit.setEnabled(true);
                     mainPhoneSubmit.setBackground(getActivity().getResources().getDrawable(R.drawable.person_submit_bg));
@@ -487,7 +490,59 @@ public class LoginPageFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "调取微信登录页面", Toast.LENGTH_SHORT).show();
-                // 调取微信登录页面回来之后，先判断是否是老用户，是就直接登录，否则跳转绑定手机号
+                // TODO: 调取微信登录页面回来之后，先判断是否是老用户，是就直接登录，否则跳转绑定手机号，
+                // 绑定手机号
+                loginActivity.replaceFragment(LoginActivity.BIND_PHONE);
+            }
+        });
+    }
+
+    private void initLoginBindPhoneFragment() {
+        final EditText bindPhoneContent = (EditText) viewWrap.findViewById(R.id.login_input_num_content);
+        final TextView bindPhoneError = (TextView) viewWrap.findViewById(R.id.login_pwd_error);
+        final Button bindPhoneSubmit = (Button) viewWrap.findViewById(R.id.login_bind_phone_submit);
+
+        bindPhoneContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String head = s.toString();
+                if (head.length() == 11 && bindPhoneError.getVisibility() == View.GONE) {
+                    bindPhoneSubmit.setAlpha(1);
+                    bindPhoneSubmit.setEnabled(true);
+                } else if (head.length() == 2) {
+                    JudgeUtil.showErrorViewIfNeed(getActivity(), head, bindPhoneError, bindPhoneSubmit);
+                    bindPhoneSubmit.setAlpha(0.6f);
+                    bindPhoneSubmit.setEnabled(false);
+                } else if (head.length() == 0) {
+                    JudgeUtil.hideErrorViewIfNeed(getActivity(), bindPhoneError, bindPhoneSubmit);
+                    bindPhoneSubmit.setAlpha(0.6f);
+                    bindPhoneSubmit.setEnabled(false);
+                } else {
+                    bindPhoneSubmit.setAlpha(0.6f);
+                    bindPhoneSubmit.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        bindPhoneSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 跳转到获取验证码页面
+                String phoneNum = bindPhoneContent.getText().toString();
+                toggleSoftKeyboard();
+                bindPhoneContent.setText("");
+                loginActivity.setPhoneNum(phoneNum);
+                loginActivity.replaceFragment(LoginActivity.CODE);
             }
         });
     }

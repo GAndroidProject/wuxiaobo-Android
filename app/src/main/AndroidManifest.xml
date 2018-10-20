@@ -38,6 +38,9 @@
         <activity android:name=".business.download.ui.DownloadActivity"/>
         <activity android:name=".business.download.ui.OffLineCacheActivity"/>
         <activity android:name=".business.column.ui.CacheColumnActivity"/>
+        <activity android:name=".business.search.ui.SearchActivity"/>
+        <activity android:name=".business.course_more.ui.CourseMoreActivity"/>
+        <activity android:name=".business.coupon.ui.CouponActivity"/>
     </application>
 
 </manifest>

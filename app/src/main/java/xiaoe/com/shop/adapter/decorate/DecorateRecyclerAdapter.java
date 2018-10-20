@@ -46,8 +46,10 @@ import xiaoe.com.shop.adapter.decorate.search.SearchViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingFigureViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingImageLoader;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.business.course_more.ui.CourseMoreActivity;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
+import xiaoe.com.shop.business.search.ui.SearchActivity;
 
 /**
  * 店铺装修组件显示列表适配器
@@ -179,8 +181,21 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         break;
                     case DecorateEntityType.KNOWLEDGE_GROUP:
                         KnowledgeGroupViewHolder knowledgeGroupViewHolder = (KnowledgeGroupViewHolder) holder;
-                        knowledgeGroupViewHolder.groupTitle.setText(currentComponent.getTitle());
-                        knowledgeGroupViewHolder.groupMore.setText(currentComponent.getDesc());
+                        if (currentComponent.isHideTitle()) {
+                            knowledgeGroupViewHolder.groupTitle.setVisibility(View.GONE);
+                            knowledgeGroupViewHolder.groupMore.setVisibility(View.GONE);
+                        } else {
+                            knowledgeGroupViewHolder.groupTitle.setText(currentComponent.getTitle());
+                            knowledgeGroupViewHolder.groupMore.setText(currentComponent.getDesc());
+                            knowledgeGroupViewHolder.groupMore.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    // 跳转到更多课程的页面
+                                    Intent intent = new Intent(mContext, CourseMoreActivity.class);
+                                    mContext.startActivity(intent);
+                                }
+                            });
+                        }
                         GridLayoutManager lm = new GridLayoutManager(mContext, 2);
                         knowledgeGroupViewHolder.groupRecyclerView.setLayoutManager(lm);
                         // recyclerView 取消滑动
@@ -191,12 +206,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         }
                         KnowledgeGroupRecyclerAdapter groupAdapter = new KnowledgeGroupRecyclerAdapter(mContext, currentComponent.getKnowledgeCommodityItemList());
                         knowledgeGroupViewHolder.groupRecyclerView.setAdapter(groupAdapter);
-                        knowledgeGroupViewHolder.groupMore.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(mContext, "查看更多", Toast.LENGTH_SHORT).show();
-                            }
-                        });
                         break;
                 }
                 break;
@@ -229,7 +238,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 searchViewHolder.searchIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                    Toast.makeText(mContext, "点击了搜索...", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(mContext, SearchActivity.class);
+                        mContext.startActivity(intent);
                     }
                 });
                 break;

@@ -103,4 +103,14 @@
     <string name="login_we_chat_title">绑定微信</string>
     <string name="login_we_chat_desc">绑定微信号，同步微信课程</string>
     <string name="login_we_chat_submit">去绑定</string>
+    <string name="login_bind_phone_title">绑定手机号</string>
+    <string name="login_bind_phone_desc">依据《中华人民共和国网络安全法》要求，请绑定手机号完成实名认证</string>
+
+    <string name="course_more_title">知识商品</string>
+
+    <string name="coupon_title">优惠券</string>
+    <string name="coupon_empty_desc">当前暂无可用的优惠券哦</string>
+
+    <string name="search_content_hint">请输入搜索内容</string>
+    <string name="search_content_empty">无搜索结果</string>
 </resources>

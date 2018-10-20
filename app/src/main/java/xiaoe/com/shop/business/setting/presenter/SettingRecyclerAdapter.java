@@ -102,25 +102,4 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
         currentPos = position;
         return super.getItemViewType(position);
     }
-
-    class SettingItemViewHolder extends BaseViewHolder {
-
-        @BindView(R.id.setting_item_container)
-        FrameLayout itemContainer;
-        @BindView(R.id.item_title)
-        TextView itemTitle;
-        @BindView(R.id.item_icon)
-        SimpleDraweeView itemIcon;
-        @BindView(R.id.item_content)
-        TextView itemContent;
-        @BindView(R.id.item_go)
-        ImageView itemGo;
-
-        private OnItemClickListener itemClickListener;
-
-        SettingItemViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
 }

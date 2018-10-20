@@ -2,6 +2,7 @@ package xiaoe.com.shop.adapter.decorate.knowledge_commodity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import java.util.List;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.business.column.ui.ColumnActivity;
 
 public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -41,7 +43,7 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
     }
 
     @Override
-    public void onBindViewHolder(BaseViewHolder holder, int position) {
+    public void onBindViewHolder(BaseViewHolder holder, final int position) {
         KnowledgeItemViewHolder knowledgeItemViewHolder = (KnowledgeItemViewHolder) holder;
         knowledgeItemViewHolder.itemIcon.setImageURI(currentItem.getItemImg());
         knowledgeItemViewHolder.itemTitle.setText(currentItem.getItemTitle());
@@ -62,7 +64,10 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
         knowledgeItemViewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "item click", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mContext, ColumnActivity.class);
+                boolean isBigColumn = position % 2 == 0 ? true : false;
+                intent.putExtra("isBigColumn", isBigColumn);
+                mContext.startActivity(intent);
             }
         });
     }

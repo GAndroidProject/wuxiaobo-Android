@@ -23,6 +23,7 @@ import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
+import xiaoe.com.shop.business.coupon.ui.CouponActivity;
 import xiaoe.com.shop.business.course.ui.CourseItemActivity;
 import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
@@ -213,7 +214,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 Toast.makeText(getActivity(), "我的任务", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
-                Toast.makeText(getActivity(), "优惠券", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), CouponActivity.class);
+                startActivity(intent);
                 break;
             case 2:
                 intent = new Intent(getActivity(), MineLearningActivity.class);

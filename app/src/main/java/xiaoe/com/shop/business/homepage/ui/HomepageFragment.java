@@ -144,27 +144,7 @@ public class HomepageFragment extends BaseFragment {
         flowInfoItemList.add(flowInfoItem_3);
         componentInfo_1.setFlowInfoItemList(flowInfoItemList);
 
-        // 最近更新假数据
-        ComponentInfo componentInfo_5 = new ComponentInfo();
-        List<RecentUpdateListItem> itemList = new ArrayList<>();
-        RecentUpdateListItem item_1 = new RecentUpdateListItem();
-        item_1.setListTitle("09-22期 | 为什么哈哈哈哈哈哈哈，成为哒哒哒");
-        item_1.setListPlayState("play");
-        RecentUpdateListItem item_2 = new RecentUpdateListItem();
-        item_2.setListTitle("09-21期 | 你还想海外逃税？国家哒哒哒");
-        item_2.setListPlayState("play");
-        RecentUpdateListItem item_3 = new RecentUpdateListItem();
-        item_3.setListTitle("09-20期 | 十年后，我希望仍能与你在一起得到");
-        item_3.setListPlayState("play");
-        itemList.add(item_1);
-        itemList.add(item_2);
-        itemList.add(item_3);
-        componentInfo_5.setType("recent_update");
-        componentInfo_5.setTitle("每天听见吴晓波");
-        componentInfo_5.setDesc("已更新至09-22期");
-        componentInfo_5.setSubList(itemList);
         tempData.add(componentInfo_1);
-        tempData.add(componentInfo_5);
         homeContentRecyclerView.setLayoutManager(llm);
         if (tempData.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) { // 标题在头顶
             List<ComponentInfo> titleData = new ArrayList<>();

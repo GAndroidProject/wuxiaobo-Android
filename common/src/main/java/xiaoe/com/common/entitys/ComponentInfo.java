@@ -35,12 +35,22 @@ public class ComponentInfo {
     private List<GraphicNavItem> graphicNavItemList;
     // 是否需要渲染
     private boolean needDecorate = true;
+    // 是否隐藏 title
+    private boolean hideTitle = false;
 
     public ComponentInfo() { }
 
 
     public void setNeedDecorate(boolean needDecorate) {
         this.needDecorate = needDecorate;
+    }
+
+    public boolean isHideTitle() {
+        return hideTitle;
+    }
+
+    public void setHideTitle(boolean hideTitle) {
+        this.hideTitle = hideTitle;
     }
 
     public boolean isNeedDecorate() {
