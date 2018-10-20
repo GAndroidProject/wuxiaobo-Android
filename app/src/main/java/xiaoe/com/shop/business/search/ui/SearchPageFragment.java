@@ -2,12 +2,14 @@ package xiaoe.com.shop.business.search.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +91,13 @@ public class SearchPageFragment extends BaseFragment implements OnTabClickListen
         historyContentView.setTitleStartText("历史搜索");
         historyContentView.setTitleEndText("清空历史搜索");
 
+        historyContentView.setTitleEndClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "清空历史搜索", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         List<String> historyData = new ArrayList<>();
         historyData.add("区块链");
         historyData.add("我的财富计划");
@@ -108,11 +117,44 @@ public class SearchPageFragment extends BaseFragment implements OnTabClickListen
         recommendData.add("吴晓波频道");
         recommendData.add("我的职场计划");
         recommendData.add("避免败局");
-        
+        SearchMainContentRecyclerAdapter recommendAdapter = new SearchMainContentRecyclerAdapter(mContext, recommendData);
+        recommendAdapter.setOnTabClickListener(this);
+        recommendContentView.setContentAdapter(recommendAdapter);
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Log.d(TAG, "onItemClick:  ----------- " + (historyContentView.isMatchRecycler(view.getParent())));
+        toggleSoftKeyboard();
+        if (historyContentView.isMatchRecycler(view.getParent())) {
+            Log.d(TAG, "onItemClick:  ----------- " + (historyContentView.isMatchRecycler(view.getParent())));
+        } else if (recommendContentView.isMatchRecycler(view.getParent())) {
+            switch (position) {
+                case 0:
+                    Toast.makeText(mContext, "我的财富计划", Toast.LENGTH_SHORT).show();
+                    break;
+                case 1:
+                    Toast.makeText(mContext, "吴晓波频道", Toast.LENGTH_SHORT).show();
+                    break;
+                case 2:
+                    Toast.makeText(mContext, "我的职场计划", Toast.LENGTH_SHORT).show();
+                    break;
+                case 3:
+                    Toast.makeText(mContext, "避免败局", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 如果软键盘弹出，就关闭软键盘
+     */
+    private void toggleSoftKeyboard() {
+        if (imm != null && imm.isActive()) {
+            View view = searchActivity.getCurrentFocus();
+            if (view != null) {
+                IBinder iBinder = view.getWindowToken();
+                imm.hideSoftInputFromWindow(iBinder, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
     }
 }

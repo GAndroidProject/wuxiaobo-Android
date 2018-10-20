@@ -90,4 +90,12 @@ public class SearchContentView extends LinearLayout {
     public boolean isMatchRecycler (ViewParent view) {
         return contentRecycler == view;
     }
+
+    public void setTitleStartClickListener(OnClickListener listener) {
+        contentTitleStart.setOnClickListener(listener);
+    }
+
+    public void setTitleEndClickListener(OnClickListener listener) {
+        contentTitleEnd.setOnClickListener(listener);
+    }
 }

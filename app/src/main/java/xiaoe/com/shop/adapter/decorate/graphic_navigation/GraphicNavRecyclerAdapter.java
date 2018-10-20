@@ -1,18 +1,18 @@
 package xiaoe.com.shop.adapter.decorate.graphic_navigation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.List;
 
 import xiaoe.com.common.entitys.GraphicNavItem;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
 
 public class GraphicNavRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -39,7 +39,10 @@ public class GraphicNavRecyclerAdapter extends RecyclerView.Adapter<BaseViewHold
         graphicNavItemViewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "导航item -- " + mItemList.get(innerPos).getNavContent() , Toast.LENGTH_SHORT).show();
+                String pageTitle = mItemList.get(innerPos).getNavContent();
+                Intent intent = new Intent(mContext, NavigateDetailActivity.class);
+                intent.putExtra("pageTitle", pageTitle);
+                mContext.startActivity(intent);
             }
         });
     }
