@@ -19,12 +19,13 @@ import java.util.List;
 public final class SQLiteUtil extends SQLiteOpenHelper {
 
     private static final String TAG = "SQLiteUtil";
+    private static final  String DATABASE_NAME = "xiaoeshop.db";
     private static SQLiteUtil INSTANCE;
     private final ISQLiteCallBack callBack;
 
 
     private SQLiteUtil(Context context, ISQLiteCallBack callBack) {
-        super(context, callBack.getDatabaseName(), null, callBack.getVersion());
+        super(context, DATABASE_NAME, null, callBack.getVersion());
         this.callBack = callBack;
     }
 
