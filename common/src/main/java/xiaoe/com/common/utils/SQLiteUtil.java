@@ -156,6 +156,7 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         List<String> tablesSQL = callBack.createTablesSQL();
         for (String create_table : tablesSQL) {
+            Log.d(TAG, "onCreate: execute："+create_table);
             db.execSQL(create_table);
             Log.d(TAG, "create table " + "[ \n" + create_table + "\n ]" + " successful! ");
         }

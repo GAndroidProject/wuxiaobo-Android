@@ -16,10 +16,12 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.search.presenter.OnTabClickListener;
 import xiaoe.com.shop.business.search.presenter.SearchMainContentRecyclerAdapter;
+import xiaoe.com.shop.business.search.presenter.SearchSQLiteCallback;
 
 public class SearchPageFragment extends BaseFragment implements OnTabClickListener {
 
@@ -103,7 +105,9 @@ public class SearchPageFragment extends BaseFragment implements OnTabClickListen
         historyContentView.setTitleEndClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "清空历史搜索", Toast.LENGTH_SHORT).show();
+                // 删除数据库中全部数据
+                SQLiteUtil.execSQL("delete from " + SearchSQLiteCallback.TABLE_NAME_CONTENT);
+                Toast.makeText(searchActivity, "删除成功", Toast.LENGTH_SHORT).show();
             }
         });
 
