@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -71,9 +73,6 @@ public class SearchActivity extends XiaoeActivity {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
         }
 
-        currentFragment = SearchPageFragment.newInstance(R.layout.fragment_search_main);
-        getSupportFragmentManager().beginTransaction().add(R.id.search_result_wrap, currentFragment, EMPTY).commit();
-
         initData();
         initView();
         initListener();
@@ -87,11 +86,9 @@ public class SearchActivity extends XiaoeActivity {
         // 初始化数据库
         SQLiteUtil.init(this.getApplicationContext(), new SearchSQLiteCallback());
         historyList = queryAllData();
-        for(SearchHistory searchHistory : historyList) {
-            Log.d(TAG, "initData: id ---- " + searchHistory.getmId());
-            Log.d(TAG, "initData: content ---- " + searchHistory.getmContent());
-            Log.d(TAG, "initData: create --- " + searchHistory.getmCreate());
-        }
+        currentFragment = SearchPageFragment.newInstance(R.layout.fragment_search_main);
+        ((SearchPageFragment) currentFragment).setHistoryList(historyList);
+        getSupportFragmentManager().beginTransaction().add(R.id.search_result_wrap, currentFragment, MAIN).commit();
     }
 
     private void initListener() {
@@ -107,22 +104,38 @@ public class SearchActivity extends XiaoeActivity {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    // TODO: 写入搜索操作的数据库搜索记录操作
+                    // 关闭软件盘
                     toggleSoftKeyboard();
                     String content = searchContent.getText().toString();
-                    if (!hasData(content)) { // 没有存数据库，就存
-                        // 将输入的内容插入到数据库
-                        String currentTime = obtainCurrentTime();
-                        SearchHistory searchHistory = new SearchHistory(content, currentTime);
-                        Log.d(TAG, "onKey: searchHistory --- " + searchHistory.toString());
-                        SQLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
+                    if (TextUtils.isEmpty(content)) { // 不输入搜索内容，默认搜索最近在搜的第一个，先写死为 list
+                        content = "list";
+                    } else {
+                        if (!hasData(content)) { // 不为空并且没有存数据库，就存
+                            // 将输入的内容插入到数据库
+                            String currentTime = obtainCurrentTime();
+                            SearchHistory searchHistory = new SearchHistory(content, currentTime);
+                            SQLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
+                        }
                     }
-                    // TODO: 请求搜索结构，拿到搜索结果
+                    obtainSearchResult(content);
                     return true;
                 }
                 return false;
             }
         });
+    }
+
+    // 根据搜索内容进行查找
+    private void obtainSearchResult(String content) {
+        // TODO: 请求搜索接口，拿到搜索结果，先写死搜索结果
+        List<String> tempData = new ArrayList<>();
+        tempData.add("group");
+        tempData.add("list");
+        if (tempData.contains(content)) { // 包含搜索结果
+            replaceFragment(CONTENT);
+        } else { // 否则
+            replaceFragment(EMPTY);
+        }
     }
 
     protected void replaceFragment(String tag) {
@@ -133,8 +146,10 @@ public class SearchActivity extends XiaoeActivity {
         if (currentFragment == null) {
             switch (tag) {
                 case MAIN: // 搜索主页
+                    currentFragment = SearchPageFragment.newInstance(R.layout.fragment_search_main);
                     break;
                 case CONTENT: // 搜索结果页
+                    currentFragment = SearchPageFragment.newInstance(R.layout.fragment_search_result);
                     break;
                 case EMPTY: // 搜索空白页
                     currentFragment = SearchPageFragment.newInstance(R.layout.fragment_search_empty);
@@ -177,19 +192,17 @@ public class SearchActivity extends XiaoeActivity {
 
     // 判断数据库是否已经存了这条数据
     private boolean hasData(String tempContent) {
-        // 从 search_history 表里面找到 content = tempContent 的 id
+        // 从 search_history 表里面找到 content = tempContent 的那条数据
         List<SearchHistory> lists = SQLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
-                "select id as " + SearchHistoryEntity.COLUMN_NAME_ID + ", " +
-                        SearchHistoryEntity.COLUMN_NAME_CONTENT + " from " +
-                        SearchSQLiteCallback.TABLE_NAME_CONTENT + " where content = ?", new String[]{tempContent});
+                "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " where " + SearchHistoryEntity.COLUMN_NAME_CONTENT + " = ?", new String[]{tempContent});
         // 已经有一条数据的话就不用再插入
         return lists.size() == 1;
     }
 
-    // 查询数据库中全部数据
+    // 查询最新创建的五条数据
     protected List<SearchHistory> queryAllData() {
         return SQLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
-            "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT, null);
+            "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " order by " + SearchHistoryEntity.COLUMN_NAME_CREATE + " desc limit 5", null);
     }
 
     // 获取当前时间

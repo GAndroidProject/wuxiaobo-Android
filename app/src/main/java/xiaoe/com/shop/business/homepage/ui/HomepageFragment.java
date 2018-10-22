@@ -33,6 +33,7 @@ import xiaoe.com.common.entitys.FlowInfoItem;
 import xiaoe.com.common.entitys.GraphicNavItem;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
+import xiaoe.com.common.entitys.TestComponent;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
@@ -189,7 +190,10 @@ public class HomepageFragment extends BaseFragment {
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        Log.d(TAG, "onMainThreadResponse: isSuccess --- " + success);
+        if (success) { // 请求成功
+            TestComponent testComponent = (TestComponent) entity;
+            Log.d(TAG, "onMainThreadResponse: --- " + testComponent);
+        }
     }
 
     @Override

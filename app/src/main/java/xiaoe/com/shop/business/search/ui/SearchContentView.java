@@ -2,7 +2,6 @@ package xiaoe.com.shop.business.search.ui;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,7 +12,8 @@ import android.widget.TextView;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.search.presenter.AutoLineFeedLayoutManager;
-import xiaoe.com.shop.business.search.presenter.SearchMainContentRecyclerAdapter;
+import xiaoe.com.shop.business.search.presenter.HistoryRecyclerAdapter;
+import xiaoe.com.shop.business.search.presenter.RecommendRecyclerAdapter;
 import xiaoe.com.shop.business.search.presenter.SpacesItemDecoration;
 
 public class SearchContentView extends LinearLayout {
@@ -76,8 +76,22 @@ public class SearchContentView extends LinearLayout {
         contentTitleEnd.setVisibility(visibility);
     }
 
-    public void setContentAdapter(SearchMainContentRecyclerAdapter adapter) {
+    public void setHistoryContentAdapter(HistoryRecyclerAdapter adapter) {
         AutoLineFeedLayoutManager autoLineFeedLayoutManager = new AutoLineFeedLayoutManager(mContext);
+        autoLineFeedLayoutManager.setScrollEnabled(false);
+        SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
+        int top = Dp2Px2SpUtil.dp2px(mContext, 16);
+        int right = Dp2Px2SpUtil.dp2px(mContext, 16);
+        spacesItemDecoration.setMargin(0, top, right, 0);
+        contentRecycler.setLayoutManager(autoLineFeedLayoutManager);
+        contentRecycler.addItemDecoration(spacesItemDecoration);
+        contentRecycler.setAdapter(adapter);
+        contentRecycler.setNestedScrollingEnabled(false);
+    }
+
+    public void setRecommendContentAdapter(RecommendRecyclerAdapter adapter) {
+        AutoLineFeedLayoutManager autoLineFeedLayoutManager = new AutoLineFeedLayoutManager(mContext);
+        autoLineFeedLayoutManager.setScrollEnabled(false);
         SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
         int top = Dp2Px2SpUtil.dp2px(mContext, 16);
         int right = Dp2Px2SpUtil.dp2px(mContext, 16);

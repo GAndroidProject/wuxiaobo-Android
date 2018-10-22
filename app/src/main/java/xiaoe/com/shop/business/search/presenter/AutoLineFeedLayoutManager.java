@@ -4,11 +4,14 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 public class AutoLineFeedLayoutManager extends LinearLayoutManager {
+
+    private boolean isScrollEnabled = true;
 
     public AutoLineFeedLayoutManager(Context context) {
         super(context);
@@ -20,6 +23,10 @@ public class AutoLineFeedLayoutManager extends LinearLayoutManager {
 
     public AutoLineFeedLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    public void setScrollEnabled(boolean flag) {
+        this.isScrollEnabled = flag;
     }
 
     @Override
@@ -62,5 +69,15 @@ public class AutoLineFeedLayoutManager extends LinearLayoutManager {
                 lastLineMaxHeight = height;
             }
         }
+    }
+
+    @Override
+    public boolean canScrollVertically() {
+        return isScrollEnabled && super.canScrollVertically();
+    }
+
+    @Override
+    public boolean canScrollHorizontally() {
+        return isScrollEnabled && super.canScrollHorizontally();
     }
 }
