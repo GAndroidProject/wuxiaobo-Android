@@ -19,7 +19,7 @@ public abstract class IRequest {
 
     private String cmd = "";
     protected String clientInfo = Global.g().getDeviceInfo();
-    protected String buildVersion = "1";
+    protected String buildVersion = Global.g().getVersionName();
     public String getCmd(){
         return cmd;
     }
@@ -66,7 +66,35 @@ public abstract class IRequest {
     public Map<String, Object> getFormBody() {
         return formBody;
     }
+
     public String getWrapedFormBody() {
+        //暂时直接new对象，后期通过缓存获取
+        UserInfo userInfo = new UserInfo();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("app_id",formBody.containsKey("app_id")?formBody.get("app_id"):"");
+        jsonObject.put("client","6");
+        jsonObject.put("app_version","1.0");
+        jsonObject.put("build_version",buildVersion);
+        jsonObject.put("client_info",clientInfo);
+
+        String userId = "";
+        String encryptData = "";
+        if(userInfo != null){
+            userId = userInfo.getUserId();
+            encryptData = userInfo.getEncryptData();
+        }
+        jsonObject.put("user_id",userId);
+        jsonObject.put("encrypt_data",encryptData);
+        for(Map.Entry<String ,Object> entry : formBody.entrySet() ){
+            if("app_id".equals(entry.getKey())){
+                continue;
+            }
+            jsonObject.put(entry.getKey(),entry.getValue());
+        }
+        return jsonObject.toJSONString();
+    }
+
+    private String getWrapedFormBody2() {
         //暂时直接new对象，后期通过缓存获取
         UserInfo userInfo = new UserInfo();
         JSONObject jsonObject = new JSONObject();

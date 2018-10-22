@@ -25,7 +25,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
@@ -42,7 +41,8 @@ public class NetworkEngine {
     //    private final static String BASE_URL = url;
 //    private final static String BASE_URL = XiaoeApplication.isFormalCondition() ? FORMAL_URL : TEST_URL;
 //    private final static String BASE_URL = "http://134.175.39.17:12242/";
-    private final static String BASE_URL = "http://134.175.39.17:9380/";
+    public final static String BASE_URL = "http://134.175.39.17:9380/";
+    public final static String CLASS_DETAIL_BASE_URL = "http://134.175.39.17:9378/api/";
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient client;
@@ -80,9 +80,9 @@ public class NetworkEngine {
             @Override
             public void run() {
                 if (iRequest.isPOST()) {
-                    POST(BASE_URL + iRequest.getCmd(), iRequest);
+                    POST(iRequest.getCmd(), iRequest);
                 } else {
-                    GET(BASE_URL + iRequest.getCmd(), iRequest);
+                    GET(iRequest.getCmd(), iRequest);
                 }
             }
         });

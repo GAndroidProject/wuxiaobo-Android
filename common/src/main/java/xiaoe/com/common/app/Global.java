@@ -61,7 +61,7 @@ public class Global
     public String getDeviceInfo(){
         Context context = application.getApplicationContext();
         DeviceInfo deviceInfo = new DeviceInfo();
-        deviceInfo.setVersionName(getVersionName(context));
+        deviceInfo.setVersionName(getVersionName());
         deviceInfo.setBuildLevel("Android "+getBuildLevel());
         deviceInfo.setBuildVersion("Android "+getBuildVersion());
         deviceInfo.setDeviceId(getDeviceId(context));
@@ -75,10 +75,10 @@ public class Global
      * 返回版本名字
      * 对应build.gradle中的versionName
      *
-     * @param context
      * @return
      */
-    public static String getVersionName(Context context) {
+    public String getVersionName() {
+        Context context = application.getApplicationContext();
         String versionName = "";
         try {
             PackageManager packageManager = context.getPackageManager();
