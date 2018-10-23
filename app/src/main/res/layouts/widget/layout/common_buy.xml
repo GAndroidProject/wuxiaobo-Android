@@ -9,7 +9,7 @@
     <Button
         android:id="@+id/buy_vip"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="34dp"
         android:minHeight="0dp"
         android:layout_weight="1"
         android:background="@drawable/vip_btn_bg"
@@ -31,7 +31,7 @@
     <Button
         android:id="@+id/buy_course"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="34dp"
         android:minHeight="0dp"
         android:layout_weight="1"
         android:background="@drawable/recent_update_btn_pressed"

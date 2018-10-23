@@ -31,6 +31,11 @@ public abstract class IRequest {
         this.entityClass = entityClass;
         this.iBizCallback = iBizCallback;
     }
+    IRequest(String cmd, IBizCallback iBizCallback){
+        this.cmd = cmd;
+        this.entityClass = null;
+        this.iBizCallback = iBizCallback;
+    }
 
     private Map<String,Object> formBody = new HashMap<String,Object>();
 

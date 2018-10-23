@@ -148,7 +148,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 //        if (AudioMediaPlayer.isPlaying()) {
-        if (true && miniAudioPlayController != null) {
+        if (miniAudioPlayController != null) {
             int action = ev.getAction();
             switch (action) {
                 case MotionEvent.ACTION_DOWN:

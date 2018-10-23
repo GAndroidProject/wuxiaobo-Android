@@ -34,4 +34,5 @@ dependencies {
     api 'com.alibaba:fastjson:1.2.31'
     api 'com.facebook.fresco:fresco:0.12.0'
     api 'org.greenrobot:eventbus:3.0.0'
+    api files("libs/tbs_sdk_thirdapp_v3.6.0.1352_43618_sharewithdownload_withoutGame_obfs_20180918_120327.jar")
 }

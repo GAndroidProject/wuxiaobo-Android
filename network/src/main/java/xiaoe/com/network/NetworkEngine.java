@@ -79,64 +79,10 @@ public class NetworkEngine {
         ThreadPoolUtils.runTaskOnThread(new Runnable() {
             @Override
             public void run() {
-                if (iRequest.isPOST()) {
-                    POST(iRequest.getCmd(), iRequest);
-                } else {
-                    GET(iRequest.getCmd(), iRequest);
-                }
+                POST(iRequest.getCmd(), iRequest);
             }
         });
 
-    }
-    private void GET(String url, IRequest iRequest) {
-        Request request = new Request.Builder()
-                .get()
-                .url(url)
-                .tag(iRequest)
-                .build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                IRequest mRequest = (IRequest) call.request().tag();
-                mRequest.onResponse(false, null);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                IRequest mRequest = (IRequest) call.request().tag();
-                ResponseBody body = response.body();
-                if (body == null) {
-                    mRequest.onResponse(false, null);
-                    return;
-                }
-                String jsonString = body.string();
-                JSONObject jsonObject = null;
-                String code = "";
-                try {
-                    jsonObject = new JSONObject(jsonString);
-                    code = jsonObject.getString("code");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    mRequest.onResponse(false, null);
-                    return;
-                }
-
-                if ("0".equals(code)) {
-                    Gson gson = new Gson();
-                    try {
-                        Object entityObj = gson.fromJson(jsonObject.getString("data"), mRequest.getEntityClass());
-                        mRequest.onResponse(true, entityObj);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        mRequest.onResponse(false, null);
-                    }
-                } else {
-                    mRequest.onResponse(false, null);
-                }
-
-            }
-        });
     }
 
     private void POST(String url, IRequest iRequest) {
@@ -164,7 +110,6 @@ public class NetworkEngine {
                 IRequest mRequest = (IRequest) (call.request().tag());
                 ResponseBody body = response.body();
                 if (body == null) {
-                    body.close();
                     mRequest.onResponse(false, null);
                     return;
                 }
@@ -173,40 +118,13 @@ public class NetworkEngine {
 //                    StatusKeepUtil.clearUserInfo();
 //                }
                 String jsonString = body.string();
-                Log.d(TAG, "onResponse: body --- " + jsonString);
-                JSONObject jsonObject = null;
+                com.alibaba.fastjson.JSONObject jsonObject = null;
                 String code = "";
-                try {
-                    jsonObject = new JSONObject(jsonString);
-                    code = jsonObject.getString("code");
-                    Log.d(TAG, "onResponse: code --- " + code);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    body.close();
-                    mRequest.onResponse(false, null);
-                    return;
-                }
-
+                jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
+                code = jsonObject.getString("code");
                 if ("0".equals(code)) {
-                    Gson gson = new Gson();
-                    Object entityObj = null;
-
-                    try {
-                        String strData = jsonObject.getString("data");
-//                        if ("true".equals(strData) || "false".equals(strData)) {
-//                            strData = jsonString;
-//                        }
-                        if(!TextUtils.isEmpty(strData) && !"null".equals(strData)){
-                            entityObj = analyticalJSON(strData, gson, mRequest.getEntityClass());
-                        }
-                    } catch (JSONException e) {
-//                        e.printStackTrace();
-                        body.close();
-                        mRequest.onResponse(false, null);
-                        return;
-                    }
                     body.close();
-                    mRequest.onResponse(true, entityObj);
+                    mRequest.onResponse(true, jsonObject.get("data"));
                 } else if ("2".equals(code)) {
                     body.close();
                     //未登录清除缓存，后续放开注释
@@ -236,7 +154,7 @@ public class NetworkEngine {
             try {
                 objectJSON = gson.fromJson(strJSON, clazz);
             } catch (JsonSyntaxException e) {
-//                Log.d(TAG, "analyticalJSON: "+e.toString());
+                Log.d(TAG, "analyticalJSON: "+e.toString());
                 e.printStackTrace();
             }
             return objectJSON;

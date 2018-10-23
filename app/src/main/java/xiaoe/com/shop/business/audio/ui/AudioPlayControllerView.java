@@ -164,4 +164,12 @@ public class AudioPlayControllerView extends FrameLayout implements View.OnClick
         }
         touchSeekBar = false;
     }
+
+    public void setButtonEnabled(boolean enabled){
+        btnPlayNext.setEnabled(enabled);
+        btnPlayForward.setEnabled(enabled);
+        btnPlayLast.setEnabled(enabled);
+        btnPlayBack.setEnabled(enabled);
+        btnPlay.setEnabled(enabled);
+    }
 }

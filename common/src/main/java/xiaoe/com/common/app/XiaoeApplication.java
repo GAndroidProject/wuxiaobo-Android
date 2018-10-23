@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.tencent.smtt.sdk.QbSdk;
 
 /**
  * Created by Administrator on 2017/7/17.
@@ -25,6 +26,7 @@ public class XiaoeApplication extends Application {
         //初始化Fresco图片加载库
         ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext).setDownsampleEnabled(true).build();
         Fresco.initialize(this,imagePipelineConfig);
+        QbSdk.initX5Environment(this, null);
 
     }
     public static Context getmContext() {

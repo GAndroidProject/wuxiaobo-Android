@@ -2,6 +2,7 @@ package xiaoe.com.shop.business.audio.ui;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,21 +14,29 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.tencent.smtt.sdk.CookieSyncManager;
+import com.tencent.smtt.sdk.WebView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import xiaoe.com.common.utils.NetworkState;
+import xiaoe.com.network.requests.AudioDetailRequest;
+import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.ViewAnim;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
+import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.comment.ui.CommentActivity;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
+import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.ContentMenuLayout;
 
 public class AudioActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener {
@@ -63,6 +72,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private ObjectAnimator diskRotate;
     private AudioHoverControllerLayout audioHoverPlayController;
     private ContentMenuLayout contentMenuLayout;
+    private AudioPresenter audioPresenter;
+    private WebView detailContent;
+    private CommonBuyView commonBuyView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,10 +83,13 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             getWindow().setSharedElementEnterTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
             getWindow().setSharedElementReturnTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.CENTER_CROP));
         }
+        EventBus.getDefault().register(this);
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
         setContentView(R.layout.activity_audio);
         initViews();
-        initDatas();
-        EventBus.getDefault().register(this);
+//        initDatas();
+        audioPresenter = new AudioPresenter(this);
+        audioPresenter.requestDetail();
     }
 
     @Override
@@ -116,6 +131,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
         ImageView btnAudioComment = (ImageView) findViewById(R.id.btn_audio_comment);
         btnAudioComment.setOnClickListener(this);
+        //图文内容详细显示
+        detailContent = (WebView) findViewById(R.id.audio_detail_content);
+        //底部购买按钮
+        commonBuyView = (CommonBuyView) findViewById(R.id.common_buy_view);
     }
     private void initDatas() {
         AudioPlayUtil audioPlayUtil = AudioPlayUtil.getInstance();
@@ -170,6 +189,28 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         playNum.setVisibility(visible);
         btnSpeedPlay.setVisibility(visible);
         audioPlayController.setVisibility(visible);
+    }
+
+    @Override
+    public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
+        super.onMainThreadResponse(iRequest, success, entity);
+        JSONObject jsonObject = null;
+        if(entity != null){
+            jsonObject = (JSONObject) entity;
+        }
+        if(iRequest instanceof AudioDetailRequest && jsonObject != null){
+            //购买商品前详情，
+            JSONObject resourceInfo = jsonObject.getJSONObject("resource_info");
+            if(resourceInfo.getIntValue("has_buy") == 0){
+                setButtonEnabled(false);
+                commonBuyView.setVisibility(View.VISIBLE);
+            }
+        String content = resourceInfo.getString("content");
+        detailContent.loadDataWithBaseURL(null, NetworkState.getNewContent(content),"text/html", "UTF-8", null);
+        CookieSyncManager.createInstance(this);
+        CookieSyncManager.getInstance().sync();
+        }
+
     }
 
     @Override
@@ -228,6 +269,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        if(detailContent != null){
+            detailContent.destroy();
+        }
     }
 
     @Override
@@ -235,5 +279,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if(view.getId() == R.id.hover_audio_more){
             contentMenuLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setButtonEnabled(boolean enabled){
+        audioPlayController.setButtonEnabled(enabled);
     }
 }
