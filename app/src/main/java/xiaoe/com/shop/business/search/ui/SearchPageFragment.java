@@ -49,6 +49,7 @@ public class SearchPageFragment extends BaseFragment implements OnTabClickListen
     SearchContentView recommendContentView;
 
     List<SearchHistory> historyList;
+    List<String> recommendData; // 暂时写死
 
     public static SearchPageFragment newInstance(int layoutId) {
         SearchPageFragment searchPageFragment = new SearchPageFragment();
@@ -143,7 +144,7 @@ public class SearchPageFragment extends BaseFragment implements OnTabClickListen
         recommendContentView.setTitleEndVisibility(View.GONE);
         recommendContentView.setTitleStartText("大家都在搜");
 
-        List<String> recommendData = new ArrayList<>();
+        recommendData = new ArrayList<>();
         recommendData.add("区块链");
         recommendData.add("我的财富计划");
         recommendData.add("升职记");
@@ -237,25 +238,15 @@ public class SearchPageFragment extends BaseFragment implements OnTabClickListen
     public void onItemClick(View view, int position) {
         toggleSoftKeyboard();
         if (historyContentView.getVisibility() == View.VISIBLE && historyContentView.isMatchRecycler(view.getParent())) {
-            Log.d(TAG, "onItemClick:  ----------- " + (historyContentView.isMatchRecycler(view.getParent())));
+            String searchContent = historyList.get(position).getmContent();
+            ((SearchActivity) getActivity()).searchContent.setText(searchContent);
+            ((SearchActivity) getActivity()).searchContent.setSelection(searchContent.length());
+            imm.toggleSoftInput(0, 0);
         } else if (recommendContentView.getVisibility() == View.VISIBLE && recommendContentView.isMatchRecycler(view.getParent())) {
-            switch (position) {
-                case 0:
-                    Toast.makeText(mContext, "区块链", Toast.LENGTH_SHORT).show();
-                    break;
-                case 1:
-                    Toast.makeText(mContext, "我的财富计划", Toast.LENGTH_SHORT).show();
-                    break;
-                case 2:
-                    Toast.makeText(mContext, "升职记", Toast.LENGTH_SHORT).show();
-                    break;
-                case 3:
-                    Toast.makeText(mContext, "健康", Toast.LENGTH_SHORT).show();
-                    break;
-                case 4:
-                    Toast.makeText(mContext, "新税收政策", Toast.LENGTH_SHORT).show();
-                    break;
-            }
+            String searchContent = recommendData.get(position);
+            ((SearchActivity) getActivity()).searchContent.setText(searchContent);
+            ((SearchActivity) getActivity()).searchContent.setSelection(searchContent.length());
+            imm.toggleSoftInput(0, 0);
         }
     }
 

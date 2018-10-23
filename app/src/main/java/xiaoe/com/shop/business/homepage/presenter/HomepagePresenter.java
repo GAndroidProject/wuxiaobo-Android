@@ -7,6 +7,7 @@ import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.HomepageRequest;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class HomepagePresenter implements IBizCallback {
 
@@ -17,8 +18,15 @@ public class HomepagePresenter implements IBizCallback {
     }
 
     @Override
-    public void onResponse(IRequest iRequest, boolean success, Object entity) {
-        inr.onMainThreadResponse(iRequest, success, entity);
+    public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
+        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                if (success && entity != null) {
+                    inr.onMainThreadResponse(iRequest, success, entity);
+                }
+            }
+        });
     }
 
     public void requestData() {

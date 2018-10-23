@@ -572,6 +572,7 @@ public class LoginPageFragment extends BaseFragment {
                 if (event.getAction() != MotionEvent.ACTION_UP) {
                     return false;
                 }
+                // 点中 drawable
                 if (event.getX() > et.getWidth() - et.getPaddingEnd() - drawable.getIntrinsicWidth()) {
                     if (et.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD + InputType.TYPE_CLASS_TEXT) {
                         // 设置隐藏按钮

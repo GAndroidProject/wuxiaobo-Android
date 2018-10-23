@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,8 +193,7 @@ public class HomepageFragment extends BaseFragment {
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
         if (success) { // 请求成功
-            TestComponent testComponent = (TestComponent) entity;
-            Log.d(TAG, "onMainThreadResponse: --- " + testComponent);
+            JSONObject entityObj = (JSONObject) entity;
         }
     }
 
