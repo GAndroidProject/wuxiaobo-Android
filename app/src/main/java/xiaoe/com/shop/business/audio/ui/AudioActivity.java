@@ -283,5 +283,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
     private void setButtonEnabled(boolean enabled){
         audioPlayController.setButtonEnabled(enabled);
+        audioHoverPlayController.setButtonEnabled(enabled);
     }
 }

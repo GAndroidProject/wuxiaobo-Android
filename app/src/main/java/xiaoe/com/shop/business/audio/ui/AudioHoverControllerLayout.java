@@ -88,4 +88,10 @@ public class AudioHoverControllerLayout extends FrameLayout implements View.OnCl
                 break;
         }
     }
+
+    public void setButtonEnabled(boolean enabled){
+        btnPlay.setEnabled(enabled);
+        btnNext.setEnabled(enabled);
+        btnLast.setEnabled(enabled);
+    }
 }
