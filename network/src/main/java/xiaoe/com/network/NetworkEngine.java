@@ -118,30 +118,9 @@ public class NetworkEngine {
 //                    StatusKeepUtil.clearUserInfo();
 //                }
                 String jsonString = body.string();
-                com.alibaba.fastjson.JSONObject jsonObject = null;
-                String code = "";
-                jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
-                code = jsonObject.getString("code");
-                if ("0".equals(code)) {
-                    body.close();
-                    mRequest.onResponse(true, jsonObject.get("data"));
-                } else if ("2".equals(code)) {
-                    body.close();
-                    //未登录清除缓存，后续放开注释
-//                    StatusKeepUtil.clearUserInfo();
-                    mRequest.onResponse(false, "not login");
-                }else if("3".equals(code)){
-                    body.close();
-                    //登录超时清除缓存，后续放开注释
-//                    StatusKeepUtil.clearUserInfo();
-                    mRequest.onResponse(false, "user login time out");
-                } else if("40006".equals(code) || "40007".equals(code)){
-                    body.close();
-                    mRequest.onResponse(false,"user repeat");
-                }else{
-                    body.close();
-                    mRequest.onResponse(false, null);
-                }
+                com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
+                body.close();
+                mRequest.onResponse(true, jsonObject);
             }
         });
     }

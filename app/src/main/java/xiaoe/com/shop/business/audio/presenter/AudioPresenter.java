@@ -1,9 +1,9 @@
 package xiaoe.com.shop.business.audio.presenter;
 
-import xiaoe.com.common.entitys.AudioGoodsDetail;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
+import xiaoe.com.network.requests.AudioContentRequest;
 import xiaoe.com.network.requests.AudioDetailRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
@@ -33,11 +33,23 @@ public class AudioPresenter implements IBizCallback {
      * 获取购买前商品详情
      */
     public void requestDetail(){
-        AudioDetailRequest couponRequest = new AudioDetailRequest(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.goods.info.get/1.0.0", AudioGoodsDetail.class, this);
+        AudioDetailRequest couponRequest = new AudioDetailRequest(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.goods.info.get/1.0.0", this);
         couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addRequestParam("goods_id","i_5bcde8b3943bd_PZIPQ3oF");
-        couponRequest.addRequestParam("goods_type","1");
-        couponRequest.addRequestParam("user_id","u_5859f1669c370_NI8t8WuW");
+        couponRequest.addRequestParam("goods_id","a_59f1500e3ee2f_v9K2reHm");
+        couponRequest.addRequestParam("goods_type","2");
+        couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        couponRequest.sendRequest();
+    }
+
+    /**
+     * 获取购买后的资源内容
+     */
+    public void requestContent(){
+        AudioContentRequest couponRequest = new AudioContentRequest(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.resource.content.get", this);
+        couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
+        couponRequest.addRequestParam("resource_id","a_59f1500e3ee2f_v9K2reHm");
+        couponRequest.addRequestParam("resource_type","2");
+        couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         couponRequest.sendRequest();
     }
 }

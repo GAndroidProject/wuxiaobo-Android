@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,7 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
     private static final  String DATABASE_NAME = "xiaoeshop.db";
     private static SQLiteUtil INSTANCE;
     private final ISQLiteCallBack callBack;
+
 
 
     private SQLiteUtil(Context context, ISQLiteCallBack callBack) {
@@ -156,9 +156,7 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         List<String> tablesSQL = callBack.createTablesSQL();
         for (String create_table : tablesSQL) {
-            Log.d(TAG, "onCreate: execute："+create_table);
             db.execSQL(create_table);
-            Log.d(TAG, "create table " + "[ \n" + create_table + "\n ]" + " successful! ");
         }
     }
 

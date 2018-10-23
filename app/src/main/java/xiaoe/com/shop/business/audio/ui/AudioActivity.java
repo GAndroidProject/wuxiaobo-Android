@@ -31,7 +31,6 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.ViewAnim;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
-import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.comment.ui.CommentActivity;
 import xiaoe.com.shop.events.AudioPlayEvent;
@@ -46,6 +45,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private SimpleDraweeView audioBG;
     private SimpleDraweeView audioRing;
     private ViewAnim mViewAnim;
+    private String appId = "";
+    private String resourceId = "";
 
     private Handler mHandler = new Handler(){
         @Override
@@ -87,9 +88,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         setContentView(R.layout.activity_audio);
         initViews();
-//        initDatas();
         audioPresenter = new AudioPresenter(this);
-        audioPresenter.requestDetail();
+//        audioPresenter.requestDetail();
     }
 
     @Override
@@ -113,10 +113,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         btnPageClose.setOnClickListener(this);
         //标题
         audioTitle = (TextView) findViewById(R.id.audio_title);
-        audioTitle.setText("我的财富计划 新中产必修财富课程");
         //播放次数
         playNum = (TextView) findViewById(R.id.play_num);
-        playNum.setText("1000次播放");
 
         //倍速按钮
         btnSpeedPlay = (TextView) findViewById(R.id.audio_speed_play);
@@ -137,20 +135,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         commonBuyView = (CommonBuyView) findViewById(R.id.common_buy_view);
     }
     private void initDatas() {
-        AudioPlayUtil audioPlayUtil = AudioPlayUtil.getInstance();
-        String[] paths = {getResources().getString(R.string.test_audio_url1),
-                getResources().getString(R.string.test_audio_url2),
-                getResources().getString(R.string.test_audio_url3),
-                getResources().getString(R.string.test_audio_url4),
-                getResources().getString(R.string.test_audio_url5)};
-        for (int i = 0; i < 5; i++){
-            AudioPlayUtil.Audio audio = new AudioPlayUtil.Audio();
-            audio.setUrl(paths[i]);
-            audio.setPlay(false);
-            audio.setIndex(i);
-            audioPlayUtil.addAudio(audio);
-        }
-        AudioMediaPlayer.setAudio(audioPlayUtil.getAudioList().get(0));
+
     }
     private void setDiskRotateAnimator(boolean play){
         if(diskRotate == null){
