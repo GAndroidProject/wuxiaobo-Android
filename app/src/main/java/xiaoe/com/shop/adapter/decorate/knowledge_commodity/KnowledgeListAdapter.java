@@ -3,6 +3,7 @@ package xiaoe.com.shop.adapter.decorate.knowledge_commodity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
 
@@ -58,21 +61,33 @@ public class KnowledgeListAdapter extends BaseAdapter {
         } else {
             viewHolder = (KnowledgeHolder) convertView.getTag();
         }
-        viewHolder.itemTitle.setText(mItemList.get(position).getItemTitle());
-        viewHolder.itemIcon.setImageURI(mItemList.get(position).getItemImg());
-        if (TextUtils.isEmpty(mItemList.get(position).getItemPrice())) { // 无价格，将 desc 文案设置在左边的 textView 中，右边的 textView 内容置空
-            viewHolder.itemDesc.setText("");
-            viewHolder.itemPrice.setText(mItemList.get(position).getItemDesc());
-            viewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
-        } else { // 有价格
-            if (mItemList.get(position).isHasBuy()) { // 买了
-                viewHolder.itemPrice.setText("已购");
-                viewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
-                viewHolder.itemDesc.setText(mItemList.get(position).getItemDesc());
-            } else { // 没买
-                viewHolder.itemDesc.setText(mItemList.get(position).getItemDesc());
-                viewHolder.itemPrice.setText(mItemList.get(position).getItemPrice());
+        // 如果是专栏的话需要有两行标题，其他单品就显示一行标题和一行描述
+        String srcType = mItemList.get(position).getSrcType();
+        if (srcType != null) { // 写的数据的时候并没有添加 srcType 先兼容，课程页用了真数据之后删掉
+            if (srcType.equals(DecorateEntityType.TOPIC) || srcType.equals(DecorateEntityType.COLUMN)) { // 专栏或者大专栏
+                viewHolder.itemTitle.setText(mItemList.get(position).getItemTitle());
+                viewHolder.itemTitle.setMaxLines(1);
+                viewHolder.itemTitleColumn.setVisibility(View.VISIBLE);
+                viewHolder.itemTitleColumn.setText(mItemList.get(position).getItemTitleColumn());
+            } else { // 其他单品
+                viewHolder.itemTitle.setText(mItemList.get(position).getItemTitle());
+                viewHolder.itemTitle.setMaxLines(2);
+                viewHolder.itemTitleColumn.setVisibility(View.GONE);
             }
+        }
+        viewHolder.itemIcon.setImageURI(mItemList.get(position).getItemImg());
+        // 将 desc 文案设置在左边的 textView 中，右边的 textView 内容置空，这个是什么状态
+//            viewHolder.itemDesc.setText("");
+//            viewHolder.itemPrice.setText(mItemList.get(position).getItemDesc());
+//            viewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
+//            viewHolder.itemPrice.setTextSize(12);
+        if (mItemList.get(position).isHasBuy()) { // 买了
+            viewHolder.itemPrice.setText("已购");
+            viewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
+            viewHolder.itemDesc.setText(mItemList.get(position).getItemDesc());
+        } else { // 没买
+            viewHolder.itemDesc.setText(mItemList.get(position).getItemDesc());
+            viewHolder.itemPrice.setText(mItemList.get(position).getItemPrice());
         }
         viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,23 +99,5 @@ public class KnowledgeListAdapter extends BaseAdapter {
             }
         });
         return convertView;
-    }
-
-    class KnowledgeHolder {
-
-        @BindView(R.id.knowledge_list_item_wrap)
-        RelativeLayout itemWrap;
-        @BindView(R.id.knowledge_list_item_icon)
-        SimpleDraweeView itemIcon;
-        @BindView(R.id.knowledge_list_item_title)
-        TextView itemTitle;
-        @BindView(R.id.knowledge_list_item_price)
-        TextView itemPrice;
-        @BindView(R.id.knowledge_list_item_desc)
-        TextView itemDesc;
-
-        KnowledgeHolder(View itemView) {
-            ButterKnife.bind(this, itemView);
-        }
     }
 }

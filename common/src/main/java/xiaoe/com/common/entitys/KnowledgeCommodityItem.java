@@ -6,12 +6,16 @@ public class KnowledgeCommodityItem {
     private String itemImg;
     // 标题
     private String itemTitle;
+    // 标题专栏描述
+    private String itemTitleColumn;
     // 价格
     private String itemPrice;
     // 描述
     private String itemDesc;
     // 是否购买
     private boolean hasBuy;
+    // 子类型（图文、音频、视频、专栏）
+    private String srcType;
 
     public KnowledgeCommodityItem() {}
 
@@ -53,5 +57,23 @@ public class KnowledgeCommodityItem {
 
     public String getItemDesc() {
         return itemDesc;
+    }
+
+    public void setItemTitleColumn(String itemTitleColumn) {
+        this.itemTitleColumn = itemTitleColumn;
+    }
+
+    public String getItemTitleColumn() {
+
+        return itemTitleColumn;
+    }
+
+    public void setSrcType(String srcType) {
+        this.srcType = srcType;
+    }
+
+    public String getSrcType() {
+
+        return srcType;
     }
 }

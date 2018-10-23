@@ -8,13 +8,13 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -26,7 +26,9 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
-import xiaoe.com.common.entitys.FlowInfoItem;
+import xiaoe.com.common.entitys.GraphicNavItem;
+import xiaoe.com.common.entitys.KnowledgeCommodityItem;
+import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
@@ -52,10 +54,9 @@ public class HomepageFragment extends BaseFragment {
     RecyclerView homeContentRecyclerView;
     @BindView(R.id.home_collapsing_toolbar)
     CollapsingToolbarLayout homeCollLayout;
-    @BindView(R.id.home_tool_bar)
-    Toolbar homeToolBar;
 
     private DecorateRecyclerAdapter adapter;
+    List<ComponentInfo> microPageList;
 
     @Nullable
     @Override
@@ -78,82 +79,156 @@ public class HomepageFragment extends BaseFragment {
         // 网络请求数据代码
         HomepagePresenter hp = new HomepagePresenter(this);
         hp.requestData();
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-//        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                HomepageFragment.this.Toast("弹出一个吐司");
-//            }
-//        });
-//        toolbar.setLogo(R.mipmap.ic_launcher);
-//        toolbar.setTitle("我是标题");
-//        toolbar.setSubtitle("这是子标题");
     }
 
-    public void init() {
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        llm.setOrientation(LinearLayout.VERTICAL);
-        List<ComponentInfo> tempData = new ArrayList<ComponentInfo>();
-        // 搜索框假数据
-//        ComponentInfo componentInfo = new ComponentInfo();
-//        componentInfo.setTitle("课程");
-//        componentInfo.setType("search");
-//        tempData.add(componentInfo);
-//        LinearLayoutManager llm_1 = new LinearLayoutManager(getActivity());
-//        llm.setOrientation(LinearLayout.VERTICAL);
-//        homeTitleRecyclerView.setLayoutManager(llm_1);
-        // 信息流假数据
-        ComponentInfo componentInfo_1 = new ComponentInfo();
-        componentInfo_1.setType("flow_info");
-        componentInfo_1.setTitle("10月10日 星期三");
-        componentInfo_1.setDesc("今天");
-        componentInfo_1.setJoinedDesc("我正在学");
-        componentInfo_1.setImgUrl("res:///" + R.mipmap.icon_taday_learning);
-        List<FlowInfoItem> flowInfoItemList = new ArrayList<>();
-        FlowInfoItem flowInfoItem_1 = new FlowInfoItem();
-        flowInfoItem_1.setItemType("imgText");
-        flowInfoItem_1.setItemTitle("今日精选");
-        flowInfoItem_1.setItemDesc("我的财富计划 新中产必修财富课程");
-        flowInfoItem_1.setItemPrice("￥9.9");
-        flowInfoItem_1.setItemHasBuy(false);
-        flowInfoItem_1.setItemImg("http://pic.58pic.com/58pic/15/62/48/98Z58PICyiN_1024.jpg");
-        FlowInfoItem flowInfoItem_2 = new FlowInfoItem();
-        flowInfoItem_2.setItemType("audio");
-        flowInfoItem_2.setItemTitle("音频组件");
-        flowInfoItem_2.setItemDesc("我的财富计划 新中产必修财富课程");
-        flowInfoItem_2.setItemPrice("￥999");
-        flowInfoItem_2.setItemJoinedDesc("10928");
-        flowInfoItem_2.setItemHasBuy(false);
-        FlowInfoItem flowInfoItem_3 = new FlowInfoItem();
-        flowInfoItem_3.setItemType("video");
-        flowInfoItem_3.setItemTitle("视频组件");
-        flowInfoItem_3.setItemDesc("每天看见吴晓波");
-        flowInfoItem_3.setItemPrice("199.99");
-        flowInfoItem_3.setItemImg("http://pic6.nipic.com/20100417/4578581_140045259657_2.jpg");
-        flowInfoItem_3.setItemHasBuy(true);
-        flowInfoItemList.add(flowInfoItem_1);
-        flowInfoItemList.add(flowInfoItem_2);
-        flowInfoItemList.add(flowInfoItem_3);
-        componentInfo_1.setFlowInfoItemList(flowInfoItemList);
-
-        tempData.add(componentInfo_1);
-        homeContentRecyclerView.setLayoutManager(llm);
-        if (tempData.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) { // 标题在头顶
-            List<ComponentInfo> titleData = new ArrayList<>();
-            homeAppBar.setVisibility(View.VISIBLE);
-            titleData.add(tempData.get(0));
-            DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
-            homeTitleRecyclerView.setAdapter(dra);
-            tempData.remove(0);
-        } else {
-            homeAppBar.setVisibility(View.GONE);
+    @Override
+    public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
+        super.onMainThreadResponse(iRequest, success, entity);
+        JSONObject result = (JSONObject) entity;
+        int code = result.getInteger("code");
+        if (success) { // 请求成功
+            if (code == 0) {
+                Object data = result.get("data");
+                initPageData(data);
+                initMainContent();
+            } else if (code == NetworkCodes.CODE_GOODS_DELETE) { // 微页面不存在
+                Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
+            } else if (code == NetworkCodes.CODE_TINY_PAGER_NO_FIND) { // 微页面已被删除
+                Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
+            }
         }
+    }
 
-        adapter = new DecorateRecyclerAdapter(getActivity(), tempData);
-        homeContentRecyclerView.setAdapter(adapter);
+    // 初始化微页面数据
+    private void initPageData(Object data) {
+        JSONObject entityObj = (JSONObject) data;
+        JSONArray microPageData = (JSONArray) entityObj.get("components");
+        for (Object item : microPageData) {
+            JSONObject itemObj = ((JSONObject) item);
+            switch (itemObj.getString("type")) {
+                case DecorateEntityType.SEARCH_STR: // 搜索组件
+                    ComponentInfo componentInfo_title = new ComponentInfo();
+                    componentInfo_title.setTitle("课程");
+                    componentInfo_title.setType(DecorateEntityType.SEARCH_STR);
+                    microPageList.add(componentInfo_title);
+                    break;
+                case DecorateEntityType.SHUFFLING_FIGURE_STR: // 轮播图
+                    ComponentInfo componentInfo_shuffling = new ComponentInfo();
+                    componentInfo_shuffling.setType(DecorateEntityType.SHUFFLING_FIGURE_STR);
+                    List<String> urlList = new ArrayList<>();
+                    JSONArray shufflingSubList = (JSONArray) itemObj.get("list");
+                    for (Object subItem : shufflingSubList) {
+                        JSONObject subItemObj = (JSONObject) subItem;
+                        urlList.add(subItemObj.getString("img_url"));
+                    }
+                    componentInfo_shuffling.setShufflingList(urlList);
+                    microPageList.add(componentInfo_shuffling);
+                    break;
+                case DecorateEntityType.GRAPHIC_NAVIGATION_STR: // 图文导航
+                    ComponentInfo componentInfo_navigator = new ComponentInfo();
+                    componentInfo_navigator.setType(DecorateEntityType.GRAPHIC_NAVIGATION_STR);
+                    List<GraphicNavItem> graphicNavItemList = new ArrayList<>();
+                    JSONArray navigatorSubList = (JSONArray) itemObj.get("list");
+                    for (Object subItem : navigatorSubList) {
+                        JSONObject subItemObj = (JSONObject) subItem;
+                        GraphicNavItem graphicNavItem = new GraphicNavItem();
+                        graphicNavItem.setNavIcon(subItemObj.getString("img_url"));
+                        graphicNavItem.setNavContent(subItemObj.getString("title"));
+                        graphicNavItemList.add(graphicNavItem);
+                    }
+                    componentInfo_navigator.setGraphicNavItemList(graphicNavItemList);
+                    microPageList.add(componentInfo_navigator);
+                    break;
+                case DecorateEntityType.GOODS:
+                    initGoods(itemObj);
+                    break;
+            }
+        }
+    }
 
+    // 初始化商品
+    private void initGoods(JSONObject itemObj) {
+        String type_title = itemObj.getString("type_title");
+        switch (type_title) {
+            case DecorateEntityType.RECENT_UPDATE_STR: // 频道
+                // TODO: 初始化频道数据
+                break;
+            case DecorateEntityType.KNOWLEDGE_COMMODITY_STR: // 知识商品
+                if (itemObj.getInteger("list_style") == 0) { // 列表形式
+                    ComponentInfo componentInfo_know_list = new ComponentInfo();
+                    componentInfo_know_list.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
+                    componentInfo_know_list.setSubType(DecorateEntityType.KNOWLEDGE_LIST);
+                    List<KnowledgeCommodityItem> listItems = new ArrayList<>();
+                    JSONArray knowledgeListSubList = (JSONArray) itemObj.get("list");
+                    initKnowledgeData(listItems, knowledgeListSubList);
+                    componentInfo_know_list.setKnowledgeCommodityItemList(listItems);
+                    microPageList.add(componentInfo_know_list);
+                } else if (itemObj.getInteger("list_style") == 2) { // （小图）宫格形式
+                    ComponentInfo componentInfo_know_group = new ComponentInfo();
+                    componentInfo_know_group.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
+                    componentInfo_know_group.setSubType(DecorateEntityType.KNOWLEDGE_GROUP);
+                    componentInfo_know_group.setTitle("学会管理自己的财富");
+                    componentInfo_know_group.setDesc("查看更多");
+                    List<KnowledgeCommodityItem> groupItems = new ArrayList<>();
+                    JSONArray knowledgeGroupSubList = (JSONArray) itemObj.get("list");
+                    initKnowledgeData(groupItems, knowledgeGroupSubList);
+                    componentInfo_know_group.setKnowledgeCommodityItemList(groupItems);
+                    microPageList.add(componentInfo_know_group);
+                }
+                break;
+        }
+    }
+
+    // 从 JSON 对象数组中获取知识商品的数据并初始化到已设置好的对象中
+    private void initKnowledgeData(List<KnowledgeCommodityItem> itemList, JSONArray knowledgeListSubList) {
+        for (Object subItem : knowledgeListSubList) {
+            JSONObject listSubItemObj = (JSONObject) subItem;
+            KnowledgeCommodityItem item = new KnowledgeCommodityItem();
+            item.setItemTitle(listSubItemObj.getString("title"));
+            item.setItemTitleColumn(listSubItemObj.getString("summary"));
+            item.setItemImg(listSubItemObj.getString("img_url"));
+            String price = "￥" + listSubItemObj.getString("show_price");
+            Log.d(TAG, "initGoods: price ---- " + price);
+            if (price.equals("￥")) { // 表示买了，所以没有价格
+                item.setItemPrice(null);
+                item.setHasBuy(true);
+            } else {
+                item.setItemPrice(price);
+                item.setHasBuy(false);
+            }
+            String srcType = listSubItemObj.getString("src_type");
+            int viewCount = listSubItemObj.getInteger("view_count") == null ? 0 : listSubItemObj.getInteger("view_count");
+            item.setSrcType(srcType);
+            String viewDesc = obtainViewCountDesc(srcType, viewCount);
+            item.setItemDesc(viewDesc);
+            itemList.add(item);
+        }
+    }
+
+    // 根据子类型获取浏览字段
+    private String obtainViewCountDesc (String srcType, int viewCount) {
+        if (viewCount == 0) {
+            return "";
+        }
+        switch (srcType) {
+            case DecorateEntityType.IMAGE_TEXT: // 图文
+                return viewCount + "次阅读";
+            case DecorateEntityType.AUDIO: // 音频
+            case DecorateEntityType.VIDEO: // 视频
+                return viewCount + "次播放";
+            case DecorateEntityType.TOPIC: // 大专栏
+            case DecorateEntityType.COLUMN: // 专栏
+                return "已更新" + viewCount + "期";
+            default:
+                return "";
+        }
+    }
+
+    // 拿到请求到的数据后进行界面初始化
+    public void init() {
+        microPageList = new ArrayList<>();
+
+        // 转场动画 SimpleDraweeView 处理
         getActivity().setExitSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
@@ -180,18 +255,33 @@ public class HomepageFragment extends BaseFragment {
         });
     }
 
-    @Override
-    public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
-        super.onMainThreadResponse(iRequest, success, entity);
-        if (success) { // 请求成功
-            JSONObject entityObj = (JSONObject) entity;
+    // 初始化首页内容
+    private void initMainContent () {
+        // 初始化布局管理器
+        LinearLayoutManager llm_content = new LinearLayoutManager(getActivity());
+        llm_content.setOrientation(LinearLayout.VERTICAL);
+        homeContentRecyclerView.setLayoutManager(llm_content);
+        LinearLayoutManager llm_title = new LinearLayoutManager(getActivity());
+        llm_title.setOrientation(LinearLayoutManager.VERTICAL);
+        homeTitleRecyclerView.setLayoutManager(llm_title);
+        // 初始化适配器
+        adapter = new DecorateRecyclerAdapter(getActivity(), microPageList);
+        homeContentRecyclerView.setAdapter(adapter);
+        if (microPageList.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) { // 标题在头顶
+            List<ComponentInfo> titleData = new ArrayList<>();
+            homeAppBar.setVisibility(View.VISIBLE);
+            titleData.add(microPageList.get(0));
+            DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
+            homeTitleRecyclerView.setAdapter(dra);
+            microPageList.remove(0);
+        } else {
+            homeAppBar.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        init();
     }
 
     @Override

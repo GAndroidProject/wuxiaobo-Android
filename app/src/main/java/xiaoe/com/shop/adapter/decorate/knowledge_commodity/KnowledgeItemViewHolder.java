@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
-public class KnowledgeItemViewHolder extends BaseViewHolder {
+class KnowledgeItemViewHolder extends BaseViewHolder {
 
     @BindView(R.id.knowledge_group_item_wrap)
     FrameLayout itemWrap;
@@ -19,6 +19,8 @@ public class KnowledgeItemViewHolder extends BaseViewHolder {
     SimpleDraweeView itemIcon;
     @BindView(R.id.knowledge_group_item_title)
     TextView itemTitle;
+    @BindView(R.id.knowledge_group_item_title_column)
+    TextView itemTitleColumn;
     @BindView(R.id.knowledge_group_item_price)
     TextView itemPrice;
     @BindView(R.id.knowledge_group_item_desc)

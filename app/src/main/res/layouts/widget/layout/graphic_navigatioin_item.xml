@@ -9,7 +9,7 @@
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/graphic_item_icon"
         android:layout_width="30dp"
-        android:layout_height="26dp" />
+        android:layout_height="30dp" />
     
     <TextView
         android:id="@+id/graphic_item_content"

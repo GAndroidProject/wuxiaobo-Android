@@ -15,6 +15,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import xiaoe.com.common.entitys.ComponentInfo;
+import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
@@ -59,7 +60,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
 
         // 知识商品假数据 -- 列表形式
         ComponentInfo componentInfo_know_list = new ComponentInfo();
-        componentInfo_know_list.setType("knowledge_commodity");
+        componentInfo_know_list.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
         componentInfo_know_list.setSubType("knowledgeList");
         List<KnowledgeCommodityItem> listItems = new ArrayList<>();
         // 有价格没买
@@ -87,7 +88,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
         componentInfo_know_list.setKnowledgeCommodityItemList(listItems);
         // 知识商品假数据 -- 分组形式
         ComponentInfo componentInfo_know_group = new ComponentInfo();
-        componentInfo_know_group.setType("knowledge_commodity");
+        componentInfo_know_group.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
         componentInfo_know_group.setSubType("knowledgeGroup");
         componentInfo_know_group.setTitle("栏目二");
         componentInfo_know_group.setDesc("");

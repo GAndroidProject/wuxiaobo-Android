@@ -8,6 +8,7 @@ import butterknife.ButterKnife;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
+// RecyclerView 的 ViewHolder
 public class KnowledgeListViewHolder extends BaseViewHolder {
 
     @BindView(R.id.knowledge_list_list_view)

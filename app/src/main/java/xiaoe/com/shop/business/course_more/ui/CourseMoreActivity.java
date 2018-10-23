@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.ComponentInfo;
+import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
@@ -69,7 +70,7 @@ public class CourseMoreActivity extends XiaoeActivity {
 
         // 知识商品假数据 -- 分组形式
         ComponentInfo componentInfo_know_group = new ComponentInfo();
-        componentInfo_know_group.setType("knowledge_commodity");
+        componentInfo_know_group.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
         componentInfo_know_group.setSubType("knowledgeGroup");
         componentInfo_know_group.setTitle("学会管理自己的财富");
         componentInfo_know_group.setDesc("查看更多");

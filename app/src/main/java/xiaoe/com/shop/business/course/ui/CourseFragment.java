@@ -30,6 +30,7 @@ import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
+import xiaoe.com.shop.business.course.presenter.CoursePresenter;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
 import xiaoe.com.shop.widget.SearchView;
 
@@ -68,7 +69,7 @@ public class CourseFragment extends BaseFragment {
         // 搜索框假数据
         ComponentInfo componentInfo_title = new ComponentInfo();
         componentInfo_title.setTitle("课程");
-        componentInfo_title.setType("search");
+        componentInfo_title.setType(DecorateEntityType.SEARCH_STR);
         tempData.add(componentInfo_title);
 
         LinearLayoutManager llm_1 = new LinearLayoutManager(getActivity());
@@ -82,7 +83,7 @@ public class CourseFragment extends BaseFragment {
 
         // 轮播图假数据
         ComponentInfo componentInfo_shuffling = new ComponentInfo();
-        componentInfo_shuffling.setType("shuffling_figure");
+        componentInfo_shuffling.setType(DecorateEntityType.SHUFFLING_FIGURE_STR);
         List<String> urlList = new ArrayList<>();
 //        urlList.add("res:///" + R.mipmap.audio_bg);
         urlList.add("http://img05.tooopen.com/images/20141020/sy_73154627197.jpg");
@@ -92,7 +93,7 @@ public class CourseFragment extends BaseFragment {
 
         // 导航假数据
         ComponentInfo componentInfo_navigator = new ComponentInfo();
-        componentInfo_navigator.setType("graphic_navigation");
+        componentInfo_navigator.setType(DecorateEntityType.GRAPHIC_NAVIGATION_STR);
         List<GraphicNavItem> graphicNavItemList = new ArrayList<>();
         GraphicNavItem graphicNavItem_1 = new GraphicNavItem();
         graphicNavItem_1.setNavIcon("res:///" + R.mipmap.class_fundation);
@@ -127,14 +128,14 @@ public class CourseFragment extends BaseFragment {
         itemList.add(item_1);
         itemList.add(item_2);
         itemList.add(item_3);
-        componentInfo_recent.setType("recent_update");
+        componentInfo_recent.setType(DecorateEntityType.RECENT_UPDATE_STR);
         componentInfo_recent.setTitle("每天听见吴晓波");
         componentInfo_recent.setDesc("已更新至09-22期");
         componentInfo_recent.setSubList(itemList);
 
         // 知识商品假数据 -- 列表形式
         ComponentInfo componentInfo_know_list = new ComponentInfo();
-        componentInfo_know_list.setType("knowledge_commodity");
+        componentInfo_know_list.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
         componentInfo_know_list.setSubType("knowledgeList");
         List<KnowledgeCommodityItem> listItems = new ArrayList<>();
         // 有价格没买
@@ -162,7 +163,7 @@ public class CourseFragment extends BaseFragment {
         componentInfo_know_list.setKnowledgeCommodityItemList(listItems);
         // 知识商品假数据 -- 分组形式
         ComponentInfo componentInfo_know_group = new ComponentInfo();
-        componentInfo_know_group.setType("knowledge_commodity");
+        componentInfo_know_group.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
         componentInfo_know_group.setSubType("knowledgeGroup");
         componentInfo_know_group.setTitle("学会管理自己的财富");
         componentInfo_know_group.setDesc("查看更多");
@@ -222,8 +223,8 @@ public class CourseFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 网络请求数据代码
-//        CoursePresenter cp = new CoursePresenter(this);
-//        cp.requestData();
+        CoursePresenter cp = new CoursePresenter(this);
+        cp.requestData();
     }
 
     @Override
