@@ -35,8 +35,8 @@ public class AudioPresenter implements IBizCallback {
     public void requestDetail(){
         AudioDetailRequest couponRequest = new AudioDetailRequest(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.goods.info.get/1.0.0", this);
         couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addRequestParam("goods_id","a_59f1500e3ee2f_v9K2reHm");
-        couponRequest.addRequestParam("goods_type","2");
+        couponRequest.addRequestParam("resource_id","a_5bc6b2a5d3ff5_cJc4CYI1");
+        couponRequest.addRequestParam("resource_type","2");
         couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         couponRequest.sendRequest();
     }
@@ -45,9 +45,9 @@ public class AudioPresenter implements IBizCallback {
      * 获取购买后的资源内容
      */
     public void requestContent(){
-        AudioContentRequest couponRequest = new AudioContentRequest(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.resource.content.get", this);
+        AudioContentRequest couponRequest = new AudioContentRequest(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.resource.content.get/1.0.0", this);
         couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addRequestParam("resource_id","a_59f1500e3ee2f_v9K2reHm");
+        couponRequest.addRequestParam("resource_id","a_5bc6b2a5d3ff5_cJc4CYI1");
         couponRequest.addRequestParam("resource_type","2");
         couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         couponRequest.sendRequest();

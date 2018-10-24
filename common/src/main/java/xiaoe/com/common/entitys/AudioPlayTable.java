@@ -12,6 +12,7 @@ public class AudioPlayTable {
     //表里的字段
     private static final String appId = "app_id";
     private static final String resourceId = "resource_id";
+    private static final String columnId = "column_id";
     private static final String title = "title";
     private static final String content = "content";
     private static final String playUrl = "play_url";
@@ -22,6 +23,7 @@ public class AudioPlayTable {
     public static final String CREATE_TABLE_SQL = "CREATE TABLE "+TABLE_NAME+" ("+
             appId+" "+TYPE_VARCHAR_64+" not null,"+
             resourceId+" "+TYPE_VARCHAR_64+" not null,"+
+            columnId+" "+TYPE_VARCHAR_64+" default \"\","+
             title+" "+TYPE_VARCHAR_256+" default \"\","+
             content+" "+TYPE_TEXT+" default \"\","+
             playUrl+" "+TYPE_TEXT+" default \"\","+
@@ -65,5 +67,9 @@ public class AudioPlayTable {
 
     public static String getUpdateAt() {
         return updateAt;
+    }
+
+    public static String getColumnId() {
+        return columnId;
     }
 }

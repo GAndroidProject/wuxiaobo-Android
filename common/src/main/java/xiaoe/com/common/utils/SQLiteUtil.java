@@ -101,7 +101,6 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
             cursor.close();
             db.close();
         }
-
     }
 
     public static void deleteFrom(String tableName) {
@@ -163,5 +162,34 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         callBack.onUpgrade(sqLiteDatabase, oldVersion, newVersion);
+    }
+
+    public static boolean tabIsExist(String tabName){
+        boolean result = false;
+        if(tabName == null){
+            return false;
+        }
+        SQLiteDatabase db = INSTANCE.getWritableDatabase();
+        Cursor cursor = null;
+        try {
+            String sql = "select count(*) as c from sqlite_master where type ='table' and name = '"+tabName.trim()+"'";
+            cursor = db.rawQuery(sql, null);
+            if(cursor.moveToNext()){
+                int count = cursor.getInt(0);
+                if(count>0){
+                    result = true;
+                }
+            }
+            cursor.close();
+            db.close();
+        } catch (Exception e) {
+            if(cursor != null){
+                cursor.close();
+            }
+            if(db != null){
+                db.close();
+            }
+        }
+        return result;
     }
 }

@@ -117,10 +117,15 @@ public class NetworkEngine {
 //                if (mRequest instanceof LoginRequest) {
 //                    StatusKeepUtil.clearUserInfo();
 //                }
-                String jsonString = body.string();
-                com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
-                body.close();
-                mRequest.onResponse(true, jsonObject);
+                try {
+                    String jsonString = body.string();
+                    com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
+                    body.close();
+                    mRequest.onResponse(true, jsonObject);
+                }catch (Exception e){
+                    mRequest.onResponse(false, null);
+                }
+
             }
         });
     }

@@ -24,7 +24,15 @@ import com.tencent.smtt.sdk.WebView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
+
+import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.AudioPlayTable;
+import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.common.utils.NetworkState;
+import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.AudioContentRequest;
 import xiaoe.com.network.requests.AudioDetailRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
@@ -32,11 +40,13 @@ import xiaoe.com.shop.anim.ViewAnim;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
+import xiaoe.com.shop.business.audio.presenter.AudioSQLiteUtil;
 import xiaoe.com.shop.business.comment.ui.CommentActivity;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.ContentMenuLayout;
+import xiaoe.com.shop.widget.StatusPagerView;
 
 public class AudioActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener {
     private static final String TAG = "AudioActivity";
@@ -76,6 +86,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private AudioPresenter audioPresenter;
     private WebView detailContent;
     private CommonBuyView commonBuyView;
+    private StatusPagerView statusPagerView;
+    private AudioDetailsSwitchLayout pagerContentDetailLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,8 +100,13 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         setContentView(R.layout.activity_audio);
         initViews();
+        SQLiteUtil.init(this, new AudioSQLiteUtil());
+        boolean tableExist = SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
+        if(!tableExist){
+            SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+        }
         audioPresenter = new AudioPresenter(this);
-//        audioPresenter.requestDetail();
+        initDatas();
     }
 
     @Override
@@ -102,6 +119,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void initViews() {
+        pagerContentDetailLayout = (AudioDetailsSwitchLayout) findViewById(R.id.pager_content_detail);
+
         mViewAnim = new ViewAnim();
         audioBG = (SimpleDraweeView) findViewById(R.id.audio_bg);
         audioBG.setImageURI("res:///"+R.mipmap.detail_bg_wave);
@@ -133,9 +152,13 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         detailContent = (WebView) findViewById(R.id.audio_detail_content);
         //底部购买按钮
         commonBuyView = (CommonBuyView) findViewById(R.id.common_buy_view);
+        //状态页面
+        statusPagerView = (StatusPagerView) findViewById(R.id.state_pager_view);
+        statusPagerView.setVisibility(View.GONE);
+        setButtonEnabled(false);
     }
     private void initDatas() {
-
+        audioPresenter.requestDetail();
     }
     private void setDiskRotateAnimator(boolean play){
         if(diskRotate == null){
@@ -179,23 +202,99 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        JSONObject jsonObject = null;
-        if(entity != null){
-            jsonObject = (JSONObject) entity;
+        JSONObject jsonObject = (JSONObject) entity;
+        if(entity == null || !success){
+            setPagerState(true);
+            return;
         }
-        if(iRequest instanceof AudioDetailRequest && jsonObject != null){
-            //购买商品前详情，
-            JSONObject resourceInfo = jsonObject.getJSONObject("resource_info");
-            if(resourceInfo.getIntValue("has_buy") == 0){
-                setButtonEnabled(false);
-                commonBuyView.setVisibility(View.VISIBLE);
-            }
-        String content = resourceInfo.getString("content");
-        detailContent.loadDataWithBaseURL(null, NetworkState.getNewContent(content),"text/html", "UTF-8", null);
+        if(iRequest instanceof AudioContentRequest){
+            audioContentRequest(jsonObject);
+        }else if(iRequest instanceof AudioDetailRequest){
+            audioDetailRequest(jsonObject);
+        }
+    }
+
+    /**
+     * 购买前的详情
+     * @param jsonObject
+     */
+    private void audioDetailRequest(JSONObject jsonObject) {
+        JSONObject data = jsonObject.getJSONObject("data");
+        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
+            return;
+        }
+        JSONObject resourceInfo = data.getJSONObject("resource_info");
+        if(resourceInfo.getIntValue("has_buy") == 1){
+            commonBuyView.setVisibility(View.GONE);
+            audioPresenter.requestContent();
+        }else{
+            commonBuyView.setVisibility(View.VISIBLE);
+            setButtonEnabled(false);
+            String detail = resourceInfo.getString("content");
+            setContentDetail(detail);
+        }
+    }
+
+    /**
+     * 购买后的内容
+     * @param jsonObject
+     */
+    private void audioContentRequest(JSONObject jsonObject) {
+        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED){
+            setPagerState(true);
+            return; }JSONObject data = jsonObject.getJSONObject("data");
+        String detail = data.getString("content");
+        setContentDetail(detail);
+        String title = data.getString("title");
+        audioTitle.setText(title);
+        if(AudioMediaPlayer.getAudio() != null){
+            AudioPlayEntity oldAudio = AudioMediaPlayer.getAudio();
+            oldAudio.setCurrentPlayState(0);
+            String sqlWhereClause = AudioPlayTable.getAppId()+"=? and "+AudioPlayTable.getResourceId()+"=?";
+            SQLiteUtil.update(AudioPlayTable.TABLE_NAME, oldAudio, sqlWhereClause,
+                    new String[]{oldAudio.getAppId(),oldAudio.getResourceId()});
+        }
+        AudioPlayEntity audioPlayEntity = new AudioPlayEntity();
+        audioPlayEntity.setAppId("123456");
+        audioPlayEntity.setResourceId("123456");
+        audioPlayEntity.setColumnId("123456");
+        audioPlayEntity.setContent(detail);
+        audioPlayEntity.setCurrentPlayState(1);
+        audioPlayEntity.setPlayUrl(data.getString("audio_url"));
+        audioPlayEntity.setState(0);
+        audioPlayEntity.setTitle(title);
+        audioPlayEntity.setCreateAt(DateFormat.currentTime());
+        audioPlayEntity.setUpdateAt(DateFormat.currentTime());
+        audioPlayEntity.setIndex(0);
+        List<AudioPlayEntity> dbAudioEntitys = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,
+                "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getResourceId()+"=?", new String[]{"123456"});
+        if(dbAudioEntitys.size() > 0){
+            String sqlWhereClause = AudioPlayTable.getAppId()+"=? and "+AudioPlayTable.getResourceId()+"=?";
+            SQLiteUtil.update(AudioPlayTable.TABLE_NAME, audioPlayEntity, sqlWhereClause,
+                    new String[]{audioPlayEntity.getAppId(),audioPlayEntity.getResourceId()});
+        }else{
+            SQLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioPlayEntity);
+        }
+        AudioMediaPlayer.setAudio(audioPlayEntity);
+    }
+    private void setContentDetail(String detail){
+        detailContent.loadDataWithBaseURL(null, NetworkState.getNewContent(detail), "text/html", "UFT-8", null);
         CookieSyncManager.createInstance(this);
         CookieSyncManager.getInstance().sync();
+    }
+    public void setPagerState(boolean error){
+        if(error){
+            pagerContentDetailLayout.setVisibility(View.GONE);
+            statusPagerView.setVisibility(View.VISIBLE);
+            statusPagerView.setLoadingState(View.GONE);
+            statusPagerView.setStateImage(StatusPagerView.DETAIL_NONE);
+            statusPagerView.setHintStateVisibility(View.VISIBLE);
+        }else{
+            pagerContentDetailLayout.setVisibility(View.VISIBLE);
+            statusPagerView.setVisibility(View.GONE);
+            statusPagerView.setLoadingState(View.GONE);
+            statusPagerView.setHintStateVisibility(View.GONE);
         }
-
     }
 
     @Override

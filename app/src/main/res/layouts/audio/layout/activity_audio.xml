@@ -8,6 +8,7 @@
     android:background="@color/audio_page_bg_color">
 
     <xiaoe.com.shop.business.audio.ui.AudioDetailsSwitchLayout
+        android:id="@+id/pager_content_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:target_view="@+id/move_text"
@@ -165,6 +166,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:background="@color/white"
             >
             <ScrollView
                 android:id="@+id/ScrollView"
@@ -179,6 +181,19 @@
 
     </xiaoe.com.shop.business.audio.ui.AudioDetailsSwitchLayout>
 
+
+    <xiaoe.com.shop.widget.ContentMenuLayout
+        android:id="@+id/content_menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+
+    <xiaoe.com.shop.widget.StatusPagerView
+        android:id="@+id/state_pager_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <RelativeLayout
         android:id="@+id/audio_page_close_btn"
         android:layout_width="wrap_content"
@@ -192,10 +207,4 @@
             android:src="@mipmap/audio_white_back"
             />
     </RelativeLayout>
-    <xiaoe.com.shop.widget.ContentMenuLayout
-        android:id="@+id/content_menu_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        />
 </RelativeLayout>

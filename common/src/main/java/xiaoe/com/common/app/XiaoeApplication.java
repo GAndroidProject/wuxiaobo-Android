@@ -27,7 +27,6 @@ public class XiaoeApplication extends Application {
         ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext).setDownsampleEnabled(true).build();
         Fresco.initialize(this,imagePipelineConfig);
         QbSdk.initX5Environment(this, null);
-
     }
     public static Context getmContext() {
         return mContext;

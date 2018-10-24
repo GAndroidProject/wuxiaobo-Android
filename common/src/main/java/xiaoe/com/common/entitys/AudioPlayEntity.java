@@ -1,7 +1,7 @@
 package xiaoe.com.common.entitys;
 
-public class AudioPlayTableEntity {
-    private String TAG = "AudioPlayTableEntity";
+public class AudioPlayEntity {
+    private String TAG = "AudioPlayEntity";
     //表里的字段
     private String appId = null;
     private String resourceId = null;
@@ -12,6 +12,8 @@ public class AudioPlayTableEntity {
     private int state = 0;//默认0，0-正常，1-删除
     private String createAt = null;
     private String updateAt = null;
+    private String columnId = null;
+    private int index = -1;
 
 
     public String getAppId() {
@@ -84,5 +86,21 @@ public class AudioPlayTableEntity {
 
     public void setUpdateAt(String updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public String getColumnId() {
+        return columnId;
+    }
+
+    public void setColumnId(String columnId) {
+        this.columnId = columnId;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

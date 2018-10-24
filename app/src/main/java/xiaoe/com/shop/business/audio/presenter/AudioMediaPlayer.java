@@ -12,6 +12,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.util.List;
 
+import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.shop.events.AudioPlayEvent;
 
 public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedListener,
@@ -20,7 +21,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     private static final String TAG = "AudioMediaPlayer";
     private static MediaPlayer mediaPlayer;
     private static AudioPlayEvent event;
-    private static AudioPlayUtil.Audio audio = null;
+    private static AudioPlayEntity audio = null;
     private static boolean isStop = true;//是否是停止（已经释放资源），
     @Override
     public void onCreate() {
@@ -97,7 +98,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
         mediaPlayer.reset();
         try {
-            mediaPlayer.setDataSource(audio.getUrl());
+            mediaPlayer.setDataSource(audio.getPlayUrl());
         } catch (IOException e) {
 //            e.printStackTrace();
         }
@@ -166,7 +167,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
 
     public static void playNext() {
-        List<AudioPlayUtil.Audio> playList = AudioPlayUtil.getInstance().getAudioList();
+        List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
         int indexNext = audio.getIndex() + 1;
         if(indexNext >= playList.size()){
             indexNext = 0;
@@ -181,7 +182,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     public static void playLast() {
-        List<AudioPlayUtil.Audio> playList = AudioPlayUtil.getInstance().getAudioList();
+        List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
         int indexLast = audio.getIndex() - 1;
         if(indexLast < 0){
             indexLast = playList.size() - 1;
@@ -195,11 +196,11 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
     }
 
-    public static AudioPlayUtil.Audio getAudio() {
+    public static AudioPlayEntity getAudio() {
         return audio;
     }
 
-    public static void setAudio(AudioPlayUtil.Audio audio) {
+    public static void setAudio(AudioPlayEntity audio) {
         AudioMediaPlayer.audio = audio;
     }
 
