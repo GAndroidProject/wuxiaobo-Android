@@ -9,6 +9,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
@@ -25,7 +26,7 @@ public class SettingItemViewHolder extends BaseViewHolder {
     @BindView(R.id.item_go)
     ImageView itemGo;
 
-    private OnItemClickListener itemClickListener;
+    private OnItemClickWithPosListener itemClickListener;
 
     SettingItemViewHolder(View itemView) {
         super(itemView);

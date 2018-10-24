@@ -28,15 +28,9 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"/>
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/course_tool_bar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_collapseMode="pin">
 
-                </android.support.v7.widget.Toolbar>
             </android.support.design.widget.CollapsingToolbarLayout>
+
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -48,5 +42,12 @@
             android:paddingEnd="20dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
         </android.support.v7.widget.RecyclerView>
+
     </android.support.design.widget.CoordinatorLayout>
+
+    <xiaoe.com.shop.widget.StatusPagerView
+        android:id="@+id/course_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </FrameLayout>

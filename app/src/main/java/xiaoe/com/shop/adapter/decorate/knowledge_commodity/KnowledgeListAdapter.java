@@ -23,8 +23,11 @@ import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
+import xiaoe.com.shop.business.course.ui.CourseItemActivity;
 
 public class KnowledgeListAdapter extends BaseAdapter {
+
+    private static final String TAG = "KnowledgeListAdapter";
 
     private List<KnowledgeCommodityItem> mItemList;
     private Context mContext;
@@ -92,10 +95,20 @@ public class KnowledgeListAdapter extends BaseAdapter {
         viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ColumnActivity.class);
-                boolean isBigColumn = position % 2 == 0 ? true : false;
-                intent.putExtra("isBigColumn", isBigColumn);
-                mContext.startActivity(intent);
+                Intent intent = null;
+                switch (mItemList.get(position).getSrcType()) {
+                    case DecorateEntityType.IMAGE_TEXT:
+                        intent = new Intent(mContext, CourseItemActivity.class);
+                        intent.putExtra("imgUrl", mItemList.get(position).getItemImg());
+                        mContext.startActivity(intent);
+                        break;
+                    case DecorateEntityType.AUDIO:
+                        break;
+                    case DecorateEntityType.VIDEO:
+                        break;
+                    case DecorateEntityType.COLUMN:
+                        break;
+                }
             }
         });
         return convertView;

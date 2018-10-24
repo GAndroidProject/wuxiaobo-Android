@@ -17,15 +17,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import xiaoe.com.common.entitys.SettingItemInfo;
+import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
-import xiaoe.com.shop.business.setting.presenter.OnItemClickListener;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
 
-public class SettingPersonActivity extends XiaoeActivity implements OnItemClickListener {
+public class SettingPersonActivity extends XiaoeActivity implements OnItemClickWithPosListener {
 
     private static final String TAG = "SettingPersonActivity";
 
@@ -89,7 +89,7 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickL
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         settingContentView.setLayoutManager(llm);
         settingRecyclerAdapter = new SettingRecyclerAdapter(this, dataList);
-        settingRecyclerAdapter.setOnItemClickListener(this);
+        settingRecyclerAdapter.setOnItemClickWithPosListener(this);
         settingContentView.setAdapter(settingRecyclerAdapter);
         settingContentView.addItemDecoration(new LinearDividerDecoration(this, LinearLayout.VERTICAL, R.drawable.recycler_divider_line, Dp2Px2SpUtil.dp2px(this, 20)));
     }

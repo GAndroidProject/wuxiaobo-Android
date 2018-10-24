@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
@@ -18,5 +19,5 @@ public class SearchMainContentViewHolder extends BaseViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    private OnTabClickListener tabClickListener;
+    private OnItemClickWithPosListener itemClickListener;
 }

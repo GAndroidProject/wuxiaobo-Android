@@ -1,28 +1,19 @@
 package xiaoe.com.shop.business.setting.presenter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnItemClick;
 import xiaoe.com.common.entitys.SettingItemInfo;
+import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
-import xiaoe.com.shop.business.setting.ui.SettingPersonItemActivity;
 
 public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -31,7 +22,7 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
     private int currentPos;
     private SettingItemInfo currentItem;
-    private OnItemClickListener onItemClickListener;
+    private OnItemClickWithPosListener onItemClickWithPosListener;
 
     // 默认会有底部 margin
     public SettingRecyclerAdapter(Context context, List<SettingItemInfo> itemList) {
@@ -39,8 +30,8 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
         this.itemList = itemList;
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.onItemClickListener = listener;
+    public void setOnItemClickWithPosListener(OnItemClickWithPosListener listener) {
+        this.onItemClickWithPosListener = listener;
     }
 
     @Override
@@ -84,8 +75,8 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
             viewHolder.itemContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onItemClickListener != null) {
-                        onItemClickListener.onItemClick(v, tempPos);
+                    if (onItemClickWithPosListener != null) {
+                        onItemClickWithPosListener.onItemClick(v, tempPos);
                     }
                 }
             });

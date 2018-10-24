@@ -30,16 +30,16 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.SettingItemInfo;
+import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
-import xiaoe.com.shop.business.setting.presenter.OnItemClickListener;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
 import xiaoe.com.shop.business.setting.presenter.SettingTimeCount;
 import xiaoe.com.shop.widget.CodeVerifyView;
 
-public class EditDataFragment extends BaseFragment implements OnItemClickListener {
+public class EditDataFragment extends BaseFragment implements OnItemClickWithPosListener {
 
     private static final String TAG = "EditDataFragment";
 
@@ -139,7 +139,7 @@ public class EditDataFragment extends BaseFragment implements OnItemClickListene
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         LinearDividerDecoration linearDividerDecoration = new LinearDividerDecoration(getActivity(), R.drawable.recycler_divider_line, Dp2Px2SpUtil.dp2px(getActivity(), 20));
         llm.setOrientation(LinearLayoutManager.VERTICAL);
-        settingRecyclerAdapter.setOnItemClickListener(this);
+        settingRecyclerAdapter.setOnItemClickWithPosListener(this);
         accountRecycler.setLayoutManager(llm);
         accountRecycler.addItemDecoration(linearDividerDecoration);
         accountRecycler.setAdapter(settingRecyclerAdapter);
@@ -210,7 +210,7 @@ public class EditDataFragment extends BaseFragment implements OnItemClickListene
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         LinearDividerDecoration linearDividerDecoration = new LinearDividerDecoration(getActivity(), R.drawable.recycler_divider_line, Dp2Px2SpUtil.dp2px(getActivity(), 20));
         llm.setOrientation(LinearLayoutManager.VERTICAL);
-        settingRecyclerAdapter.setOnItemClickListener(this);
+        settingRecyclerAdapter.setOnItemClickWithPosListener(this);
         aboutContent.setLayoutManager(llm);
         aboutContent.addItemDecoration(linearDividerDecoration);
         aboutContent.setAdapter(settingRecyclerAdapter);

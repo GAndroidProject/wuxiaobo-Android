@@ -95,6 +95,10 @@ public class SearchActivity extends XiaoeActivity {
     private void initData() {
         // 初始化数据库
         SQLiteUtil.init(this.getApplicationContext(), new SearchSQLiteCallback());
+        // 如果表不存在，就去创建
+        if(!SQLiteUtil.tabIsExist(SearchSQLiteCallback.TABLE_NAME_CONTENT)){
+            SQLiteUtil.execSQL(SearchSQLiteCallback.TABLE_SCHEMA_CONTENT);
+        }
         historyList = queryAllData();
         currentFragment = SearchPageFragment.newInstance(R.layout.fragment_search_main);
         ((SearchPageFragment) currentFragment).setHistoryList(historyList);

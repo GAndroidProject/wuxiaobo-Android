@@ -115,23 +115,29 @@
             android:layout_marginEnd="14dp"
             android:background="@drawable/recent_update_btn_selector"/>
 
-        <TextView
-            android:id="@+id/item_detail_org_content"
+        <ScrollView
+            android:id="@+id/org_content_scroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="64dp"
+            android:layout_height="match_parent"
+            android:layout_below="@id/item_detail_desc_img"
             android:layout_marginStart="14dp"
             android:layout_marginEnd="14dp"
             android:layout_marginTop="16dp"
-            android:paddingBottom="20dp"
-            android:layout_below="@id/item_detail_desc_img"/>
+            android:paddingBottom="20dp">
+
+            <com.tencent.smtt.sdk.WebView
+                android:id="@+id/item_detail_org_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </ScrollView>
 
         <xiaoe.com.shop.widget.CommonBuyView
             android:id="@+id/item_detail_buy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_below="@id/item_detail_org_content"/>
+            android:layout_below="@id/org_content_scroll"/>
 
     </RelativeLayout>
 

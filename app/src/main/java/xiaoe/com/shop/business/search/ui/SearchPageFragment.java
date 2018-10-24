@@ -6,7 +6,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +20,16 @@ import butterknife.Unbinder;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.entitys.SearchHistory;
+import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
-import xiaoe.com.shop.business.search.presenter.OnTabClickListener;
 import xiaoe.com.shop.business.search.presenter.HistoryRecyclerAdapter;
 import xiaoe.com.shop.business.search.presenter.RecommendRecyclerAdapter;
 import xiaoe.com.shop.business.search.presenter.SearchSQLiteCallback;
 
-public class SearchPageFragment extends BaseFragment implements OnTabClickListener {
+public class SearchPageFragment extends BaseFragment implements OnItemClickWithPosListener {
 
     private static final String TAG = "SearchPageFragment";
 
@@ -136,7 +135,7 @@ public class SearchPageFragment extends BaseFragment implements OnTabClickListen
 
             List<SearchHistory> historyData = historyList;
             HistoryRecyclerAdapter historyAdapter = new HistoryRecyclerAdapter(mContext, historyData);
-            historyAdapter.setOnTabClickListener(this);
+            historyAdapter.setOnItemClickWithPosListener(this);
             historyContentView.setHistoryContentAdapter(historyAdapter);
         }
 

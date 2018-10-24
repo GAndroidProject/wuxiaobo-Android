@@ -10,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -21,16 +19,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.SettingItemInfo;
+import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.utils.CacheManagerUtil;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
-import xiaoe.com.shop.business.setting.presenter.OnItemClickListener;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
 
-public class MainAccountFragment extends BaseFragment implements OnItemClickListener {
+public class MainAccountFragment extends BaseFragment implements OnItemClickWithPosListener {
 
     private static final String TAG = "MainAccountFragment";
 
@@ -91,7 +89,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickList
         LinearDividerDecoration linearDividerDecoration = new LinearDividerDecoration(getActivity(), R.drawable.recycler_divider_line, Dp2Px2SpUtil.dp2px(getActivity(), 20));
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         accountContent.setLayoutManager(llm);
-        settingRecyclerAdapter.setOnItemClickListener(this);
+        settingRecyclerAdapter.setOnItemClickWithPosListener(this);
         accountContent.addItemDecoration(linearDividerDecoration);
         accountContent.setAdapter(settingRecyclerAdapter);
     }

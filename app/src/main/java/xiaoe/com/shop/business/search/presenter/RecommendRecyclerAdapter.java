@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import xiaoe.com.common.entitys.SearchHistory;
+import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
@@ -16,15 +16,15 @@ public class RecommendRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
     private Context mContext;
     private List<String> recommendList;
 
-    private OnTabClickListener onTabClickListener;
+    private OnItemClickWithPosListener onItemClickWithPosListener;
 
     public RecommendRecyclerAdapter(Context context, List<String> recommendList) {
         this.mContext = context;
         this.recommendList = recommendList;
     }
 
-    public void setOnTabClickListener(OnTabClickListener onTabClickListener) {
-        this.onTabClickListener = onTabClickListener;
+    public void setOnTabClickListener(OnItemClickWithPosListener onItemClickWithPosListener) {
+        this.onItemClickWithPosListener = onItemClickWithPosListener;
     }
 
     @Override
@@ -42,8 +42,8 @@ public class RecommendRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
         searchMainContentViewHolder.content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onTabClickListener != null) {
-                    onTabClickListener.onItemClick(v, tempPos);
+                if (onItemClickWithPosListener != null) {
+                    onItemClickWithPosListener.onItemClick(v, tempPos);
                 }
             }
         });

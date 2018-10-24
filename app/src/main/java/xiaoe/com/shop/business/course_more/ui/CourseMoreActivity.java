@@ -25,7 +25,6 @@ import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
-import xiaoe.com.shop.business.course.presenter.CoursePresenter;
 import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class CourseMoreActivity extends XiaoeActivity {
@@ -53,7 +52,7 @@ public class CourseMoreActivity extends XiaoeActivity {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
         }
 
-//        CoursePresenter coursePresenter = new CoursePresenter(this);
+//        CourseItemPresenter coursePresenter = new CourseItemPresenter(this);
 //        coursePresenter.requestData();
 
         initData();

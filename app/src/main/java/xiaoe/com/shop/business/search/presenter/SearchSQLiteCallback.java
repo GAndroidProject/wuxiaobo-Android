@@ -20,7 +20,7 @@ public class SearchSQLiteCallback implements ISQLiteCallBack {
     private static final String SEP_COMMA = ",";
 
     // 建表 sql
-    private static final String TABLE_SCHEMA_CONTENT =
+    public static final String TABLE_SCHEMA_CONTENT =
             "CREATE TABLE " + TABLE_NAME_CONTENT + " (" +
             SearchHistoryEntity.COLUMN_NAME_ID + TYPE_TEXT + " PRIMARY KEY " + SEP_COMMA +
             SearchHistoryEntity.COLUMN_NAME_CONTENT + TYPE_TEXT + SEP_COMMA +

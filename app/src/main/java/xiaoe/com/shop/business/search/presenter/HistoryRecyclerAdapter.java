@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import xiaoe.com.common.entitys.SearchHistory;
+import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
@@ -16,15 +17,15 @@ public class HistoryRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
     private Context mContext;
     private List<SearchHistory> historyList;
 
-    private OnTabClickListener onTabClickListener;
+    private OnItemClickWithPosListener onItemClickWithPosListener;
 
     public HistoryRecyclerAdapter(Context context, List<SearchHistory> itemList) {
         this.mContext = context;
         this.historyList = itemList;
     }
 
-    public void setOnTabClickListener(OnTabClickListener onTabClickListener) {
-        this.onTabClickListener = onTabClickListener;
+    public void setOnItemClickWithPosListener(OnItemClickWithPosListener onItemClickWithPosListener) {
+        this.onItemClickWithPosListener = onItemClickWithPosListener;
     }
 
     @Override
@@ -42,8 +43,8 @@ public class HistoryRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
         searchMainContentViewHolder.content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onTabClickListener != null) {
-                    onTabClickListener.onItemClick(v, tempPos);
+                if (onItemClickWithPosListener != null) {
+                    onItemClickWithPosListener.onItemClick(v, tempPos);
                 }
             }
         });

@@ -29,7 +29,6 @@ android {
                     'src/main/res/layouts/video',
                     'src/main/res/layouts/audio',
                     'src/main/res/layouts/custom_toast',
-                    'src/main/res/layouts/home',
                     'src/main/res/layouts/course',
                     'src/main/res/layouts/mine',
                     'src/main/res/layouts/mine_learning',

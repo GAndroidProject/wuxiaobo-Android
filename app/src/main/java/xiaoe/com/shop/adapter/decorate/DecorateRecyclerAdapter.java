@@ -1,24 +1,17 @@
 package xiaoe.com.shop.adapter.decorate;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.youth.banner.BannerConfig;
@@ -27,6 +20,9 @@ import java.util.List;
 
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
+import xiaoe.com.common.entitys.KnowledgeCommodityItem;
+import xiaoe.com.common.interfaces.OnItemClickWithKnowledgeListener;
+import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.MeasureUtil;
 import xiaoe.com.shop.R;
@@ -46,15 +42,15 @@ import xiaoe.com.shop.adapter.decorate.search.SearchViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingFigureViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingImageLoader;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.business.course.ui.CourseItemActivity;
 import xiaoe.com.shop.business.course_more.ui.CourseMoreActivity;
-import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.business.search.ui.SearchActivity;
 
 /**
  * 店铺装修组件显示列表适配器
  */
-public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
+public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> implements OnItemClickWithKnowledgeListener {
 
     private static final String TAG = "DecorateRecyclerAdapter";
 
@@ -65,6 +61,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     private int currentPos;
     // 当前 item
     private ComponentInfo currentComponent;
+
+    // 知识商品分组形式的 recycler
+    RecyclerView knowledgeGroupRecycler;
 
     public DecorateRecyclerAdapter(Context context, List<ComponentInfo> componentList) {
         this.mContext = context;
@@ -197,6 +196,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                             });
                         }
                         GridLayoutManager lm = new GridLayoutManager(mContext, 2);
+                        knowledgeGroupRecycler = knowledgeGroupViewHolder.groupRecyclerView;
                         knowledgeGroupViewHolder.groupRecyclerView.setLayoutManager(lm);
                         // recyclerView 取消滑动
                         knowledgeGroupViewHolder.groupRecyclerView.setNestedScrollingEnabled(false);
@@ -205,6 +205,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                             currentComponent.setNeedDecorate(false);
                         }
                         KnowledgeGroupRecyclerAdapter groupAdapter = new KnowledgeGroupRecyclerAdapter(mContext, currentComponent.getKnowledgeCommodityItemList());
+                        groupAdapter.setOnItemClickWithKnowledgeListener(this);
                         knowledgeGroupViewHolder.groupRecyclerView.setAdapter(groupAdapter);
                         break;
                 }
@@ -275,6 +276,27 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return DecorateEntityType.SEARCH;
             default:
                 return -1;
+        }
+    }
+
+    @Override
+    public void onItemClick(View view, KnowledgeCommodityItem knowledgeCommodityItem) {
+        Intent intent = null;
+        // 知识商品分组形式
+        if (view.getParent() == knowledgeGroupRecycler) {
+            switch (knowledgeCommodityItem.getSrcType()) {
+                case DecorateEntityType.IMAGE_TEXT: // 图文
+                    intent = new Intent(mContext, CourseItemActivity.class);
+                    intent.putExtra("imgUrl", knowledgeCommodityItem.getItemImg());
+                    mContext.startActivity(intent);
+                    break;
+                case DecorateEntityType.AUDIO: // 音频
+                    break;
+                case DecorateEntityType.VIDEO: // 视频
+                    break;
+                case DecorateEntityType.COLUMN: // 专栏
+                    break;
+            }
         }
     }
 }

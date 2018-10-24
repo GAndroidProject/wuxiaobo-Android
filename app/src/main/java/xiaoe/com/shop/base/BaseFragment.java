@@ -30,6 +30,13 @@ public class BaseFragment extends Fragment implements INetworkResponse {
     private static PopupWindow popupWindow;
     private TextView mToastText;
     private boolean isFragmentDestroy = false;
+
+    // Fragment 懒加载字段
+    private boolean isFragmentVisible;
+    private boolean isReuseView;
+    private boolean isFirstVisible;
+    private View rootView;
+
 //    private Handler mHandler = new Handler(){
 //        @Override
 //        public void handleMessage(Message msg) {
@@ -59,9 +66,49 @@ public class BaseFragment extends Fragment implements INetworkResponse {
         }
     }
 
+    // 这个方法除了 Fragment 的可见状态发生变化时会被回调外，创建 Fragment 实例时候也会调用
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        // 若在生命周期之外调用就 return
+        if (rootView == null) {
+            return;
+        }
+        if (isFirstVisible && isVisibleToUser) {
+            onFragmentFirstVisible();
+            isFirstVisible = false;
+        }
+        if (isVisibleToUser) {
+            onFragmentVisibleChange(true);
+        }
+        if (isFragmentVisible) {
+            isFragmentVisible = false;
+            onFragmentVisibleChange(false);
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initVariable();
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        // 懒加载的初始化
+        if (rootView == null) {
+            rootView = view;
+            if (getUserVisibleHint()) {
+                if (isFirstVisible) {
+                    onFragmentFirstVisible();
+                    isFirstVisible = false;
+                }
+                onFragmentVisibleChange(true);
+                isFragmentVisible = true;
+            }
+        }
+        super.onViewCreated(isReuseView ? rootView : view, savedInstanceState);
+        // toast 的初始化
         popupWindow = new PopupWindow(getContext());
         popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -109,18 +156,21 @@ public class BaseFragment extends Fragment implements INetworkResponse {
             mHandler.removeCallbacksAndMessages(null);
         }
         mHandler = null;
+        initVariable();
     }
 
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
 
     }
+
     public void ToastCustom(String msg){
         mHandler.removeMessages(0);
         mToastText.setText(msg);
         popupWindow.showAtLocation(getActivity().getWindow().getDecorView(), Gravity.CENTER, 0, 0);
         mHandler.sendEmptyMessageDelayed(0,1500);
     }
+
     /**
      * 在弹出对话框时，显示popupWindow，则popupWindow会在对话框下面（被对话框盖住）
      * 是方法是让popupWindow显示在对话上面
@@ -131,5 +181,32 @@ public class BaseFragment extends Fragment implements INetworkResponse {
         mToastText.setText(msg);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
         mHandler.sendEmptyMessageDelayed(0,1500);
+    }
+
+    // fragment 首次可见时回调，可进行网络加载
+    protected void onFragmentFirstVisible () {
+
+    }
+
+    // 去除 setUserVisibleHint 多余的回调，只有当 fragment 可见状态发生变化才回调
+    // 可以进行 ui 的操作
+    protected void onFragmentVisibleChange (boolean isVisible) {
+
+    }
+
+    protected boolean isFragmentVisible () {
+        return isFragmentVisible;
+    }
+
+    // 设置是否使用 view 的复用，默认开启，view 的复用可以防止重复创建 view
+    protected void reuseView (boolean isReuse) {
+        isReuseView = isReuse;
+    }
+
+    private void initVariable () {
+        isFirstVisible = true;
+        isFragmentVisible = false;
+        rootView = null;
+        isReuseView = true;
     }
 }

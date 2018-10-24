@@ -1,4 +1,4 @@
-package xiaoe.com.shop.business.main.presenter;
+package xiaoe.com.shop.business.mine.presenter;
 
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;

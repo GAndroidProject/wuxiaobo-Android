@@ -1,4 +1,4 @@
-package xiaoe.com.shop.business.homepage.ui;
+package xiaoe.com.shop.business.main.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -33,16 +33,17 @@ import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
-import xiaoe.com.shop.business.homepage.presenter.HomepagePresenter;
+import xiaoe.com.shop.business.main.presenter.PageFragmentPresenter;
+import xiaoe.com.shop.widget.StatusPagerView;
 
-public class HomepageFragment extends BaseFragment {
+public class HomePageFragment extends BaseFragment {
 
-    private static final String TAG = "HomepageFragment";
+    private static final String TAG = "HomePageFragment";
 
     private Unbinder unbinder;
     private Context mContext;
 
-    private HomepagePresenter homePagePresenter;
+    private PageFragmentPresenter homePagePresenter;
 
     private boolean destroyView = false;
 
@@ -54,8 +55,9 @@ public class HomepageFragment extends BaseFragment {
     RecyclerView homeContentRecyclerView;
     @BindView(R.id.home_collapsing_toolbar)
     CollapsingToolbarLayout homeCollLayout;
+    @BindView(R.id.home_status)
+    StatusPagerView statusPagerView;
 
-    private DecorateRecyclerAdapter adapter;
     List<ComponentInfo> microPageList;
 
     @Nullable
@@ -76,9 +78,24 @@ public class HomepageFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onFragmentVisibleChange(boolean isVisible) {
+        super.onFragmentVisibleChange(isVisible);
+        if (isVisible) {
+            // fragment 显示的时候显示 loading
+            statusPagerView.setHintStateVisibility(View.GONE);
+            statusPagerView.setLoadingState(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onFragmentFirstVisible() {
+        super.onFragmentFirstVisible();
         // 网络请求数据代码
-        HomepagePresenter hp = new HomepagePresenter(this);
-        hp.requestData();
+        PageFragmentPresenter hp = new PageFragmentPresenter(this);
+        hp.requestHomeData();
     }
 
     @Override
@@ -91,6 +108,8 @@ public class HomepageFragment extends BaseFragment {
                 Object data = result.get("data");
                 initPageData(data);
                 initMainContent();
+                // 请求成功之后隐藏 loading
+                statusPagerView.setVisibility(View.GONE);
             } else if (code == NetworkCodes.CODE_GOODS_DELETE) { // 微页面不存在
                 Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
             } else if (code == NetworkCodes.CODE_TINY_PAGER_NO_FIND) { // 微页面已被删除
@@ -188,7 +207,6 @@ public class HomepageFragment extends BaseFragment {
             item.setItemTitleColumn(listSubItemObj.getString("summary"));
             item.setItemImg(listSubItemObj.getString("img_url"));
             String price = "￥" + listSubItemObj.getString("show_price");
-            Log.d(TAG, "initGoods: price ---- " + price);
             if (price.equals("￥")) { // 表示买了，所以没有价格
                 item.setItemPrice(null);
                 item.setHasBuy(true);
@@ -265,7 +283,7 @@ public class HomepageFragment extends BaseFragment {
         llm_title.setOrientation(LinearLayoutManager.VERTICAL);
         homeTitleRecyclerView.setLayoutManager(llm_title);
         // 初始化适配器
-        adapter = new DecorateRecyclerAdapter(getActivity(), microPageList);
+        DecorateRecyclerAdapter adapter = new DecorateRecyclerAdapter(getActivity(), microPageList);
         homeContentRecyclerView.setAdapter(adapter);
         if (microPageList.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) { // 标题在头顶
             List<ComponentInfo> titleData = new ArrayList<>();

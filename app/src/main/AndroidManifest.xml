@@ -40,6 +40,7 @@
         <service android:name=".business.audio.presenter.AudioMediaPlayer"/>
         <activity android:name=".business.mine_learning.ui.MineLearningActivity"/>
         <activity android:name=".business.setting.ui.SettingPersonActivity"/>
+        <activity android:name=".business.setting.ui.SettingPersonItemActivity"/>
         <activity android:name=".business.setting.ui.SettingAccountActivity"/>
         <activity android:name=".business.download.ui.DownloadActivity"/>
         <activity android:name=".business.download.ui.OffLineCacheActivity"/>
