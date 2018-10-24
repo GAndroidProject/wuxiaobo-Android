@@ -36,34 +36,43 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.main.presenter.PageFragmentPresenter;
 import xiaoe.com.shop.widget.StatusPagerView;
 
-public class HomePageFragment extends BaseFragment {
+public class MicroPageFragment extends BaseFragment {
 
-    private static final String TAG = "HomePageFragment";
+    private static final String TAG = "MicroPageFragment";
 
     private Unbinder unbinder;
     private Context mContext;
+    private int microPageId = -1;
 
     private PageFragmentPresenter homePagePresenter;
 
     private boolean destroyView = false;
 
-    @BindView(R.id.home_app_bar)
-    AppBarLayout homeAppBar;
-    @BindView(R.id.home_head_recycler)
-    RecyclerView homeTitleRecyclerView;
-    @BindView(R.id.home_content_recycler)
-    RecyclerView homeContentRecyclerView;
-    @BindView(R.id.home_collapsing_toolbar)
-    CollapsingToolbarLayout homeCollLayout;
-    @BindView(R.id.home_status)
-    StatusPagerView statusPagerView;
+    @BindView(R.id.micro_page_app_bar)
+    AppBarLayout microPageAppBar;
+    @BindView(R.id.micro_page_head_recycler)
+    RecyclerView microPageTitleRecyclerView;
+    @BindView(R.id.micro_page_content_recycler)
+    RecyclerView microPageContentRecyclerView;
+    @BindView(R.id.micro_page_collapsing_toolbar)
+    CollapsingToolbarLayout microPageCollLayout;
+    @BindView(R.id.micro_page_loading)
+    StatusPagerView microPageLoading;
 
     List<ComponentInfo> microPageList;
+
+    public static MicroPageFragment newInstance(int microPageId) {
+        MicroPageFragment microPageFragment = new MicroPageFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("microPageId", microPageId);
+        microPageFragment.setArguments(bundle);
+        return microPageFragment;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, null, false);
+        View view = inflater.inflate(R.layout.fragment_micro_page, null, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getContext();
         return view;
@@ -78,6 +87,11 @@ public class HomePageFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            // 获取微页面 id
+            microPageId = bundle.getInt("microPageId");
+        }
     }
 
     @Override
@@ -85,8 +99,8 @@ public class HomePageFragment extends BaseFragment {
         super.onFragmentVisibleChange(isVisible);
         if (isVisible) {
             // fragment 显示的时候显示 loading
-            statusPagerView.setHintStateVisibility(View.GONE);
-            statusPagerView.setLoadingState(View.VISIBLE);
+            microPageLoading.setHintStateVisibility(View.GONE);
+            microPageLoading.setLoadingState(View.VISIBLE);
         }
     }
 
@@ -95,7 +109,7 @@ public class HomePageFragment extends BaseFragment {
         super.onFragmentFirstVisible();
         // 网络请求数据代码
         PageFragmentPresenter hp = new PageFragmentPresenter(this);
-        hp.requestHomeData();
+        hp.requestHomeData(microPageId);
     }
 
     @Override
@@ -109,7 +123,7 @@ public class HomePageFragment extends BaseFragment {
                 initPageData(data);
                 initMainContent();
                 // 请求成功之后隐藏 loading
-                statusPagerView.setVisibility(View.GONE);
+                microPageLoading.setVisibility(View.GONE);
             } else if (code == NetworkCodes.CODE_GOODS_DELETE) { // 微页面不存在
                 Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
             } else if (code == NetworkCodes.CODE_TINY_PAGER_NO_FIND) { // 微页面已被删除
@@ -215,8 +229,10 @@ public class HomePageFragment extends BaseFragment {
                 item.setHasBuy(false);
             }
             String srcType = listSubItemObj.getString("src_type");
+            String srcId = listSubItemObj.getString("src_id");
             int viewCount = listSubItemObj.getInteger("view_count") == null ? 0 : listSubItemObj.getInteger("view_count");
             item.setSrcType(srcType);
+            item.setResourceId(srcId);
             String viewDesc = obtainViewCountDesc(srcType, viewCount);
             item.setItemDesc(viewDesc);
             itemList.add(item);
@@ -245,6 +261,11 @@ public class HomePageFragment extends BaseFragment {
     // 拿到请求到的数据后进行界面初始化
     public void init() {
         microPageList = new ArrayList<>();
+
+        // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
+        if (microPageId != -1 && microPageId != 0) {
+            microPageCollLayout.setBackground(mContext.getResources().getDrawable(R.mipmap.class_bg));
+        }
 
         // 转场动画 SimpleDraweeView 处理
         getActivity().setExitSharedElementCallback(new SharedElementCallback() {
@@ -278,22 +299,33 @@ public class HomePageFragment extends BaseFragment {
         // 初始化布局管理器
         LinearLayoutManager llm_content = new LinearLayoutManager(getActivity());
         llm_content.setOrientation(LinearLayout.VERTICAL);
-        homeContentRecyclerView.setLayoutManager(llm_content);
+        microPageContentRecyclerView.setLayoutManager(llm_content);
         LinearLayoutManager llm_title = new LinearLayoutManager(getActivity());
         llm_title.setOrientation(LinearLayoutManager.VERTICAL);
-        homeTitleRecyclerView.setLayoutManager(llm_title);
+        microPageTitleRecyclerView.setLayoutManager(llm_title);
         // 初始化适配器
         DecorateRecyclerAdapter adapter = new DecorateRecyclerAdapter(getActivity(), microPageList);
-        homeContentRecyclerView.setAdapter(adapter);
+        microPageContentRecyclerView.setAdapter(adapter);
         if (microPageList.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) { // 标题在头顶
-            List<ComponentInfo> titleData = new ArrayList<>();
-            homeAppBar.setVisibility(View.VISIBLE);
-            titleData.add(microPageList.get(0));
-            DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
-            homeTitleRecyclerView.setAdapter(dra);
-            microPageList.remove(0);
+            if (microPageId == 0) {
+                List<ComponentInfo> titleData = new ArrayList<>();
+                microPageAppBar.setVisibility(View.VISIBLE);
+                titleData.add(microPageList.get(0));
+                DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
+                microPageTitleRecyclerView.setAdapter(dra);
+                microPageList.remove(0);
+            } else {
+                List<ComponentInfo> titleData = new ArrayList<>();
+                microPageAppBar.setVisibility(View.VISIBLE);
+                // 如果有搜索栏，就取前三个，因为已经 remove 掉了，所以都 remove 第一个
+                titleData.add(microPageList.remove(0));
+                titleData.add(microPageList.remove(0));
+                titleData.add(microPageList.remove(0));
+                DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
+                microPageTitleRecyclerView.setAdapter(dra);
+            }
         } else {
-            homeAppBar.setVisibility(View.GONE);
+            microPageAppBar.setVisibility(View.GONE);
         }
     }
 

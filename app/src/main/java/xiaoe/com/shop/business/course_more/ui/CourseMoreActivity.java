@@ -52,7 +52,7 @@ public class CourseMoreActivity extends XiaoeActivity {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
         }
 
-//        CourseItemPresenter coursePresenter = new CourseItemPresenter(this);
+//        CourseImageTextPresenter coursePresenter = new CourseImageTextPresenter(this);
 //        coursePresenter.requestData();
 
         initData();

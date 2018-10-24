@@ -2,28 +2,17 @@ package xiaoe.com.shop.adapter.decorate.knowledge_commodity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
-import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
-import xiaoe.com.shop.business.column.ui.ColumnActivity;
-import xiaoe.com.shop.business.course.ui.CourseItemActivity;
+import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 
 public class KnowledgeListAdapter extends BaseAdapter {
 
@@ -98,8 +87,9 @@ public class KnowledgeListAdapter extends BaseAdapter {
                 Intent intent = null;
                 switch (mItemList.get(position).getSrcType()) {
                     case DecorateEntityType.IMAGE_TEXT:
-                        intent = new Intent(mContext, CourseItemActivity.class);
+                        intent = new Intent(mContext, CourseImageTextActivity.class);
                         intent.putExtra("imgUrl", mItemList.get(position).getItemImg());
+                        intent.putExtra("resourceId", mItemList.get(position).getResourceId());
                         mContext.startActivity(intent);
                         break;
                     case DecorateEntityType.AUDIO:

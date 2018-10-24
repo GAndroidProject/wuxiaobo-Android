@@ -50,4 +50,8 @@ public class CommonBuyView extends LinearLayout {
     public void setOnBuyBtnClickListener(OnClickListener listener) {
         buyBtn.setOnClickListener(listener);
     }
+
+    public void setBuyBtnText(String price) {
+        buyBtn.setText(price);
+    }
 }

@@ -22,7 +22,6 @@ import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.interfaces.OnItemClickWithKnowledgeListener;
-import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.MeasureUtil;
 import xiaoe.com.shop.R;
@@ -42,7 +41,7 @@ import xiaoe.com.shop.adapter.decorate.search.SearchViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingFigureViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingImageLoader;
 import xiaoe.com.shop.base.BaseViewHolder;
-import xiaoe.com.shop.business.course.ui.CourseItemActivity;
+import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.course_more.ui.CourseMoreActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.business.search.ui.SearchActivity;
@@ -285,9 +284,10 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         // 知识商品分组形式
         if (view.getParent() == knowledgeGroupRecycler) {
             switch (knowledgeCommodityItem.getSrcType()) {
-                case DecorateEntityType.IMAGE_TEXT: // 图文
-                    intent = new Intent(mContext, CourseItemActivity.class);
+                case DecorateEntityType.IMAGE_TEXT: // 图文 -- resourceType 为 1，resourceId 需要取
+                    intent = new Intent(mContext, CourseImageTextActivity.class);
                     intent.putExtra("imgUrl", knowledgeCommodityItem.getItemImg());
+                    intent.putExtra("resourceId", knowledgeCommodityItem.getResourceId());
                     mContext.startActivity(intent);
                     break;
                 case DecorateEntityType.AUDIO: // 音频

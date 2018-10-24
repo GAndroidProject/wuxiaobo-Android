@@ -20,7 +20,7 @@ import xiaoe.com.common.entitys.FlowInfoItem;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
-import xiaoe.com.shop.business.course.ui.CourseItemActivity;
+import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
 
 public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
@@ -65,7 +65,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
                             Pair.create(imgTxtBg, mContext.getResources().getString(R.string.share_img)),
                             Pair.create(imgTxtTitle, mContext.getResources().getString(R.string.share_txt)));
-                    Intent transitionIntent = new Intent(mContext, CourseItemActivity.class);
+                    Intent transitionIntent = new Intent(mContext, CourseImageTextActivity.class);
                     transitionIntent.putExtra("type", DecorateEntityType.FLOW_INFO_IMG_TEXT_STR);
                     transitionIntent.putExtra("imgUrl", imgUrl);
                     mContext.startActivity(transitionIntent, options.toBundle());

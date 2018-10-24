@@ -16,6 +16,8 @@ public class KnowledgeCommodityItem {
     private boolean hasBuy;
     // 子类型（图文、音频、视频、专栏）
     private String srcType;
+    // 资源 id
+    private String resourceId;
 
     public KnowledgeCommodityItem() {}
 
@@ -75,5 +77,14 @@ public class KnowledgeCommodityItem {
     public String getSrcType() {
 
         return srcType;
+    }
+
+    public void setResourceId(String resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    public String getResourceId() {
+
+        return resourceId;
     }
 }

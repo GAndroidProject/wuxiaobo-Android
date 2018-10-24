@@ -26,7 +26,7 @@
         </activity>
         <activity android:name=".business.main.ui.MainActivity"/>
         <activity android:name=".test.TreeActivity"/>
-        <activity android:name=".business.course.ui.CourseItemActivity"/>
+        <activity android:name=".business.course.ui.CourseImageTextActivity"/>
         <activity android:name=".business.audio.ui.AudioActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="stateHidden|adjustResize"

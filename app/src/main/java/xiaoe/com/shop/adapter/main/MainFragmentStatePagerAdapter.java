@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xiaoe.com.shop.base.BaseFragment;
-import xiaoe.com.shop.business.main.ui.CoursePageFragment;
-import xiaoe.com.shop.business.main.ui.HomePageFragment;
+import xiaoe.com.shop.business.main.ui.MicroPageFragment;
 import xiaoe.com.shop.business.mine.ui.MineFragment;
 
 /**
@@ -21,8 +20,11 @@ public class MainFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     private List<BaseFragment> list = new ArrayList<BaseFragment>();
     public MainFragmentStatePagerAdapter(FragmentManager fm) {
         super(fm);
-        HomePageFragment homePageFragment = new HomePageFragment();
-        CoursePageFragment coursePageFragment = new CoursePageFragment();
+        // TODO: 拿到微页面 id
+        // 首页微页面
+        MicroPageFragment homePageFragment = MicroPageFragment.newInstance(0);
+        // 课程页微页面
+        MicroPageFragment coursePageFragment = MicroPageFragment.newInstance(6232);
         MineFragment mineFragment = new MineFragment();
         list.add(homePageFragment);
         list.add(coursePageFragment);

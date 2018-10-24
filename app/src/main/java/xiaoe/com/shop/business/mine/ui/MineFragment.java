@@ -25,7 +25,7 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.cdkey.ui.CdKeyActivity;
 import xiaoe.com.shop.business.coupon.ui.CouponActivity;
-import xiaoe.com.shop.business.course.ui.CourseItemActivity;
+import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
@@ -198,7 +198,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case R.id.learning_item_container:
                 // TODO: 根据不同类型跳转到对应的详情页
-                intent = new Intent(getActivity(), CourseItemActivity.class);
+                intent = new Intent(getActivity(), CourseImageTextActivity.class);
                 getActivity().startActivity(intent);
                 break;
             case R.id.card_container:

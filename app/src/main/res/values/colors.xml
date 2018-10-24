@@ -45,4 +45,5 @@
     <color name="login_error">#F6524E</color><!--登录异常颜色-->
     <color name="delete_red">#E95454</color>
 
+    <color name="pic_line">#979797</color>
 </resources>

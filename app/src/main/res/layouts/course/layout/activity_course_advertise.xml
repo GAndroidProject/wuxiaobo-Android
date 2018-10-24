@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="120dp">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/image_text_advertise_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/image_text_advertise_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/course_image_text_advertise_title"
+            android:textSize="18sp"
+            android:textColor="@color/main_title_color"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"/>
+
+        <View
+            android:layout_width="136dp"
+            android:layout_height="2dp"
+            android:background="@color/pic_line"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/image_text_advertise_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/course_image_text_advertise_desc"
+                android:textSize="14sp"
+                android:textColor="@color/secondary_title_color"
+                android:layout_gravity="start|center" />
+
+            <TextView
+                android:id="@+id/image_text_advertise_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/course_image_text_btn"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:layout_gravity="end|bottom"
+                android:background="@drawable/person_submit_bg"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
