@@ -14,6 +14,7 @@ public class AudioPlayEntity {
     private String updateAt = null;
     private String columnId = null;
     private int index = -1;
+    private boolean isPlay = false;
 
 
     public String getAppId() {
@@ -102,5 +103,13 @@ public class AudioPlayEntity {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public boolean isPlay() {
+        return isPlay;
+    }
+
+    public void setPlay(boolean play) {
+        isPlay = play;
     }
 }

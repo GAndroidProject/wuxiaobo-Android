@@ -39,6 +39,7 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.ViewAnim;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.audio.presenter.AudioSQLiteUtil;
 import xiaoe.com.shop.business.comment.ui.CommentActivity;
@@ -88,6 +89,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private CommonBuyView commonBuyView;
     private StatusPagerView statusPagerView;
     private AudioDetailsSwitchLayout pagerContentDetailLayout;
+    private boolean singleAudio = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -242,7 +244,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private void audioContentRequest(JSONObject jsonObject) {
         if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED){
             setPagerState(true);
-            return; }JSONObject data = jsonObject.getJSONObject("data");
+            return;
+        }
+        setButtonEnabled(true);
+        JSONObject data = jsonObject.getJSONObject("data");
         String detail = data.getString("content");
         setContentDetail(detail);
         String title = data.getString("title");
@@ -274,6 +279,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                     new String[]{audioPlayEntity.getAppId(),audioPlayEntity.getResourceId()});
         }else{
             SQLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioPlayEntity);
+        }
+        if(singleAudio){
+            AudioPlayUtil.getInstance().addAudio(audioPlayEntity);
         }
         AudioMediaPlayer.setAudio(audioPlayEntity);
     }

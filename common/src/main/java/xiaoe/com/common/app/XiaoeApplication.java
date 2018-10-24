@@ -2,6 +2,7 @@ package xiaoe.com.common.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
@@ -26,7 +27,17 @@ public class XiaoeApplication extends Application {
         //初始化Fresco图片加载库
         ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext).setDownsampleEnabled(true).build();
         Fresco.initialize(this,imagePipelineConfig);
-        QbSdk.initX5Environment(this, null);
+        QbSdk.initX5Environment(mContext, new QbSdk.PreInitCallback() {
+            @Override
+            public void onCoreInitFinished() {
+                Log.d(TAG, "onCoreInitFinished: --------------");
+            }
+
+            @Override
+            public void onViewInitFinished(boolean b) {
+                Log.d(TAG, "onViewInitFinished: --------------"+b);
+            }
+        });
     }
     public static Context getmContext() {
         return mContext;
