@@ -39,6 +39,8 @@ public abstract class IRequest {
 
     private Map<String,Object> formBody = new HashMap<String,Object>();
 
+    private JSONObject buzDatas = new JSONObject();
+
     /**
      * 添加请求参数
      * @param key
@@ -66,6 +68,10 @@ public abstract class IRequest {
         }
         formBody.remove(key);
         return true;
+    }
+
+    public void addBUZDataParam(String key, Object val){
+        buzDatas.put(key, val);
     }
 
     public Map<String, Object> getFormBody() {
@@ -96,6 +102,7 @@ public abstract class IRequest {
             }
             jsonObject.put(entry.getKey(),entry.getValue());
         }
+        jsonObject.put("buz_data", buzDatas);
         return jsonObject.toJSONString();
     }
 
