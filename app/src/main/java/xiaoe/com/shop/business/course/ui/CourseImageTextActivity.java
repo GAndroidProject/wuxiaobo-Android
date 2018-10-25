@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -61,7 +64,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
     @BindView(R.id.image_text_advertise_desc)
     TextView itDescDesc;
     @BindView(R.id.image_text_advertise_btn)
-    TextView itBtn;
+    TextView itDescBtn;
 
     @BindView(R.id.image_text_org_content)
     WebView itOrgContent;
@@ -121,10 +124,42 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 onBackPressed();
             }
         });
+        itCollection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast("收藏功能");
+            }
+        });
+        itShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast("分享功能");
+            }
+        });
+        itBuy.setOnVipBtnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast("成为超级会员");
+            }
+        });
+        itBuy.setOnBuyBtnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast("购买这个课程");
+            }
+        });
+        itDescBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast("领取奖学金");
+            }
+        });
     }
 
     private void initViews() {
-        itBg.setImageURI(imgUrl);
+        if (imgUrl != null) {
+            itBg.setImageURI(imgUrl);
+        }
         itDescImg.setImageURI("res:///" + R.mipmap.img_text_bg);
     }
 
@@ -150,21 +185,34 @@ public class CourseImageTextActivity extends XiaoeActivity {
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
         JSONObject result = (JSONObject) entity;
-        int code = result.getInteger("code");
-        JSONObject data = (JSONObject) result.get("data");
         if (success) {
+            int code = result.getInteger("code");
+            JSONObject data = (JSONObject) result.get("data");
             if (iRequest instanceof CourseITBeforeBuyRequest) {
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     initBeforeBuyData(data);
-                    itLoading.setVisibility(View.GONE);
                 } else if (code == NetworkCodes.CODE_GOODS_GROUPS_DELETE) {
                     Log.d(TAG, "onMainThreadResponse: 商品分组已被删除");
                 } else if (code == NetworkCodes.CODE_GOODS_NOT_FIND) {
                     Log.d(TAG, "onMainThreadResponse: 商品不存在");
                 }
             } else if (iRequest instanceof CourseITAfterBuyRequest) {
-                Log.d(TAG, "onMainThreadResponse: 成功请求购买后的接口");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    // 不需要购买按钮
+                    itBuy.setVisibility(View.GONE);
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    layoutParams.setMargins(0, 0, 0, 0);
+                    itWrap.setLayoutParams(layoutParams);
+                    initAfterBuyData(data);
+                } else if (code == NetworkCodes.CODE_RESOURCE_NOT_BUY) {
+                    Log.d(TAG, "onMainThreadResponse: 商品没有买");
+                } else if (code == NetworkCodes.CODE_RESOURCE_INFO_FAILED) {
+                    Log.d(TAG, "onMainThreadResponse: 获取指定商品失败");
+                }
             }
+        } else {
+            Log.d(TAG, "onMainThreadResponse: request fail");
+            onBackPressed();
         }
     }
 
@@ -174,13 +222,14 @@ public class CourseImageTextActivity extends XiaoeActivity {
         JSONObject resourceInfo = (JSONObject) data.get("resource_info");
         boolean hasBuy = resourceInfo.getInteger("has_buy") == 1; // 0 没买，1 买了
         if (hasBuy) { // 已经买了，请求购买后接口
-            courseImageTextPresenter.requestAfterBuy();
+            courseImageTextPresenter.requestAfterBuy(resourceId, resourceType);
         } else { // 没买，显示没买的数据
-            // 富文本内容
-            String orgContent = resourceInfo.getString("content");
-            if (orgContent.equals("")) { // 表示没有买，不能看图文的内容，此时需要拿 preview_content 的内容
-                orgContent = resourceInfo.getString("preview_content");
+            if (imgUrl == null) {
+                imgUrl = resourceInfo.getString("img_url_compressed") == null ? "" : resourceInfo.getString("img_url_compressed");
+                itBg.setImageURI(imgUrl);
             }
+            // 富文本内容，不能看图文的内容，此时需要拿 preview_content 的内容
+            String orgContent = resourceInfo.getString("preview_content");
             setOrgContent(orgContent);
             // 标题
             String title = resourceInfo.getString("title");
@@ -212,7 +261,39 @@ public class CourseImageTextActivity extends XiaoeActivity {
             } else {
                 itBuy.setVisibility(View.GONE);
             }
+            // 购买前初始化完成，去掉 loading
+            itLoading.setVisibility(View.GONE);
         }
+    }
+
+    // 初始化购买后的数据
+    private void initAfterBuyData(JSONObject data) {
+        if (imgUrl == null) {
+            imgUrl = data.getString("img_url") == null ? "" : data.getString("img_url");
+            itBg.setImageURI(imgUrl);
+        }
+        // 富文本内容
+        String orgContent = data.getString("content");
+        setOrgContent(orgContent);
+        // 标题
+        String title = data.getString("title");
+        // 浏览量
+        int viewCount = data.getInteger("view_count") == null ? 0 : data.getInteger("view_count");
+        String viewCountStr;
+        if (viewCount > 0 && viewCount < 10000) {
+            viewCountStr = viewCount + "次阅读";
+            itDesc.setText(viewCountStr);
+        } else if (viewCount > 10000) {
+            viewCountStr = (viewCount / 10000) + "w次阅读";
+            itDesc.setText(viewCountStr);
+        } else {
+            // 如果没有阅读量的话就将文本设置为空，并且将前面的点页隐藏
+            itDesc.setText("");
+            itDesc.setCompoundDrawables(null, null, null, null);
+        }
+        itTitle.setText(title);
+        // 购买后初始化完成，去掉 loading
+        itLoading.setVisibility(View.GONE);
     }
 
     // 初始化富文本数据

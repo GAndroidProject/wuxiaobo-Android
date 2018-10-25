@@ -11,7 +11,6 @@ import java.util.List;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.interfaces.OnItemClickWithKnowledgeListener;
-import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
@@ -79,7 +78,7 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
         knowledgeItemViewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickWithKnowledgeListener.onItemClick(v, currentItem);
+                onItemClickWithKnowledgeListener.onKnowledgeItemClick(v, currentItem);
             }
         });
     }

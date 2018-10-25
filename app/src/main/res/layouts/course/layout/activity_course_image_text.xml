@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <xiaoe.com.shop.widget.PushScrollView
         android:id="@+id/image_text_wrap"
@@ -13,7 +14,8 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         app:scrollId="@+id/image_text_bg"
-        app:maxZoom="120dp">
+        app:maxZoom="120dp"
+        android:layout_marginBottom="50dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,30 +41,42 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"/>
 
-            <ScrollView
+            <com.tencent.smtt.sdk.WebView
+                android:id="@+id/image_text_org_content"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="46dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="8dp"
-                android:paddingBottom="20dp">
+                android:paddingBottom="20dp"/>
 
-                <com.tencent.smtt.sdk.WebView
-                    android:id="@+id/image_text_org_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-            </ScrollView>
-
-            <xiaoe.com.shop.widget.CommonBuyView
-                android:id="@+id/image_text_buy"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"/>
+                android:background="@color/audio_page_bg_color">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/course_image_text_page_bottom"
+                    android:textSize="12sp"
+                    android:textColor="@color/course_page_bottom_color"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_gravity="center"/>
+
+            </FrameLayout>
 
         </LinearLayout>
 
     </xiaoe.com.shop.widget.PushScrollView>
+
+    <xiaoe.com.shop.widget.CommonBuyView
+        android:id="@+id/image_text_buy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"/>
 
     <xiaoe.com.shop.widget.StatusPagerView
         android:id="@+id/image_text_loading"

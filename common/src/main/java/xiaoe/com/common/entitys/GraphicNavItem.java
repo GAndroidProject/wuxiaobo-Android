@@ -6,6 +6,10 @@ public class GraphicNavItem {
     private String navIcon;
     // 导航文案
     private String navContent;
+    // 跳转的资源类型
+    private String navResourceType;
+    // 跳转的资源 id
+    private String navResourceId;
 
     public GraphicNavItem() { }
 
@@ -18,11 +22,26 @@ public class GraphicNavItem {
     }
 
     public String getNavIcon() {
-
         return navIcon;
     }
 
     public String getNavContent() {
         return navContent;
+    }
+
+    public String getNavResourceType() {
+        return navResourceType;
+    }
+
+    public String getNavResourceId() {
+        return navResourceId;
+    }
+
+    public void setNavResourceType(String navResourceType) {
+        this.navResourceType = navResourceType;
+    }
+
+    public void setNavResourceId(String navResourceId) {
+        this.navResourceId = navResourceId;
     }
 }

@@ -4,10 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/knowledge_list_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/main_title_color"
+        android:maxLines="1" />
+
     <ListView
         android:id="@+id/knowledge_list_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="#00000000"
-        android:dividerHeight="18dp"/>
+        android:dividerHeight="18dp"
+        android:layout_marginTop="40dp"/>
+
 </FrameLayout>

@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +20,11 @@ import butterknife.ButterKnife;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
+import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.business.navigate_detail.presenter.NavigateDetailPresenter;
 import xiaoe.com.shop.business.search.ui.SearchActivity;
 
 public class NavigateDetailActivity extends XiaoeActivity {
@@ -37,14 +42,24 @@ public class NavigateDetailActivity extends XiaoeActivity {
 
     Intent intent;
     String pageTitle;
+    String groupId;
+    String resourceType = DecorateEntityType.RESOURCE_TAG; // 商品分组的资源类型
+
+    NavigateDetailPresenter navigateDetailPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigate_detail);
         ButterKnife.bind(this);
+
         intent = getIntent();
         pageTitle = intent.getStringExtra("pageTitle");
+        groupId = intent.getStringExtra("resourceId");
+
+        // 发送网络请求
+        navigateDetailPresenter = new NavigateDetailPresenter(this);
+//        navigateDetailPresenter.requestData(groupId);
 
         initView();
         initData();
@@ -148,4 +163,16 @@ public class NavigateDetailActivity extends XiaoeActivity {
         });
     }
 
+    @Override
+    public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
+        super.onMainThreadResponse(iRequest, success, entity);
+        JSONObject result = (JSONObject) entity;
+        if (success) {
+            int code = result.getInteger("code");
+            JSONObject data = (JSONObject) result.get("data");
+        } else {
+            Log.d(TAG, "onMainThreadResponse: 请求失败...");
+            onBackPressed();
+        }
+    }
 }

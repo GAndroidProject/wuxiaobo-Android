@@ -41,11 +41,11 @@ public class CourseImageTextPresenter implements IBizCallback {
     }
 
     // 请求购买后的信息
-    public void requestAfterBuy () {
-        CourseITAfterBuyRequest courseITAfterBuyRequest = new CourseITAfterBuyRequest(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.resource.content.get", this);
+    public void requestAfterBuy (String resourceId, String resourceType) {
+        CourseITAfterBuyRequest courseITAfterBuyRequest = new CourseITAfterBuyRequest(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.resource.content.get/1.0.0", this);
         courseITAfterBuyRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        courseITAfterBuyRequest.addRequestParam("resource_id","a_5bc6b2a5d3ff5_cJc4CYI1");
-        courseITAfterBuyRequest.addRequestParam("resource_type","1");
+        courseITAfterBuyRequest.addRequestParam("resource_id", resourceId);
+        courseITAfterBuyRequest.addRequestParam("resource_type", resourceType);
         courseITAfterBuyRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         NetworkEngine.getInstance().sendRequest(courseITAfterBuyRequest);
     }

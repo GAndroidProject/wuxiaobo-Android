@@ -31,10 +31,10 @@ public class PageFragmentPresenter implements IBizCallback {
     }
 
     public void requestHomeData(int microPageId) {
-        PageFragmentRequest hp = new PageFragmentRequest(NetworkEngine.BASE_URL + "api/xe.shop.page.get/1.0.0", TestComponent.class, this);
-        hp.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
-        hp.addRequestParam("shop_id", "apppcHqlTPT3482");
-        hp.addRequestParam("micro_page_id", microPageId);
-        NetworkEngine.getInstance().sendRequest(hp);
+        PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(NetworkEngine.BASE_URL + "api/xe.shop.page.get/1.0.0", TestComponent.class, this);
+        pageFragmentRequest.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
+        pageFragmentRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        pageFragmentRequest.addRequestParam("micro_page_id", microPageId);
+        NetworkEngine.getInstance().sendRequest(pageFragmentRequest);
     }
 }

@@ -167,6 +167,8 @@ public class MicroPageFragment extends BaseFragment {
                         GraphicNavItem graphicNavItem = new GraphicNavItem();
                         graphicNavItem.setNavIcon(subItemObj.getString("img_url"));
                         graphicNavItem.setNavContent(subItemObj.getString("title"));
+                        graphicNavItem.setNavResourceType(subItemObj.getString("src_type"));
+                        graphicNavItem.setNavResourceId(subItemObj.getString("src_id"));
                         graphicNavItemList.add(graphicNavItem);
                     }
                     componentInfo_navigator.setGraphicNavItemList(graphicNavItemList);
@@ -231,8 +233,13 @@ public class MicroPageFragment extends BaseFragment {
             String srcType = listSubItemObj.getString("src_type");
             String srcId = listSubItemObj.getString("src_id");
             int viewCount = listSubItemObj.getInteger("view_count") == null ? 0 : listSubItemObj.getInteger("view_count");
+            int purchaseCount = listSubItemObj.getInteger("purchase_count") == null ? 0 : listSubItemObj.getInteger("purchase_count");
             item.setSrcType(srcType);
             item.setResourceId(srcId);
+            // 专栏或者大专栏订阅量就是 purchaseCount
+            if (srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.TOPIC)) {
+                viewCount = purchaseCount;
+            }
             String viewDesc = obtainViewCountDesc(srcType, viewCount);
             item.setItemDesc(viewDesc);
             itemList.add(item);

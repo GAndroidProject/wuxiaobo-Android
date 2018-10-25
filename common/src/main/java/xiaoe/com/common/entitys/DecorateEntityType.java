@@ -46,4 +46,7 @@ public class DecorateEntityType {
     public static final String VIDEO = "video"; // 视频
     public static final String COLUMN = "column"; // 专栏
     public static final String TOPIC = "topic"; // 大专栏
+
+    // 商品分组类型
+    public static final String RESOURCE_TAG = "resource_tag";
 }

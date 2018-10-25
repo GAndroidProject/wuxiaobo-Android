@@ -13,7 +13,7 @@ public class NavigateDetailPresenter implements IBizCallback {
 
     public NavigateDetailPresenter(INetworkResponse inr) {
         this.inr = inr;
-        this.cmd = "";
+        this.cmd = "xe.goods.more.get/1.0.0";
     }
 
     public NavigateDetailPresenter(INetworkResponse inr, String cmd) {
@@ -26,9 +26,10 @@ public class NavigateDetailPresenter implements IBizCallback {
         inr.onResponse(iRequest, success, entity);
     }
 
-    public void requestData() {
-        NaviDetailRequest naviDetailRequest = new NaviDetailRequest(cmd, null, this);
-        naviDetailRequest.addRequestParam("app_id", "123456");
+    public void requestData(String groupId) {
+        NaviDetailRequest naviDetailRequest = new NaviDetailRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + cmd, null, this);
+        naviDetailRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        naviDetailRequest.addRequestParam("group_id", groupId);
         NetworkEngine.getInstance().sendRequest(naviDetailRequest);
     }
 }

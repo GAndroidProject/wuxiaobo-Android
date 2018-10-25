@@ -21,7 +21,6 @@
         android:layout_height="22dp"
         android:src="@mipmap/video_collect"
         tools:ignore="ContentDescription"
-        android:layout_marginTop="18dp"
         android:layout_toStartOf="@id/image_text_share"
         android:layout_below="@id/image_text_bg"/>
 

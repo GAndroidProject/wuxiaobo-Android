@@ -11,5 +11,5 @@ public interface OnItemClickWithKnowledgeListener {
      * @param view 点击的 view
      * @param knowledgeCommodityItem 点击的 view 对象的知识商品组件对象
      */
-    public void onItemClick(View view, KnowledgeCommodityItem knowledgeCommodityItem);
+    public void onKnowledgeItemClick(View view, KnowledgeCommodityItem knowledgeCommodityItem);
 }

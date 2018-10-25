@@ -44,7 +44,7 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
 
     @Override
     public void onItemClick(View view, int position) {
-        Log.d(TAG, "onItemClick: "+position);
+        Log.d(TAG, "onNavItemClick: "+position);
         if(finishDownloadListAdapter.menuIsOpen()){
             finishDownloadListAdapter.closeMenu();
         }else{
