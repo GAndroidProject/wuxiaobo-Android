@@ -39,7 +39,9 @@ public abstract class IRequest {
 
     private Map<String,Object> formBody = new HashMap<String,Object>();
 
-    private JSONObject buzDatas = new JSONObject();
+    private JSONObject buzDataParams = null;
+
+    private JSONObject dataParams = null;
 
     /**
      * 添加请求参数
@@ -71,8 +73,19 @@ public abstract class IRequest {
     }
 
     public void addBUZDataParam(String key, Object val){
-        buzDatas.put(key, val);
+        if(buzDataParams == null){
+            buzDataParams = new JSONObject();
+        }
+        buzDataParams.put(key, val);
     }
+
+    public void addDataParam(String key, Object val){
+        if(dataParams == null){
+            dataParams = new JSONObject();
+        }
+        dataParams.put(key, val);
+    }
+
 
     public Map<String, Object> getFormBody() {
         return formBody;
@@ -102,7 +115,12 @@ public abstract class IRequest {
             }
             jsonObject.put(entry.getKey(),entry.getValue());
         }
-        jsonObject.put("buz_data", buzDatas);
+        if(buzDataParams != null){
+            jsonObject.put("buz_data", buzDataParams);
+        }
+        if(dataParams != null){
+            jsonObject.put("data", dataParams);
+        }
         return jsonObject.toJSONString();
     }
 
