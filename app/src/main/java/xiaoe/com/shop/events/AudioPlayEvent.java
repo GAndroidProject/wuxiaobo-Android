@@ -5,7 +5,9 @@ public class AudioPlayEvent {
     public static final int PLAY = 1002;
     public static final int PAUSE = 1003;
     public static final int STOP = 1004;
+    public static final int PROGRESS = 1005;
     private int state;
+    private int progress;
 
     public int getState() {
         return state;
@@ -13,5 +15,13 @@ public class AudioPlayEvent {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 }

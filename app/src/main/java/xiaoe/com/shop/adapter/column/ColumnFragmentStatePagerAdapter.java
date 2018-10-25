@@ -1,6 +1,5 @@
 package xiaoe.com.shop.adapter.column;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
@@ -35,7 +34,7 @@ public class ColumnFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public BaseFragment getItem(int position) {
         return list.get(position);
     }
 

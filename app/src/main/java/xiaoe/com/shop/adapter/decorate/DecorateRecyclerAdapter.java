@@ -42,9 +42,11 @@ import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingFigureViewHolde
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingImageLoader;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
+import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.course_more.ui.CourseMoreActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.business.search.ui.SearchActivity;
+import xiaoe.com.shop.business.video.ui.VideoActivity;
 
 /**
  * 店铺装修组件显示列表适配器
@@ -293,8 +295,12 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 case DecorateEntityType.AUDIO: // 音频
                     break;
                 case DecorateEntityType.VIDEO: // 视频
+                    intent = new Intent(mContext, VideoActivity.class);
+                    mContext.startActivity(intent);
                     break;
                 case DecorateEntityType.COLUMN: // 专栏
+                    intent = new Intent(mContext, ColumnActivity.class);
+                    mContext.startActivity(intent);
                     break;
             }
         }

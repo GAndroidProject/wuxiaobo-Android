@@ -32,8 +32,8 @@ import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.network.NetworkCodes;
-import xiaoe.com.network.requests.AudioContentRequest;
-import xiaoe.com.network.requests.AudioDetailRequest;
+import xiaoe.com.network.requests.ContentRequest;
+import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.ViewAnim;
@@ -52,7 +52,6 @@ import xiaoe.com.shop.widget.StatusPagerView;
 public class AudioActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener {
     private static final String TAG = "AudioActivity";
     private final int MSG_VIEW_STATE = 10001;
-    private final int MSG_PLAY_PROGRESS = 10002;
     private SimpleDraweeView audioBG;
     private SimpleDraweeView audioRing;
     private ViewAnim mViewAnim;
@@ -66,9 +65,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             switch (msg.what){
                 case MSG_VIEW_STATE:
                     initViewState(View.VISIBLE);
-                    break;
-                case MSG_PLAY_PROGRESS:
-                    playProgress();
                     break;
                 default:break;
             }
@@ -116,7 +112,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         super.onStart();
         if(AudioMediaPlayer.isPlaying()){
             setDiskRotateAnimator(true);
-            mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS,100);
         }
     }
 
@@ -209,9 +204,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             setPagerState(true);
             return;
         }
-        if(iRequest instanceof AudioContentRequest){
+        if(iRequest instanceof ContentRequest){
             audioContentRequest(jsonObject);
-        }else if(iRequest instanceof AudioDetailRequest){
+        }else if(iRequest instanceof DetailRequest){
             audioDetailRequest(jsonObject);
         }
     }
@@ -283,7 +278,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if(singleAudio){
             AudioPlayUtil.getInstance().addAudio(audioPlayEntity);
         }
-        AudioMediaPlayer.setAudio(audioPlayEntity);
+        AudioMediaPlayer.setAudio(audioPlayEntity,true);
     }
     private void setContentDetail(String detail){
         detailContent.loadDataWithBaseURL(null, NetworkState.getNewContent(detail), "text/html", "UFT-8", null);
@@ -331,7 +326,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 audioHoverPlayController.setPlayState(true);
                 audioPlayController.setTotalDuration(AudioMediaPlayer.getDuration());
                 setDiskRotateAnimator(true);
-                mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS,100);
                 break;
             case AudioPlayEvent.PAUSE:
                 audioPlayController.setPlayState(false);
@@ -343,18 +337,12 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 audioHoverPlayController.setPlayState(false);
                 setDiskRotateAnimator(false);
                 break;
+            case AudioPlayEvent.PROGRESS:
+                audioPlayController.setPlayDuration(event.getProgress());
+                break;
             default:
                 break;
         }
-    }
-
-    private void playProgress() {
-        if(!AudioMediaPlayer.isPlaying()){
-            //已经停机就不需要在轮循获取当前进度
-            return;
-        }
-        audioPlayController.setPlayDuration(AudioMediaPlayer.getCurrentPosition());
-        mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS,500);
     }
 
     @Override

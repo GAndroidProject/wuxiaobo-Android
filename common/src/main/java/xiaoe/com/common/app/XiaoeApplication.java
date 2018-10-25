@@ -2,7 +2,6 @@ package xiaoe.com.common.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
@@ -30,12 +29,10 @@ public class XiaoeApplication extends Application {
         QbSdk.initX5Environment(mContext, new QbSdk.PreInitCallback() {
             @Override
             public void onCoreInitFinished() {
-                Log.d(TAG, "onCoreInitFinished: --------------");
             }
 
             @Override
             public void onViewInitFinished(boolean b) {
-                Log.d(TAG, "onViewInitFinished: --------------"+b);
             }
         });
     }

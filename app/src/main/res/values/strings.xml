@@ -128,4 +128,7 @@
     <string name="course_image_text_btn">领取奖学金</string>
     <string name="course_image_text_advertise_title">学习本次课程即可瓜分1万元奖学金</string>
     <string name="course_image_text_advertise_desc">学习知识还能赚钱</string>
+    <string name="loading_text">加载中...</string>
+    <string name="click_load_more_text">点击加载更多</string>
+    <string name="load_all_text">已加载全部</string>
 </resources>

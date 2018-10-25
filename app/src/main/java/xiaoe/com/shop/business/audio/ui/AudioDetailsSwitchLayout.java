@@ -387,7 +387,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
     }
 
     private void finishDrag(int vy) {
-        Log.i(TAG, "TouchUp: vy = " + vy);
         //手指滑动起点坐标 - 手指滑动终点坐标
         //有时我们下拉fling，手指抬起瞬间有轻微的反方向滑动，导致vy<0，targetView反向fling,，加上该判断过滤这种情况
         final float diffY = mLastMotionY - mInitialMotionY;
@@ -528,7 +527,5 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
             mScroller.startScroll(0, mTargetCurrentOffset, 0, mTargetEndOffset - mTargetCurrentOffset);
             invalidate();
         }
-    }
-    public void s(){
     }
 }

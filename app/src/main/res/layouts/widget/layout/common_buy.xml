@@ -35,7 +35,6 @@
         android:minHeight="0dp"
         android:layout_weight="1"
         android:background="@drawable/recent_update_btn_pressed"
-        android:text="购买￥980"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:layout_marginEnd="14dp"

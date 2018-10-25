@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-    <TextView
+    <com.tencent.smtt.sdk.WebView
+        android:id="@+id/column_detail_web_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\n课程简介\r\nvv课程简介\r\n课程简介\r\n课程简介\r\nd"
         />
 
 </RelativeLayout>

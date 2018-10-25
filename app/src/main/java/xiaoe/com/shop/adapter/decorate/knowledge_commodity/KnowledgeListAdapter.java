@@ -12,7 +12,9 @@ import java.util.List;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
+import xiaoe.com.shop.business.video.ui.VideoActivity;
 
 public class KnowledgeListAdapter extends BaseAdapter {
 
@@ -95,8 +97,12 @@ public class KnowledgeListAdapter extends BaseAdapter {
                     case DecorateEntityType.AUDIO:
                         break;
                     case DecorateEntityType.VIDEO:
+                        intent = new Intent(mContext, VideoActivity.class);
+                        mContext.startActivity(intent);
                         break;
                     case DecorateEntityType.COLUMN:
+                        intent = new Intent(mContext, ColumnActivity.class);
+                        mContext.startActivity(intent);
                         break;
                 }
             }

@@ -4,7 +4,9 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.Nullable;
 
 import org.greenrobot.eventbus.EventBus;
@@ -19,10 +21,23 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnCompletionListener,
         MediaPlayer.OnErrorListener {
     private static final String TAG = "AudioMediaPlayer";
+    private static final int MSG_PLAY_PROGRESS = 80001;
     private static MediaPlayer mediaPlayer;
     private static AudioPlayEvent event;
     private static AudioPlayEntity audio = null;
     private static boolean isStop = true;//是否是停止（已经释放资源），
+    private static Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case MSG_PLAY_PROGRESS:
+                    playProgress();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
     @Override
     public void onCreate() {
         super.onCreate();
@@ -62,6 +77,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         mediaPlayer.start();
         event.setState(AudioPlayEvent.PLAY);
         EventBus.getDefault().post(event);
+        mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
     }
 
     @Override
@@ -124,6 +140,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         } else {
             mediaPlayer.start();
             event.setState(AudioPlayEvent.PLAY);
+            mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
         }
         EventBus.getDefault().post(event);
     }
@@ -172,7 +189,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(indexNext >= playList.size()){
             indexNext = 0;
         }
-        setAudio(playList.get(indexNext));
+        setAudio(playList.get(indexNext),false);
         stop();
         if(isStop){
             start();
@@ -187,7 +204,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(indexLast < 0){
             indexLast = playList.size() - 1;
         }
-        setAudio(playList.get(indexLast));
+        setAudio(playList.get(indexLast),false);
         stop();
         if(isStop){
             start();
@@ -196,16 +213,35 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
     }
 
+    private static void playProgress() {
+        if(!isPlaying()){
+            //已经停止就不需要在轮循获取当前进度
+            return;
+        }
+        event.setState(AudioPlayEvent.PROGRESS);
+        event.setProgress(getCurrentPosition());
+        EventBus.getDefault().post(event);
+        mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS,500);
+    }
+
     public static AudioPlayEntity getAudio() {
         return audio;
     }
 
-    public static void setAudio(AudioPlayEntity audio) {
+    public static void setAudio(AudioPlayEntity audio, boolean autoPlay) {
         AudioMediaPlayer.audio = audio;
+        if(autoPlay){
+            start();
+        }
     }
 
     public static boolean isStop() {
         return isStop;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
+    }
 }

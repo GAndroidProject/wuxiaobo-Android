@@ -21,6 +21,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment {
     private static final String TAG = "ColumnDirectoryFragment";
     private View rootView;
     private RecyclerView directoryRecyclerView;
+    private TreeChildRecyclerAdapter directoryAdapter;
 
     @Nullable
     @Override
@@ -44,12 +45,20 @@ public class LittleColumnDirectoryFragment extends BaseFragment {
         treeLinearLayoutManager.setAutoMeasureEnabled(true);
         directoryRecyclerView.setLayoutManager(treeLinearLayoutManager);
         directoryRecyclerView.setNestedScrollingEnabled(false);
-        TreeChildRecyclerAdapter directoryAdapter = new TreeChildRecyclerAdapter(getContext());
+        directoryAdapter = new TreeChildRecyclerAdapter(getContext());
         directoryRecyclerView.setAdapter(directoryAdapter);
+        List<ItemData> childList = new ArrayList<ItemData>();
+        for (int j = 0; j < 15; j++){
+            childList.add(new ItemData(ItemData.ITEM_TYPE_CHILD, "音视频图文-"+j,"",UUID.randomUUID().toString(), 2,null));
+        }
+        directoryAdapter.setData(childList);
+    }
+
+    public void add(){
         List<ItemData> childList = new ArrayList<ItemData>();
         for (int j = 0; j < 5; j++){
             childList.add(new ItemData(ItemData.ITEM_TYPE_CHILD, "音视频图文-"+j,"",UUID.randomUUID().toString(), 2,null));
         }
-        directoryAdapter.setData(childList);
+        directoryAdapter.addAll(childList);
     }
 }

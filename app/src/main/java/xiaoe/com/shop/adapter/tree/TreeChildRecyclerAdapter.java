@@ -2,7 +2,6 @@ package xiaoe.com.shop.adapter.tree;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,11 +93,19 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 		mDataSet.add(position, text);
 		notifyItemInserted(position);
 	}
+	public void add(ItemData text) {
+		mDataSet.add(text);
+		notifyDataSetChanged();
+	}
 
 	public void addAll(List<ItemData> list, int position) {
-		Log.d(TAG, "addAll:................ ");
 		mDataSet.addAll(position, list);
 		notifyItemRangeInserted(position, list.size());
+	}
+	public void addAll(List<ItemData> list) {
+		int position = mDataSet.size() - 1;
+		mDataSet.addAll(list);
+		notifyDataSetChanged();
 	}
 
 	public void delete(int pos) {

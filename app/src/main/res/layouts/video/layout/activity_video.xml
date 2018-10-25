@@ -8,58 +8,70 @@
         android:id="@+id/video_play_controller"
         android:layout_width="match_parent"
         android:layout_height="210dp"/>
-
-    <RelativeLayout
+    <ScrollView
         android:id="@+id/video_content_detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@+id/detail_buy"
         android:layout_below="@id/video_play_controller"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
         >
-        <TextView
-            android:id="@+id/video_title"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/btn_collect"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:textColor="@color/main_title_color"
-            android:text="我的财富计划啊啊啊 新中产必修财富课程"
-            />
-        <ImageView
-            android:id="@+id/btn_collect"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@mipmap/video_collect"
-            android:layout_toStartOf="@+id/btn_share"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
-            />
-        <ImageView
-            android:id="@+id/btn_share"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="20dp"
-            android:src="@mipmap/audio_share"
-            android:layout_alignParentEnd="true"
-            />
+            android:layout_marginEnd="20dp"
+            >
+            <TextView
+                android:id="@+id/video_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/btn_collect"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:textColor="@color/main_title_color"
+                />
+            <ImageView
+                android:id="@+id/btn_collect"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@mipmap/video_collect"
+                android:layout_toStartOf="@+id/btn_share"
+                android:layout_marginStart="20dp"
+                />
+            <ImageView
+                android:id="@+id/btn_share"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="20dp"
+                android:src="@mipmap/audio_share"
+                android:layout_alignParentEnd="true"
+                />
 
-        <TextView
-            android:id="@+id/play_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/video_title"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
-            android:drawableStart="@drawable/circle_shape"
-            android:drawablePadding="5dp"
-            android:textColor="@color/secondary_title_color"
-            android:textSize="14sp"
-            />
+            <TextView
+                android:id="@+id/play_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/video_title"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:drawableStart="@drawable/circle_shape"
+                android:drawablePadding="5dp"
+                android:textColor="@color/secondary_title_color"
+                android:textSize="14sp"
+                />
+            <com.tencent.smtt.sdk.WebView
+                android:id="@+id/video_web_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/play_num"
+                android:layout_marginTop="8dp"
+                />
+        </RelativeLayout>
+    </ScrollView>
 
-    </RelativeLayout>
+
 
     <xiaoe.com.shop.widget.CommonBuyView
         android:id="@+id/detail_buy"
@@ -67,5 +79,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_alignParentBottom="true"/>
+
+    <xiaoe.com.shop.widget.StatusPagerView
+        android:id="@+id/video_state_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/video_play_controller"
+        />
 
 </RelativeLayout>

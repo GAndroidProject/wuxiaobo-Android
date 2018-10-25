@@ -1,11 +1,8 @@
 package xiaoe.com.shop.widget;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +38,11 @@ public class CommonBuyView extends LinearLayout {
         View view = View.inflate(context, R.layout.common_buy, this);
         vipBtn = (TextView) view.findViewById(R.id.buy_vip);
         buyBtn = (TextView) view.findViewById(R.id.buy_course);
+    }
+
+    public void setBuyPrice(int price){
+        float priceF = price / (100*1.0f);
+        buyBtn.setText("购买¥"+priceF);
     }
 
     public void setOnVipBtnClickListener(OnClickListener listener) {

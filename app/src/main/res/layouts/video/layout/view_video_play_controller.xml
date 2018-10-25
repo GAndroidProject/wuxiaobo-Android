@@ -104,6 +104,6 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_centerInParent="true"
-        android:src="@mipmap/icon_play_video_loading" />
+        android:src="@mipmap/audio_play" />
 
 </RelativeLayout>

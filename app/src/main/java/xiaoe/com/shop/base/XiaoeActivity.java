@@ -23,15 +23,22 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.app.Global;
+import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.AudioPlayTable;
+import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.TranslationAnimator;
+import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.business.audio.presenter.AudioSQLiteUtil;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
+import xiaoe.com.shop.business.main.ui.MainActivity;
 
 /**
  * Created by Administrator on 2017/7/17.
@@ -44,6 +51,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private static PopupWindow popupWindow;
     private static Toast toast;
     private TextView mToastText;
+    private boolean isInit = true;
     private int miniPlayerAnimHeight = 0;//音频迷你播放器动画滑动的高度
     private int actionDownY = 0;//手指按下屏幕Y轴坐标
     private MiniAudioPlayControllerLayout miniAudioPlayController;//音频迷你播放器
@@ -105,6 +113,35 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         isActivityDestroy = false;
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(this instanceof MainActivity && isInit){
+            isInit = false;
+            getAudioRecord();
+        }
+    }
+
+    private void getAudioRecord() {
+        if(miniAudioPlayController == null){
+            return;
+        }
+        SQLiteUtil.init(this, new AudioSQLiteUtil());
+        if(SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)){
+            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 1";
+            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
+            if(entityList.size() > 0){
+                AudioMediaPlayer.setAudio(entityList.get(0), false);
+                miniAudioPlayController.setAudioTitle(entityList.get(0).getTitle());
+                miniAudioPlayController.setVisibility(View.VISIBLE);
+            }else{
+                miniAudioPlayController.setVisibility(View.GONE);
+            }
+        }else{
+            miniAudioPlayController.setVisibility(View.GONE);
+        }
+    }
+
     public void Toast(String msg){
         toast = Toast.makeText(this,msg,Toast.LENGTH_SHORT);
         toast.show();
@@ -148,7 +185,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 //        if (AudioMediaPlayer.isPlaying()) {
-        if (miniAudioPlayController != null) {
+        if (miniAudioPlayController != null && !miniAudioPlayController.isClose()) {
             int action = ev.getAction();
             switch (action) {
                 case MotionEvent.ACTION_DOWN:

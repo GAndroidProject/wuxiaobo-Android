@@ -6,12 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tencent.smtt.sdk.CookieSyncManager;
+import com.tencent.smtt.sdk.WebView;
+
+import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 
 public class ColumnDetailFragment extends BaseFragment {
     private static final String TAG = "ColumnDetailFragment";
     private View rootView;
+    private WebView webView;
 
     @Nullable
     @Override
@@ -23,5 +28,12 @@ public class ColumnDetailFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        webView = (WebView) rootView.findViewById(R.id.column_detail_web_view);
+    }
+
+    public void setContentDetail(String detail){
+        webView.loadDataWithBaseURL(null, NetworkState.getNewContent(detail), "text/html", "UFT-8", null);
+        CookieSyncManager.createInstance(getContext());
+        CookieSyncManager.getInstance().sync();
     }
 }

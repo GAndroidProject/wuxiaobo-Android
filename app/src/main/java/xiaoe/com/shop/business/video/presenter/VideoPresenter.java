@@ -1,17 +1,16 @@
-package xiaoe.com.shop.business.audio.presenter;
+package xiaoe.com.shop.business.video.presenter;
 
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
-import xiaoe.com.network.requests.ContentRequest;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
-public class AudioPresenter implements IBizCallback {
-    private static final String TAG = "AudioPresenter";
+public class VideoPresenter implements IBizCallback {
+    private static final String TAG = "VideoPresenter";
     private INetworkResponse iNetworkResponse;
 
-    public AudioPresenter(INetworkResponse iNetworkResponse) {
+    public VideoPresenter(INetworkResponse iNetworkResponse) {
         this.iNetworkResponse = iNetworkResponse;
     }
 
@@ -20,12 +19,9 @@ public class AudioPresenter implements IBizCallback {
         ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
             @Override
             public void run() {
-                if(success && entity != null){
-                    iNetworkResponse.onMainThreadResponse(iRequest,success, entity);
-                }
+                iNetworkResponse.onMainThreadResponse(iRequest, success, entity);
             }
         });
-
     }
 
     /**
@@ -34,8 +30,8 @@ public class AudioPresenter implements IBizCallback {
     public void requestDetail(){
         DetailRequest couponRequest = new DetailRequest( this);
         couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addRequestParam("resource_id","a_5bc6b2a5d3ff5_cJc4CYI1");
-        couponRequest.addRequestParam("resource_type","2");
+        couponRequest.addRequestParam("resource_id","v_5bc733612d5f5_MXZA7ePO");
+        couponRequest.addRequestParam("resource_type","3");
         couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         couponRequest.sendRequest();
     }
@@ -44,10 +40,10 @@ public class AudioPresenter implements IBizCallback {
      * 获取购买后的资源内容
      */
     public void requestContent(){
-        ContentRequest couponRequest = new ContentRequest( this);
+        DetailRequest couponRequest = new DetailRequest( this);
         couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addRequestParam("resource_id","a_5bc6b2a5d3ff5_cJc4CYI1");
-        couponRequest.addRequestParam("resource_type","2");
+        couponRequest.addRequestParam("resource_id","v_5bc733612d5f5_MXZA7ePO");
+        couponRequest.addRequestParam("resource_type","3");
         couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         couponRequest.sendRequest();
     }

@@ -9,16 +9,21 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import xiaoe.com.common.app.Global;
+import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
+import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
 import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.BottomTabBar;
@@ -28,6 +33,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     private static final String TAG = "MainActivity";
     private BottomTabBar bottomTabBar;
     private ScrollViewPager mainViewPager;
+    private MiniAudioPlayControllerLayout miniAudioPlayController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             Global.g().setGlobalColor("#000000");
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
         }
+        EventBus.getDefault().register(this);
         // 透明状态栏
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -75,8 +82,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         mainViewPager.setAdapter(new MainFragmentStatePagerAdapter(getSupportFragmentManager()));
         mainViewPager.setOffscreenPageLimit(3);
 
-        MiniAudioPlayControllerLayout miniAudioPlayController = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
+        miniAudioPlayController = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
         setMiniAudioPlayController(miniAudioPlayController);
+        miniAudioPlayController.setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
         setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
     }
 
@@ -90,5 +98,40 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         Log.d(TAG, "onCheckedTab: "+index);
         mainViewPager.setCurrentItem(index);
         Log.d(TAG, "onCheckedTab: I "+mainViewPager.getCurrentItem());
+    }
+
+    @Subscribe
+    public void onEventMainThread(AudioPlayEvent event) {
+        AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        if(playEntity == null){
+            return;
+        }
+        switch (event.getState()){
+            case AudioPlayEvent.LOADING:
+                miniAudioPlayController.setAudioTitle(playEntity.getTitle());
+                break;
+            case AudioPlayEvent.PLAY:
+                miniAudioPlayController.setAudioTitle(playEntity.getTitle());
+                miniAudioPlayController.setPlayState(AudioPlayEvent.PLAY);
+                miniAudioPlayController.setMaxProgress(AudioMediaPlayer.getDuration());
+                break;
+            case AudioPlayEvent.PAUSE:
+                miniAudioPlayController.setPlayState(AudioPlayEvent.PAUSE);
+                break;
+            case AudioPlayEvent.STOP:
+                miniAudioPlayController.setPlayState(AudioPlayEvent.PAUSE);
+                break;
+            case AudioPlayEvent.PROGRESS:
+                miniAudioPlayController.setProgress(event.getProgress());
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

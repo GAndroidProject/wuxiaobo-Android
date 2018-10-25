@@ -44,6 +44,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private TextView totalPlayTime;
     private boolean isFullScreen = false;
     private VideoPlayEvent videoPlayEvent;
+    private RelativeLayout playProgressWidget;
 
     public VideoPlayControllerView(@NonNull Context context) {
         this(context,null);
@@ -78,11 +79,15 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         playSeekBar.setOnSeekBarChangeListener(this);
         totalPlayTime = (TextView) findViewById(R.id.id_total_play_time);
 
+        playProgressWidget = (RelativeLayout) findViewById(R.id.id_play_progress_widget);
+        playProgressWidget.setVisibility(View.GONE);
+
         mVideoPlayer = new VideoPlayer();
         mVideoPlayer.setOnPreparedListener(this);
         mVideoPlayer.setSurfaceHolder(videoSurface.getHolder(), true);
 
         videoPlayEvent = new VideoPlayEvent();
+
     }
 
     public void setPreviewImage(String imageUrl){
@@ -90,6 +95,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     }
 
     public void setPlayUrl(String url){
+        setPlayState(VideoPlayConstant.VIDEO_STATE_LOADING);
         mVideoPlayer.setSourcePath(url);
         mVideoPlayer.prepareMediaPlayer();
     }
@@ -178,6 +184,9 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         totalPlayTime.setText(DateFormat.longToString(mVideoPlayer.getDuration()));
         previewImage.setVisibility(View.GONE);
         setPlayState(VideoPlayConstant.VIDEO_STATE_PLAY);
+
+        videoPlayEvent.setState(VideoPlayConstant.VIDEO_STATE_PLAY);
+        EventBus.getDefault().post(videoPlayEvent);
     }
 
     private void setPlayState(int state){
@@ -191,6 +200,10 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             //停止
             btnPlay.setImageResource(R.mipmap.audio_play);
         }
+    }
+
+    public void setPlayProgressWidgetVisibility(int v){
+        playProgressWidget.setVisibility(v);
     }
 
     public boolean isFullScreen() {
