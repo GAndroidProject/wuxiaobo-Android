@@ -1,5 +1,6 @@
 package xiaoe.com.shop.business.course_more.ui;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +13,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +25,12 @@ import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
+import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.business.course_more.presenter.CourseMorePresenter;
 import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class CourseMoreActivity extends XiaoeActivity {
@@ -37,6 +43,15 @@ public class CourseMoreActivity extends XiaoeActivity {
     TextView courseMoreTitle;
     @BindView(R.id.course_more_content)
     RecyclerView courseMoreContent;
+
+    Intent intent;
+    String groupId; // 分组 id
+    int pageNum = 1; // 页码
+    int pageSize = 10; // 页数
+    String lastId; // 上次请求最后一个的 id
+    boolean loadFinished; // 是否请求完成 -- 方便扩展加载更多，现在先不用
+
+    List<ComponentInfo> dataList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,65 +67,19 @@ public class CourseMoreActivity extends XiaoeActivity {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
         }
 
-//        CourseImageTextPresenter coursePresenter = new CourseImageTextPresenter(this);
-//        coursePresenter.requestData();
+        intent = getIntent();
+        groupId = intent.getStringExtra("groupId");
+
+        CourseMorePresenter courseMorePresenter = new CourseMorePresenter(this);
+        // 第一次请求 lastId 为 ""
+        courseMorePresenter.requestData(groupId, pageNum, pageSize, lastId);
 
         initData();
         initListener();
     }
 
     private void initData() {
-
-        List<ComponentInfo> tempData = new ArrayList<>();
-
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayout.VERTICAL);
-        courseMoreContent.setLayoutManager(llm);
-
-        // 知识商品假数据 -- 分组形式
-        ComponentInfo componentInfo_know_group = new ComponentInfo();
-        componentInfo_know_group.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
-        componentInfo_know_group.setSubType("knowledgeGroup");
-        componentInfo_know_group.setTitle("学会管理自己的财富");
-        componentInfo_know_group.setDesc("查看更多");
-        componentInfo_know_group.setHideTitle(true);
-        List<KnowledgeCommodityItem> groupItems = new ArrayList<>();
-        KnowledgeCommodityItem groupItem_1 = new KnowledgeCommodityItem();
-        groupItem_1.setItemTitle("我的财富计划 新中产必修理财课程");
-        groupItem_1.setItemImg("http://pic15.nipic.com/20110619/7763155_101852942332_2.jpg");
-        groupItem_1.setHasBuy(false);
-        groupItem_1.setItemDesc("已更新至135期");
-        groupItem_1.setItemPrice("￥980");
-        KnowledgeCommodityItem groupItem_2 = new KnowledgeCommodityItem();
-        groupItem_2.setItemTitle("我的财富计划");
-        groupItem_2.setItemImg("http://pic38.nipic.com/20140212/17942401_101320663138_2.jpg");
-        groupItem_2.setHasBuy(true);
-        groupItem_2.setItemPrice("￥555.21");
-        groupItem_2.setItemDesc("187次播放");
-        KnowledgeCommodityItem groupItem_3 = new KnowledgeCommodityItem();
-        groupItem_3.setItemTitle("学会规划自己的职场 必修理财课程");
-        groupItem_3.setItemImg("http://gbres.dfcfw.com/Files/picture/20170925/9B00CEC6F06B756A4A9C256E870A324B.jpg");
-        groupItem_3.setHasBuy(false);
-        groupItem_3.setItemDesc("已更新至134期");
-        KnowledgeCommodityItem groupItem_4 = new KnowledgeCommodityItem();
-        groupItem_4.setItemTitle("这个文案是测试的，随便搞搞");
-        groupItem_4.setItemImg("http://img.zcool.cn/community/01a9e45a60510ca8012113c7899c89.jpg@1280w_1l_2o_100sh.jpg");
-        groupItem_4.setHasBuy(true);
-        groupItem_4.setItemPrice("￥123.12");
-        groupItem_4.setItemDesc("130次播放");
-        groupItems.add(groupItem_1);
-        groupItems.add(groupItem_2);
-        groupItems.add(groupItem_3);
-        groupItems.add(groupItem_4);
-        groupItems.add(groupItem_1);
-        groupItems.add(groupItem_2);
-        groupItems.add(groupItem_3);
-        groupItems.add(groupItem_4);
-        componentInfo_know_group.setKnowledgeCommodityItemList(groupItems);
-
-        tempData.add(componentInfo_know_group);
-
-        courseMoreContent.setAdapter(new DecorateRecyclerAdapter(this, tempData));
+        dataList = new ArrayList<>();
     }
 
     private void initListener() {
@@ -125,6 +94,100 @@ public class CourseMoreActivity extends XiaoeActivity {
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        Log.d(TAG, "onMainThreadResponse: " + success);
+        JSONObject result = (JSONObject) entity;
+        if (success) {
+            int code = result.getInteger("code");
+            JSONObject data = (JSONObject) result.get("data");
+            lastId = data.getInteger("last_id").toString();
+            loadFinished = data.getBoolean("finished");
+            JSONObject component = (JSONObject) data.get("component");
+            if (code == NetworkCodes.CODE_SUCCEED) {
+                initPageData(component);
+            } else if (code == NetworkCodes.CODE_GOODS_GROUPS_NOT_FIND) {
+                Log.d(TAG, "onMainThreadResponse: 商品分组不存在");
+            }
+        } else {
+            Log.d(TAG, "onMainThreadResponse: 请求失败...");
+        }
+    }
+
+    private void initPageData(JSONObject component) {
+        // 0 列表形式，2 宫格形式(默认)
+        int showStyle = component.getInteger("list_style") == null ? 2 : component.getInteger("list_style");
+        // 知识商品假数据 -- 分组形式
+        ComponentInfo componentInfo_knowledge = new ComponentInfo();
+        componentInfo_knowledge.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
+        if (showStyle == 0) {
+            componentInfo_knowledge.setSubType(DecorateEntityType.KNOWLEDGE_LIST);
+        } else if (showStyle == 2) {
+            componentInfo_knowledge.setSubType(DecorateEntityType.KNOWLEDGE_GROUP);
+        }
+        // 隐藏知识商品组件的 title
+        componentInfo_knowledge.setTitle("");
+        componentInfo_knowledge.setDesc("");
+        componentInfo_knowledge.setHideTitle(true);
+        JSONArray componentList = (JSONArray) component.get("list");
+        List<KnowledgeCommodityItem> itemListObj = new ArrayList<>();
+        for (Object itemObj : componentList) {
+            JSONObject listSubItemObj = (JSONObject) itemObj;
+            KnowledgeCommodityItem item = new KnowledgeCommodityItem();
+            item.setItemTitle(listSubItemObj.getString("title"));
+            item.setItemTitleColumn(listSubItemObj.getString("summary"));
+            item.setItemImg(listSubItemObj.getString("img_url"));
+            String price = "￥" + listSubItemObj.getString("show_price");
+            if (price.equals("￥")) { // 表示买了，所以没有价格
+                item.setItemPrice(null);
+                item.setHasBuy(true);
+            } else {
+                item.setItemPrice(price);
+                item.setHasBuy(false);
+            }
+            String srcType = listSubItemObj.getString("src_type");
+            String srcId = listSubItemObj.getString("src_id");
+            int viewCount = listSubItemObj.getInteger("view_count") == null ? 0 : listSubItemObj.getInteger("view_count");
+            int purchaseCount = listSubItemObj.getInteger("purchase_count") == null ? 0 : listSubItemObj.getInteger("purchase_count");
+            item.setSrcType(srcType);
+            item.setResourceId(srcId);
+            // 专栏或者大专栏订阅量就是 purchaseCount
+            if (srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.TOPIC)) {
+                viewCount = purchaseCount;
+            }
+            String viewDesc = obtainViewCountDesc(srcType, viewCount);
+            item.setItemDesc(viewDesc);
+            itemListObj.add(item);
+        }
+        componentInfo_knowledge.setKnowledgeCommodityItemList(itemListObj);
+        dataList.add(componentInfo_knowledge);
+        initRecycler();
+    }
+
+    // 根据子类型获取浏览字段
+    private String obtainViewCountDesc (String srcType, int viewCount) {
+        if (viewCount == 0) {
+            return "";
+        }
+        switch (srcType) {
+            case DecorateEntityType.IMAGE_TEXT: // 图文
+                return viewCount + "次阅读";
+            case DecorateEntityType.AUDIO: // 音频
+            case DecorateEntityType.VIDEO: // 视频
+                return viewCount + "次播放";
+            case DecorateEntityType.TOPIC: // 大专栏
+            case DecorateEntityType.COLUMN: // 专栏
+                return "已更新" + viewCount + "期";
+            default:
+                return "";
+        }
+    }
+
+    private void initRecycler() {
+
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayout.VERTICAL);
+        courseMoreContent.setLayoutManager(llm);
+
+        DecorateRecyclerAdapter adapter = new DecorateRecyclerAdapter(this, dataList);
+        courseMoreContent.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 }

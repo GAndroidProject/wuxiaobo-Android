@@ -43,6 +43,7 @@ public class NetworkEngine {
 //    private final static String BASE_URL = "http://134.175.39.17:12242/";
     public final static String BASE_URL = "http://134.175.39.17:9380/";
     public final static String CLASS_DETAIL_BASE_URL = "http://134.175.39.17:9378/api/";
+    public final static String COLLECTION_BASE_URL = "http://134.175.39.17:9381/api/"; // 收藏接口 url
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient client;

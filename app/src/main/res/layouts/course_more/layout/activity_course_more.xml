@@ -1,53 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/course_more_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_collapseMode="pin">
+
+        <ImageView
+            android:id="@+id/course_more_back"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="false">
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/course_more_tool_bar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin">
+            tools:ignore="ContentDescription"
+            android:src="@mipmap/download_back"/>
 
-                <ImageView
-                    android:id="@+id/course_more_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:ignore="ContentDescription"
-                    android:src="@mipmap/download_back"/>
-
-                <TextView
-                    android:id="@+id/course_more_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/course_more_title"
-                    android:textSize="18sp"
-                    android:textColor="@color/main_title_color"
-                    android:layout_gravity="center_horizontal"/>
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+        <TextView
+            android:id="@+id/course_more_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/course_more_title"
+            android:textSize="18sp"
+            android:textColor="@color/main_title_color"
+            android:layout_gravity="center_horizontal"/>
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/course_more_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
         android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:paddingEnd="20dp"/>
 
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

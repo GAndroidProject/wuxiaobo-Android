@@ -208,7 +208,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                                 @Override
                                 public void onClick(View v) {
                                     // 跳转到更多课程的页面
+                                    String groupId = currentComponent.getGroupId();
                                     Intent intent = new Intent(mContext, CourseMoreActivity.class);
+                                    intent.putExtra("groupId", groupId);
                                     mContext.startActivity(intent);
                                 }
                             });
@@ -337,6 +339,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 intent = new Intent(mContext, CourseImageTextActivity.class);
                 intent.putExtra("imgUrl", "");
                 intent.putExtra("resourceId", resourceId);
+                mContext.startActivity(intent);
                 break;
             case DecorateEntityType.AUDIO: // 音频
                 break;
@@ -351,8 +354,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 intent.putExtra("pageTitle", pageTitle);
                 intent.putExtra("resourceId", graphicNavItem.getNavResourceId());
                 intent.putExtra("resourceType", graphicNavItem.getNavResourceType());
+                mContext.startActivity(intent);
                 break;
         }
-        mContext.startActivity(intent);
     }
 }

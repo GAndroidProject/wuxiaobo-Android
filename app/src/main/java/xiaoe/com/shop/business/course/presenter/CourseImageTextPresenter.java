@@ -1,8 +1,11 @@
 package xiaoe.com.shop.business.course.presenter;
 
+import com.alibaba.fastjson.JSONObject;
+
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
+import xiaoe.com.network.requests.CheckCollectionRequest;
 import xiaoe.com.network.requests.CourseITAfterBuyRequest;
 import xiaoe.com.network.requests.CourseITBeforeBuyRequest;
 import xiaoe.com.network.requests.IRequest;
@@ -32,7 +35,7 @@ public class CourseImageTextPresenter implements IBizCallback {
 
     // 请求购买前的信息
     public void requestBeforeBuy (String resourceId, String resourceType) {
-        CourseITBeforeBuyRequest courseITBeforeBuyRequest = new CourseITBeforeBuyRequest(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.goods.info.get/1.0.0", this);
+        CourseITBeforeBuyRequest courseITBeforeBuyRequest = new CourseITBeforeBuyRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + "xe.goods.info.get/1.0.0", this);
         courseITBeforeBuyRequest.addRequestParam("shop_id","apppcHqlTPT3482");
         courseITBeforeBuyRequest.addRequestParam("resource_id", resourceId);
         courseITBeforeBuyRequest.addRequestParam("resource_type", resourceType);
@@ -42,11 +45,26 @@ public class CourseImageTextPresenter implements IBizCallback {
 
     // 请求购买后的信息
     public void requestAfterBuy (String resourceId, String resourceType) {
-        CourseITAfterBuyRequest courseITAfterBuyRequest = new CourseITAfterBuyRequest(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.resource.content.get/1.0.0", this);
+        CourseITAfterBuyRequest courseITAfterBuyRequest = new CourseITAfterBuyRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + "xe.resource.content.get/1.0.0", this);
         courseITAfterBuyRequest.addRequestParam("shop_id","apppcHqlTPT3482");
         courseITAfterBuyRequest.addRequestParam("resource_id", resourceId);
         courseITAfterBuyRequest.addRequestParam("resource_type", resourceType);
         courseITAfterBuyRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         NetworkEngine.getInstance().sendRequest(courseITAfterBuyRequest);
+    }
+
+    // 请求检查是否收藏
+    public void requestCheckCollection(String resourceId, String resourceType) {
+        CheckCollectionRequest checkCollectionRequest = new CheckCollectionRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.favorites.check/1.0.0", this);
+        checkCollectionRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        checkCollectionRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        checkCollectionRequest.addRequestParam("content_id", resourceId);
+        checkCollectionRequest.addRequestParam("content_type", resourceType);
+        NetworkEngine.getInstance().sendRequest(checkCollectionRequest);
+    }
+
+    // 请求添加收藏
+    public void requestAddCollection(String resourceId, String resourceType) {
+
     }
 }

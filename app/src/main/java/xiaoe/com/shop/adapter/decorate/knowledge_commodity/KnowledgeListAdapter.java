@@ -104,6 +104,8 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         intent = new Intent(mContext, ColumnActivity.class);
                         mContext.startActivity(intent);
                         break;
+                    case DecorateEntityType.TOPIC:
+                        break;
                 }
             }
         });

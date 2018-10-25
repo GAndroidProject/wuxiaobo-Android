@@ -3,7 +3,7 @@ package xiaoe.com.shop.business.course_more.presenter;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
-import xiaoe.com.network.requests.CourseMoreRequest;
+import xiaoe.com.network.requests.CommodityGroupRequest;
 import xiaoe.com.network.requests.IRequest;
 
 public class CourseMorePresenter implements IBizCallback {
@@ -26,16 +26,19 @@ public class CourseMorePresenter implements IBizCallback {
         inr.onResponse(iRequest, success, entity);
     }
 
-    public void requestData(String resourceId) {
-        CourseMoreRequest courseMoreRequest = new CourseMoreRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + cmd, null, this);
-        courseMoreRequest.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
-        courseMoreRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
-        courseMoreRequest.addRequestParam("app_version", "0.1");
-        courseMoreRequest.addRequestParam("client", "1");
-        courseMoreRequest.addRequestParam("is_manager", 0);
-        courseMoreRequest.addRequestParam("agent_type", 1);
-        courseMoreRequest.addRequestParam("agent_version", "1");
-        courseMoreRequest.addBUZDataParam("id", resourceId);
-        NetworkEngine.getInstance().sendRequest(courseMoreRequest);
+    public void requestData(String groupId, int pageNum, int pageSize, String lastId) {
+        CommodityGroupRequest commodityGroupRequest = new CommodityGroupRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + cmd, null, this);
+        commodityGroupRequest.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
+        commodityGroupRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        commodityGroupRequest.addRequestParam("app_version", "0.1");
+        commodityGroupRequest.addRequestParam("client", "1");
+        commodityGroupRequest.addRequestParam("is_manager", 0);
+        commodityGroupRequest.addRequestParam("agent_type", 1);
+        commodityGroupRequest.addRequestParam("agent_version", "1");
+        commodityGroupRequest.addBUZDataParam("id", groupId);
+        commodityGroupRequest.addBUZDataParam("page_num", pageNum);
+        commodityGroupRequest.addBUZDataParam("page_size", pageSize);
+        commodityGroupRequest.addBUZDataParam("last_id", lastId);
+        NetworkEngine.getInstance().sendRequest(commodityGroupRequest);
     }
 }

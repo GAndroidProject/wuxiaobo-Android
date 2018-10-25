@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -24,6 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.CheckCollectionRequest;
 import xiaoe.com.network.requests.CourseITAfterBuyRequest;
 import xiaoe.com.network.requests.CourseITBeforeBuyRequest;
 import xiaoe.com.network.requests.IRequest;
@@ -84,6 +84,8 @@ public class CourseImageTextActivity extends XiaoeActivity {
     String resourceId; // 资源 id
     String resourceType; // 资源类型
 
+    boolean isCollected; // 是否收藏
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +114,8 @@ public class CourseImageTextActivity extends XiaoeActivity {
         // 发送购买前网络请求判断是否已经购买
         courseImageTextPresenter = new CourseImageTextPresenter(this);
         courseImageTextPresenter.requestBeforeBuy(resourceId, resourceType);
+        // 请求检查该商品是否已经被收藏
+        courseImageTextPresenter.requestCheckCollection(resourceId, resourceType);
         // 显示 loading
         itLoading.setHintStateVisibility(View.GONE);
         itLoading.setLoadingState(View.VISIBLE);
@@ -127,7 +131,11 @@ public class CourseImageTextActivity extends XiaoeActivity {
         itCollection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast("收藏功能");
+                if (isCollected) { // 收藏了，点击之后取消收藏
+
+                } else { // 没有收藏，点击之后收藏
+
+                }
             }
         });
         itShare.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +178,9 @@ public class CourseImageTextActivity extends XiaoeActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (itLoading.getVisibility() == View.GONE) {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -208,6 +218,10 @@ public class CourseImageTextActivity extends XiaoeActivity {
                     Log.d(TAG, "onMainThreadResponse: 商品没有买");
                 } else if (code == NetworkCodes.CODE_RESOURCE_INFO_FAILED) {
                     Log.d(TAG, "onMainThreadResponse: 获取指定商品失败");
+                }
+            } else if (iRequest instanceof CheckCollectionRequest) {
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    initCollectionData(data);
                 }
             }
         } else {
@@ -305,5 +319,20 @@ public class CourseImageTextActivity extends XiaoeActivity {
         itOrgContent.loadDataWithBaseURL(null, NetworkState.getNewContent(orgContent), "text/html", "UFT-8", null);
         CookieSyncManager.createInstance(this);
         CookieSyncManager.getInstance().sync();
+    }
+
+    // 初始化收藏信息
+    private void initCollectionData(JSONObject data) {
+        int isFavorite = data.getInteger("is_favorite") == null ? -1 : data.getInteger("is_favorite");
+        if (isFavorite != -1) {
+            isCollected = isFavorite == 1;
+            if (isCollected) { // 收藏了
+                itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
+            } else {
+                itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+            }
+        } else {
+            Log.d(TAG, "initCollectionData: 异常情况");
+        }
     }
 }

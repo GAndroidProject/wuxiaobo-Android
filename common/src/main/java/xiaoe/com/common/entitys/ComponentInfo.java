@@ -37,6 +37,8 @@ public class ComponentInfo {
     private boolean needDecorate = true;
     // 是否隐藏 title
     private boolean hideTitle = false;
+    // 分组 id
+    private String groupId;
 
     public ComponentInfo() { }
 
@@ -54,7 +56,6 @@ public class ComponentInfo {
     }
 
     public boolean isNeedDecorate() {
-
         return needDecorate;
     }
 
@@ -63,7 +64,6 @@ public class ComponentInfo {
     }
 
     public List<GraphicNavItem> getGraphicNavItemList() {
-
         return graphicNavItemList;
     }
 
@@ -72,7 +72,6 @@ public class ComponentInfo {
     }
 
     public List<FlowInfoItem> getFlowInfoItemList() {
-
         return flowInfoItemList;
     }
 
@@ -81,7 +80,6 @@ public class ComponentInfo {
     }
 
     public List<KnowledgeCommodityItem> getKnowledgeCommodityItemList() {
-
         return knowledgeCommodityItemList;
     }
 
@@ -90,7 +88,6 @@ public class ComponentInfo {
     }
 
     public List<String> getShufflingList() {
-
         return shufflingList;
     }
 
@@ -99,7 +96,6 @@ public class ComponentInfo {
     }
 
     public List<RecentUpdateListItem> getSubList() {
-
         return subList;
     }
 
@@ -108,7 +104,6 @@ public class ComponentInfo {
     }
 
     public boolean isHasBuy() {
-
         return hasBuy;
     }
 
@@ -121,7 +116,6 @@ public class ComponentInfo {
     }
 
     public String getSubType() {
-
         return subType;
     }
 
@@ -167,6 +161,14 @@ public class ComponentInfo {
 
     public String getDesc() {
         return desc;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getGroupId() {
+        return groupId;
     }
 
     @Override

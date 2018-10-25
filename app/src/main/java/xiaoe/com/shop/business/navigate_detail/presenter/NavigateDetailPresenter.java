@@ -3,8 +3,8 @@ package xiaoe.com.shop.business.navigate_detail.presenter;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
+import xiaoe.com.network.requests.CommodityGroupRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.NaviDetailRequest;
 
 public class NavigateDetailPresenter implements IBizCallback {
 
@@ -27,9 +27,15 @@ public class NavigateDetailPresenter implements IBizCallback {
     }
 
     public void requestData(String groupId) {
-        NaviDetailRequest naviDetailRequest = new NaviDetailRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + cmd, null, this);
-        naviDetailRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
-        naviDetailRequest.addRequestParam("group_id", groupId);
-        NetworkEngine.getInstance().sendRequest(naviDetailRequest);
+        CommodityGroupRequest commodityGroupRequest = new CommodityGroupRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + cmd, null, this);
+        commodityGroupRequest.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
+        commodityGroupRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        commodityGroupRequest.addRequestParam("app_version", "0.1");
+        commodityGroupRequest.addRequestParam("client", "1");
+        commodityGroupRequest.addRequestParam("is_manager", 0);
+        commodityGroupRequest.addRequestParam("agent_type", 1);
+        commodityGroupRequest.addRequestParam("agent_version", "1");
+        commodityGroupRequest.addBUZDataParam("id", groupId);
+        NetworkEngine.getInstance().sendRequest(commodityGroupRequest);
     }
 }

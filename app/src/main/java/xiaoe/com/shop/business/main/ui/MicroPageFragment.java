@@ -193,6 +193,9 @@ public class MicroPageFragment extends BaseFragment {
                     ComponentInfo componentInfo_know_list = new ComponentInfo();
                     componentInfo_know_list.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
                     componentInfo_know_list.setSubType(DecorateEntityType.KNOWLEDGE_LIST);
+                    // 微页面列表形式的知识商品组件都隐藏 title
+                    componentInfo_know_list.setHideTitle(true);
+                    componentInfo_know_list.setGroupId(itemObj.getString("tag_id"));
                     List<KnowledgeCommodityItem> listItems = new ArrayList<>();
                     JSONArray knowledgeListSubList = (JSONArray) itemObj.get("list");
                     initKnowledgeData(listItems, knowledgeListSubList);
@@ -204,6 +207,7 @@ public class MicroPageFragment extends BaseFragment {
                     componentInfo_know_group.setSubType(DecorateEntityType.KNOWLEDGE_GROUP);
                     componentInfo_know_group.setTitle("学会管理自己的财富");
                     componentInfo_know_group.setDesc("查看更多");
+                    componentInfo_know_group.setGroupId(itemObj.getString("tag_id"));
                     List<KnowledgeCommodityItem> groupItems = new ArrayList<>();
                     JSONArray knowledgeGroupSubList = (JSONArray) itemObj.get("list");
                     initKnowledgeData(groupItems, knowledgeGroupSubList);
