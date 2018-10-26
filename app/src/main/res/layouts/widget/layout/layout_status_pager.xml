@@ -20,7 +20,7 @@
         android:layout_width="148dp"
         android:layout_height="148dp"
         android:layout_centerHorizontal="true"
-        />
+        android:layout_marginTop="134dp"/>
     <TextView
         android:id="@+id/state_text"
         android:layout_width="wrap_content"

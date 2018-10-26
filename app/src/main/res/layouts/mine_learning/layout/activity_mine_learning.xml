@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/mine_learning_tool_bar"
@@ -27,21 +28,24 @@
             android:textSize="18sp"
             android:textColor="@color/main_title_color"
             android:layout_gravity="center_horizontal"/>
+
     </android.support.v7.widget.Toolbar>
 
-    <ListView
-        android:id="@+id/learning_list"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/white_corner_bg"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:scrollbars="none"
-        android:fadeScrollbars="false"
-        android:dividerHeight="16dp"
-        android:divider="@color/lucency"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/learning_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <xiaoe.com.shop.widget.StatusPagerView
+            android:id="@+id/learning_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+    </FrameLayout>
 
 </LinearLayout>

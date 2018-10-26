@@ -170,38 +170,37 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     public void onClick(View v) {
         Intent intent = null;
         switch (v.getId()) {
-            case R.id.mine_title_msg:
+            case R.id.mine_title_msg: // 信息
                 Toast.makeText(getActivity(), "点击信息按钮", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.mine_title_setting:
+            case R.id.mine_title_setting: // 设置
                 intent = new Intent(getActivity(), SettingAccountActivity.class);
                 getActivity().startActivity(intent);
                 break;
-            case R.id.title_avatar:
+            case R.id.title_avatar: // 头像
                 intent = new Intent(getActivity(), SettingPersonActivity.class);
                 intent.putExtra("avatar", "http://pic13.nipic.com/20110331/3032951_224550202000_2.jpg");
                 getActivity().startActivity(intent);
                 break;
-            case R.id.title_buy_vip:
+            case R.id.title_buy_vip: // 超级会员
                 Toast.makeText(getActivity(), "成为超级会员", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.card_equity_more:
+            case R.id.card_equity_more: // 更多权益
                 Toast.makeText(getActivity(), "点击更多权益", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.card_renewal:
+            case R.id.card_renewal: // 续费
                 Toast.makeText(getActivity(), "点击续费按钮", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.learning_more:
+            case R.id.learning_more: // 我正在学 -> 查看更多
                 intent = new Intent(getActivity(), MineLearningActivity.class);
                 intent.putExtra("pageTitle", "我正在学");
                 getActivity().startActivity(intent);
                 break;
-            case R.id.learning_item_container:
+            case R.id.learning_item_container: // 我正在学的详情页
                 // TODO: 根据不同类型跳转到对应的详情页
-                intent = new Intent(getActivity(), CourseImageTextActivity.class);
-                getActivity().startActivity(intent);
+                Toast.makeText(getActivity(), "我正在学", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.card_container:
+            case R.id.card_container: // 超级会员卡片
                 Toast.makeText(getActivity(), "超级会员卡片", Toast.LENGTH_SHORT).show();
                 break;
         }

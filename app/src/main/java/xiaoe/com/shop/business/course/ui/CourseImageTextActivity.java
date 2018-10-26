@@ -23,10 +23,13 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.CheckCollectionRequest;
 import xiaoe.com.network.requests.CourseITAfterBuyRequest;
 import xiaoe.com.network.requests.CourseITBeforeBuyRequest;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.RemoveCollectionRequest;
+import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.course.presenter.CourseImageTextPresenter;
@@ -80,11 +83,19 @@ public class CourseImageTextActivity extends XiaoeActivity {
 
     // 图文处理工具类
     CourseImageTextPresenter courseImageTextPresenter = null;
+    CollectionUtils collectionUtils = null;
 
     String resourceId; // 资源 id
     String resourceType; // 资源类型
 
     boolean isCollected; // 是否收藏
+
+    // 需要收藏的字段
+    String collectionTitle;
+    String collectionAuthor;
+    String collectionImgUrl;
+    String collectionImgUrlCompressed;
+    String collectionPrice;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,9 +124,10 @@ public class CourseImageTextActivity extends XiaoeActivity {
     private void initData() {
         // 发送购买前网络请求判断是否已经购买
         courseImageTextPresenter = new CourseImageTextPresenter(this);
+        collectionUtils = new CollectionUtils(this);
         courseImageTextPresenter.requestBeforeBuy(resourceId, resourceType);
         // 请求检查该商品是否已经被收藏
-        courseImageTextPresenter.requestCheckCollection(resourceId, resourceType);
+        collectionUtils.requestCheckCollection(resourceId, resourceType);
         // 显示 loading
         itLoading.setHintStateVisibility(View.GONE);
         itLoading.setLoadingState(View.VISIBLE);
@@ -131,10 +143,20 @@ public class CourseImageTextActivity extends XiaoeActivity {
         itCollection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO: 收藏数据的验证
                 if (isCollected) { // 收藏了，点击之后取消收藏
-
-                } else { // 没有收藏，点击之后收藏
-
+                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+                    collectionUtils.requestRemoveCollection(resourceId, resourceType);
+                } else { // 没有收藏，点击之后收藏\
+                    // 改变图标
+                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
+                    JSONObject collectionContent = new JSONObject();
+                    collectionContent.put("title", collectionTitle);
+                    collectionContent.put("author", collectionAuthor);
+                    collectionContent.put("img_url", collectionImgUrl);
+                    collectionContent.put("img_url_compressed", collectionImgUrlCompressed);
+                    collectionContent.put("price", collectionPrice);
+                    collectionUtils.requestAddCollection(resourceId, resourceType, collectionContent);
                 }
             }
         });
@@ -196,17 +218,21 @@ public class CourseImageTextActivity extends XiaoeActivity {
         super.onMainThreadResponse(iRequest, success, entity);
         JSONObject result = (JSONObject) entity;
         if (success) {
-            int code = result.getInteger("code");
-            JSONObject data = (JSONObject) result.get("data");
             if (iRequest instanceof CourseITBeforeBuyRequest) {
+                int code = result.getInteger("code");
+                JSONObject data = (JSONObject) result.get("data");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    initBeforeBuyData(data);
+                    if (data != null) {
+                        initBeforeBuyData(data);
+                    }
                 } else if (code == NetworkCodes.CODE_GOODS_GROUPS_DELETE) {
                     Log.d(TAG, "onMainThreadResponse: 商品分组已被删除");
                 } else if (code == NetworkCodes.CODE_GOODS_NOT_FIND) {
                     Log.d(TAG, "onMainThreadResponse: 商品不存在");
                 }
             } else if (iRequest instanceof CourseITAfterBuyRequest) {
+                int code = result.getInteger("code");
+                JSONObject data = (JSONObject) result.get("data");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     // 不需要购买按钮
                     itBuy.setVisibility(View.GONE);
@@ -220,8 +246,26 @@ public class CourseImageTextActivity extends XiaoeActivity {
                     Log.d(TAG, "onMainThreadResponse: 获取指定商品失败");
                 }
             } else if (iRequest instanceof CheckCollectionRequest) {
+                int code = result.getInteger("code");
+                JSONObject data = (JSONObject) result.get("data");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     initCollectionData(data);
+                }
+            } else if (iRequest instanceof AddCollectionRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    Toast("收藏成功");
+                    isCollected = !isCollected;
+                } else if (code == NetworkCodes.CODE_COLLECT_FAILED) {
+                    Toast("收藏失败");
+                }
+            } else if (iRequest instanceof RemoveCollectionRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    Toast("取消收藏成功");
+                    isCollected = !isCollected;
+                } else if (code == NetworkCodes.CODE_DELETE_COLLECT_FAILED) {
+                    Toast("取消收藏失败");
                 }
             }
         } else {
@@ -238,7 +282,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
         if (hasBuy) { // 已经买了，请求购买后接口
             courseImageTextPresenter.requestAfterBuy(resourceId, resourceType);
         } else { // 没买，显示没买的数据
-            if (imgUrl == null) {
+            if (imgUrl == null || imgUrl.equals("")) {
                 imgUrl = resourceInfo.getString("img_url_compressed") == null ? "" : resourceInfo.getString("img_url_compressed");
                 itBg.setImageURI(imgUrl);
             }
@@ -275,6 +319,15 @@ public class CourseImageTextActivity extends XiaoeActivity {
             } else {
                 itBuy.setVisibility(View.GONE);
             }
+
+            // 将需要收藏的字段赋值（未购）
+            collectionTitle = title;
+            collectionAuthor = resourceInfo.getString("author");
+            // 未购的图片链接都是压缩的图片链接
+            collectionImgUrl = imgUrl;
+            collectionImgUrlCompressed = imgUrl;
+            collectionPrice = price + "";
+
             // 购买前初始化完成，去掉 loading
             itLoading.setVisibility(View.GONE);
         }
@@ -282,8 +335,8 @@ public class CourseImageTextActivity extends XiaoeActivity {
 
     // 初始化购买后的数据
     private void initAfterBuyData(JSONObject data) {
-        if (imgUrl == null) {
-            imgUrl = data.getString("img_url") == null ? "" : data.getString("img_url");
+        if (imgUrl == null || imgUrl.equals("")) {
+            imgUrl = data.getString("img_url") == null ? data.getString("img_url_compressed") : data.getString("img_url");
             itBg.setImageURI(imgUrl);
         }
         // 富文本内容
@@ -306,6 +359,16 @@ public class CourseImageTextActivity extends XiaoeActivity {
             itDesc.setCompoundDrawables(null, null, null, null);
         }
         itTitle.setText(title);
+
+        // 将需要收藏的字段赋值（已购）
+        collectionTitle = title;
+        collectionAuthor = data.getString("author");
+        // 未购的图片链接都是压缩的图片链接
+        collectionImgUrl = imgUrl;
+        collectionImgUrlCompressed = data.getString("img_url_compressed");
+        // 已购收藏价格为空
+        collectionPrice = "";
+
         // 购买后初始化完成，去掉 loading
         itLoading.setVisibility(View.GONE);
     }
