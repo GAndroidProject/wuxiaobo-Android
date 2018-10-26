@@ -53,7 +53,7 @@ public class CouponActivity extends XiaoeActivity {
 
         // TODO: 请求接口判断是否有可用的优惠券，如果有就显示，否则现在空页面
 //        CouponPresenter couponPresenter = new CouponPresenter(this);
-//        couponPresenter.requestData();
+//        couponPresenter.requestSearchResult();
 
         initView();
         initListener();

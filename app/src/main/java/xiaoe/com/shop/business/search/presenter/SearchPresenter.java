@@ -13,7 +13,7 @@ public class SearchPresenter implements IBizCallback {
 
     public SearchPresenter(INetworkResponse inr) {
         this.inr = inr;
-        this.cmd = ""; // 默认接口
+        this.cmd = "api/xe.shop.search/1.0.0"; // 默认接口
     }
 
     public SearchPresenter(INetworkResponse inr, String cmd) {
@@ -26,9 +26,31 @@ public class SearchPresenter implements IBizCallback {
         inr.onResponse(iRequest, success, entity);
     }
 
-    public void requestData() {
-        SearchRequest searchRequest = new SearchRequest(cmd, null, this);
-        searchRequest.addRequestParam("app_id", "123456");
+    /**
+     * 请求搜索结果（默认请求第一页，十条）
+     *
+     * @param keyWord 搜索关键词
+     */
+    public void requestSearchResult(String keyWord) {
+        SearchRequest searchRequest = new SearchRequest(NetworkEngine.BASE_URL + cmd, this);
+        searchRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        searchRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        searchRequest.addDataParam("keyword", keyWord);
+        searchRequest.addDataParam("page", 1);
+        searchRequest.addDataParam("page_size", 10);
+        NetworkEngine.getInstance().sendRequest(searchRequest);
+    }
+
+    /**
+     * 指定页码、页面大小请求搜索结果
+     */
+    public void requestSearchResultByPage(String keyWord, int pageIndex, int pageSize) {
+        SearchRequest searchRequest = new SearchRequest(NetworkEngine.BASE_URL + cmd, this);
+        searchRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        searchRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        searchRequest.addDataParam("keyword", keyWord);
+        searchRequest.addDataParam("page", pageIndex);
+        searchRequest.addDataParam("page_size", pageSize);
         NetworkEngine.getInstance().sendRequest(searchRequest);
     }
 }

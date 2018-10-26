@@ -94,7 +94,7 @@ public class MineLearningActivity extends XiaoeActivity {
             case "我正在学":
                 learningTitle.setText(pageTitle);
 //            MineLearningPresenter mineCollectionPresenter = new MineLearningPresenter(this, "我正在学的接口");
-//            mineCollectionPresenter.requestData();
+//            mineCollectionPresenter.requestSearchResult();
                 // 显示假数据
                 initTempData();
                 break;
@@ -247,7 +247,7 @@ public class MineLearningActivity extends XiaoeActivity {
     /**
      * 资源类型转换 int - str
      * @param resourceType 资源类型
-     * @return
+     * @return 资源类型的字符串形式
      */
     protected String convertInt2Str(int resourceType) {
         switch (resourceType) {

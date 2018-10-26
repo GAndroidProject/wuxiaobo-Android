@@ -24,6 +24,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,9 +40,12 @@ import xiaoe.com.common.entitys.SearchHistory;
 import xiaoe.com.common.entitys.SearchHistoryEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.SearchRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.business.search.presenter.SearchPresenter;
 import xiaoe.com.shop.business.search.presenter.SearchSQLiteCallback;
 import xiaoe.com.shop.utils.StatusBarUtil;
 
@@ -69,6 +74,10 @@ public class SearchActivity extends XiaoeActivity {
     // 历史列表
     List<SearchHistory> historyList;
 
+    SearchPresenter searchPresenter;
+
+    Object dataList; // 搜索结果
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,11 +97,28 @@ public class SearchActivity extends XiaoeActivity {
         initListener();
     }
 
-    private void initView() {
+    // 搜索框后面的叉
+    Drawable right;
 
+    private void initView() {
+        // 先默认显示我的财富计划
+        searchContent.setText("我的财富计划");
+        searchContent.setSelection(searchContent.getText().toString().length());
+        // 设置删除按钮
+        initCloseIcon();
+    }
+
+    // 初始化关闭按钮
+    private void initCloseIcon() {
+        right = SearchActivity.this.getResources().getDrawable(R.mipmap.icon_clear);
+        Rect rect = new Rect(0, 0, right.getIntrinsicWidth(), right.getIntrinsicHeight());
+        right.setBounds(rect);
+        searchContent.setCompoundDrawables(null, null, right, null);
     }
 
     private void initData() {
+        searchPresenter = new SearchPresenter(this);
+
         // 初始化数据库
         SQLiteUtil.init(this.getApplicationContext(), new SearchSQLiteCallback());
         // 如果表不存在，就去创建
@@ -117,7 +143,14 @@ public class SearchActivity extends XiaoeActivity {
         searchCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                if (currentFragment.getTag().equals(CONTENT)) { // 点击取消时，是有搜索内容的话，切换为主页 fragment
+                    // 切换回主页之前把上次网络请求的数据清空
+                    dataList = null;
+                    ((SearchPageFragment) currentFragment).setDataList(null);
+                    replaceFragment(MAIN);
+                } else {
+                    onBackPressed();
+                }
             }
         });
 
@@ -130,7 +163,9 @@ public class SearchActivity extends XiaoeActivity {
                     toggleSoftKeyboard();
                     String content = searchContent.getText().toString();
                     if (TextUtils.isEmpty(content)) { // 不输入搜索内容，默认搜索最近在搜的第一个，先写死为 list
-                        content = "list";
+                        content = "我的财富计划";
+                        searchContent.setText(content);
+                        searchContent.setSelection(content.length());
                     } else {
                         if (!hasData(content)) { // 不为空并且没有存数据库，就存
                             // 将输入的内容插入到数据库
@@ -146,7 +181,6 @@ public class SearchActivity extends XiaoeActivity {
             }
         });
 
-        // editText 文字长度大于 0 后显示 drawable
         searchContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -156,13 +190,10 @@ public class SearchActivity extends XiaoeActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String input = s.toString();
-                if (input.length() > 0) {
-                    Drawable right = SearchActivity.this.getResources().getDrawable(R.mipmap.icon_clear);
-                    Rect rect = new Rect(0, 0, right.getIntrinsicWidth(), right.getIntrinsicHeight());
-                    right.setBounds(rect);
-                    searchContent.setCompoundDrawables(null, null, right, null);
-                } else {
+                if (input.length() == 0) {
                     searchContent.setCompoundDrawables(null, null, null, null);
+                } else {
+                    searchContent.setCompoundDrawables(null, null, right, null);
                 }
             }
 
@@ -189,6 +220,7 @@ public class SearchActivity extends XiaoeActivity {
                 if (event.getX() > searchContent.getWidth() - searchContent.getPaddingEnd() - drawable.getIntrinsicWidth()) {
                     // 清空操作
                     searchContent.setText("");
+                    searchContent.setSelection(searchContent.getText().toString().length());
                     return true;
                 }
                 return false;
@@ -197,18 +229,15 @@ public class SearchActivity extends XiaoeActivity {
     }
 
     // 根据搜索内容进行查找
-    private void obtainSearchResult(String content) {
-        // TODO: 请求搜索接口，拿到搜索结果，先写死搜索结果
-        List<String> tempData = new ArrayList<>();
-        tempData.add("group");
-        tempData.add("list");
-        if (tempData.contains(content)) { // 包含搜索结果
-            replaceFragment(CONTENT);
-        } else { // 否则
-            replaceFragment(EMPTY);
+    protected void obtainSearchResult(String content) {
+        // 发送搜索请求，避免请求工具为空
+        if (searchPresenter == null) {
+            searchPresenter = new SearchPresenter(this);
         }
+        searchPresenter.requestSearchResult(content);
     }
 
+    // 替换 fragment
     protected void replaceFragment(String tag) {
         if (currentFragment != null) {
             getSupportFragmentManager().beginTransaction().hide(currentFragment).commit();
@@ -221,6 +250,7 @@ public class SearchActivity extends XiaoeActivity {
                     break;
                 case CONTENT: // 搜索结果页
                     currentFragment = SearchPageFragment.newInstance(R.layout.fragment_search_result);
+                    ((SearchPageFragment) currentFragment).setDataList(dataList);
                     break;
                 case EMPTY: // 搜索空白页
                     currentFragment = SearchPageFragment.newInstance(R.layout.fragment_search_empty);
@@ -245,7 +275,30 @@ public class SearchActivity extends XiaoeActivity {
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        Log.d(TAG, "onMainThreadResponse: success --- " + success);
+        JSONObject result = (JSONObject) entity;
+        if (success) {
+            if (iRequest instanceof SearchRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    if (data.get("dataList") != null) { // 有内容，就切换到内容页面
+                        initResultData(data.get("dataList"));
+                    } else { // 否则切换到空页
+                        replaceFragment(EMPTY);
+                    }
+                } else if (code == NetworkCodes.CODE_SEARCH_ERROR) {
+                    Log.d(TAG, "onMainThreadResponse: 店铺内搜索商品出错");
+                }
+            }
+        } else {
+            Log.d(TAG, "onMainThreadResponse: 请求失败..");
+        }
+    }
+
+    // 初始化搜索结果
+    private void initResultData(Object dataList) {
+        this.dataList = dataList;
+        replaceFragment(CONTENT);
     }
 
     /**

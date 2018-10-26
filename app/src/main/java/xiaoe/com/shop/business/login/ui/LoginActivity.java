@@ -78,7 +78,7 @@ public class LoginActivity extends XiaoeActivity {
 
         // 网络请求
 //        LoginPresenter loginPresenter = new LoginPresenter(this, "");
-//        loginPresenter.requestData();
+//        loginPresenter.requestSearchResult();
 
         initView();
         initListener();

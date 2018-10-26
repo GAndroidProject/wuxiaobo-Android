@@ -139,7 +139,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         // 网络请求数据代码
 //        MinePresenter minePresenter = new MinePresenter(this);
-//        minePresenter.requestData();
+//        minePresenter.requestSearchResult();
     }
 
     @Override

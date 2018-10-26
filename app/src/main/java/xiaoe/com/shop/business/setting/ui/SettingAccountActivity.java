@@ -73,7 +73,7 @@ public class SettingAccountActivity extends XiaoeActivity {
 
         // 网络请求
         // SettingPresenter settingPresenter = new SettingPresenter(this);
-        // settingPresenter.requestData();
+        // settingPresenter.requestSearchResult();
 
         currentFragment = new MainAccountFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.account_container, currentFragment, MAIN).commit();

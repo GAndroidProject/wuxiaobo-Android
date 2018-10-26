@@ -68,7 +68,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     private ComponentInfo currentComponent;
 
     // 知识商品分组形式的 recycler
-    RecyclerView knowledgeGroupRecycler;
+    private RecyclerView knowledgeGroupRecycler;
 
     public DecorateRecyclerAdapter(Context context, List<ComponentInfo> componentList) {
         this.mContext = context;

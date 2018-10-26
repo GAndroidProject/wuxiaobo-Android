@@ -44,7 +44,7 @@ public class SettingPersonItemActivity extends XiaoeActivity {
         initListener();
         // 网络请求
         // SettingPresenter settingPresenter = new SettingPresenter(cmd, this);
-        // settingPresenter.requestData();
+        // settingPresenter.requestSearchResult();
     }
 
     private void initData() {

@@ -12,12 +12,16 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.ComponentInfo;
+import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.entitys.SearchHistory;
 import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
@@ -40,15 +44,22 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
 
     private int layoutId = -1;
     SearchActivity searchActivity;
+    Object dataList; // 搜索结果
 
     // 软键盘
     InputMethodManager imm;
 
+    // 首页 fragment 所需要的基础内容
     SearchContentView historyContentView;
     SearchContentView recommendContentView;
+    List<SearchHistory> historyList; // 历史搜索记录集合
+    List<String> recommendData; // 推荐集合（暂时写死）
 
-    List<SearchHistory> historyList;
-    List<String> recommendData; // 暂时写死
+    // 搜索结果 fragment 需要的基础内容
+    RecyclerView searchResultRecycler;
+    List<ComponentInfo> itemComponentList;
+    List<JSONObject> itemJsonList; // 单品 json 集合
+    List<JSONObject> groupJsonList; // 专栏、大专栏 json 集合
 
     public static SearchPageFragment newInstance(int layoutId) {
         SearchPageFragment searchPageFragment = new SearchPageFragment();
@@ -56,6 +67,10 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         bundle.putInt("layoutId", layoutId);
         searchPageFragment.setArguments(bundle);
         return searchPageFragment;
+    }
+
+    protected void setDataList(Object dataList) {
+        this.dataList = dataList;
     }
 
     protected void setHistoryList(List<SearchHistory> historyList) {
@@ -144,11 +159,11 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         recommendContentView.setTitleStartText("大家都在搜");
 
         recommendData = new ArrayList<>();
-        recommendData.add("区块链");
+        // 默认的四个关键词
         recommendData.add("我的财富计划");
-        recommendData.add("升职记");
-        recommendData.add("健康");
-        recommendData.add("新税收政策");
+        recommendData.add("吴晓波频道");
+        recommendData.add("我的职场计划");
+        recommendData.add("避免败局");
         RecommendRecyclerAdapter recommendAdapter = new RecommendRecyclerAdapter(mContext, recommendData);
         recommendAdapter.setOnTabClickListener(this);
         recommendContentView.setRecommendContentAdapter(recommendAdapter);
@@ -156,81 +171,111 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
 
     // 初始化搜索结果 fragment
     private void initSearchResultFragment() {
-        RecyclerView recyclerView = (RecyclerView) viewWrap.findViewById(R.id.result_content);
+        // 初始化基础设施
+        itemJsonList = new ArrayList<>();
+        groupJsonList = new ArrayList<>();
+        // 初始化组件容器
+        itemComponentList = new ArrayList<>();
+        searchResultRecycler = (RecyclerView) viewWrap.findViewById(R.id.result_content);
+        initDataList();
+    }
 
-        List<ComponentInfo> tempData = new ArrayList<>();
+    // 初始化搜索结果数据类型，分类依据 -- 单品 / 专栏、大专栏
+    private void initDataList() {
+        JSONArray dataJsonList = (JSONArray) dataList;
+        for (Object jsonItem : dataJsonList) {
+            JSONObject dataListItem = (JSONObject) jsonItem;
+            String label = dataListItem.getString("label");
+            // 内容 list
+            JSONArray list = (JSONArray) dataListItem.get("list");
+            if (label.equals("图文") || label.equals("音频") || label.equals("视频")) {
+                for (Object listItem : list) {
+                    JSONObject item = (JSONObject) listItem;
+                    item.put("resource_type", dataListItem.getInteger("type"));
+                    itemJsonList.add(item);
+                }
+            } else if (label.equals("专栏") || label.equals("大专栏")) {
+                for (Object listItem : list) {
+                    JSONObject item = (JSONObject) listItem;
+                    item.put("resource_type", dataListItem.getInteger("type"));
+                    groupJsonList.add(item);
+                }
+            }
+        }
 
-        // 知识商品假数据 -- 列表形式
-        ComponentInfo componentInfo_know_list = new ComponentInfo();
-        componentInfo_know_list.setType("knowledge_commodity");
-        componentInfo_know_list.setSubType("knowledgeList");
-        List<KnowledgeCommodityItem> listItems = new ArrayList<>();
-        // 有价格没买
-        KnowledgeCommodityItem listItem_1 = new KnowledgeCommodityItem();
-        listItem_1.setItemTitle("我的财富计划新中产必修理财课程");
-        listItem_1.setItemImg("http://img05.tooopen.com/images/20141020/sy_73154627197.jpg");
-        listItem_1.setItemPrice("￥999.99");
-        listItem_1.setHasBuy(false);
-        listItem_1.setItemDesc("已更新至135期");
-        // 有价格买了
-        KnowledgeCommodityItem listItem_2 = new KnowledgeCommodityItem();
-        listItem_2.setItemTitle("我的财富计划新中产必修理财课程杀杀杀");
-        listItem_2.setItemImg("http://img.zcool.cn/community/01f39a59a7affba801211d25185cd3.jpg@1280w_1l_2o_100sh.jpg");
-        listItem_2.setItemPrice("￥85.55");
-        listItem_2.setHasBuy(true);
-        listItem_2.setItemDesc("已更新至120期");
-        // 没有价格，免费的
-        KnowledgeCommodityItem listItem_3 = new KnowledgeCommodityItem();
-        listItem_3.setItemTitle("我的财富计划新中产必修理财课程哒哒哒");
-        listItem_3.setItemImg("http://img.zcool.cn/community/01951d55dd8f336ac7251df845a2ae.jpg");
-        listItem_3.setItemDesc("已更新至101期");
-        listItems.add(listItem_1);
-        listItems.add(listItem_2);
-        listItems.add(listItem_3);
-        componentInfo_know_list.setKnowledgeCommodityItemList(listItems);
-        // 知识商品假数据 -- 分组形式
-        ComponentInfo componentInfo_know_group = new ComponentInfo();
-        componentInfo_know_group.setType("knowledge_commodity");
-        componentInfo_know_group.setSubType("knowledgeGroup");
-        componentInfo_know_group.setTitle("学会管理自己的财富");
-        componentInfo_know_group.setDesc("查看更多");
-        List<KnowledgeCommodityItem> groupItems = new ArrayList<>();
-        KnowledgeCommodityItem groupItem_1 = new KnowledgeCommodityItem();
-        groupItem_1.setItemTitle("我的财富计划 新中产必修理财课程");
-        groupItem_1.setItemImg("http://pic15.nipic.com/20110619/7763155_101852942332_2.jpg");
-        groupItem_1.setHasBuy(false);
-        groupItem_1.setItemDesc("已更新至135期");
-        groupItem_1.setItemPrice("￥980");
-        KnowledgeCommodityItem groupItem_2 = new KnowledgeCommodityItem();
-        groupItem_2.setItemTitle("我的财富计划");
-        groupItem_2.setItemImg("http://pic38.nipic.com/20140212/17942401_101320663138_2.jpg");
-        groupItem_2.setHasBuy(true);
-        groupItem_2.setItemPrice("￥555.21");
-        groupItem_2.setItemDesc("187次播放");
-        KnowledgeCommodityItem groupItem_3 = new KnowledgeCommodityItem();
-        groupItem_3.setItemTitle("学会规划自己的职场 必修理财课程");
-        groupItem_3.setItemImg("http://gbres.dfcfw.com/Files/picture/20170925/9B00CEC6F06B756A4A9C256E870A324B.jpg");
-        groupItem_3.setHasBuy(false);
-        groupItem_3.setItemDesc("已更新至134期");
-        KnowledgeCommodityItem groupItem_4 = new KnowledgeCommodityItem();
-        groupItem_4.setItemTitle("这个文案是测试的，随便搞搞");
-        groupItem_4.setItemImg("http://img.zcool.cn/community/01a9e45a60510ca8012113c7899c89.jpg@1280w_1l_2o_100sh.jpg");
-        groupItem_4.setHasBuy(true);
-        groupItem_4.setItemPrice("￥123.12");
-        groupItem_4.setItemDesc("130次播放");
-        groupItems.add(groupItem_1);
-        groupItems.add(groupItem_2);
-        groupItems.add(groupItem_3);
-        groupItems.add(groupItem_4);
-        componentInfo_know_group.setKnowledgeCommodityItemList(groupItems);
+        initSearchResultData();
+    }
 
-        tempData.add(componentInfo_know_list);
-        tempData.add(componentInfo_know_group);
+    // 初始化搜索结果数据
+    private void initSearchResultData() {
+        // 专栏、大专栏
+        initPageDataByJson(groupJsonList, true);
+        // 单品
+        initPageDataByJson(itemJsonList, false);
+        // 初始化 recyclerView
+        initRecycler();
+    }
 
-        LinearLayoutManager llm = new LinearLayoutManager(mContext);
-        recyclerView.setLayoutManager(llm);
-        DecorateRecyclerAdapter adapter = new DecorateRecyclerAdapter(mContext, tempData);
-        recyclerView.setAdapter(adapter);
+    /**
+     * 初始化页面数据 -- 大于 3 个宫格显示，否则列表显示
+     *
+     * @param listData 页面数据（包括单品、专栏、大专栏）
+     * @param isGroup 是否为专栏/大专栏
+     */
+    private void initPageDataByJson(List<JSONObject> listData, boolean isGroup) {
+        ComponentInfo itemComponentInfo = new ComponentInfo();
+        if (itemJsonList.size() > 0 && itemJsonList.size() <= 3) { // 列表显示
+            itemComponentInfo.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
+            itemComponentInfo.setSubType(DecorateEntityType.KNOWLEDGE_LIST);
+        } else { // 宫格显示
+            itemComponentInfo.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
+            itemComponentInfo.setSubType(DecorateEntityType.KNOWLEDGE_GROUP);
+        }
+        itemComponentInfo.setHideTitle(false);
+        if (isGroup) {
+            itemComponentInfo.setTitle("系列课程");
+        } else {
+            itemComponentInfo.setTitle("单品课程");
+        }
+        // 目的将 title 的查看更多隐藏掉
+        itemComponentInfo.setDesc("");
+        List<KnowledgeCommodityItem> contentList = new ArrayList<>();
+        // 遍历系列课程
+        for (Object itemContent : listData) {
+            KnowledgeCommodityItem commodityItem = new KnowledgeCommodityItem();
+            JSONObject item = (JSONObject) itemContent;
+            String resourceId = item.getString("id");
+            String resourceType = convertInt2Str((int) item.get("resource_type"));
+            String imgUrl = item.getString("img_url");
+            String title = item.getString("title");
+            String columnDesc = item.getString("summary");
+            float price = item.getFloat("price");
+            String priceStr;
+            if (price == 0) {
+                priceStr = "";
+            } else {
+                priceStr = "￥" + price;
+            }
+            commodityItem.setItemTitle(title);
+            commodityItem.setItemImg(imgUrl);
+            commodityItem.setItemTitleColumn(columnDesc);
+            commodityItem.setSrcType(resourceType);
+            commodityItem.setResourceId(resourceId);
+            commodityItem.setItemPrice(priceStr);
+            contentList.add(commodityItem);
+        }
+        itemComponentInfo.setKnowledgeCommodityItemList(contentList);
+        itemComponentList.add(itemComponentInfo);
+    }
+
+    // 初始化 recyclerView
+    private void initRecycler() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        searchResultRecycler.setLayoutManager(layoutManager);
+        DecorateRecyclerAdapter decorateRecyclerAdapter = new DecorateRecyclerAdapter(mContext, itemComponentList);
+        searchResultRecycler.setAdapter(decorateRecyclerAdapter);
+        decorateRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -240,12 +285,12 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             String searchContent = historyList.get(position).getmContent();
             ((SearchActivity) getActivity()).searchContent.setText(searchContent);
             ((SearchActivity) getActivity()).searchContent.setSelection(searchContent.length());
-            imm.toggleSoftInput(0, 0);
+            ((SearchActivity) getActivity()).obtainSearchResult(((SearchActivity) getActivity()).searchContent.getText().toString());
         } else if (recommendContentView.getVisibility() == View.VISIBLE && recommendContentView.isMatchRecycler(view.getParent())) {
             String searchContent = recommendData.get(position);
             ((SearchActivity) getActivity()).searchContent.setText(searchContent);
             ((SearchActivity) getActivity()).searchContent.setSelection(searchContent.length());
-            imm.toggleSoftInput(0, 0);
+            ((SearchActivity) getActivity()).obtainSearchResult(((SearchActivity) getActivity()).searchContent.getText().toString());
         }
     }
 
@@ -259,6 +304,28 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                 IBinder iBinder = view.getWindowToken();
                 imm.hideSoftInputFromWindow(iBinder, InputMethodManager.HIDE_NOT_ALWAYS);
             }
+        }
+    }
+
+    /**
+     * 资源类型转换 int - str，注意这个接口返回的 type 跟其他的不一样，不能通用化
+     * @param resourceType 资源类型
+     * @return 资源类型的字符串形式
+     */
+    protected String convertInt2Str(int resourceType) {
+        switch (resourceType) {
+            case 0: // 图文
+                return DecorateEntityType.IMAGE_TEXT;
+            case 1: // 音频
+                return DecorateEntityType.AUDIO;
+            case 2: // 视频
+                return DecorateEntityType.VIDEO;
+            case 4: // 专栏
+                return DecorateEntityType.COLUMN;
+            case 8: // 大专栏
+                return DecorateEntityType.TOPIC;
+            default:
+                return null;
         }
     }
 }

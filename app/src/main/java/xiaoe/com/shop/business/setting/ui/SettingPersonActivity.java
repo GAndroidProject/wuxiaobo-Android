@@ -50,7 +50,7 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
 
         // 网络请求
         // SettingPresenter settingPresenter = new SettingPresenter(this);
-        // settingPresenter.requestData();
+        // settingPresenter.requestSearchResult();
 
         initData();
         initListener();
