@@ -10,11 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.ColumnListRequst;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
@@ -22,6 +24,7 @@ import xiaoe.com.shop.adapter.column.ColumnFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
 import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
+import xiaoe.com.shop.utils.NumberFormat;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.CustomScrollView;
 import xiaoe.com.shop.widget.ListBottomLoadMoreView;
@@ -49,6 +52,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private Intent mIntent;
     private ColumnPresenter columnPresenter;
     private boolean isBigColumn;
+    private int pageIndex = 0;
+    private int pageSize = 20;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +68,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private void initData() {
         resourceId = mIntent.getStringExtra("resource_id");
         columnPresenter = new ColumnPresenter(this);
-        columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "5");
+        columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
     }
 
     private void initView() {
@@ -79,7 +84,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
         String imageUrl = mIntent.getStringExtra("column_image_url");
         columnImage = (SimpleDraweeView) findViewById(R.id.column_image);
-        if("".equals(imageUrl)){
+        if(!"".equals(imageUrl)){
             columnImage.setImageURI(imageUrl);
         }
         columnTitle = (TextView) findViewById(R.id.column_title);
@@ -115,24 +120,49 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(entity == null || !success){
             return;
         }
-        JSONObject data = jsonObject.getJSONObject("data");
-        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
+        Object dataObject = jsonObject.get("data");
+        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || dataObject == null ){
             return;
         }
         if(iRequest instanceof DetailRequest){
+            JSONObject data = (JSONObject) dataObject;
             detailRequest(data.getJSONObject("resource_info"));
+        }else if(iRequest instanceof ColumnListRequst){
+            JSONArray data = (JSONArray) dataObject;
+            columnListRequest(iRequest, data);
+        }
+    }
+
+    private void columnListRequest(IRequest iRequest, JSONArray data) {
+        if(data.size() < pageSize){
+            columnScrollView.setLoadState(ListBottomLoadMoreView.STATE_ALL_FINISH);
+            loadMoreView.setLoadState(ListBottomLoadMoreView.STATE_ALL_FINISH);
+        }
+        if(isBigColumn){
+            ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
+            fragment.addData(columnPresenter.formatColumnEntity(data));
+        }else{
+            LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
+            fragment.addData(columnPresenter.formatSingleResouceEntity(data));
         }
     }
 
     private void detailRequest(JSONObject data) {
         if(data.getIntValue("has_buy") == 0){
             buyView.setVisibility(View.VISIBLE);
+            buyView.setBuyPrice(data.getIntValue("price"));
         }else{
             buyView.setVisibility(View.GONE);
         }
         ColumnDetailFragment detailFragment = (ColumnDetailFragment) columnViewPagerAdapter.getItem(0);
         detailFragment.setContentDetail(data.getString("content"));
         columnTitle.setText(data.getString("title"));
+        columnImage.setImageURI(data.getString("img_url_compressed"));
+        int purchaseCount = data.getIntValue("purchase_count");
+        if(purchaseCount > 0){
+            buyCount.setText(NumberFormat.viewCountToString(purchaseCount)+"人学习");
+        }
+        columnPresenter.requestColumnList(resourceId, "0");
     }
 
     @Override

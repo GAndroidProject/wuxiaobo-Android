@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import xiaoe.com.common.entitys.ItemData;
+import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.OnScrollToListener;
@@ -22,7 +22,7 @@ import xiaoe.com.shop.interfaces.OnScrollToListener;
 public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 	private String TAG = "TreeChildRecyclerAdapter";
 	private Context mContext;
-	private List<ItemData> mDataSet;
+	private List<ColumnSecondDirectoryEntity> mDataSet;
 	private OnScrollToListener onScrollToListener;
 
 	public void setOnScrollToListener(OnScrollToListener onScrollToListener) {
@@ -31,7 +31,7 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 
 	public TreeChildRecyclerAdapter(Context context) {
 		mContext = context;
-		mDataSet = new ArrayList<ItemData>();
+		mDataSet = new ArrayList<ColumnSecondDirectoryEntity>();
 	}
 
 	@Override
@@ -70,57 +70,32 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 		notifyItemRangeRemoved(position, itemCount);
 	}
 
-	protected int getCurrentPosition(String uuid) {
-		for (int i = 0; i < mDataSet.size(); i++) {
-			if (uuid.equalsIgnoreCase(mDataSet.get(i).getUuid())) {
-				return i;
-			}
-		}
-		return -1;
-	}
 
-	@Override
-	public int getItemViewType(int position) {
-		return mDataSet.get(position).getType();
-	}
 
-	public void setData(List<ItemData> list) {
+
+	public void setData(List<ColumnSecondDirectoryEntity> list) {
 		mDataSet = list;
 		notifyDataSetChanged();
 	}
 
-	public void add(ItemData text, int position) {
+	public void add(ColumnSecondDirectoryEntity text, int position) {
 		mDataSet.add(position, text);
 		notifyItemInserted(position);
 	}
-	public void add(ItemData text) {
+	public void add(ColumnSecondDirectoryEntity text) {
 		mDataSet.add(text);
 		notifyDataSetChanged();
 	}
 
-	public void addAll(List<ItemData> list, int position) {
+	public void addAll(List<ColumnSecondDirectoryEntity> list, int position) {
 		mDataSet.addAll(position, list);
 		notifyItemRangeInserted(position, list.size());
 	}
-	public void addAll(List<ItemData> list) {
+	public void addAll(List<ColumnSecondDirectoryEntity> list) {
 		int position = mDataSet.size() - 1;
 		mDataSet.addAll(list);
 		notifyDataSetChanged();
 	}
 
-	public void delete(int pos) {
-		if (pos >= 0 && pos < mDataSet.size()) {
-			if (mDataSet.get(pos).getType() == ItemData.ITEM_TYPE_PARENT
-					&& mDataSet.get(pos).isExpand()) {// 父组件并且子节点已经展开
-				for (int i = 0; i < mDataSet.get(pos).getChildren().size() + 1; i++) {
-					mDataSet.remove(pos);
-				}
-				notifyItemRangeRemoved(pos, mDataSet.get(pos).getChildren()
-						.size() + 1);
-			} else {// 孩子节点，或没有展开的父节点
-				mDataSet.remove(pos);
-				notifyItemRemoved(pos);
-			}
-		}
-	}
+
 }

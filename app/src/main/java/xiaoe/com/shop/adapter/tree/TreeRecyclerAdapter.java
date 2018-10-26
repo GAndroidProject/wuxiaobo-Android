@@ -2,16 +2,15 @@ package xiaoe.com.shop.adapter.tree;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import xiaoe.com.common.entitys.ItemData;
+import xiaoe.com.common.entitys.ColumnDirectoryEntity;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.ItemDataClickListener;
@@ -25,23 +24,21 @@ import xiaoe.com.shop.interfaces.OnScrollToListener;
 public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 	private String TAG = "RecyclerAdapter";
 	private Context mContext;
-	private List<ItemData> mDataSet;
+	private List<ColumnDirectoryEntity> mDataSet;
 	private OnScrollToListener onScrollToListener;
-
-	public void setOnScrollToListener(OnScrollToListener onScrollToListener) {
-		this.onScrollToListener = onScrollToListener;
-	}
+	private int paddingLeft = 0;
 
 	public TreeRecyclerAdapter(Context context) {
 		mContext = context;
-		mDataSet = new ArrayList<ItemData>();
+		mDataSet = new ArrayList<ColumnDirectoryEntity>();
+		paddingLeft = Dp2Px2SpUtil.dp2px(mContext, 16);
 	}
 
 	@Override
 	public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(mContext).inflate(
 				R.layout.item_recycler_parent, parent, false);
-		return new ParentViewHolder(mContext, view);
+		return new ParentViewHolder(mContext, view, paddingLeft, paddingLeft);
 	}
 
 	@Override
@@ -54,21 +51,11 @@ public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 	private ItemDataClickListener imageClickListener = new ItemDataClickListener() {
 
 		@Override
-		public void onExpandChildren(ItemData itemData) {
-			int position = getCurrentPosition(itemData.getUuid());
-			if (onScrollToListener != null) {
-				Log.d(TAG, "onExpandChildren: "+position);
-				onScrollToListener.scrollTo(position + 1);
-			}
+		public void onExpandChildren(ColumnDirectoryEntity itemData) {
 		}
 
 		@Override
-		public void onHideChildren(ItemData itemData) {
-			int position = getCurrentPosition(itemData.getUuid());
-			if (onScrollToListener != null) {
-				Log.d(TAG, "onHideChildren: "+position);
-				onScrollToListener.scrollTo(position);
-			}
+		public void onHideChildren(ColumnDirectoryEntity itemData) {
 		}
 	};
 
@@ -77,37 +64,9 @@ public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 		return mDataSet.size();
 	}
 
-	private int getChildrenCount(ItemData item) {
-		List<ItemData> list = new ArrayList<ItemData>();
-		printChild(item, list);
-		return list.size();
+	public void setOnScrollToListener(OnScrollToListener onScrollToListener) {
+		this.onScrollToListener = onScrollToListener;
 	}
-
-	private void printChild(ItemData item, List<ItemData> list) {
-		list.add(item);
-		if (item.getChildren() != null) {
-			for (int i = 0; i < item.getChildren().size(); i++) {
-				printChild(item.getChildren().get(i), list);
-			}
-		}
-	}
-
-
-    public List<ItemData> getData() {
-        List<ItemData> list = new ArrayList<ItemData>();
-        for (int i = 0; i < 30; i++){
-            int type = ItemData.ITEM_TYPE_PARENT;
-            String text = "专栏-"+i;
-			ItemData itemData = new ItemData(type, text,"", UUID.randomUUID().toString(), 1, null);
-			List<ItemData> childList = new ArrayList<ItemData>();
-			for (int j = 0; j < i + 1; j++){
-				childList.add(new ItemData(ItemData.ITEM_TYPE_CHILD, text+"_音视频图文-"+j,"",UUID.randomUUID().toString(), 2,null));
-			}
-			itemData.setChildren(childList);
-            list.add(itemData);
-        }
-        return list;
-    }
 
 	/**
 	 * 从position开始删除，删除
@@ -123,44 +82,26 @@ public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 		notifyItemRangeRemoved(position, itemCount);
 	}
 
-	protected int getCurrentPosition(String uuid) {
-		for (int i = 0; i < mDataSet.size(); i++) {
-			if (uuid.equalsIgnoreCase(mDataSet.get(i).getUuid())) {
-				return i;
-			}
-		}
-		return -1;
+	public void setData(List<ColumnDirectoryEntity> list) {
+		mDataSet = list;
+		notifyDataSetChanged();
 	}
 
-	@Override
-	public int getItemViewType(int position) {
-		return mDataSet.get(position).getType();
-	}
-
-	public void add(ItemData text, int position) {
+	public void add(ColumnDirectoryEntity text, int position) {
 		mDataSet.add(position, text);
 		notifyItemInserted(position);
 	}
-
-	public void addAll(List<ItemData> list, int position) {
-		Log.d(TAG, "addAll:................ ");
+	public void add(ColumnDirectoryEntity text) {
+		mDataSet.add( text);
+		notifyDataSetChanged();
+	}
+	public void addAll(List<ColumnDirectoryEntity> list, int position) {
 		mDataSet.addAll(position, list);
 		notifyItemRangeInserted(position, list.size());
 	}
-
-	public void delete(int pos) {
-		if (pos >= 0 && pos < mDataSet.size()) {
-			if (mDataSet.get(pos).getType() == ItemData.ITEM_TYPE_PARENT
-					&& mDataSet.get(pos).isExpand()) {// 父组件并且子节点已经展开
-				for (int i = 0; i < mDataSet.get(pos).getChildren().size() + 1; i++) {
-					mDataSet.remove(pos);
-				}
-				notifyItemRangeRemoved(pos, mDataSet.get(pos).getChildren()
-						.size() + 1);
-			} else {// 孩子节点，或没有展开的父节点
-				mDataSet.remove(pos);
-				notifyItemRemoved(pos);
-			}
-		}
+	public void addAll(List<ColumnDirectoryEntity> list) {
+		mDataSet.addAll(list);
+		notifyDataSetChanged();
 	}
+
 }

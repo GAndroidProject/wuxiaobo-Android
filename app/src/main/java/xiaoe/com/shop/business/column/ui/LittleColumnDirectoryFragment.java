@@ -8,14 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import xiaoe.com.common.entitys.ItemData;
+import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.tree.TreeChildRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
+import xiaoe.com.shop.widget.DashlineItemDivider;
 
 public class LittleColumnDirectoryFragment extends BaseFragment {
     private static final String TAG = "ColumnDirectoryFragment";
@@ -45,20 +45,16 @@ public class LittleColumnDirectoryFragment extends BaseFragment {
         treeLinearLayoutManager.setAutoMeasureEnabled(true);
         directoryRecyclerView.setLayoutManager(treeLinearLayoutManager);
         directoryRecyclerView.setNestedScrollingEnabled(false);
+        int padding = Dp2Px2SpUtil.dp2px(getContext(), 16);
+        directoryRecyclerView.addItemDecoration(new DashlineItemDivider(padding, padding));
         directoryAdapter = new TreeChildRecyclerAdapter(getContext());
         directoryRecyclerView.setAdapter(directoryAdapter);
-        List<ItemData> childList = new ArrayList<ItemData>();
-        for (int j = 0; j < 15; j++){
-            childList.add(new ItemData(ItemData.ITEM_TYPE_CHILD, "音视频图文-"+j,"",UUID.randomUUID().toString(), 2,null));
-        }
-        directoryAdapter.setData(childList);
     }
 
-    public void add(){
-        List<ItemData> childList = new ArrayList<ItemData>();
-        for (int j = 0; j < 5; j++){
-            childList.add(new ItemData(ItemData.ITEM_TYPE_CHILD, "音视频图文-"+j,"",UUID.randomUUID().toString(), 2,null));
-        }
-        directoryAdapter.addAll(childList);
+    public void addData(List<ColumnSecondDirectoryEntity> list){
+        directoryAdapter.addAll(list);
+    }
+    public void setData(List<ColumnSecondDirectoryEntity> list){
+        directoryAdapter.setData(list);
     }
 }

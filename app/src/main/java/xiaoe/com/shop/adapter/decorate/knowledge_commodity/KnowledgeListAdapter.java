@@ -2,6 +2,7 @@ package xiaoe.com.shop.adapter.decorate.knowledge_commodity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,14 +102,24 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         mContext.startActivity(intent);
                         break;
                     case DecorateEntityType.COLUMN:
-                        intent = new Intent(mContext, ColumnActivity.class);
-                        mContext.startActivity(intent);
+                        jumpColumn(mItemList.get(position).getResourceId(), false, mItemList.get(position).getItemImg());
                         break;
                     case DecorateEntityType.TOPIC:
+                        jumpColumn(mItemList.get(position).getResourceId(), true, mItemList.get(position).getItemImg());
                         break;
                 }
             }
         });
         return convertView;
+    }
+
+    private void jumpColumn(String resId, boolean isBigColumn, String imageUrl){
+        Intent intent = new Intent(mContext, ColumnActivity.class);
+        intent.putExtra("resource_id", resId);
+        intent.putExtra("isBigColumn", isBigColumn);
+        if(!TextUtils.isEmpty(imageUrl)){
+            intent.putExtra("column_image_url", imageUrl);
+        }
+        mContext.startActivity(intent);
     }
 }

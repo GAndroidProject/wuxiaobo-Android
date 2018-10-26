@@ -1,7 +1,7 @@
 package xiaoe.com.shop.interfaces;
 
 
-import xiaoe.com.common.entitys.ItemData;
+import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 
 /**
  * @Author Zheng Haibo
@@ -10,8 +10,8 @@ import xiaoe.com.common.entitys.ItemData;
  */
 public interface ItemDataClickListener {
 
-	public void onExpandChildren(ItemData itemData);
+	public void onExpandChildren(ColumnDirectoryEntity itemData);
 
-	public void onHideChildren(ItemData itemData);
+	public void onHideChildren(ColumnDirectoryEntity itemData);
 
 }

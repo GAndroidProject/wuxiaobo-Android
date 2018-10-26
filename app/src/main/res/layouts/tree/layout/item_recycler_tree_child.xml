@@ -3,31 +3,39 @@
 	android:id="@+id/item_container"
 	android:layout_width="match_parent"
 	android:layout_height="48dp"
-	android:background="@color/main_bg_color" >
+	android:background="@color/lucency" >
+	<TextView
+		android:id="@+id/text"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_centerVertical="true"
+		android:layout_toStartOf="@+id/btn_item_play"
+		android:maxLines="1"
+		android:textColor="@color/main_title_color"
+		android:textSize="14sp" />
 	<LinearLayout
+		android:id="@+id/btn_item_play"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
 		android:layout_centerVertical="true"
+		android:layout_marginStart="6dp"
 		android:gravity="center"
 		android:orientation="horizontal">
 		<TextView
+			android:id="@+id/item_play_length"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginEnd="6dp"
 			android:textColor="@color/secondary_title_color"
-			android:text="12:00"
 			android:textSize="12sp"
 			/>
-	</LinearLayout>
-	<TextView
-		android:id="@+id/text"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_centerVertical="true"
-		android:gravity="center"
-		android:singleLine="true"
-		android:text="音视频图文"
-		android:textColor="@color/main_title_color"
-		android:textSize="14sp" />
+		<ImageView
+			android:id="@+id/item_play_icon"
+			android:layout_width="20dp"
+			android:layout_height="20dp"
 
+			android:src="@mipmap/audiolist_playall"
+			/>
+	</LinearLayout>
 </RelativeLayout>

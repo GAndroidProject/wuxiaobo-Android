@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import java.util.List;
+
+import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.tree.TreeRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
@@ -20,6 +23,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     private View rootView;
     private RecyclerView directoryRecyclerView;
     private LinearLayout btnBatchDownload;
+    private TreeRecyclerAdapter directoryAdapter;
 
     @Nullable
     @Override
@@ -45,9 +49,8 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         treeLinearLayoutManager.setAutoMeasureEnabled(true);
         directoryRecyclerView.setLayoutManager(treeLinearLayoutManager);
         directoryRecyclerView.setNestedScrollingEnabled(false);
-        TreeRecyclerAdapter directoryAdapter = new TreeRecyclerAdapter(getContext());
+        directoryAdapter = new TreeRecyclerAdapter(getContext());
         directoryRecyclerView.setAdapter(directoryAdapter);
-        directoryAdapter.addAll(directoryAdapter.getData(), 0);
     }
 
     @Override
@@ -64,5 +67,12 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     private void clickBatchDownload() {
         Intent intent = new Intent(getContext(), DownloadActivity.class);
         startActivity(intent);
+    }
+
+    public void addData(List<ColumnDirectoryEntity> list){
+        directoryAdapter.addAll(list);
+    }
+    public void setData(List<ColumnDirectoryEntity> list){
+        directoryAdapter.setData(list);
     }
 }

@@ -6,14 +6,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import xiaoe.com.common.entitys.ItemData;
+import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.ItemDataClickListener;
-import xiaoe.com.shop.widget.RecycleViewDivider;
+import xiaoe.com.shop.widget.DashlineItemDivider;
 
 /**
  * @Author Zheng Haibo
@@ -29,9 +30,9 @@ public class ParentViewHolder extends BaseViewHolder {
 	private final View divisionLine;
 	private final LinearLayout btnExpandDown;
     private final LinearLayout btnPlayAll;
-    private final LinearLayout btnExpandTop;
+    private final RelativeLayout btnExpandTop;
 
-	public ParentViewHolder(Context context, View itemView) {
+	public ParentViewHolder(Context context, View itemView, int paddingLeft, int paddingRight) {
 		super(itemView);
 		mContext = context;
 		text = (TextView) itemView.findViewById(R.id.text);
@@ -41,7 +42,7 @@ public class ParentViewHolder extends BaseViewHolder {
 		layoutManager.setAutoMeasureEnabled(true);
 		childRecyclerView.setLayoutManager(layoutManager);
 		//item分割线
-		childRecyclerView.addItemDecoration(new RecycleViewDivider(context, LinearLayoutManager.HORIZONTAL, R.drawable.imaginary_line));
+		childRecyclerView.addItemDecoration(new DashlineItemDivider(paddingLeft,paddingRight));
 		childRecyclerView.setNestedScrollingEnabled(false);
 		treeChildRecyclerAdapter = new TreeChildRecyclerAdapter(context);
 		childRecyclerView.setAdapter(treeChildRecyclerAdapter);
@@ -50,14 +51,14 @@ public class ParentViewHolder extends BaseViewHolder {
 		//展开按钮
 		btnExpandDown = (LinearLayout) itemView.findViewById(R.id.expand_down_btn);
 		//收起按钮
-        btnExpandTop = (LinearLayout) itemView.findViewById(R.id.expand_top_btn);
+        btnExpandTop = (RelativeLayout) itemView.findViewById(R.id.expand_top_btn);
 		//播放全部按钮
         btnPlayAll = (LinearLayout) itemView.findViewById(R.id.play_all_btn);
 	}
 
-	public void bindView(final ItemData itemData, final int position,
+	public void bindView(final ColumnDirectoryEntity itemData, final int position,
 						 final ItemDataClickListener imageClickListener) {
-		text.setText(itemData.getText());
+		text.setText(itemData.getTitle());
 		if (itemData.isExpand()) {
 			divisionLine.setVisibility(View.VISIBLE);
 			childRecyclerView.setVisibility(View.VISIBLE);
@@ -75,7 +76,7 @@ public class ParentViewHolder extends BaseViewHolder {
 				Toast.makeText(mContext, "正在播放全部", Toast.LENGTH_SHORT).show();
 			}
 		});
-		treeChildRecyclerAdapter.setData(itemData.getChildren());
+		treeChildRecyclerAdapter.setData(itemData.getResource_list());
 		//展开点击事件
 		btnExpandDown.setOnClickListener(new OnClickListener() {
 

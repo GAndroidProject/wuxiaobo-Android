@@ -2,18 +2,14 @@ package xiaoe.com.shop.adapter.tree;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.MimeTypeMap;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.File;
-
-import xiaoe.com.common.entitys.ItemData;
+import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
@@ -26,37 +22,55 @@ public class ChildViewHolder extends BaseViewHolder {
 
 	public TextView text;
 	public RelativeLayout relativeLayout;
+	private final TextView playLength;
+	private final ImageView playIcon;
 
 	public ChildViewHolder(Context context, View itemView) {
 		super(itemView);
 		text = (TextView) itemView.findViewById(R.id.text);
 		relativeLayout = (RelativeLayout) itemView.findViewById(R.id.item_container);
+		playLength = (TextView) itemView.findViewById(R.id.item_play_length);
+		playIcon = (ImageView) itemView.findViewById(R.id.item_play_icon);
 	}
 
-	public void bindView(final ItemData itemData, int position) {
-		text.setText(itemData.getText());
+	public void bindView(final ColumnSecondDirectoryEntity itemData, int position) {
+		text.setText(itemData.getTitle());
+		int type = itemData.getResource_type();
+		if(type == 2){
+			setMediaTypeState(View.VISIBLE);
+			playLength.setText(DateFormat.longToString(itemData.getAudio_length() * 1000));
+		}else if (type == 3){
+			setMediaTypeState(View.VISIBLE);
+			playLength.setText(DateFormat.longToString(itemData.getVideo_length() * 1000));
+		}else{
+			setMediaTypeState(View.GONE);
+		}
+		setMediaType(type);
 		relativeLayout.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
-				openFileInSystem(itemData.getPath(), view.getContext());
+				openFileInSystem(itemData.getTitle(), view.getContext());
 			}
 		});
 	}
+	private void setMediaTypeState(int visibility){
+		playLength.setVisibility(visibility);
+		playIcon.setVisibility(visibility);
+	}
+
+	public void setMediaType(int type){
+		if(type == 1){
+
+		}else if(type == 2){
+			playIcon.setImageResource(R.mipmap.audiolist_playall);
+		}else if(type == 3){
+			playIcon.setImageResource(R.mipmap.audiolist_vedio);
+		}
+	}
 
 	private void openFileInSystem(String path, Context context) {
-		try {
-			MimeTypeMap myMime = MimeTypeMap.getSingleton();
-			Intent newIntent = new Intent(Intent.ACTION_VIEW);
-			String mimeType = myMime.getMimeTypeFromExtension(fileExt(path)
-					.substring(1));
-			newIntent.setDataAndType(Uri.fromFile(new File(path)), mimeType);
-			newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(newIntent);
-		} catch (Exception e) {
-			Toast.makeText(context, "No handler for this type of file.",
-					Toast.LENGTH_LONG).show();
-		}
+
 	}
 
 	@SuppressLint("DefaultLocale")

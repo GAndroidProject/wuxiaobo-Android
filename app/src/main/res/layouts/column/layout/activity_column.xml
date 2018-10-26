@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
+    android:background="@color/white"
     >
     <xiaoe.com.shop.widget.CustomScrollView
         android:id="@+id/column_scroll_view"
@@ -129,7 +130,9 @@
                 android:id="@+id/column_view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_below="@id/column_menu_warp"
                 />
             <xiaoe.com.shop.widget.ListBottomLoadMoreView

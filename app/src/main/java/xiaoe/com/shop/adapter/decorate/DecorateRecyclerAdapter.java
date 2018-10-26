@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -319,10 +320,10 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     mContext.startActivity(intent);
                     break;
                 case DecorateEntityType.COLUMN: // 专栏
-                    intent = new Intent(mContext, ColumnActivity.class);
-                    mContext.startActivity(intent);
+                    jumpColumn(knowledgeCommodityItem.getResourceId(), false, knowledgeCommodityItem.getItemImg());
                     break;
                 case DecorateEntityType.TOPIC: // 大专栏
+                    jumpColumn(knowledgeCommodityItem.getResourceId(), true, knowledgeCommodityItem.getItemImg());
                     break;
             }
         }
@@ -346,8 +347,10 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.VIDEO: // 视频
                 break;
             case DecorateEntityType.COLUMN: // 专栏
+                jumpColumn(resourceId, false, "");
                 break;
             case DecorateEntityType.TOPIC: // 大专栏
+                jumpColumn(resourceId, true, "");
                 break;
             case DecorateEntityType.RESOURCE_TAG: // 商品分组
                 intent = new Intent(mContext, NavigateDetailActivity.class);
@@ -357,5 +360,15 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 mContext.startActivity(intent);
                 break;
         }
+    }
+
+    private void jumpColumn(String resId, boolean isBigColumn, String imageUrl){
+        Intent intent = new Intent(mContext, ColumnActivity.class);
+        intent.putExtra("resource_id", resId);
+        intent.putExtra("isBigColumn", isBigColumn);
+        if(!TextUtils.isEmpty(imageUrl)){
+            intent.putExtra("column_image_url", imageUrl);
+        }
+        mContext.startActivity(intent);
     }
 }
