@@ -13,6 +13,12 @@ public class AudioPlayEntity {
     private String createAt = null;
     private String updateAt = null;
     private String columnId = null;
+
+    private int hasFavorite = 0;//是否收藏，0-未收藏，1-已收藏
+    private int hasBuy = 0;// 是否已购买0-未购买，1-已购买
+
+    private int playCount = 0;
+    private int code = - 2;
     private int index = -1;
     private boolean isPlay = false;
 
@@ -111,5 +117,37 @@ public class AudioPlayEntity {
 
     public void setPlay(boolean play) {
         isPlay = play;
+    }
+
+    public int getPlayCount() {
+        return playCount;
+    }
+
+    public void setPlayCount(int playCount) {
+        this.playCount = playCount;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public int getHasFavorite() {
+        return hasFavorite;
+    }
+
+    public void setHasFavorite(int hasFavorite) {
+        this.hasFavorite = hasFavorite;
+    }
+
+    public int getHasBuy() {
+        return hasBuy;
+    }
+
+    public void setHasBuy(int hasBuy) {
+        this.hasBuy = hasBuy;
     }
 }

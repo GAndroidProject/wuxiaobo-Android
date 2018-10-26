@@ -6,6 +6,7 @@ public class AudioPlayEvent {
     public static final int PAUSE = 1003;
     public static final int STOP = 1004;
     public static final int PROGRESS = 1005;
+    public static final int PREPARE = 1006;
     private int state;
     private int progress;
 

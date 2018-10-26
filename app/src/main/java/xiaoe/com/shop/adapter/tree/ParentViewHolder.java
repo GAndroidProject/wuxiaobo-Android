@@ -13,7 +13,7 @@ import android.widget.Toast;
 import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
-import xiaoe.com.shop.interfaces.ItemDataClickListener;
+import xiaoe.com.shop.interfaces.OnClickExpandListener;
 import xiaoe.com.shop.widget.DashlineItemDivider;
 
 /**
@@ -44,7 +44,7 @@ public class ParentViewHolder extends BaseViewHolder {
 		//item分割线
 		childRecyclerView.addItemDecoration(new DashlineItemDivider(paddingLeft,paddingRight));
 		childRecyclerView.setNestedScrollingEnabled(false);
-		treeChildRecyclerAdapter = new TreeChildRecyclerAdapter(context);
+		treeChildRecyclerAdapter = new TreeChildRecyclerAdapter(context, null);
 		childRecyclerView.setAdapter(treeChildRecyclerAdapter);
 		//分割线
 		divisionLine = itemView.findViewById(R.id.division_line);
@@ -57,7 +57,7 @@ public class ParentViewHolder extends BaseViewHolder {
 	}
 
 	public void bindView(final ColumnDirectoryEntity itemData, final int position,
-						 final ItemDataClickListener imageClickListener) {
+						 final OnClickExpandListener imageClickListener) {
 		text.setText(itemData.getTitle());
 		if (itemData.isExpand()) {
 			divisionLine.setVisibility(View.VISIBLE);

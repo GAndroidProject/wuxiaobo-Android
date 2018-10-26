@@ -84,6 +84,7 @@ public class ColumnPresenter implements IBizCallback {
         for (Object object : jsonArray) {
             ColumnSecondDirectoryEntity secondDirectoryEntity = new ColumnSecondDirectoryEntity();
             JSONObject jsonObject = (JSONObject) object;
+            secondDirectoryEntity.setApp_id(jsonObject.getString("app_id"));
             secondDirectoryEntity.setResource_id(jsonObject.getString("resource_id"));
             secondDirectoryEntity.setTitle(jsonObject.getString("title"));
             secondDirectoryEntity.setImg_url(jsonObject.getString("img_url"));
@@ -91,6 +92,7 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
             secondDirectoryEntity.setAudio_length(jsonObject.getIntValue("audio_length"));
             secondDirectoryEntity.setVideo_length(jsonObject.getIntValue("video_length"));
+            secondDirectoryEntity.setAudio_url(jsonObject.getString("audio_url"));
             directoryEntityList.add(secondDirectoryEntity);
         }
         return directoryEntityList;

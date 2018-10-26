@@ -19,6 +19,7 @@ import com.youth.banner.BannerConfig;
 
 import java.util.List;
 
+import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.GraphicNavItem;
@@ -44,8 +45,12 @@ import xiaoe.com.shop.adapter.decorate.search.SearchViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingFigureViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingImageLoader;
 import xiaoe.com.shop.base.BaseViewHolder;
-import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
+import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
+import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
+import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
+import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.course_more.ui.CourseMoreActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
@@ -314,6 +319,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     mContext.startActivity(intent);
                     break;
                 case DecorateEntityType.AUDIO: // 音频
+                    jumpAudio(knowledgeCommodityItem.getResourceId());
                     break;
                 case DecorateEntityType.VIDEO: // 视频
                     intent = new Intent(mContext, VideoActivity.class);
@@ -343,6 +349,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 mContext.startActivity(intent);
                 break;
             case DecorateEntityType.AUDIO: // 音频
+                jumpAudio(resourceId);
                 break;
             case DecorateEntityType.VIDEO: // 视频
                 break;
@@ -369,6 +376,29 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         if(!TextUtils.isEmpty(imageUrl)){
             intent.putExtra("column_image_url", imageUrl);
         }
+        mContext.startActivity(intent);
+    }
+    private void jumpAudio(String resId){
+        AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        String resourceId = "";
+        if(playEntity != null){
+            resourceId = playEntity.getResourceId();
+        }
+        if(!resourceId.equals(resId)){
+            AudioMediaPlayer.stop();
+
+            playEntity = new AudioPlayEntity();
+            playEntity.setAppId("apppcHqlTPT3482");
+            playEntity.setResourceId(resId);
+            playEntity.setIndex(0);
+            playEntity.setPlay(true);
+            AudioMediaPlayer.setAudio(playEntity, false);
+
+            AudioPlayUtil.getInstance().refreshAudio(playEntity);
+            AudioPresenter audioPresenter = new AudioPresenter(null);
+            audioPresenter.requestDetail(resId);
+        }
+        Intent intent = new Intent(mContext, AudioActivity.class);
         mContext.startActivity(intent);
     }
 }

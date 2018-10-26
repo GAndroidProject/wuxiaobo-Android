@@ -12,11 +12,11 @@ public class Constants {
     //应用appid 正式环境
     private static final String formalAppid = "appuAhZGRFx3075";
 
-    //微信登录测试环境
+    //微信测试环境
 //    private static final String wxLoginAppIdTest = "wx3514f0d221328921";
-    private static final String wxLoginAppIdTest = "wxfe3c46716c7587ee";
-    //微信登录正式环境
-    private static final String wxLoginAppIdFormal = "wx0b41f790886f724e";
+    private static final String wxAppIdTest = "wxfe3c46716c7587ee";
+    //微信正式环境
+    private static final String wxAppIdFormal = "wx0b41f790886f724e";
 
     public static final String AUDIO_PLAY_RESOURCE_ID = "audioPlayResourceid";
     //上一次购买资源的id
@@ -48,11 +48,11 @@ public class Constants {
     public static String[] READ_WRITE_PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final String[] mTabNames = {"首页", "已购", "我的"};
     //获取微信登录appid
-    public static String getWxLoginAppId(){
+    public static String getWXAppId(){
         if(XiaoeApplication.isFormalCondition()){
-            return wxLoginAppIdFormal;
+            return wxAppIdFormal;
         }
-        return wxLoginAppIdTest;
+        return wxAppIdTest;
     }
     //获取应用appid
     public static String getAppId(){

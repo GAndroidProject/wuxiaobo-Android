@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.interfaces.OnClickListPlayListener;
 
 /**
  * @Author Zheng Haibo
@@ -24,6 +26,7 @@ public class ChildViewHolder extends BaseViewHolder {
 	public RelativeLayout relativeLayout;
 	private final TextView playLength;
 	private final ImageView playIcon;
+	private final LinearLayout btnItemPlay;
 
 	public ChildViewHolder(Context context, View itemView) {
 		super(itemView);
@@ -31,9 +34,10 @@ public class ChildViewHolder extends BaseViewHolder {
 		relativeLayout = (RelativeLayout) itemView.findViewById(R.id.item_container);
 		playLength = (TextView) itemView.findViewById(R.id.item_play_length);
 		playIcon = (ImageView) itemView.findViewById(R.id.item_play_icon);
+		btnItemPlay = (LinearLayout) itemView.findViewById(R.id.btn_item_play);
 	}
 
-	public void bindView(final ColumnSecondDirectoryEntity itemData, int position) {
+	public void bindView(final ColumnSecondDirectoryEntity itemData, final int position, final OnClickListPlayListener mListPlayListener) {
 		text.setText(itemData.getTitle());
 		int type = itemData.getResource_type();
 		if(type == 2){
@@ -51,6 +55,12 @@ public class ChildViewHolder extends BaseViewHolder {
 			@Override
 			public void onClick(View view) {
 				openFileInSystem(itemData.getTitle(), view.getContext());
+			}
+		});
+		btnItemPlay.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mListPlayListener.OnPlayPosition(v, position);
 			}
 		});
 	}

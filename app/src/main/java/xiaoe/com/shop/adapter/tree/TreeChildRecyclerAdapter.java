@@ -12,6 +12,7 @@ import java.util.List;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.interfaces.OnClickListPlayListener;
 import xiaoe.com.shop.interfaces.OnScrollToListener;
 
 /**
@@ -24,14 +25,13 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 	private Context mContext;
 	private List<ColumnSecondDirectoryEntity> mDataSet;
 	private OnScrollToListener onScrollToListener;
+	private OnClickListPlayListener mListPlayListener;
 
-	public void setOnScrollToListener(OnScrollToListener onScrollToListener) {
-		this.onScrollToListener = onScrollToListener;
-	}
 
-	public TreeChildRecyclerAdapter(Context context) {
+	public TreeChildRecyclerAdapter(Context context, OnClickListPlayListener listPlayListener) {
 		mContext = context;
 		mDataSet = new ArrayList<ColumnSecondDirectoryEntity>();
+		mListPlayListener = listPlayListener;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 	@Override
 	public void onBindViewHolder(BaseViewHolder holder, int position) {
 		ChildViewHolder imageViewHolder = (ChildViewHolder) holder;
-		imageViewHolder.bindView(mDataSet.get(position), position);
+		imageViewHolder.bindView(mDataSet.get(position), position, mListPlayListener);
 	}
 
 
@@ -70,8 +70,9 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 		notifyItemRangeRemoved(position, itemCount);
 	}
 
-
-
+	public List<ColumnSecondDirectoryEntity> getData(){
+		return mDataSet;
+	}
 
 	public void setData(List<ColumnSecondDirectoryEntity> list) {
 		mDataSet = list;
@@ -97,5 +98,7 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 		notifyDataSetChanged();
 	}
 
-
+	public void setOnScrollToListener(OnScrollToListener onScrollToListener) {
+		this.onScrollToListener = onScrollToListener;
+	}
 }

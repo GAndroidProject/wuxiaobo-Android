@@ -1,11 +1,18 @@
 package xiaoe.com.shop.business.audio.presenter;
 
+import com.alibaba.fastjson.JSONObject;
+
+import org.greenrobot.eventbus.EventBus;
+
+import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.ContentRequest;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
+import xiaoe.com.shop.events.AudioPlayEvent;
 
 public class AudioPresenter implements IBizCallback {
     private static final String TAG = "AudioPresenter";
@@ -17,24 +24,94 @@ public class AudioPresenter implements IBizCallback {
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
+        if(iRequest instanceof DetailRequest){
+            setAudioDetail(success, (JSONObject) entity, (String) iRequest.getFormBody().get("resource_id"));
+        }else if(iRequest instanceof ContentRequest){
+            setAudioContent(success, (JSONObject)entity);
+        }else{
+            ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(success && entity != null){
+                        iNetworkResponse.onMainThreadResponse(iRequest,success, entity);
+                    }
+                }
+            });
+        }
+
+    }
+
+    private void setAudioContent(boolean success, JSONObject jsonObject) {
+        JSONObject data = jsonObject.getJSONObject("data");
+        AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        if(playEntity == null){
+            playEntity = new AudioPlayEntity();
+        }
+        if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
+            playEntity.setCode(-1);
+            playAudio(playEntity.isPlay());
+            return;
+        }
+        playEntity.setCode(0);
+        playEntity.setContent(data.getString("content"));
+        playEntity.setPlayUrl(data.getString("audio_url"));
+        AudioMediaPlayer.setAudio(playEntity, false);
+        playAudio(playEntity.isPlay());
+    }
+
+    private void setAudioDetail(boolean success, JSONObject jsonObject, String resourceId) {
+        JSONObject data = jsonObject.getJSONObject("data");
+        AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        if(playEntity == null){
+            playEntity = new AudioPlayEntity();
+            playEntity.setResourceId(resourceId);
+            playEntity.setAppId("apppcHqlTPT3482");
+            playEntity.setIndex(0);
+            playEntity.setPlay(false);
+        }
+        playEntity.setCurrentPlayState(1);
+        if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
+            playEntity.setCode(-1);
+            return;
+        }
+        JSONObject resourceInfo = data.getJSONObject("resource_info");
+        playEntity.setTitle(resourceInfo.getString("title"));
+        playEntity.setHasFavorite(resourceInfo.getIntValue("has_favorite"));
+        playEntity.setPlayCount(resourceInfo.getIntValue("audio_play_count"));
+        playEntity.setHasBuy(resourceInfo.getIntValue("has_buy"));
+        playEntity.setResourceId(resourceId);
+        if(resourceInfo.getIntValue("has_buy") == 0){
+            playEntity.setCode(0);
+            playEntity.setContent(resourceInfo.getString("content"));
+            AudioMediaPlayer.setAudio(playEntity, false);
+            playAudio(false);
+        }else{
+            AudioMediaPlayer.setAudio(playEntity, false);
+            requestContent(resourceId);
+        }
+    }
+
+    private void playAudio(final boolean play){
         ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
             @Override
             public void run() {
-                if(success && entity != null){
-                    iNetworkResponse.onMainThreadResponse(iRequest,success, entity);
+                AudioPlayEvent event = new AudioPlayEvent();
+                event.setState(AudioPlayEvent.PREPARE);
+                EventBus.getDefault().post(event);
+                if(play){
+                    AudioMediaPlayer.start();
                 }
             }
         });
-
     }
 
     /**
      * 获取购买前商品详情
      */
-    public void requestDetail(){
+    public void requestDetail(String resourceId){
         DetailRequest couponRequest = new DetailRequest( this);
         couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addRequestParam("resource_id","a_5bc6b2a5d3ff5_cJc4CYI1");
+        couponRequest.addRequestParam("resource_id",resourceId);
         couponRequest.addRequestParam("resource_type","2");
         couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         couponRequest.sendRequest();
@@ -43,10 +120,10 @@ public class AudioPresenter implements IBizCallback {
     /**
      * 获取购买后的资源内容
      */
-    public void requestContent(){
+    private void requestContent(String resourceId){
         ContentRequest couponRequest = new ContentRequest( this);
         couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addRequestParam("resource_id","a_5bc6b2a5d3ff5_cJc4CYI1");
+        couponRequest.addRequestParam("resource_id",resourceId);
         couponRequest.addRequestParam("resource_type","2");
         couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         couponRequest.sendRequest();

@@ -42,5 +42,15 @@ public class AudioPlayUtil {
         this.audioList.add(index, audio);
     }
 
+    public void refreshAudio(AudioPlayEntity audio){
+        if(this.audioList == null){
+            audioList = new ArrayList<AudioPlayEntity>();
+            audioList.add(audio);
+        }else{
+            audioList.clear();
+            audioList.add(audio);
+        }
+
+    }
 
 }

@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,7 +33,8 @@ import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.TranslationAnimator;
-import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
+import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.audio.presenter.AudioSQLiteUtil;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
@@ -131,8 +131,12 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 1";
             List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
             if(entityList.size() > 0){
-                AudioMediaPlayer.setAudio(entityList.get(0), false);
-                miniAudioPlayController.setAudioTitle(entityList.get(0).getTitle());
+                AudioPlayEntity playEntity = entityList.get(0);
+                playEntity.setPlay(false);
+                AudioPlayUtil.getInstance().refreshAudio(playEntity);
+                AudioPresenter audioPresenter = new AudioPresenter(null);
+                audioPresenter.requestDetail(playEntity.getResourceId());
+                miniAudioPlayController.setAudioTitle(playEntity.getTitle());
                 miniAudioPlayController.setVisibility(View.VISIBLE);
             }else{
                 miniAudioPlayController.setVisibility(View.GONE);
@@ -240,12 +244,10 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         ArrayList<String> permissionList = new ArrayList<String>();
         for(int i = 0; i < Constants.permissions.length ; i++){
             String permissions = Constants.permissions[i];
-            Log.d(TAG, "initPermission: "+ ContextCompat.checkSelfPermission(this, permissions)+" ; "+i);
             if (ContextCompat.checkSelfPermission(this, permissions) != PackageManager.PERMISSION_GRANTED) {
                 permissionList.add(permissions);
             }
         }
-        Log.d(TAG, "initPermission: ");
         String[] permission = permissionList.toArray(new String[permissionList.size()]);
         if(Build.VERSION.SDK_INT > 22 && permission.length > 0){
             ActivityCompat.requestPermissions(this,permission,1);

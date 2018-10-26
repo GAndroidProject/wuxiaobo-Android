@@ -8,7 +8,7 @@ import xiaoe.com.common.entitys.ColumnDirectoryEntity;
  * @PersonalWebsite http://www.mobctrl.net
  * @Description
  */
-public interface ItemDataClickListener {
+public interface OnClickExpandListener {
 
 	public void onExpandChildren(ColumnDirectoryEntity itemData);
 

@@ -13,7 +13,7 @@ import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
-import xiaoe.com.shop.interfaces.ItemDataClickListener;
+import xiaoe.com.shop.interfaces.OnClickExpandListener;
 import xiaoe.com.shop.interfaces.OnScrollToListener;
 
 /**
@@ -48,7 +48,7 @@ public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 				imageClickListener);
 	}
 
-	private ItemDataClickListener imageClickListener = new ItemDataClickListener() {
+	private OnClickExpandListener imageClickListener = new OnClickExpandListener() {
 
 		@Override
 		public void onExpandChildren(ColumnDirectoryEntity itemData) {

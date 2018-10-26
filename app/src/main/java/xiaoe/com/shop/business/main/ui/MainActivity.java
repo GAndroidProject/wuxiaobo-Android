@@ -108,6 +108,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         }
         switch (event.getState()){
             case AudioPlayEvent.LOADING:
+                miniAudioPlayController.setVisibility(View.VISIBLE);
                 miniAudioPlayController.setAudioTitle(playEntity.getTitle());
                 break;
             case AudioPlayEvent.PLAY:

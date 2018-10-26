@@ -8,13 +8,18 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.List;
 
+import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.AudioPlayTable;
+import xiaoe.com.common.utils.DateFormat;
+import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.shop.events.AudioPlayEvent;
 
 public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedListener,
@@ -109,7 +114,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
      * 开始播放
      */
     public static void start(){
-        if(audio == null){
+        if(audio == null || mediaPlayer == null || TextUtils.isEmpty(audio.getPlayUrl())){
             return;
         }
         mediaPlayer.reset();
@@ -145,9 +150,23 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         EventBus.getDefault().post(event);
     }
     public static void stop() {
-        if(mediaPlayer != null) {
+        if(audio == null){
+            return;
+        }
+        if(mediaPlayer != null && !isStop) {
             mediaPlayer.stop();
         }
+        audio.setCurrentPlayState(0);
+
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
+        boolean tableExist = SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
+        if(!tableExist){
+            SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+        }
+        String sqlWhereClause = AudioPlayTable.getAppId()+"=? and "+AudioPlayTable.getResourceId()+"=?";
+        SQLiteUtil.update(AudioPlayTable.TABLE_NAME, audio, sqlWhereClause,
+                new String[]{audio.getAppId(),audio.getResourceId()});
+
         event.setState(AudioPlayEvent.STOP);
         EventBus.getDefault().post(event);
         isStop = true;
@@ -189,12 +208,19 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(indexNext >= playList.size()){
             indexNext = 0;
         }
-        setAudio(playList.get(indexNext),false);
         stop();
-        if(isStop){
-            start();
+        audio.setPlay(false);
+        AudioPlayEntity nextAudio = playList.get(indexNext);
+        nextAudio.setPlay(true);
+        if(audio.getResourceId().equals(nextAudio.getResourceId())){
+            if(isStop){
+                start();
+            }else{
+                play();
+            }
         }else{
-            play();
+            audio = nextAudio;
+            new AudioPresenter(null).requestDetail(nextAudio.getResourceId());
         }
     }
 
@@ -204,12 +230,19 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(indexLast < 0){
             indexLast = playList.size() - 1;
         }
-        setAudio(playList.get(indexLast),false);
         stop();
-        if(isStop){
-            start();
+        audio.setPlay(false);
+        AudioPlayEntity lastAudio = playList.get(indexLast);
+        lastAudio.setPlay(true);
+        if(audio.getResourceId().equals(lastAudio.getResourceId())){
+            if(isStop){
+                start();
+            }else{
+                play();
+            }
         }else{
-            play();
+            audio = lastAudio;
+            new AudioPresenter(null).requestDetail(lastAudio.getResourceId());
         }
     }
 
@@ -230,8 +263,30 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     public static void setAudio(AudioPlayEntity audio, boolean autoPlay) {
         AudioMediaPlayer.audio = audio;
-        if(autoPlay){
-            start();
+
+
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
+        boolean tableExist = SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
+        if(!tableExist){
+            SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+        }
+        AudioPlayEntity audioPlayEntity = new AudioPlayEntity();
+        audioPlayEntity.setAppId(audio.getAppId());
+        audioPlayEntity.setTitle(audio.getTitle());
+        audioPlayEntity.setResourceId(audio.getResourceId());
+        audioPlayEntity.setCurrentPlayState(1);
+        audioPlayEntity.setState(0);
+        audioPlayEntity.setCreateAt(DateFormat.currentTime());
+        audioPlayEntity.setUpdateAt(DateFormat.currentTime());
+        audioPlayEntity.setIndex(audio.getIndex());
+        List<AudioPlayEntity> dbAudioEntitys = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,
+                "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getResourceId()+"=?", new String[]{audio.getResourceId()});
+        if(dbAudioEntitys.size() > 0){
+            String sqlWhereClause = AudioPlayTable.getAppId()+"=? and "+AudioPlayTable.getResourceId()+"=?";
+            SQLiteUtil.update(AudioPlayTable.TABLE_NAME, audioPlayEntity, sqlWhereClause,
+                    new String[]{audioPlayEntity.getAppId(),audioPlayEntity.getResourceId()});
+        }else{
+            SQLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioPlayEntity);
         }
     }
 

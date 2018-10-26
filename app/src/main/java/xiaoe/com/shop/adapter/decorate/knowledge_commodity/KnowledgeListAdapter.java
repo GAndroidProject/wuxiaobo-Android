@@ -10,9 +10,14 @@ import android.widget.BaseAdapter;
 
 import java.util.List;
 
+import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
+import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
+import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
@@ -96,6 +101,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         mContext.startActivity(intent);
                         break;
                     case DecorateEntityType.AUDIO:
+                        jumpAudio(mItemList.get(position).getResourceId());
                         break;
                     case DecorateEntityType.VIDEO:
                         intent = new Intent(mContext, VideoActivity.class);
@@ -120,6 +126,30 @@ public class KnowledgeListAdapter extends BaseAdapter {
         if(!TextUtils.isEmpty(imageUrl)){
             intent.putExtra("column_image_url", imageUrl);
         }
+        mContext.startActivity(intent);
+    }
+
+    private void jumpAudio(String resId){
+        AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        String resourceId = "";
+        if(playEntity != null){
+            resourceId = playEntity.getResourceId();
+        }
+        if(!resourceId.equals(resId)){
+            AudioMediaPlayer.stop();
+
+            playEntity = new AudioPlayEntity();
+            playEntity.setAppId("apppcHqlTPT3482");
+            playEntity.setResourceId(resId);
+            playEntity.setIndex(0);
+            playEntity.setPlay(true);
+            AudioMediaPlayer.setAudio(playEntity, false);
+
+            AudioPlayUtil.getInstance().refreshAudio(playEntity);
+            AudioPresenter audioPresenter = new AudioPresenter(null);
+            audioPresenter.requestDetail(resId);
+        }
+        Intent intent = new Intent(mContext, AudioActivity.class);
         mContext.startActivity(intent);
     }
 }

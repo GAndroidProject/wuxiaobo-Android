@@ -83,12 +83,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                    ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
-                            Pair.create(audioBG, "share_img_audio_bg"),
-                            Pair.create(audioRing, mContext.getResources().getString(R.string.share_img)));
-                    Intent audioIntent = new Intent(mContext, AudioActivity.class);
-                    mContext.startActivity(audioIntent, options.toBundle());
+                    jumpAudioActivity(audioBG, audioRing);
                     }
                 });
                 return new FlowInfoAudioViewHolder(view);
@@ -172,5 +167,14 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             default:
                 return -1;
         }
+    }
+
+    private void jumpAudioActivity(View audioBG, View audioRing){
+        ActivityOptions options =
+                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+                        Pair.create(audioBG, "share_img_audio_bg"),
+                        Pair.create(audioRing, mContext.getResources().getString(R.string.share_img)));
+        Intent audioIntent = new Intent(mContext, AudioActivity.class);
+        mContext.startActivity(audioIntent, options.toBundle());
     }
 }

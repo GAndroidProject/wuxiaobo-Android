@@ -6,7 +6,6 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -111,7 +110,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
             mHeaderView = findViewById(mHeaderViewId);
         }
         if (mTargetViewId != 0) {
-            Log.d(TAG, "onFinishInflate: "+mTargetViewId);
             mTargetView = findViewById(mTargetViewId);
         }
         if (mHoverViewId != 0) {
@@ -197,7 +195,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
         mHoverViewHeight = mHoverView.getMeasuredHeight();
         mHoverView.layout(Dp2Px2SpUtil.dp2px(mContext, 64), -mHoverViewHeight, (width / 2 + mHoverViewWidth /2), 0);
         mHoverView.layout(0, -mHoverViewHeight, (width / 2 + mHoverViewWidth /2), 0);
-        Log.d(TAG, "onLayout: "+mHeaderView.getWidth());
     }
 
     @Override
@@ -214,7 +211,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mIsDragging = false;
-                Log.d(TAG, "onInterceptTouchEvent: ACTION_DOWN");
                 //记录当前活动的pointerId
                 mActivePointerId = ev.getPointerId(0);
                 pointerIndex = ev.findPointerIndex(mActivePointerId);
@@ -225,7 +221,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
                 mInitialDownX = ev.getX(pointerIndex);
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.d(TAG, "onInterceptTouchEvent: ACTION_MOVE");
                 pointerIndex = ev.findPointerIndex(mActivePointerId);
                 if (pointerIndex < 0) {
                     return false;
@@ -245,7 +240,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
 
             case MotionEvent.ACTION_POINTER_UP:
                 //多指
-                Log.d(TAG, "onInterceptTouchEvent: ACTION_POINTER_UP");
                 onSecondaryPointerUp(ev);
                 break;
 
@@ -256,7 +250,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
                 mActivePointerId = INVALID_POINTER;
                 break;
         }
-        Log.d(TAG, "onInterceptTouchEvent: "+isShowDetail+" ; "+mIsDragging);
         if(isShowDetail && mIsDragging){
             return true;
         }
@@ -286,14 +279,12 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                Log.d(TAG, "onTouchEvent: ACTION_DOWN");
                 //获取活动的pointerId
                 mActivePointerId = ev.getPointerId(0);
                 mIsScroller = false;
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                Log.d(TAG, "onTouchEvent: ACTION_MOVE");
                 pointerIndex = ev.findPointerIndex(mActivePointerId);
                 if (pointerIndex < 0) {
                     return false;
@@ -327,7 +318,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN: {
-                Log.d(TAG, "onTouchEvent: ACTION_POINTER_DOWN");
                 pointerIndex = ev.getActionIndex();
                 if (pointerIndex < 0) {
                     return false;
@@ -344,12 +334,10 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
                 break;
 
             case MotionEvent.ACTION_UP:
-                Log.d(TAG, "onTouchEvent: ACTION_UP");
                 mIsScroller = false;
                 mLastMotionY = 0;
                 pointerIndex = ev.findPointerIndex(mActivePointerId);
                 if (pointerIndex < 0) {
-                    Log.e(TAG, "Got ACTION_UP event but don't have an active pointer id.");
                     return false;
                 }
 
@@ -415,7 +403,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
         //下拉，上拉
         boolean down = y < mInitialDownY && mTargetCurrentOffset > mTargetEndOffset;
         boolean up = y > mInitialDownY && !((AudioDetailsLayout)mTargetView).canChildScrollUp();
-        Log.d(TAG, "startDragging: "+up + " ; "+down+" ; "+((AudioDetailsLayout)mTargetView).canChildScrollUp());
         if (up || down) {
             final float yDiff = Math.abs(y - mInitialDownY);
             if (yDiff > mTouchSlop && !mIsDragging) {
