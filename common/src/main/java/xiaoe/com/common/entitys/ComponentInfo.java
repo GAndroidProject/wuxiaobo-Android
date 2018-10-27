@@ -39,6 +39,8 @@ public class ComponentInfo {
     private boolean hideTitle = false;
     // 分组 id
     private String groupId;
+    // 专栏 id
+    private String columnId;
 
     public ComponentInfo() { }
 
@@ -169,6 +171,15 @@ public class ComponentInfo {
 
     public String getGroupId() {
         return groupId;
+    }
+
+    public void setColumnId(String columnId) {
+        this.columnId = columnId;
+    }
+
+    public String getColumnId() {
+
+        return columnId;
     }
 
     @Override

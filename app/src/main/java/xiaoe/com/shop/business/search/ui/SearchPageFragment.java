@@ -70,7 +70,17 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
     }
 
     protected void setDataList(Object dataList) {
+        if (this.dataList != null) { // 保证数据都是最新的
+            this.dataList = null;
+            // 组件集合、专栏/大专栏集合、单品集合都需要清空
+            this.itemComponentList.clear();
+            this.groupJsonList.clear();
+            this.itemJsonList.clear();
+        }
         this.dataList = dataList;
+        if (this.searchResultRecycler != null) { // recyclerView 已经初始化过一次，重新加载数据
+            initDataList();
+        }
     }
 
     protected void setHistoryList(List<SearchHistory> historyList) {
@@ -308,19 +318,19 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
     }
 
     /**
-     * 资源类型转换 int - str，注意这个接口返回的 type 跟其他的不一样，不能通用化
+     * 资源类型转换 int - str
      * @param resourceType 资源类型
      * @return 资源类型的字符串形式
      */
     protected String convertInt2Str(int resourceType) {
         switch (resourceType) {
-            case 0: // 图文
+            case 1: // 图文
                 return DecorateEntityType.IMAGE_TEXT;
-            case 1: // 音频
+            case 2: // 音频
                 return DecorateEntityType.AUDIO;
-            case 2: // 视频
+            case 3: // 视频
                 return DecorateEntityType.VIDEO;
-            case 4: // 专栏
+            case 6: // 专栏
                 return DecorateEntityType.COLUMN;
             case 8: // 大专栏
                 return DecorateEntityType.TOPIC;

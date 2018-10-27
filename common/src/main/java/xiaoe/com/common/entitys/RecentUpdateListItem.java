@@ -9,6 +9,8 @@ public class RecentUpdateListItem {
     private String listTitle;
     // item 图标
     private String listPlayState;
+    // item 资源 id
+    private String listResourceId;
 
     public RecentUpdateListItem() {
 
@@ -29,11 +31,18 @@ public class RecentUpdateListItem {
     }
 
     public String getListTitle() {
-
         return listTitle;
     }
 
     public String getListPlayState() {
         return listPlayState;
+    }
+
+    public void setListResourceId(String listResourceId) {
+        this.listResourceId = listResourceId;
+    }
+
+    public String getListResourceId() {
+        return listResourceId;
     }
 }

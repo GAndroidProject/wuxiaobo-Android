@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -143,10 +144,7 @@ public class SearchActivity extends XiaoeActivity {
         searchCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentFragment.getTag().equals(CONTENT)) { // 点击取消时，是有搜索内容的话，切换为主页 fragment
-                    // 切换回主页之前把上次网络请求的数据清空
-                    dataList = null;
-                    ((SearchPageFragment) currentFragment).setDataList(null);
+                if (currentFragment.getTag().equals(CONTENT) || currentFragment.getTag().equals(EMPTY)) { // 点击取消时，是有搜索内容的话或者是空页面，切换为主页 fragment
                     replaceFragment(MAIN);
                 } else {
                     onBackPressed();
@@ -259,11 +257,12 @@ public class SearchActivity extends XiaoeActivity {
             if (currentFragment != null) {
                 getSupportFragmentManager().beginTransaction().add(R.id.search_result_wrap, currentFragment, tag).commit();
             }
-        } else {
+        } else { // fragment 不为空，结果页要显示更新操作
             switch (tag) {
                 case MAIN:
                     break;
                 case CONTENT:
+                    ((SearchPageFragment) currentFragment).setDataList(dataList);
                     break;
                 case EMPTY:
                     break;
@@ -275,13 +274,16 @@ public class SearchActivity extends XiaoeActivity {
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
+        if (this.dataList != null) { // 网络请求回来之后判断一下 dataList 是否为空，不为空则清空
+            this.dataList = null;
+        }
         JSONObject result = (JSONObject) entity;
         if (success) {
             if (iRequest instanceof SearchRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
-                    if (data.get("dataList") != null) { // 有内容，就切换到内容页面
+                    if (data.get("dataList") != null && ((JSONArray)data.get("dataList")).size() > 0) { // 有内容，就切换到内容页面
                         initResultData(data.get("dataList"));
                     } else { // 否则切换到空页
                         replaceFragment(EMPTY);

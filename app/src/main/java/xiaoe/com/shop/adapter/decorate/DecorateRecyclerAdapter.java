@@ -171,13 +171,28 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 break;
             case DecorateEntityType.RECENT_UPDATE:
                 RecentUpdateViewHolder recentUpdateViewHolder = (RecentUpdateViewHolder) holder;
-                recentUpdateViewHolder.recentUpdateAvatar.setImageURI("res:///" + R.mipmap.detail_disk);
+                recentUpdateViewHolder.recentUpdateAvatar.setImageURI(currentComponent.getImgUrl());
                 recentUpdateViewHolder.recentUpdateSubTitle.setText(currentComponent.getTitle());
                 recentUpdateViewHolder.recentUpdateSubDesc.setText(currentComponent.getDesc());
-                recentUpdateViewHolder.recentUpdateSubBtn.setOnClickListener(new View.OnClickListener() {
+                if (currentComponent.isHideTitle()) { // 隐藏收听全部按钮
+                    recentUpdateViewHolder.recentUpdateSubBtn.setVisibility(View.GONE);
+                } else {
+                    recentUpdateViewHolder.recentUpdateSubBtn.setVisibility(View.VISIBLE);
+                    recentUpdateViewHolder.recentUpdateSubBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(mContext, "全部播放...", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                //TODO: 跳转到专栏
+                recentUpdateViewHolder.recentUpdateAvatar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                    Toast.makeText(mContext, "全部播放...", Toast.LENGTH_SHORT).show();
+                        String columnId = currentComponent.getColumnId();
+                        Intent intent = new Intent(mContext, ColumnActivity.class);
+                        intent.putExtra("resource_id", columnId);
+                        mContext.startActivity(intent);
                     }
                 });
                 // 加载 ListView 的数据

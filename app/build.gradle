@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'xiaoeshop'
             keyPassword '123456'
-            storeFile file('E:/AndroidStudioProjects/XiaoeShop/xiaoeshop.jks')
+            storeFile file('D:/xiaoe_pro/xiaoe_app/XiaoeShop/xiaoeshop.jks')
             storePassword '123456'
         }
     }

@@ -28,11 +28,15 @@ import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.GraphicNavItem;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
+import xiaoe.com.common.entitys.RecentUpdateListItem;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.ColumnListRequst;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.PageFragmentRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
+import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
 import xiaoe.com.shop.business.main.presenter.PageFragmentPresenter;
 import xiaoe.com.shop.widget.StatusPagerView;
 
@@ -43,8 +47,6 @@ public class MicroPageFragment extends BaseFragment {
     private Unbinder unbinder;
     private Context mContext;
     private int microPageId = -1;
-
-    private PageFragmentPresenter homePagePresenter;
 
     private boolean destroyView = false;
 
@@ -109,7 +111,7 @@ public class MicroPageFragment extends BaseFragment {
         super.onFragmentFirstVisible();
         // 网络请求数据代码
         PageFragmentPresenter hp = new PageFragmentPresenter(this);
-        hp.requestHomeData(microPageId);
+        hp.requestMicroPageData(microPageId);
     }
 
     @Override
@@ -118,24 +120,69 @@ public class MicroPageFragment extends BaseFragment {
         JSONObject result = (JSONObject) entity;
         int code = result.getInteger("code");
         if (success) { // 请求成功
-            if (code == 0) {
-                Object data = result.get("data");
-                initPageData(data);
-                initMainContent();
-                // 请求成功之后隐藏 loading
-                microPageLoading.setVisibility(View.GONE);
-            } else if (code == NetworkCodes.CODE_GOODS_DELETE) { // 微页面不存在
-                Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
-            } else if (code == NetworkCodes.CODE_TINY_PAGER_NO_FIND) { // 微页面已被删除
-                Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
+            if (iRequest instanceof PageFragmentRequest) {
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    initPageData(data);
+                    initMainContent();
+                    // 请求成功之后隐藏 loading
+                    microPageLoading.setVisibility(View.GONE);
+                } else if (code == NetworkCodes.CODE_GOODS_DELETE) { // 微页面不存在
+                    Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
+                } else if (code == NetworkCodes.CODE_TINY_PAGER_NO_FIND) { // 微页面已被删除
+                    Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
+                }
+            } else if (iRequest instanceof ColumnListRequst) {
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONArray data = (JSONArray) result.get("data");
+                    refreshRecentComponent(data);
+                } else {
+                    Log.d(TAG, "onMainThreadResponse: 获取最近更新组件的列表失败..");
+                }
             }
         }
     }
 
+    // 刷新最近更新组件的子列表
+    private void refreshRecentComponent(JSONArray data) {
+        List<RecentUpdateListItem> itemList = new ArrayList<>();
+        int audioCount = 0; // 记录音频数据条数
+        // 获取专栏 list
+        for (Object dataItem : data) {
+            JSONObject dataJsonItem = (JSONObject) dataItem;
+            RecentUpdateListItem recentUpdateListItem = new RecentUpdateListItem();
+            String title = dataJsonItem.getString("title");
+            // 频道组件如果 playState 传空的话会隐藏播放 icon
+            String resourceType = convertInt2Str(dataJsonItem.getInteger("resource_type"));
+            String resourceId = dataJsonItem.getString("resource_id");
+            recentUpdateListItem.setListTitle(title);
+            if (resourceType.equals(DecorateEntityType.AUDIO)) { // 只有音频才需要显示播放 icon
+                recentUpdateListItem.setListPlayState(DecorateEntityType.ITEM_RECENT_PLAY);
+                audioCount++; // 视音频就加 1
+            } else {
+                recentUpdateListItem.setListPlayState("");
+            }
+            recentUpdateListItem.setListResourceId(resourceId);
+            itemList.add(recentUpdateListItem);
+        }
+        // 更新频道组件
+        for (ComponentInfo componentInfo : microPageList) {
+            if (componentInfo.getType().equals(DecorateEntityType.RECENT_UPDATE_STR)) {
+                componentInfo.setSubList(itemList);
+                if (audioCount == 3) { // 3 个都是音频，就显示收听全部按钮，不想加字段，就用这个 hideTitle 来判断
+                    componentInfo.setHideTitle(true);
+                } else {
+                    componentInfo.setHideTitle(false);
+                }
+            }
+        }
+        // 刷新操作
+        microPageAdapter.notifyDataSetChanged();
+    }
+
     // 初始化微页面数据
-    private void initPageData(Object data) {
-        JSONObject entityObj = (JSONObject) data;
-        JSONArray microPageData = (JSONArray) entityObj.get("components");
+    private void initPageData(JSONObject data) {
+        JSONArray microPageData = (JSONArray) data.get("components");
         for (Object item : microPageData) {
             JSONObject itemObj = ((JSONObject) item);
             switch (itemObj.getString("type")) {
@@ -187,6 +234,30 @@ public class MicroPageFragment extends BaseFragment {
         switch (type_title) {
             case DecorateEntityType.RECENT_UPDATE_STR: // 频道
                 // TODO: 初始化频道数据
+                JSONArray recentList = (JSONArray) itemObj.get("list");
+                for (Object listItem : recentList) {
+                    ComponentInfo component_recent = new ComponentInfo();
+                    component_recent.setType(DecorateEntityType.RECENT_UPDATE_STR);
+                    JSONObject jsonItem = (JSONObject) listItem;
+                    String recentTitle = jsonItem.getString("title");
+                    // 频道组件对应的专栏 id
+                    String recentId = jsonItem.getString("src_id");
+                    String imgUrl = jsonItem.getString("img_url");
+                    int updateCount = jsonItem.getInteger("resource_count");
+                    String updateCountStr = "已更新至" + updateCount + "期";
+                    component_recent.setTitle(recentTitle);
+                    component_recent.setImgUrl(imgUrl);
+                    component_recent.setDesc(updateCountStr);
+                    // 最近更新需要设置专栏 id
+                    component_recent.setColumnId(recentId);
+                    if (recentId != null) {
+                        ColumnPresenter columnPresenter = new ColumnPresenter(this);
+                        // 请求该专栏下三条数据
+                        columnPresenter.requestColumnListByNum(recentId, "0", 3);
+                    }
+                    // 先把频道组件存起来，等网络请求的回调回来后再操作
+                    microPageList.add(component_recent);
+                }
                 break;
             case DecorateEntityType.KNOWLEDGE_COMMODITY_STR: // 知识商品
                 if (itemObj.getInteger("list_style") == 0) { // 列表形式
@@ -236,13 +307,14 @@ public class MicroPageFragment extends BaseFragment {
             }
             String srcType = listSubItemObj.getString("src_type");
             String srcId = listSubItemObj.getString("src_id");
+            // view_count -- 浏览次数 / resource_count -- 更新期数 / purchase_count -- 订阅数
             int viewCount = listSubItemObj.getInteger("view_count") == null ? 0 : listSubItemObj.getInteger("view_count");
-            int purchaseCount = listSubItemObj.getInteger("purchase_count") == null ? 0 : listSubItemObj.getInteger("purchase_count");
+            int resourceCount = listSubItemObj.getInteger("resource_count") == null ? 0 : listSubItemObj.getInteger("resource_count");
             item.setSrcType(srcType);
             item.setResourceId(srcId);
             // 专栏或者大专栏订阅量就是 purchaseCount
             if (srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.TOPIC)) {
-                viewCount = purchaseCount;
+                viewCount = resourceCount;
             }
             String viewDesc = obtainViewCountDesc(srcType, viewCount);
             item.setItemDesc(viewDesc);
@@ -304,7 +376,7 @@ public class MicroPageFragment extends BaseFragment {
             }
         });
     }
-
+    DecorateRecyclerAdapter microPageAdapter;
     // 初始化首页内容
     private void initMainContent () {
         // 初始化布局管理器
@@ -314,9 +386,6 @@ public class MicroPageFragment extends BaseFragment {
         LinearLayoutManager llm_title = new LinearLayoutManager(getActivity());
         llm_title.setOrientation(LinearLayoutManager.VERTICAL);
         microPageTitleRecyclerView.setLayoutManager(llm_title);
-        // 初始化适配器
-        DecorateRecyclerAdapter adapter = new DecorateRecyclerAdapter(getActivity(), microPageList);
-        microPageContentRecyclerView.setAdapter(adapter);
         if (microPageList.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) { // 标题在头顶
             if (microPageId == 0) {
                 List<ComponentInfo> titleData = new ArrayList<>();
@@ -338,6 +407,9 @@ public class MicroPageFragment extends BaseFragment {
         } else {
             microPageAppBar.setVisibility(View.GONE);
         }
+        // 初始化适配器
+        microPageAdapter = new DecorateRecyclerAdapter(getActivity(), microPageList);
+        microPageContentRecyclerView.setAdapter(microPageAdapter);
     }
 
     @Override
@@ -351,6 +423,28 @@ public class MicroPageFragment extends BaseFragment {
         destroyView = true;
         if (unbinder != null) {
             unbinder.unbind();
+        }
+    }
+
+    /**
+     * 资源类型转换 int - str
+     * @param resourceType 资源类型
+     * @return 资源类型的字符串形式
+     */
+    protected String convertInt2Str(int resourceType) {
+        switch (resourceType) {
+            case 1: // 图文
+                return DecorateEntityType.IMAGE_TEXT;
+            case 2: // 音频
+                return DecorateEntityType.AUDIO;
+            case 3: // 视频
+                return DecorateEntityType.VIDEO;
+            case 6: // 专栏
+                return DecorateEntityType.COLUMN;
+            case 8: // 大专栏
+                return DecorateEntityType.TOPIC;
+            default:
+                return null;
         }
     }
 }

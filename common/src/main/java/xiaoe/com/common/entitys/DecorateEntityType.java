@@ -49,4 +49,8 @@ public class DecorateEntityType {
 
     // 商品分组类型
     public static final String RESOURCE_TAG = "resource_tag";
+
+    // 频道组件播放、暂定 flag
+    public static final String ITEM_RECENT_PLAY = "play";
+    public static final String ITEM_RECENT_STOP = "stop";
 }

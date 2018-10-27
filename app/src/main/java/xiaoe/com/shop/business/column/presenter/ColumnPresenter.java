@@ -97,4 +97,21 @@ public class ColumnPresenter implements IBizCallback {
         }
         return directoryEntityList;
     }
+
+    /**
+     * 根据每页大小请求专栏列表
+     * @param resourceId    资源 id
+     * @param resourceType  资源类型
+     * @param pageSize      每页数量
+     */
+    public void requestColumnListByNum(String resourceId, String resourceType, int pageSize) {
+        ColumnListRequst columnListRequst = new ColumnListRequst(this);
+        columnListRequst.addRequestParam("shop_id","apppcHqlTPT3482");
+        columnListRequst.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        columnListRequst.addDataParam("goods_id",resourceId);
+        columnListRequst.addDataParam("resource_type",resourceType);
+        columnListRequst.addDataParam("page", "1");
+        columnListRequst.addDataParam("page_size", pageSize + "");
+        columnListRequst.sendRequest();
+    }
 }

@@ -18,6 +18,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
@@ -65,27 +66,38 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         }
         viewHolder.itemTitle.setText(mItemList.get(position).getListTitle());
         String playState = mItemList.get(position).getListPlayState();
-        if (playState.equals("play")) {
-            viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
-        } else if (playState.equals("stop")) {
-            viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
+        switch (playState) {
+            case DecorateEntityType.ITEM_RECENT_PLAY:
+                viewHolder.itemIcon.setVisibility(View.VISIBLE);
+                viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
+                break;
+            case DecorateEntityType.ITEM_RECENT_STOP:
+                viewHolder.itemIcon.setVisibility(View.VISIBLE);
+                viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
+                break;
+            default:  // 没有设置播放状态的话，就隐藏这个播放按钮
+                viewHolder.itemIcon.setVisibility(View.GONE);
+                break;
         }
+        // TODO: 每一项的音频播放按钮
         viewHolder.itemIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if (mItemList.get(position).getListPlayState().equals("play")) { // 暂停，点击后换成播放中状态
-                viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
-                mItemList.get(position).setListPlayState("stop");
-            } else if (mItemList.get(position).getListPlayState().equals("stop")) { // 播放中，点击后换成准备播放状态
-                viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
-                mItemList.get(position).setListPlayState("play");
-            }
+                if (mItemList.get(position).getListPlayState().equals(DecorateEntityType.ITEM_RECENT_PLAY)) { // 暂停，点击后换成播放中状态
+                    viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
+                    mItemList.get(position).setListPlayState(DecorateEntityType.ITEM_RECENT_STOP);
+                } else if (mItemList.get(position).getListPlayState().equals(DecorateEntityType.ITEM_RECENT_STOP)) { // 播放中，点击后换成准备播放状态
+                    viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
+                    mItemList.get(position).setListPlayState(DecorateEntityType.ITEM_RECENT_PLAY);
+                }
             }
         });
         viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String resourceId = mItemList.get(position).getListResourceId();
                 Intent audioIntent = new Intent(mContext, AudioActivity.class);
+                audioIntent.putExtra("resource_id", resourceId);
                 mContext.startActivity(audioIntent);
             }
         });
