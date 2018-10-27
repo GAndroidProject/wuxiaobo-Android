@@ -26,7 +26,7 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 	private List<ColumnSecondDirectoryEntity> mDataSet;
 	private OnScrollToListener onScrollToListener;
 	private OnClickListPlayListener mListPlayListener;
-
+	private int parentPosition = 0;
 
 	public TreeChildRecyclerAdapter(Context context, OnClickListPlayListener listPlayListener) {
 		mContext = context;
@@ -44,7 +44,7 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 	@Override
 	public void onBindViewHolder(BaseViewHolder holder, int position) {
 		ChildViewHolder imageViewHolder = (ChildViewHolder) holder;
-		imageViewHolder.bindView(mDataSet.get(position), position, mListPlayListener);
+		imageViewHolder.bindView(mDataSet.get(position), parentPosition, position, mListPlayListener);
 	}
 
 
@@ -74,6 +74,10 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 		return mDataSet;
 	}
 
+	public ColumnSecondDirectoryEntity getPositionData(int position){
+		return mDataSet.get(position);
+	}
+
 	public void setData(List<ColumnSecondDirectoryEntity> list) {
 		mDataSet = list;
 		notifyDataSetChanged();
@@ -100,5 +104,13 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 
 	public void setOnScrollToListener(OnScrollToListener onScrollToListener) {
 		this.onScrollToListener = onScrollToListener;
+	}
+
+	public void setListPlayListener(OnClickListPlayListener mListPlayListener) {
+		this.mListPlayListener = mListPlayListener;
+	}
+
+	public void setParentPosition(int parentPosition) {
+		this.parentPosition = parentPosition;
 	}
 }

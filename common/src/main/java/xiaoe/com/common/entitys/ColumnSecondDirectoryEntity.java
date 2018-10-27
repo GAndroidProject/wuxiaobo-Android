@@ -37,6 +37,9 @@ public class ColumnSecondDirectoryEntity {
     private String audio_compress_url;
     private String m3u8_url;
 
+    private String columnId = "";
+    private String bigColumnId = "";
+
 
     public int getPageIndex() {
         return pageIndex;
@@ -180,5 +183,21 @@ public class ColumnSecondDirectoryEntity {
 
     public void setM3u8_url(String m3u8_url) {
         this.m3u8_url = m3u8_url;
+    }
+
+    public String getColumnId() {
+        return columnId;
+    }
+
+    public void setColumnId(String columnId) {
+        this.columnId = columnId;
+    }
+
+    public String getBigColumnId() {
+        return bigColumnId;
+    }
+
+    public void setBigColumnId(String bigColumnId) {
+        this.bigColumnId = bigColumnId;
     }
 }

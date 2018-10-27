@@ -126,7 +126,6 @@ public class NetworkEngine {
                 }catch (Exception e){
                     mRequest.onResponse(false, null);
                 }
-
             }
         });
     }

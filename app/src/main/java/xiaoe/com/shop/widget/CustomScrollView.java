@@ -27,6 +27,12 @@ public class CustomScrollView extends ScrollView {
         if(scrollChanged != null){
             scrollChanged.onScrollChanged(l,t,oldl,oldt);
         }
+        int height = getHeight();
+        int childHeight = getChildAt(0).getHeight();
+        boolean loadMore = t + height >= childHeight - loadHeight;
+        if(loadMore && loadState == ListBottomLoadMoreView.STATE_NOT_LOAD && scrollChanged != null){
+            scrollChanged.onLoadState(loadState);
+        }
     }
     public void setScrollChanged(OnCustomScrollChangedListener changed){
         scrollChanged = changed;
@@ -38,7 +44,6 @@ public class CustomScrollView extends ScrollView {
 
         int height = getHeight();
         int childHeight = getChildAt(0).getHeight();
-        Log.d(TAG, "onOverScrolled: "+scrollY+" ; "+height+" ; "+childHeight+" ; "+loadHeight);
         boolean loadMore = scrollY + height >= childHeight - loadHeight;
         if(loadMore && loadState == ListBottomLoadMoreView.STATE_NOT_LOAD && scrollChanged != null){
             scrollChanged.onLoadState(loadState);

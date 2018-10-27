@@ -48,14 +48,16 @@ public class AudioPresenter implements IBizCallback {
             playEntity = new AudioPlayEntity();
         }
         if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
-            playEntity.setCode(-1);
+            playEntity.setCode(1);
             playAudio(playEntity.isPlay());
             return;
         }
-        playEntity.setCode(0);
+        if(playEntity.getCode() == -2){
+            playEntity.setPlayUrl(data.getString("audio_url"));
+        }
         playEntity.setContent(data.getString("content"));
-        playEntity.setPlayUrl(data.getString("audio_url"));
-        AudioMediaPlayer.setAudio(playEntity, false);
+        playEntity.setCode(0);
+//        AudioMediaPlayer.setAudio(playEntity, false);
         playAudio(playEntity.isPlay());
     }
 
@@ -69,9 +71,13 @@ public class AudioPresenter implements IBizCallback {
             playEntity.setIndex(0);
             playEntity.setPlay(false);
         }
+        if(!resourceId.equals(playEntity.getResourceId())){
+            //当前播放的音频与请求到的音频数据不是同一资源，则放弃结果
+            return;
+        }
         playEntity.setCurrentPlayState(1);
         if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
-            playEntity.setCode(-1);
+            playEntity.setCode(1);
             return;
         }
         JSONObject resourceInfo = data.getJSONObject("resource_info");
@@ -83,10 +89,10 @@ public class AudioPresenter implements IBizCallback {
         if(resourceInfo.getIntValue("has_buy") == 0){
             playEntity.setCode(0);
             playEntity.setContent(resourceInfo.getString("content"));
-            AudioMediaPlayer.setAudio(playEntity, false);
+//            AudioMediaPlayer.setAudio(playEntity, false);
             playAudio(false);
         }else{
-            AudioMediaPlayer.setAudio(playEntity, false);
+//            AudioMediaPlayer.setAudio(playEntity, false);
             requestContent(resourceId);
         }
     }
@@ -98,9 +104,9 @@ public class AudioPresenter implements IBizCallback {
                 AudioPlayEvent event = new AudioPlayEvent();
                 event.setState(AudioPlayEvent.PREPARE);
                 EventBus.getDefault().post(event);
-                if(play){
-                    AudioMediaPlayer.start();
-                }
+//                if(play){
+//                    AudioMediaPlayer.start();
+//                }
             }
         });
     }

@@ -31,7 +31,7 @@
     <color name="audio_seek_bar_progress">#4B4D55</color><!--音频播放进度条进度颜色-->
     <color name="layout_line">#B3BCC5</color><!--边框线颜色-->
     <color name="vip_btn_bg">#1AB09B76</color><!--超级会员按钮背景颜色-->
-	<color name="menu_floating_bg">#30000000</color> <!--菜单浮窗背景 -->
+	<color name="menu_floating_bg">#3d000000</color> <!--菜单浮窗背景 -->
 	<color name="mine_super_vip_bg">#FFD753</color>
 
     <color name="btn_column_menu">#C0C6D6</color><!--专栏页  菜单按钮未选择颜色-->
@@ -48,4 +48,6 @@
     <color name="pic_line">#979797</color>
 
     <color name="course_page_bottom_color">#B8BBBE</color>
+
+    <color name="touch_pressed_bg">#1a000000</color> <!--菜单浮窗背景 -->
 </resources>

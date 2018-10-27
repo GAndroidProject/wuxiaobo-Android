@@ -3,7 +3,7 @@
 	android:id="@+id/item_container"
 	android:layout_width="match_parent"
 	android:layout_height="48dp"
-	android:background="@color/lucency" >
+	android:background="@drawable/touch_state_bg" >
 	<TextView
 		android:id="@+id/text"
 		android:layout_width="match_parent"
@@ -34,8 +34,7 @@
 			android:id="@+id/item_play_icon"
 			android:layout_width="20dp"
 			android:layout_height="20dp"
-
-			android:src="@mipmap/audiolist_playall"
+			android:src="@mipmap/class_play"
 			/>
 	</LinearLayout>
 </RelativeLayout>

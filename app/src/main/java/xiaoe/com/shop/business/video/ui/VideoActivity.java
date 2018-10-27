@@ -45,6 +45,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private VideoPresenter videoPresenter;
     private WebView videoContentWebView;
     private TextView videoTitle;
+    private Intent mIntent;
+    private String mResourceId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         setContentView(R.layout.activity_video);
         EventBus.getDefault().register(this);
         videoPresenter = new VideoPresenter(this);
+        mIntent = getIntent();
         initViews();
         initDatas();
     }
@@ -72,8 +75,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
 
     private void initViews() {
-        Intent intent = getIntent();
-        String videoImageUrl = intent.getStringExtra("videoImageUrl");
+        String videoImageUrl = mIntent.getStringExtra("videoImageUrl");
 
         playControllerView = (VideoPlayControllerView) findViewById(R.id.video_play_controller);
         playControllerView.setPlayProgressWidgetVisibility(View.GONE);
@@ -97,7 +99,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void initDatas() {
-        videoPresenter.requestDetail();
+        mResourceId = mIntent.getStringExtra("resourceId");
+        videoPresenter.requestDetail(mResourceId);
     }
     @Override
     public void onBackPressed() {
@@ -218,7 +221,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         playCount.setText(NumberFormat.viewCountToString(count)+"次播放");
         if(resourceInfo.getIntValue("has_buy") == 1){
             buyView.setVisibility(View.GONE);
-            videoPresenter.requestContent();
+            videoPresenter.requestContent(mResourceId);
         }else{
             buyView.setVisibility(View.VISIBLE);
             int price = resourceInfo.getIntValue("price");

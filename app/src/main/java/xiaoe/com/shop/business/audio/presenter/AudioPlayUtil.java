@@ -1,5 +1,7 @@
 package xiaoe.com.shop.business.audio.presenter;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ public class AudioPlayUtil {
     private static final String TAG = "AudioPlayUtil";
     private List<AudioPlayEntity> audioList;
     private static AudioPlayUtil audioPlayUtil = null;
+    private boolean singleAudio = true; // 是否是单品音频，专栏列表中资源一个音频不属于单品，
 
     private AudioPlayUtil(){
         audioList = new ArrayList<AudioPlayEntity>();
@@ -50,7 +53,33 @@ public class AudioPlayUtil {
             audioList.clear();
             audioList.add(audio);
         }
-
     }
 
+    /**
+     * 是否是单品音频，专栏列表中资源一个音频不属于单品
+     * @return
+     */
+    public boolean isSingleAudio() {
+        return singleAudio;
+    }
+
+    /**
+     * 是否是单品音频，专栏列表中资源一个音频不属于单品
+     * @param singleAudio
+     */
+    public void setSingleAudio(boolean singleAudio) {
+        this.singleAudio = singleAudio;
+    }
+
+    public static boolean resourceEquals(String playResourceId, String playColumnId, String playBigColumnId, String resourceId, String columnId, String bigColumnId){
+        resourceId = TextUtils.isEmpty(resourceId) ? "" : resourceId;
+        columnId = TextUtils.isEmpty(columnId) ? "" : columnId;
+        bigColumnId = TextUtils.isEmpty(bigColumnId) ? "" : bigColumnId;
+        playResourceId = TextUtils.isEmpty(playResourceId) ? "" : playResourceId;
+        playColumnId = TextUtils.isEmpty(playColumnId) ? "" : playColumnId;
+        playBigColumnId = TextUtils.isEmpty(playBigColumnId) ? "" : playBigColumnId;
+
+        boolean resourceEquals = resourceId.equals(playResourceId) && columnId.equals(playColumnId) && bigColumnId.equals(playBigColumnId);
+        return  resourceEquals;
+    }
 }

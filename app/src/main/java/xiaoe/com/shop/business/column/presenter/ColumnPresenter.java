@@ -45,12 +45,14 @@ public class ColumnPresenter implements IBizCallback {
         couponRequest.sendRequest();
     }
 
-    public void requestColumnList(String resourceId, String resourceType){
+    public void requestColumnList(String resourceId, String resourceType, int page, int pageSize){
         ColumnListRequst columnListRequst = new ColumnListRequst(this);
         columnListRequst.addRequestParam("shop_id","apppcHqlTPT3482");
         columnListRequst.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         columnListRequst.addDataParam("goods_id",resourceId);
         columnListRequst.addDataParam("resource_type",resourceType);
+        columnListRequst.addDataParam("page", ""+page);
+        columnListRequst.addDataParam("page_size", ""+pageSize);
         columnListRequst.sendRequest();
     }
 
@@ -58,16 +60,17 @@ public class ColumnPresenter implements IBizCallback {
      * 格式化一级目录数据
      * @param jsonArray
      */
-    public List<ColumnDirectoryEntity> formatColumnEntity(JSONArray jsonArray){
+    public List<ColumnDirectoryEntity> formatColumnEntity(JSONArray jsonArray, String bigColumnId){
         List<ColumnDirectoryEntity> directoryEntityList = new ArrayList<ColumnDirectoryEntity>();
         for (Object object : jsonArray) {
             ColumnDirectoryEntity directoryEntity = new ColumnDirectoryEntity();
             JSONObject jsonObject = (JSONObject) object;
             directoryEntity.setApp_id(jsonObject.getString("app_id"));
             directoryEntity.setTitle(jsonObject.getString("title"));
-            directoryEntity.setResource_id(jsonObject.getString("resource_id"));
+            String columnId = jsonObject.getString("resource_id");
+            directoryEntity.setResource_id(columnId);
             directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
-            List<ColumnSecondDirectoryEntity> childList = formatSingleResouceEntity(jsonObject.getJSONArray("resource_list"));
+            List<ColumnSecondDirectoryEntity> childList = formatSingleResouceEntity(jsonObject.getJSONArray("resource_list"),columnId , bigColumnId);
             directoryEntity.setResource_list(childList);
             directoryEntityList.add(directoryEntity);
         }
@@ -79,7 +82,7 @@ public class ColumnPresenter implements IBizCallback {
      * @param jsonArray
      * @return
      */
-    public List<ColumnSecondDirectoryEntity> formatSingleResouceEntity(JSONArray jsonArray){
+    public List<ColumnSecondDirectoryEntity> formatSingleResouceEntity(JSONArray jsonArray, String columnId, String bigColumnId){
         List<ColumnSecondDirectoryEntity> directoryEntityList = new ArrayList<ColumnSecondDirectoryEntity>();
         for (Object object : jsonArray) {
             ColumnSecondDirectoryEntity secondDirectoryEntity = new ColumnSecondDirectoryEntity();
@@ -93,6 +96,8 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setAudio_length(jsonObject.getIntValue("audio_length"));
             secondDirectoryEntity.setVideo_length(jsonObject.getIntValue("video_length"));
             secondDirectoryEntity.setAudio_url(jsonObject.getString("audio_url"));
+            secondDirectoryEntity.setColumnId(columnId);
+            secondDirectoryEntity.setBigColumnId(bigColumnId);
             directoryEntityList.add(secondDirectoryEntity);
         }
         return directoryEntityList;

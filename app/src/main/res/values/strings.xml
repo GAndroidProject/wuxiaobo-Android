@@ -133,4 +133,6 @@
     <string name="loading_text">加载中...</string>
     <string name="click_load_more_text">点击加载更多</string>
     <string name="load_all_text">已加载全部</string>
+
+    <string name="buy_goods_name_text">购买包的名称</string>
 </resources>

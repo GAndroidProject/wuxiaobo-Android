@@ -135,5 +135,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        if(!AudioMediaPlayer.isPlaying()){
+            AudioMediaPlayer.release();
+        }
     }
 }

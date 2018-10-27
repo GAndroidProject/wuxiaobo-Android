@@ -21,6 +21,7 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.interfaces.OnClickListPlayListener;
 import xiaoe.com.shop.widget.DashlineItemDivider;
 
@@ -32,6 +33,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     private LinearLayout btnPlayAll;
     private List<AudioPlayEntity> playList = null;
     private boolean isAddPlayList = false;
+    private boolean isHasBuy = false;
 
     public LittleColumnDirectoryFragment() {
         playList = new ArrayList<AudioPlayEntity>();
@@ -101,42 +103,104 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             playEntity.setTitle(entity.getTitle());
             playEntity.setState(0);
             playEntity.setPlay(false);
+            playEntity.setPlayUrl(entity.getAudio_url());
+            playEntity.setCode(-1);
+            playEntity.setHasBuy(isHasBuy ? 1 : 0);
+            playEntity.setColumnId(entity.getColumnId());
+            playEntity.setBigColumnId(entity.getBigColumnId());
             index++;
             playList.add(playEntity);
         }
     }
 
     private void clickPlayAll() {
+        if(!isHasBuy){
+            toastCustom("未购买课程");
+            return;
+        }
         if(playList.size() > 0){
+            if(!isAddPlayList){
+                AudioPlayUtil.getInstance().setAudioList(playList);
+            }
             isAddPlayList = true;
-            AudioPlayUtil.getInstance().setAudioList(playList);
             AudioMediaPlayer.stop();
             AudioPlayEntity playEntity = playList.get(0);
             playEntity.setPlay(true);
-            AudioMediaPlayer.setAudio(playEntity, false);
+            AudioMediaPlayer.setAudio(playEntity, true);
             new AudioPresenter(null).requestDetail(playEntity.getResourceId());
         }
+        directoryAdapter.notifyDataSetChanged();
     }
 
-    private void playPosition(int position){
-        if(playList.size() > 0){
-            if(!isAddPlayList){
-                isAddPlayList = true;
-                AudioPlayUtil.getInstance().setAudioList(playList);
+    private void playPosition(String resourceId, String columnId, String bigColumnId){
+        if(!isAddPlayList){
+            isAddPlayList = true;
+            AudioPlayUtil.getInstance().setAudioList(playList);
+        }
+        AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
+
+        boolean resourceEquals = false;
+        if(playAudio != null){
+            resourceEquals = AudioPlayUtil.resourceEquals(playAudio.getResourceId(), playAudio.getColumnId(), playAudio.getBigColumnId(),
+                    resourceId, columnId, bigColumnId);
+        }
+        //正在播放的资源和点击的资源相同，则播放暂停操作
+        if(playAudio != null && resourceEquals){
+            if(AudioMediaPlayer.isStop()){
+                AudioMediaPlayer.start();
+            }else{
+                AudioMediaPlayer.play();
             }
-            AudioMediaPlayer.stop();
-            AudioPlayEntity playEntity = playList.get(position);
-            playEntity.setPlay(true);
-            AudioMediaPlayer.setAudio(playEntity, false);
-            new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+            return;
+        }
+        AudioMediaPlayer.stop();
+        for (AudioPlayEntity playEntity : playList) {
+            if(playEntity.getResourceId().equals(resourceId)){
+                playEntity.setPlay(true);
+                AudioMediaPlayer.setAudio(playEntity, true);
+                new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+                break;
+            }
+        }
+        directoryAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onPlayPosition(View view,int parentPosition, int position) {
+        if(!isHasBuy){
+            toastCustom("未购买课程");
+            return;
+        }
+        ColumnSecondDirectoryEntity itemData = directoryAdapter.getData().get(position);
+        if(itemData.getResource_type() == 2){
+            playPosition(itemData.getResource_id(), itemData.getColumnId(), itemData.getBigColumnId());
         }
     }
 
     @Override
-    public void OnPlayPosition(View view, int position) {
-        ColumnSecondDirectoryEntity itemData = directoryAdapter.getData().get(position);
-        if(itemData.getResource_type() == 2){
-            playPosition(position);
+    public void onJumpDetail(ColumnSecondDirectoryEntity itemData) {
+        if(!isHasBuy){
+            toastCustom("未购买课程");
+            return;
         }
+        int resourceType = itemData.getResource_type();
+        String resourceId = itemData.getResource_id();
+        if(resourceType == 1){
+            //图文
+           JumpDetail.jumpImageText(getContext(), resourceId, null);
+        }else if(resourceType == 2){
+            //音频
+            JumpDetail.jumpAudio(getContext(), resourceId);
+        }else if(resourceType == 3){
+            //视频
+            JumpDetail.jumpVideo(getContext(), resourceId, "");
+        }else{
+            toastCustom("未知课程");
+            return;
+        }
+    }
+
+    public void setHasBuy(boolean hasBuy) {
+        isHasBuy = hasBuy;
     }
 }

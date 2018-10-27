@@ -18,6 +18,7 @@ public class AudioPlayTable {
     private static final String playUrl = "play_url";
     private static final String currentPlayState = "current_play_state";//默认0,0-不是当前播放，1-当前播放
     private static final String state = "state";//默认0，0-正常，1-删除
+    private static final String hasBuy = "has_buy";//是否购买，默认0，0-未购买，1-已购买
     private static final String createAt = "create_at";
     private static final String updateAt = "update_at";
     public static final String CREATE_TABLE_SQL = "CREATE TABLE "+TABLE_NAME+" ("+
@@ -29,6 +30,7 @@ public class AudioPlayTable {
             playUrl+" "+TYPE_TEXT+" default \"\","+
             currentPlayState+" "+TYPE_INTEGER+" default 0,"+
             state+" "+TYPE_INTEGER+" default 0,"+
+            hasBuy+" "+TYPE_INTEGER+" default 0,"+
             createAt+" "+TYPE_DATETIME+" default '0000-00-00 00:00:00',"+
             updateAt+" "+TYPE_DATETIME+" default '0000-00-00 00:00:00',"+
             "primary key ("+appId +","+ resourceId+"))";
@@ -71,5 +73,9 @@ public class AudioPlayTable {
 
     public static String getColumnId() {
         return columnId;
+    }
+
+    public static String getHasBuy() {
+        return hasBuy;
     }
 }

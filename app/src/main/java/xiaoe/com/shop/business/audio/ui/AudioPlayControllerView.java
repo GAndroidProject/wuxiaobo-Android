@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -146,12 +145,10 @@ public class AudioPlayControllerView extends FrameLayout implements View.OnClick
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        Log.d(TAG, "onProgressChanged: ");
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-        Log.d(TAG, "onStartTrackingTouch: ");
         touchSeekBar = true;
     }
 

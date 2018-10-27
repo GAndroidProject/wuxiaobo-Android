@@ -52,8 +52,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private Intent mIntent;
     private ColumnPresenter columnPresenter;
     private boolean isBigColumn;
-    private int pageIndex = 0;
+    private int pageIndex = 1;
     private int pageSize = 20;
+    private boolean isHasBuy = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         toolBarheight = Dp2Px2SpUtil.dp2px(this,280);
         columnScrollView = (CustomScrollView) findViewById(R.id.column_scroll_view);
         columnScrollView.setScrollChanged(this);
+        columnScrollView.setLoadHeigth(Dp2Px2SpUtil.dp2px(this, 40));
 
         buyView = (CommonBuyView) findViewById(R.id.common_buy_layout);
         buyView.setVisibility(View.GONE);
@@ -98,6 +100,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         //加载更多
         loadMoreView = (ListBottomLoadMoreView) findViewById(R.id.btn_bottom_load_more);
         loadMoreView.setVisibility(View.GONE);
+        setLoadState(ListBottomLoadMoreView.STATE_LOADING);
         //课程简介按钮
         btnContentDetail = (LinearLayout) findViewById(R.id.btn_content_detail);
         btnContentDetail.setOnClickListener(this);
@@ -122,6 +125,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         Object dataObject = jsonObject.get("data");
         if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || dataObject == null ){
+            if(iRequest instanceof ColumnListRequst){
+                setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
+            }
             return;
         }
         if(iRequest instanceof DetailRequest){
@@ -134,16 +140,19 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void columnListRequest(IRequest iRequest, JSONArray data) {
-        if(data.size() < pageSize){
-            columnScrollView.setLoadState(ListBottomLoadMoreView.STATE_ALL_FINISH);
-            loadMoreView.setLoadState(ListBottomLoadMoreView.STATE_ALL_FINISH);
-        }
         if(isBigColumn){
             ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
-            fragment.addData(columnPresenter.formatColumnEntity(data));
+            fragment.setHasBuy(isHasBuy);
+            fragment.addData(columnPresenter.formatColumnEntity(data, resourceId));
         }else{
             LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
-            fragment.addData(columnPresenter.formatSingleResouceEntity(data));
+            fragment.setHasBuy(isHasBuy);
+            fragment.addData(columnPresenter.formatSingleResouceEntity(data, resourceId, ""));
+        }
+        if(data.size() < pageSize){
+            setLoadState(ListBottomLoadMoreView.STATE_ALL_FINISH);
+        }else{
+            setLoadState(ListBottomLoadMoreView.STATE_NOT_LOAD);
         }
     }
 
@@ -151,8 +160,10 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(data.getIntValue("has_buy") == 0){
             buyView.setVisibility(View.VISIBLE);
             buyView.setBuyPrice(data.getIntValue("price"));
+            isHasBuy = false;
         }else{
             buyView.setVisibility(View.GONE);
+            isHasBuy = true;
         }
         ColumnDetailFragment detailFragment = (ColumnDetailFragment) columnViewPagerAdapter.getItem(0);
         detailFragment.setContentDetail(data.getString("content"));
@@ -162,7 +173,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(purchaseCount > 0){
             buyCount.setText(NumberFormat.viewCountToString(purchaseCount)+"人学习");
         }
-        columnPresenter.requestColumnList(resourceId, "0");
+        columnPresenter.requestColumnList(resourceId, "0", pageIndex, pageSize);
     }
 
     @Override
@@ -217,9 +228,15 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
     @Override
     public void onLoadState(int state) {
-        if(columnViewPager.getCurrentItem() == 1){
-            loadMoreView.setLoadState(ListBottomLoadMoreView.STATE_LOADING);
-            columnScrollView.setLoadState(ListBottomLoadMoreView.STATE_LOADING);
+        if(columnViewPager.getCurrentItem() == 1 && state == ListBottomLoadMoreView.STATE_NOT_LOAD){
+            setLoadState(ListBottomLoadMoreView.STATE_LOADING);
+            pageIndex++;
+            columnPresenter.requestColumnList(resourceId, "0", pageIndex, pageSize);
         }
+    }
+    public void setLoadState(int state){
+        loadMoreView.setLoadState(state);
+        columnScrollView.setLoadState(state);
+
     }
 }

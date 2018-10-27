@@ -14,6 +14,7 @@ import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.OnClickExpandListener;
+import xiaoe.com.shop.interfaces.OnClickListPlayListener;
 import xiaoe.com.shop.interfaces.OnScrollToListener;
 
 /**
@@ -27,25 +28,30 @@ public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 	private List<ColumnDirectoryEntity> mDataSet;
 	private OnScrollToListener onScrollToListener;
 	private int paddingLeft = 0;
+	private OnClickListPlayListener mPlayListener;
+	private List<BaseViewHolder> viewHolderList;
 
-	public TreeRecyclerAdapter(Context context) {
+	public TreeRecyclerAdapter(Context context, OnClickListPlayListener playListener) {
 		mContext = context;
 		mDataSet = new ArrayList<ColumnDirectoryEntity>();
 		paddingLeft = Dp2Px2SpUtil.dp2px(mContext, 16);
+		mPlayListener = playListener;
+		viewHolderList = new ArrayList<BaseViewHolder>();
 	}
 
 	@Override
 	public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(mContext).inflate(
 				R.layout.item_recycler_parent, parent, false);
-		return new ParentViewHolder(mContext, view, paddingLeft, paddingLeft);
+		ParentViewHolder viewHolder = new ParentViewHolder(mContext, view, paddingLeft, paddingLeft);
+		viewHolderList.add(viewHolder);
+		return viewHolder;
 	}
 
 	@Override
 	public void onBindViewHolder(BaseViewHolder holder, int position) {
 		ParentViewHolder imageViewHolder = (ParentViewHolder) holder;
-		imageViewHolder.bindView(mDataSet.get(position), position,
-				imageClickListener);
+		imageViewHolder.bindView(mDataSet.get(position), position, imageClickListener, mPlayListener);
 	}
 
 	private OnClickExpandListener imageClickListener = new OnClickExpandListener() {
@@ -87,6 +93,14 @@ public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 		notifyDataSetChanged();
 	}
 
+	public List<ColumnDirectoryEntity> getData(){
+		return  mDataSet;
+	}
+
+	public ColumnDirectoryEntity getPositionData(int position){
+		return mDataSet.get(position);
+	}
+
 	public void add(ColumnDirectoryEntity text, int position) {
 		mDataSet.add(position, text);
 		notifyItemInserted(position);
@@ -104,4 +118,7 @@ public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 		notifyDataSetChanged();
 	}
 
+	public List<BaseViewHolder> getViewHolderList() {
+		return viewHolderList;
+	}
 }

@@ -12,13 +12,14 @@ public class AudioPlayEntity {
     private int state = 0;//默认0，0-正常，1-删除
     private String createAt = null;
     private String updateAt = null;
-    private String columnId = null;
+    private String columnId = "";
+    private String bigColumnId = "";
 
     private int hasFavorite = 0;//是否收藏，0-未收藏，1-已收藏
     private int hasBuy = 0;// 是否已购买0-未购买，1-已购买
 
     private int playCount = 0;
-    private int code = - 2;
+    private int code = -2;//-2:正在请求详情（没有图文详情和播放地址），-1:只有播放地址，0:请求成功，1：请求失败
     private int index = -1;
     private boolean isPlay = false;
 
@@ -149,5 +150,13 @@ public class AudioPlayEntity {
 
     public void setHasBuy(int hasBuy) {
         this.hasBuy = hasBuy;
+    }
+
+    public String getBigColumnId() {
+        return bigColumnId;
+    }
+
+    public void setBigColumnId(String bigColumnId) {
+        this.bigColumnId = bigColumnId;
     }
 }

@@ -8,12 +8,12 @@ import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.OnClickExpandListener;
+import xiaoe.com.shop.interfaces.OnClickListPlayListener;
 import xiaoe.com.shop.widget.DashlineItemDivider;
 
 /**
@@ -57,7 +57,7 @@ public class ParentViewHolder extends BaseViewHolder {
 	}
 
 	public void bindView(final ColumnDirectoryEntity itemData, final int position,
-						 final OnClickExpandListener imageClickListener) {
+						 final OnClickExpandListener imageClickListener, final OnClickListPlayListener playListener) {
 		text.setText(itemData.getTitle());
 		if (itemData.isExpand()) {
 			divisionLine.setVisibility(View.VISIBLE);
@@ -70,12 +70,15 @@ public class ParentViewHolder extends BaseViewHolder {
 			setExpandState(View.VISIBLE);
 			setPlayButtonState(View.GONE);
 		}
+
 		btnPlayAll.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(mContext, "正在播放全部", Toast.LENGTH_SHORT).show();
+				playListener.onPlayPosition(v, position, -1);
 			}
 		});
+		treeChildRecyclerAdapter.setParentPosition(position);
+		treeChildRecyclerAdapter.setListPlayListener(playListener);
 		treeChildRecyclerAdapter.setData(itemData.getResource_list());
 		//展开点击事件
 		btnExpandDown.setOnClickListener(new OnClickListener() {
@@ -115,4 +118,8 @@ public class ParentViewHolder extends BaseViewHolder {
 	private void setPlayButtonState(int visibility){
         btnPlayAll.setVisibility(visibility);
     }
+
+	public TreeChildRecyclerAdapter getTreeChildRecyclerAdapter() {
+		return treeChildRecyclerAdapter;
+	}
 }

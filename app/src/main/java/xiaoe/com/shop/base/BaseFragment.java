@@ -36,17 +36,6 @@ public class BaseFragment extends Fragment implements INetworkResponse {
     private boolean isReuseView;
     private boolean isFirstVisible;
     private View rootView;
-
-//    private Handler mHandler = new Handler(){
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            if(popupWindow != null){
-//                popupWindow.dismiss();
-//            }
-//        }
-//    };
-
     private Handler mHandler = new BfHandler(this);
 
     static class BfHandler extends Handler {
@@ -164,7 +153,7 @@ public class BaseFragment extends Fragment implements INetworkResponse {
 
     }
 
-    public void ToastCustom(String msg){
+    public void toastCustom(String msg){
         mHandler.removeMessages(0);
         mToastText.setText(msg);
         popupWindow.showAtLocation(getActivity().getWindow().getDecorView(), Gravity.CENTER, 0, 0);
@@ -173,10 +162,10 @@ public class BaseFragment extends Fragment implements INetworkResponse {
 
     /**
      * 在弹出对话框时，显示popupWindow，则popupWindow会在对话框下面（被对话框盖住）
-     * 是方法是让popupWindow显示在对话上面
+     * 从方法是让popupWindow显示在对话上面
      * view 是对话框中的view
      */
-    public void ToastCustomDialog(View view,String msg){
+    public void toastCustomDialog(View view,String msg){
         mHandler.removeMessages(0);
         mToastText.setText(msg);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);

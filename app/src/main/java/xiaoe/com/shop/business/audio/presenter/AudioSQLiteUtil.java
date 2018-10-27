@@ -49,6 +49,7 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
         values.put(AudioPlayTable.getColumnId(), tableEntity.getColumnId());
         values.put(AudioPlayTable.getState(), tableEntity.getState());
         values.put(AudioPlayTable.getUpdateAt(), tableEntity.getUpdateAt());
+        values.put(AudioPlayTable.getHasBuy(), tableEntity.getHasBuy());
         if(tableEntity.getCreateAt() != null){
             values.put(AudioPlayTable.getCreateAt(), tableEntity.getCreateAt());
         }
@@ -81,8 +82,12 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
         int columnIdIndex = cursor.getColumnIndex(AudioPlayTable.getColumnId());
         entity.setColumnId(cursor.getString(columnIdIndex));
 
+        int hasBuyIndex = cursor.getColumnIndex(AudioPlayTable.getHasBuy());
+        entity.setHasBuy(cursor.getInt(hasBuyIndex));
+
         int createAtIndex = cursor.getColumnIndex(AudioPlayTable.getCreateAt());
         entity.setCreateAt(cursor.getString(createAtIndex));
+
         int updateAtIndex = cursor.getColumnIndex(AudioPlayTable.getUpdateAt());
         entity.setUpdateAt(cursor.getString(updateAtIndex));
         return entity;

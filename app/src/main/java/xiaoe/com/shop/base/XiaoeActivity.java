@@ -33,6 +33,7 @@ import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.TranslationAnimator;
+import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.audio.presenter.AudioSQLiteUtil;
@@ -55,22 +56,6 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private int miniPlayerAnimHeight = 0;//音频迷你播放器动画滑动的高度
     private int actionDownY = 0;//手指按下屏幕Y轴坐标
     private MiniAudioPlayControllerLayout miniAudioPlayController;//音频迷你播放器
-//    private Handler mHandler = new Handler(){
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            if(msg.what == DISMISS_POPUP_WINDOW){
-//                if(popupWindow != null){
-//                    popupWindow.dismiss();
-//                }
-//            }else if(msg.what == DISMISS_TOAST){
-//                if(toast != null){
-//                    toast.cancel();
-//                }
-//            }
-//
-//        }
-//    };
     private Handler mHandler = new XeHandler(this);
     private boolean mHasFocus = false;
     private boolean isActivityDestroy = false;
@@ -133,7 +118,10 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             if(entityList.size() > 0){
                 AudioPlayEntity playEntity = entityList.get(0);
                 playEntity.setPlay(false);
+                playEntity.setCode(-1);
                 AudioPlayUtil.getInstance().refreshAudio(playEntity);
+
+                AudioMediaPlayer.setAudio(playEntity, false);
                 AudioPresenter audioPresenter = new AudioPresenter(null);
                 audioPresenter.requestDetail(playEntity.getResourceId());
                 miniAudioPlayController.setAudioTitle(playEntity.getTitle());

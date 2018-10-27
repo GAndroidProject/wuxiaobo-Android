@@ -1,6 +1,5 @@
 package xiaoe.com.shop.adapter.tree;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -9,10 +8,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.interfaces.OnClickListPlayListener;
 
 /**
@@ -27,9 +29,11 @@ public class ChildViewHolder extends BaseViewHolder {
 	private final TextView playLength;
 	private final ImageView playIcon;
 	private final LinearLayout btnItemPlay;
+	private Context mContext = null;
 
 	public ChildViewHolder(Context context, View itemView) {
 		super(itemView);
+		mContext = context;
 		text = (TextView) itemView.findViewById(R.id.text);
 		relativeLayout = (RelativeLayout) itemView.findViewById(R.id.item_container);
 		playLength = (TextView) itemView.findViewById(R.id.item_play_length);
@@ -37,7 +41,7 @@ public class ChildViewHolder extends BaseViewHolder {
 		btnItemPlay = (LinearLayout) itemView.findViewById(R.id.btn_item_play);
 	}
 
-	public void bindView(final ColumnSecondDirectoryEntity itemData, final int position, final OnClickListPlayListener mListPlayListener) {
+	public void bindView(final ColumnSecondDirectoryEntity itemData, final int parentPosition, final int position, final OnClickListPlayListener mListPlayListener) {
 		text.setText(itemData.getTitle());
 		int type = itemData.getResource_type();
 		if(type == 2){
@@ -54,16 +58,46 @@ public class ChildViewHolder extends BaseViewHolder {
 
 			@Override
 			public void onClick(View view) {
-				openFileInSystem(itemData.getTitle(), view.getContext());
+				if(mListPlayListener != null){
+					mListPlayListener.onJumpDetail(itemData);
+				}
 			}
 		});
 		btnItemPlay.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mListPlayListener.OnPlayPosition(v, position);
+				if(mListPlayListener != null){
+					mListPlayListener.onPlayPosition(v,parentPosition, position);
+				}
 			}
 		});
+		setPlayState(itemData.getResource_id(), itemData.getColumnId(), itemData.getBigColumnId());
 	}
+	//设置播放态
+	private void setPlayState(String resourceId, String columnId, String bigColumnId) {
+
+		AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        boolean resourceEquals = false;
+		if(playEntity != null){
+            resourceEquals = AudioPlayUtil.resourceEquals(playEntity.getResourceId(), playEntity.getColumnId(), playEntity.getBigColumnId(),
+                    resourceId, columnId, bigColumnId);
+        }
+
+		if(resourceEquals){
+			int hightColor = mContext.getResources().getColor(R.color.high_title_color);
+			text.setTextColor(hightColor);
+			playLength.setTextColor(hightColor);
+			if(AudioMediaPlayer.isPlaying()){
+				playIcon.setImageResource(R.mipmap.audiolist_playing);
+			}else{
+				playIcon.setImageResource(R.mipmap.class_play);
+			}
+		}else{
+			text.setTextColor(mContext.getResources().getColor(R.color.main_title_color));
+			playLength.setTextColor(mContext.getResources().getColor(R.color.secondary_title_color));
+		}
+	}
+
 	private void setMediaTypeState(int visibility){
 		playLength.setVisibility(visibility);
 		playIcon.setVisibility(visibility);
@@ -79,27 +113,6 @@ public class ChildViewHolder extends BaseViewHolder {
 		}
 	}
 
-	private void openFileInSystem(String path, Context context) {
 
-	}
-
-	@SuppressLint("DefaultLocale")
-	private String fileExt(String url) {
-		if (url.indexOf("?") > -1) {
-			url = url.substring(0, url.indexOf("?"));
-		}
-		if (url.lastIndexOf(".") == -1) {
-			return null;
-		} else {
-			String ext = url.substring(url.lastIndexOf("."));
-			if (ext.indexOf("%") > -1) {
-				ext = ext.substring(0, ext.indexOf("%"));
-			}
-			if (ext.indexOf("/") > -1) {
-				ext = ext.substring(0, ext.indexOf("/"));
-			}
-			return ext.toLowerCase();
-		}
-	}
 
 }

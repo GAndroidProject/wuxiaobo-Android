@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import com.youth.banner.BannerConfig;
 
 import java.util.List;
 
-import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.GraphicNavItem;
@@ -45,10 +43,6 @@ import xiaoe.com.shop.adapter.decorate.search.SearchViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingFigureViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingImageLoader;
 import xiaoe.com.shop.base.BaseViewHolder;
-import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
-import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
-import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
-import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.course_more.ui.CourseMoreActivity;
@@ -56,6 +50,7 @@ import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
 import xiaoe.com.shop.business.search.ui.SearchActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
+import xiaoe.com.shop.common.JumpDetail;
 
 /**
  * 店铺装修组件显示列表适配器
@@ -334,17 +329,17 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     mContext.startActivity(intent);
                     break;
                 case DecorateEntityType.AUDIO: // 音频
-                    jumpAudio(knowledgeCommodityItem.getResourceId());
+                    JumpDetail.jumpAudio(mContext, knowledgeCommodityItem.getResourceId());
                     break;
                 case DecorateEntityType.VIDEO: // 视频
                     intent = new Intent(mContext, VideoActivity.class);
                     mContext.startActivity(intent);
                     break;
                 case DecorateEntityType.COLUMN: // 专栏
-                    jumpColumn(knowledgeCommodityItem.getResourceId(), false, knowledgeCommodityItem.getItemImg());
+                    JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), false);
                     break;
                 case DecorateEntityType.TOPIC: // 大专栏
-                    jumpColumn(knowledgeCommodityItem.getResourceId(), true, knowledgeCommodityItem.getItemImg());
+                    JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), true);
                     break;
             }
         }
@@ -364,15 +359,15 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 mContext.startActivity(intent);
                 break;
             case DecorateEntityType.AUDIO: // 音频
-                jumpAudio(resourceId);
+                JumpDetail.jumpAudio(mContext, resourceId);
                 break;
             case DecorateEntityType.VIDEO: // 视频
                 break;
             case DecorateEntityType.COLUMN: // 专栏
-                jumpColumn(resourceId, false, "");
+                JumpDetail.jumpColumn(mContext, resourceId, "", false);
                 break;
             case DecorateEntityType.TOPIC: // 大专栏
-                jumpColumn(resourceId, true, "");
+                JumpDetail.jumpColumn(mContext, resourceId, "", true);
                 break;
             case DecorateEntityType.RESOURCE_TAG: // 商品分组
                 intent = new Intent(mContext, NavigateDetailActivity.class);
@@ -382,38 +377,5 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 mContext.startActivity(intent);
                 break;
         }
-    }
-
-    private void jumpColumn(String resId, boolean isBigColumn, String imageUrl){
-        Intent intent = new Intent(mContext, ColumnActivity.class);
-        intent.putExtra("resource_id", resId);
-        intent.putExtra("isBigColumn", isBigColumn);
-        if(!TextUtils.isEmpty(imageUrl)){
-            intent.putExtra("column_image_url", imageUrl);
-        }
-        mContext.startActivity(intent);
-    }
-    private void jumpAudio(String resId){
-        AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
-        String resourceId = "";
-        if(playEntity != null){
-            resourceId = playEntity.getResourceId();
-        }
-        if(!resourceId.equals(resId)){
-            AudioMediaPlayer.stop();
-
-            playEntity = new AudioPlayEntity();
-            playEntity.setAppId("apppcHqlTPT3482");
-            playEntity.setResourceId(resId);
-            playEntity.setIndex(0);
-            playEntity.setPlay(true);
-            AudioMediaPlayer.setAudio(playEntity, false);
-
-            AudioPlayUtil.getInstance().refreshAudio(playEntity);
-            AudioPresenter audioPresenter = new AudioPresenter(null);
-            audioPresenter.requestDetail(resId);
-        }
-        Intent intent = new Intent(mContext, AudioActivity.class);
-        mContext.startActivity(intent);
     }
 }

@@ -2,7 +2,6 @@ package xiaoe.com.shop.adapter.decorate.knowledge_commodity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +9,12 @@ import android.widget.BaseAdapter;
 
 import java.util.List;
 
-import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.shop.R;
-import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
-import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
-import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
-import xiaoe.com.shop.business.audio.ui.AudioActivity;
-import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
+import xiaoe.com.shop.common.JumpDetail;
 
 public class KnowledgeListAdapter extends BaseAdapter {
 
@@ -101,55 +95,21 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         mContext.startActivity(intent);
                         break;
                     case DecorateEntityType.AUDIO:
-                        jumpAudio(mItemList.get(position).getResourceId());
+                        JumpDetail.jumpAudio(mContext, mItemList.get(position).getResourceId());
                         break;
                     case DecorateEntityType.VIDEO:
                         intent = new Intent(mContext, VideoActivity.class);
                         mContext.startActivity(intent);
                         break;
                     case DecorateEntityType.COLUMN:
-                        jumpColumn(mItemList.get(position).getResourceId(), false, mItemList.get(position).getItemImg());
+                        JumpDetail.jumpColumn(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), false);
                         break;
                     case DecorateEntityType.TOPIC:
-                        jumpColumn(mItemList.get(position).getResourceId(), true, mItemList.get(position).getItemImg());
+                        JumpDetail.jumpColumn(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), true);
                         break;
                 }
             }
         });
         return convertView;
-    }
-
-    private void jumpColumn(String resId, boolean isBigColumn, String imageUrl){
-        Intent intent = new Intent(mContext, ColumnActivity.class);
-        intent.putExtra("resource_id", resId);
-        intent.putExtra("isBigColumn", isBigColumn);
-        if(!TextUtils.isEmpty(imageUrl)){
-            intent.putExtra("column_image_url", imageUrl);
-        }
-        mContext.startActivity(intent);
-    }
-
-    private void jumpAudio(String resId){
-        AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
-        String resourceId = "";
-        if(playEntity != null){
-            resourceId = playEntity.getResourceId();
-        }
-        if(!resourceId.equals(resId)){
-            AudioMediaPlayer.stop();
-
-            playEntity = new AudioPlayEntity();
-            playEntity.setAppId("apppcHqlTPT3482");
-            playEntity.setResourceId(resId);
-            playEntity.setIndex(0);
-            playEntity.setPlay(true);
-            AudioMediaPlayer.setAudio(playEntity, false);
-
-            AudioPlayUtil.getInstance().refreshAudio(playEntity);
-            AudioPresenter audioPresenter = new AudioPresenter(null);
-            audioPresenter.requestDetail(resId);
-        }
-        Intent intent = new Intent(mContext, AudioActivity.class);
-        mContext.startActivity(intent);
     }
 }
