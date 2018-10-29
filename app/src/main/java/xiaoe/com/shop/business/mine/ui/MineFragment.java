@@ -33,6 +33,7 @@ import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.business.setting.ui.SettingAccountActivity;
 import xiaoe.com.shop.business.setting.ui.SettingPersonActivity;
+import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -41,6 +42,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     private Unbinder unbinder;
     private Context mContext;
 
+    @BindView(R.id.mine_title_wrap)
+    LinearLayout mineWrap;
     @BindView(R.id.mine_title_view)
     MineTitleView mineTitleView;
     @BindView(R.id.mine_msg_view)

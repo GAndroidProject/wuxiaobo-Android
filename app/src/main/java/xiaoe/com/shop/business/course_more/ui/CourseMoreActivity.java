@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,6 +38,8 @@ public class CourseMoreActivity extends XiaoeActivity {
 
     private static final String TAG = "CourseMoreActivity";
 
+    @BindView(R.id.course_more_tool_bar)
+    Toolbar courseMoreToolbar;
     @BindView(R.id.course_more_back)
     ImageView courseMoreBack;
     @BindView(R.id.course_more_title)
@@ -62,10 +65,9 @@ public class CourseMoreActivity extends XiaoeActivity {
         //状态栏颜色字体(白底黑字)修改 Android6.0+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        } else {
-            Global.g().setGlobalColor("#000000");
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
         }
+
+        courseMoreToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         intent = getIntent();
         groupId = intent.getStringExtra("groupId");

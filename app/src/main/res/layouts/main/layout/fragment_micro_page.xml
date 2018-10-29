@@ -14,7 +14,10 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/micro_page_app_bar"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:stateListAnimator="@null"
+            app:layout_behavior="@string/micro_page_behavior">
+
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/micro_page_collapsing_toolbar"
                 android:layout_width="match_parent"
@@ -31,7 +34,35 @@
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"/>
 
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/micro_page_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    app:layout_collapseMode="pin"
+                    android:background="@color/high_title_color"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/micro_page_toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/micro_fragment_title"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"/>
+
+                    <ImageView
+                        android:id="@+id/micro_page_toolbar_search_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/class_search"
+                        android:layout_gravity="end"
+                        tools:ignore="ContentDescription" />
+
+                </android.support.v7.widget.Toolbar>
+
             </android.support.design.widget.CollapsingToolbarLayout>
+
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -41,7 +72,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:background="@color/white"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </android.support.design.widget.CoordinatorLayout>
 

@@ -9,8 +9,9 @@
     android:background="@color/audio_page_bg_color">
 
     <android.support.v7.widget.Toolbar
+        android:id="@+id/account_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="64dp"
         app:layout_collapseMode="pin"
         android:background="@color/white">
 

@@ -8,11 +8,14 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -29,6 +32,7 @@ import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.GraphicNavItem;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.ColumnListRequst;
 import xiaoe.com.network.requests.IRequest;
@@ -38,6 +42,7 @@ import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
 import xiaoe.com.shop.business.main.presenter.PageFragmentPresenter;
+import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.StatusPagerView;
 
 public class MicroPageFragment extends BaseFragment {
@@ -60,6 +65,13 @@ public class MicroPageFragment extends BaseFragment {
     CollapsingToolbarLayout microPageCollLayout;
     @BindView(R.id.micro_page_loading)
     StatusPagerView microPageLoading;
+
+    @BindView(R.id.micro_page_toolbar)
+    Toolbar microToolBar;
+    @BindView(R.id.micro_page_toolbar_title)
+    TextView microToolBarTitle;
+    @BindView(R.id.micro_page_toolbar_search_icon)
+    ImageView microToolBarSearch;
 
     List<ComponentInfo> microPageList;
 
@@ -117,9 +129,9 @@ public class MicroPageFragment extends BaseFragment {
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        JSONObject result = (JSONObject) entity;
-        int code = result.getInteger("code");
         if (success) { // 请求成功
+            JSONObject result = (JSONObject) entity;
+            int code = result.getInteger("code");
             if (iRequest instanceof PageFragmentRequest) {
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
@@ -140,6 +152,8 @@ public class MicroPageFragment extends BaseFragment {
                     Log.d(TAG, "onMainThreadResponse: 获取最近更新组件的列表失败..");
                 }
             }
+        } else {
+            Log.d(TAG, "onMainThreadResponse: fail");
         }
     }
 
@@ -170,9 +184,9 @@ public class MicroPageFragment extends BaseFragment {
             if (componentInfo.getType().equals(DecorateEntityType.RECENT_UPDATE_STR)) {
                 componentInfo.setSubList(itemList);
                 if (audioCount == 3) { // 3 个都是音频，就显示收听全部按钮，不想加字段，就用这个 hideTitle 来判断
-                    componentInfo.setHideTitle(true);
-                } else {
                     componentInfo.setHideTitle(false);
+                } else {
+                    componentInfo.setHideTitle(true);
                 }
             }
         }
@@ -375,7 +389,28 @@ public class MicroPageFragment extends BaseFragment {
                 Log.d(TAG, "onSharedElementsArrived: ");
             }
         });
+        // 沉浸式初始化
+//        microPageAppBar.setPadding(0, statusBarHeight, 0, 0);
     }
+
+    // 初始化头部
+    private void initTitle() {
+        final int statusBarHeight = StatusBarUtil.getStatusBarHeight(getActivity());
+        microPageAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0) {
+                    microToolBar.setVisibility(View.GONE);
+                } else if (Math.abs(verticalOffset) >= (appBarLayout.getTotalScrollRange() / 3)) {
+                    microToolBar.setVisibility(View.VISIBLE);
+                    microToolBar.setPadding(0, statusBarHeight, Dp2Px2SpUtil.dp2px(getActivity(), 20), 0);
+                } else {
+                    microToolBar.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
     DecorateRecyclerAdapter microPageAdapter;
     // 初始化首页内容
     private void initMainContent () {
@@ -403,6 +438,8 @@ public class MicroPageFragment extends BaseFragment {
                 titleData.add(microPageList.remove(0));
                 DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
                 microPageTitleRecyclerView.setAdapter(dra);
+                // 课程页需要一个 title
+                initTitle();
             }
         } else {
             microPageAppBar.setVisibility(View.GONE);

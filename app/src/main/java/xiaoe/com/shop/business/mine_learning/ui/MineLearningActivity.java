@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -45,6 +46,8 @@ public class MineLearningActivity extends XiaoeActivity {
 
     private String pageTitle;
 
+    @BindView(R.id.mine_learning_tool_bar)
+    Toolbar learningToolbar;
     @BindView(R.id.learning_back)
     ImageView learningBack;
     @BindView(R.id.learning_title)
@@ -68,16 +71,17 @@ public class MineLearningActivity extends XiaoeActivity {
         ButterKnife.bind(this);
         Intent intent = getIntent();
         pageTitle = intent.getStringExtra("pageTitle");
-        //状态栏颜色字体(白底黑字)修改 Android6.0+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        } else {
-            Global.g().setGlobalColor("#000000");
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
-        }
 
+        initTitle();
         initPageData();
         initListener();
+    }
+
+    // 沉浸式初始化
+    private void initTitle() {
+        StatusBarUtil.setRootViewFitsSystemWindows(this, false);
+        int statusBarHeight = StatusBarUtil.getStatusBarHeight(this);
+        learningToolbar.setPadding(0, statusBarHeight, 0, 0);
     }
 
     // 初始化页面数据

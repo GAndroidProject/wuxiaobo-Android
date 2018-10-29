@@ -1,8 +1,11 @@
 package xiaoe.com.shop.business.setting.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,14 +16,18 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import xiaoe.com.common.app.Global;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class SettingPersonItemActivity extends XiaoeActivity {
 
     private static final String TAG = "PersonItemActivity";
-    
+
+    @BindView(R.id.person_edit_toolbar)
+    Toolbar personEditToolbar;
     @BindView(R.id.person_edit_back)
     ImageView personEditBack;
     @BindView(R.id.person_edit_title)
@@ -39,6 +46,13 @@ public class SettingPersonItemActivity extends XiaoeActivity {
         setContentView(R.layout.activity_setting_person_item);
         ButterKnife.bind(this);
         intent = getIntent();
+
+        //状态栏颜色字体(白底黑字)修改 Android6.0+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
+        personEditToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         initData();
         initListener();

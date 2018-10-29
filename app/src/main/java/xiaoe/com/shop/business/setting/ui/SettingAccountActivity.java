@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -47,6 +48,8 @@ public class SettingAccountActivity extends XiaoeActivity {
     protected static final String PWD_NEW = "password_new"; // 设置新的密码
     protected static final String WE_CHAT = "we_chat"; // 绑定微信
 
+    @BindView(R.id.account_toolbar)
+    Toolbar accountToolbar;
     @BindView(R.id.setting_account_edit_back)
     ImageView accountBack;
     @BindView(R.id.setting_account_edit_title)
@@ -66,10 +69,9 @@ public class SettingAccountActivity extends XiaoeActivity {
         //状态栏颜色字体(白底黑字)修改 Android6.0+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        } else {
-            Global.g().setGlobalColor("#000000");
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
         }
+
+        accountToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         // 网络请求
         // SettingPresenter settingPresenter = new SettingPresenter(this);

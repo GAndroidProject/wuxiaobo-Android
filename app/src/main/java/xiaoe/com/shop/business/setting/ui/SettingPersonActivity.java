@@ -1,10 +1,13 @@
 package xiaoe.com.shop.business.setting.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +19,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.SettingItemInfo;
 import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
@@ -24,11 +28,14 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
+import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class SettingPersonActivity extends XiaoeActivity implements OnItemClickWithPosListener {
 
     private static final String TAG = "SettingPersonActivity";
 
+    @BindView(R.id.setting_person_tool_bar)
+    Toolbar settingToolbar;
     @BindView(R.id.setting_back)
     ImageView settingBack;
     @BindView(R.id.setting_person_content)
@@ -51,6 +58,13 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
         // 网络请求
         // SettingPresenter settingPresenter = new SettingPresenter(this);
         // settingPresenter.requestSearchResult();
+
+        //状态栏颜色字体(白底黑字)修改 Android6.0+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
+        settingToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         initData();
         initListener();

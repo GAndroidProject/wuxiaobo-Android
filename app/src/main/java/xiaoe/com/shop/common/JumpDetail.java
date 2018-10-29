@@ -11,6 +11,7 @@ import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
+import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
 
 public class JumpDetail {
@@ -82,6 +83,19 @@ public class JumpDetail {
             intent.putExtra("imgUrl", imageUrl);
         }
         intent.putExtra("resourceId", resId);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转商品分组
+     * @param context
+     * @param pageTitle
+     * @param resourceId
+     */
+    public static void jumpShopGroup(Context context, String pageTitle, String resourceId) {
+        Intent intent = new Intent(context, NavigateDetailActivity.class);
+        intent.putExtra("pageTitle", pageTitle);
+        intent.putExtra("resourceId", resourceId);
         context.startActivity(intent);
     }
 }

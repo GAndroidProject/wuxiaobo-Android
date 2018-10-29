@@ -135,4 +135,10 @@
     <string name="load_all_text">已加载全部</string>
 
     <string name="buy_goods_name_text">购买包的名称</string>
+
+    <!-- appLayout 下拉放大图片的行为 -->
+    <string name="appbar_scroll_behavior" translatable="false">xiaoe.com.shop.widget.AppbarZoomBehavior</string>
+    <string name="micro_page_behavior" translatable="false">xiaoe.com.shop.widget.MicroScrollBehavior</string>
+
+    <string name="micro_fragment_title">课程</string>
 </resources>

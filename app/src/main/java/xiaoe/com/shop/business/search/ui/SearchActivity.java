@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -60,7 +61,9 @@ public class SearchActivity extends XiaoeActivity {
 
     @BindView(R.id.search_wrap)
     LinearLayout searchWrap;
-    @BindView(R.id.search_content)
+    @BindView(R.id.search_title_wrap)
+    FrameLayout searchTitleWrap;
+    @BindView(R.id.search_content_et)
     EditText searchContent;
     @BindView(R.id.search_cancel)
     TextView searchCancel;
@@ -85,13 +88,7 @@ public class SearchActivity extends XiaoeActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        //状态栏颜色字体(白底黑字)修改 Android6.0+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        } else {
-            Global.g().setGlobalColor("#000000");
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
-        }
+        StatusBarUtil.setRootViewFitsSystemWindows(this, false);
 
         initData();
         initView();

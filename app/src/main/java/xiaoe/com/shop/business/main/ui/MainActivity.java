@@ -39,17 +39,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //状态栏颜色字体(白底黑字)修改 Android6.0+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        } else {
-            Global.g().setGlobalColor("#000000");
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
-        }
+
         EventBus.getDefault().register(this);
-        // 透明状态栏
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
         initView();
         initPermission();
         Intent audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);

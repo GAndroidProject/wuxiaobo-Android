@@ -9,9 +9,9 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/home_tool_bar"
+        android:id="@+id/setting_person_tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="64dp"
         app:layout_collapseMode="pin"
         android:background="@color/white">
 

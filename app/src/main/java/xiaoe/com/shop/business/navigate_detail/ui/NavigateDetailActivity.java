@@ -1,10 +1,13 @@
 package xiaoe.com.shop.business.navigate_detail.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +21,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
@@ -28,11 +32,14 @@ import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.navigate_detail.presenter.NavigateDetailPresenter;
 import xiaoe.com.shop.business.search.ui.SearchActivity;
+import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class NavigateDetailActivity extends XiaoeActivity {
 
     private static final String TAG = "NavigateDetailActivity";
 
+    @BindView(R.id.navigate_tool_bar)
+    Toolbar navigateToolbar;
     @BindView(R.id.navigate_back)
     ImageView navigateBack;
     @BindView(R.id.navigate_title)
@@ -63,6 +70,13 @@ public class NavigateDetailActivity extends XiaoeActivity {
         intent = getIntent();
         pageTitle = intent.getStringExtra("pageTitle");
         groupId = intent.getStringExtra("resourceId");
+
+        //状态栏颜色字体(白底黑字)修改 Android6.0+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
+        navigateToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         // 发送网络请求
         navigateDetailPresenter = new NavigateDetailPresenter(this);

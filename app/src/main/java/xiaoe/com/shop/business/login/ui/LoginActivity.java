@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -38,6 +39,8 @@ public class LoginActivity extends XiaoeActivity {
     protected static final String REGISTER = "login_register"; // 注页面
     protected static final String WE_CHAT = "login_we_chat"; // 绑定微信页
 
+    @BindView(R.id.login_toolbar)
+    Toolbar loginToolBar;
     @BindView(R.id.login_back)
     ImageView loginBack;
     @BindView(R.id.login_register)
@@ -64,13 +67,10 @@ public class LoginActivity extends XiaoeActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        //状态栏颜色字体(白底黑字)修改 Android6.0+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        } else {
-            Global.g().setGlobalColor("#000000");
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_VISIBLE);
-        }
+
+        StatusBarUtil.setRootViewFitsSystemWindows(this, false);
+        loginToolBar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+
         // TODO: 找本地缓存的登录信息，如果没有就显示登录主页，如果有就直接跳到主页，先默认没有登录
 
         currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_main);

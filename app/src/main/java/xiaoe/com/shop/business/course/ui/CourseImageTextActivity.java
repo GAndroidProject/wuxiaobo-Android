@@ -4,6 +4,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +25,7 @@ import com.tencent.smtt.sdk.WebView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.AddCollectionRequest;
@@ -33,9 +38,9 @@ import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.course.presenter.CourseImageTextPresenter;
+import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.CommonBuyView;
-import xiaoe.com.shop.widget.PushScrollView;
-import xiaoe.com.shop.widget.StatusPagerView;
+import xiaoe.com.shop.widget.CommonTitleView;
 
 public class CourseImageTextActivity extends XiaoeActivity {
 
@@ -44,13 +49,25 @@ public class CourseImageTextActivity extends XiaoeActivity {
     private Unbinder unbinder;
 
     @BindView(R.id.image_text_wrap)
-    PushScrollView itWrap;
+    NestedScrollView itWrap;
 
-    @BindView(R.id.image_text_bg)
+//    @BindView(R.id.common_title_wrap)
+//    FrameLayout titleWrap;
+
+    @BindView(R.id.it_wrap)
+    CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.it_app_bar)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.it_collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+//    @BindView(R.id.it_toolbar)
+//    Toolbar itToolbar;
+    @BindView(R.id.app_layout_bg)
     SimpleDraweeView itBg;
-    @BindView(R.id.image_text_back)
+    @BindView(R.id.it_title_back)
     ImageView itBack;
-
+    @BindView(R.id.it_common_title_view)
+    CommonTitleView itTitleView;
     @BindView(R.id.image_text_title)
     TextView itTitle;
     @BindView(R.id.image_text_collection)
@@ -75,8 +92,8 @@ public class CourseImageTextActivity extends XiaoeActivity {
     @BindView(R.id.image_text_buy)
     CommonBuyView itBuy;
 
-    @BindView(R.id.image_text_loading)
-    StatusPagerView itLoading;
+//    @BindView(R.id.image_text_loading)
+//    StatusPagerView itLoading;
 
     // 图文图片的链接
     String imgUrl;
@@ -102,13 +119,13 @@ public class CourseImageTextActivity extends XiaoeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_image_text);
 
+        unbinder = ButterKnife.bind(this);
+
         // SimpleDraweeView 转场显示图片的设置
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setSharedElementEnterTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
             getWindow().setSharedElementReturnTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.CENTER_CROP));
         }
-
-        unbinder = ButterKnife.bind(this);
 
         // 从上一个 activity 中获取图文的图片链接
         Intent transitionIntent = getIntent();
@@ -116,9 +133,29 @@ public class CourseImageTextActivity extends XiaoeActivity {
         resourceId = transitionIntent.getStringExtra("resourceId");
         resourceType = "1"; // 图文的资源类型为 1
 
+        initTitle();
         initData();
         initViews();
         initListener();
+    }
+
+    private void initTitle() {
+        StatusBarUtil.setRootViewFitsSystemWindows(this, false);
+        final int statusBarHeight = StatusBarUtil.getStatusBarHeight(this);
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0) { // 开始的时候
+                    itTitleView.setVisibility(View.GONE);
+                } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) { // 滑动结束
+                    itTitleView.setVisibility(View.VISIBLE);
+                    itTitleView.setPadding(0, statusBarHeight, Dp2Px2SpUtil.dp2px(CourseImageTextActivity.this, 14), 0);
+                } else {
+                    itTitleView.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void initData() {
@@ -129,8 +166,8 @@ public class CourseImageTextActivity extends XiaoeActivity {
         // 请求检查该商品是否已经被收藏
         collectionUtils.requestCheckCollection(resourceId, resourceType);
         // 显示 loading
-        itLoading.setHintStateVisibility(View.GONE);
-        itLoading.setLoadingState(View.VISIBLE);
+//        itLoading.setHintStateVisibility(View.GONE);
+//        itLoading.setLoadingState(View.VISIBLE);
     }
 
     private void initListener() {
@@ -146,10 +183,12 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 // TODO: 收藏数据的验证
                 if (isCollected) { // 收藏了，点击之后取消收藏
                     itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+                    itTitleView.setTitleCollectDrawable(R.mipmap.video_collect);
                     collectionUtils.requestRemoveCollection(resourceId, resourceType);
                 } else { // 没有收藏，点击之后收藏\
                     // 改变图标
                     itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
+                    itTitleView.setTitleCollectDrawable(R.mipmap.audio_collect);
                     JSONObject collectionContent = new JSONObject();
                     collectionContent.put("title", collectionTitle);
                     collectionContent.put("author", collectionAuthor);
@@ -184,6 +223,42 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 Toast("领取奖学金");
             }
         });
+        itTitleView.setTitleBackClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        itTitleView.setTitleShareClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        itTitleView.setTitleCollectClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 收藏数据的验证
+                if (isCollected) { // 收藏了，点击之后取消收藏
+                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+                    itTitleView.setTitleCollectDrawable(R.mipmap.video_collect);
+                    collectionUtils.requestRemoveCollection(resourceId, resourceType);
+                } else { // 没有收藏，点击之后收藏\
+                    // 改变图标
+                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
+                    itTitleView.setTitleCollectDrawable(R.mipmap.audio_collect);
+                    JSONObject collectionContent = new JSONObject();
+                    collectionContent.put("title", collectionTitle);
+                    collectionContent.put("author", collectionAuthor);
+                    collectionContent.put("img_url", collectionImgUrl);
+                    collectionContent.put("img_url_compressed", collectionImgUrlCompressed);
+                    collectionContent.put("price", collectionPrice);
+                    collectionUtils.requestAddCollection(resourceId, resourceType, collectionContent);
+                }
+            }
+        });
+//        itWrap.setNestedScrollingEnabled(false);
+        itWrap.setSmoothScrollingEnabled(true);
     }
 
     private void initViews() {
@@ -200,9 +275,10 @@ public class CourseImageTextActivity extends XiaoeActivity {
 
     @Override
     public void onBackPressed() {
-        if (itLoading.getVisibility() == View.GONE) {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
+//        if (itLoading.getVisibility() == View.GONE) {
+//            super.onBackPressed();
+//        }
     }
 
     @Override
@@ -238,7 +314,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
                     itBuy.setVisibility(View.GONE);
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     layoutParams.setMargins(0, 0, 0, 0);
-                    itWrap.setLayoutParams(layoutParams);
+//                    itWrap.setLayoutParams(layoutParams);
                     initAfterBuyData(data);
                 } else if (code == NetworkCodes.CODE_RESOURCE_NOT_BUY) {
                     Log.d(TAG, "onMainThreadResponse: 商品没有买");
@@ -329,7 +405,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
             collectionPrice = price + "";
 
             // 购买前初始化完成，去掉 loading
-            itLoading.setVisibility(View.GONE);
+//            itLoading.setVisibility(View.GONE);
         }
     }
 
@@ -370,7 +446,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
         collectionPrice = "";
 
         // 购买后初始化完成，去掉 loading
-        itLoading.setVisibility(View.GONE);
+//        itLoading.setVisibility(View.GONE);
     }
 
     // 初始化富文本数据
@@ -391,8 +467,10 @@ public class CourseImageTextActivity extends XiaoeActivity {
             isCollected = isFavorite == 1;
             if (isCollected) { // 收藏了
                 itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
+                itTitleView.setTitleCollectDrawable(R.mipmap.audio_collect);
             } else {
                 itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+                itTitleView.setTitleCollectDrawable(R.mipmap.video_collect);
             }
         } else {
             Log.d(TAG, "initCollectionData: 异常情况");

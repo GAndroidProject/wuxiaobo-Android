@@ -17,17 +17,17 @@
 
     <ImageView
         android:id="@+id/image_text_collection"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@mipmap/video_collect"
         tools:ignore="ContentDescription"
         android:layout_toStartOf="@id/image_text_share"
-        android:layout_below="@id/image_text_bg"/>
+        android:layout_below="@id/app_layout_bg"/>
 
     <ImageView
         android:id="@+id/image_text_share"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@mipmap/audio_share"
         tools:ignore="ContentDescription"
         android:layout_alignBottom="@id/image_text_collection"
