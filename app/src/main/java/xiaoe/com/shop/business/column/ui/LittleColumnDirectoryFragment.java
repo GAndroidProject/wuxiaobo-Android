@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,7 @@ import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickListPlayListener;
 import xiaoe.com.shop.widget.DashlineItemDivider;
 
@@ -43,6 +47,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_little_column_directory, null, false);
+        EventBus.getDefault().register(this);
         return rootView;
     }
 
@@ -202,5 +207,16 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
 
     public void setHasBuy(boolean hasBuy) {
         isHasBuy = hasBuy;
+    }
+
+    @Subscribe
+    public void onEventMainThread(AudioPlayEvent event) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

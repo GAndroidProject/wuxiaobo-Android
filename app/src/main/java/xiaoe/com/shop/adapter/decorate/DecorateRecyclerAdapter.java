@@ -49,7 +49,6 @@ import xiaoe.com.shop.business.course_more.ui.CourseMoreActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
 import xiaoe.com.shop.business.search.ui.SearchActivity;
-import xiaoe.com.shop.business.video.ui.VideoActivity;
 import xiaoe.com.shop.common.JumpDetail;
 
 /**
@@ -332,8 +331,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     JumpDetail.jumpAudio(mContext, knowledgeCommodityItem.getResourceId());
                     break;
                 case DecorateEntityType.VIDEO: // 视频
-                    intent = new Intent(mContext, VideoActivity.class);
-                    mContext.startActivity(intent);
+                    JumpDetail.jumpVideo(mContext, knowledgeCommodityItem.getResourceId(), "");
                     break;
                 case DecorateEntityType.COLUMN: // 专栏
                     JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), false);

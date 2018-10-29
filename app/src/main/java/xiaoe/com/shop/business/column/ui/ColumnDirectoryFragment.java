@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +28,7 @@ import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.download.ui.DownloadActivity;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickListPlayListener;
 
 public class ColumnDirectoryFragment extends BaseFragment implements View.OnClickListener, OnClickListPlayListener {
@@ -44,6 +48,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_column_directory, null, false);
+        EventBus.getDefault().register(this);
         return rootView;
     }
 
@@ -125,14 +130,16 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     }
     private void notifyDataSetChanged(int parentPosition, int position){
         ParentViewHolder parentViewHolder= (ParentViewHolder) directoryAdapter.getViewHolderList().get(parentPosition);
-        if(position > 0){
-            parentViewHolder.getTreeChildRecyclerAdapter().notifyItemChanged(position);
-        }else{
-            parentViewHolder.getTreeChildRecyclerAdapter().notifyDataSetChanged();
+        parentViewHolder.getTreeChildRecyclerAdapter().notifyDataSetChanged();
+        if(parentPosition != playParentPosition){
+            ParentViewHolder oldParentViewHolder= (ParentViewHolder) directoryAdapter.getViewHolderList().get(playParentPosition);
+            oldParentViewHolder.getTreeChildRecyclerAdapter().notifyDataSetChanged();
         }
-
-        ParentViewHolder oldParentViewHolder= (ParentViewHolder) directoryAdapter.getViewHolderList().get(playParentPosition);
-        oldParentViewHolder.getTreeChildRecyclerAdapter().notifyDataSetChanged();
+//        if(position > 0){
+//            parentViewHolder.getTreeChildRecyclerAdapter().notifyItemChanged(position);
+//        }else{
+//            parentViewHolder.getTreeChildRecyclerAdapter().notifyDataSetChanged();
+//        }
     }
     @Override
     public void onJumpDetail(ColumnSecondDirectoryEntity itemData) {
@@ -231,5 +238,23 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                 break;
             }
         }
+    }
+
+    @Subscribe
+    public void onEventMainThread(AudioPlayEvent event) {
+        switch (event.getState()){
+            case AudioPlayEvent.NEXT:
+            case AudioPlayEvent.LAST:
+                notifyDataSetChanged(playParentPosition, -1);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -75,6 +76,9 @@ public class AudioPlayControllerView extends FrameLayout implements View.OnClick
         }
         AudioMediaPlayer.getAudio().setPlay(isPlay);
     }
+    public void setPlayButtonEnabled(boolean enabled){
+        btnPlay.setEnabled(enabled);
+    }
 
     public void setPlayDuration(int playProgress){
         if(!touchSeekBar){
@@ -84,6 +88,7 @@ public class AudioPlayControllerView extends FrameLayout implements View.OnClick
     }
 
     public void setTotalDuration(int duration){
+        Log.d(TAG, "setTotalDuration: "+duration);
         playSeek.setMax(duration);
         totalDuration.setText(DateFormat.longToString(duration));
     }

@@ -116,6 +116,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 1";
             List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
             if(entityList.size() > 0){
+                AudioPlayUtil.getInstance().setSingleAudio(true);
                 AudioPlayEntity playEntity = entityList.get(0);
                 playEntity.setPlay(false);
                 playEntity.setCode(-1);

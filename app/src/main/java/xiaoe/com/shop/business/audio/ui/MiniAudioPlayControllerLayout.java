@@ -45,7 +45,11 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
         audioPlayProgress.setMaxProgress(0);
         audioPlayProgress.setProgress(0);
         btnClose = (ImageView) rootView.findViewById(R.id.id_audio_mini_close);
-        btnClose.setVisibility(View.GONE);
+        if(AudioMediaPlayer.isPlaying()){
+            btnClose.setVisibility(View.GONE);
+        }else{
+            btnClose.setVisibility(View.VISIBLE);
+        }
         btnClose.setOnClickListener(this);
         btnPlay = (RelativeLayout) rootView.findViewById(R.id.id_btn_play_state);
         btnPlay.setOnClickListener(this);
@@ -113,5 +117,9 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
 
     public void setMiniPlayerAnimHeight(int height) {
         miniPlayerAnimHeight = height;
+    }
+
+    public void setPlayButtonEnabled(boolean enabled){
+        btnPlay.setEnabled(enabled);
     }
 }

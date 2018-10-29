@@ -31,6 +31,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     private static AudioPlayEvent event;
     private static AudioPlayEntity audio = null;
     private static boolean isStop = true;//是否是停止（已经释放资源），
+    private static boolean prepared = false;
     private static Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -73,12 +74,15 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         //设置
         mediaPlayer.setOnErrorListener(this);
 
-         event = new AudioPlayEvent();
+        event = new AudioPlayEvent();
+        isStop = true;
+        prepared = false;
     }
 
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        prepared = true;
         mediaPlayer.start();
         event.setState(AudioPlayEvent.PLAY);
         EventBus.getDefault().post(event);
@@ -118,6 +122,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(audio == null || mediaPlayer == null || TextUtils.isEmpty(audio.getPlayUrl())){
             return;
         }
+        prepared = false;
         mediaPlayer.reset();
         try {
             mediaPlayer.setDataSource(audio.getPlayUrl());
@@ -138,7 +143,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
     //播放，如果是播放中就执行暂停，否则播放
     public static void play() {
-        if(mediaPlayer == null){
+        if(mediaPlayer == null || !prepared){
             return;
         }
         if(mediaPlayer.isPlaying()){
@@ -156,7 +161,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             return;
         }
         if(mediaPlayer != null && !isStop) {
-            mediaPlayer.stop();
+            if(prepared){
+                mediaPlayer.stop();
+            }
         }
         audio.setCurrentPlayState(0);
         audio.setUpdateAt(DateFormat.currentTime());

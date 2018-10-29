@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -111,8 +110,11 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             case AudioPlayEvent.LOADING:
                 miniAudioPlayController.setVisibility(View.VISIBLE);
                 miniAudioPlayController.setAudioTitle(playEntity.getTitle());
+                miniAudioPlayController.setPlayButtonEnabled(false);
+                miniAudioPlayController.setPlayState(AudioPlayEvent.PAUSE);
                 break;
             case AudioPlayEvent.PLAY:
+                miniAudioPlayController.setPlayButtonEnabled(true);
                 miniAudioPlayController.setAudioTitle(playEntity.getTitle());
                 miniAudioPlayController.setPlayState(AudioPlayEvent.PLAY);
                 miniAudioPlayController.setMaxProgress(AudioMediaPlayer.getDuration());

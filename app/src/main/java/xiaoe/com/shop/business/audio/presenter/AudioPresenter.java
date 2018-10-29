@@ -102,7 +102,7 @@ public class AudioPresenter implements IBizCallback {
             @Override
             public void run() {
                 AudioPlayEvent event = new AudioPlayEvent();
-                event.setState(AudioPlayEvent.PREPARE);
+                event.setState(AudioPlayEvent.REFRESH_PAGER);
                 EventBus.getDefault().post(event);
 //                if(play){
 //                    AudioMediaPlayer.start();

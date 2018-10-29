@@ -220,8 +220,11 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     public void onEventMainThread(AudioPlayEvent event) {
         switch (event.getState()){
             case AudioPlayEvent.LOADING:
+                audioPlayController.setPlayButtonEnabled(false);
                 break;
+
             case AudioPlayEvent.PLAY:
+                audioPlayController.setPlayButtonEnabled(true);
                 audioPlayController.setPlayState(true);
                 audioHoverPlayController.setPlayState(true);
                 audioPlayController.setTotalDuration(AudioMediaPlayer.getDuration());
@@ -240,7 +243,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             case AudioPlayEvent.PROGRESS:
                 audioPlayController.setPlayDuration(event.getProgress());
                 break;
-            case AudioPlayEvent.PREPARE:
+            case AudioPlayEvent.REFRESH_PAGER:
             case AudioPlayEvent.NEXT:
             case AudioPlayEvent.LAST:
                 refreshPager();

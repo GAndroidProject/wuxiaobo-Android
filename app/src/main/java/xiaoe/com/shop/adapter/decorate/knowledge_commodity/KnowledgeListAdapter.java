@@ -13,7 +13,6 @@ import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
-import xiaoe.com.shop.business.video.ui.VideoActivity;
 import xiaoe.com.shop.common.JumpDetail;
 
 public class KnowledgeListAdapter extends BaseAdapter {
@@ -98,8 +97,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         JumpDetail.jumpAudio(mContext, mItemList.get(position).getResourceId());
                         break;
                     case DecorateEntityType.VIDEO:
-                        intent = new Intent(mContext, VideoActivity.class);
-                        mContext.startActivity(intent);
+                        JumpDetail.jumpVideo(mContext, mItemList.get(position).getResourceId(), "");
                         break;
                     case DecorateEntityType.COLUMN:
                         JumpDetail.jumpColumn(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), false);

@@ -14,9 +14,9 @@ public class Constants {
 
     //微信测试环境
 //    private static final String wxLoginAppIdTest = "wx3514f0d221328921";
-    private static final String wxAppIdTest = "wxfe3c46716c7587ee";
+    private static final String wxAppIdTest = "wx764341f522a6c929";
     //微信正式环境
-    private static final String wxAppIdFormal = "wx0b41f790886f724e";
+    private static final String wxAppIdFormal = "wx764341f522a6c929";
 
     public static final String AUDIO_PLAY_RESOURCE_ID = "audioPlayResourceid";
     //上一次购买资源的id
