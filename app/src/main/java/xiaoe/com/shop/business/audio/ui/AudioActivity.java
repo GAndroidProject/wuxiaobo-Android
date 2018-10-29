@@ -57,6 +57,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private StatusPagerView statusPagerView;
     private AudioDetailsSwitchLayout pagerContentDetailLayout;
     private Intent mIntent;
+    private AudioPlayListLayout audioPlayList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,6 +110,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         contentMenuLayout = (ContentMenuLayout) findViewById(R.id.content_menu_layout);
         contentMenuLayout.setButtonClickListener(this);
 
+        //播放列表
+        audioPlayList = (AudioPlayListLayout) findViewById(R.id.audio_play_list);
+        audioPlayList.setVisibility(View.GONE);
         //播放列表按钮
         ImageView btnPlayList = (ImageView) findViewById(R.id.btn_play_list);
         btnPlayList.setOnClickListener(this);
@@ -116,6 +120,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             btnPlayList.setVisibility(View.GONE);
         }else {
             btnPlayList.setVisibility(View.VISIBLE);
+            audioPlayList.addPlayData(AudioPlayUtil.getInstance().getAudioList());
         }
 
         ImageView btnAudioComment = (ImageView) findViewById(R.id.btn_audio_comment);
@@ -209,7 +214,11 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.btn_play_list:
-
+                if(audioPlayList.getVisibility() == View.VISIBLE){
+                    audioPlayList.setVisibility(View.GONE);
+                }else{
+                    audioPlayList.setVisibility(View.VISIBLE);
+                }
                 break;
             default:
                 break;
@@ -244,9 +253,12 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 audioPlayController.setPlayDuration(event.getProgress());
                 break;
             case AudioPlayEvent.REFRESH_PAGER:
+                refreshPager();
+                break;
             case AudioPlayEvent.NEXT:
             case AudioPlayEvent.LAST:
                 refreshPager();
+                audioPlayList.notifyDataSetChanged();
                 break;
             default:
                 break;

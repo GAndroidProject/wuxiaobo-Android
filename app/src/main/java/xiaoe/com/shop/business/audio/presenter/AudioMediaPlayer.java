@@ -48,6 +48,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public void onCreate() {
         super.onCreate();
         init();
+        AudioNotifier.get().init(this);
     }
 
     @Override
@@ -134,6 +135,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         EventBus.getDefault().post(event);
         isStop = false;
         saveAudioDB();
+        AudioNotifier.get().showPlay(audio);
     }
     public static boolean isPlaying(){
         if(mediaPlayer == null){
@@ -149,10 +151,12 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(mediaPlayer.isPlaying()){
             mediaPlayer.pause();
             event.setState(AudioPlayEvent.PAUSE);
+            AudioNotifier.get().showPause(audio);
         } else {
             mediaPlayer.start();
             event.setState(AudioPlayEvent.PLAY);
             mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
+            AudioNotifier.get().showPlay(audio);
         }
         EventBus.getDefault().post(event);
     }
@@ -181,6 +185,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         EventBus.getDefault().post(event);
         isStop = true;
     }
+
     public static void seekTo(int msec){
         if(mediaPlayer != null){
             mediaPlayer.seekTo(msec);
@@ -211,6 +216,19 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         return  -1;
     }
 
+    public static void playAppoint(int position){
+        audio.setPlay(false);
+        stop();
+
+        List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
+        AudioPlayEntity nextAudio = playList.get(position);
+        setAudio(nextAudio, true);
+        if(nextAudio.getCode() != 0){
+            new AudioPresenter(null).requestDetail(nextAudio.getResourceId());
+        }
+        event.setState(AudioPlayEvent.NEXT);
+        EventBus.getDefault().post(event);
+    }
 
     public static void playNext() {
         List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
@@ -321,5 +339,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
+        AudioNotifier.get().cancelAll();
     }
 }

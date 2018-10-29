@@ -59,7 +59,7 @@ public class ChildViewHolder extends BaseViewHolder {
 			@Override
 			public void onClick(View view) {
 				if(mListPlayListener != null){
-					mListPlayListener.onJumpDetail(itemData);
+					mListPlayListener.onJumpDetail(itemData, parentPosition, position);
 				}
 			}
 		});

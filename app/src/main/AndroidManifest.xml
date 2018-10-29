@@ -67,6 +67,12 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent" />
         <!--微信sdk end-->
+        
+        <receiver android:name=".business.audio.presenter.StatusBarReceiver">
+            <intent-filter>
+                <action android:name="me.wcy.music.STATUS_BAR_ACTIONS" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

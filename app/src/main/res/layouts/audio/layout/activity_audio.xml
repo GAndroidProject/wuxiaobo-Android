@@ -189,6 +189,10 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         />
+    <xiaoe.com.shop.business.audio.ui.AudioPlayListLayout
+        android:id="@+id/audio_play_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <xiaoe.com.shop.widget.StatusPagerView
         android:id="@+id/state_pager_view"

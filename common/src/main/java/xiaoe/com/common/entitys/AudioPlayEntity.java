@@ -15,6 +15,8 @@ public class AudioPlayEntity {
     private String columnId = "";
     private String bigColumnId = "";
 
+    private int totalDuration = 0;//总时长
+
     private int hasFavorite = 0;//是否收藏，0-未收藏，1-已收藏
     private int hasBuy = 0;// 是否已购买0-未购买，1-已购买
 
@@ -158,5 +160,13 @@ public class AudioPlayEntity {
 
     public void setBigColumnId(String bigColumnId) {
         this.bigColumnId = bigColumnId;
+    }
+
+    public int getTotalDuration() {
+        return totalDuration;
+    }
+
+    public void setTotalDuration(int totalDuration) {
+        this.totalDuration = totalDuration;
     }
 }

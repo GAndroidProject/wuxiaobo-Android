@@ -41,12 +41,15 @@ import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.utils.StatusBarUtil;
+import xiaoe.com.shop.interfaces.OnCancelListener;
+import xiaoe.com.shop.interfaces.OnConfirmListener;
+import xiaoe.com.shop.widget.CustomDialog;
 
 /**
  * Created by Administrator on 2017/7/17.
  */
 
-public class XiaoeActivity extends AppCompatActivity implements INetworkResponse{
+public class XiaoeActivity extends AppCompatActivity implements INetworkResponse, OnCancelListener, OnConfirmListener {
     private static final String TAG = "XiaoeActivity";
     private static final int DISMISS_POPUP_WINDOW = 1;
     private static final int DISMISS_TOAST = 2;
@@ -60,6 +63,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private Handler mHandler = new XeHandler(this);
     private boolean mHasFocus = false;
     private boolean isActivityDestroy = false;
+    private CustomDialog dialog;
+
 
     static class XeHandler extends Handler {
 
@@ -108,6 +113,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
             StatusBarUtil.setStatusBarColor(this, 0x55000000);
         }
+        dialog = new CustomDialog(this);
     }
 
     @Override
@@ -178,7 +184,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
 
     }
-    public void ToastCustom(String msg){
+    public void toastCustom(String msg){
         if(mHasFocus){
             mHandler.removeMessages(DISMISS_POPUP_WINDOW);
             mToastText.setText(msg);
@@ -219,7 +225,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
      * 是方法是让popupWindow显示在对话上面
      * view 是对话框中的view
      */
-    public void ToastCustomDialog(View view,String msg){
+    public void toastCustomDialog(View view,String msg){
         mHandler.removeMessages(DISMISS_POPUP_WINDOW);
         mToastText.setText(msg);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
@@ -268,5 +274,18 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onClickCancel(View view, int tag) {
+
+    }
+
+    @Override
+    public void onClickConfirm(View view, int tag) {
+
+    }
+    public CustomDialog getDialog(){
+        return dialog;
     }
 }

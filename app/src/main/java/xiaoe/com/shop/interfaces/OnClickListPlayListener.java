@@ -6,5 +6,5 @@ import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 
 public interface OnClickListPlayListener {
     void onPlayPosition(View view,int parentPosition, int position);
-    void onJumpDetail(ColumnSecondDirectoryEntity itemData);
+    void onJumpDetail(ColumnSecondDirectoryEntity itemData, int parentPosition, int position);
 }

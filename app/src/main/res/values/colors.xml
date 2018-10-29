@@ -50,5 +50,5 @@
 
     <color name="course_page_bottom_color">#B8BBBE</color>
 
-    <color name="touch_pressed_bg">#1a000000</color> <!--菜单浮窗背景 -->
+    <color name="touch_pressed_bg">#1a000000</color> <!--点击按压颜色-->
 </resources>

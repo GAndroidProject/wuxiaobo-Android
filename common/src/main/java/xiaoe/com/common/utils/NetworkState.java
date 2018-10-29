@@ -47,7 +47,7 @@ public class NetworkState {
 
     public static String getNewContent(String htmltext){
         if(TextUtils.isEmpty(htmltext)){
-            return htmltext;
+            return "";
         }
         String style = "<style type='text/css'>img { max-width: 100%; width: 100%; height: auto; } section {max-width: 100%; width: 100%; }</style>";
         try {

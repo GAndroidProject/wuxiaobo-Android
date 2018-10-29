@@ -20,9 +20,14 @@ public abstract class IRequest {
     private String cmd = "";
     protected String clientInfo = Global.g().getDeviceInfo();
     protected String buildVersion = Global.g().getVersionName();
-    public String getCmd(){
-        return cmd;
-    }
+
+    private Map<String,Object> formBody = new HashMap<String,Object>();
+
+    private JSONObject buzDataParams = null;
+
+    private JSONObject dataParams = null;
+
+    private JSONObject bizDataParams = null;
 
     private IBizCallback iBizCallback;
 
@@ -37,12 +42,9 @@ public abstract class IRequest {
         this.iBizCallback = iBizCallback;
     }
 
-    private Map<String,Object> formBody = new HashMap<String,Object>();
-
-    private JSONObject buzDataParams = null;
-
-    private JSONObject dataParams = null;
-
+    public String getCmd(){
+        return cmd;
+    }
     /**
      * 添加请求参数
      * @param key
@@ -64,6 +66,7 @@ public abstract class IRequest {
     public void addRequestParam(Map<String,String> form){
         formBody.putAll(form);
     }
+
     public boolean removeParam(String key){
         if(formBody.containsKey(key)){
             return false;
@@ -86,6 +89,12 @@ public abstract class IRequest {
         dataParams.put(key, val);
     }
 
+    public void addBIZDataParam(String key, Object val){
+        if (bizDataParams == null){
+            bizDataParams = new JSONObject();
+        }
+        bizDataParams.put(key, val);
+    }
 
     public Map<String, Object> getFormBody() {
         return formBody;
@@ -95,7 +104,7 @@ public abstract class IRequest {
         //暂时直接new对象，后期通过缓存获取
         UserInfo userInfo = new UserInfo();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("app_id",formBody.containsKey("app_id")?formBody.get("app_id"):"");
+        jsonObject.put("app_id",formBody.containsKey("app_id") ? formBody.get("app_id") : "");
         jsonObject.put("client","6");
         jsonObject.put("app_version","1.0");
         jsonObject.put("build_version",buildVersion);
@@ -110,9 +119,6 @@ public abstract class IRequest {
         jsonObject.put("user_id",userId);
         jsonObject.put("encrypt_data",encryptData);
         for(Map.Entry<String ,Object> entry : formBody.entrySet() ){
-            if("app_id".equals(entry.getKey())){
-                continue;
-            }
             jsonObject.put(entry.getKey(),entry.getValue());
         }
         if(buzDataParams != null){
@@ -120,6 +126,9 @@ public abstract class IRequest {
         }
         if(dataParams != null){
             jsonObject.put("data", dataParams);
+        }
+        if(bizDataParams != null){
+            jsonObject.put("biz_data", bizDataParams);
         }
         return jsonObject.toJSONString();
     }

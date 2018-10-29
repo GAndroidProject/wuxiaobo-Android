@@ -141,4 +141,6 @@
     <string name="micro_page_behavior" translatable="false">xiaoe.com.shop.widget.MicroScrollBehavior</string>
 
     <string name="micro_fragment_title">课程</string>
+
+    <string name="hint_text">提示</string>
 </resources>

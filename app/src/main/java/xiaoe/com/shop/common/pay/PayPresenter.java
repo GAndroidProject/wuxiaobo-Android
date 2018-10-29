@@ -10,6 +10,8 @@ import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.PayOrderRequest;
+import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class PayPresenter implements IBizCallback {
     private static final String TAG = "PayPresenter";
@@ -22,21 +24,48 @@ public class PayPresenter implements IBizCallback {
     }
 
     @Override
-    public void onResponse(IRequest iRequest, boolean success, Object entity) {
-
+    public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
+        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                iNetworkResponse.onMainThreadResponse(iRequest, success, entity);
+            }
+        });
     }
 
+    /**
+     * 下单支付
+     * @param paymentType
+     * @param resourceType
+     * @param resourceId
+     * @param productId
+     */
+    public void payOrder(int paymentType, int resourceType, String resourceId, String productId){
+        PayOrderRequest payOrderRequest = new PayOrderRequest(this);
+        payOrderRequest.addBIZDataParam("user_account_type", "0");
+        payOrderRequest.addBIZDataParam("force_collection", "1");
+        payOrderRequest.addBIZDataParam("payment_type", ""+paymentType);
+        payOrderRequest.addBIZDataParam("resource_type", ""+resourceType);
+        payOrderRequest.addBIZDataParam("resource_id", ""+resourceId);
+        payOrderRequest.addBIZDataParam("product_id", ""+productId);
+        payOrderRequest.addRequestParam("app_id", "apppcHqlTPT3482");
+        payOrderRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        payOrderRequest.sendRequest();
+    }
 
-    public void pullWXPay(){
+    /**
+     * 呼起微信支付
+     */
+    public void pullWXPay(String appId, String partnerId, String prepayId, String noncestr, String timestamp, String wxPay, String sign){
         PayReq req = new PayReq();
         //req.appId = "wxf8b4f85f3a794e77";  // 测试用appId
-//        req.appId			= payEntity.getAppid();
-//        req.partnerId		= payEntity.getPartnerid();
-//        req.prepayId		= payEntity.getPrepayid();
-//        req.nonceStr		= payEntity.getNoncestr();
-//        req.timeStamp		= payEntity.getTimestamp();
-//        req.packageValue	= payEntity.getWXPay();
-//        req.sign			= payEntity.getSign();
+        req.appId			= appId;
+        req.partnerId		= partnerId;
+        req.prepayId		= prepayId;
+        req.nonceStr		= noncestr;
+        req.timeStamp		= timestamp;
+        req.packageValue	= wxPay;
+        req.sign			= sign;
         wxapi.sendReq(req);
     }
 }

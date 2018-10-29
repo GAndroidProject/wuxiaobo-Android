@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,7 +107,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         isAddPlayList = playParentPosition == parentPosition;
         if(position == -1){
             //播放全部
-            List<AudioPlayEntity> playList = setAudioPlayList(parentEntity.getResource_list());
+            List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
             clickPlayAll(playList);
 
         }else{
@@ -114,9 +115,10 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             ColumnSecondDirectoryEntity playEntity = parentEntity.getResource_list().get(position);
             if(playEntity.getResource_type() == 2){
                 //音频
-                List<AudioPlayEntity> playList = setAudioPlayList(parentEntity.getResource_list());
+                List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
                 if(!isAddPlayList){
                     AudioPlayUtil.getInstance().setAudioList(playList);
+                    AudioPlayUtil.getInstance().setSingleAudio(false);
                 }
                 isAddPlayList = true;
                 playPosition(playList, playEntity.getResource_id(), playEntity.getColumnId(), playEntity.getBigColumnId());
@@ -142,7 +144,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
 //        }
     }
     @Override
-    public void onJumpDetail(ColumnSecondDirectoryEntity itemData) {
+    public void onJumpDetail(ColumnSecondDirectoryEntity itemData, int parentPosition, int position) {
         if(!isHasBuy){
             toastCustom("未购买课程");
             return;
@@ -154,6 +156,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             JumpDetail.jumpImageText(getContext(), resourceId, null);
         }else if(resourceType == 2){
             //音频
+            onPlayPosition(null, parentPosition, position);
             JumpDetail.jumpAudio(getContext(), resourceId);
         }else if(resourceType == 3){
             //视频
@@ -172,7 +175,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
      * 设置播放列表
      * @param list
      */
-    private List<AudioPlayEntity> setAudioPlayList(List<ColumnSecondDirectoryEntity> list){
+    private List<AudioPlayEntity> getAudioPlayList(List<ColumnSecondDirectoryEntity> list){
         List<AudioPlayEntity> playList = new ArrayList<AudioPlayEntity>();
         int index = 0;
         for (ColumnSecondDirectoryEntity entity : list) {
@@ -192,6 +195,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             playEntity.setHasBuy(isHasBuy ? 1 : 0);
             playEntity.setColumnId(entity.getColumnId());
             playEntity.setBigColumnId(entity.getBigColumnId());
+            playEntity.setTotalDuration(entity.getAudio_length());
             index++;
             playList.add(playEntity);
         }
@@ -203,6 +207,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         if(playList.size() > 0){
             if(!isAddPlayList){
                 AudioPlayUtil.getInstance().setAudioList(playList);
+                AudioPlayUtil.getInstance().setSingleAudio(false);
             }
             isAddPlayList = true;
             AudioMediaPlayer.stop();
@@ -214,6 +219,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     }
 
     private void playPosition(List<AudioPlayEntity> playList, String resourceId, String columnId, String bigColumnId){
+        Log.d(TAG, "playPosition: --------"+resourceId);
         boolean resourceEquals = false;
         AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
         if(playAudio != null){
@@ -230,8 +236,10 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             return;
         }
         AudioMediaPlayer.stop();
+        int i = 0;
         for (AudioPlayEntity playEntity : playList) {
             if(playEntity.getResourceId().equals(resourceId)){
+                Log.d(TAG, "playPosition: ***********"+i+" ; "+playEntity.getResourceId());
                 playEntity.setPlay(true);
                 AudioMediaPlayer.setAudio(playEntity, true);
                 new AudioPresenter(null).requestDetail(playEntity.getResourceId());

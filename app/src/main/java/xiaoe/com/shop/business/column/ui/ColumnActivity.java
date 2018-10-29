@@ -19,10 +19,12 @@ import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.ColumnListRequst;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.PayOrderRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.column.ColumnFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
+import xiaoe.com.shop.common.pay.PayPresenter;
 import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
 import xiaoe.com.shop.utils.NumberFormat;
 import xiaoe.com.shop.widget.CommonBuyView;
@@ -81,8 +83,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         columnScrollView.setScrollChanged(this);
         columnScrollView.setLoadHeigth(Dp2Px2SpUtil.dp2px(this, 40));
 
+        //购买按钮
         buyView = (CommonBuyView) findViewById(R.id.common_buy_layout);
         buyView.setVisibility(View.GONE);
+        buyView.setOnBuyBtnClickListener(this);
+        buyView.setOnVipBtnClickListener(this);
 
         String imageUrl = mIntent.getStringExtra("column_image_url");
         columnImage = (SimpleDraweeView) findViewById(R.id.column_image);
@@ -121,12 +126,19 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         JSONObject jsonObject = (JSONObject) entity;
         if(entity == null || !success){
+            if(iRequest instanceof PayOrderRequest){
+                getDialog().dismissDialog();
+            }
             return;
         }
         Object dataObject = jsonObject.get("data");
         if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || dataObject == null ){
             if(iRequest instanceof ColumnListRequst){
                 setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
+            }else if(iRequest instanceof PayOrderRequest){
+                getDialog().dismissDialog();
+                getDialog().setHintMessage("获取支付信息失败");
+                getDialog().showDialog(-1);
             }
             return;
         }
@@ -136,7 +148,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else if(iRequest instanceof ColumnListRequst){
             JSONArray data = (JSONArray) dataObject;
             columnListRequest(iRequest, data);
+        }else if(iRequest instanceof PayOrderRequest){
+            JSONObject data = (JSONObject) dataObject;
+            payOrderRequest(data);
         }
+    }
+
+    private void payOrderRequest(JSONObject dataObject) {
+
     }
 
     private void columnListRequest(IRequest iRequest, JSONArray data) {
@@ -190,9 +209,22 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             case R.id.btn_back:
                 finish();
                 break;
+            case R.id.buy_vip:
+                toastCustom("购买超级会员");
+                break;
+            case R.id.buy_course:
+                buyResource();
+                break;
             default:
                 break;
         }
+    }
+
+    private void buyResource() {
+        getDialog().showLoadDialog(false);
+        PayPresenter payPresenter = new PayPresenter(this, this);
+        int resourceType = isBigColumn ? 8 : 6;
+        payPresenter.payOrder(3, resourceType, resourceId, resourceId);
     }
 
     private void setColumnViewPager(int index){
