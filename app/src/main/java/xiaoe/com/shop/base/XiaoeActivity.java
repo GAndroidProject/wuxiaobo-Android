@@ -40,9 +40,9 @@ import xiaoe.com.shop.business.audio.presenter.AudioSQLiteUtil;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 import xiaoe.com.shop.business.main.ui.MainActivity;
-import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.interfaces.OnCancelListener;
 import xiaoe.com.shop.interfaces.OnConfirmListener;
+import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.CustomDialog;
 
 /**
@@ -103,17 +103,19 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         popupWindow.setFocusable(true);
         isActivityDestroy = false;
 
-        // 状态栏设置
+        dialog = new CustomDialog(this);
+    }
+    // 状态栏设置
+    public void setStatusBar(){
         // 屏幕上方预留状态栏高度的 padding
         StatusBarUtil.setRootViewFitsSystemWindows(this, true);
-        // 设置透明状态栏
+//         设置透明状态栏
         StatusBarUtil.setTranslucentStatus(this);
-        // 设置深色文字图标风格
+//         设置深色文字图标风格
         if (!StatusBarUtil.setStatusBarDarkTheme(this, true)) {
             // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
             StatusBarUtil.setStatusBarColor(this, 0x55000000);
         }
-        dialog = new CustomDialog(this);
     }
 
     @Override
