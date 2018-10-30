@@ -15,6 +15,7 @@ import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -43,6 +44,7 @@ public class NetworkEngine {
 //    private final static String BASE_URL = "http://134.175.39.17:12242/";
     public final static String BASE_URL = "http://134.175.39.17:9380/";
     public final static String CLASS_DETAIL_BASE_URL = "http://134.175.39.17:9378/api/";
+    public final static String COMMENT_BASE_URL = "http://134.175.39.17:9379/api/";
     public final static String COLLECTION_BASE_URL = "http://134.175.39.17:9381/api/"; // 收藏接口 url
     public final static String PLY_BASE_URL = "http://134.175.39.247:4586/";//支付订单
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -94,11 +96,17 @@ public class NetworkEngine {
             return;
         }
         RequestBody formBody = RequestBody.create(JSON, formBodyString);
-        Request request = new Request.Builder()
+        Request.Builder build = new Request.Builder()
                 .url(url)
                 .post(formBody)
-                .tag(iRequest)
-                .build();
+                .tag(iRequest);
+        Map<String, String> header = iRequest.getHeader();
+        if(header != null && header.size() > 0){
+            for(Map.Entry<String ,String> entry : iRequest.getHeader().entrySet() ){
+                build.addHeader(entry.getKey(),entry.getValue());
+            }
+        }
+        Request request = build.build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
             @Override
