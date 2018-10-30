@@ -57,6 +57,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private int pageIndex = 1;
     private int pageSize = 20;
     private boolean isHasBuy = false;
+    private PayPresenter payPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,6 +72,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private void initData() {
         resourceId = mIntent.getStringExtra("resource_id");
         columnPresenter = new ColumnPresenter(this);
+        payPresenter = new PayPresenter(this, this);
         columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
     }
 
@@ -128,6 +130,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(entity == null || !success){
             if(iRequest instanceof PayOrderRequest){
                 getDialog().dismissDialog();
+                getDialog().setHintMessage("获取支付信息失败");
+                getDialog().showDialog(-1);
             }
             return;
         }
@@ -155,7 +159,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void payOrderRequest(JSONObject dataObject) {
-
+        JSONObject payConfig = dataObject.getJSONObject("payConfig");
+        payPresenter.pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
+                                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
     }
 
     private void columnListRequest(IRequest iRequest, JSONArray data) {
@@ -222,7 +228,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     private void buyResource() {
         getDialog().showLoadDialog(false);
-        PayPresenter payPresenter = new PayPresenter(this, this);
         int resourceType = isBigColumn ? 8 : 6;
         payPresenter.payOrder(3, resourceType, resourceId, resourceId);
     }

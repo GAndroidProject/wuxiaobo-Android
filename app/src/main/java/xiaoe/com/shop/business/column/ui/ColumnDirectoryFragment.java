@@ -239,7 +239,6 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         int i = 0;
         for (AudioPlayEntity playEntity : playList) {
             if(playEntity.getResourceId().equals(resourceId)){
-                Log.d(TAG, "playPosition: ***********"+i+" ; "+playEntity.getResourceId());
                 playEntity.setPlay(true);
                 AudioMediaPlayer.setAudio(playEntity, true);
                 new AudioPresenter(null).requestDetail(playEntity.getResourceId());

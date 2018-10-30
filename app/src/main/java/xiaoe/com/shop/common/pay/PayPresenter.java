@@ -42,12 +42,12 @@ public class PayPresenter implements IBizCallback {
      */
     public void payOrder(int paymentType, int resourceType, String resourceId, String productId){
         PayOrderRequest payOrderRequest = new PayOrderRequest(this);
-        payOrderRequest.addBIZDataParam("user_account_type", "0");
-        payOrderRequest.addBIZDataParam("force_collection", "1");
-        payOrderRequest.addBIZDataParam("payment_type", ""+paymentType);
-        payOrderRequest.addBIZDataParam("resource_type", ""+resourceType);
-        payOrderRequest.addBIZDataParam("resource_id", ""+resourceId);
-        payOrderRequest.addBIZDataParam("product_id", ""+productId);
+        payOrderRequest.addBUZDataParam("user_account_type", "0");
+        payOrderRequest.addBUZDataParam("force_collection", "1");
+        payOrderRequest.addBUZDataParam("payment_type", ""+paymentType);
+        payOrderRequest.addBUZDataParam("resource_type", ""+resourceType);
+        payOrderRequest.addBUZDataParam("resource_id", ""+resourceId);
+        payOrderRequest.addBUZDataParam("product_id", ""+productId);
         payOrderRequest.addRequestParam("app_id", "apppcHqlTPT3482");
         payOrderRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
         payOrderRequest.sendRequest();

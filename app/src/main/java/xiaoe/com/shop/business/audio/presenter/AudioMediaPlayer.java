@@ -138,7 +138,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         AudioNotifier.get().showPlay(audio);
     }
     public static boolean isPlaying(){
-        if(mediaPlayer == null){
+        if(mediaPlayer == null || !prepared || isStop){
             return  false;
         }
         return mediaPlayer.isPlaying();
@@ -161,13 +161,11 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         EventBus.getDefault().post(event);
     }
     public static void stop() {
-        if(audio == null){
+        if(audio == null || mediaPlayer == null || isStop){
             return;
         }
-        if(mediaPlayer != null && !isStop) {
-            if(prepared){
-                mediaPlayer.stop();
-            }
+        if(prepared){
+            mediaPlayer.stop();
         }
         audio.setCurrentPlayState(0);
         audio.setUpdateAt(DateFormat.currentTime());
@@ -203,7 +201,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         isStop = true;
     }
     public static int getDuration(){
-        if(mediaPlayer != null){
+        if(mediaPlayer != null && prepared){
             return  mediaPlayer.getDuration();
         }
         return  -1;

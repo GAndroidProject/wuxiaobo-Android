@@ -143,4 +143,9 @@
     <string name="micro_fragment_title">课程</string>
 
     <string name="hint_text">提示</string>
+
+    <string name="empty_comment">暂无评论</string>
+    <string name="get_comment_fail">获取评论失败</string>
+    <string name="send_empty_comment">不能发表空白评论</string>
+    <string name="send_comment_fail">发表失败</string>
 </resources>

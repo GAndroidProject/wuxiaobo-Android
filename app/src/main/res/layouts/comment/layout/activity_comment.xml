@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/comment_pager"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
 
     <RelativeLayout
         android:id="@+id/tool_bar"
@@ -28,44 +31,20 @@
         android:id="@+id/comment_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:overScrollMode="never"
         android:layout_below="@id/tool_bar"
-        android:layout_above="@+id/bottom_edit_wrap"
+        android:layout_above="@+id/comment_view"
         />
-    
-    <RelativeLayout
-        android:id="@+id/bottom_edit_wrap"
+    <xiaoe.com.shop.widget.CommentView
+        android:id="@+id/comment_view"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        >
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/line"
-            />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
-            android:padding="3dp"
-            android:layout_toStartOf="@+id/btn_send_comment"
-            android:background="@drawable/white_solid_border"
-            />
-        
-        <TextView
-            android:id="@+id/btn_send_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:gravity="center"
-            android:textColor="@color/secondary_title_color"
-            android:textSize="14sp"
-            android:text="@string/send_text"
-            />
-
-    </RelativeLayout>
-
+        />
+    <xiaoe.com.shop.widget.StatusPagerView
+        android:id="@+id/status_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tool_bar"
+        />
 </RelativeLayout>

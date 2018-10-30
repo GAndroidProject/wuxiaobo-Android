@@ -10,6 +10,7 @@ import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
+import xiaoe.com.shop.business.comment.ui.CommentActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
@@ -96,6 +97,14 @@ public class JumpDetail {
         Intent intent = new Intent(context, NavigateDetailActivity.class);
         intent.putExtra("pageTitle", pageTitle);
         intent.putExtra("resourceId", resourceId);
+        context.startActivity(intent);
+    }
+
+    public static void jumpComment(Context context, String resourceId, int resourceType, String resourceTitle){
+        Intent intent = new Intent(context, CommentActivity.class);
+        intent.putExtra("resourceId", resourceId);
+        intent.putExtra("resourceType", resourceType);
+        intent.putExtra("resourceTitle", resourceTitle);
         context.startActivity(intent);
     }
 }

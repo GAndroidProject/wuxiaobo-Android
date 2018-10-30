@@ -35,6 +35,13 @@ public class StatusPagerView extends FrameLayout {
         stateText = (TextView) rootView.findViewById(R.id.state_text);
         stateImage = (ImageView) rootView.findViewById(R.id.state_image);
         setHintStateVisibility(View.GONE);
+
+        rootView.findViewById(R.id.pager).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     public void setLoadingState(int visibility){

@@ -16,6 +16,9 @@ public class DateFormat {
      * @param ms 毫秒，不能超过24小时，
      */
     public static String longToString (long ms){
+        if(ms < 1000){
+            return "00:00";
+        }
 
         int totalSecond = (int) (ms / 1000);//总时间（单位：秒）
         int h =  totalSecond / 3600;//时

@@ -1,12 +1,16 @@
 package xiaoe.com.shop.adapter.comment;
 
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import xiaoe.com.common.entitys.CommentEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.utils.NumberFormat;
 
 public class CommentListHolder extends BaseViewHolder {
     private static final String TAG = "CommentListHolder";
@@ -16,6 +20,9 @@ public class CommentListHolder extends BaseViewHolder {
     private TextView commentContent;
     private TextView sendCommentDate;
     private TextView likeCount;
+    private ImageView likeIcon;
+    private TextView srcCommentContent;
+    private TextView btnReplyComment;
 
     public CommentListHolder(View itemView) {
         super(itemView);
@@ -25,18 +32,32 @@ public class CommentListHolder extends BaseViewHolder {
 
     private void initViews() {
         userAvatar = (SimpleDraweeView) rootView.findViewById(R.id.column_user_avatar);
-        userAvatar.setImageURI("res:///"+R.mipmap.cash_alipay);
         userName = (TextView) rootView.findViewById(R.id.column_user_name);
-        userName.setText("马云");
         commentContent = (TextView) rootView.findViewById(R.id.comment_content);
-        commentContent.setText("帮内容寻找精准流量 帮流量匹配优质内容!真的很棒很棒");
         sendCommentDate = (TextView) rootView.findViewById(R.id.send_comment_date);
-        sendCommentDate.setText("2018-10-20 16:26:23");
         likeCount = (TextView) rootView.findViewById(R.id.comment_like_count);
-        likeCount.setText("125");
+        likeIcon = (ImageView) rootView.findViewById(R.id.comment_like_icon);
+        srcCommentContent = (TextView) rootView.findViewById(R.id.src_comment_content);
+        btnReplyComment = (TextView) rootView.findViewById(R.id.btn_reply_comment);
     }
 
-    public void bindView(){
-
+    public void bindView(CommentEntity commentEntity, int position){
+        userAvatar.setImageURI(commentEntity.getUser_avatar());
+        userName.setText(commentEntity.getUser_nickname());
+        commentContent.setText(commentEntity.getContent());
+        likeCount.setText(NumberFormat.viewCountToString(commentEntity.getLike_num()));
+        sendCommentDate.setText(commentEntity.getComment_at());
+        if(commentEntity.isIs_praise()){
+            likeIcon.setImageResource(R.mipmap.comment_liked);
+        }else{
+            likeIcon.setImageResource(R.mipmap.comment_like);
+        }
+        if(TextUtils.isEmpty(commentEntity.getSrc_content())){
+            srcCommentContent.setVisibility(View.GONE);
+        }else{
+            srcCommentContent.setVisibility(View.VISIBLE);
+            srcCommentContent.setText(commentEntity.getSrc_content());
+        }
+//        btnReplyComment.setOnClickListener(this);
     }
 }

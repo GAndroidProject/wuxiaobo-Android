@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/main_bg_color" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        >
+        <TextView
+            android:id="@+id/id_icon_comment_send"
+            android:layout_width="45dp"
+            android:layout_marginRight="10dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="center"
+            android:textColor="@color/recent_list_color"
+            android:background="@drawable/touch_state_bg"
+            android:gravity="center"
+            android:text="发送"
+            android:textSize="12sp"
+            android:visibility="gone"
+            />
+        <EditText
+            android:id="@+id/id_edit_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textCursorDrawable="@drawable/cursor_drawable"
+            android:layout_toStartOf="@id/id_icon_comment_send"
+            android:background="@drawable/border"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:gravity="top"
+            android:textColor="@color/main_title_color"
+            android:hint="我来说两句"
+            android:textColorHint="@color/secondary_title_color"
+            />
+    </RelativeLayout>
+
+</LinearLayout>

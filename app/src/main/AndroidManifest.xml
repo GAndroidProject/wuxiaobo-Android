@@ -47,7 +47,10 @@
         <activity android:name=".business.search.ui.SearchActivity"/>
         <activity android:name=".business.course_more.ui.CourseMoreActivity"/>
         <activity android:name=".business.coupon.ui.CouponActivity"/>
-		<activity android:name=".business.comment.ui.CommentActivity"/>
+		<activity android:name=".business.comment.ui.CommentActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
+            />
         <activity android:name=".business.navigate_detail.ui.NavigateDetailActivity"/>
         <activity android:name=".business.cdkey.ui.CdKeyActivity"/>
 

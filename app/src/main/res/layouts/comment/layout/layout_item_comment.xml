@@ -17,11 +17,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/column_user_avatar"
+        android:layout_toStartOf="@+id/btn_comment_delete"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="20dp"
         android:maxLines="1"
         android:textSize="14sp"
         android:textColor="@color/secondary_title_color"
+        />
+    <ImageView
+        android:id="@+id/btn_comment_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:padding="6dp"
+        android:src="@mipmap/comment_delete"
+        android:background="@drawable/touch_state_bg"
         />
     <RelativeLayout
         android:id="@+id/comment_content_wrap"
@@ -39,6 +50,17 @@
             android:layout_height="wrap_content"
             android:textColor="@color/main_title_color"
             android:textSize="14sp"
+            />
+        <TextView
+            android:id="@+id/src_comment_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/comment_content"
+            android:textColor="@color/secondary_title_color"
+            android:textSize="14sp"
+            android:padding="12dp"
+            android:background="@color/main_bg_color"
             />
     </RelativeLayout>
 
@@ -61,6 +83,7 @@
         android:layout_below="@id/comment_content_wrap"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
+        android:background="@drawable/touch_state_bg"
         android:textColor="@color/knowledge_item_desc_color"
         android:textSize="12sp"
         android:text="@string/reply_comment_text"
@@ -79,6 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:gravity="bottom"
             android:textColor="@color/knowledge_item_desc_color"
             android:textSize="12sp"
             />
@@ -88,7 +112,7 @@
             android:layout_height="16dp"
             android:layout_gravity="bottom"
             android:layout_marginStart="6dp"
-            android:src="@mipmap/comment_liked"
+            android:src="@mipmap/comment_like"
             />
     </LinearLayout>
     <View

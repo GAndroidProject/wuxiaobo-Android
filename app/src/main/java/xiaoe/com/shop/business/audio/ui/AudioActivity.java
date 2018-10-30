@@ -29,7 +29,7 @@ import xiaoe.com.shop.anim.ViewAnim;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
-import xiaoe.com.shop.business.comment.ui.CommentActivity;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
 import xiaoe.com.shop.utils.NumberFormat;
@@ -210,8 +210,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 break;
             case R.id.btn_audio_comment:
             case R.id.btn_comment:
-                Intent intent = new Intent(this, CommentActivity.class);
-                startActivity(intent);
+                AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+                JumpDetail.jumpComment(this,playEntity.getResourceId(), 2, audioTitle.getText().toString());
                 break;
             case R.id.btn_play_list:
                 if(audioPlayList.getVisibility() == View.VISIBLE){
