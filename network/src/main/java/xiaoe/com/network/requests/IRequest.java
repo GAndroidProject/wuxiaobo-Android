@@ -31,6 +31,8 @@ public abstract class IRequest {
 
     private IBizCallback iBizCallback;
 
+    private Map<String, String> header;
+
     IRequest(String cmd, Class entityClass, IBizCallback iBizCallback){
         this.cmd = cmd;
         this.entityClass = entityClass;
@@ -57,6 +59,13 @@ public abstract class IRequest {
         }
         formBody.put(key,value);
         return true;
+    }
+
+    public void addHeaderParam(String key, String value){
+        if(header == null){
+            header = new HashMap<String, String>();
+        }
+        header.put(key, value);
     }
 
     /**
@@ -170,6 +179,10 @@ public abstract class IRequest {
 
     public void setPOST(boolean POST) {
         isPOST = POST;
+    }
+
+    public Map<String, String> getHeader() {
+        return header;
     }
 
     public void onResponse(boolean success, Object entityObj){
