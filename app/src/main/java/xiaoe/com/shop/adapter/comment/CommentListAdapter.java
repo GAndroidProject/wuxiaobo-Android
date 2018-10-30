@@ -12,15 +12,18 @@ import java.util.List;
 import xiaoe.com.common.entitys.CommentEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.interfaces.OnClickCommentListener;
 
 public class CommentListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private static final String TAG = "CommentListAdapter";
-    List<CommentEntity> commentList;
+    private List<CommentEntity> commentList;
     private Context mContext;
+    private OnClickCommentListener commentListener;
 
-    public CommentListAdapter(Context context) {
+    public CommentListAdapter(Context context, OnClickCommentListener listener) {
         this.mContext = context;
         commentList = new ArrayList<CommentEntity>();
+        commentListener = listener;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         CommentListHolder viewHolder = (CommentListHolder) holder;
-        viewHolder.bindView(commentList.get(position), position);
+        viewHolder.bindView(commentList.get(position), position, commentListener);
     }
 
     @Override

@@ -10,9 +10,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import xiaoe.com.common.entitys.CommentEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.interfaces.OnClickCommentListener;
 import xiaoe.com.shop.utils.NumberFormat;
 
-public class CommentListHolder extends BaseViewHolder {
+public class CommentListHolder extends BaseViewHolder implements View.OnClickListener {
     private static final String TAG = "CommentListHolder";
     private View rootView;
     private SimpleDraweeView userAvatar;
@@ -23,6 +24,8 @@ public class CommentListHolder extends BaseViewHolder {
     private ImageView likeIcon;
     private TextView srcCommentContent;
     private TextView btnReplyComment;
+    private CommentEntity mCommentEntity;
+    private OnClickCommentListener commentListener;
 
     public CommentListHolder(View itemView) {
         super(itemView);
@@ -41,7 +44,9 @@ public class CommentListHolder extends BaseViewHolder {
         btnReplyComment = (TextView) rootView.findViewById(R.id.btn_reply_comment);
     }
 
-    public void bindView(CommentEntity commentEntity, int position){
+    public void bindView(CommentEntity commentEntity, int position, OnClickCommentListener listener){
+        mCommentEntity = commentEntity;
+        commentListener = listener;
         userAvatar.setImageURI(commentEntity.getUser_avatar());
         userName.setText(commentEntity.getUser_nickname());
         commentContent.setText(commentEntity.getContent());
@@ -58,6 +63,13 @@ public class CommentListHolder extends BaseViewHolder {
             srcCommentContent.setVisibility(View.VISIBLE);
             srcCommentContent.setText(commentEntity.getSrc_content());
         }
-//        btnReplyComment.setOnClickListener(this);
+        btnReplyComment.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(commentListener != null){
+            commentListener.onClickComment(mCommentEntity);
+        }
     }
 }

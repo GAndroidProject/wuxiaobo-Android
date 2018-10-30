@@ -1,6 +1,7 @@
 package xiaoe.com.shop.common.pay;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -57,6 +58,9 @@ public class PayPresenter implements IBizCallback {
      * 呼起微信支付
      */
     public void pullWXPay(String appId, String partnerId, String prepayId, String noncestr, String timestamp, String wxPay, String sign){
+        if(TextUtils.isEmpty(wxPay)){
+            wxPay = "Sign=WXPay";
+        }
         PayReq req = new PayReq();
         //req.appId = "wxf8b4f85f3a794e77";  // 测试用appId
         req.appId			= appId;

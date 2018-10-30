@@ -148,4 +148,5 @@
     <string name="get_comment_fail">获取评论失败</string>
     <string name="send_empty_comment">不能发表空白评论</string>
     <string name="send_comment_fail">发表失败</string>
+    <string name="send_comment_succeed">发表成功</string>
 </resources>

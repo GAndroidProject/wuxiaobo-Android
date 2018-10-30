@@ -2,9 +2,13 @@ package xiaoe.com.shop.widget;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +31,10 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
     private EditText editComment;
     private TextView sendComment;
     private OnClickSendCommentListener sendListener;
+    private String srcHint;
+    private boolean isReply = false;
+    private ForegroundColorSpan colorSpan;
+    private SpannableStringBuilder stringBuilder;
 
     public CommentView(Context context) {
         this(context, null);
@@ -44,6 +52,9 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
 
     private void initView(Context context) {
         mContext = context;
+        colorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.secondary_title_color));
+        stringBuilder = new SpannableStringBuilder();
+
         View sendCommentView = LayoutInflater.from(mContext).inflate(R.layout.layout_send_comment,null,false);
 
         sendComment = (TextView) sendCommentView.findViewById(R.id.id_icon_comment_send);
@@ -69,18 +80,38 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
                     lp.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
                     editComment.setLayoutParams(lp);
                 }
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
             }
         });
+        editComment.setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                String commentContent = editComment.getText().toString();
+                if(isReply && (keyCode == KeyEvent.KEYCODE_DEL) && srcHint.length() == commentContent.length()){
+                    return true;
+                }else{
+                    return false;
+                }
+
+            }
+        });
         addView(sendCommentView);
     }
-    public void setBtnEditComment(String text){
+    public void setEditHint(String text){
         editComment.setText("");
         editComment.setHint(text);
+    }
+    public void setSrcCommentHint(String hint){
+        isReply = true;
+        srcHint = hint+"：";
+        stringBuilder.clear();
+        stringBuilder.append(srcHint);
+        stringBuilder.setSpan(colorSpan,0,srcHint.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        editComment.setText(stringBuilder);
+        editComment.setSelection(srcHint.length());
     }
     @Override
     public void onClick(View v) {
@@ -107,9 +138,15 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
         String commentContent = editComment.getText().toString().trim();
         editComment.setHint("我来说两句");
         editComment.setText("");
+        if(isReply){
+            commentContent = commentContent.substring(srcHint.length());
+        }
         if(sendListener != null){
             sendListener.onSend(commentContent);
         }
+        isReply = false;
+        srcHint = "";
+        editComment.setText("");
     }
 
 
@@ -158,11 +195,19 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
             lp.width = LayoutParams.MATCH_PARENT;
             editComment.setLayoutParams(lp);
         }else if(oldBottom != 0 && bottom != 0 &&(bottom - oldBottom > 100)){
-            if(TextUtils.isEmpty(editComment.getText().toString().trim())){
+            String tempContent = editComment.getText().toString();
+            if(isReply){
+                tempContent = tempContent.substring(srcHint.length());
+            }
+            if(TextUtils.isEmpty(tempContent)){
                 sendComment.setVisibility(GONE);
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) editComment.getLayoutParams();
                 lp.width = LayoutParams.MATCH_PARENT;
                 editComment.setLayoutParams(lp);
+
+                isReply = false;
+                srcHint = "";
+                editComment.setText("");
             }
         }
     }
@@ -179,5 +224,9 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
 
     public void setSendListener(OnClickSendCommentListener sendListener) {
         this.sendListener = sendListener;
+    }
+
+    public boolean isReply(){
+        return isReply;
     }
 }

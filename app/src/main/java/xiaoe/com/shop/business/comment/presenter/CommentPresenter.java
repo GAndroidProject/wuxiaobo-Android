@@ -2,6 +2,7 @@ package xiaoe.com.shop.business.comment.presenter;
 
 import android.text.TextUtils;
 
+import xiaoe.com.common.entitys.CommentEntity;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.CommentListRequest;
@@ -56,17 +57,20 @@ public class CommentPresenter implements IBizCallback {
      * @param recordType
      * @param recordTitle
      * @param content
-     * @param srcCommentId 被回复的id
+     * @param replyComment 被回复的信息
      */
-    public void sendComment(String recordId, int recordType, String recordTitle, String content, int srcCommentId){
+    public void sendComment(String recordId, int recordType, String recordTitle, String content, CommentEntity replyComment){
         SendCommentRequest commentRequest = new SendCommentRequest(this);
         commentRequest.addRequestParam("shop_id","apppcHqlTPT3482");
         commentRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         commentRequest.addRequestParam("record_id",recordId);
         commentRequest.addRequestParam("record_type",recordType);
         commentRequest.addRequestParam("record_title",recordTitle);
-        if(srcCommentId >= 0){
-            commentRequest.addRequestParam("src_comment_id",srcCommentId);
+        if(replyComment != null){
+            commentRequest.addRequestParam("src_comment_id",replyComment.getComment_id());
+            commentRequest.addRequestParam("src_content",replyComment.getContent());
+            commentRequest.addRequestParam("src_nick_name",replyComment.getUser_nickname());
+            commentRequest.addRequestParam("src_user_id",replyComment.getUser_id());
         }
         commentRequest.addRequestParam("content",content);
 

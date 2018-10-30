@@ -26,11 +26,12 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.comment.CommentListAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.comment.presenter.CommentPresenter;
+import xiaoe.com.shop.interfaces.OnClickCommentListener;
 import xiaoe.com.shop.interfaces.OnClickSendCommentListener;
 import xiaoe.com.shop.widget.CommentView;
 import xiaoe.com.shop.widget.StatusPagerView;
 
-public class CommentActivity extends XiaoeActivity implements OnClickSendCommentListener {
+public class CommentActivity extends XiaoeActivity implements OnClickSendCommentListener, OnClickCommentListener {
     private static final String TAG = "CommentActivity";
     private RecyclerView commentRecyclerView;
     private CommentListAdapter commentAdapter;
@@ -46,6 +47,7 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
     private CommentEntity sendComment;
     private boolean sending = false;
     private int mCommentCount = 0;
+    private CommentEntity replyCommentEntity = null; //被回复的评论id
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
         layoutManager.setAutoMeasureEnabled(true);
         commentRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayout.HORIZONTAL));
         commentRecyclerView.setLayoutManager(layoutManager);
-        commentAdapter = new CommentListAdapter(this);
+        commentAdapter = new CommentListAdapter(this, this);
         commentRecyclerView.setAdapter(commentAdapter);
 
         commentView = (CommentView) findViewById(R.id.comment_view);
@@ -114,7 +116,7 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
             commentListRequest(data);
         }else if(iRequest instanceof SendCommentRequest){
             getDialog().dismissDialog();
-            sending = true;
+            sending = false;
             JSONObject data = (JSONObject) dataObject;
             sendCommentRequest(data);
         }
@@ -126,6 +128,8 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
         int commentId = data.getIntValue("comment_id");
         sendComment.setComment_id(commentId);
         commentAdapter.addPosition(sendComment, 0);
+        commentRecyclerView.scrollToPosition(0);
+        toastCustom(getResources().getString(R.string.send_comment_succeed));
     }
 
     private void commentListRequest(JSONObject dataObject) {
@@ -177,6 +181,18 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
         getDialog().showLoadDialog(false);
         sendComment = new CommentEntity();
         sendComment.setContent(content);
-        commentPresenter.sendComment(resourceId, resourceType, resourceTitle, content, -1);
+        CommentEntity tempReplyCommentEntity = null;
+        if(commentView.isReply()){
+            tempReplyCommentEntity = replyCommentEntity;
+            sendComment.setSrc_comment_id(replyCommentEntity.getComment_id());
+            sendComment.setSrc_content(replyCommentEntity.getContent());
+        }
+        commentPresenter.sendComment(resourceId, resourceType, resourceTitle, content, tempReplyCommentEntity);
+    }
+
+    @Override
+    public void onClickComment(CommentEntity commentEntity) {
+        commentView.setSrcCommentHint(commentEntity.getUser_nickname());
+        replyCommentEntity = commentEntity;
     }
 }
