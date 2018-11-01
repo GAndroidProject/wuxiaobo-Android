@@ -34,5 +34,15 @@ dependencies {
     api 'com.alibaba:fastjson:1.2.31'
     api 'com.facebook.fresco:fresco:0.12.0'
     api 'org.greenrobot:eventbus:3.0.0'
+    //腾讯x5内核
     api files("libs/tbs_sdk_thirdapp_v3.6.0.1352_43618_sharewithdownload_withoutGame_obfs_20180918_120327.jar")
+    //微信sdk
+    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+    //友盟集成
+    api files("libs/umeng-common-1.5.4.jar")
+    api files("libs/umeng-share-core-6.9.3.jar")
+    api files("libs/umeng-sharetool-6.9.3.jar")
+    api files("libs/umeng-sharetool-6.9.3.jar")
+    api files("libs/umeng-share-wechat-full-6.9.3.jar")
+//    api files("libs/umeng-shareboard-widget-6.9.3.jar")
 }

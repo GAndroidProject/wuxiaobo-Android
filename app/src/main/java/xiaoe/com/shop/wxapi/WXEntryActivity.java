@@ -80,8 +80,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 //            intent.putExtra("code", code);
 //            intent.putExtra("msg", msg);
 //            intent.putExtra("isLogin", true);
-            finish();
         }
+        finish();
 
     }
 

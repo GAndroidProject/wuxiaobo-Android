@@ -1,16 +1,11 @@
 package xiaoe.com.shop.business.course.presenter;
 
-import com.alibaba.fastjson.JSONObject;
-
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
-import xiaoe.com.network.requests.AddCollectionRequest;
-import xiaoe.com.network.requests.CheckCollectionRequest;
 import xiaoe.com.network.requests.CourseITAfterBuyRequest;
 import xiaoe.com.network.requests.CourseITBeforeBuyRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.RemoveCollectionRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class CourseImageTextPresenter implements IBizCallback {
@@ -39,8 +34,8 @@ public class CourseImageTextPresenter implements IBizCallback {
     public void requestBeforeBuy (String resourceId, String resourceType) {
         CourseITBeforeBuyRequest courseITBeforeBuyRequest = new CourseITBeforeBuyRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + "xe.goods.info.get/1.0.0", this);
         courseITBeforeBuyRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        courseITBeforeBuyRequest.addRequestParam("resource_id", resourceId);
-        courseITBeforeBuyRequest.addRequestParam("resource_type", resourceType);
+        courseITBeforeBuyRequest.addDataParam("resource_id", resourceId);
+        courseITBeforeBuyRequest.addDataParam("resource_type", resourceType);
         courseITBeforeBuyRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         NetworkEngine.getInstance().sendRequest(courseITBeforeBuyRequest);
     }
@@ -49,8 +44,8 @@ public class CourseImageTextPresenter implements IBizCallback {
     public void requestAfterBuy (String resourceId, String resourceType) {
         CourseITAfterBuyRequest courseITAfterBuyRequest = new CourseITAfterBuyRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + "xe.resource.content.get/1.0.0", this);
         courseITAfterBuyRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        courseITAfterBuyRequest.addRequestParam("resource_id", resourceId);
-        courseITAfterBuyRequest.addRequestParam("resource_type", resourceType);
+        courseITAfterBuyRequest.addDataParam("resource_id", resourceId);
+        courseITAfterBuyRequest.addDataParam("resource_type", resourceType);
         courseITAfterBuyRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         NetworkEngine.getInstance().sendRequest(courseITAfterBuyRequest);
     }

@@ -57,6 +57,7 @@
         <!--微信sdk start-->
         <activity
             android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTop"

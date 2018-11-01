@@ -17,15 +17,18 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.ColumnListRequst;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.PayOrderRequest;
+import xiaoe.com.network.requests.RemoveCollectionRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.column.ColumnFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
 import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
+import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.CustomScrollView;
@@ -59,6 +62,13 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private boolean isHasBuy = false;
     private boolean pay = false;
     private boolean refreshData = false;
+    private ImageView btnCollect;
+    private boolean hasCollect = false;//是否收藏
+    private CollectionUtils collectionUtils;
+    private String collectTitle = "";
+    private String collectImgUrl;
+    private String collectImgUrlCompressed;
+    private String collectPrice = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +84,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         resourceId = mIntent.getStringExtra("resource_id");
         columnPresenter = new ColumnPresenter(this);
         columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
+        collectionUtils = new CollectionUtils(this);
     }
 
     private void initView() {
@@ -119,9 +130,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         btnContentDirectory.setOnClickListener(this);
         btnContentDirectory.setEnabled(true);
         btnContentDirectorTag = (ImageView) findViewById(R.id.btn_content_director_tag);
-
+        //返回按钮
         btnBack = (ImageView) findViewById(R.id.btn_back);
         btnBack.setOnClickListener(this);
+        //收藏按钮
+        btnCollect = (ImageView) findViewById(R.id.btn_collect);
+        btnCollect.setOnClickListener(this);
     }
 
     @Override
@@ -170,6 +184,36 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else if(iRequest instanceof PayOrderRequest){
             JSONObject data = (JSONObject) dataObject;
             payOrderRequest(data);
+        }else if(iRequest instanceof AddCollectionRequest){
+            addCollectionRequest(jsonObject);
+        }else if(iRequest instanceof RemoveCollectionRequest){
+            removeCollectionRequest(jsonObject);
+        }
+    }
+
+    /**
+     * 取消收藏
+     * @param jsonObject
+     */
+    private void removeCollectionRequest(JSONObject jsonObject) {
+        if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
+//            toastCustom(getResources().getString(R.string.cancel_collect_succeed));
+            setCollectState(false);
+        }else{
+            toastCustom(getResources().getString(R.string.cancel_collect_fail));
+        }
+    }
+
+    /**
+     * 添加收藏
+     * @param jsonObject
+     */
+    private void addCollectionRequest(JSONObject jsonObject) {
+        if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
+//            toastCustom(getResources().getString(R.string.collect_succeed));
+            setCollectState(true);
+        }else{
+            toastCustom(getResources().getString(R.string.collect_fail));
         }
     }
 
@@ -177,8 +221,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         JSONObject payConfig = dataObject.getJSONObject("payConfig");
         pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
                 payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
-//        payPresenter.pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
-//                                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
     }
 
     private void columnListRequest(IRequest iRequest, JSONArray data) {
@@ -228,13 +270,22 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             buyView.setVisibility(View.VISIBLE);
             buyView.setBuyPrice(data.getIntValue("price"));
             isHasBuy = false;
+            collectPrice = ""+data.getString("price");
         }else{
             buyView.setVisibility(View.GONE);
             isHasBuy = true;
+            collectPrice = "";
         }
+        String title = data.getString("title");
+        //收藏内容
+        collectTitle = title;
+        collectImgUrl = data.getString("img_url_compressed");
+        collectImgUrlCompressed = data.getString("img_url_compressed");
+        setCollectState(data.getIntValue("has_favorite") == 1);
+
         ColumnDetailFragment detailFragment = (ColumnDetailFragment) columnViewPagerAdapter.getItem(0);
         detailFragment.setContentDetail(data.getString("content"));
-        columnTitle.setText(data.getString("title"));
+        columnTitle.setText(title);
         columnImage.setImageURI(data.getString("img_url_compressed"));
         int purchaseCount = data.getIntValue("purchase_count");
         if(purchaseCount > 0){
@@ -266,8 +317,28 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             case R.id.buy_course:
                 buyResource();
                 break;
+            case R.id.btn_collect:
+                collect();
+                break;
             default:
                 break;
+        }
+    }
+    //点击收藏按钮
+    private void collect() {
+        hasCollect = !hasCollect;
+        if(hasCollect){
+            //添加收藏
+            JSONObject collectionContent = new JSONObject();
+            collectionContent.put("title",collectTitle);
+            collectionContent.put("author","");
+            collectionContent.put("img_url",collectImgUrl);
+            collectionContent.put("img_url_compressed",collectImgUrlCompressed);
+            collectionContent.put("price",collectPrice);
+            collectionUtils.requestAddCollection(resourceId, isBigColumn ? "8" : "6", collectionContent);
+        }else {
+            //取消收藏
+            collectionUtils.requestRemoveCollection(resourceId, isBigColumn ? "8" : "6");
         }
     }
 
@@ -320,6 +391,19 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     public void setLoadState(int state){
         loadMoreView.setLoadState(state);
         columnScrollView.setLoadState(state);
+    }
+
+    /**
+     * 设置收藏状态
+     * @param collect 0-未收藏，1-已收藏
+     */
+    private void setCollectState(boolean collect){
+        hasCollect = collect;
+        if(collect){
+            btnCollect.setImageResource(R.mipmap.audio_collect);
+        }else{
+            btnCollect.setImageResource(R.mipmap.video_collect);
+        }
     }
 
     @Override

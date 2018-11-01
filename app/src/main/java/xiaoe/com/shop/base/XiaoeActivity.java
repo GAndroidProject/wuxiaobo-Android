@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,6 +20,10 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -51,7 +56,7 @@ import xiaoe.com.shop.widget.CustomDialog;
  * Created by Administrator on 2017/7/17.
  */
 
-public class XiaoeActivity extends AppCompatActivity implements INetworkResponse, OnCancelListener, OnConfirmListener {
+public class XiaoeActivity extends AppCompatActivity implements INetworkResponse, OnCancelListener, OnConfirmListener, UMShareListener {
     private static final String TAG = "XiaoeActivity";
     private static final int DISMISS_POPUP_WINDOW = 1;
     private static final int DISMISS_TOAST = 2;
@@ -329,4 +334,33 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     public CustomDialog getDialog(){
         return dialog;
     }
+
+
+    /*↓↓↓↓↓↓↓  此处往下是友盟分享回调 ↓↓↓↓↓↓↓*/
+    public void umShare(){
+        new ShareAction(this)
+                .withText("hello")
+                .setDisplayList(SHARE_MEDIA.QQ,SHARE_MEDIA.WEIXIN)
+                .setCallback(this).open();
+    }
+    @Override
+    public void onStart(SHARE_MEDIA share_media) {
+        Log.d(TAG, "onStart: 友盟");
+    }
+
+    @Override
+    public void onResult(SHARE_MEDIA share_media) {
+        Log.d(TAG, "onResult: 友盟");
+    }
+
+    @Override
+    public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+        Log.d(TAG, "onError: 友盟");
+    }
+
+    @Override
+    public void onCancel(SHARE_MEDIA share_media) {
+        Log.d(TAG, "onCancel: 友盟");
+    }
+    /* ↑↑↑↑↑↑↑ 此处往上是友盟分享回调 ↑↑↑↑↑↑↑↑*/
 }

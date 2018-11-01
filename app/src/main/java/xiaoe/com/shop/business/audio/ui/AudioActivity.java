@@ -26,8 +26,10 @@ import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.PayOrderRequest;
+import xiaoe.com.network.requests.RemoveCollectionRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.ViewAnim;
 import xiaoe.com.shop.base.XiaoeActivity;
@@ -37,6 +39,7 @@ import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
+import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.ContentMenuLayout;
@@ -64,6 +67,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private Intent mIntent;
     private AudioPlayListLayout audioPlayList;
     private boolean paying = false;
+    private ImageView btnCollect;
+    private boolean hasCollect = false;//是否收藏
+    private CollectionUtils collectionUtils;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -154,8 +160,15 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         //状态页面
         statusPagerView = (StatusPagerView) findViewById(R.id.state_pager_view);
         statusPagerView.setVisibility(View.GONE);
+        //收藏按钮
+        btnCollect = (ImageView) findViewById(R.id.btn_collect);
+        btnCollect.setOnClickListener(this);
+        //分享按钮
+        ImageView btnShare = (ImageView) findViewById(R.id.btn_share);
+        btnShare.setOnClickListener(this);
     }
     private void initDatas() {
+        collectionUtils = new CollectionUtils(this);
         refreshPager();
     }
     private void setDiskRotateAnimator(boolean play){
@@ -221,8 +234,42 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if(iRequest instanceof PayOrderRequest){
             JSONObject data = (JSONObject) dataObject;
             payOrderRequest(data);
+        }else if(iRequest instanceof AddCollectionRequest){
+            addCollectionRequest(jsonObject);
+        }else if(iRequest instanceof RemoveCollectionRequest){
+            removeCollectionRequest(jsonObject);
+        }
+
+    }
+
+    /**
+     * 取消收藏
+     * @param jsonObject
+     */
+    private void removeCollectionRequest(JSONObject jsonObject) {
+        if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
+//            toastCustom(getResources().getString(R.string.cancel_collect_succeed));
+            setCollectState(false);
+            AudioMediaPlayer.getAudio().setHasFavorite(0);
+        }else{
+            toastCustom(getResources().getString(R.string.cancel_collect_fail));
         }
     }
+
+    /**
+     * 添加收藏
+     * @param jsonObject
+     */
+    private void addCollectionRequest(JSONObject jsonObject) {
+        if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
+//            toastCustom(getResources().getString(R.string.collect_succeed));
+            setCollectState(true);
+            AudioMediaPlayer.getAudio().setHasFavorite(1);
+        }else{
+            toastCustom(getResources().getString(R.string.collect_fail));
+        }
+    }
+
     private void payOrderRequest(JSONObject dataObject) {
         JSONObject payConfig = dataObject.getJSONObject("payConfig");
         pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
@@ -276,8 +323,34 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             case R.id.buy_vip:
                 toastCustom("购买超级会员");
                 break;
+            case R.id.btn_collect:
+            case R.id.btn_collect_item:
+                collect();
+                break;
+            case R.id.btn_share:
+                umShare();
+                break;
             default:
                 break;
+        }
+    }
+
+    private void collect() {
+        hasCollect = !hasCollect;
+        AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
+        if(hasCollect){
+            //添加收藏
+            JSONObject collectionContent = new JSONObject();
+            collectionContent.put("title",audioPlayEntity.getTitle());
+            collectionContent.put("author","");
+            collectionContent.put("img_url",audioPlayEntity.getImgUrl());
+            collectionContent.put("img_url_compressed",audioPlayEntity.getImgUrl());
+            String price = audioPlayEntity.getHasBuy() == 1 ? "" : ""+audioPlayEntity.getPrice();
+            collectionContent.put("price", price);
+            collectionUtils.requestAddCollection(audioPlayEntity.getResourceId(), "2", collectionContent);
+        }else {
+            //取消收藏
+            collectionUtils.requestRemoveCollection(audioPlayEntity.getResourceId(), "2");
         }
     }
 
@@ -388,6 +461,19 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }else{
             playNum.setVisibility(View.GONE);
         }
-
+        setCollectState(playEntity.getHasFavorite() == 1);
+    }
+    /**
+     * 设置收藏状态
+     * @param collect 0-未收藏，1-已收藏
+     */
+    private void setCollectState(boolean collect){
+        hasCollect = collect;
+        if(collect){
+            btnCollect.setImageResource(R.mipmap.audio_collect);
+        }else{
+            btnCollect.setImageResource(R.mipmap.video_collect);
+        }
+        contentMenuLayout.setCollectState(collect);
     }
 }

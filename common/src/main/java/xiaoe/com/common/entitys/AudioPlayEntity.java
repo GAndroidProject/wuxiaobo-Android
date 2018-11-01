@@ -15,6 +15,8 @@ public class AudioPlayEntity {
     private String columnId = "";
     private String bigColumnId = "";
     private int price;
+    private String imgUrl;
+    private String imgUrlCompressed;
 
     private int totalDuration = 0;//总时长
 
@@ -177,5 +179,21 @@ public class AudioPlayEntity {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getImgUrlCompressed() {
+        return imgUrlCompressed;
+    }
+
+    public void setImgUrlCompressed(String imgUrlCompressed) {
+        this.imgUrlCompressed = imgUrlCompressed;
     }
 }

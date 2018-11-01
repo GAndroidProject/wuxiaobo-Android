@@ -89,12 +89,14 @@
                         android:layout_weight="1"
                         />
                     <ImageView
+                        android:id="@+id/btn_collect"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@mipmap/audio_collect"
                         android:layout_weight="1"
                         />
                     <ImageView
+                        android:id="@+id/btn_share"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@mipmap/audio_share"

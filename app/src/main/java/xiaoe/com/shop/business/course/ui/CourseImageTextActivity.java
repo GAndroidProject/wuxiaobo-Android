@@ -27,17 +27,19 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.CheckCollectionRequest;
 import xiaoe.com.network.requests.CourseITAfterBuyRequest;
 import xiaoe.com.network.requests.CourseITBeforeBuyRequest;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.PayOrderRequest;
 import xiaoe.com.network.requests.RemoveCollectionRequest;
-import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.course.presenter.CourseImageTextPresenter;
+import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.CommonTitleView;
@@ -113,6 +115,8 @@ public class CourseImageTextActivity extends XiaoeActivity {
     String collectionImgUrl;
     String collectionImgUrlCompressed;
     String collectionPrice;
+
+    private boolean paying = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -214,7 +218,9 @@ public class CourseImageTextActivity extends XiaoeActivity {
         itBuy.setOnBuyBtnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast("购买这个课程");
+                paying = true;
+                getDialog().showLoadDialog(false);
+                payOrder(resourceId, 1, 2);
             }
         });
         itDescBtn.setOnClickListener(new View.OnClickListener() {
@@ -271,6 +277,14 @@ public class CourseImageTextActivity extends XiaoeActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(paying){
+            paying = false;
+            int code = getWXPayCode(true);
+            if(code == 0){
+                courseImageTextPresenter.requestBeforeBuy(resourceId, resourceType);
+            }
+            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+        }
     }
 
     @Override
@@ -292,9 +306,13 @@ public class CourseImageTextActivity extends XiaoeActivity {
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
+        if(activityDestroy){
+            return;
+        }
         JSONObject result = (JSONObject) entity;
         if (success) {
             if (iRequest instanceof CourseITBeforeBuyRequest) {
+                getDialog().dismissDialog();
                 int code = result.getInteger("code");
                 JSONObject data = (JSONObject) result.get("data");
                 if (code == NetworkCodes.CODE_SUCCEED) {
@@ -343,11 +361,31 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 } else if (code == NetworkCodes.CODE_DELETE_COLLECT_FAILED) {
                     Toast("取消收藏失败");
                 }
+            } else if(iRequest instanceof PayOrderRequest){
+                payOrderRequest(result);
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail");
             onBackPressed();
         }
+    }
+
+    /**
+     * 支付下单
+     * @param jsonObject
+     */
+    private void payOrderRequest(JSONObject jsonObject) {
+        JSONObject data = jsonObject.getJSONObject("data");
+        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
+            getDialog().dismissDialog();
+            getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
+            getDialog().showDialog(-1);
+            return;
+        }
+
+        JSONObject payConfig = data.getJSONObject("payConfig");
+        pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
+                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
     }
 
     // 初始化购买前的数据

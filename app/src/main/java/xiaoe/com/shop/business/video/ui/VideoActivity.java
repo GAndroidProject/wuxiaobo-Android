@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -23,16 +24,19 @@ import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.ContentRequest;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.PayOrderRequest;
+import xiaoe.com.network.requests.RemoveCollectionRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.video.presenter.VideoPresenter;
 import xiaoe.com.shop.events.VideoPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickVideoBackListener;
+import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.StatusPagerView;
@@ -50,6 +54,13 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private Intent mIntent;
     private String mResourceId;
     private boolean paying = false;
+    private ImageView btnCollect;
+    private boolean hasCollect = false;//是否收藏
+    private CollectionUtils collectionUtils;
+    private String collectTitle = "";
+    private String collectImgUrl;
+    private String collectImgUrlCompressed;
+    private String collectPrice = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,6 +76,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         setContentView(R.layout.activity_video);
         EventBus.getDefault().register(this);
         videoPresenter = new VideoPresenter(this);
+        collectionUtils = new CollectionUtils(this);
         mIntent = getIntent();
         initViews();
         initDatas();
@@ -111,8 +123,11 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         statusPagerView.setVisibility(View.VISIBLE);
         statusPagerView.setLoadingState(View.VISIBLE);
         statusPagerView.setHintStateVisibility(View.GONE);
-
+        //webView显示图文
         videoContentWebView = (WebView) findViewById(R.id.video_web_view);
+        //收藏按钮
+        btnCollect = (ImageView) findViewById(R.id.btn_collect);
+        btnCollect.setOnClickListener(this);
     }
 
     private void initDatas() {
@@ -137,8 +152,41 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 break;
             case R.id.buy_vip:
                 toastCustom("购买超级会员");
+            case R.id.btn_collect:
+                collect();
+                break;
             default:
                 break;
+        }
+    }
+
+    private void collect() {
+        hasCollect = !hasCollect;
+        if(hasCollect){
+            //添加收藏
+            JSONObject collectionContent = new JSONObject();
+            collectionContent.put("title",collectTitle);
+            collectionContent.put("author","");
+            collectionContent.put("img_url",collectImgUrl);
+            collectionContent.put("img_url_compressed",collectImgUrlCompressed);
+            collectionContent.put("price",collectPrice);
+            collectionUtils.requestAddCollection(mResourceId, "3", collectionContent);
+        }else {
+            //取消收藏
+            collectionUtils.requestRemoveCollection(mResourceId, "3");
+        }
+    }
+
+    /**
+     * 设置收藏状态
+     * @param collect 0-未收藏，1-已收藏
+     */
+    private void setCollectState(boolean collect){
+        hasCollect = collect;
+        if(collect){
+            btnCollect.setImageResource(R.mipmap.audio_collect);
+        }else{
+            btnCollect.setImageResource(R.mipmap.video_collect);
         }
     }
 
@@ -244,8 +292,38 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             detailRequest(jsonObject);
         }else if(iRequest instanceof PayOrderRequest){
             payOrderRequest(jsonObject);
+        }else if(iRequest instanceof AddCollectionRequest){
+            addCollectionRequest(jsonObject);
+        }else if(iRequest instanceof RemoveCollectionRequest){
+            removeCollectionRequest(jsonObject);
         }
 
+    }
+
+    /**
+     * 取消收藏
+     * @param jsonObject
+     */
+    private void removeCollectionRequest(JSONObject jsonObject) {
+        if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
+//            toastCustom(getResources().getString(R.string.cancel_collect_succeed));
+            setCollectState(false);
+        }else{
+            toastCustom(getResources().getString(R.string.cancel_collect_fail));
+        }
+    }
+
+    /**
+     * 添加收藏
+     * @param jsonObject
+     */
+    private void addCollectionRequest(JSONObject jsonObject) {
+        if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
+//            toastCustom(getResources().getString(R.string.collect_succeed));
+            setCollectState(true);
+        }else{
+            toastCustom(getResources().getString(R.string.collect_fail));
+        }
     }
 
     private void payOrderRequest(JSONObject jsonObject) {
@@ -272,7 +350,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             return;
         }
         JSONObject resourceInfo = data.getJSONObject("resource_info");
-        videoTitle.setText(resourceInfo.getString("title"));
+        String title = resourceInfo.getString("title");
+        videoTitle.setText(title);
         int count = resourceInfo.getIntValue("audio_play_count");
         if(count > 0){
             playCount.setVisibility(View.VISIBLE);
@@ -280,12 +359,18 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }else{
             playCount.setVisibility(View.GONE);
         }
+        collectTitle = title;
+        collectImgUrl = resourceInfo.getString("img_url_compressed");
+        collectImgUrlCompressed = resourceInfo.getString("img_url_compressed");
+        setCollectState(resourceInfo.getIntValue("has_favorite") == 1);
         if(resourceInfo.getIntValue("has_buy") == 1){
+            collectPrice = "";
             buyView.setVisibility(View.GONE);
             videoPresenter.requestContent(mResourceId);
         }else{
             buyView.setVisibility(View.VISIBLE);
             int price = resourceInfo.getIntValue("price");
+            collectPrice = ""+price;
             buyView.setBuyPrice(price);
             String detail = resourceInfo.getString("content");
             setContentDetail(detail);
@@ -303,6 +388,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         setContentDetail(detail);
         playControllerView.setPlayUrl(data.getString("video_mp4"));
         setPagerState(false);
+        collectImgUrl = data.getString("img_url");
     }
 
     private void setContentDetail(String detail){

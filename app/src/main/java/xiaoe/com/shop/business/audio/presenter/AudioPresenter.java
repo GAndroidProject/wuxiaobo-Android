@@ -85,6 +85,8 @@ public class AudioPresenter implements IBizCallback {
         playEntity.setHasBuy(resourceInfo.getIntValue("has_buy"));
         playEntity.setResourceId(resourceId);
         playEntity.setPrice(resourceInfo.getIntValue("price"));
+        playEntity.setImgUrl(resourceInfo.getString("img_url_compressed"));
+        playEntity.setImgUrlCompressed(resourceInfo.getString("img_url_compressed"));
         if(resourceInfo.getIntValue("has_buy") == 0){
             playEntity.setCode(0);
             playEntity.setContent(resourceInfo.getString("content"));
@@ -101,9 +103,6 @@ public class AudioPresenter implements IBizCallback {
                 AudioPlayEvent event = new AudioPlayEvent();
                 event.setState(AudioPlayEvent.REFRESH_PAGER);
                 EventBus.getDefault().post(event);
-//                if(play){
-//                    AudioMediaPlayer.start();
-//                }
             }
         });
     }

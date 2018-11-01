@@ -28,7 +28,7 @@ public class NavigateDetailPresenter implements IBizCallback {
 
     public void requestData(String groupId) {
         CommodityGroupRequest commodityGroupRequest = new CommodityGroupRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + cmd, null, this);
-        commodityGroupRequest.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
+        commodityGroupRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
         commodityGroupRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
         commodityGroupRequest.addRequestParam("app_version", "0.1");
         commodityGroupRequest.addRequestParam("client", "1");

@@ -18,6 +18,7 @@ android {
         versionName "v1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk { abiFilters "armeabi","x86"}
+//        multiDexEnabled true
     }
     buildTypes {
         debug {
@@ -41,6 +42,7 @@ android {
                 [
                     'src/main/res/layouts/test',
                     'src/main/res/layouts/main',
+                    'src/main/res/layouts/umeng',
                     'src/main/res/layouts/download',
                     'src/main/res/layouts/comment',
                     'src/main/res/layouts/column',
@@ -90,6 +92,6 @@ dependencies {
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
     //圆圈loading
     implementation 'com.pnikosis:materialish-progress:1.7'
-    //微信sdk
-    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+    //分包
+//    compile 'com.android.support:multidex:1.0.3'
 }

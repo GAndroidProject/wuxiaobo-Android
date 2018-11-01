@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class ContentMenuLayout extends FrameLayout implements View.OnClickListen
     private LinearLayout btnComment;
     private View menuBG;
     private TextView btnCancel;
+    private ImageView collectIcon;
 
     public ContentMenuLayout(@NonNull Context context) {
         this(context,null);
@@ -35,7 +37,8 @@ public class ContentMenuLayout extends FrameLayout implements View.OnClickListen
         menuBG = rootView.findViewById(R.id.menu_bg);
         menuBG.setOnClickListener(this);
         btnShare = (LinearLayout) rootView.findViewById(R.id.btn_share);
-        btnCollect = (LinearLayout) rootView.findViewById(R.id.btn_collect);
+        btnCollect = (LinearLayout) rootView.findViewById(R.id.btn_collect_item);
+        collectIcon = (ImageView) rootView.findViewById(R.id.collect_icon);
         btnDownload = (LinearLayout) rootView.findViewById(R.id.btn_download);
         btnComment = (LinearLayout) rootView.findViewById(R.id.btn_comment);
         btnCancel = (TextView) rootView.findViewById(R.id.btn_cancel);
@@ -61,6 +64,13 @@ public class ContentMenuLayout extends FrameLayout implements View.OnClickListen
                 break;
             default:
                 break;
+        }
+    }
+    public void setCollectState(boolean collect){
+        if(collect){
+            collectIcon.setImageResource(R.mipmap.audio_collect);
+        }else{
+            collectIcon.setImageResource(R.mipmap.video_collect);
         }
     }
 }
