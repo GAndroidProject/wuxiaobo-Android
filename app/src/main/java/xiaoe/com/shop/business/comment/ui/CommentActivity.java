@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,26 +20,29 @@ import java.util.List;
 
 import xiaoe.com.common.entitys.CommentEntity;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.CommentLikeRequest;
 import xiaoe.com.network.requests.CommentListRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.SendCommentRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.comment.CommentListAdapter;
+import xiaoe.com.shop.adapter.comment.CommentLoadMoreHolder;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.comment.presenter.CommentPresenter;
 import xiaoe.com.shop.interfaces.OnClickCommentListener;
 import xiaoe.com.shop.interfaces.OnClickSendCommentListener;
 import xiaoe.com.shop.widget.CommentView;
+import xiaoe.com.shop.widget.ListBottomLoadMoreView;
 import xiaoe.com.shop.widget.StatusPagerView;
 
-public class CommentActivity extends XiaoeActivity implements OnClickSendCommentListener, OnClickCommentListener {
+public class CommentActivity extends XiaoeActivity implements View.OnClickListener, OnClickSendCommentListener, OnClickCommentListener {
     private static final String TAG = "CommentActivity";
     private RecyclerView commentRecyclerView;
     private CommentListAdapter commentAdapter;
     private CommentView commentView;
     private CommentPresenter commentPresenter;
     private Intent mIntent;
-    private int pageSize = 20;
+    private final int pageSize = 10;
     private String resourceId;
     private int resourceType;
     private StatusPagerView statusPagerView;
@@ -48,6 +52,10 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
     private boolean sending = false;
     private int mCommentCount = 0;
     private CommentEntity replyCommentEntity = null; //被回复的评论id
+    private ImageView btnBack;
+    private int mPosition;
+    private int lastVisibleItemPosition = -1;
+    private boolean isCommentFinished = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,6 +79,29 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
         commentCountView = (TextView) findViewById(R.id.comment_count);
         commentCountView.setText("评论");
         commentRecyclerView = (RecyclerView) findViewById(R.id.comment_recycler_view);
+        commentRecyclerView.setItemAnimator(null);
+        commentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                if ((visibleItemCount > 0 && (lastVisibleItemPosition) >= totalItemCount - 1)) {
+                    onLoadMore(recyclerView);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                if(layoutManager != null){
+                    lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+                }
+            }
+        });
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setAutoMeasureEnabled(true);
         commentRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayout.HORIZONTAL));
@@ -84,7 +115,11 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
 
         statusPagerView = (StatusPagerView) findViewById(R.id.status_pager);
         setPagerState(-1);
+
+        btnBack = (ImageView) findViewById(R.id.btn_back);
+        btnBack.setOnClickListener(this);
     }
+
 
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
@@ -96,7 +131,12 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
             }else if(iRequest instanceof SendCommentRequest){
                 getDialog().dismissDialog();
                 sending = false;
-                toastCustom(getResources().getString(R.string.send_comment_fail));
+                if(commentView.isReply()){
+                    toastCustom(getResources().getString(R.string.send_reply_comment_fail));
+                    commentView.setReply(false);
+                }else{
+                    toastCustom(getResources().getString(R.string.send_comment_fail));
+                }
             }
             return;
         }
@@ -107,7 +147,12 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
             }else if(iRequest instanceof SendCommentRequest){
                 getDialog().dismissDialog();
                 sending = false;
-                toastCustom(getResources().getString(R.string.send_comment_fail));
+                if(commentView.isReply()){
+                    toastCustom(getResources().getString(R.string.send_reply_comment_fail));
+                    commentView.setReply(false);
+                }else{
+                    toastCustom(getResources().getString(R.string.send_comment_fail));
+                }
             }
             return;
         }
@@ -119,17 +164,40 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
             sending = false;
             JSONObject data = (JSONObject) dataObject;
             sendCommentRequest(data);
+        }else if(iRequest instanceof CommentLikeRequest){
+            commentLikeRequest(null);
         }
     }
 
+    private void commentLikeRequest(JSONObject data) {
+        CommentEntity commentEntity = commentAdapter.getData().get(mPosition);
+        boolean praise = commentEntity.isIs_praise();
+//        int likeCount = commentEntity.getLike_num();
+//        if(praise){
+//            likeCount++;
+//        }else{
+//            likeCount--;
+//        }
+//        commentEntity.setLike_num(likeCount);
+        commentAdapter.notifyItemChanged(mPosition);
+    }
+
     private void sendCommentRequest(JSONObject data) {
+        if(mCommentCount == 0){
+            setPagerState(0);
+        }
         mCommentCount++;
         commentCountView.setText("评论 "+mCommentCount+" 条");
         int commentId = data.getIntValue("comment_id");
         sendComment.setComment_id(commentId);
         commentAdapter.addPosition(sendComment, 0);
         commentRecyclerView.scrollToPosition(0);
-        toastCustom(getResources().getString(R.string.send_comment_succeed));
+        if(commentView.isReply()){
+            toastCustom(getResources().getString(R.string.send_reply_comment_succeed));
+            commentView.setReply(false);
+        }else{
+            toastCustom(getResources().getString(R.string.send_comment_succeed));
+        }
     }
 
     private void commentListRequest(JSONObject dataObject) {
@@ -137,6 +205,12 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
         if(count <= 0){
             setPagerState(-2);
             return;
+        }
+        isCommentFinished = dataObject.getBoolean("is_finished");
+        if(isCommentFinished){
+            commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_ALL_FINISH);
+        }else{
+            commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_NOT_LOAD);
         }
         mCommentCount = count;
         commentCountView.setText("评论 "+count+" 条");
@@ -165,6 +239,7 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
             statusPagerView.setStateText(getResources().getString(R.string.get_comment_fail));
         }
         statusPagerView.setVisibility(state >= 0 ? View.GONE : View.VISIBLE);
+        commentView.setVisibility(state == -2 || state >= 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -191,8 +266,52 @@ public class CommentActivity extends XiaoeActivity implements OnClickSendComment
     }
 
     @Override
-    public void onClickComment(CommentEntity commentEntity) {
-        commentView.setSrcCommentHint(commentEntity.getUser_nickname());
-        replyCommentEntity = commentEntity;
+    public void onClickComment(CommentEntity commentEntity, int type, int position) {
+        if(type == CommentView.TYPE_REPLY){
+            //回复
+            commentView.setSrcCommentHint(commentEntity.getUser_nickname());
+            replyCommentEntity = commentEntity;
+        }else if(type == CommentView.TYPE_LIKE){
+            //点赞
+            mPosition = position;
+            boolean praise = !commentEntity.isIs_praise();
+            commentEntity.setIs_praise(praise);
+            int likeCount = commentEntity.getLike_num();
+            if(praise){
+                likeCount++;
+            }else{
+                likeCount--;
+            }
+            commentEntity.setLike_num(likeCount);
+            commentPresenter.likeComment(resourceId, resourceType, commentEntity.getComment_id(), commentEntity.getUser_id(), commentEntity.getContent(), praise);
+        }else if(type == CommentView.TYPE_DELETE){
+            //删除
+            if(commentEntity.isDelete()){
+                return;
+            }
+            mCommentCount--;
+            commentCountView.setText("评论 "+mCommentCount+" 条");
+            commentEntity.setDelete(true);
+            commentPresenter.deleteComment(resourceId, resourceType, commentEntity.getComment_id());
+            commentAdapter.getData().remove(position);
+            commentAdapter.notifyItemRangeChanged(0, commentAdapter.getItemCount());
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.btn_back){
+            finish();
+        }
+    }
+
+    private void onLoadMore(RecyclerView recyclerView) {
+        CommentLoadMoreHolder loadMoreHolder = commentAdapter.getLoadMoreHolder();
+        if(loadMoreHolder != null && loadMoreHolder.getLoadState() == ListBottomLoadMoreView.STATE_NOT_LOAD  && !isCommentFinished){
+            loadMoreHolder.setLoadState(ListBottomLoadMoreView.STATE_LOADING);
+            commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_LOADING);
+            CommentEntity commentEntity = commentAdapter.getData().get(commentAdapter.getItemCount() - 2);
+            commentPresenter.requestCommentList(resourceId, resourceType, pageSize, commentEntity.getComment_id(), null);
+        }
     }
 }

@@ -11,10 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="44dp">
         <ImageView
+            android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingStart="20dp"
             android:src="@mipmap/download_back"
+            android:background="@drawable/touch_state_bg"
             />
         <TextView
             android:id="@+id/comment_count"
@@ -46,5 +48,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tool_bar"
+        android:layout_above="@id/comment_view"
         />
 </RelativeLayout>

@@ -14,6 +14,7 @@ public class AudioPlayEntity {
     private String updateAt = null;
     private String columnId = "";
     private String bigColumnId = "";
+    private int price;
 
     private int totalDuration = 0;//总时长
 
@@ -168,5 +169,13 @@ public class AudioPlayEntity {
 
     public void setTotalDuration(int totalDuration) {
         this.totalDuration = totalDuration;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }

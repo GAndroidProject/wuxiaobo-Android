@@ -23,6 +23,7 @@ public class ListBottomLoadMoreView extends FrameLayout {
     private View rootView;
     private ProgressWheel progressWheel;
     private TextView loadText;
+    private int state = STATE_NOT_LOAD;
 
     public ListBottomLoadMoreView(@NonNull Context context) {
         this(context,null);
@@ -54,5 +55,9 @@ public class ListBottomLoadMoreView extends FrameLayout {
             default:
                 break;
         }
+        this.state = state;
+    }
+    public int getLoadState(){
+        return state;
     }
 }

@@ -149,4 +149,13 @@
     <string name="send_empty_comment">不能发表空白评论</string>
     <string name="send_comment_fail">发表失败</string>
     <string name="send_comment_succeed">发表成功</string>
+    <string name="send_reply_comment_succeed">回复成功</string>
+    <string name="send_reply_comment_fail">回复失败</string>
+
+    <!--支付提示 start-->
+    <string name="pay_succeed">支付成功</string>
+    <string name="pay_fail">支付失败</string>
+    <string name="not_can_pay">不能支付</string>
+    <string name="pay_info_error">获取支付信息失败</string>
+    <!--支付提示 end-->
 </resources>

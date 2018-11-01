@@ -25,7 +25,7 @@ public class AudioPresenter implements IBizCallback {
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
         if(iRequest instanceof DetailRequest){
-            setAudioDetail(success, (JSONObject) entity, (String) iRequest.getFormBody().get("resource_id"));
+            setAudioDetail(success, (JSONObject) entity, (String) iRequest.getDataParams().get("resource_id"));
         }else if(iRequest instanceof ContentRequest){
             setAudioContent(success, (JSONObject)entity);
         }else{
@@ -52,9 +52,7 @@ public class AudioPresenter implements IBizCallback {
             playAudio(playEntity.isPlay());
             return;
         }
-        if(playEntity.getCode() == -2){
-            playEntity.setPlayUrl(data.getString("audio_url"));
-        }
+        playEntity.setPlayUrl(data.getString("audio_url"));
         playEntity.setContent(data.getString("content"));
         playEntity.setCode(0);
 //        AudioMediaPlayer.setAudio(playEntity, false);
@@ -86,13 +84,12 @@ public class AudioPresenter implements IBizCallback {
         playEntity.setPlayCount(resourceInfo.getIntValue("audio_play_count"));
         playEntity.setHasBuy(resourceInfo.getIntValue("has_buy"));
         playEntity.setResourceId(resourceId);
+        playEntity.setPrice(resourceInfo.getIntValue("price"));
         if(resourceInfo.getIntValue("has_buy") == 0){
             playEntity.setCode(0);
             playEntity.setContent(resourceInfo.getString("content"));
-//            AudioMediaPlayer.setAudio(playEntity, false);
             playAudio(false);
         }else{
-//            AudioMediaPlayer.setAudio(playEntity, false);
             requestContent(resourceId);
         }
     }
@@ -117,8 +114,8 @@ public class AudioPresenter implements IBizCallback {
     public void requestDetail(String resourceId){
         DetailRequest couponRequest = new DetailRequest( this);
         couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addRequestParam("resource_id",resourceId);
-        couponRequest.addRequestParam("resource_type","2");
+        couponRequest.addDataParam("resource_id",resourceId);
+        couponRequest.addDataParam("resource_type","2");
         couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         couponRequest.sendRequest();
     }

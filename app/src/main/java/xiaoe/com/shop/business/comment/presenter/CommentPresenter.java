@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import xiaoe.com.common.entitys.CommentEntity;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
+import xiaoe.com.network.requests.CommentDeleteRequest;
+import xiaoe.com.network.requests.CommentLikeRequest;
 import xiaoe.com.network.requests.CommentListRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.SendCommentRequest;
@@ -75,5 +77,37 @@ public class CommentPresenter implements IBizCallback {
         commentRequest.addRequestParam("content",content);
 
         commentRequest.sendRequest();
+    }
+
+    /**
+     * 评论点赞
+     * @param recordId
+     * @param recordType
+     * @param commentId
+     * @param srcUserId
+     * @param commentContent
+     * @param praised
+     */
+    public void likeComment(String recordId, int recordType, int commentId, String srcUserId, String commentContent, boolean praised){
+        CommentLikeRequest commentLikeRequest = new CommentLikeRequest(this);
+        commentLikeRequest.addRequestParam("shop_id","apppcHqlTPT3482");
+        commentLikeRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        commentLikeRequest.addRequestParam("record_id",recordId);
+        commentLikeRequest.addRequestParam("record_type",recordType);
+        commentLikeRequest.addRequestParam("comment_id",commentId);
+        commentLikeRequest.addRequestParam("src_user_id",srcUserId);
+        commentLikeRequest.addRequestParam("src_comment_content",commentContent);
+        commentLikeRequest.addRequestParam("is_praised",praised);
+        commentLikeRequest.sendRequest();
+    }
+    public void deleteComment(String recordId, int recordType, int commentId){
+        CommentDeleteRequest commentDeleteRequest = new CommentDeleteRequest(this);
+        commentDeleteRequest.addRequestParam("shop_id","apppcHqlTPT3482");
+        commentDeleteRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        commentDeleteRequest.addRequestParam("comment_id",commentId);
+        commentDeleteRequest.addRequestParam("record_id",recordId);
+        commentDeleteRequest.addRequestParam("record_type",recordType);
+
+        commentDeleteRequest.sendRequest();
     }
 }

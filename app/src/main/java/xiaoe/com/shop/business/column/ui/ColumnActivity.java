@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.ColumnListRequst;
 import xiaoe.com.network.requests.DetailRequest;
@@ -24,7 +25,6 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.column.ColumnFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
-import xiaoe.com.shop.common.pay.PayPresenter;
 import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
 import xiaoe.com.shop.utils.NumberFormat;
 import xiaoe.com.shop.widget.CommonBuyView;
@@ -57,7 +57,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private int pageIndex = 1;
     private int pageSize = 20;
     private boolean isHasBuy = false;
-    private PayPresenter payPresenter;
+    private boolean pay = false;
+    private boolean refreshData = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,7 +73,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private void initData() {
         resourceId = mIntent.getStringExtra("resource_id");
         columnPresenter = new ColumnPresenter(this);
-        payPresenter = new PayPresenter(this, this);
         columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
     }
 
@@ -125,12 +125,27 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(pay){
+            int code = getWXPayCode(true);
+            if(code == 0){
+                columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
+            }
+            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+        }
+    }
+
+    @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
+        if(activityDestroy){
+            return;
+        }
         JSONObject jsonObject = (JSONObject) entity;
         if(entity == null || !success){
             if(iRequest instanceof PayOrderRequest){
                 getDialog().dismissDialog();
-                getDialog().setHintMessage("获取支付信息失败");
+                getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
                 getDialog().showDialog(-1);
             }
             return;
@@ -141,7 +156,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
             }else if(iRequest instanceof PayOrderRequest){
                 getDialog().dismissDialog();
-                getDialog().setHintMessage("获取支付信息失败");
+                getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
                 getDialog().showDialog(-1);
             }
             return;
@@ -160,19 +175,31 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     private void payOrderRequest(JSONObject dataObject) {
         JSONObject payConfig = dataObject.getJSONObject("payConfig");
-        payPresenter.pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
-                                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
+        pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
+                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
+//        payPresenter.pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
+//                                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
     }
 
     private void columnListRequest(IRequest iRequest, JSONArray data) {
         if(isBigColumn){
             ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
-            fragment.addData(columnPresenter.formatColumnEntity(data, resourceId));
+            if(refreshData){
+                refreshData = false;
+                fragment.refreshData(columnPresenter.formatColumnEntity(data, resourceId));
+            }else{
+                fragment.addData(columnPresenter.formatColumnEntity(data, resourceId));
+            }
         }else{
             LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
-            fragment.addData(columnPresenter.formatSingleResouceEntity(data, resourceId, ""));
+            if(refreshData){
+                refreshData = false;
+                fragment.refreshData(columnPresenter.formatSingleResouceEntity(data, resourceId, ""));
+            }else{
+                fragment.addData(columnPresenter.formatSingleResouceEntity(data, resourceId, ""));
+            }
         }
         if(data.size() < pageSize){
             setLoadState(ListBottomLoadMoreView.STATE_ALL_FINISH);
@@ -182,6 +209,21 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void detailRequest(JSONObject data) {
+        if(pay){
+            refreshData = true;
+            pay = false;
+            getDialog().dismissDialog();
+            getDialog().setHintMessage(getResources().getString(R.string.pay_succeed));
+            getDialog().showDialog(-1);
+            if(isBigColumn){
+                ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
+                fragment.clearData();
+            }else{
+                LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
+                fragment.clearData();
+            }
+            setLoadState(ListBottomLoadMoreView.STATE_NOT_LOAD);
+        }
         if(data.getIntValue("has_buy") == 0){
             buyView.setVisibility(View.VISIBLE);
             buyView.setBuyPrice(data.getIntValue("price"));
@@ -196,7 +238,10 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         columnImage.setImageURI(data.getString("img_url_compressed"));
         int purchaseCount = data.getIntValue("purchase_count");
         if(purchaseCount > 0){
+            buyCount.setVisibility(View.VISIBLE);
             buyCount.setText(NumberFormat.viewCountToString(purchaseCount)+"人学习");
+        }else {
+            buyCount.setVisibility(View.GONE);
         }
         columnPresenter.requestColumnList(resourceId, "0", pageIndex, pageSize);
     }
@@ -227,9 +272,10 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void buyResource() {
+        pay = true;
         getDialog().showLoadDialog(false);
         int resourceType = isBigColumn ? 8 : 6;
-        payPresenter.payOrder(3, resourceType, resourceId, resourceId);
+        payOrder(resourceId, resourceType, 3);
     }
 
     private void setColumnViewPager(int index){
@@ -274,6 +320,10 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     public void setLoadState(int state){
         loadMoreView.setLoadState(state);
         columnScrollView.setLoadState(state);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

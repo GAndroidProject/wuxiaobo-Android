@@ -83,6 +83,11 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 		notifyDataSetChanged();
 	}
 
+	public void refreshData(List<ColumnSecondDirectoryEntity> list){
+		mDataSet.clear();
+		addAll(list);
+	}
+
 	public void add(ColumnSecondDirectoryEntity text, int position) {
 		mDataSet.add(position, text);
 		notifyItemInserted(position);
@@ -100,6 +105,10 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 		int position = mDataSet.size() - 1;
 		mDataSet.addAll(list);
 		notifyDataSetChanged();
+	}
+
+	public void clearData(){
+		mDataSet.clear();
 	}
 
 	public void setOnScrollToListener(OnScrollToListener onScrollToListener) {

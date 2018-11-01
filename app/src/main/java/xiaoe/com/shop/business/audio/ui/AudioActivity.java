@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -23,12 +24,16 @@ import org.greenrobot.eventbus.Subscribe;
 
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.utils.NetworkState;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
+import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.PayOrderRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.ViewAnim;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
+import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
@@ -58,6 +63,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private AudioDetailsSwitchLayout pagerContentDetailLayout;
     private Intent mIntent;
     private AudioPlayListLayout audioPlayList;
+    private boolean paying = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +85,20 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         super.onStart();
         if(AudioMediaPlayer.isPlaying()){
             setDiskRotateAnimator(true);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(paying){
+            paying = false;
+            int code = getWXPayCode(true);
+            if(code == 0){
+                AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+                new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+            }
+            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
         }
     }
 
@@ -129,6 +149,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         detailContent = (WebView) findViewById(R.id.audio_detail_content);
         //底部购买按钮
         commonBuyView = (CommonBuyView) findViewById(R.id.common_buy_view);
+        commonBuyView.setOnVipBtnClickListener(this);
+        commonBuyView.setOnBuyBtnClickListener(this);
         //状态页面
         statusPagerView = (StatusPagerView) findViewById(R.id.state_pager_view);
         statusPagerView.setVisibility(View.GONE);
@@ -178,7 +200,35 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-
+        if(entity == null || !success){
+            if(iRequest instanceof PayOrderRequest){
+                getDialog().dismissDialog();
+                getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
+                getDialog().showDialog(-1);
+            }
+            return;
+        }
+        JSONObject jsonObject = (JSONObject) entity;
+        Object dataObject = jsonObject.get("data");
+        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || dataObject == null ){
+            if(iRequest instanceof PayOrderRequest){
+                getDialog().dismissDialog();
+                getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
+                getDialog().showDialog(-1);
+            }
+            return;
+        }
+        if(iRequest instanceof PayOrderRequest){
+            JSONObject data = (JSONObject) dataObject;
+            payOrderRequest(data);
+        }
+    }
+    private void payOrderRequest(JSONObject dataObject) {
+        JSONObject payConfig = dataObject.getJSONObject("payConfig");
+        pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
+                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
+//        payPresenter.pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
+//                                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
     }
 
 
@@ -220,9 +270,22 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                     audioPlayList.setVisibility(View.VISIBLE);
                 }
                 break;
+            case R.id.buy_course:
+                buyResource();
+                break;
+            case R.id.buy_vip:
+                toastCustom("购买超级会员");
+                break;
             default:
                 break;
         }
+    }
+
+    private void buyResource() {
+        paying = true;
+        getDialog().showLoadDialog(false);
+        AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        payOrder(playEntity.getResourceId(), 2, 2);
     }
 
     @Subscribe
@@ -287,17 +350,25 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void refreshPager(){
+        if(activityDestroy){
+            return;
+        }
+        getDialog().dismissDialog();
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
-        int code = playEntity.getCode();
-        if(playEntity == null || code == -2){
+        if(playEntity == null){
             setButtonEnabled(false);
             return;
-        }else if (code == 1){
+        }
+        int code = playEntity.getCode();
+        if (code == 1){
             setPagerState(true);
             return;
+        }else if(code == -2){
+            setButtonEnabled(false);
         }
         if(playEntity.getHasBuy() == 0){
             commonBuyView.setVisibility(View.VISIBLE);
+            commonBuyView.setBuyPrice(playEntity.getPrice());
             setButtonEnabled(false);
         }else{
             commonBuyView.setVisibility(View.GONE);
@@ -310,6 +381,13 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             AudioMediaPlayer.setAudio(playEntity, true);
         }
         audioTitle.setText(playEntity.getTitle());
-        playNum.setText(NumberFormat.viewCountToString(playEntity.getPlayCount())+"次播放");
+        int count = playEntity.getPlayCount();
+        if(count > 0){
+            playNum.setVisibility(View.VISIBLE);
+            playNum.setText(NumberFormat.viewCountToString(count)+"次播放");
+        }else{
+            playNum.setVisibility(View.GONE);
+        }
+
     }
 }

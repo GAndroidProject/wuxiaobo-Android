@@ -21,10 +21,12 @@ import org.greenrobot.eventbus.Subscribe;
 
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.ContentRequest;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.PayOrderRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
@@ -47,6 +49,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private TextView videoTitle;
     private Intent mIntent;
     private String mResourceId;
+    private boolean paying = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +76,18 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         super.onStart();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(paying){
+            paying = false;
+            int code = getWXPayCode(true);
+            if(code == 0){
+                videoPresenter.requestDetail(mResourceId);
+            }
+            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+        }
+    }
 
     private void initViews() {
         String videoImageUrl = mIntent.getStringExtra("videoImageUrl");
@@ -90,6 +105,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         playCount = (TextView) findViewById(R.id.play_num);
         buyView = (CommonBuyView) findViewById(R.id.detail_buy);
         buyView.setVisibility(View.GONE);
+        buyView.setOnBuyBtnClickListener(this);
+        buyView.setOnVipBtnClickListener(this);
         statusPagerView = (StatusPagerView) findViewById(R.id.video_state_pager);
         statusPagerView.setVisibility(View.VISIBLE);
         statusPagerView.setLoadingState(View.VISIBLE);
@@ -115,9 +132,20 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.buy_course:
+                buyResource();
+                break;
+            case R.id.buy_vip:
+                toastCustom("购买超级会员");
             default:
                 break;
         }
+    }
+
+    private void buyResource() {
+        paying = true;
+        getDialog().showLoadDialog(false);
+        payOrder(mResourceId, 3, 2);
     }
 
     @Subscribe
@@ -196,20 +224,48 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        JSONObject jsonObject = (JSONObject) entity;
-        if(entity == null || !success){
-            setPagerState(true);
+        if(activityDestroy){
             return;
         }
+
+        if(entity == null || !success){
+            setPagerState(true);
+            if(iRequest instanceof PayOrderRequest){
+                getDialog().dismissDialog();
+                getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
+                getDialog().showDialog(-1);
+            }
+            return;
+        }
+        JSONObject jsonObject = (JSONObject) entity;
         if(iRequest instanceof ContentRequest){
             contentRequest(jsonObject);
         }else if(iRequest instanceof DetailRequest){
             detailRequest(jsonObject);
+        }else if(iRequest instanceof PayOrderRequest){
+            payOrderRequest(jsonObject);
         }
 
     }
 
+    private void payOrderRequest(JSONObject jsonObject) {
+
+        JSONObject data = jsonObject.getJSONObject("data");
+        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
+            getDialog().dismissDialog();
+            getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
+            getDialog().showDialog(-1);
+            return;
+        }
+
+
+        JSONObject payConfig = data.getJSONObject("payConfig");
+        pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
+                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
+    }
+
     private void detailRequest(JSONObject jsonObject) {
+        getDialog().dismissDialog();
         JSONObject data = jsonObject.getJSONObject("data");
         if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
             setPagerState(true);
@@ -218,7 +274,12 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         JSONObject resourceInfo = data.getJSONObject("resource_info");
         videoTitle.setText(resourceInfo.getString("title"));
         int count = resourceInfo.getIntValue("audio_play_count");
-        playCount.setText(NumberFormat.viewCountToString(count)+"次播放");
+        if(count > 0){
+            playCount.setVisibility(View.VISIBLE);
+            playCount.setText(NumberFormat.viewCountToString(count)+"次播放");
+        }else{
+            playCount.setVisibility(View.GONE);
+        }
         if(resourceInfo.getIntValue("has_buy") == 1){
             buyView.setVisibility(View.GONE);
             videoPresenter.requestContent(mResourceId);

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,8 +92,14 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     public void addData(List<ColumnDirectoryEntity> list){
         directoryAdapter.addAll(list);
     }
+    public void refreshData(List<ColumnDirectoryEntity> list){
+        directoryAdapter.refreshData(list);
+    }
     public void setData(List<ColumnDirectoryEntity> list){
         directoryAdapter.setData(list);
+    }
+    public void clearData(){
+        directoryAdapter.clearData();
     }
 
     @Override
@@ -157,7 +162,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         }else if(resourceType == 2){
             //音频
             onPlayPosition(null, parentPosition, position);
-            JumpDetail.jumpAudio(getContext(), resourceId);
+            JumpDetail.jumpAudio(getContext(), resourceId, 1);
         }else if(resourceType == 3){
             //视频
             JumpDetail.jumpVideo(getContext(), resourceId, "");
@@ -219,7 +224,6 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     }
 
     private void playPosition(List<AudioPlayEntity> playList, String resourceId, String columnId, String bigColumnId){
-        Log.d(TAG, "playPosition: --------"+resourceId);
         boolean resourceEquals = false;
         AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
         if(playAudio != null){
@@ -236,7 +240,6 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             return;
         }
         AudioMediaPlayer.stop();
-        int i = 0;
         for (AudioPlayEntity playEntity : playList) {
             if(playEntity.getResourceId().equals(resourceId)){
                 playEntity.setPlay(true);

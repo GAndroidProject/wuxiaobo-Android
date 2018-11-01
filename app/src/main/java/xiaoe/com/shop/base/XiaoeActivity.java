@@ -29,6 +29,7 @@ import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.AudioPlayTable;
 import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
@@ -40,6 +41,7 @@ import xiaoe.com.shop.business.audio.presenter.AudioSQLiteUtil;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 import xiaoe.com.shop.business.main.ui.MainActivity;
+import xiaoe.com.shop.common.pay.PayPresenter;
 import xiaoe.com.shop.interfaces.OnCancelListener;
 import xiaoe.com.shop.interfaces.OnConfirmListener;
 import xiaoe.com.shop.utils.StatusBarUtil;
@@ -64,6 +66,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private boolean mHasFocus = false;
     private boolean isActivityDestroy = false;
     private CustomDialog dialog;
+    protected boolean activityDestroy = false;
+    private PayPresenter payPresenter;
 
 
     static class XeHandler extends Handler {
@@ -133,7 +137,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         }
         SQLiteUtil.init(this, new AudioSQLiteUtil());
         if(SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)){
-            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 1";
+            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 10";
             List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
             if(entityList.size() > 0){
                 AudioPlayUtil.getInstance().setSingleAudio(true);
@@ -237,6 +241,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        activityDestroy = true;
         isActivityDestroy = true;
         if(toast != null){
             toast.cancel();
@@ -276,6 +281,40 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                 startActivity(intent);
             }
         });
+    }
+
+    /**
+     * 获取微信支付返回码
+     * @param hint
+     * @return
+     */
+    public int getWXPayCode(boolean hint){
+        int code = (int) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+        //code = 0微信支付成功，-1支付失败（签名错误之类，未拉起微信支付），-2支付失败（用户主动取消），-100不是微信支付
+        if(code == -1 && hint){
+            getDialog().dismissDialog();
+            getDialog().setHintMessage(getResources().getString(R.string.not_can_pay));
+            getDialog().showDialog(-1);
+        }else if(code == -2 && hint){
+            getDialog().dismissDialog();
+            getDialog().setHintMessage(getResources().getString(R.string.pay_fail));
+            getDialog().showDialog(-2);
+        }
+        return code;
+    }
+    //购买资源（下单）
+    public void payOrder(String resourceId, int resourceType, int paymentType) {
+        if(payPresenter == null){
+            payPresenter = new PayPresenter(this, this);
+        }
+        payPresenter.payOrder(paymentType, resourceType, resourceId, resourceId);
+    }
+    //拉起微信支付
+    public void pullWXPay(String appid, String partnerid, String prepayid, String noncestr, String timestamp, String packageValue, String sign){
+        if(payPresenter == null){
+            payPresenter = new PayPresenter(this, this);
+        }
+        payPresenter.pullWXPay(appid, partnerid, prepayid, noncestr, timestamp, packageValue, sign);
     }
 
     @Override

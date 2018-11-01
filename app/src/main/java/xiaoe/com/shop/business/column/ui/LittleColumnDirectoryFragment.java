@@ -83,6 +83,14 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
         setAudioPlayList(list);
     }
 
+    public void refreshData(List<ColumnSecondDirectoryEntity> list){
+        directoryAdapter.refreshData(list);
+    }
+
+    public void clearData(){
+        directoryAdapter.clearData();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -199,7 +207,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
         }else if(resourceType == 2){
             //音频
             onPlayPosition(null, parentPosition, position);
-            JumpDetail.jumpAudio(getContext(), resourceId);
+            JumpDetail.jumpAudio(getContext(), resourceId, 1);
         }else if(resourceType == 3){
             //视频
             JumpDetail.jumpVideo(getContext(), resourceId, "");

@@ -27,6 +27,9 @@ import xiaoe.com.shop.interfaces.OnClickSendCommentListener;
 
 public class CommentView extends FrameLayout implements View.OnClickListener, View.OnLayoutChangeListener, View.OnTouchListener {
     private static final String TAG = "CommentView";
+    public final static int TYPE_REPLY = 2100;
+    public final static int TYPE_LIKE = 2200;
+    public final static int TYPE_DELETE = 2300;
     private Context mContext;
     private EditText editComment;
     private TextView sendComment;
@@ -228,5 +231,9 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
 
     public boolean isReply(){
         return isReply;
+    }
+
+    public void setReply(boolean reply) {
+        isReply = reply;
     }
 }

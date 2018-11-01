@@ -43,11 +43,8 @@ import xiaoe.com.shop.adapter.decorate.search.SearchViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingFigureViewHolder;
 import xiaoe.com.shop.adapter.decorate.shuffling_figure.ShufflingImageLoader;
 import xiaoe.com.shop.base.BaseViewHolder;
-import xiaoe.com.shop.business.column.ui.ColumnActivity;
-import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.course_more.ui.CourseMoreActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
-import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
 import xiaoe.com.shop.business.search.ui.SearchActivity;
 import xiaoe.com.shop.common.JumpDetail;
 
@@ -323,7 +320,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     JumpDetail.jumpImageText(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg());
                     break;
                 case DecorateEntityType.AUDIO: // 音频
-                    JumpDetail.jumpAudio(mContext, knowledgeCommodityItem.getResourceId());
+                    JumpDetail.jumpAudio(mContext, knowledgeCommodityItem.getResourceId(), 0);
                     break;
                 case DecorateEntityType.VIDEO: // 视频
                     JumpDetail.jumpVideo(mContext, knowledgeCommodityItem.getResourceId(), "");
@@ -348,7 +345,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 JumpDetail.jumpImageText(mContext, resourceId, "");
                 break;
             case DecorateEntityType.AUDIO: // 音频
-                JumpDetail.jumpAudio(mContext, resourceId);
+                JumpDetail.jumpAudio(mContext, resourceId, 0);
                 break;
             case DecorateEntityType.VIDEO: // 视频
                 break;

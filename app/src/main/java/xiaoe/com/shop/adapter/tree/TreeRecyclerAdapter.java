@@ -117,6 +117,16 @@ public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 		mDataSet.addAll(list);
 		notifyDataSetChanged();
 	}
+	public void refreshData(List<ColumnDirectoryEntity> list){
+		mDataSet.clear();
+		mDataSet.addAll(list);
+		notifyDataSetChanged();
+	}
+
+	public void clearData(){
+		mDataSet.clear();
+		notifyDataSetChanged();
+	}
 
 	public List<BaseViewHolder> getViewHolderList() {
 		return viewHolderList;

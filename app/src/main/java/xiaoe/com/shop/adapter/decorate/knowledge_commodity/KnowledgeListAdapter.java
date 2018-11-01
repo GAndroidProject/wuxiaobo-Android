@@ -94,7 +94,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         mContext.startActivity(intent);
                         break;
                     case DecorateEntityType.AUDIO:
-                        JumpDetail.jumpAudio(mContext, mItemList.get(position).getResourceId());
+                        JumpDetail.jumpAudio(mContext, mItemList.get(position).getResourceId(),0);
                         break;
                     case DecorateEntityType.VIDEO:
                         JumpDetail.jumpVideo(mContext, mItemList.get(position).getResourceId(), "");

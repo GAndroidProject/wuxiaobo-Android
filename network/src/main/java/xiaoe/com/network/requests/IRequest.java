@@ -193,4 +193,16 @@ public abstract class IRequest {
     public Class getEntityClass(){
         return this.entityClass;
     }
+
+    public JSONObject getBuzDataParams() {
+        return buzDataParams;
+    }
+
+    public JSONObject getDataParams() {
+        return dataParams;
+    }
+
+    public JSONObject getBizDataParams() {
+        return bizDataParams;
+    }
 }

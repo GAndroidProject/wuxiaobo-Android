@@ -22,12 +22,14 @@ public class JumpDetail {
      * 跳转音频详情
      * @param context
      * @param resId
+     * @param hasBuy 0-未购买。1-已购买
      */
-    public static void jumpAudio(Context context, String resId){
+    public static void jumpAudio(Context context, String resId, int hasBuy){
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
         String resourceId = "";
         if(playEntity != null){
             resourceId = playEntity.getResourceId();
+            playEntity.setHasBuy(hasBuy);
         }
         if(!resourceId.equals(resId)){
             AudioMediaPlayer.stop();
@@ -38,6 +40,7 @@ public class JumpDetail {
             playEntity.setIndex(0);
             playEntity.setPlay(true);
             playEntity.setCode(-2);
+            playEntity.setHasBuy(hasBuy);
             AudioMediaPlayer.setAudio(playEntity, false);
 
             AudioPlayUtil.getInstance().refreshAudio(playEntity);

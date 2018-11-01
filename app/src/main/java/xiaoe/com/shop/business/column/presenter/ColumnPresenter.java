@@ -39,8 +39,8 @@ public class ColumnPresenter implements IBizCallback {
     public void requestDetail(String resourceId, String resourceType){
         DetailRequest couponRequest = new DetailRequest( this);
         couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addRequestParam("resource_id",resourceId);
-        couponRequest.addRequestParam("resource_type",resourceType);
+        couponRequest.addDataParam("resource_id",resourceId);
+        couponRequest.addDataParam("resource_type",resourceType);
         couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         couponRequest.sendRequest();
     }

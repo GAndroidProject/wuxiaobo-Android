@@ -13,6 +13,7 @@ import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import xiaoe.com.common.app.Constants;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
 
 
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
@@ -33,7 +34,6 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.d(TAG, "onResume: ");
 	}
 
 	@Override
@@ -43,9 +43,10 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 	@Override
 	public void onResp(BaseResp resp) {
 		if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
-//			EventBus.getDefault().post(new PayEvent(resp.errCode));
+			Log.e(TAG, "onResp: ------");
+			SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
+			SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, resp.errCode);
 		}
-		Log.d(TAG, "onResp: "+resp.errCode);
 		finish();
 	}
 }

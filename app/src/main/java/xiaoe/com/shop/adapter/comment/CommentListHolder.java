@@ -1,8 +1,10 @@
 package xiaoe.com.shop.adapter.comment;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -12,6 +14,7 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.OnClickCommentListener;
 import xiaoe.com.shop.utils.NumberFormat;
+import xiaoe.com.shop.widget.CommentView;
 
 public class CommentListHolder extends BaseViewHolder implements View.OnClickListener {
     private static final String TAG = "CommentListHolder";
@@ -26,9 +29,14 @@ public class CommentListHolder extends BaseViewHolder implements View.OnClickLis
     private TextView btnReplyComment;
     private CommentEntity mCommentEntity;
     private OnClickCommentListener commentListener;
+    private LinearLayout btnLikeComment;
+    private ImageView btnCommentDelete;
+    private final Context mContext;
+    private int mPosition;
 
-    public CommentListHolder(View itemView) {
+    public CommentListHolder(Context context, View itemView) {
         super(itemView);
+        mContext = context;
         rootView = itemView;
         initViews();
     }
@@ -40,11 +48,18 @@ public class CommentListHolder extends BaseViewHolder implements View.OnClickLis
         sendCommentDate = (TextView) rootView.findViewById(R.id.send_comment_date);
         likeCount = (TextView) rootView.findViewById(R.id.comment_like_count);
         likeIcon = (ImageView) rootView.findViewById(R.id.comment_like_icon);
+        //被回复评论内容
         srcCommentContent = (TextView) rootView.findViewById(R.id.src_comment_content);
+        //回复评论按钮
         btnReplyComment = (TextView) rootView.findViewById(R.id.btn_reply_comment);
+        //点赞
+        btnLikeComment = (LinearLayout) rootView.findViewById(R.id.btn_like_comment);
+        //删除
+        btnCommentDelete = (ImageView) rootView.findViewById(R.id.btn_comment_delete);
     }
 
     public void bindView(CommentEntity commentEntity, int position, OnClickCommentListener listener){
+        mPosition = position;
         mCommentEntity = commentEntity;
         commentListener = listener;
         userAvatar.setImageURI(commentEntity.getUser_avatar());
@@ -54,8 +69,10 @@ public class CommentListHolder extends BaseViewHolder implements View.OnClickLis
         sendCommentDate.setText(commentEntity.getComment_at());
         if(commentEntity.isIs_praise()){
             likeIcon.setImageResource(R.mipmap.comment_liked);
+            likeCount.setTextColor(mContext.getResources().getColor(R.color.high_title_color));
         }else{
             likeIcon.setImageResource(R.mipmap.comment_like);
+            likeCount.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
         }
         if(TextUtils.isEmpty(commentEntity.getSrc_content())){
             srcCommentContent.setVisibility(View.GONE);
@@ -64,12 +81,30 @@ public class CommentListHolder extends BaseViewHolder implements View.OnClickLis
             srcCommentContent.setText(commentEntity.getSrc_content());
         }
         btnReplyComment.setOnClickListener(this);
+        btnLikeComment.setOnClickListener(this);
+        btnCommentDelete.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+
+        switch (v.getId()){
+            case R.id.btn_reply_comment:
+                clickComment(CommentView.TYPE_REPLY);
+                break;
+            case R.id.btn_like_comment:
+                clickComment(CommentView.TYPE_LIKE);
+                break;
+            case R.id.btn_comment_delete:
+                clickComment(CommentView.TYPE_DELETE);
+                break;
+            default:
+                break;
+        }
+    }
+    private void clickComment(int type){
         if(commentListener != null){
-            commentListener.onClickComment(mCommentEntity);
+            commentListener.onClickComment(mCommentEntity, type, mPosition);
         }
     }
 }

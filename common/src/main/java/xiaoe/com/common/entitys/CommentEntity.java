@@ -32,6 +32,8 @@ public class CommentEntity {
     private String src_wx_avatar;
     private boolean is_praise = false;
 
+    private boolean isDelete = false;
+
     public int getComment_id() {
         return comment_id;
     }
@@ -134,5 +136,13 @@ public class CommentEntity {
 
     public void setIs_praise(boolean is_praise) {
         this.is_praise = is_praise;
+    }
+
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete) {
+        isDelete = delete;
     }
 }
