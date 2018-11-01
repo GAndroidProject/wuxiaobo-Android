@@ -47,6 +47,7 @@ public class NetworkEngine {
     public final static String COMMENT_BASE_URL = "http://134.175.39.17:9379/api/";
     public final static String COLLECTION_BASE_URL = "http://134.175.39.17:9381/api/"; // 收藏接口 url
     public final static String PLY_BASE_URL = "http://134.175.39.247:4586/";//支付订单
+    public final static String LOGIN_BASE_URL = "http://app-server.inside.xiaoeknow.com/api/"; // 登录接口 url
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient client;

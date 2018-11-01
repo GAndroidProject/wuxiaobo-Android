@@ -1,5 +1,6 @@
 package xiaoe.com.shop.common;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.comment.ui.CommentActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
+import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
 
@@ -109,5 +111,17 @@ public class JumpDetail {
         intent.putExtra("resourceType", resourceType);
         intent.putExtra("resourceTitle", resourceTitle);
         context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到主页
+     * @param context 上下文
+     * @param isFormalUser 是否为正式用户
+     */
+    public static void jumpMain(Context context, boolean isFormalUser) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra("isFormalUser", isFormalUser);
+        context.startActivity(intent);
+        ((Activity) context).finish();
     }
 }

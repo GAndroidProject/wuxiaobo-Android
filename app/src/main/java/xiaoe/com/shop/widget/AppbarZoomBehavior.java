@@ -1,10 +1,12 @@
 package xiaoe.com.shop.widget;
 
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +36,7 @@ public class AppbarZoomBehavior extends AppBarLayout.Behavior {
 
     private boolean isAnimate;//是否做动画标志
     private OverScroller mScroller;
+    private boolean isPositive;
 
     public AppbarZoomBehavior() {
 
@@ -91,6 +94,7 @@ public class AppbarZoomBehavior extends AppBarLayout.Behavior {
      */
     @Override
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, int dx, int dy, int[] consumed) {
+        isPositive = dy > 0;
         if (mImageView != null && child.getBottom() >= mAppbarHeight && dy < 0) {
             zoomHeaderImageView(child, dy);
         } else {
@@ -117,7 +121,7 @@ public class AppbarZoomBehavior extends AppBarLayout.Behavior {
     }
 
     /**
-     * 对ImageView进行缩放处理，对AppbarLayout进行高度的设置
+     * 对SimpleDraweeView进行缩放处理，对AppbarLayout进行高度的设置
      */
     private void zoomHeaderImageView(AppBarLayout abl, int dy) {
         mTotalDy += -dy;
@@ -143,7 +147,7 @@ public class AppbarZoomBehavior extends AppBarLayout.Behavior {
 
 
     /**
-     * 滑动停止的时候，恢复AppbarLayout、ImageView的原始状态
+     * 滑动停止的时候，恢复AppbarLayout、SimpleDraweeView的原始状态
      */
     @Override
     public void onStopNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout abl, View target) {
@@ -154,7 +158,7 @@ public class AppbarZoomBehavior extends AppBarLayout.Behavior {
     private ValueAnimator valueAnimator;
 
     /**
-     * 通过属性动画的形式，恢复AppbarLayout、ImageView的原始状态
+     * 通过属性动画的形式，恢复AppbarLayout、SimpleDraweeView的原始状态
      */
     private void recovery(final AppBarLayout abl) {
         if (mTotalDy > 0) {
@@ -177,5 +181,15 @@ public class AppbarZoomBehavior extends AppBarLayout.Behavior {
                 abl.setBottom(mAppbarHeight);
             }
         }
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public boolean onNestedFling(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, float velocityX, float velocityY, boolean consumed) {
+        if (target instanceof NestedScrollView) {
+            NestedScrollView nestedScrollView = (NestedScrollView) target;
+            consumed = velocityY > 0 || nestedScrollView.computeVerticalScrollOffset() > 0;
+        }
+        return super.onNestedFling(coordinatorLayout, child, target, velocityX, velocityY, consumed);
     }
 }

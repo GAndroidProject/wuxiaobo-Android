@@ -51,7 +51,7 @@ public class MicroPageFragment extends BaseFragment {
 
     private Unbinder unbinder;
     private Context mContext;
-    private int microPageId = -1;
+    private String microPageId = "";
 
     private boolean destroyView = false;
 
@@ -75,10 +75,10 @@ public class MicroPageFragment extends BaseFragment {
 
     List<ComponentInfo> microPageList;
 
-    public static MicroPageFragment newInstance(int microPageId) {
+    public static MicroPageFragment newInstance(String microPageId) {
         MicroPageFragment microPageFragment = new MicroPageFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("microPageId", microPageId);
+        bundle.putString("microPageId", microPageId);
         microPageFragment.setArguments(bundle);
         return microPageFragment;
     }
@@ -104,7 +104,7 @@ public class MicroPageFragment extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             // 获取微页面 id
-            microPageId = bundle.getInt("microPageId");
+            microPageId = bundle.getString("microPageId");
         }
     }
 
@@ -257,7 +257,7 @@ public class MicroPageFragment extends BaseFragment {
                     // 频道组件对应的专栏 id
                     String recentId = jsonItem.getString("src_id");
                     String imgUrl = jsonItem.getString("img_url");
-                    int updateCount = jsonItem.getInteger("resource_count");
+                    int updateCount = jsonItem.getInteger("resource_count") == null ? 0 : jsonItem.getInteger("resource_count");
                     String updateCountStr = "已更新至" + updateCount + "期";
                     component_recent.setTitle(recentTitle);
                     component_recent.setImgUrl(imgUrl);
@@ -360,7 +360,7 @@ public class MicroPageFragment extends BaseFragment {
         microPageList = new ArrayList<>();
 
         // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
-        if (microPageId != -1 && microPageId != 0) {
+        if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) { // 不为空，也不为主页
             microPageCollLayout.setBackground(mContext.getResources().getDrawable(R.mipmap.class_bg));
         }
 
@@ -421,15 +421,15 @@ public class MicroPageFragment extends BaseFragment {
         LinearLayoutManager llm_title = new LinearLayoutManager(getActivity());
         llm_title.setOrientation(LinearLayoutManager.VERTICAL);
         microPageTitleRecyclerView.setLayoutManager(llm_title);
-        if (microPageList.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) { // 标题在头顶
-            if (microPageId == 0) {
+        if (microPageList.size() > 0 && microPageList.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) { // 标题在头顶
+            if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
                 List<ComponentInfo> titleData = new ArrayList<>();
                 microPageAppBar.setVisibility(View.VISIBLE);
                 titleData.add(microPageList.get(0));
                 DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
                 microPageTitleRecyclerView.setAdapter(dra);
                 microPageList.remove(0);
-            } else {
+            } else if (microPageId.equals(MainActivity.MICRO_PAGE_COURSE)) {
                 List<ComponentInfo> titleData = new ArrayList<>();
                 microPageAppBar.setVisibility(View.VISIBLE);
                 // 如果有搜索栏，就取前三个，因为已经 remove 掉了，所以都 remove 第一个

@@ -165,4 +165,7 @@
     <string name="cancel_collect_succeed">取消收藏成功</string>
     <string name="cancel_collect_fail">取消收藏失败</string>
     <!--收藏提示 end-->
+
+    <string name="action_sheet_man">男</string>
+    <string name="action_sheet_woman">女</string>
 </resources>

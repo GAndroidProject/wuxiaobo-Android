@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.SettingItemInfo;
 import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
+import xiaoe.com.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
@@ -39,7 +40,7 @@ import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
 import xiaoe.com.shop.business.setting.presenter.SettingTimeCount;
 import xiaoe.com.shop.widget.CodeVerifyView;
 
-public class EditDataFragment extends BaseFragment implements OnItemClickWithPosListener {
+public class EditDataFragment extends BaseFragment implements OnItemClickWithSettingItemInfoListener {
 
     private static final String TAG = "EditDataFragment";
 
@@ -139,7 +140,7 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithPos
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         LinearDividerDecoration linearDividerDecoration = new LinearDividerDecoration(getActivity(), R.drawable.recycler_divider_line, Dp2Px2SpUtil.dp2px(getActivity(), 20));
         llm.setOrientation(LinearLayoutManager.VERTICAL);
-        settingRecyclerAdapter.setOnItemClickWithPosListener(this);
+        settingRecyclerAdapter.setOnItemClickWithSettingItemInfoListener(this);
         accountRecycler.setLayoutManager(llm);
         accountRecycler.addItemDecoration(linearDividerDecoration);
         accountRecycler.setAdapter(settingRecyclerAdapter);
@@ -210,7 +211,7 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithPos
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         LinearDividerDecoration linearDividerDecoration = new LinearDividerDecoration(getActivity(), R.drawable.recycler_divider_line, Dp2Px2SpUtil.dp2px(getActivity(), 20));
         llm.setOrientation(LinearLayoutManager.VERTICAL);
-        settingRecyclerAdapter.setOnItemClickWithPosListener(this);
+        settingRecyclerAdapter.setOnItemClickWithSettingItemInfoListener(this);
         aboutContent.setLayoutManager(llm);
         aboutContent.addItemDecoration(linearDividerDecoration);
         aboutContent.setAdapter(settingRecyclerAdapter);
@@ -370,10 +371,10 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithPos
     }
 
     @Override
-    public void onItemClick(View view, int position) {
+    public void onItemClick(View view, SettingItemInfo itemInfo) {
         // 账号设置的点击事件
         if (accountRecycler == view.getParent()) {
-            switch (position) {
+            switch (itemList.indexOf(itemInfo)) {
                 case 0:
                     // 修改密码
                     settingAccountActivity.replaceFragment(SettingAccountActivity.PWD_NOW);
@@ -388,7 +389,7 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithPos
                     break;
             }
         } else if (aboutContent == view.getParent()) { // 关于的点击事件
-            switch (position) {
+            switch (itemList.indexOf(itemInfo)) {
                 case 0:
                     // 联系我们
                     Toast.makeText(getActivity(), "联系我们", Toast.LENGTH_SHORT).show();

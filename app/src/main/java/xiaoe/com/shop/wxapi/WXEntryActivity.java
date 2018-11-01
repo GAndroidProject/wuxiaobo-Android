@@ -13,6 +13,8 @@ import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import xiaoe.com.common.app.Constants;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
+import xiaoe.com.shop.common.login.LoginPresenter;
 
 
 /**
@@ -28,10 +30,11 @@ import xiaoe.com.common.app.Constants;
  */
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
-    private final String TAG = this.getClass().getSimpleName();
+    private static final String TAG = "WXEntryActivity";
 
     private IWXAPI mApi;
 
+    LoginPresenter loginPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 break;
         }
         if(resp.getType() == ConstantsAPI.COMMAND_SENDAUTH){
+            Log.d(TAG, "onResp: code --- " + code);
+            SharedPreferencesUtil.getInstance(this, "xiaoe_file");
+            boolean hasUpdate = SharedPreferencesUtil.putData("wx_code", code);
 //            WXEntry wxEntry = WXEntry.getInstance();
 //            wxEntry.setCode(code);
 //            wxEntry.setMsg(msg);
@@ -80,9 +86,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 //            intent.putExtra("code", code);
 //            intent.putExtra("msg", msg);
 //            intent.putExtra("isLogin", true);
+            if (hasUpdate) { // 更新后回去
+                finish();
+                return;
+            }
         }
         finish();
-
     }
 
 

@@ -8,11 +8,10 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/login_toolbar"
+    <FrameLayout
+        android:id="@+id/login_title"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_collapseMode="pin"
+        android:layout_height="wrap_content"
         android:background="@color/white">
 
         <ImageView
@@ -20,7 +19,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:ignore="ContentDescription"
-            android:src="@mipmap/download_back"/>
+            android:src="@mipmap/download_back"
+            android:layout_gravity="start|center"
+            android:paddingStart="26dp"
+            android:paddingEnd="26dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"/>
 
         <TextView
             android:id="@+id/login_register"
@@ -29,11 +33,13 @@
             android:text="@string/login_register_title"
             android:textSize="16sp"
             android:textColor="@color/main_title_color"
-            android:layout_gravity="end"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="20dp"/>
+            android:layout_gravity="end|center"
+            android:paddingStart="26dp"
+            android:paddingEnd="26dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"/>
 
-    </android.support.v7.widget.Toolbar>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/login_container"

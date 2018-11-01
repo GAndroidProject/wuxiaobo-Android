@@ -16,8 +16,6 @@ public class MicroScrollBehavior extends AppBarLayout.Behavior {
 
     private static final String TAG = "MicroScrollBehavior";
 
-    private OverScroller mScroller;
-
     private static final int TOP_CHILD_FLING_THRESHOLD = 3;
     private boolean isPositive;
 
@@ -27,41 +25,12 @@ public class MicroScrollBehavior extends AppBarLayout.Behavior {
 
     public MicroScrollBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
-        getParentScroller(context);
-    }
-
-    // 获取滑动属性
-    private void getParentScroller(Context context) {
-        if (mScroller != null) return;
-        mScroller = new OverScroller(context);
-        try {
-            Class<?> reflex_class = getClass().getSuperclass().getSuperclass();//父类AppBarLayout.Behavior  父类的父类   HeaderBehavior
-            Field fieldScroller = reflex_class.getDeclaredField("mScroller");
-            fieldScroller.setAccessible(true);
-            fieldScroller.set(this, mScroller);
-        } catch (Exception e) {
-            Log.d(TAG, "getParentScroller: exception --> " + e);
-        }
     }
 
     @Override
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, int dx, int dy, int[] consumed) {
-//        if (mScroller != null) { //当recyclerView 做好滑动准备的时候 直接干掉Appbar的滑动
-//            if (mScroller.computeScrollOffset()) {
-//                mScroller.abortAnimation();
-//            }
-//        }
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed);
         isPositive = dy > 0;
-    }
-
-    @Override
-    public boolean onTouchEvent(CoordinatorLayout parent, AppBarLayout child, MotionEvent ev) {
-//        switch (ev.getActionMasked()) {
-//            case MotionEvent.ACTION_DOWN:
-//                break;
-//        }
-        return super.onTouchEvent(parent, child, ev);
     }
 
     @Override

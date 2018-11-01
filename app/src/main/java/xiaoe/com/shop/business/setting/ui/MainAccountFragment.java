@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.SettingItemInfo;
 import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
+import xiaoe.com.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import xiaoe.com.common.utils.CacheManagerUtil;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.requests.IRequest;
@@ -28,7 +29,7 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
 
-public class MainAccountFragment extends BaseFragment implements OnItemClickWithPosListener {
+public class MainAccountFragment extends BaseFragment implements OnItemClickWithSettingItemInfoListener {
 
     private static final String TAG = "MainAccountFragment";
 
@@ -89,7 +90,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
         LinearDividerDecoration linearDividerDecoration = new LinearDividerDecoration(getActivity(), R.drawable.recycler_divider_line, Dp2Px2SpUtil.dp2px(getActivity(), 20));
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         accountContent.setLayoutManager(llm);
-        settingRecyclerAdapter.setOnItemClickWithPosListener(this);
+        settingRecyclerAdapter.setOnItemClickWithSettingItemInfoListener(this);
         accountContent.addItemDecoration(linearDividerDecoration);
         accountContent.setAdapter(settingRecyclerAdapter);
     }
@@ -125,9 +126,9 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
     }
 
     @Override
-    public void onItemClick(View view, int position) {
+    public void onItemClick(View view, SettingItemInfo itemInfo) {
         SettingAccountActivity settingAccountActivity = (SettingAccountActivity) getActivity();
-        String tag = settingAccountActivity.int2Str(position);
+        String tag = settingAccountActivity.int2Str(itemInfoList.indexOf(itemInfo));
         settingAccountActivity.replaceFragment(tag);
     }
 }

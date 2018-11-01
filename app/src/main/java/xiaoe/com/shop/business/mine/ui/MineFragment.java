@@ -12,28 +12,34 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.MineMoneyItemInfo;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
+import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.SettingPseronMsgRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.cdkey.ui.CdKeyActivity;
 import xiaoe.com.shop.business.coupon.ui.CouponActivity;
-import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
+import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
+import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
 import xiaoe.com.shop.business.setting.ui.SettingAccountActivity;
 import xiaoe.com.shop.business.setting.ui.SettingPersonActivity;
-import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -142,7 +148,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         // 网络请求数据代码
 //        MinePresenter minePresenter = new MinePresenter(this);
-//        minePresenter.requestSearchResult();
+        SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
+        List<LoginUser> loginMsg = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        if (loginMsg.size() == 1) {
+            String apiToken = loginMsg.get(0).getApi_token();
+            SettingPresenter settingPresenter = new SettingPresenter(this);
+            settingPresenter.requestPersonData(apiToken, false);
+        }
     }
 
     @Override
@@ -158,7 +170,28 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        Log.d(TAG, "onMainThreadResponse: isSuccess --- " + success);
+        JSONObject result = (JSONObject) entity;
+        if (success) {
+            if (iRequest instanceof SettingPseronMsgRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    initMineMsg(data);
+                } else if (code == NetworkCodes.CODE_PERSON_PARAM_LOSE) {
+                    Log.d(TAG, "onMainThreadResponse: 必选字段缺失");
+                } else if (code == NetworkCodes.CODE_PERSON_PARAM_UNUSEFUL) {
+                    Log.d(TAG, "onMainThreadResponse: 字段格式无效");
+                } else if (code == NetworkCodes.CODE_PERSON_NOT_FOUND) {
+                    Log.d(TAG, "onMainThreadResponse: 当前用户不存在");
+                }
+            }
+        } else {
+            Log.d(TAG, "onMainThreadResponse: request fail...");
+        }
+    }
+
+    private void initMineMsg(JSONObject data) {
+
     }
 
     @Override
@@ -182,7 +215,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case R.id.title_avatar: // 头像
                 intent = new Intent(getActivity(), SettingPersonActivity.class);
-                intent.putExtra("avatar", "http://pic13.nipic.com/20110331/3032951_224550202000_2.jpg");
+                intent.putExtra("avatar", "");
                 getActivity().startActivity(intent);
                 break;
             case R.id.title_buy_vip: // 超级会员

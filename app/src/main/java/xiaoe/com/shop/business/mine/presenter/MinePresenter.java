@@ -19,10 +19,4 @@ public class MinePresenter implements IBizCallback {
         inr.onMainThreadResponse(iRequest, success, entity);
     }
 
-    public void requestData() {
-        // TODO: 接口参数
-        MineRequest mineRequest = new MineRequest("", null, this);
-        mineRequest.addRequestParam("app_id", "123");
-        NetworkEngine.getInstance().sendRequest(mineRequest);
-    }
 }

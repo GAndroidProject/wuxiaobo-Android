@@ -3,6 +3,7 @@ package xiaoe.com.shop.business.setting.presenter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import xiaoe.com.common.entitys.SettingItemInfo;
 import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
+import xiaoe.com.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 
@@ -20,9 +22,7 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
     private Context mContext;
     private List<SettingItemInfo> itemList;
 
-    private int currentPos;
-    private SettingItemInfo currentItem;
-    private OnItemClickWithPosListener onItemClickWithPosListener;
+    private OnItemClickWithSettingItemInfoListener onItemClickWithSettingItemInfoListener;
 
     // 默认会有底部 margin
     public SettingRecyclerAdapter(Context context, List<SettingItemInfo> itemList) {
@@ -30,8 +30,8 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
         this.itemList = itemList;
     }
 
-    public void setOnItemClickWithPosListener(OnItemClickWithPosListener listener) {
-        this.onItemClickWithPosListener = listener;
+    public void setOnItemClickWithSettingItemInfoListener(OnItemClickWithSettingItemInfoListener listener) {
+        this.onItemClickWithSettingItemInfoListener = listener;
     }
 
     @Override
@@ -46,16 +46,17 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         SettingItemViewHolder viewHolder = (SettingItemViewHolder) holder;
         final int tempPos = viewHolder.getAdapterPosition();
-        if (position == itemList.size()) { // 最后一个空项，什么都不显示
-            viewHolder.itemContainer.setVisibility(View.GONE);
-            return;
-        } else {
-            currentItem = itemList.get(currentPos);
-        }
-        if (currentPos == 0) { // 是头像，约定如果有 title 会优先显示 title
-            if (TextUtils.isEmpty(currentItem.getItemTitle())) {
+//        if (position == itemList.size()) { // 最后一个空项，什么都不显示
+//            viewHolder.itemContainer.setVisibility(View.GONE);
+//            return;
+//        } else {
+        final SettingItemInfo currentItem = itemList.get(tempPos);
+//        }
+        if (tempPos == 0) { // 是头像，约定如果有 title 会优先显示 title
+            if (!TextUtils.isEmpty(currentItem.getItemTitle())) {
                 viewHolder.itemIcon.setVisibility(View.VISIBLE);
                 viewHolder.itemContent.setVisibility(View.GONE);
+                viewHolder.itemGo.setVisibility(View.GONE);
                 viewHolder.itemTitle.setText(currentItem.getItemTitle());
                 viewHolder.itemIcon.setImageURI(currentItem.getItemIcon());
             } else {
@@ -71,12 +72,12 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
             viewHolder.itemTitle.setText(currentItem.getItemTitle());
             viewHolder.itemContent.setText(currentItem.getItemContent());
         }
-        if (currentPos != itemList.size()) {
+        if (tempPos != itemList.size()) {
             viewHolder.itemContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onItemClickWithPosListener != null) {
-                        onItemClickWithPosListener.onItemClick(v, tempPos);
+                    if (onItemClickWithSettingItemInfoListener != null) {
+                        onItemClickWithSettingItemInfoListener.onItemClick(v, currentItem);
                     }
                 }
             });
@@ -90,7 +91,6 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        currentPos = position;
         return super.getItemViewType(position);
     }
 }

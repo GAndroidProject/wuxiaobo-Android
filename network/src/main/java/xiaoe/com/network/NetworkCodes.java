@@ -31,4 +31,22 @@ public class NetworkCodes {
     public static final int CODE_SHOP_NOT_FIND = 3404;// 店铺不存在
 
     public static final int CODE_DATA_FAILED = 3500;// 拉取数据失败
+
+    public static final int CODE_LOGIN_FAIL = -1; // 登录失败
+    public static final int CODE_LOGIN_PASSWORD_ERROR = -2; // 密码错误
+    public static final int CODE_HAD_REGISTER = 1105; // 手机号已注册
+    public static final int CODE_NO_REGISTER = 1106; // 手机号未注册
+    public static final int CODE_OBTAIN_ACCESS_TOKEN_FAIL = 1004; // 获取 access token 失败
+    public static final int CODE_REGISTER_FAIL = -1; // 注册失败
+    public static final int CODE_PHONE_CODE_ERROR = 2001; // 验证码错误
+    public static final int CODE_LIMIT_USER = 3001; // 受限用户
+    public static final int CODE_PHONE_HAD_BIND = 1101; // 手机号已被绑定
+    public static final int CODE_WX_HAD_BIND = 1102; // 微信号已被绑定
+
+    public static final int CODE_OBTAIN_LEARNING_FAIL = 3042; // 获取学习记录失败
+
+    public static final int CODE_PERSON_PARAM_LOSE = 2501;
+    public static final int CODE_PERSON_PARAM_UNUSEFUL = 2502;
+    public static final int CODE_PERSON_PHONE_REPEAT = 2504;
+    public static final int CODE_PERSON_NOT_FOUND = 2506;
 }

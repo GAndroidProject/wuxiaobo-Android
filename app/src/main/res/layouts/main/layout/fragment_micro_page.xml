@@ -72,7 +72,8 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:background="@color/white"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:overScrollMode="never"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

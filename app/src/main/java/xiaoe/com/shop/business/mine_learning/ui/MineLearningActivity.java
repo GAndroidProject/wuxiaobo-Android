@@ -1,8 +1,6 @@
 package xiaoe.com.shop.business.mine_learning.ui;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -22,7 +19,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
@@ -30,9 +26,9 @@ import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.CollectionListRequest;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.MineLearningRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
-import xiaoe.com.shop.adapter.decorate.knowledge_commodity.KnowledgeListAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.mine_learning.presenter.MineLearningPresenter;
 import xiaoe.com.shop.business.search.presenter.SpacesItemDecoration;
@@ -67,6 +63,7 @@ public class MineLearningActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBar();
         setContentView(R.layout.activity_mine_learning);
         ButterKnife.bind(this);
         Intent intent = getIntent();
@@ -97,10 +94,8 @@ public class MineLearningActivity extends XiaoeActivity {
                 break;
             case "我正在学":
                 learningTitle.setText(pageTitle);
-//            MineLearningPresenter mineCollectionPresenter = new MineLearningPresenter(this, "我正在学的接口");
-//            mineCollectionPresenter.requestSearchResult();
-                // 显示假数据
-                initTempData();
+                mineLearningPresenter = new MineLearningPresenter(this);
+                mineLearningPresenter.requestLearningData(1, 10);
                 break;
             default:
                 // 其他情况处理（没传 title）
@@ -111,50 +106,6 @@ public class MineLearningActivity extends XiaoeActivity {
                 learningLoading.setStateText("暂无收藏内容，快去首页逛逛吧");
                 break;
         }
-    }
-
-    // 我正在学临时数据
-    private void initTempData() {
-        // 我的收藏页面使用的是只是商品的列表组件，所以可以直接用列表组件
-        List<KnowledgeCommodityItem> listItems = new ArrayList<>();
-        // 有价格没买
-        KnowledgeCommodityItem listItem_1 = new KnowledgeCommodityItem();
-        listItem_1.setItemTitle("我的财富计划新中产必修理财课程");
-        listItem_1.setItemImg("http://img05.tooopen.com/images/20141020/sy_73154627197.jpg");
-        listItem_1.setItemPrice("￥999.99");
-        listItem_1.setHasBuy(false);
-        listItem_1.setItemDesc("已更新至135期");
-        // 有价格买了
-        KnowledgeCommodityItem listItem_2 = new KnowledgeCommodityItem();
-        listItem_2.setItemTitle("我的财富计划新中产必修理财课程杀杀杀");
-        listItem_2.setItemImg("http://img.zcool.cn/community/01f39a59a7affba801211d25185cd3.jpg@1280w_1l_2o_100sh.jpg");
-        listItem_2.setItemPrice("￥85.55");
-        listItem_2.setHasBuy(true);
-        listItem_2.setItemDesc("已更新至120期");
-        // 没有价格，免费的
-        KnowledgeCommodityItem listItem_3 = new KnowledgeCommodityItem();
-        listItem_3.setItemTitle("我的财富计划新中产必修理财课程哒哒哒");
-        listItem_3.setItemImg("http://img.zcool.cn/community/01951d55dd8f336ac7251df845a2ae.jpg");
-        listItem_3.setItemDesc("已更新至101期");
-        listItems.add(listItem_1);
-        listItems.add(listItem_2);
-        listItems.add(listItem_3);
-        listItems.add(listItem_1);
-        listItems.add(listItem_2);
-        listItems.add(listItem_3);
-
-        List<ComponentInfo> componentInfos = new ArrayList<>();
-        ComponentInfo componentInfo = new ComponentInfo();
-        componentInfo.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
-        componentInfo.setSubType(DecorateEntityType.KNOWLEDGE_LIST);
-        componentInfo.setHideTitle(true);
-        componentInfo.setKnowledgeCommodityItemList(listItems);
-        componentInfos.add(componentInfo);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        learningList.setLayoutManager(layoutManager);
-        DecorateRecyclerAdapter decorateRecyclerAdapter = new DecorateRecyclerAdapter(this, componentInfos);
-        learningList.setAdapter(decorateRecyclerAdapter);
     }
 
     private void initListener() {
@@ -174,10 +125,18 @@ public class MineLearningActivity extends XiaoeActivity {
             if (iRequest instanceof CollectionListRequest) {
                 int code = result.getInteger("code");
                 JSONObject data = (JSONObject) result.get("data");
-                if (code == 0) {
-                    initCollectionPageData(data);
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    initPageData(data);
                 } else if (code == NetworkCodes.CODE_COLLECT_LIST_FAILED) {
                     Log.d(TAG, "onMainThreadResponse: 获取收藏列表失败");
+                }
+            } else if (iRequest instanceof MineLearningRequest) {
+                int code = result.getInteger("code");
+                JSONObject data = (JSONObject) result.get("data");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    initPageData(data);
+                } else if (code == NetworkCodes.CODE_OBTAIN_LEARNING_FAIL) {
+                    Log.d(TAG, "onMainThreadResponse: 获取学习记录失败...");
                 }
             }
         } else {
@@ -186,8 +145,8 @@ public class MineLearningActivity extends XiaoeActivity {
         }
     }
 
-    // 初始化收藏页数据
-    private void initCollectionPageData(JSONObject data) {
+    // 初始化收藏页和我正在学数据
+    private void initPageData(JSONObject data) {
         JSONArray goodsList = (JSONArray) data.get("goods_list");
         List<KnowledgeCommodityItem> itemList = new ArrayList<>();
         if (goodsList == null) {

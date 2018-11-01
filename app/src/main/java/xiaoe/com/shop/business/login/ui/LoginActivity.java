@@ -1,33 +1,51 @@
 package xiaoe.com.shop.business.login.ui;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import xiaoe.com.common.app.Global;
+import xiaoe.com.common.entitys.LoginUser;
+import xiaoe.com.network.requests.LoginCodeVerifyRequest;
+import xiaoe.com.network.requests.LoginFindPwdCodeVerifyRequest;
+import xiaoe.com.network.requests.ResetPasswordRequest;
+import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.utils.JudgeUtil;
+import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
+import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.LoginBindRequest;
+import xiaoe.com.network.requests.LoginRequest;
+import xiaoe.com.network.requests.LoginCheckRegisterRequest;
+import xiaoe.com.network.requests.LoginDoRegisterRequest;
+import xiaoe.com.network.requests.LoginPhoneCodeRequest;
+import xiaoe.com.network.requests.LoginRegisterCodeVerifyRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
-import xiaoe.com.shop.business.login.presenter.LoginTimeCount;
+import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
+import xiaoe.com.shop.common.login.LoginPresenter;
 import xiaoe.com.shop.utils.StatusBarUtil;
-import xiaoe.com.shop.widget.CodeVerifyView;
 
 public class LoginActivity extends XiaoeActivity {
 
     private static final String TAG = "LoginActivity";
+
+    public static final String REGISTER_ERROR_TIP = "register_error_tip"; // 手机没有注册则显示没有注册 tip
 
     // 需要切换的 fragment tag
     protected static final String MAIN = "login_main"; // 登录主页
@@ -37,10 +55,10 @@ public class LoginActivity extends XiaoeActivity {
     protected static final String FIND_PWD = "login_find_pwd"; // 找回密码页
     protected static final String SET_PWD = "login_set_pwd"; // 设置密码页
     protected static final String REGISTER = "login_register"; // 注页面
-    protected static final String WE_CHAT = "login_we_chat"; // 绑定微信页
+    protected static final String BIND_WE_CHAT = "bind_we_chat"; // 绑定微信页
 
-    @BindView(R.id.login_toolbar)
-    Toolbar loginToolBar;
+    @BindView(R.id.login_title)
+    FrameLayout loginTitle;
     @BindView(R.id.login_back)
     ImageView loginBack;
     @BindView(R.id.login_register)
@@ -52,36 +70,61 @@ public class LoginActivity extends XiaoeActivity {
 
     // 手机号
     protected String phoneNum;
+    // 验证码
+    protected String smsCode;
+    protected boolean isRegister; // 是否为注册流程
 
-    public String getPhoneNum() {
+    protected LoginPresenter loginPresenter;
+
+    protected String getPhoneNum() {
         return phoneNum;
     }
 
-    public void setPhoneNum(String phoneNum) {
+    protected void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
+    }
+
+    protected String getSmsCode() {
+        return smsCode;
+    }
+
+    protected void setSmsCode(String smsCode) {
+        this.smsCode = smsCode;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setStatusBar();
+        StatusBarUtil.setRootViewFitsSystemWindows(this, false);
+
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        StatusBarUtil.setRootViewFitsSystemWindows(this, false);
-        loginToolBar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
-
-        // TODO: 找本地缓存的登录信息，如果没有就显示登录主页，如果有就直接跳到主页，先默认没有登录
+        loginTitle.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_main);
         getSupportFragmentManager().beginTransaction().add(R.id.login_container, currentFragment, MAIN).commit();
 
         // 网络请求
-//        LoginPresenter loginPresenter = new LoginPresenter(this, "");
-//        loginPresenter.requestSearchResult();
+        loginPresenter = new LoginPresenter(this, this);
 
+        initData();
         initView();
         initListener();
+    }
+
+    private void initData() {
+        // 初始化 SharedPreference
+        SharedPreferencesUtil.getInstance(this, "xiaoe_file");
+        // 初始化数据库
+        SQLiteUtil.init(this.getApplicationContext(), new LoginSQLiteCallback());
+        // 如果表不存在，就去创建
+        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
+            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
+        }
     }
 
     private void initView() {
@@ -106,8 +149,6 @@ public class LoginActivity extends XiaoeActivity {
         loginRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 换页之前将 editText 的内容清掉
-                ((EditText)((LoginPageFragment)currentFragment).viewWrap.findViewById(R.id.login_input_num_content)).setText("");
                 // 如果软件盘在的话，就把软键盘隐藏
                 toggleSoftKeyboard();
                 replaceFragment(REGISTER);
@@ -121,58 +162,61 @@ public class LoginActivity extends XiaoeActivity {
         if (currentFragment != null) {
             switch (currentFragment.getTag()) {
                 case REGISTER:
-                    ((EditText) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_input_num_content)).setText("");
-                    ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_pwd_error).setVisibility(View.GONE);
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
+                    // 回到首页之前清空 preTag
+                    preTag = null;
                     replaceFragment(MAIN);
                     break;
                 case CODE:
-                    ((CodeVerifyView) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_register_code_content)).clearAllEditText();
-                    // TODO: 停掉 time count
+                    ((LoginPageFragment) currentFragment).loginCodeContent.clearAllEditText();
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
+                    preTag = null;
                     replaceFragment(MAIN);
                     break;
                 case PWD:
-                    ((EditText) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_input_num_content)).setText("");
-                    ((EditText) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_pwd_pass_word)).setText("");
-                    ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_pwd_error).setVisibility(View.GONE);
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
+                    preTag = null;
                     replaceFragment(MAIN);
                     break;
                 case FIND_PWD:
-                    ((EditText) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_input_num_content)).setText("");
                     replaceFragment(PWD);
                     break;
                 case SET_PWD:
-                    ((EditText) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_set_pwd_content)).setText("");
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
+                    preTag = null;
                     replaceFragment(MAIN);
                     break;
-                case WE_CHAT:
+                case BIND_WE_CHAT:
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
+                    preTag = null;
                     replaceFragment(MAIN);
                     break;
                 case BIND_PHONE:
-                    ((EditText) ((LoginPageFragment) currentFragment).viewWrap.findViewById(R.id.login_input_num_content)).setText("");
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
+                    preTag = null;
                     replaceFragment(MAIN);
                     break;
+                default:
+                    super.onBackPressed();
             }
         }
     }
 
+    // 上一个 fragment 的 tag
+    protected String preTag;
     protected void replaceFragment(String tag) {
         if (currentFragment != null) {
+            preTag = currentFragment.getTag();
             getSupportFragmentManager().beginTransaction().hide(currentFragment).commit();
         }
         currentFragment = getSupportFragmentManager().findFragmentByTag(tag);
-        if (currentFragment == null) {
+        if (currentFragment == null) { // 第一次创建
             switch (tag) {
                 case MAIN: // 登录主页
                     loginBack.setVisibility(View.GONE);
@@ -202,14 +246,14 @@ public class LoginActivity extends XiaoeActivity {
                 case SET_PWD: // 设置密码页
                     loginBack.setVisibility(View.VISIBLE);
                     loginRegister.setVisibility(View.GONE);
-                    currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_set_pwd);
+                    currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_set_pwd, phoneNum, smsCode);
                     break;
                 case REGISTER: // 注册页
                     loginBack.setVisibility(View.VISIBLE);
                     loginRegister.setVisibility(View.GONE);
                     currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_register);
                     break;
-                case WE_CHAT: // 微信登录页
+                case BIND_WE_CHAT: // 微信登录页
                     loginBack.setVisibility(View.VISIBLE);
                     loginRegister.setVisibility(View.GONE);
                     currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_we_chat);
@@ -229,7 +273,7 @@ public class LoginActivity extends XiaoeActivity {
                 case PWD:
                 case FIND_PWD:
                 case SET_PWD:
-                case WE_CHAT:
+                case BIND_WE_CHAT:
                 case BIND_PHONE:
                     loginBack.setVisibility(View.VISIBLE);
                     loginRegister.setVisibility(View.GONE);
@@ -242,7 +286,203 @@ public class LoginActivity extends XiaoeActivity {
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        Log.d(TAG, "onMainThreadResponse: success --- " + success);
+        JSONObject result = (JSONObject) entity;
+        if (success) {
+            if (iRequest instanceof LoginRequest) { // 微信登录回调
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    updateLoginMsg(data);
+                } else if (code == NetworkCodes.CODE_PARAMS_ERROR) {
+                    Log.d(TAG, "onMainThreadResponse: 微信登录参数错误.");
+                } else if (code == NetworkCodes.CODE_GOODS_GROUPS_NOT_FIND) {
+                    // 意思是没有完成微信、手机号绑定的用户
+                    Log.d(TAG, "onMainThreadResponse: 受限用户.");
+                    JSONObject data = (JSONObject) result.get("data");
+                    // 绑定手机
+                    obtainLimitUserInfo(data, false);
+                } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
+                    Log.d(TAG, "onMainThreadResponse: 登录失败." + result.getString("msg"));
+                } else if (code == NetworkCodes.CODE_OBTAIN_ACCESS_TOKEN_FAIL) { // 获取 access token 失败
+                    Log.d(TAG, "onMainThreadResponse: 获取 access token 失败");
+                } else if (code == NetworkCodes.CODE_LOGIN_PASSWORD_ERROR) {
+                    Log.d(TAG, "onMainThreadResponse: 密码错误...");
+                }
+            } else if (iRequest instanceof LoginPhoneCodeRequest || iRequest instanceof LoginCodeVerifyRequest) { // 请求验证码回调
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) { // 验证成功
+                    Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
+                    toggleSoftKeyboard();
+                } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
+                    Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
+                    this.smsCode = "";
+                    ((LoginPageFragment) currentFragment).loginCodeContent.setErrorBg(R.drawable.cv_error_bg);
+                }
+            } else if (iRequest instanceof LoginRegisterCodeVerifyRequest) { // 注册验证码确认回调
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) { // 验证成功
+                    Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
+                    ((LoginPageFragment) currentFragment).loginTimeCount.cancel();
+                    ((LoginPageFragment) currentFragment).loginCodeContent.clearAllEditText();
+                    toggleSoftKeyboard();
+                    // TODO: 需要根据不同情况实现跳转
+                    // 首页 -- 主页；注册页 -- 设置密码页面 -- 主页；绑定手机 -- 主页
+                    replaceFragment(LoginActivity.SET_PWD);
+                } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
+                    Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
+                    this.smsCode = "";
+                    ((LoginPageFragment) currentFragment).loginCodeContent.setErrorBg(R.drawable.cv_error_bg);
+                }
+            } else if (iRequest instanceof LoginFindPwdCodeVerifyRequest) { // 找回密码验证码回调
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) { // 验证成功
+                    Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
+                    toggleSoftKeyboard();
+                    replaceFragment(LoginActivity.SET_PWD);
+                } else if (code == NetworkCodes.CODE_LOGIN_FAIL) { // 验证失败
+                    Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
+                    this.smsCode = "";
+                    ((LoginPageFragment) currentFragment).loginCodeContent.setErrorBg(R.drawable.cv_error_bg);
+                }
+            } else if (iRequest instanceof LoginCheckRegisterRequest) { // 首页注册检测
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_HAD_REGISTER) { // 已经注册
+                    ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(true);
+                    ((LoginPageFragment) currentFragment).phoneObtainCode.setAlpha(1);
+                    ((LoginPageFragment) currentFragment).phoneObtainCode.setBackground(getResources().getDrawable(R.drawable.person_submit_bg));
+                    replaceFragment(CODE);
+                    // 发送请求验证码接口
+                    loginPresenter.obtainPhoneCode(phoneNum);
+                } else if (code == NetworkCodes.CODE_NO_REGISTER) { // 没有注册
+                    ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(false);
+                    ((LoginPageFragment) currentFragment).phoneErrorTip.setText("该手机号未注册，请返回注册");
+                    JudgeUtil.showErrorViewIfNeed(this, REGISTER_ERROR_TIP, ((LoginPageFragment) currentFragment).phoneErrorTip, ((LoginPageFragment) currentFragment).phoneObtainCode);
+                }
+            } else if (iRequest instanceof LoginDoRegisterRequest) { // 执行注册操作
+                int code = result.getInteger("code");
+                String msg = result.getString("msg");
+                if (code == NetworkCodes.CODE_LIMIT_USER) { // 受限用户
+                    JSONObject data = (JSONObject) result.get("data");
+                    obtainLimitUserInfo(data, true);
+                } else if (code == NetworkCodes.CODE_PARAMS_ERROR) { // 参数错误
+                    Log.d(TAG, "onMainThreadResponse: register --- " + msg);
+                } else if (code == NetworkCodes.CODE_REGISTER_FAIL) { // 注册失败
+                    Log.d(TAG, "onMainThreadResponse: register --- " + msg);
+                } else if (code == NetworkCodes.CODE_PHONE_CODE_ERROR) { // 验证码错误
+                    Log.d(TAG, "onMainThreadResponse: register --- " + msg);
+                }
+            } else if (iRequest instanceof LoginBindRequest) { // 绑定操作回调
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) { // 注册成功
+                    JSONObject data = (JSONObject) result.get("data");
+                    initUserInfo(data);
+                } else if (code == NetworkCodes.CODE_PHONE_CODE_ERROR) {
+                    Log.d(TAG, "onMainThreadResponse: 验证码错误...");
+                    Toast("验证码错误");
+                } else if (code == NetworkCodes.CODE_REGISTER_FAIL) {
+                    Log.d(TAG, "onMainThreadResponse: 注册失败..");
+                } else if (code == NetworkCodes.CODE_OBTAIN_ACCESS_TOKEN_FAIL) {
+                    Log.d(TAG, "onMainThreadResponse: 服务器访问失败");
+                } else if (code == NetworkCodes.CODE_PARAMS_ERROR) {
+                    Log.d(TAG, "onMainThreadResponse: 参数错误");
+                } else if (code == NetworkCodes.CODE_PHONE_HAD_BIND) {
+                    Log.d(TAG, "onMainThreadResponse: 手机已被绑定");
+                    Toast("手机已被绑定");
+                } else if (code == NetworkCodes.CODE_WX_HAD_BIND) {
+                    Log.d(TAG, "onMainThreadResponse: 微信号已被绑定");
+                    Toast("微信号已被绑定");
+                }
+            } else if (iRequest instanceof ResetPasswordRequest) { // 重置密码回调
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) { // 修改成功
+                    Toast("修改成功");
+                    replaceFragment(PWD);
+                } else if (code == NetworkCodes.CODE_LOGIN_FAIL) { // 修改失败
+                    Log.d(TAG, "onMainThreadResponse: 修改失败");
+                    Toast("修改失败，请重试");
+                }
+            }
+        } else {
+            Log.d(TAG, "onMainThreadResponse: request fail");
+        }
+    }
+
+    // 获取受限用户信息（此时需要去绑定微信或者手机）
+    private void obtainLimitUserInfo(JSONObject data, boolean needBindWx) {
+
+        String accessToken = data.getString("access_token");
+
+        SharedPreferencesUtil.putData("accessToken", accessToken);
+
+        if (needBindWx) {
+            // 受限用户绑定微信
+            replaceFragment(BIND_WE_CHAT);
+        } else {
+            // 受限用户绑定手机
+            replaceFragment(BIND_PHONE);
+        }
+    }
+
+    // 注册成功初始化用户信息
+    private void initUserInfo(JSONObject data) {
+        String id = data.getString("id");
+        String wxOpenId = data.getString("wx_open_id");
+        String wxUnionId = data.getString("wx_union_id");
+        String phone = data.getString("phone");
+        String apiToken = data.getString("api_token");
+
+        LoginUser user = new LoginUser();
+        user.setId(id);
+        user.setWxOpenId(wxOpenId);
+        user.setWxUnionId(wxUnionId);
+        user.setPhone(phone);
+        user.setApi_token(apiToken);
+
+        List<LoginUser> userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        if (userList.size() == 1) {
+            // 已经有用户注册过，此时需要先将已注册用户的信息删掉
+            String tempId = userList.get(0).getId();
+            SQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER, "id = ?", new String[]{tempId});
+        }
+        // 存储用户信息
+        SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, user);
+
+        Toast("注册成功");
+        // 注册成功跳转到首页
+        JumpDetail.jumpMain(this, true);
+    }
+
+    // 登录成功之后，拿到的登录信息更新到本地数据库
+    private void updateLoginMsg(JSONObject data) {
+        String id = data.getString("id");
+        String wxOpenId = data.getString("wx_open_id");
+        String wxUnionId = data.getString("wx_union_id");
+        String phone = data.getString("phone");
+        String apiToken = data.getString("api_token");
+
+        LoginUser user = new LoginUser();
+        user.setId(id);
+        user.setWxOpenId(wxOpenId);
+        user.setWxUnionId(wxUnionId);
+        user.setPhone(phone);
+        user.setApi_token(apiToken);
+
+        List<LoginUser> userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+
+        if (userList.size() == 1) { // 证明有登录或者注册过的用户
+            String localId = userList.get(0).getId();
+            if (localId.equals(id)) { // 同一个用户
+                SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER, user, "id = ?", new String[]{id}); // 更新该用户信息
+            } else { // 不同一个用户
+                SQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER, "id = ?", new String[]{localId});
+                SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, user); // 删掉原来的用户，插入新用户
+            }
+        } else { // 表中没有用户登录记录
+            SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, user);
+        }
+
+        Toast("登录成功");
+        JumpDetail.jumpMain(this, true);
     }
 
     /**
@@ -255,6 +495,36 @@ public class LoginActivity extends XiaoeActivity {
                 IBinder iBinder = view.getWindowToken();
                 imm.hideSoftInputFromWindow(iBinder, InputMethodManager.HIDE_NOT_ALWAYS);
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String code = SharedPreferencesUtil.getData("wx_code", "").toString();
+        // 获取注册所需要的信息
+        String accessToken = SharedPreferencesUtil.getData("accessToken", "").toString();
+//        Log.d(TAG, "onResume: accessToken --- " + accessToken);
+//        Log.d(TAG, "onResume: code --- " + code);
+//        Log.d(TAG, "onResume: preTag --- " + preTag);
+        List<LoginUser> userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        if (userList.size() == 1) { // 有用户登录信息，直接去主页
+            JumpDetail.jumpMain(this, true);
+            return;
+        }
+        if (!TextUtils.isEmpty(code)) {
+            // 注册流程，拉起微信后，进行绑定操作
+            if (!TextUtils.isEmpty(accessToken)) { // 表示有操作过
+                if (preTag.equals(SET_PWD)) { // 从设置密码点击绑定微信进行注册
+                    loginPresenter.bindWeChat(accessToken, code); // 进行绑定微信
+                }
+            }
+            if (preTag == null) { // 从首页直接点击微信登录
+                loginPresenter.loginByWeChat(code);
+            }
+            // code 如果有，都要清空
+            SharedPreferencesUtil.putData("wx_code", ""); // 清空 code
+            SharedPreferencesUtil.putData("accessToken", ""); // 清空 accessToken
         }
     }
 }

@@ -41,6 +41,7 @@ import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.course.presenter.CourseImageTextPresenter;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.StatusBarUtil;
+import xiaoe.com.shop.utils.UpdateLearningUtils;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.CommonTitleView;
 
@@ -109,6 +110,8 @@ public class CourseImageTextActivity extends XiaoeActivity {
 
     boolean isCollected; // 是否收藏
 
+    boolean canBack;
+
     // 需要收藏的字段
     String collectionTitle;
     String collectionAuthor;
@@ -121,6 +124,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBar();
         setContentView(R.layout.activity_course_image_text);
 
         unbinder = ButterKnife.bind(this);
@@ -289,7 +293,12 @@ public class CourseImageTextActivity extends XiaoeActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (canBack) {
+            // TODO: 获取学习进度
+            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+            updateLearningUtils.updateLearningProgress(resourceId, Integer.parseInt(resourceType), 50);
+            super.onBackPressed();
+        }
 //        if (itLoading.getVisibility() == View.GONE) {
 //            super.onBackPressed();
 //        }
@@ -309,6 +318,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
         if(activityDestroy){
             return;
         }
+        canBack = false;
         JSONObject result = (JSONObject) entity;
         if (success) {
             if (iRequest instanceof CourseITBeforeBuyRequest) {
@@ -441,7 +451,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
             collectionImgUrl = imgUrl;
             collectionImgUrlCompressed = imgUrl;
             collectionPrice = price + "";
-
+            canBack = true;
             // 购买前初始化完成，去掉 loading
 //            itLoading.setVisibility(View.GONE);
         }
@@ -483,6 +493,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
         // 已购收藏价格为空
         collectionPrice = "";
 
+        canBack = true;
         // 购买后初始化完成，去掉 loading
 //        itLoading.setVisibility(View.GONE);
     }

@@ -10,16 +10,9 @@ import xiaoe.com.network.requests.MineLearningRequest;
 public class MineLearningPresenter implements IBizCallback {
 
     private INetworkResponse inr;
-    private String cmd;
 
     public MineLearningPresenter(INetworkResponse inr) {
         this.inr = inr;
-        this.cmd = "test/test_app"; // 默认请求接口名字
-    }
-
-    public MineLearningPresenter(INetworkResponse inr, String cmd) {
-        this.inr = inr;
-        this.cmd = cmd;
     }
 
     @Override
@@ -27,9 +20,15 @@ public class MineLearningPresenter implements IBizCallback {
         inr.onResponse(iRequest, success, entity);
     }
 
-    public void requestData() {
-        MineLearningRequest mineLearningRequest = new MineLearningRequest(cmd, TestInfo.class, this);
-        mineLearningRequest.addRequestParam("app_id", "123456");
+    // 获取正在学习列表
+    public void requestLearningData(int pageIndex, int pageSize) {
+        MineLearningRequest mineLearningRequest = new MineLearningRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.learning.records.get/1.0.0", this);
+
+        mineLearningRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        mineLearningRequest.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
+        mineLearningRequest.addDataParam("page_size", pageSize);
+        mineLearningRequest.addDataParam("page", pageIndex);
+
         NetworkEngine.getInstance().sendRequest(mineLearningRequest);
     }
 }
