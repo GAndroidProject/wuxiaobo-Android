@@ -33,6 +33,8 @@ import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.AudioPlayTable;
+import xiaoe.com.common.entitys.LoginUser;
+import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -45,6 +47,7 @@ import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.audio.presenter.AudioSQLiteUtil;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
+import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.common.pay.PayPresenter;
 import xiaoe.com.shop.interfaces.OnCancelListener;
@@ -74,6 +77,14 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     protected boolean activityDestroy = false;
     private PayPresenter payPresenter;
 
+    // 登录的信息
+    List<LoginUser> userList;
+    List<LoginUserInfo> userInfoList;
+
+    // 用户登录信息
+    LoginUser user = null;
+    // 用户详细信息
+    LoginUserInfo userInfo = null;
 
     static class XeHandler extends Handler {
 
@@ -113,9 +124,28 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         isActivityDestroy = false;
 
         dialog = new CustomDialog(this);
+
+        // 初始化数据库
+        SQLiteUtil.init(this.getApplicationContext(), new LoginSQLiteCallback());
+        // 如果表不存在，就去创建
+        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
+            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
+        }
+        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER_INFO)) {
+            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER_INFO);
+        }
+
+        userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        userInfoList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER_INFO, null);
+        if (userList.size() == 1) {
+            user = userList.get(0);
+        }
+        if (userInfoList.size() == 1) {
+            userInfo = userInfoList.get(0);
+        }
     }
     // 状态栏设置
-    public void setStatusBar(){
+    protected void setStatusBar(){
         // 屏幕上方预留状态栏高度的 padding
         StatusBarUtil.setRootViewFitsSystemWindows(this, true);
 //         设置透明状态栏
@@ -125,6 +155,52 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
             StatusBarUtil.setStatusBarColor(this, 0x55000000);
         }
+    }
+
+    // 获取登录 api_token，为空表示没有登录态
+    protected String getLoginApiToke() {
+        if (user != null) {
+            return user.getApi_token();
+        } else {
+            return "";
+        }
+    }
+
+    // 获取登录手机，为空表示没有登录态
+    protected String getLoginPhone() {
+        if (user != null && userInfo != null) {
+            return userInfo.getPhone();
+        } else {
+            return "";
+        }
+    }
+
+    // 获取微信昵称，为空表示没有登录态
+    protected String getWxNickname() {
+        if (user != null && userInfo != null) {
+            return userInfo.getWxNickname();
+        } else {
+            return "";
+        }
+    }
+
+    // 获取微信头像，为空表示没有登录态
+    protected String getWxAvatar() {
+        if (user != null && userInfo != null) {
+            return userInfo.getWxAvatar();
+        } else {
+            return "";
+        }
+    }
+
+    // 获取登录用户登录信息集合
+    protected List<LoginUser> getLoginUserList() {
+        return userList;
+    }
+
+    // 获取登录用户详细信息集合
+    protected List<LoginUserInfo> getLoginUserInfoList() {
+        return userInfoList;
     }
 
     @Override

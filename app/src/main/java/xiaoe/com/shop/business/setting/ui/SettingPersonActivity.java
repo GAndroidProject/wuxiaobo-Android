@@ -17,14 +17,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bigkoo.pickerview.builder.TimePickerBuilder;
+import com.bigkoo.pickerview.listener.OnTimeSelectListener;
+import com.bigkoo.pickerview.view.TimePickerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,10 +41,12 @@ import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.SettingItemInfo;
 import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.interfaces.OnItemClickWithSettingItemInfoListener;
+import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.SettingPersonItemRequest;
 import xiaoe.com.network.requests.SettingPseronMsgRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
@@ -66,11 +76,18 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
     List<SettingItemInfo> dataList;
     private static final int REQUEST_CODE = 101;
 
-    View actionSheetGender;
+    View actionSheet;
+    // 性别选择器的内容
     TextView actionSheetMan;
     TextView actionSheetWoman;
     TextView actionSheetCancel;
     Dialog dialog;
+
+    // 时间选择器
+    TimePickerView timePickerView;
+
+    String apiToken;
+    SettingPresenter settingPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,12 +102,13 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
 
         SQLiteUtil.init(this, new LoginSQLiteCallback());
         List<LoginUser> loginMsg = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        if (loginMsg.size() == 1) {
+            apiToken = loginMsg.get(0).getApi_token();
 
-        String apiToken = loginMsg.get(0).getApi_token();
-
-        // 网络请求
-        SettingPresenter settingPresenter = new SettingPresenter(this);
-        settingPresenter.requestPersonData(apiToken, true);
+            // 网络请求
+            settingPresenter = new SettingPresenter(this);
+            settingPresenter.requestPersonData(apiToken, true);
+        }
 
         //状态栏颜色字体(白底黑字)修改 Android6.0+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -133,6 +151,8 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
                 } else if (code == NetworkCodes.CODE_PERSON_NOT_FOUND) {
                     Log.d(TAG, "onMainThreadResponse: 当前用户不存在");
                 }
+            } else if (iRequest instanceof SettingPersonItemRequest) {
+
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail");
@@ -206,12 +226,14 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
     public void onItemClick(View view, SettingItemInfo itemInfo) {
         switch (itemInfo.getItemTitle()) {
             case "头像":
+            case "手机": // 手机和头像先不支持在个人资料页面进行修改
                 return;
             case "性别":
-                initActionSheetGender();
+                initActionSheetGender(dataList.indexOf(itemInfo));
                 break;
             case "生日":
                 // TODO: 显示日期选择器
+                initActionSheetDate(dataList.indexOf(itemInfo));
                 break;
             default:
                 Intent intent = new Intent(this, SettingPersonItemActivity.class);
@@ -238,14 +260,15 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
         }
     }
 
-    private void initActionSheetGender() {
+    // 初始化底部性别选择器
+    private void initActionSheetGender(int position) {
         dialog = new Dialog(this, R.style.ActionSheetDialogStyle);
-        actionSheetGender = LayoutInflater.from(this).inflate(R.layout.action_sheet_gender, null);
-        actionSheetMan = (TextView) actionSheetGender.findViewById(R.id.action_sheet_man);
-        actionSheetWoman = (TextView) actionSheetGender.findViewById(R.id.action_sheet_woman);
-        actionSheetCancel = (TextView) actionSheetGender.findViewById(R.id.action_sheet_cancel);
+        actionSheet = LayoutInflater.from(this).inflate(R.layout.action_sheet_gender, null);
+        actionSheetMan = (TextView) actionSheet.findViewById(R.id.action_sheet_man);
+        actionSheetWoman = (TextView) actionSheet.findViewById(R.id.action_sheet_woman);
+        actionSheetCancel = (TextView) actionSheet.findViewById(R.id.action_sheet_cancel);
         // 将布局设置给 dialog
-        dialog.setContentView(actionSheetGender);
+        dialog.setContentView(actionSheet);
         // 获取当前 activity 所在的窗体
         Window dialogWindow = dialog.getWindow();
         // 设置 dialog 从窗体底部弹出
@@ -259,25 +282,30 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
 //            dialogWindow.setAttributes(lp);
             // 显示对话框
 //            dialogWindow.setBackgroundDrawableResource(R.drawable.action_sheet_bg);
-            initActionSheetGenderListener();
+            initActionSheetGenderListener(position);
             dialog.show();
         }
     }
 
-    private void initActionSheetGenderListener() {
+    // 初始化性别底部选择器监听
+    private void initActionSheetGenderListener(final int position) {
         actionSheetMan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: 修改性别信息为男
-                Toast("男");
+                settingPresenter.updateGender(apiToken, "男");
+                dataList.get(position).setItemContent("男");
+                settingRecyclerAdapter.notifyDataSetChanged();
+                dialog.dismiss();
             }
         });
 
         actionSheetWoman.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: 修改性别信息为女
-                Toast("女");
+                settingPresenter.updateGender(apiToken, "女");
+                dataList.get(position).setItemContent("女");
+                settingRecyclerAdapter.notifyDataSetChanged();
+                dialog.dismiss();
             }
         });
 
@@ -289,4 +317,38 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
         });
     }
 
+    // 初始化日期底部选择器
+    private void initActionSheetDate(final int position) {
+        Calendar startDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance();
+
+        // 设置选择时间的开始和结束日期
+        startDate.set(1950, 0, 1);
+        int year = endDate.get(Calendar.YEAR);
+        int month = endDate.get(Calendar.MONTH);
+        int day = endDate.get(Calendar.DAY_OF_MONTH);
+        endDate.set(year, month, day);
+
+        timePickerView = new TimePickerBuilder(SettingPersonActivity.this, new OnTimeSelectListener() {
+
+            @Override
+            public void onTimeSelect(Date date, View v) {
+                String dateStr = DateFormat.date2String(date);
+                settingPresenter.updateBirth(apiToken, dateStr);
+                dataList.get(position).setItemContent(dateStr);
+                settingRecyclerAdapter.notifyDataSetChanged();
+            }
+        }).setContentTextSize(20)
+                .setTitleColor(getResources().getColor(R.color.main_title_color))
+                .setTitleSize(16)
+                .setOutSideCancelable(true)
+                .setSubmitColor(getResources().getColor(R.color.main_title_color))
+                .setCancelColor(getResources().getColor(R.color.main_title_color))
+                .setTitleBgColor(getResources().getColor(R.color.white))
+                .isCyclic(false)
+                .setDate(endDate) // 可以设置选择的时间
+                .setRangDate(startDate, endDate)
+                .build();
+        timePickerView.show();
+    }
 }

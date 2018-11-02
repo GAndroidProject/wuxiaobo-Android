@@ -14,6 +14,7 @@ import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.LoginBindRequest;
 import xiaoe.com.network.requests.LoginFindPwdCodeVerifyRequest;
+import xiaoe.com.network.requests.LoginNewCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginRequest;
 import xiaoe.com.network.requests.LoginCheckRegisterRequest;
 import xiaoe.com.network.requests.LoginCodeVerifyRequest;
@@ -21,6 +22,7 @@ import xiaoe.com.network.requests.LoginDoRegisterRequest;
 import xiaoe.com.network.requests.LoginPhoneCodeRequest;
 import xiaoe.com.network.requests.LoginRegisterCodeVerifyRequest;
 import xiaoe.com.network.requests.ResetPasswordRequest;
+import xiaoe.com.network.requests.UpdatePhoneRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class LoginPresenter implements IBizCallback {
@@ -89,8 +91,8 @@ public class LoginPresenter implements IBizCallback {
         NetworkEngine.getInstance().sendRequest(loginPhoneCodeRequest);
     }
 
-    // 确认手机验证码（首页、绑定手机页去登录页面）
-    public void verifyLoginCode(String phoneNum, String code) {
+    // 旧手机验证码
+    public void verifyCode(String phoneNum, String code) {
         LoginCodeVerifyRequest loginCodeVerifyRequest = new LoginCodeVerifyRequest(NetworkEngine.LOGIN_BASE_URL + "verify_code", this);
 
         loginCodeVerifyRequest.addHeaderParam("app-id", "wx764341f522a6c929");
@@ -98,6 +100,17 @@ public class LoginPresenter implements IBizCallback {
         loginCodeVerifyRequest.addRequestParam("sms_code", code);
 
         NetworkEngine.getInstance().sendRequest(loginCodeVerifyRequest);
+    }
+
+    // 新手机验证码
+    public void verifyNewCode(String phoneNum, String code) {
+        LoginNewCodeVerifyRequest loginNewCodeVerifyRequest = new LoginNewCodeVerifyRequest(NetworkEngine.LOGIN_BASE_URL + "verify_code", this);
+
+        loginNewCodeVerifyRequest.addHeaderParam("app-id", "wx764341f522a6c929");
+        loginNewCodeVerifyRequest.addRequestParam("phone", phoneNum);
+        loginNewCodeVerifyRequest.addRequestParam("sms_code", code);
+
+        NetworkEngine.getInstance().sendRequest(loginNewCodeVerifyRequest);
     }
 
     // 确认手机验证码（注册页面要去设置密码页）
@@ -199,5 +212,18 @@ public class LoginPresenter implements IBizCallback {
         resetPasswordRequest.addRequestParam("new_password", password);
 
         NetworkEngine.getInstance().sendRequest(resetPasswordRequest);
+    }
+
+    // 更新手机号
+    public void updatePhone(String apiToken, String smsCode, String newPhone, String newSmsCode) {
+        UpdatePhoneRequest updatePhoneRequest = new UpdatePhoneRequest(NetworkEngine.LOGIN_BASE_URL + "reset_phone", this);
+
+        updatePhoneRequest.addHeaderParam("app-id", "wx764341f522a6c929");
+        updatePhoneRequest.addRequestParam("api_token", apiToken);
+        updatePhoneRequest.addRequestParam("sms_code", smsCode);
+        updatePhoneRequest.addRequestParam("new_phone", newPhone);
+        updatePhoneRequest.addRequestParam("new_sms_code", newSmsCode);
+
+        NetworkEngine.getInstance().sendRequest(updatePhoneRequest);
     }
 }

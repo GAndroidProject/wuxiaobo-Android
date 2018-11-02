@@ -14,11 +14,16 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import xiaoe.com.common.app.Global;
+import xiaoe.com.common.entitys.LoginUser;
+import xiaoe.com.common.entitys.LoginUserInfo;
+import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 
 
 /**
@@ -55,6 +60,15 @@ public class BaseFragment extends Fragment implements INetworkResponse {
         }
     }
 
+    // 登录的信息
+    List<LoginUser> userList;
+    List<LoginUserInfo> userInfoList;
+
+    // 用户登录信息
+    LoginUser user = null;
+    // 用户详细信息
+    LoginUserInfo userInfo = null;
+
     // 这个方法除了 Fragment 的可见状态发生变化时会被回调外，创建 Fragment 实例时候也会调用
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -79,7 +93,73 @@ public class BaseFragment extends Fragment implements INetworkResponse {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 初始化数据库
+        SQLiteUtil.init(getActivity().getApplicationContext(), new LoginSQLiteCallback());
+        // 如果表不存在，就去创建
+        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
+            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
+        }
+        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER_INFO)) {
+            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER_INFO);
+        }
+
+        userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        userInfoList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER_INFO, null);
+        if (userList.size() == 1) {
+            user = userList.get(0);
+        }
+        if (userInfoList.size() == 1) {
+            userInfo = userInfoList.get(0);
+        }
+
         initVariable();
+    }
+
+    // 获取登录 api_token，为空表示没有登录态
+    protected String getLoginApiToke() {
+        if (user != null) {
+            return user.getApi_token();
+        } else {
+            return "";
+        }
+    }
+
+    // 获取登录手机，为空表示没有登录态
+    protected String getLoginPhone() {
+        if (user != null && userInfo != null) {
+            return userInfo.getPhone();
+        } else {
+            return "";
+        }
+    }
+
+    // 获取微信昵称，为空表示没有登录态
+    protected String getWxNickname() {
+        if (user != null && userInfo != null) {
+            return userInfo.getWxNickname();
+        } else {
+            return "";
+        }
+    }
+
+    // 获取微信头像，为空表示没有登录态
+    protected String getWxAvatar() {
+        if (user != null && userInfo != null) {
+            return userInfo.getWxAvatar();
+        } else {
+            return "";
+        }
+    }
+
+    // 获取登录用户登录信息集合
+    protected List<LoginUser> getLoginUserList() {
+        return userList;
+    }
+
+    // 获取登录用户详细信息集合
+    protected List<LoginUserInfo> getLoginUserInfoList() {
+        return userInfoList;
     }
 
     @Override

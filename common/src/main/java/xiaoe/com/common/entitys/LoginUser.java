@@ -8,7 +8,6 @@ public class LoginUser {
     private String id;
     private String wxOpenId;
     private String wxUnionId;
-    private String phone;
     private String api_token;
 
     public LoginUser() {
@@ -31,10 +30,6 @@ public class LoginUser {
         this.wxUnionId = wxUnionId;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public void setApi_token(String api_token) {
         this.api_token = api_token;
     }
@@ -53,10 +48,6 @@ public class LoginUser {
 
     public String getWxUnionId() {
         return wxUnionId;
-    }
-
-    public String getPhone() {
-        return phone;
     }
 
     public String getApi_token() {

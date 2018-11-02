@@ -6,51 +6,31 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/audio_page_bg_color"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/setting_pwd_set_now"
+        android:text="@string/setting_pwd_obtain_phone_code"
         android:textSize="16sp"
         android:textColor="@color/secondary_title_color"
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp" />
-    
-    <EditText
-        android:id="@+id/pwd_now_content"
-        android:labelFor="@id/pwd_now_content"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:textSize="16sp"
-        android:textColor="@color/main_title_color"
-        android:inputType="textPassword"
-        android:layout_marginTop="26dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:paddingTop="18dp"
-        android:paddingBottom="18dp"
-        android:maxLength="16"/>
 
     <Button
-        android:id="@+id/pwd_now_next"
+        android:id="@+id/pwd_obtain_phone_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/setting_pwd_set_btn"
+        android:text="@string/login_main_phone_submit"
         android:textSize="16sp"
         android:textColor="@color/white"
         android:layout_marginTop="32dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/person_submit_bg"/>
-
-    <TextView
-        android:id="@+id/pwd_now_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/setting_pwd_set_phone"
-        android:textSize="16sp"
-        android:textColor="@color/recent_update_btn_pressed"
-        android:layout_marginTop="28dp"
-        android:layout_gravity="center"/>
 
     <View
         android:layout_width="match_parent"

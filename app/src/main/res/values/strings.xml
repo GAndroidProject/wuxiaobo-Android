@@ -53,7 +53,7 @@
     <string name="setting_phone_desc">更换手机号不会影响账户余额和已购产品</string>
     <string name="setting_pwd_set_now">请输入现有密码</string>
     <string name="setting_pwd_set_btn">下一步</string>
-    <string name="setting_pwd_set_phone">通过短信验证码验证</string>
+    <string name="setting_pwd_obtain_phone_code">通过短信验证码验证</string>
     <string name="setting_pwd_limit">密码长度6–12位</string>
     <string name="setting_pwd_new_submit">完成修改</string>
     <string name="setting_phone_num_title">已向 %1$s 发送验证码</string> <!-- 第一个参数为字符串 -->

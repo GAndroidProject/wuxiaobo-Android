@@ -21,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.LoginUser;
+import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.common.entitys.MineMoneyItemInfo;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SQLiteUtil;
@@ -73,14 +74,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initData();
-        initListener();
     }
 
     private void initData() {
-        mineMsgView.setNickName("名字太长了呀哈哈哈");
-        mineMsgView.setAvatar("http://pic13.nipic.com/20110331/3032951_224550202000_2.jpg");
-        // TODO: 根据登陆态度判断 mineMsgView 的数据展示
         // 会员权益假数据
         List<String> contentList = new ArrayList<>();
         contentList.add("四大体系课程免费听");
@@ -148,18 +144,52 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         // 网络请求数据代码
 //        MinePresenter minePresenter = new MinePresenter(this);
-        SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
-        List<LoginUser> loginMsg = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
-        if (loginMsg.size() == 1) {
-            String apiToken = loginMsg.get(0).getApi_token();
-            SettingPresenter settingPresenter = new SettingPresenter(this);
-            settingPresenter.requestPersonData(apiToken, false);
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        List<LoginUser> loginMsg = getLoginUserList();
+        if (loginMsg.size() == 1) {
+            initMineMsg();
+            initData();
+        } else {
+            // 游客登录
+            mineMsgView.setNickName("点击登录");
+            mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
+            mineVipCard.setVisibility(View.GONE);
+            // 超级会员隐藏后奖学金的位置
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int left = Dp2Px2SpUtil.dp2px(getActivity(), 20);
+            int top = Dp2Px2SpUtil.dp2px(getActivity(), -36);
+            int right = Dp2Px2SpUtil.dp2px(getActivity(), 20);
+            layoutParams.setMargins(left, top, right ,0);
+            mineMoneyWrapView.setLayoutParams(layoutParams);
+            // 金钱容器假数据
+            List<MineMoneyItemInfo> itemInfoList = new ArrayList<>();
+            MineMoneyItemInfo item_1 = new MineMoneyItemInfo();
+            item_1.setItemTitle("￥0.00");
+            item_1.setItemDesc("奖学金");
+            MineMoneyItemInfo item_2 = new MineMoneyItemInfo();
+            item_2.setItemTitle("0张");
+            item_2.setItemDesc("优惠券");
+            itemInfoList.add(item_1);
+            itemInfoList.add(item_2);
+            MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(getActivity(), itemInfoList);
+            mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
+            // 我正在学假数据
+            // TODO: 根据是否登录显示正在学的 item
+            // mineLearningWrap.setLearningContainerVisibility(View.GONE);
+            mineLearningWrapView.setLearningIconURI("http://pic13.nipic.com/20110331/3032951_224550202000_2.jpg");
+            mineLearningWrapView.setLearningTitle("我的财富计划");
+            mineLearningWrapView.setLearningUpdate("已更新至07-22期");
+            // TODO: 如果没有登录或者登录了没有在学课程就需要将登录描述显示出来否则隐藏
+            mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
+            MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
+            mineLearningWrapView.setLearningListAdapter(learningListAdapter);
+        }
+
+        initListener();
     }
 
     @Override
@@ -170,28 +200,24 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        JSONObject result = (JSONObject) entity;
-        if (success) {
-            if (iRequest instanceof SettingPseronMsgRequest) {
-                int code = result.getInteger("code");
-                if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data = (JSONObject) result.get("data");
-                    initMineMsg(data);
-                } else if (code == NetworkCodes.CODE_PERSON_PARAM_LOSE) {
-                    Log.d(TAG, "onMainThreadResponse: 必选字段缺失");
-                } else if (code == NetworkCodes.CODE_PERSON_PARAM_UNUSEFUL) {
-                    Log.d(TAG, "onMainThreadResponse: 字段格式无效");
-                } else if (code == NetworkCodes.CODE_PERSON_NOT_FOUND) {
-                    Log.d(TAG, "onMainThreadResponse: 当前用户不存在");
-                }
-            }
-        } else {
-            Log.d(TAG, "onMainThreadResponse: request fail...");
-        }
     }
 
-    private void initMineMsg(JSONObject data) {
-
+    // 初始化我的信息
+    private void initMineMsg() {
+        String wxNickname = getWxNickname();
+        String wxAvatar = getWxAvatar();
+        // 设置界面信息
+        if (wxNickname.equals("") || wxNickname.equals("null")) {
+            // 微信昵称为空
+            mineMsgView.setNickName("请设置昵称");
+        } else {
+            mineMsgView.setNickName(wxNickname);
+        }
+        if (wxAvatar.equals("") || wxAvatar.equals("null")) {
+            mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
+        } else {
+            mineMsgView.setAvatar(wxAvatar);
+        }
     }
 
     @Override

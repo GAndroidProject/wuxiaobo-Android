@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.shop.utils.JudgeUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
@@ -242,8 +243,6 @@ public class LoginPageFragment extends BaseFragment {
         phoneObtainCode = (Button) viewWrap.findViewById(R.id.login_submit_btn);
 
         TextView registerPhoneProvision = (TextView) viewWrap.findViewById(R.id.login_register_provision);
-        phoneObtainCode.setEnabled(false);
-        phoneObtainCode.setAlpha(0.6f);
 
         initPhoneInputListener(LoginActivity.REGISTER);
 
@@ -276,16 +275,22 @@ public class LoginPageFragment extends BaseFragment {
             public void onComplete(String content) {
                 // 拿到用户输入的验证码，然后跟返回的验证码对比
                 switch (loginActivity.preTag) {
-                    case LoginActivity.MAIN:
+                    case LoginActivity.MAIN: // 通过验证码登录
                         loginActivity.loginPresenter.loginBySmsCode(phoneNum, content);
                         break;
-                    case LoginActivity.BIND_PHONE:
-                        loginActivity.loginPresenter.verifyLoginCode(phoneNum, content);
+                    case LoginActivity.BIND_PHONE: // 绑定手机
+//                        loginActivity.loginPresenter.verifyLoginCode(phoneNum, content);
+                        String accessToken = SharedPreferencesUtil.getData("accessToken", "").toString();
+                        if (accessToken != null && !accessToken.equals("")) {
+                            loginActivity.loginPresenter.bindPhone(accessToken, phoneNum, content);
+                            SharedPreferencesUtil.putData("accessToken", ""); // 用完就清空
+                            toggleSoftKeyboard();
+                        }
                         break;
-                    case LoginActivity.REGISTER:
+                    case LoginActivity.REGISTER: // 确认注册验证码
                         loginActivity.loginPresenter.verifyRegisterCode(phoneNum, content);
                         break;
-                    case LoginActivity.FIND_PWD:
+                    case LoginActivity.FIND_PWD: // 确认找回密码验证码
                         loginActivity.loginPresenter.verifyFindPwdCode(phoneNum, content);
                         break;
                 }
@@ -490,7 +495,8 @@ public class LoginPageFragment extends BaseFragment {
 
     // 初始化手机号输入、按钮监听
     private void initPhoneInputListener(String tag) {
-
+        phoneObtainCode.setEnabled(false);
+        phoneObtainCode.setAlpha(0.6f);
         // 监听文字变化
         phoneContent.addTextChangedListener(new TextWatcher() {
             @Override

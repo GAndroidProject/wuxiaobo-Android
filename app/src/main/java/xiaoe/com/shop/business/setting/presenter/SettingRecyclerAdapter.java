@@ -46,24 +46,20 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         SettingItemViewHolder viewHolder = (SettingItemViewHolder) holder;
         final int tempPos = viewHolder.getAdapterPosition();
-//        if (position == itemList.size()) { // 最后一个空项，什么都不显示
-//            viewHolder.itemContainer.setVisibility(View.GONE);
-//            return;
-//        } else {
         final SettingItemInfo currentItem = itemList.get(tempPos);
-//        }
         if (tempPos == 0) { // 是头像，约定如果有 title 会优先显示 title
-            if (!TextUtils.isEmpty(currentItem.getItemTitle())) {
+            if (currentItem.getItemTitle().equals("头像")) {
                 viewHolder.itemIcon.setVisibility(View.VISIBLE);
                 viewHolder.itemContent.setVisibility(View.GONE);
                 viewHolder.itemGo.setVisibility(View.GONE);
                 viewHolder.itemTitle.setText(currentItem.getItemTitle());
                 viewHolder.itemIcon.setImageURI(currentItem.getItemIcon());
             } else {
-                viewHolder.itemIcon.setVisibility(View.GONE);
-                viewHolder.itemContent.setVisibility(View.VISIBLE);
+                viewHolder.itemIcon.setVisibility(View.VISIBLE);
+                viewHolder.itemContent.setVisibility(View.GONE);
+                viewHolder.itemGo.setVisibility(View.VISIBLE);
                 viewHolder.itemTitle.setText(currentItem.getItemTitle());
-                viewHolder.itemContent.setText(currentItem.getItemContent());
+                viewHolder.itemIcon.setImageURI(""); // 占位
             }
         } else {
             itemList.size(); // 其他内容

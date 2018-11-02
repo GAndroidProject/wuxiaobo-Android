@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +31,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.SettingItemInfo;
-import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
@@ -38,11 +38,13 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
 import xiaoe.com.shop.business.setting.presenter.SettingTimeCount;
+import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.utils.JudgeUtil;
 import xiaoe.com.shop.widget.CodeVerifyView;
 
-public class EditDataFragment extends BaseFragment implements OnItemClickWithSettingItemInfoListener {
+public class SettingAccountFragment extends BaseFragment implements OnItemClickWithSettingItemInfoListener {
 
-    private static final String TAG = "EditDataFragment";
+    private static final String TAG = "SettingAccountFragment";
 
     private Unbinder unbinder;
     private Context mContext;
@@ -60,12 +62,12 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithSet
     // 软键盘
     InputMethodManager imm;
 
-    public static EditDataFragment newInstance(int layoutId) {
-        EditDataFragment editDataFragment = new EditDataFragment();
+    public static SettingAccountFragment newInstance(int layoutId) {
+        SettingAccountFragment settingAccountFragment = new SettingAccountFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("layoutId", layoutId);
-        editDataFragment.setArguments(bundle);
-        return editDataFragment;
+        settingAccountFragment.setArguments(bundle);
+        return settingAccountFragment;
     }
 
     @Override
@@ -104,23 +106,26 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithSet
             case R.layout.fragment_message:
                 initMessageFragment();
                 break;
-            case R.layout.fragment_suggestion:
-                initSuggestionFragment();
-                break;
+//            case R.layout.fragment_suggestion:
+//                initSuggestionFragment();
+//                break;
             case R.layout.fragment_about:
                 initAboutFragment();
                 break;
-            case R.layout.fragment_phone:
-                initPhoneFragment();
+            case R.layout.fragment_current_phone:
+                initCurrentPhoneFragment();
                 break;
-            case R.layout.fragment_pwd_now:
-                initPwdNowFragment();
+            case R.layout.fragment_pwd_obtain_phone_code:
+                initPwdObtainPhoneCodeFragment();
                 break;
             case R.layout.fragment_pwd_new:
                 initPwdNewFragment();
                 break;
-            case R.layout.fragment_phone_num:
-                initPhoneNumFragment();
+            case R.layout.fragment_phone_code:
+                initPhoneCodeFragment();
+                break;
+            case R.layout.fragment_change_phone_complete:
+                initChangePhoneCompleteFragment();
                 break;
         }
     }
@@ -131,8 +136,9 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithSet
         itemList = new ArrayList<>();
         accountRecycler = (RecyclerView) viewWrap.findViewById(R.id.account_content);
         SettingItemInfo changePwd = new SettingItemInfo("修改密码", "", "");
-        SettingItemInfo changePhone = new SettingItemInfo("更换手机号", "" ,"188*****1234");
-        SettingItemInfo bindWeChat = new SettingItemInfo("绑定微信", "", "未绑定");
+        SettingItemInfo changePhone = new SettingItemInfo("更换手机号", "" ,settingAccountActivity.localPhone);
+        String tip = settingAccountActivity.apiToken == null ? "未绑定" : "已绑定";
+        SettingItemInfo bindWeChat = new SettingItemInfo("绑定微信", "", tip);
         itemList.add(changePwd);
         itemList.add(changePhone);
         itemList.add(bindWeChat);
@@ -163,8 +169,8 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithSet
         });
     }
 
-    // 建议布局
-    private void initSuggestionFragment() {
+    // 建议布局（先留着）
+    /*private void initSuggestionFragment() {
         EditText editText = (EditText) viewWrap.findViewById(R.id.suggest_content);
         final TextView numText = (TextView) viewWrap.findViewById(R.id.suggest_num);
         Button btnSubmit = (Button) viewWrap.findViewById(R.id.suggest_submit);
@@ -188,11 +194,10 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithSet
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 网络请求，保存意见反馈
                 settingAccountActivity.replaceFragment(SettingAccountActivity.MAIN);
             }
         });
-    }
+    }*/
 
     // 关于布局
     private void initAboutFragment() {
@@ -217,49 +222,28 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithSet
         aboutContent.setAdapter(settingRecyclerAdapter);
     }
 
-    private void initPhoneFragment() {
+    private void initCurrentPhoneFragment() {
         TextView phoneNum = (TextView) viewWrap.findViewById(R.id.phone_num);
         Button phoneSubmit = (Button) viewWrap.findViewById(R.id.phone_submit);
         // 初始化数据
-        String num = "18814182578";
-        phoneNum.setText(num);
+        phoneNum.setText(settingAccountActivity.localPhone);
         phoneSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                settingAccountActivity.accountTitle.setText("修改密码");
-                settingAccountActivity.replaceFragment(SettingAccountActivity.PHONE_NUM);
+                settingAccountActivity.inputNewPhone = false;
+                settingAccountActivity.loginPresenter.obtainPhoneCode(settingAccountActivity.localPhone);
             }
         });
     }
 
-    private void initPwdNowFragment() {
-        final EditText nowPwd = (EditText) viewWrap.findViewById(R.id.pwd_now_content);
-        Button nowBtn = (Button) viewWrap.findViewById(R.id.pwd_now_next);
-        final TextView nowPhone = (TextView) viewWrap.findViewById(R.id.pwd_now_phone);
+    private void initPwdObtainPhoneCodeFragment() {
+        Button nowBtn = (Button) viewWrap.findViewById(R.id.pwd_obtain_phone_code);
 
         nowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 判断密码是否正确
-                String tempPwd = "123";
-                if (tempPwd.equals(nowPwd.getText().toString())) { // 密码正确
-                    // 跳转到修改页面
-                    if (imm != null && imm.isActive()) {
-                        imm.hideSoftInputFromWindow(nowPwd.getWindowToken(), 0);
-                    }
-                    nowPwd.setText("");
-                    settingAccountActivity.replaceFragment(SettingAccountActivity.PWD_NEW);
-                } else {
-                    Toast.makeText(getActivity(), "密码错误", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        nowPhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nowPwd.setText("");
-                settingAccountActivity.replaceFragment(SettingAccountActivity.PHONE_NUM);
+                // 获取验证码
+                settingAccountActivity.loginPresenter.obtainPhoneCode(settingAccountActivity.localPhone);
             }
         });
     }
@@ -320,43 +304,95 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithSet
         });
     }
 
-    protected CodeVerifyView phoneNumContent;
+    protected CodeVerifyView phoneCodeContent;
+    protected SettingTimeCount settingTimeCount;
+    TextView phoneNumTitle;
 
-    private void initPhoneNumFragment() {
-        final SettingTimeCount settingTimeCount = new SettingTimeCount(getActivity(), 60000, 1000, viewWrap);
-
-        TextView phoneNumTitle = (TextView) viewWrap.findViewById(R.id.phone_num_title);
-        phoneNumContent = (CodeVerifyView) viewWrap.findViewById(R.id.phone_num_content);
+    private void initPhoneCodeFragment() {
+        settingTimeCount = new SettingTimeCount(getActivity(), 60000, 1000, viewWrap);
+        settingTimeCount.start();
+        phoneNumTitle = (TextView) viewWrap.findViewById(R.id.phone_num_title);
+        phoneCodeContent = (CodeVerifyView) viewWrap.findViewById(R.id.phone_num_content);
         final TextView phoneNumDesc = (TextView) viewWrap.findViewById(R.id.phone_num_desc);
-        phoneNumTitle.setText(String.format(getActivity().getResources().getString(R.string.setting_phone_num_title), "18814182578"));
-        phoneNumDesc.setText("获取验证码");
-        phoneNumContent.setOnCodeFinishListener(new CodeVerifyView.OnCodeFinishListener() {
+        phoneNumTitle.setText(String.format(getActivity().getResources().getString(R.string.setting_phone_num_title), settingAccountActivity.localPhone));
+        phoneCodeContent.setOnCodeFinishListener(new CodeVerifyView.OnCodeFinishListener() {
             @Override
             public void onComplete(String content) {
                 // content 为用户输入的验证码
-                // TODO: 获取后台返回的验证码与用户输入的作比较，默认 1234
-                if (content.equals("1234")) {
-                    phoneNumContent.clearAllEditText();
-                    settingAccountActivity.accountTitle.setText("账号设置");
-                    // 关掉 SettingTimeCount
-                    settingTimeCount.cancel();
-                    settingAccountActivity.replaceFragment(SettingAccountActivity.ACCOUNT);
-                    if (imm != null && imm.isActive()) {
-                        View view = getActivity().getCurrentFocus();
-                        if (view != null) {
-                            IBinder iBinder = view.getWindowToken();
-                            imm.hideSoftInputFromWindow(iBinder, InputMethodManager.HIDE_NOT_ALWAYS);
-                        }
-                    }
+                if (settingAccountActivity.inputNewPhone) {
+                    settingAccountActivity.newSmsCode = content;
+                    // 新手机验证码确认
+                    settingAccountActivity.loginPresenter.verifyNewCode(settingAccountActivity.newPhone, content);
                 } else {
-                    phoneNumContent.setErrorBg(R.drawable.cv_error_bg);
+                    settingAccountActivity.smsCode = content;
+                    // 旧手机验证码确认
+                    settingAccountActivity.loginPresenter.verifyCode(settingAccountActivity.localPhone, content);
                 }
             }
         });
         phoneNumDesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                settingAccountActivity.loginPresenter.obtainPhoneCode(phoneNumTitle.getText().toString());
                 settingTimeCount.start();
+            }
+        });
+    }
+
+    TextView completeTitle;
+    LinearLayout completeContentWrap;
+    EditText completeContent;
+    TextView completeError;
+    Button completeSubmit;
+
+    // 初始化修改手机完成页面
+    private void initChangePhoneCompleteFragment() {
+        completeTitle = (TextView) viewWrap.findViewById(R.id.setting_complete_title);
+        completeContentWrap = (LinearLayout) viewWrap.findViewById(R.id.login_input_num_wrap);
+        completeContent = (EditText) viewWrap.findViewById(R.id.login_input_num_content);
+        completeError = (TextView) viewWrap.findViewById(R.id.login_error_tip);
+        completeSubmit = (Button) viewWrap.findViewById(R.id.login_submit_btn);
+
+        completeTitle.setVisibility(View.GONE);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(getActivity(), 40), 0, 0);
+        completeContentWrap.setLayoutParams(layoutParams);
+        completeContent.setInputType(InputType.TYPE_CLASS_PHONE);
+
+        completeContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String head = s.toString();
+                if (head.length() == 11 && completeError.getVisibility() == View.GONE) {
+                    completeSubmit.setAlpha(1);
+                    completeSubmit.setEnabled(true);
+                } else {
+                    JudgeUtil.showErrorViewIfNeed(getActivity(), head, completeError, completeSubmit);
+                    completeSubmit.setAlpha(0.6f);
+                    completeSubmit.setEnabled(false);
+                    completeContent.setCursorVisible(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        completeSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                completeContent.setCursorVisible(false);
+                settingAccountActivity.inputNewPhone = true;
+                settingAccountActivity.newPhone = completeContent.getText().toString();
+                phoneNumTitle.setText(String.format(getActivity().getResources().getString(R.string.setting_phone_num_title), settingAccountActivity.newPhone));
+                settingAccountActivity.loginPresenter.obtainPhoneCode(settingAccountActivity.newPhone);
             }
         });
     }
@@ -377,15 +413,18 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithSet
             switch (itemList.indexOf(itemInfo)) {
                 case 0:
                     // 修改密码
-                    settingAccountActivity.replaceFragment(SettingAccountActivity.PWD_NOW);
+                    settingAccountActivity.replaceFragment(SettingAccountActivity.PWD_PHONE_CODE);
                     break;
                 case 1:
                     // 更换手机号
-                    settingAccountActivity.replaceFragment(SettingAccountActivity.PHONE);
+                    settingAccountActivity.replaceFragment(SettingAccountActivity.CURRENT_PHONE);
                     break;
                 case 2:
                     // 绑定微信
-                    Toast.makeText(getActivity(), "绑定微信", Toast.LENGTH_SHORT).show();
+                    String tip = itemList.get(2).getItemContent();
+                    if (tip.equals("未绑定")) {
+                        JumpDetail.jumpLogin(getActivity());
+                    }
                     break;
             }
         } else if (aboutContent == view.getParent()) { // 关于的点击事件
@@ -398,6 +437,33 @@ public class EditDataFragment extends BaseFragment implements OnItemClickWithSet
                     // 服务协议
                     Toast.makeText(getActivity(), "服务协议", Toast.LENGTH_SHORT).show();
                     break;
+            }
+        }
+    }
+
+    /**
+     * 如果软键盘弹出，就关闭软键盘
+     */
+    private void toggleSoftKeyboard() {
+        if (imm != null && imm.isActive()) {
+            View view = getActivity().getCurrentFocus();
+            if (view != null) {
+                IBinder iBinder = view.getWindowToken();
+                imm.hideSoftInputFromWindow(iBinder, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) { // 界面隐藏的时候，做清空操作
+            toggleSoftKeyboard();
+            if (phoneCodeContent != null) {
+                phoneCodeContent.clearAllEditText();
+            }
+            if (settingTimeCount != null) {
+                settingTimeCount.cancel();
             }
         }
     }

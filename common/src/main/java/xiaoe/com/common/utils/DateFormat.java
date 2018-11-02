@@ -89,4 +89,9 @@ public class DateFormat {
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+08"));
         return sdf.format(new Date());
     }
+
+    public static String date2String(Date date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return simpleDateFormat.format(date);
+    }
 }

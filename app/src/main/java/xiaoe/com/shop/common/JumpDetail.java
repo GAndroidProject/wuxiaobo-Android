@@ -13,6 +13,7 @@ import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.comment.ui.CommentActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
+import xiaoe.com.shop.business.login.ui.LoginActivity;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
@@ -123,5 +124,14 @@ public class JumpDetail {
         intent.putExtra("isFormalUser", isFormalUser);
         context.startActivity(intent);
         ((Activity) context).finish();
+    }
+
+    /**
+     * 跳转到登录页面
+     * @param context 上下文
+     */
+    public static void jumpLogin(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
     }
 }

@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.alibaba.fastjson.JSONObject;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -18,12 +20,19 @@ import java.util.List;
 import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
+import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.SettingPseronMsgRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
+import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
+import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
 import xiaoe.com.shop.utils.StatusBarUtil;
@@ -39,6 +48,11 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     public static final String MICRO_PAGE_MAIN = "app_home_page";
     public static final String MICRO_PAGE_COURSE = "app_course_page";
 
+    SettingPresenter settingPresenter;
+
+    String apiToken;
+    List<LoginUserInfo> loginUserList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +62,11 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         setContentView(R.layout.activity_main);
 
         EventBus.getDefault().register(this);
+
+        apiToken = getLoginApiToke();
+        loginUserList = getLoginUserInfoList();
+        settingPresenter = new SettingPresenter(this);
+        settingPresenter.requestPersonData(apiToken, false);
 
         initView();
         initPermission();
@@ -138,6 +157,57 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         EventBus.getDefault().unregister(this);
         if(!AudioMediaPlayer.isPlaying()){
             AudioMediaPlayer.release();
+        }
+    }
+
+    @Override
+    public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
+        super.onMainThreadResponse(iRequest, success, entity);
+        JSONObject result = (JSONObject) entity;
+        if (success) {
+            if (iRequest instanceof SettingPseronMsgRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    initMineMsg(data);
+                } else if (code == NetworkCodes.CODE_PERSON_PARAM_LOSE) {
+                    Log.d(TAG, "onMainThreadResponse: 必选字段缺失");
+                } else if (code == NetworkCodes.CODE_PERSON_PARAM_UNUSEFUL) {
+                    Log.d(TAG, "onMainThreadResponse: 字段格式无效");
+                } else if (code == NetworkCodes.CODE_PERSON_NOT_FOUND) {
+                    Log.d(TAG, "onMainThreadResponse: 当前用户不存在");
+                }
+            }
+        } else {
+            Log.d(TAG, "onMainThreadResponse: request fail, param error may be...");
+        }
+    }
+
+    private void initMineMsg(JSONObject data) {
+
+        String wxNickname = data.getString("wx_nickname");
+        String wxAvatar = data.getString("wx_avatar");
+        String shopId = data.getString("app_id");
+        String userId = data.getString("user_id");
+        String phone = data.getString("phone");
+
+        LoginUserInfo loginUserInfo = new LoginUserInfo();
+        loginUserInfo.setUserId(userId);
+        loginUserInfo.setWxNickname(wxNickname);
+        loginUserInfo.setWxAvatar(wxAvatar);
+        loginUserInfo.setPhone(phone);
+        loginUserInfo.setShopId(shopId);
+
+        if (loginUserList.size() == 1) { // 已经有用户登录过，此时需要更新数据
+            LoginUserInfo hadLoginUserInfo = loginUserList.get(0);
+            if (hadLoginUserInfo.getUserId().equals(loginUserInfo.getUserId())) { // 同一个用户
+                SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo, "user_id = ?", new String[]{ hadLoginUserInfo.getUserId() });
+            } else { // 不同用户，先把原来的用户删掉，然后将新用户插入
+                SQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "user_id = ?", new String[]{ hadLoginUserInfo.getUserId() });
+                SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo);
+            }
+        } else { // 没有，则直接插入数据
+            SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo);
         }
     }
 }

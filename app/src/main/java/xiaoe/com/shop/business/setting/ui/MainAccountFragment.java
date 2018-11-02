@@ -77,13 +77,11 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
         SettingItemInfo memory = new SettingItemInfo("消除缓存", "", cacheSize);
         SettingItemInfo version = new SettingItemInfo("版本更新", "", "已经是最新版本");
         SettingItemInfo us = new SettingItemInfo("关于我们", "", "");
-        SettingItemInfo suggestion = new SettingItemInfo("意见反馈", "", "");
         itemInfoList.add(account);
         itemInfoList.add(message);
         itemInfoList.add(memory);
         itemInfoList.add(version);
         itemInfoList.add(us);
-        itemInfoList.add(suggestion);
 
         settingRecyclerAdapter = new SettingRecyclerAdapter(getActivity(), itemInfoList);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());

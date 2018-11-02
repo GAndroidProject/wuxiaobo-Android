@@ -119,12 +119,6 @@ public class LoginActivity extends XiaoeActivity {
     private void initData() {
         // 初始化 SharedPreference
         SharedPreferencesUtil.getInstance(this, "xiaoe_file");
-        // 初始化数据库
-        SQLiteUtil.init(this.getApplicationContext(), new LoginSQLiteCallback());
-        // 如果表不存在，就去创建
-        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
-            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
-        }
     }
 
     private void initView() {
@@ -302,21 +296,30 @@ public class LoginActivity extends XiaoeActivity {
                     // 绑定手机
                     obtainLimitUserInfo(data, false);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
-                    Log.d(TAG, "onMainThreadResponse: 登录失败." + result.getString("msg"));
+                    Toast("登录失败");
+                    Log.d(TAG, "onMainThreadResponse: " + result.getString("msg"));
                 } else if (code == NetworkCodes.CODE_OBTAIN_ACCESS_TOKEN_FAIL) { // 获取 access token 失败
                     Log.d(TAG, "onMainThreadResponse: 获取 access token 失败");
                 } else if (code == NetworkCodes.CODE_LOGIN_PASSWORD_ERROR) {
-                    Log.d(TAG, "onMainThreadResponse: 密码错误...");
+                    Toast("密码错误");
+                    Log.d(TAG, "onMainThreadResponse: " + result.getString("msg"));
                 }
-            } else if (iRequest instanceof LoginPhoneCodeRequest || iRequest instanceof LoginCodeVerifyRequest) { // 请求验证码回调
+            } else if (iRequest instanceof LoginPhoneCodeRequest) { // 获取验证码回调
                 int code = result.getInteger("code");
-                if (code == NetworkCodes.CODE_SUCCEED) { // 验证成功
+                if (code == NetworkCodes.CODE_SUCCEED) { // 获取成功
                     Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
                     toggleSoftKeyboard();
-                } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
+                } else if (code == NetworkCodes.CODE_LOGIN_FAIL) { // 获取失败
                     Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
                     this.smsCode = "";
                     ((LoginPageFragment) currentFragment).loginCodeContent.setErrorBg(R.drawable.cv_error_bg);
+                }
+            } else if (iRequest instanceof LoginCodeVerifyRequest) { // 微信注册，进行绑定手机，验证码确认
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) { // 绑定手机
+                    Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
+                } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
+                    Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
                 }
             } else if (iRequest instanceof LoginRegisterCodeVerifyRequest) { // 注册验证码确认回调
                 int code = result.getInteger("code");
@@ -325,8 +328,7 @@ public class LoginActivity extends XiaoeActivity {
                     ((LoginPageFragment) currentFragment).loginTimeCount.cancel();
                     ((LoginPageFragment) currentFragment).loginCodeContent.clearAllEditText();
                     toggleSoftKeyboard();
-                    // TODO: 需要根据不同情况实现跳转
-                    // 首页 -- 主页；注册页 -- 设置密码页面 -- 主页；绑定手机 -- 主页
+                    // 注册流程去到设置密码页
                     replaceFragment(LoginActivity.SET_PWD);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
                     Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
@@ -337,6 +339,8 @@ public class LoginActivity extends XiaoeActivity {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) { // 验证成功
                     Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
+                    ((LoginPageFragment) currentFragment).loginTimeCount.cancel();
+                    ((LoginPageFragment) currentFragment).loginCodeContent.clearAllEditText();
                     toggleSoftKeyboard();
                     replaceFragment(LoginActivity.SET_PWD);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) { // 验证失败
@@ -428,17 +432,15 @@ public class LoginActivity extends XiaoeActivity {
         String id = data.getString("id");
         String wxOpenId = data.getString("wx_open_id");
         String wxUnionId = data.getString("wx_union_id");
-        String phone = data.getString("phone");
         String apiToken = data.getString("api_token");
 
         LoginUser user = new LoginUser();
         user.setId(id);
         user.setWxOpenId(wxOpenId);
         user.setWxUnionId(wxUnionId);
-        user.setPhone(phone);
         user.setApi_token(apiToken);
 
-        List<LoginUser> userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        List<LoginUser> userList = getLoginUserList();
         if (userList.size() == 1) {
             // 已经有用户注册过，此时需要先将已注册用户的信息删掉
             String tempId = userList.get(0).getId();
@@ -457,17 +459,17 @@ public class LoginActivity extends XiaoeActivity {
         String id = data.getString("id");
         String wxOpenId = data.getString("wx_open_id");
         String wxUnionId = data.getString("wx_union_id");
-        String phone = data.getString("phone");
+//        String phone = data.getString("phone");
         String apiToken = data.getString("api_token");
 
         LoginUser user = new LoginUser();
         user.setId(id);
         user.setWxOpenId(wxOpenId);
         user.setWxUnionId(wxUnionId);
-        user.setPhone(phone);
+//        user.setPhone(phone);
         user.setApi_token(apiToken);
 
-        List<LoginUser> userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        List<LoginUser> userList = getLoginUserList();
 
         if (userList.size() == 1) { // 证明有登录或者注册过的用户
             String localId = userList.get(0).getId();
@@ -504,18 +506,18 @@ public class LoginActivity extends XiaoeActivity {
         String code = SharedPreferencesUtil.getData("wx_code", "").toString();
         // 获取注册所需要的信息
         String accessToken = SharedPreferencesUtil.getData("accessToken", "").toString();
-//        Log.d(TAG, "onResume: accessToken --- " + accessToken);
-//        Log.d(TAG, "onResume: code --- " + code);
+        Log.d(TAG, "onResume: accessToken --- " + accessToken);
+        Log.d(TAG, "onResume: code --- " + code);
 //        Log.d(TAG, "onResume: preTag --- " + preTag);
-        List<LoginUser> userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
-        if (userList.size() == 1) { // 有用户登录信息，直接去主页
+        String apiToken = getLoginApiToke();
+        if (!apiToken.equals("")) { // 有用户登录信息，直接去主页
             JumpDetail.jumpMain(this, true);
             return;
         }
         if (!TextUtils.isEmpty(code)) {
             // 注册流程，拉起微信后，进行绑定操作
             if (!TextUtils.isEmpty(accessToken)) { // 表示有操作过
-                if (preTag.equals(SET_PWD)) { // 从设置密码点击绑定微信进行注册
+                if (preTag != null && preTag.equals(SET_PWD)) { // 从设置密码点击绑定微信进行注册
                     loginPresenter.bindWeChat(accessToken, code); // 进行绑定微信
                 }
             }
