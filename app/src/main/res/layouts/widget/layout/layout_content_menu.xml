@@ -15,7 +15,7 @@
         android:background="@drawable/menu_background"
         >
         <LinearLayout
-            android:id="@+id/btn_share"
+            android:id="@+id/btn_share_item"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:paddingStart="16dp"

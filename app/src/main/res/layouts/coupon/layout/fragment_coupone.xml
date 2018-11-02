@@ -4,12 +4,43 @@
     android:layout_height="match_parent"
     android:background="@color/audio_page_bg_color"
     >
+    <RelativeLayout
+        android:id="@+id/no_use_coupon"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        android:background="@drawable/white_round_circle"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/main_title_color"
+            android:textSize="14sp"
+            android:text="@string/no_use_coupon"
+            />
+        <ImageView
+            android:id="@+id/select_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/download_checking"
+            />
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/coupon_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
+        android:overScrollMode="never"
+        android:layout_below="@id/no_use_coupon"
         />
 </RelativeLayout>

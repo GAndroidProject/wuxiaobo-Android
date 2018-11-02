@@ -6,30 +6,64 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import xiaoe.com.common.entitys.CouponInfo;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
+import xiaoe.com.shop.interfaces.OnSelectCouponListener;
 
 public class CouponListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private static final String TAG = "CouponListAdapter";
     private Context mContext;
+    private int marginTop = 0;
+    private int marginBottom = 0;
+    private boolean existMarginTop = true;
+    private List<CouponInfo> couponList;
+    private int showSeleceIcon ;
+    private OnSelectCouponListener selectCouponListener;
 
-    public CouponListAdapter(Context context) {
+    public CouponListAdapter(Context context, int showSeleceIcon, int top) {
         this.mContext = context;
+        marginTop = top;
+        marginBottom = Dp2Px2SpUtil.dp2px(context, 12);
+        couponList = new ArrayList<CouponInfo>();
+        this.showSeleceIcon = showSeleceIcon;
     }
+
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.layout_item_coupon, parent, false);
-        return new CouponListHolder(view);
+        CouponListHolder holder = new CouponListHolder(view, showSeleceIcon);
+        holder.setOnSelectCouponListener(selectCouponListener);
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-
+        CouponListHolder couponHolder = (CouponListHolder) holder;
+        couponHolder.bindView(couponList.get(position), existMarginTop, position, marginTop, marginBottom);
     }
 
     @Override
     public int getItemCount() {
-        return 15;
+        return couponList.size();
     }
+
+    public void addAll(List<CouponInfo> list){
+        couponList.addAll(list);
+        notifyDataSetChanged();
+    }
+    public List<CouponInfo> getCouponList(){
+        return couponList;
+    }
+
+    public void setOnSelectCouponListener(OnSelectCouponListener listener) {
+        selectCouponListener = listener;
+    }
+
+
 }

@@ -2,14 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <RelativeLayout
-        android:id="@+id/coupon_bar"
+        android:id="@+id/pay_bar"
         android:layout_width="match_parent"
         android:layout_height="44dp">
 
         <ImageView
-            android:id="@+id/coupon_back"
+            android:id="@+id/pay_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
@@ -17,27 +16,25 @@
             android:src="@mipmap/download_back"
             android:background="@drawable/touch_state_bg"/>
         <TextView
-            android:id="@+id/coupon_title"
+            android:id="@+id/pay_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textSize="18sp"
             android:textColor="@color/main_title_color"
-            android:text="@string/coupon_title"
+            android:text="@string/paying"
             />
     </RelativeLayout>
-
     <FrameLayout
-        android:id="@+id/coupon_content_wrap"
+        android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/coupon_bar"/>
-
+        android:layout_below="@id/pay_bar"
+        />
     <xiaoe.com.shop.widget.StatusPagerView
         android:id="@+id/state_pager_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/coupon_bar"
+        android:layout_below="@id/pay_bar"
         />
-
 </RelativeLayout>

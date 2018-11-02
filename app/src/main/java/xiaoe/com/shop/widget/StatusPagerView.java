@@ -3,6 +3,7 @@ package xiaoe.com.shop.widget;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ public class StatusPagerView extends FrameLayout {
     private ImageView stateImage;
 
     public static final int DETAIL_NONE = R.mipmap.detail_none;
+    private TextView btnGoTo;
 
     public StatusPagerView(@NonNull Context context) {
         this(context,null);
@@ -35,6 +37,7 @@ public class StatusPagerView extends FrameLayout {
         stateText = (TextView) rootView.findViewById(R.id.state_text);
         stateImage = (ImageView) rootView.findViewById(R.id.state_image);
         setHintStateVisibility(View.GONE);
+        btnGoTo = (TextView) rootView.findViewById(R.id.btn_go_to);
 
         rootView.findViewById(R.id.pager).setOnClickListener(new OnClickListener() {
             @Override
@@ -55,7 +58,21 @@ public class StatusPagerView extends FrameLayout {
     public void setStateImage(int resId){
         stateImage.setImageResource(resId);
     }
+
     public void setStateText(String text){
         stateText.setText(text);
+    }
+
+    public void setBtnGoToText(String text){
+        btnGoTo.setText(text);
+        if(TextUtils.isEmpty(text)){
+            btnGoTo.setVisibility(GONE);
+        }else{
+            btnGoTo.setVisibility(VISIBLE);
+        }
+    }
+
+    public void setBtnGoToOnClickListener(OnClickListener listener){
+        btnGoTo.setOnClickListener(listener);
     }
 }

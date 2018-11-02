@@ -1,4 +1,4 @@
-package xiaoe.com.shop.common.pay;
+package xiaoe.com.shop.common.pay.presenter;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -41,7 +41,7 @@ public class PayPresenter implements IBizCallback {
      * @param resourceId
      * @param productId
      */
-    public void payOrder(int paymentType, int resourceType, String resourceId, String productId){
+    public void payOrder(int paymentType, int resourceType, String resourceId, String productId, String couponId){
         PayOrderRequest payOrderRequest = new PayOrderRequest(this);
         payOrderRequest.addBUZDataParam("user_account_type", "0");
         payOrderRequest.addBUZDataParam("force_collection", "1");
@@ -49,6 +49,9 @@ public class PayPresenter implements IBizCallback {
         payOrderRequest.addBUZDataParam("resource_type", ""+resourceType);
         payOrderRequest.addBUZDataParam("resource_id", ""+resourceId);
         payOrderRequest.addBUZDataParam("product_id", ""+productId);
+        if(!TextUtils.isEmpty(couponId)){
+            payOrderRequest.addBUZDataParam("cu_id", couponId);
+        }
         payOrderRequest.addRequestParam("app_id", "apppcHqlTPT3482");
         payOrderRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
         payOrderRequest.sendRequest();

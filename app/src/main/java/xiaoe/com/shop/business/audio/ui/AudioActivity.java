@@ -18,6 +18,7 @@ import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tencent.smtt.sdk.CookieSyncManager;
 import com.tencent.smtt.sdk.WebView;
+import com.umeng.socialize.UMShareAPI;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -28,7 +29,6 @@ import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.PayOrderRequest;
 import xiaoe.com.network.requests.RemoveCollectionRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.ViewAnim;
@@ -66,7 +66,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private AudioDetailsSwitchLayout pagerContentDetailLayout;
     private Intent mIntent;
     private AudioPlayListLayout audioPlayList;
-    private boolean paying = false;
     private ImageView btnCollect;
     private boolean hasCollect = false;//是否收藏
     private CollectionUtils collectionUtils;
@@ -97,15 +96,13 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        if(paying){
-            paying = false;
-            int code = getWXPayCode(true);
-            if(code == 0){
-                AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
-                new AudioPresenter(null).requestDetail(playEntity.getResourceId());
-            }
-            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+        int code = getWXPayCode(true);
+        if(code == 0){
+            getDialog().showLoadDialog(false);
+            AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+            new AudioPresenter(null).requestDetail(playEntity.getResourceId());
         }
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
     }
 
     private void initViews() {
@@ -214,27 +211,14 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
         if(entity == null || !success){
-            if(iRequest instanceof PayOrderRequest){
-                getDialog().dismissDialog();
-                getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
-                getDialog().showDialog(-1);
-            }
             return;
         }
         JSONObject jsonObject = (JSONObject) entity;
         Object dataObject = jsonObject.get("data");
         if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || dataObject == null ){
-            if(iRequest instanceof PayOrderRequest){
-                getDialog().dismissDialog();
-                getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
-                getDialog().showDialog(-1);
-            }
             return;
         }
-        if(iRequest instanceof PayOrderRequest){
-            JSONObject data = (JSONObject) dataObject;
-            payOrderRequest(data);
-        }else if(iRequest instanceof AddCollectionRequest){
+        if(iRequest instanceof AddCollectionRequest){
             addCollectionRequest(jsonObject);
         }else if(iRequest instanceof RemoveCollectionRequest){
             removeCollectionRequest(jsonObject);
@@ -268,14 +252,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }else{
             toastCustom(getResources().getString(R.string.collect_fail));
         }
-    }
-
-    private void payOrderRequest(JSONObject dataObject) {
-        JSONObject payConfig = dataObject.getJSONObject("payConfig");
-        pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
-                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
-//        payPresenter.pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
-//                                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
     }
 
 
@@ -328,11 +304,18 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 collect();
                 break;
             case R.id.btn_share:
+            case R.id.btn_share_item:
                 umShare();
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode,resultCode,data);
     }
 
     private void collect() {
@@ -355,10 +338,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void buyResource() {
-        paying = true;
-        getDialog().showLoadDialog(false);
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
-        payOrder(playEntity.getResourceId(), 2, 2);
+        JumpDetail.jumpPay(this, playEntity.getResourceId(), 2, playEntity.getImgUrl(), playEntity.getTitle(), playEntity.getPrice());
     }
 
     @Subscribe

@@ -21,6 +21,7 @@ import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tencent.smtt.sdk.CookieSyncManager;
 import com.tencent.smtt.sdk.WebView;
+import com.umeng.socialize.UMShareAPI;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,11 +35,11 @@ import xiaoe.com.network.requests.CheckCollectionRequest;
 import xiaoe.com.network.requests.CourseITAfterBuyRequest;
 import xiaoe.com.network.requests.CourseITBeforeBuyRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.PayOrderRequest;
 import xiaoe.com.network.requests.RemoveCollectionRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.course.presenter.CourseImageTextPresenter;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.utils.UpdateLearningUtils;
@@ -118,8 +119,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
     String collectionImgUrl;
     String collectionImgUrlCompressed;
     String collectionPrice;
-
-    private boolean paying = false;
+    private int resPrice = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -145,6 +145,12 @@ public class CourseImageTextActivity extends XiaoeActivity {
         initData();
         initViews();
         initListener();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode,resultCode,data);
     }
 
     private void initTitle() {
@@ -210,7 +216,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
         itShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast("分享功能");
+                umShare();
             }
         });
         itBuy.setOnVipBtnClickListener(new View.OnClickListener() {
@@ -222,9 +228,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
         itBuy.setOnBuyBtnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                paying = true;
-                getDialog().showLoadDialog(false);
-                payOrder(resourceId, 1, 2);
+                JumpDetail.jumpPay(CourseImageTextActivity.this, resourceId, 1, collectionImgUrl, collectionTitle, resPrice);
             }
         });
         itDescBtn.setOnClickListener(new View.OnClickListener() {
@@ -242,7 +246,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
         itTitleView.setTitleShareClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                umShare();
             }
         });
         itTitleView.setTitleCollectClickListener(new View.OnClickListener() {
@@ -281,14 +285,12 @@ public class CourseImageTextActivity extends XiaoeActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(paying){
-            paying = false;
-            int code = getWXPayCode(true);
-            if(code == 0){
-                courseImageTextPresenter.requestBeforeBuy(resourceId, resourceType);
-            }
-            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+        int code = getWXPayCode(true);
+        if(code == 0){
+            getDialog().showLoadDialog(false);
+            courseImageTextPresenter.requestBeforeBuy(resourceId, resourceType);
         }
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
     }
 
     @Override
@@ -371,32 +373,12 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 } else if (code == NetworkCodes.CODE_DELETE_COLLECT_FAILED) {
                     Toast("取消收藏失败");
                 }
-            } else if(iRequest instanceof PayOrderRequest){
-                payOrderRequest(result);
             }
         } else {
-            Log.d(TAG, "onMainThreadResponse: request fail");
             onBackPressed();
         }
     }
 
-    /**
-     * 支付下单
-     * @param jsonObject
-     */
-    private void payOrderRequest(JSONObject jsonObject) {
-        JSONObject data = jsonObject.getJSONObject("data");
-        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
-            getDialog().dismissDialog();
-            getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
-            getDialog().showDialog(-1);
-            return;
-        }
-
-        JSONObject payConfig = data.getJSONObject("payConfig");
-        pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
-                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
-    }
 
     // 初始化购买前的数据
     private void initBeforeBuyData(JSONObject data) {
@@ -432,6 +414,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
             // 是否可以购买
             boolean canBuy = resourceInfo.getInteger("is_can_buy") == 1;
             float price = resourceInfo.getInteger("price") == null ? 0 : resourceInfo.getInteger("price"); // 拿到分，需要除 100 拿到元
+            resPrice = (int) price;
             if (price != 0) {
                 price = price / 100;
                 Log.d(TAG, "initBeforeBuyData: price --- " + price);
@@ -521,8 +504,6 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
                 itTitleView.setTitleCollectDrawable(R.mipmap.video_collect);
             }
-        } else {
-            Log.d(TAG, "initCollectionData: 异常情况");
         }
     }
 }

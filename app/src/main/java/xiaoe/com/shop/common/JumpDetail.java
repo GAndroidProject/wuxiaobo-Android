@@ -17,6 +17,7 @@ import xiaoe.com.shop.business.login.ui.LoginActivity;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
+import xiaoe.com.shop.common.pay.ui.PayActivity;
 
 public class JumpDetail {
     private static final String TAG = "JumpDetail";
@@ -132,6 +133,20 @@ public class JumpDetail {
      */
     public static void jumpLogin(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到支付
+     * @param context
+     */
+    public static void jumpPay(Context context, String resourceId, int resourceType, String imgUrl, String title, int price){
+        Intent intent = new Intent(context, PayActivity.class);
+        intent.putExtra("resourceId", resourceId);
+        intent.putExtra("resourceType", resourceType);
+        intent.putExtra("image_url", imgUrl);
+        intent.putExtra("title", title);
+        intent.putExtra("price", price);
         context.startActivity(intent);
     }
 }

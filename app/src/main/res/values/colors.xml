@@ -51,4 +51,9 @@
     <color name="course_page_bottom_color">#B8BBBE</color>
 
     <color name="touch_pressed_bg">#1a000000</color> <!--点击按压颜色-->
+
+    <!--优惠劵 start-->
+    <color name="coupon_tag_ahex">#4092FB</color>
+    <color name="coupon_tag_invalid">#E2E5EE</color>
+    <!--优惠券 end-->
 </resources>

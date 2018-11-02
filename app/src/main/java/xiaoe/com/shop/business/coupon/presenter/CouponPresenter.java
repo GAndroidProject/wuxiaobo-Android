@@ -1,34 +1,44 @@
 package xiaoe.com.shop.business.coupon.presenter;
 
-import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
-import xiaoe.com.network.requests.CouponRequest;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.MineCouponRequest;
+import xiaoe.com.network.requests.ResourceUseCouponRequest;
 
 public class CouponPresenter implements IBizCallback {
 
     private INetworkResponse inr;
-    private String cmd;
 
     public CouponPresenter(INetworkResponse inr) {
         this.inr = inr;
-        this.cmd = ""; // 默认接口
     }
 
-    public CouponPresenter(INetworkResponse inr, String cmd) {
-        this.inr = inr;
-        this.cmd = cmd;
-    }
 
     @Override
     public void onResponse(IRequest iRequest, boolean success, Object entity) {
         inr.onResponse(iRequest, success, entity);
     }
 
-    public void requestData() {
-        CouponRequest couponRequest = new CouponRequest(cmd, null, this);
-        couponRequest.addRequestParam("app_id", "123456");
-        NetworkEngine.getInstance().sendRequest(couponRequest);
+    /**
+     * 获取我的优惠券
+     * all,valid,invalid,默认all, valid查询有效优惠券，invalid查询失效优惠券
+     * @param type
+     */
+    public void requestMineCoupon(String type) {
+        MineCouponRequest couponRequest = new MineCouponRequest(this);
+        couponRequest.addRequestParam("app_id", "apppcHqlTPT3482");
+        couponRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        couponRequest.addRequestParam("type", type);
+        couponRequest.sendRequest();
+    }
+
+    public void requestResourceUseCoupon(String resourceId, int price){
+        ResourceUseCouponRequest useCouponRequest = new ResourceUseCouponRequest(this);
+        useCouponRequest.addRequestParam("app_id", "apppcHqlTPT3482");
+        useCouponRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        useCouponRequest.addRequestParam("price", price);
+        useCouponRequest.addRequestParam("resource_id", resourceId);
+        useCouponRequest.sendRequest();
     }
 }

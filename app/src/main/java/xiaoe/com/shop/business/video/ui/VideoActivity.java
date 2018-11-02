@@ -16,6 +16,7 @@ import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.tencent.smtt.sdk.CookieSyncManager;
 import com.tencent.smtt.sdk.WebView;
+import com.umeng.socialize.UMShareAPI;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -28,12 +29,12 @@ import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.ContentRequest;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.PayOrderRequest;
 import xiaoe.com.network.requests.RemoveCollectionRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.video.presenter.VideoPresenter;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.VideoPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickVideoBackListener;
 import xiaoe.com.shop.utils.CollectionUtils;
@@ -53,7 +54,6 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private TextView videoTitle;
     private Intent mIntent;
     private String mResourceId;
-    private boolean paying = false;
     private ImageView btnCollect;
     private boolean hasCollect = false;//是否收藏
     private CollectionUtils collectionUtils;
@@ -61,6 +61,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private String collectImgUrl;
     private String collectImgUrlCompressed;
     private String collectPrice = "";
+    private int resPrice = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,14 +92,12 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     @Override
     protected void onResume() {
         super.onResume();
-        if(paying){
-            paying = false;
-            int code = getWXPayCode(true);
-            if(code == 0){
-                videoPresenter.requestDetail(mResourceId);
-            }
-            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+        int code = getWXPayCode(true);
+        if(code == 0){
+            getDialog().showLoadDialog(false);
+            videoPresenter.requestDetail(mResourceId);
         }
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
     }
 
     private void initViews() {
@@ -128,6 +127,9 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         //收藏按钮
         btnCollect = (ImageView) findViewById(R.id.btn_collect);
         btnCollect.setOnClickListener(this);
+        //分享按钮
+        ImageView btnShare = (ImageView) findViewById(R.id.btn_share);
+        btnShare.setOnClickListener(this);
     }
 
     private void initDatas() {
@@ -145,15 +147,24 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode,resultCode,data);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.buy_course:
-                buyResource();
+                JumpDetail.jumpPay(this, mResourceId, 3, collectImgUrl, collectTitle, resPrice);
                 break;
             case R.id.buy_vip:
                 toastCustom("购买超级会员");
             case R.id.btn_collect:
                 collect();
+                break;
+            case R.id.btn_share:
+                umShare();
                 break;
             default:
                 break;
@@ -190,11 +201,6 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }
     }
 
-    private void buyResource() {
-        paying = true;
-        getDialog().showLoadDialog(false);
-        payOrder(mResourceId, 3, 2);
-    }
 
     @Subscribe
     public void onEventMainThread(VideoPlayEvent event) {
@@ -278,11 +284,6 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
         if(entity == null || !success){
             setPagerState(true);
-            if(iRequest instanceof PayOrderRequest){
-                getDialog().dismissDialog();
-                getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
-                getDialog().showDialog(-1);
-            }
             return;
         }
         JSONObject jsonObject = (JSONObject) entity;
@@ -290,8 +291,6 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             contentRequest(jsonObject);
         }else if(iRequest instanceof DetailRequest){
             detailRequest(jsonObject);
-        }else if(iRequest instanceof PayOrderRequest){
-            payOrderRequest(jsonObject);
         }else if(iRequest instanceof AddCollectionRequest){
             addCollectionRequest(jsonObject);
         }else if(iRequest instanceof RemoveCollectionRequest){
@@ -326,22 +325,6 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }
     }
 
-    private void payOrderRequest(JSONObject jsonObject) {
-
-        JSONObject data = jsonObject.getJSONObject("data");
-        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
-            getDialog().dismissDialog();
-            getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
-            getDialog().showDialog(-1);
-            return;
-        }
-
-
-        JSONObject payConfig = data.getJSONObject("payConfig");
-        pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
-                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
-    }
-
     private void detailRequest(JSONObject jsonObject) {
         getDialog().dismissDialog();
         JSONObject data = jsonObject.getJSONObject("data");
@@ -360,7 +343,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             playCount.setVisibility(View.GONE);
         }
         collectTitle = title;
-        collectImgUrl = resourceInfo.getString("img_url_compressed");
+        collectImgUrl = resourceInfo.getString("img_url");
         collectImgUrlCompressed = resourceInfo.getString("img_url_compressed");
         setCollectState(resourceInfo.getIntValue("has_favorite") == 1);
         if(resourceInfo.getIntValue("has_buy") == 1){
@@ -370,6 +353,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }else{
             buyView.setVisibility(View.VISIBLE);
             int price = resourceInfo.getIntValue("price");
+            resPrice = price;
             collectPrice = ""+price;
             buyView.setBuyPrice(price);
             String detail = resourceInfo.getString("content");

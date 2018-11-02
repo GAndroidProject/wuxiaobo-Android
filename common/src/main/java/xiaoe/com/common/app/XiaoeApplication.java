@@ -9,6 +9,8 @@ import com.tencent.smtt.sdk.QbSdk;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
 
+import xiaoe.com.common.utils.SharedPreferencesUtil;
+
 /**
  * Created by Administrator on 2017/7/17.
  */
@@ -43,6 +45,8 @@ public class XiaoeApplication extends Application {
         UMConfigure.init(this, Constants.getUMAppId()
                 ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"");
         PlatformConfig.setWeixin(Constants.getWXAppId(), Constants.getWxSecret());
+        SharedPreferencesUtil.getInstance(mContext, SharedPreferencesUtil.FILE_NAME);
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
     }
     public static Context getmContext() {
         return mContext;

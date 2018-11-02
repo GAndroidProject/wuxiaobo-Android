@@ -85,7 +85,7 @@ public class AudioPresenter implements IBizCallback {
         playEntity.setHasBuy(resourceInfo.getIntValue("has_buy"));
         playEntity.setResourceId(resourceId);
         playEntity.setPrice(resourceInfo.getIntValue("price"));
-        playEntity.setImgUrl(resourceInfo.getString("img_url_compressed"));
+        playEntity.setImgUrl(resourceInfo.getString("img_url"));
         playEntity.setImgUrlCompressed(resourceInfo.getString("img_url_compressed"));
         if(resourceInfo.getIntValue("has_buy") == 0){
             playEntity.setCode(0);
@@ -111,23 +111,23 @@ public class AudioPresenter implements IBizCallback {
      * 获取购买前商品详情
      */
     public void requestDetail(String resourceId){
-        DetailRequest couponRequest = new DetailRequest( this);
-        couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addDataParam("resource_id",resourceId);
-        couponRequest.addDataParam("resource_type","2");
-        couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
-        couponRequest.sendRequest();
+        DetailRequest detailRequest = new DetailRequest( this);
+        detailRequest.addRequestParam("shop_id","apppcHqlTPT3482");
+        detailRequest.addDataParam("resource_id",resourceId);
+        detailRequest.addDataParam("resource_type","2");
+        detailRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        detailRequest.sendRequest();
     }
 
     /**
      * 获取购买后的资源内容
      */
     private void requestContent(String resourceId){
-        ContentRequest couponRequest = new ContentRequest( this);
-        couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addRequestParam("resource_id",resourceId);
-        couponRequest.addRequestParam("resource_type","2");
-        couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
-        couponRequest.sendRequest();
+        ContentRequest contentRequest = new ContentRequest( this);
+        contentRequest.addRequestParam("shop_id","apppcHqlTPT3482");
+        contentRequest.addRequestParam("resource_id",resourceId);
+        contentRequest.addRequestParam("resource_type","2");
+        contentRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        contentRequest.sendRequest();
     }
 }

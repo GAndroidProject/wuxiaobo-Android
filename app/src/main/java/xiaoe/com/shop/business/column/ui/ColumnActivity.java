@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.umeng.socialize.UMShareAPI;
 
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
@@ -21,12 +22,12 @@ import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.ColumnListRequst;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.PayOrderRequest;
 import xiaoe.com.network.requests.RemoveCollectionRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.column.ColumnFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
@@ -60,7 +61,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private int pageIndex = 1;
     private int pageSize = 20;
     private boolean isHasBuy = false;
-    private boolean pay = false;
     private boolean refreshData = false;
     private ImageView btnCollect;
     private boolean hasCollect = false;//是否收藏
@@ -69,6 +69,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private String collectImgUrl;
     private String collectImgUrlCompressed;
     private String collectPrice = "";
+    private int price = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -136,20 +137,29 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         //收藏按钮
         btnCollect = (ImageView) findViewById(R.id.btn_collect);
         btnCollect.setOnClickListener(this);
+        //分享按钮
+        ImageView btnToolBarShare = (ImageView) findViewById(R.id.btn_tool_bar_share);
+        btnToolBarShare.setOnClickListener(this);
+        ImageView btnShare = (ImageView) findViewById(R.id.btn_share);
+        btnShare.setOnClickListener(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(pay){
-            int code = getWXPayCode(true);
-            if(code == 0){
-                columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
-            }
-            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+        int code = getWXPayCode(true);
+        if(code == 0){
+            refreshData = true;
+            getDialog().showLoadDialog(false);
+            columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
         }
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode,resultCode,data);
+    }
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         if(activityDestroy){
@@ -157,21 +167,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         JSONObject jsonObject = (JSONObject) entity;
         if(entity == null || !success){
-            if(iRequest instanceof PayOrderRequest){
-                getDialog().dismissDialog();
-                getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
-                getDialog().showDialog(-1);
-            }
             return;
         }
         Object dataObject = jsonObject.get("data");
         if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || dataObject == null ){
             if(iRequest instanceof ColumnListRequst){
                 setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
-            }else if(iRequest instanceof PayOrderRequest){
-                getDialog().dismissDialog();
-                getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
-                getDialog().showDialog(-1);
             }
             return;
         }
@@ -181,9 +182,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else if(iRequest instanceof ColumnListRequst){
             JSONArray data = (JSONArray) dataObject;
             columnListRequest(iRequest, data);
-        }else if(iRequest instanceof PayOrderRequest){
-            JSONObject data = (JSONObject) dataObject;
-            payOrderRequest(data);
         }else if(iRequest instanceof AddCollectionRequest){
             addCollectionRequest(jsonObject);
         }else if(iRequest instanceof RemoveCollectionRequest){
@@ -217,12 +215,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
     }
 
-    private void payOrderRequest(JSONObject dataObject) {
-        JSONObject payConfig = dataObject.getJSONObject("payConfig");
-        pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
-                payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
-    }
-
     private void columnListRequest(IRequest iRequest, JSONArray data) {
         if(isBigColumn){
             ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
@@ -251,12 +243,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void detailRequest(JSONObject data) {
-        if(pay){
-            refreshData = true;
-            pay = false;
-            getDialog().dismissDialog();
-            getDialog().setHintMessage(getResources().getString(R.string.pay_succeed));
-            getDialog().showDialog(-1);
+        getDialog().dismissDialog();
+        if(refreshData){
             if(isBigColumn){
                 ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
                 fragment.clearData();
@@ -267,10 +255,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             setLoadState(ListBottomLoadMoreView.STATE_NOT_LOAD);
         }
         if(data.getIntValue("has_buy") == 0){
+            price = data.getIntValue("price");
             buyView.setVisibility(View.VISIBLE);
-            buyView.setBuyPrice(data.getIntValue("price"));
+            buyView.setBuyPrice(price);
             isHasBuy = false;
-            collectPrice = ""+data.getString("price");
+            collectPrice = ""+price;
         }else{
             buyView.setVisibility(View.GONE);
             isHasBuy = true;
@@ -279,14 +268,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         String title = data.getString("title");
         //收藏内容
         collectTitle = title;
-        collectImgUrl = data.getString("img_url_compressed");
+        collectImgUrl = data.getString("img_url");
         collectImgUrlCompressed = data.getString("img_url_compressed");
         setCollectState(data.getIntValue("has_favorite") == 1);
 
         ColumnDetailFragment detailFragment = (ColumnDetailFragment) columnViewPagerAdapter.getItem(0);
         detailFragment.setContentDetail(data.getString("content"));
         columnTitle.setText(title);
-        columnImage.setImageURI(data.getString("img_url_compressed"));
+        columnImage.setImageURI(collectImgUrl);
         int purchaseCount = data.getIntValue("purchase_count");
         if(purchaseCount > 0){
             buyCount.setVisibility(View.VISIBLE);
@@ -315,10 +304,15 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 toastCustom("购买超级会员");
                 break;
             case R.id.buy_course:
-                buyResource();
+                int resourceType = isBigColumn ? 8 : 6;
+                JumpDetail.jumpPay(this,resourceId,resourceType, collectImgUrl, collectTitle, price);
                 break;
             case R.id.btn_collect:
                 collect();
+                break;
+            case R.id.btn_share:
+            case R.id.btn_tool_bar_share:
+                umShare();
                 break;
             default:
                 break;
@@ -340,13 +334,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             //取消收藏
             collectionUtils.requestRemoveCollection(resourceId, isBigColumn ? "8" : "6");
         }
-    }
-
-    private void buyResource() {
-        pay = true;
-        getDialog().showLoadDialog(false);
-        int resourceType = isBigColumn ? 8 : 6;
-        payOrder(resourceId, resourceType, 3);
     }
 
     private void setColumnViewPager(int index){

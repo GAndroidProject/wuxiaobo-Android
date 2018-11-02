@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'xiaoeshop'
             keyPassword '123456'
-            storeFile file('D:/xiaoe_pro/xiaoe_app/XiaoeShop/xiaoeshop.jks')
+            storeFile file('E:/AndroidStudioProjects/XiaoeShop/xiaoeshop.jks')
             storePassword '123456'
         }
     }
@@ -41,6 +41,7 @@ android {
             res.srcDirs =
                 [
                     'src/main/res/layouts/test',
+                    'src/main/res/layouts/pay',
                     'src/main/res/layouts/main',
                     'src/main/res/layouts/umeng',
                     'src/main/res/layouts/download',

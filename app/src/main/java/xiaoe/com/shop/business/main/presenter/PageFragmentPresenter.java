@@ -7,6 +7,7 @@ import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.PageFragmentRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
+import xiaoe.com.shop.business.main.ui.MainActivity;
 
 public class PageFragmentPresenter implements IBizCallback {
 
@@ -38,14 +39,20 @@ public class PageFragmentPresenter implements IBizCallback {
         // appiOW1KfWe9943 u_5bd995b7db6ac_65ACBvuFTU -- 暂时测信息流
         // apppcHqlTPT3482 u_5ad010f47073c_yeHaGL9bEG -- 主干数据
         PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(NetworkEngine.BASE_URL + "api/xe.shop.page.get/1.0.0", TestComponent.class, this);
-        pageFragmentRequest.addRequestParam("user_id", "u_5bd995b7db6ac_65ACBvuFTU");
-        pageFragmentRequest.addRequestParam("shop_id", "appiOW1KfWe9943");
+//        pageFragmentRequest.addRequestParam("user_id", "u_5bd995b7db6ac_65ACBvuFTU");
+//        pageFragmentRequest.addRequestParam("shop_id", "appiOW1KfWe9943");
 //        pageFragmentRequest.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
 //        pageFragmentRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
         // 支付的信息
-//        pageFragmentRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
-//        pageFragmentRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
-        pageFragmentRequest.addRequestParam("micro_page_id", microPageId);
+        int id = 0;
+        if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
+            id = 0;
+        } else if (microPageId.equals(MainActivity.MICRO_PAGE_COURSE)) {
+            id = 6232;
+        }
+        pageFragmentRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        pageFragmentRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        pageFragmentRequest.addRequestParam("micro_page_id", id);
         NetworkEngine.getInstance().sendRequest(pageFragmentRequest);
     }
 }

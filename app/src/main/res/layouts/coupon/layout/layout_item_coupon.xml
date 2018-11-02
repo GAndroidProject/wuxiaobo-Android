@@ -2,9 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp">
+    android:layout_marginBottom="12dp"
+    android:id="@+id/coupon_item"
+    >
 
     <xiaoe.com.shop.widget.CouponView
+        android:id="@+id/coupon_info"
         android:layout_width="match_parent"
         android:layout_height="96dp"/>
 </RelativeLayout>

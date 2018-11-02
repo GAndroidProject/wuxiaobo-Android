@@ -37,12 +37,12 @@ public class ColumnPresenter implements IBizCallback {
      * 获取购买前商品详情
      */
     public void requestDetail(String resourceId, String resourceType){
-        DetailRequest couponRequest = new DetailRequest( this);
-        couponRequest.addRequestParam("shop_id","apppcHqlTPT3482");
-        couponRequest.addDataParam("resource_id",resourceId);
-        couponRequest.addDataParam("resource_type",resourceType);
-        couponRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
-        couponRequest.sendRequest();
+        DetailRequest detailRequest = new DetailRequest( this);
+        detailRequest.addRequestParam("shop_id","apppcHqlTPT3482");
+        detailRequest.addDataParam("resource_id",resourceId);
+        detailRequest.addDataParam("resource_type",resourceType);
+        detailRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        detailRequest.sendRequest();
     }
 
     public void requestColumnList(String resourceId, String resourceType, int page, int pageSize){

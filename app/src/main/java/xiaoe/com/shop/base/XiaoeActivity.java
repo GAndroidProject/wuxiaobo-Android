@@ -49,7 +49,7 @@ import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 import xiaoe.com.shop.business.main.ui.MainActivity;
-import xiaoe.com.shop.common.pay.PayPresenter;
+import xiaoe.com.shop.common.pay.presenter.PayPresenter;
 import xiaoe.com.shop.interfaces.OnCancelListener;
 import xiaoe.com.shop.interfaces.OnConfirmListener;
 import xiaoe.com.shop.utils.StatusBarUtil;
@@ -124,6 +124,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         isActivityDestroy = false;
 
         dialog = new CustomDialog(this);
+
+        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
 
         // 初始化数据库
         SQLiteUtil.init(this.getApplicationContext(), new LoginSQLiteCallback());
@@ -384,11 +386,11 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         return code;
     }
     //购买资源（下单）
-    public void payOrder(String resourceId, int resourceType, int paymentType) {
+    public void payOrder(String resourceId, int resourceType, int paymentType, String couponId) {
         if(payPresenter == null){
             payPresenter = new PayPresenter(this, this);
         }
-        payPresenter.payOrder(paymentType, resourceType, resourceId, resourceId);
+        payPresenter.payOrder(paymentType, resourceType, resourceId, resourceId, couponId);
     }
     //拉起微信支付
     public void pullWXPay(String appid, String partnerid, String prepayid, String noncestr, String timestamp, String packageValue, String sign){
@@ -413,10 +415,18 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
 
     /*↓↓↓↓↓↓↓  此处往下是友盟分享回调 ↓↓↓↓↓↓↓*/
+
+    /**
+     * 需要在调用的activity中实现方法
+     *     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+     *         super.onActivityResult(requestCode, resultCode, data);
+     *         UMShareAPI.get(this).onActivityResult(requestCode,resultCode,data);
+     *     }
+     */
     public void umShare(){
         new ShareAction(this)
                 .withText("hello")
-                .setDisplayList(SHARE_MEDIA.QQ,SHARE_MEDIA.WEIXIN)
+                .setDisplayList(SHARE_MEDIA.QQ,SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
                 .setCallback(this).open();
     }
     @Override

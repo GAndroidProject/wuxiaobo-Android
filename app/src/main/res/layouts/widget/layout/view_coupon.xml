@@ -10,7 +10,7 @@
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:gravity="center"
-        android:background="@color/recent_update_btn_pressed"
+        android:background="@drawable/coupon_valid_bg"
         >
         <LinearLayout
             android:id="@+id/coupon_money_wrap"
@@ -51,6 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/parent_coupon_money_wrap"
+        android:layout_toStartOf="@+id/use_state_warp"
         android:layout_marginStart="16dp"
         android:layout_centerVertical="true"
         android:orientation="vertical"
@@ -60,6 +61,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/main_title_color"
+            android:maxLines="2"
+            android:textStyle="bold"
             android:textSize="14sp"
             />
         <TextView
@@ -79,26 +82,31 @@
             />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/select_icon"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginEnd="24dp"
+    <RelativeLayout
+        android:id="@+id/use_state_warp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:src="@mipmap/download_checking"
-        />
-    <TextView
-        android:id="@+id/use_coupon"
-        android:layout_width="46dp"
-        android:layout_height="18dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="14dp"
-        android:background="@drawable/use_coupon_border"
-        android:gravity="center"
-        android:textSize="12sp"
-        android:textColor="@color/recent_update_btn_pressed"
-        android:text="@string/use_coupon"
-        />
+        android:layout_marginStart="4dp"
+        >
+        <ImageView
+            android:id="@+id/select_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="24dp"
+            android:src="@mipmap/download_tocheck"
+            />
+        <TextView
+            android:id="@+id/use_coupon"
+            android:layout_width="46dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="14dp"
+            android:background="@drawable/use_coupon_border"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:textColor="@color/recent_update_btn_pressed"
+            android:text="@string/use_coupon"
+            />
+    </RelativeLayout>
 </RelativeLayout>

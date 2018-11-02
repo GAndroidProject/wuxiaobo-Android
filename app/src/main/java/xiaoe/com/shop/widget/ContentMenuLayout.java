@@ -36,7 +36,7 @@ public class ContentMenuLayout extends FrameLayout implements View.OnClickListen
         rootView = View.inflate(context, R.layout.layout_content_menu, this);
         menuBG = rootView.findViewById(R.id.menu_bg);
         menuBG.setOnClickListener(this);
-        btnShare = (LinearLayout) rootView.findViewById(R.id.btn_share);
+        btnShare = (LinearLayout) rootView.findViewById(R.id.btn_share_item);
         btnCollect = (LinearLayout) rootView.findViewById(R.id.btn_collect_item);
         collectIcon = (ImageView) rootView.findViewById(R.id.collect_icon);
         btnDownload = (LinearLayout) rootView.findViewById(R.id.btn_download);

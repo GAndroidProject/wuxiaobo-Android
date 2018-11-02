@@ -1,6 +1,5 @@
 package xiaoe.com.shop.wxapi;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -11,6 +10,7 @@ import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.umeng.socialize.weixin.view.WXCallbackActivity;
 
 import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
@@ -28,7 +28,7 @@ import xiaoe.com.shop.common.login.LoginPresenter;
  * User: MoMo - Nen
  * Date: 2015-10-24
  */
-public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
+public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHandler {
 
     private static final String TAG = "WXEntryActivity";
 
@@ -53,13 +53,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp resp) {
-        String code = "";
+        String code = resp.errCode+"";
         String msg = "";
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 //发送成功
-                SendAuth.Resp sendResp = (SendAuth.Resp) resp;
-                code = sendResp.code;
+                if(resp instanceof SendAuth.Resp){
+                    SendAuth.Resp sendResp = (SendAuth.Resp) resp;
+                    code = sendResp.code;
+                }
                 msg = "发送成功";
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
