@@ -12,11 +12,12 @@ public class GraphicNavItemDecoration extends RecyclerView.ItemDecoration {
     private int margin;
 
     public GraphicNavItemDecoration(Context context) {
-        margin = Dp2Px2SpUtil.dp2px(context, 25);
+        margin = Dp2Px2SpUtil.dp2px(context, 16);
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         outRect.left = margin;
+        outRect.right = margin;
     }
 }

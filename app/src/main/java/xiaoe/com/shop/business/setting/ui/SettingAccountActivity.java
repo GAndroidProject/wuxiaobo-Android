@@ -29,6 +29,7 @@ import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.LoginCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginNewCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginPhoneCodeRequest;
+import xiaoe.com.network.requests.ResetPasswordRequest;
 import xiaoe.com.network.requests.UpdatePhoneRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
@@ -75,6 +76,7 @@ public class SettingAccountActivity extends XiaoeActivity {
     String localPhone = ""; // 本地存的电话
     boolean inputNewPhone = false; // 输入新的手机号
     String newPhone = ""; // 新手机号
+    boolean isUpdatePassword = false; // 是否修改密码
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,6 +151,10 @@ public class SettingAccountActivity extends XiaoeActivity {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) { // 发送成功
                     replaceFragment(PHONE_CODE);
+                    if (inputNewPhone) {
+                        // 拿到新手机号之后修改验证码 title
+                        ((SettingAccountFragment) currentFragment).phoneNumTitle.setText(String.format(getResources().getString(R.string.setting_phone_num_title), newPhone));
+                    }
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) { // 发送失败
                     Toast("获取验证码失败");
                     Log.d(TAG, "onMainThreadResponse: 发送失败");
@@ -156,6 +162,10 @@ public class SettingAccountActivity extends XiaoeActivity {
             } else if (iRequest instanceof LoginCodeVerifyRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
+                    if (isUpdatePassword) {
+                        replaceFragment(PWD_NEW);
+                        return;
+                    }
                     replaceFragment(COMPLETE);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
                     Toast("验证码错误");
@@ -178,6 +188,15 @@ public class SettingAccountActivity extends XiaoeActivity {
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
                     Toast("更换失败");
                     Log.d(TAG, "onMainThreadResponse: 更换失败");
+                }
+            } else if (iRequest instanceof ResetPasswordRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    Toast("修改成功");
+                    accountTitle.setText("设置");
+                    replaceFragment(SettingAccountActivity.MAIN);
+                } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
+                    Log.d(TAG, "onMainThreadResponse: 修改密码失败...");
                 }
             }
         } else {
@@ -279,7 +298,7 @@ public class SettingAccountActivity extends XiaoeActivity {
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_current_phone);
                     break;
                 case PWD_PHONE_CODE:
-                    accountTitle.setText("设置新密码");
+                    accountTitle.setText("修改密码");
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_pwd_obtain_phone_code);
                     break;
                 case PWD_NEW:

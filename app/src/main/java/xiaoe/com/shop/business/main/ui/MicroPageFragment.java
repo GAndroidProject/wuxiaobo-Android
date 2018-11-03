@@ -1,19 +1,18 @@
 package xiaoe.com.shop.business.main.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,6 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
+import xiaoe.com.common.entitys.FlowInfoItem;
 import xiaoe.com.common.entitys.GraphicNavItem;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
@@ -46,11 +46,14 @@ import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
 import xiaoe.com.shop.business.main.presenter.PageFragmentPresenter;
+import xiaoe.com.shop.business.search.presenter.SpacesItemDecoration;
 import xiaoe.com.shop.events.AudioPlayEvent;
+import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
 import xiaoe.com.shop.utils.StatusBarUtil;
+import xiaoe.com.shop.widget.CustomScrollView;
 import xiaoe.com.shop.widget.StatusPagerView;
 
-public class MicroPageFragment extends BaseFragment {
+public class MicroPageFragment extends BaseFragment implements OnCustomScrollChangedListener {
 
     private static final String TAG = "MicroPageFragment";
 
@@ -58,27 +61,30 @@ public class MicroPageFragment extends BaseFragment {
     private Context mContext;
     private String microPageId = "";
 
-    private boolean destroyView = false;
+    @BindView(R.id.micro_page_scroller)
+    CustomScrollView microPageScroller;
 
-    @BindView(R.id.micro_page_app_bar)
-    AppBarLayout microPageAppBar;
-    @BindView(R.id.micro_page_head_recycler)
-    RecyclerView microPageTitleRecyclerView;
-    @BindView(R.id.micro_page_content_recycler)
-    RecyclerView microPageContentRecyclerView;
-    @BindView(R.id.micro_page_collapsing_toolbar)
-    CollapsingToolbarLayout microPageCollLayout;
+    @BindView(R.id.micro_page_wrap)
+    FrameLayout microPageWrap;
+    @BindView(R.id.micro_page_title_bg)
+    SimpleDraweeView microPageTitleBg;
+    @BindView(R.id.micro_page_content)
+    RecyclerView microPageContent;
+
+    @BindView(R.id.micro_page_toolbar)
+    FrameLayout microPageToolbar;
+    @BindView(R.id.micro_page_toolbar_title)
+    TextView microPageToolbarTitle;
+    @BindView(R.id.micro_page_toolbar_search)
+    ImageView microPageToolbarSearch;
+
     @BindView(R.id.micro_page_loading)
     StatusPagerView microPageLoading;
 
-    @BindView(R.id.micro_page_toolbar)
-    Toolbar microToolBar;
-    @BindView(R.id.micro_page_toolbar_title)
-    TextView microToolBarTitle;
-    @BindView(R.id.micro_page_toolbar_search_icon)
-    ImageView microToolBarSearch;
-
     List<ComponentInfo> microPageList;
+
+    int toolbarHeight;
+    boolean isMain = true;
 
     public static MicroPageFragment newInstance(String microPageId) {
         MicroPageFragment microPageFragment = new MicroPageFragment();
@@ -255,8 +261,11 @@ public class MicroPageFragment extends BaseFragment {
                     componentInfo_navigator.setGraphicNavItemList(graphicNavItemList);
                     microPageList.add(componentInfo_navigator);
                     break;
-                case DecorateEntityType.GOODS:
+                case DecorateEntityType.GOODS_STR:
                     initGoods(itemObj);
+                    break;
+                case DecorateEntityType.FLOW_INFO_STR:
+                    initFlowInfo(itemObj);
                     break;
             }
         }
@@ -380,13 +389,86 @@ public class MicroPageFragment extends BaseFragment {
         }
     }
 
+    // 初始化信息流组件
+    private void initFlowInfo(JSONObject data) {
+        // 信息流 information_list
+        JSONArray informationList = (JSONArray) data.get("information_list");
+        for (Object listItem : informationList) {
+            ComponentInfo flowInfoComponent = new ComponentInfo();
+            flowInfoComponent.setType(DecorateEntityType.FLOW_INFO_STR);
+            JSONObject flowInfoItem = (JSONObject) listItem;
+            // 拿到信息流 title 信息
+            JSONArray dateTag = (JSONArray) flowInfoItem.get("date_tag");
+            for (int i = 0; i< dateTag.size(); i++) { // 0 -- 今日；1 -- *月*日；2 -- 星期*
+                String today = dateTag.getString(0);
+                if (!today.equals("")) { // 今日
+                    String flowInfoTitle = dateTag.getString(1) + " " + dateTag.getString(2);
+                    flowInfoComponent.setTitle(flowInfoTitle);
+                    flowInfoComponent.setDesc(today);
+                    flowInfoComponent.setJoinedDesc("我正在学");
+                    flowInfoComponent.setImgUrl("res:///" + R.mipmap.icon_taday_learning);
+                } else { // 非今日，不显示我正在学
+                    String flowInfoTitle = dateTag.getString(1);
+                    String flowInfoDesc = dateTag.getString(2);
+                    flowInfoComponent.setTitle(flowInfoTitle);
+                    flowInfoComponent.setDesc(flowInfoDesc);
+                    flowInfoComponent.setJoinedDesc("");
+                    flowInfoComponent.setImgUrl("");
+                }
+            }
+            // 拿到信息流的 content 信息
+            List<FlowInfoItem> dataList = new ArrayList<>();
+            JSONArray flowInfoList = (JSONArray) flowInfoItem.get("list");
+            for (Object item : flowInfoList) {
+                JSONObject flowInfo = (JSONObject) item;
+                FlowInfoItem fii = new FlowInfoItem();
+                String resourceType = flowInfo.getString("src_type");
+                if (resourceType.equals("member")) { continue; } // 会员先不支持
+                String resourceId = flowInfo.getString("src_id");
+                String title = flowInfo.getString("title");
+                String desc = flowInfo.getString("summary");
+                String imgUrl = flowInfo.getString("img_url");
+                String showPrice = flowInfo.getString("show_price").equals("") ? "" : "￥" + flowInfo.getString("show_price");
+                boolean hasBuy = showPrice.equals("");
+
+                fii.setItemType(resourceType);
+                fii.setItemId(resourceId);
+                fii.setItemTitle(title);
+                fii.setItemDesc(desc);
+                fii.setItemPrice(showPrice);
+                fii.setItemHasBuy(hasBuy);
+                fii.setItemImg(imgUrl);
+
+                dataList.add(fii);
+            }
+            flowInfoComponent.setFlowInfoItemList(dataList);
+            microPageList.add(flowInfoComponent);
+        }
+    }
+
+
     // 拿到请求到的数据后进行界面初始化
     public void init() {
         microPageList = new ArrayList<>();
+        microPageScroller.setScrollChanged(this);
+        toolbarHeight = Dp2Px2SpUtil.dp2px(mContext,160);
 
         // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
-        if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) { // 不为空，也不为主页
-            microPageCollLayout.setBackground(mContext.getResources().getDrawable(R.mipmap.class_bg));
+        if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) { // 课程页设置一个顶部背景
+            microPageTitleBg.setImageURI("res:///" + R.mipmap.class_bg);
+            microPageToolbar.setVisibility(View.VISIBLE);
+            // 初始化 toolbar
+            int statusBarHeight = StatusBarUtil.getStatusBarHeight(mContext);
+            microPageToolbar.setPadding(0, statusBarHeight, 0, 0);
+            // 沉浸式初始化
+            microPageWrap.setPadding(0, statusBarHeight, 0, 0);
+            // toolbar 的内容都设置为透明
+            microPageToolbar.setBackgroundColor(Color.argb(0,255,255,255));
+            isMain = false;
+        } else {
+            microPageTitleBg.setImageURI("");
+            microPageToolbar.setVisibility(View.GONE);
+            isMain = true;
         }
 
         // 转场动画 SimpleDraweeView 处理
@@ -414,75 +496,39 @@ public class MicroPageFragment extends BaseFragment {
                 Log.d(TAG, "onSharedElementsArrived: ");
             }
         });
-        // 沉浸式初始化
-//        microPageAppBar.setPadding(0, statusBarHeight, 0, 0);
-    }
-
-    // 初始化头部
-    private void initTitle() {
-        final int statusBarHeight = StatusBarUtil.getStatusBarHeight(getActivity());
-        microPageAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset == 0) {
-                    microToolBar.setVisibility(View.GONE);
-                } else if (Math.abs(verticalOffset) >= (appBarLayout.getTotalScrollRange() / 3)) {
-                    microToolBar.setVisibility(View.VISIBLE);
-                    microToolBar.setPadding(0, statusBarHeight, Dp2Px2SpUtil.dp2px(getActivity(), 20), 0);
-                } else {
-                    microToolBar.setVisibility(View.GONE);
-                }
-            }
-        });
     }
 
     DecorateRecyclerAdapter microPageAdapter;
     // 初始化首页内容
     private void initMainContent () {
         // 初始化布局管理器
-        LinearLayoutManager llm_content = new LinearLayoutManager(getActivity());
+        LinearLayoutManager llm_content = new LinearLayoutManager(mContext);
         llm_content.setOrientation(LinearLayout.VERTICAL);
-        microPageContentRecyclerView.setLayoutManager(llm_content);
-        LinearLayoutManager llm_title = new LinearLayoutManager(getActivity());
-        llm_title.setOrientation(LinearLayoutManager.VERTICAL);
-        microPageTitleRecyclerView.setLayoutManager(llm_title);
-        if (microPageList.size() > 0 && microPageList.get(0).getType().equals(DecorateEntityType.SEARCH_STR)) { // 标题在头顶
-            if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
-                List<ComponentInfo> titleData = new ArrayList<>();
-                microPageAppBar.setVisibility(View.VISIBLE);
-                titleData.add(microPageList.get(0));
-                DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
-                microPageTitleRecyclerView.setAdapter(dra);
-                microPageList.remove(0);
-            } else if (microPageId.equals(MainActivity.MICRO_PAGE_COURSE)) {
-                List<ComponentInfo> titleData = new ArrayList<>();
-                microPageAppBar.setVisibility(View.VISIBLE);
-                // 如果有搜索栏，就取前三个，因为已经 remove 掉了，所以都 remove 第一个
-                titleData.add(microPageList.remove(0));
-                titleData.add(microPageList.remove(0));
-                titleData.add(microPageList.remove(0));
-                DecorateRecyclerAdapter dra = new DecorateRecyclerAdapter(getActivity(), titleData);
-                microPageTitleRecyclerView.setAdapter(dra);
-                // 课程页需要一个 title
-                initTitle();
-            }
-        } else {
-            microPageAppBar.setVisibility(View.GONE);
-        }
+        microPageContent.setLayoutManager(llm_content);
+        SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
+        spacesItemDecoration.setMargin(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+        microPageContent.addItemDecoration(spacesItemDecoration);
         // 初始化适配器
-        microPageAdapter = new DecorateRecyclerAdapter(getActivity(), microPageList);
-        microPageContentRecyclerView.setAdapter(microPageAdapter);
+        microPageAdapter = new DecorateRecyclerAdapter(mContext, microPageList);
+        microPageContent.setAdapter(microPageAdapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        // TODO: 设置状态栏颜色
+//        if (!isMain) {
+//            StatusBarUtil.setStatusBarColor(getActivity(), getResources().getColor(R.color.recent_update_btn_pressed));
+//            isMain = true;
+//        } else {
+//            StatusBarUtil.setStatusBarColor(getActivity(), getResources().getColor(R.color.white));
+//            isMain = false;
+//        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        destroyView = true;
         EventBus.getDefault().unregister(this);
         if (unbinder != null) {
             unbinder.unbind();
@@ -523,5 +569,23 @@ public class MicroPageFragment extends BaseFragment {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onScrollChanged(int l, int t, int oldl, int oldt) {
+        if (!isMain) {
+            float alpha = (oldt / (toolbarHeight * 1.0f)) * 255;
+            if(alpha > 255){
+                alpha = 255;
+            }else if(alpha < 0){
+                alpha = 0;
+            }
+            microPageToolbar.setBackgroundColor(Color.argb((int) alpha,30,89,246));
+        }
+    }
+
+    @Override
+    public void onLoadState(int state) {
+
     }
 }

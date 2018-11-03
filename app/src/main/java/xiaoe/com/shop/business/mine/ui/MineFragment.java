@@ -41,6 +41,7 @@ import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
 import xiaoe.com.shop.business.setting.ui.SettingAccountActivity;
 import xiaoe.com.shop.business.setting.ui.SettingPersonActivity;
+import xiaoe.com.shop.common.JumpDetail;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -236,13 +237,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 Toast.makeText(getActivity(), "点击信息按钮", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.mine_title_setting: // 设置
-                intent = new Intent(getActivity(), SettingAccountActivity.class);
-                getActivity().startActivity(intent);
+                JumpDetail.jumpAccount(getActivity());
                 break;
             case R.id.title_avatar: // 头像
-                intent = new Intent(getActivity(), SettingPersonActivity.class);
-                intent.putExtra("avatar", "");
-                getActivity().startActivity(intent);
+                String avatar = getWxAvatar();
+                JumpDetail.jumpMineMsg(getActivity(), avatar);
                 break;
             case R.id.title_buy_vip: // 超级会员
                 Toast.makeText(getActivity(), "成为超级会员", Toast.LENGTH_SHORT).show();

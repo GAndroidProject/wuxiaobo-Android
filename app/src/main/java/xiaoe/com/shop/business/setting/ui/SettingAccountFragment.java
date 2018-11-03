@@ -244,6 +244,9 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
             public void onClick(View v) {
                 // 获取验证码
                 settingAccountActivity.loginPresenter.obtainPhoneCode(settingAccountActivity.localPhone);
+                // 修改密码和更换手机是互斥操作
+                settingAccountActivity.isUpdatePassword = true;
+                settingAccountActivity.inputNewPhone = false;
             }
         });
     }
@@ -296,10 +299,9 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                 if (imm != null && imm.isActive()) {
                     imm.hideSoftInputFromWindow(newPwd.getWindowToken(), 0);
                 }
-                // TODO: 请求完成修改接口，然后回到设置主页
+                String newPassword = newPwd.getText().toString();
+                settingAccountActivity.loginPresenter.resetPasswordBySms(settingAccountActivity.localPhone, settingAccountActivity.smsCode, newPassword);
                 newPwd.setText("");
-                settingAccountActivity.accountTitle.setText("设置");
-                settingAccountActivity.replaceFragment(SettingAccountActivity.MAIN);
             }
         });
     }
@@ -319,6 +321,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
             @Override
             public void onComplete(String content) {
                 // content 为用户输入的验证码
+                // 更换手机
                 if (settingAccountActivity.inputNewPhone) {
                     settingAccountActivity.newSmsCode = content;
                     // 新手机验证码确认
@@ -326,6 +329,11 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                 } else {
                     settingAccountActivity.smsCode = content;
                     // 旧手机验证码确认
+                    settingAccountActivity.loginPresenter.verifyCode(settingAccountActivity.localPhone, content);
+                }
+                // 修改密码
+                if (settingAccountActivity.isUpdatePassword) {
+                    settingAccountActivity.smsCode = content;
                     settingAccountActivity.loginPresenter.verifyCode(settingAccountActivity.localPhone, content);
                 }
             }
@@ -390,8 +398,8 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
             public void onClick(View v) {
                 completeContent.setCursorVisible(false);
                 settingAccountActivity.inputNewPhone = true;
+                settingAccountActivity.isUpdatePassword = false;
                 settingAccountActivity.newPhone = completeContent.getText().toString();
-                phoneNumTitle.setText(String.format(getActivity().getResources().getString(R.string.setting_phone_num_title), settingAccountActivity.newPhone));
                 settingAccountActivity.loginPresenter.obtainPhoneCode(settingAccountActivity.newPhone);
             }
         });

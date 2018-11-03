@@ -19,6 +19,8 @@ import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.login.ui.LoginActivity;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
+import xiaoe.com.shop.business.setting.ui.SettingAccountActivity;
+import xiaoe.com.shop.business.setting.ui.SettingPersonActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
 import xiaoe.com.shop.common.pay.ui.PayActivity;
 
@@ -150,6 +152,26 @@ public class JumpDetail {
         intent.putExtra("image_url", imgUrl);
         intent.putExtra("title", title);
         intent.putExtra("price", price);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转个人信息页面
+     * @param context 上下文
+     * @param avatar 微信头像
+     */
+    public static void jumpMineMsg(Context context, String avatar) {
+        Intent intent = new Intent(context, SettingPersonActivity.class);
+        intent.putExtra("avatar", avatar);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转账号设置
+     * @param context 上下文
+     */
+    public static void jumpAccount(Context context) {
+        Intent intent = new Intent(context, SettingAccountActivity.class);
         context.startActivity(intent);
     }
 

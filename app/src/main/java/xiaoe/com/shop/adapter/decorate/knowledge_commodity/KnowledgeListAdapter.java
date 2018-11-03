@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -86,6 +87,10 @@ public class KnowledgeListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = null;
+                if (mItemList.get(position).getSrcType() == null) {
+                    Toast.makeText(mContext, "正在处理", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 switch (mItemList.get(position).getSrcType()) {
                     case DecorateEntityType.IMAGE_TEXT:
                         intent = new Intent(mContext, CourseImageTextActivity.class);

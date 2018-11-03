@@ -6,10 +6,10 @@ package xiaoe.com.common.entitys;
 public class DecorateEntityType {
 
     public static final int FLOW_INFO = 0; // 信息流组件
-    public static final String FLOW_INFO_STR = "flow_info";
+    public static final String FLOW_INFO_STR = "information_flow";
 
-    public static final String GOODS = "goods"; // 商品的总类型
-
+    public static final String GOODS_STR = "goods"; // 商品的总类型
+    // 频道和知识商品的父类型 goods
     public static final int RECENT_UPDATE = 1; // 最近更新组件
     public static final String RECENT_UPDATE_STR = "频道"; // type 是 goods，type_title 是频道 recent_update goods
 
@@ -30,7 +30,7 @@ public class DecorateEntityType {
 
     // 信息流
     public static final int FLOW_INFO_IMG_TEXT = 0;
-    public static final String FLOW_INFO_IMG_TEXT_STR = "imgText"; // 图文子类型
+    public static final String FLOW_INFO_IMG_TEXT_STR = "image_text"; // 图文子类型
     public static final int FLOW_INFO_AUDIO = 1;
     public static final String FLOW_INFO_AUDIO_STR = "audio"; // 音频子类型
     public static final int FLOW_INFO_VIDEO = 2;
@@ -46,6 +46,10 @@ public class DecorateEntityType {
     public static final String VIDEO = "video"; // 视频
     public static final String COLUMN = "column"; // 专栏
     public static final String TOPIC = "topic"; // 大专栏
+
+    // 信息流中专栏和大专栏的数字
+    public static final int FLOW_INFO_COLUMN = 3;
+    public static final int FLOW_INFO_TOPIC = 4;
 
     // 商品分组类型
     public static final String RESOURCE_TAG = "resource_tag";

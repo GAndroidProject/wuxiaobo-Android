@@ -4,6 +4,8 @@ public class FlowInfoItem {
 
     // item 类型
     private String itemType;
+    // item id
+    private String itemId;
     // item 标题
     private String itemTitle;
     // item 描述
@@ -48,7 +50,6 @@ public class FlowInfoItem {
     }
 
     public String getItemType() {
-
         return itemType;
     }
 
@@ -74,5 +75,14 @@ public class FlowInfoItem {
 
     public String getItemPrice() {
         return itemPrice;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    public String getItemId() {
+
+        return itemId;
     }
 }

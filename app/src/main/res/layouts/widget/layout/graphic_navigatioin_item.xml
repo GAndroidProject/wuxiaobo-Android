@@ -9,7 +9,8 @@
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/graphic_item_icon"
         android:layout_width="30dp"
-        android:layout_height="30dp" />
+        android:layout_height="30dp"
+        android:layout_gravity="center"/>
     
     <TextView
         android:id="@+id/graphic_item_content"
@@ -17,5 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textSize="14sp"
-        android:textColor="@color/main_title_color"/>
+        android:textColor="@color/main_title_color"
+        android:layout_gravity="center"/>
 </LinearLayout>
