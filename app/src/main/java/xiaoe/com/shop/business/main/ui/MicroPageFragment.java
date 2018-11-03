@@ -583,7 +583,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     @Override
     public void onScrollChanged(int l, int t, int oldl, int oldt) {
         if (!isMain) {
-            float alpha = (oldt / (toolbarHeight * 1.0f)) * 255;
+            float alpha = (t / (toolbarHeight * 1.0f)) * 255;
             if(alpha > 255){
                 alpha = 255;
             }else if(alpha < 0){
