@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.CouponInfo;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
@@ -45,7 +46,7 @@ public class JumpDetail {
             AudioMediaPlayer.stop();
 
             playEntity = new AudioPlayEntity();
-            playEntity.setAppId("apppcHqlTPT3482");
+            playEntity.setAppId(Constants.getAppId());
             playEntity.setResourceId(resId);
             playEntity.setIndex(0);
             playEntity.setPlay(true);

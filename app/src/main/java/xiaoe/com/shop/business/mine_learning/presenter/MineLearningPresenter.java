@@ -1,6 +1,6 @@
 package xiaoe.com.shop.business.mine_learning.presenter;
 
-import xiaoe.com.common.entitys.TestInfo;
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -24,7 +24,7 @@ public class MineLearningPresenter implements IBizCallback {
     public void requestLearningData(int pageIndex, int pageSize) {
         MineLearningRequest mineLearningRequest = new MineLearningRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.learning.records.get/1.0.0", this);
 
-        mineLearningRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        mineLearningRequest.addRequestParam("shop_id", Constants.getAppId());
         mineLearningRequest.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
         mineLearningRequest.addDataParam("page_size", pageSize);
         mineLearningRequest.addDataParam("page", pageIndex);

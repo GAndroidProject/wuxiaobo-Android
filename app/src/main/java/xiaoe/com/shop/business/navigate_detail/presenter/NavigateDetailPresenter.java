@@ -1,5 +1,6 @@
 package xiaoe.com.shop.business.navigate_detail.presenter;
 
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -29,7 +30,7 @@ public class NavigateDetailPresenter implements IBizCallback {
     public void requestData(String groupId) {
         CommodityGroupRequest commodityGroupRequest = new CommodityGroupRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + cmd, null, this);
         commodityGroupRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
-        commodityGroupRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        commodityGroupRequest.addRequestParam("shop_id", Constants.getAppId());
         commodityGroupRequest.addRequestParam("app_version", "0.1");
         commodityGroupRequest.addRequestParam("client", "1");
         commodityGroupRequest.addRequestParam("is_manager", 0);

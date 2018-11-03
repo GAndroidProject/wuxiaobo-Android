@@ -1,5 +1,6 @@
 package xiaoe.com.shop.utils;
 
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -23,7 +24,7 @@ public class UpdateLearningUtils implements IBizCallback {
     public void updateLearningProgress(String resourceId, int resourceType, int progress) {
         UpdateMineLearningRequest updateMineLearningRequest = new UpdateMineLearningRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.learning.records.push/1.0.0", this);
 
-        updateMineLearningRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        updateMineLearningRequest.addRequestParam("shop_id", Constants.getAppId());
         updateMineLearningRequest.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
         updateMineLearningRequest.addDataParam("resource_id", resourceId);
         updateMineLearningRequest.addDataParam("resource_type", resourceType);

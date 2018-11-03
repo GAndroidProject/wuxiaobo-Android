@@ -1,5 +1,6 @@
 package xiaoe.com.shop.business.coupon.presenter;
 
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.CouponCanResourceRequest;
@@ -28,7 +29,7 @@ public class CouponPresenter implements IBizCallback {
      */
     public void requestMineCoupon(String type) {
         MineCouponRequest couponRequest = new MineCouponRequest(this);
-        couponRequest.addRequestParam("app_id", "apppcHqlTPT3482");
+        couponRequest.addRequestParam("app_id", Constants.getAppId());
         couponRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
         couponRequest.addRequestParam("type", type);
         couponRequest.sendRequest();
@@ -36,7 +37,7 @@ public class CouponPresenter implements IBizCallback {
 
     public void requestResourceUseCoupon(String resourceId, int price){
         ResourceUseCouponRequest useCouponRequest = new ResourceUseCouponRequest(this);
-        useCouponRequest.addRequestParam("app_id", "apppcHqlTPT3482");
+        useCouponRequest.addRequestParam("app_id", Constants.getAppId());
         useCouponRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
         useCouponRequest.addRequestParam("price", price);
         useCouponRequest.addRequestParam("resource_id", resourceId);
@@ -45,7 +46,7 @@ public class CouponPresenter implements IBizCallback {
 
     public void requestCouponCanResource(String couponId){
         CouponCanResourceRequest canResourceRequest = new CouponCanResourceRequest(this);
-        canResourceRequest.addRequestParam("app_id", "apppcHqlTPT3482");
+        canResourceRequest.addRequestParam("app_id", Constants.getAppId());
         canResourceRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
         canResourceRequest.addRequestParam("coupon_id", couponId);
 

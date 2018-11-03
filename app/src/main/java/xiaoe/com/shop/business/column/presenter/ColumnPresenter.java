@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.network.network_interface.IBizCallback;
@@ -38,7 +39,7 @@ public class ColumnPresenter implements IBizCallback {
      */
     public void requestDetail(String resourceId, String resourceType){
         DetailRequest detailRequest = new DetailRequest( this);
-        detailRequest.addRequestParam("shop_id","apppcHqlTPT3482");
+        detailRequest.addRequestParam("shop_id",Constants.getAppId());
         detailRequest.addDataParam("resource_id",resourceId);
         detailRequest.addDataParam("resource_type",resourceType);
         detailRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
@@ -47,7 +48,7 @@ public class ColumnPresenter implements IBizCallback {
 
     public void requestColumnList(String resourceId, String resourceType, int page, int pageSize){
         ColumnListRequst columnListRequst = new ColumnListRequst(this);
-        columnListRequst.addRequestParam("shop_id","apppcHqlTPT3482");
+        columnListRequst.addRequestParam("shop_id",Constants.getAppId());
         columnListRequst.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         columnListRequst.addDataParam("goods_id",resourceId);
         columnListRequst.addDataParam("resource_type",resourceType);
@@ -111,7 +112,7 @@ public class ColumnPresenter implements IBizCallback {
      */
     public void requestColumnListByNum(String resourceId, String resourceType, int pageSize) {
         ColumnListRequst columnListRequst = new ColumnListRequst(this);
-        columnListRequst.addRequestParam("shop_id","apppcHqlTPT3482");
+        columnListRequst.addRequestParam("shop_id",Constants.getAppId());
         columnListRequst.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
         columnListRequst.addDataParam("goods_id",resourceId);
         columnListRequst.addDataParam("resource_type",resourceType);

@@ -1,5 +1,6 @@
 package xiaoe.com.shop.business.search.presenter;
 
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -33,7 +34,7 @@ public class SearchPresenter implements IBizCallback {
      */
     public void requestSearchResult(String keyWord) {
         SearchRequest searchRequest = new SearchRequest(NetworkEngine.BASE_URL + cmd, this);
-        searchRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        searchRequest.addRequestParam("shop_id", Constants.getAppId());
         searchRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
         searchRequest.addDataParam("keyword", keyWord);
         searchRequest.addDataParam("page", 1);
@@ -46,7 +47,7 @@ public class SearchPresenter implements IBizCallback {
      */
     public void requestSearchResultByPage(String keyWord, int pageIndex, int pageSize) {
         SearchRequest searchRequest = new SearchRequest(NetworkEngine.BASE_URL + cmd, this);
-        searchRequest.addRequestParam("shop_id", "apppcHqlTPT3482");
+        searchRequest.addRequestParam("shop_id", Constants.getAppId());
         searchRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
         searchRequest.addDataParam("keyword", keyWord);
         searchRequest.addDataParam("page", pageIndex);

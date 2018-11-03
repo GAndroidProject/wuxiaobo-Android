@@ -1,5 +1,6 @@
 package xiaoe.com.shop.business.video.presenter;
 
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.ContentRequest;
@@ -30,7 +31,7 @@ public class VideoPresenter implements IBizCallback {
      */
     public void requestDetail(String resourceId){
         DetailRequest detailRequest = new DetailRequest( this);
-        detailRequest.addRequestParam("shop_id","apppcHqlTPT3482");
+        detailRequest.addRequestParam("shop_id",Constants.getAppId());
         detailRequest.addDataParam("resource_id",resourceId);
         detailRequest.addDataParam("resource_type","3");
         detailRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
@@ -42,7 +43,7 @@ public class VideoPresenter implements IBizCallback {
      */
     public void requestContent(String resourceId){
         ContentRequest contentRequest = new ContentRequest( this);
-        contentRequest.addRequestParam("shop_id","apppcHqlTPT3482");
+        contentRequest.addRequestParam("shop_id",Constants.getAppId());
         contentRequest.addRequestParam("resource_id",resourceId);
         contentRequest.addRequestParam("resource_type","3");
         contentRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");

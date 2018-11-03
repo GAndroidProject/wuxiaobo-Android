@@ -25,7 +25,7 @@ public class XiaoeApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Global.g().setApplication(this);
-        this.isFormalCondition = true;
+        this.isFormalCondition = false;
         this.mContext = getApplicationContext();
         //初始化Fresco图片加载库
         ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext).setDownsampleEnabled(true).build();

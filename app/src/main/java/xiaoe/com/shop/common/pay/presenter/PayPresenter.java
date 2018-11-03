@@ -52,7 +52,7 @@ public class PayPresenter implements IBizCallback {
         if(!TextUtils.isEmpty(couponId)){
             payOrderRequest.addBUZDataParam("cu_id", couponId);
         }
-        payOrderRequest.addRequestParam("app_id", "apppcHqlTPT3482");
+        payOrderRequest.addRequestParam("app_id", Constants.getAppId());
         payOrderRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
         payOrderRequest.sendRequest();
     }
