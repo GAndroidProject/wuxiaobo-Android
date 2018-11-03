@@ -3,15 +3,18 @@ package xiaoe.com.shop.common;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.CouponInfo;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.comment.ui.CommentActivity;
+import xiaoe.com.shop.business.coupon.ui.CouponDetailActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.login.ui.LoginActivity;
 import xiaoe.com.shop.business.main.ui.MainActivity;
@@ -147,6 +150,14 @@ public class JumpDetail {
         intent.putExtra("image_url", imgUrl);
         intent.putExtra("title", title);
         intent.putExtra("price", price);
+        context.startActivity(intent);
+    }
+
+    public static void jumpCouponCanRerource(Context context, CouponInfo couponInfo){
+        Intent intent = new Intent(context, CouponDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("coupon_info", couponInfo);
+        intent.putExtra("coupon_bundle", bundle);
         context.startActivity(intent);
     }
 }

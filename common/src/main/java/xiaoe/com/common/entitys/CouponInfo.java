@@ -1,6 +1,8 @@
 package xiaoe.com.common.entitys;
 
-public class CouponInfo {
+import java.io.Serializable;
+
+public class CouponInfo implements Serializable {
 
     /**
      * id : cou_5bb2ede4d258b-xITkSE

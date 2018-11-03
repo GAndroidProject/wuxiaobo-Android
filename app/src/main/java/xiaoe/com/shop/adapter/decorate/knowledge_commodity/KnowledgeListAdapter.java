@@ -110,4 +110,9 @@ public class KnowledgeListAdapter extends BaseAdapter {
         });
         return convertView;
     }
+    public void addAllData(List<KnowledgeCommodityItem> list){
+        mItemList.addAll(list);
+        notifyDataSetChanged();
+    }
+
 }

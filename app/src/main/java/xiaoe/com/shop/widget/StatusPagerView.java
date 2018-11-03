@@ -17,6 +17,10 @@ import xiaoe.com.shop.R;
 
 public class StatusPagerView extends FrameLayout {
     private static final String TAG = "LoadingView";
+    public static final int LOADING = 10001;
+    public static final int FINISH = 10002;
+    public static final int FAIL = 10003;
+    public static final int EMPTY = 10004;
     private View rootView;
     private ProgressWheel loadingState;
     private TextView stateText;
@@ -74,5 +78,28 @@ public class StatusPagerView extends FrameLayout {
 
     public void setBtnGoToOnClickListener(OnClickListener listener){
         btnGoTo.setOnClickListener(listener);
+    }
+
+
+    public void setPagerState(int state, String hintText, int imageResourceId){
+        if(state == FINISH){
+            setVisibility(View.GONE);
+            return;
+        }
+        setVisibility(View.VISIBLE);
+        if(state == LOADING){
+            setLoadingState(View.VISIBLE);
+            setHintStateVisibility(View.GONE);
+        }else if (state == FAIL){
+            setLoadingState(View.GONE);
+            setHintStateVisibility(View.GONE);
+            setStateImage(imageResourceId);
+            setStateText(hintText);
+        }else if (state == EMPTY){
+            setLoadingState(View.GONE);
+            setHintStateVisibility(View.GONE);
+            setStateImage(imageResourceId);
+            setStateText(hintText);
+        }
     }
 }

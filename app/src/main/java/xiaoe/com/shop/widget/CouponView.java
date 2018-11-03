@@ -15,7 +15,7 @@ import xiaoe.com.common.entitys.CouponInfo;
 import xiaoe.com.shop.R;
 
 public class CouponView extends FrameLayout {
-    private static final String TAG = "CouponView";
+    public static final String TAG = "CouponView";
     private View rootView;
     private TextView couponMoney;
     private TextView couponType;

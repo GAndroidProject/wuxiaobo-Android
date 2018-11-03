@@ -2,6 +2,7 @@ package xiaoe.com.shop.business.coupon.presenter;
 
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
+import xiaoe.com.network.requests.CouponCanResourceRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.MineCouponRequest;
 import xiaoe.com.network.requests.ResourceUseCouponRequest;
@@ -40,5 +41,14 @@ public class CouponPresenter implements IBizCallback {
         useCouponRequest.addRequestParam("price", price);
         useCouponRequest.addRequestParam("resource_id", resourceId);
         useCouponRequest.sendRequest();
+    }
+
+    public void requestCouponCanResource(String couponId){
+        CouponCanResourceRequest canResourceRequest = new CouponCanResourceRequest(this);
+        canResourceRequest.addRequestParam("app_id", "apppcHqlTPT3482");
+        canResourceRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        canResourceRequest.addRequestParam("coupon_id", couponId);
+
+        canResourceRequest.sendRequest();
     }
 }

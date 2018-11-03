@@ -54,6 +54,7 @@
         <activity android:name=".business.navigate_detail.ui.NavigateDetailActivity"/>
         <activity android:name=".business.cdkey.ui.CdKeyActivity"/>
         <activity android:name=".common.pay.ui.PayActivity"/>
+        <activity android:name=".business.coupon.ui.CouponDetailActivity"/>
         <!--微信sdk start-->
         <activity
             android:name=".wxapi.WXEntryActivity"

@@ -34,7 +34,7 @@ import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 public class BaseFragment extends Fragment implements INetworkResponse {
     private static PopupWindow popupWindow;
     private TextView mToastText;
-    private boolean isFragmentDestroy = false;
+    protected boolean isFragmentDestroy = false;
 
     // Fragment 懒加载字段
     private boolean isFragmentVisible;

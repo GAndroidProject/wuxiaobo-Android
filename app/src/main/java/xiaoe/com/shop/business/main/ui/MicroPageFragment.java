@@ -134,6 +134,9 @@ public class MicroPageFragment extends BaseFragment {
 
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
+        if(isFragmentDestroy){
+            return;
+        }
         super.onMainThreadResponse(iRequest, success, entity);
         if (success) { // 请求成功
             JSONObject result = (JSONObject) entity;

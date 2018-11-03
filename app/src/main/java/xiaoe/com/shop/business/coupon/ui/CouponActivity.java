@@ -18,9 +18,11 @@ import xiaoe.com.network.requests.MineCouponRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.coupon.presenter.CouponPresenter;
+import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.interfaces.OnSelectCouponListener;
 import xiaoe.com.shop.widget.StatusPagerView;
 
-public class CouponActivity extends XiaoeActivity implements View.OnClickListener {
+public class CouponActivity extends XiaoeActivity implements View.OnClickListener, OnSelectCouponListener {
 
     private static final String TAG = "CouponActivity";
 
@@ -61,6 +63,7 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
 
     private void initListener() {
         couponBack.setOnClickListener(this);
+        currentFragment.setOnSelectCouponListener(this);
     }
 
     private void setPagerState(int state){
@@ -139,6 +142,13 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onSelect(CouponInfo couponInfo, int position) {
+        if(couponInfo.getType() == 0){
+            JumpDetail.jumpCouponCanRerource(this, couponInfo);
         }
     }
 }

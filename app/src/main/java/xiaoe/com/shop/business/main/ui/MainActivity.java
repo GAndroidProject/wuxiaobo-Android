@@ -2,7 +2,6 @@ package xiaoe.com.shop.business.main.ui;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +16,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.LoginUserInfo;
@@ -35,7 +33,6 @@ import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
-import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.BottomTabBar;
 import xiaoe.com.shop.widget.ScrollViewPager;
 
@@ -155,7 +152,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        if(!AudioMediaPlayer.isPlaying()){
+        if(!AudioMediaPlayer.isStop()){
             AudioMediaPlayer.release();
         }
     }
