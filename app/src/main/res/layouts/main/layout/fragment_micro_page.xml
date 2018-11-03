@@ -9,7 +9,8 @@
     <xiaoe.com.shop.widget.CustomScrollView
         android:id="@+id/micro_page_scroller"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
 
         <RelativeLayout
             android:id="@+id/micro_page_wrap"
