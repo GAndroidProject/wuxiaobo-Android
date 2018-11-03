@@ -95,7 +95,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         toolBarheight = Dp2Px2SpUtil.dp2px(this,280);
         columnScrollView = (CustomScrollView) findViewById(R.id.column_scroll_view);
         columnScrollView.setScrollChanged(this);
-        columnScrollView.setLoadHeigth(Dp2Px2SpUtil.dp2px(this, 40));
+        columnScrollView.setLoadHeight(Dp2Px2SpUtil.dp2px(this, 40));
 
         //购买按钮
         buyView = (CommonBuyView) findViewById(R.id.common_buy_layout);

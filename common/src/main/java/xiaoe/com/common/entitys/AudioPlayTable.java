@@ -2,7 +2,7 @@ package xiaoe.com.common.entitys;
 
 public class AudioPlayTable {
     private static final String TAG = "AudioPlayTable";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 1;//2-增加字段：big_column_id
     public static final String TABLE_NAME = "audio_play";
     private static final String TYPE_TEXT = "TEXT";
     private static final String TYPE_VARCHAR_64 = "VARCHAR(64)";
@@ -13,6 +13,7 @@ public class AudioPlayTable {
     private static final String appId = "app_id";
     private static final String resourceId = "resource_id";
     private static final String columnId = "column_id";
+    private static final String bigColumnId = "big_column_id";
     private static final String title = "title";
     private static final String content = "content";
     private static final String playUrl = "play_url";
@@ -25,6 +26,7 @@ public class AudioPlayTable {
             appId+" "+TYPE_VARCHAR_64+" not null,"+
             resourceId+" "+TYPE_VARCHAR_64+" not null,"+
             columnId+" "+TYPE_VARCHAR_64+" default \"\","+
+            bigColumnId+" "+TYPE_VARCHAR_64+" default \"\","+
             title+" "+TYPE_VARCHAR_256+" default \"\","+
             content+" "+TYPE_TEXT+" default \"\","+
             playUrl+" "+TYPE_TEXT+" default \"\","+
@@ -77,5 +79,9 @@ public class AudioPlayTable {
 
     public static String getHasBuy() {
         return hasBuy;
+    }
+
+    public static String getBigColumnId() {
+        return bigColumnId;
     }
 }

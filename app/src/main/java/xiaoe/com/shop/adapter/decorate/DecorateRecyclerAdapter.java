@@ -65,6 +65,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     // 知识商品分组形式的 recycler
     private RecyclerView knowledgeGroupRecycler;
+    private RecentUpdateListAdapter recentUpdateListAdapter;
 
     public DecorateRecyclerAdapter(Context context, List<ComponentInfo> componentList) {
         this.mContext = context;
@@ -174,7 +175,11 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     recentUpdateViewHolder.recentUpdateSubBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(mContext, "全部播放...", Toast.LENGTH_SHORT).show();
+                            if(!currentBindComponent.isHasBuy()){
+                                Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            recentUpdateListAdapter.clickPlayAll();
                         }
                     });
                 }
@@ -185,8 +190,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     }
                 });
                 // 加载 ListView 的数据
-                RecentUpdateListAdapter adapter = new RecentUpdateListAdapter(mContext, currentBindComponent.getSubList());
-                recentUpdateViewHolder.recentUpdateListView.setAdapter(adapter);
+                recentUpdateListAdapter = new RecentUpdateListAdapter(mContext, currentBindComponent.getSubList(), currentBindComponent.isHasBuy());
+                recentUpdateViewHolder.recentUpdateListView.setAdapter(recentUpdateListAdapter);
                 MeasureUtil.setListViewHeightBasedOnChildren(recentUpdateViewHolder.recentUpdateListView);
                 break;
             case DecorateEntityType.KNOWLEDGE_COMMODITY:
@@ -359,5 +364,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 JumpDetail.jumpShopGroup(mContext, pageTitle, graphicNavItem.getNavResourceId());
                 break;
         }
+    }
+    public void notifyDataSetChangedRecentUpdate(){
+        recentUpdateListAdapter.notifyDataSetChanged();
     }
 }

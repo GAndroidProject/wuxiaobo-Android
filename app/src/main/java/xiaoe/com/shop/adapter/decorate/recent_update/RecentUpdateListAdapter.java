@@ -3,7 +3,7 @@ package xiaoe.com.shop.adapter.decorate.recent_update;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,29 +14,36 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
 import xiaoe.com.shop.R;
-import xiaoe.com.shop.business.audio.ui.AudioActivity;
+import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
+import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 
 /**
  * 最近更新列表适配器
  */
 public class RecentUpdateListAdapter extends BaseAdapter {
+    private static final String TAG = "RecentUpdateListAdapter";
 
     private List<RecentUpdateListItem> mItemList;
     private Activity mActivity;
     private Context mContext;
     private LayoutInflater mInflater;
+    private boolean hasBuy = false;
 
-    public RecentUpdateListAdapter(Context mContext, List<RecentUpdateListItem> itemList) {
+    public RecentUpdateListAdapter(Context mContext, List<RecentUpdateListItem> itemList, boolean hasBuy) {
         this.mItemList = itemList;
         this.mContext = mContext;
         this.mInflater = LayoutInflater.from(mContext);
+        this.hasBuy = hasBuy;
     }
 
     @Override
@@ -57,6 +64,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final RecentUpdateHolder viewHolder;
+        final RecentUpdateListItem recentUpdateListItem = mItemList.get(position);
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.recent_update_list_item, parent ,false);
             viewHolder = new RecentUpdateHolder(convertView);
@@ -64,41 +72,50 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         } else {
             viewHolder = (RecentUpdateHolder) convertView.getTag();
         }
-        viewHolder.itemTitle.setText(mItemList.get(position).getListTitle());
-        String playState = mItemList.get(position).getListPlayState();
-        switch (playState) {
-            case DecorateEntityType.ITEM_RECENT_PLAY:
+        viewHolder.itemTitle.setText(recentUpdateListItem.getListTitle());
+        Log.d(TAG, "getView: Type = "+recentUpdateListItem.getResourceType());
+        if(recentUpdateListItem.getResourceType() == 2){
+            boolean resourceEqual = playResourceEquals(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId());
+            Log.d(TAG, "getView: resourceEqual = "+resourceEqual+" ; "+AudioMediaPlayer.isPlaying());
+            if(resourceEqual){
                 viewHolder.itemIcon.setVisibility(View.VISIBLE);
-                viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
-                break;
-            case DecorateEntityType.ITEM_RECENT_STOP:
+                viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.high_title_color));
+            }else{
                 viewHolder.itemIcon.setVisibility(View.VISIBLE);
+                viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
+            }
+            if(resourceEqual && AudioMediaPlayer.isPlaying()){
                 viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
-                break;
-            default:  // 没有设置播放状态的话，就隐藏这个播放按钮
-                viewHolder.itemIcon.setVisibility(View.GONE);
-                break;
+            }else{
+                viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
+            }
+        }else{
+            // 没有设置播放状态的话，就隐藏这个播放按钮
+            viewHolder.itemIcon.setVisibility(View.GONE);
+            viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
         }
         // TODO: 每一项的音频播放按钮
         viewHolder.itemIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mItemList.get(position).getListPlayState().equals(DecorateEntityType.ITEM_RECENT_PLAY)) { // 暂停，点击后换成播放中状态
-                    viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
-                    mItemList.get(position).setListPlayState(DecorateEntityType.ITEM_RECENT_STOP);
-                } else if (mItemList.get(position).getListPlayState().equals(DecorateEntityType.ITEM_RECENT_STOP)) { // 播放中，点击后换成准备播放状态
-                    viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
-                    mItemList.get(position).setListPlayState(DecorateEntityType.ITEM_RECENT_PLAY);
+                if(!hasBuy){
+                    Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
+                    AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
+                    AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
+                }
+                playPosition(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId());
             }
         });
         viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String resourceId = mItemList.get(position).getListResourceId();
-                Intent audioIntent = new Intent(mContext, AudioActivity.class);
-                audioIntent.putExtra("resource_id", resourceId);
-                mContext.startActivity(audioIntent);
+//                String resourceId = mItemList.get(position).getListResourceId();
+//                Intent audioIntent = new Intent(mContext, AudioActivity.class);
+//                audioIntent.putExtra("resource_id", resourceId);
+//                mContext.startActivity(audioIntent);
             }
         });
         return convertView;
@@ -116,5 +133,96 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         RecentUpdateHolder(View itemView) {
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    /**
+     * 获取播放列表
+     * @param list
+     * @return
+     */
+    public List<AudioPlayEntity> getAudioPlayList(List<RecentUpdateListItem> list){
+        List<AudioPlayEntity> playList = new ArrayList<AudioPlayEntity>();
+        int index = 0;
+        for (RecentUpdateListItem entity : list) {
+            if(entity.getResourceType() != 2){
+                continue;
+            }
+            AudioPlayEntity playEntity = new AudioPlayEntity();
+            playEntity.setAppId(entity.getAppId());
+            playEntity.setResourceId(entity.getListResourceId());
+            playEntity.setIndex(index);
+            playEntity.setCurrentPlayState(0);
+            playEntity.setTitle(entity.getListTitle());
+            playEntity.setState(0);
+            playEntity.setPlay(false);
+            playEntity.setPlayUrl(entity.getAudioUrl());
+            playEntity.setCode(-1);
+            playEntity.setHasBuy(hasBuy ? 1 : 0);
+            playEntity.setColumnId(entity.getColumnId());
+            playEntity.setBigColumnId(entity.getBigColumnId());
+            playEntity.setTotalDuration(entity.getAudioLength());
+            index++;
+            playList.add(playEntity);
+        }
+        return playList;
+    }
+
+    /**
+     * 播放音频
+     * @param resourceId
+     * @param columnId
+     * @param bigColumnId
+     */
+    public void playPosition(String resourceId, String columnId, String bigColumnId){
+
+        AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
+
+        boolean resourceEquals = false;
+        if(playAudio != null){
+            resourceEquals = AudioPlayUtil.resourceEquals(playAudio.getResourceId(), playAudio.getColumnId(), playAudio.getBigColumnId(),
+                    resourceId, columnId, bigColumnId);
+        }
+        //正在播放的资源和点击的资源相同，则播放暂停操作
+        if(playAudio != null && resourceEquals){
+            if(AudioMediaPlayer.isStop()){
+                AudioMediaPlayer.start();
+            }else{
+                AudioMediaPlayer.play();
+            }
+            return;
+        }
+        AudioMediaPlayer.stop();
+        for (AudioPlayEntity playEntity : AudioPlayUtil.getInstance().getAudioList()) {
+            if(playEntity.getResourceId().equals(resourceId)){
+                playEntity.setPlay(true);
+                AudioMediaPlayer.setAudio(playEntity, true);
+                new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+                break;
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void clickPlayAll() {
+        if(AudioPlayUtil.getInstance().getAudioList().size() > 0){
+            AudioMediaPlayer.stop();
+            AudioPlayEntity playEntity = AudioPlayUtil.getInstance().getAudioList().get(0);
+            playEntity.setPlay(true);
+            AudioMediaPlayer.setAudio(playEntity, true);
+            new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+        }
+        notifyDataSetChanged();
+    }
+
+    //设置播放态
+    private boolean playResourceEquals(String resourceId, String columnId, String bigColumnId) {
+
+        AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        boolean resourceEquals = false;
+        if(playEntity != null){
+            resourceEquals = AudioPlayUtil.resourceEquals(playEntity.getResourceId(), playEntity.getColumnId(), playEntity.getBigColumnId(),
+                    resourceId, columnId, bigColumnId);
+        }
+        return resourceEquals;
     }
 }

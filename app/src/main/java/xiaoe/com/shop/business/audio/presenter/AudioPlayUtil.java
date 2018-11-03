@@ -12,6 +12,7 @@ public class AudioPlayUtil {
     private List<AudioPlayEntity> audioList;
     private static AudioPlayUtil audioPlayUtil = null;
     private boolean singleAudio = true; // 是否是单品音频，专栏列表中资源一个音频不属于单品，
+    private String fromTag = "";
 
     private AudioPlayUtil(){
         audioList = new ArrayList<AudioPlayEntity>();
@@ -81,5 +82,13 @@ public class AudioPlayUtil {
 
         boolean resourceEquals = resourceId.equals(playResourceId) && columnId.equals(playColumnId) && bigColumnId.equals(playBigColumnId);
         return  resourceEquals;
+    }
+
+    public String getFromTag() {
+        return fromTag;
+    }
+
+    public void setFromTag(String fromTag) {
+        this.fromTag = fromTag;
     }
 }

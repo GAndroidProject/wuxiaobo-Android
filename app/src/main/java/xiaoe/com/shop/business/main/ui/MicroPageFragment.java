@@ -9,6 +9,7 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,9 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +46,7 @@ import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
 import xiaoe.com.shop.business.main.presenter.PageFragmentPresenter;
+import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.StatusPagerView;
 
@@ -89,6 +94,7 @@ public class MicroPageFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_micro_page, null, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getContext();
+        EventBus.getDefault().register(this);
         return view;
     }
 
@@ -147,7 +153,7 @@ public class MicroPageFragment extends BaseFragment {
             } else if (iRequest instanceof ColumnListRequst) {
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONArray data = (JSONArray) result.get("data");
-                    refreshRecentComponent(data);
+                    refreshRecentComponent(data, iRequest.getDataParams().getString("goods_id"));
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取最近更新组件的列表失败..");
                 }
@@ -158,7 +164,7 @@ public class MicroPageFragment extends BaseFragment {
     }
 
     // 刷新最近更新组件的子列表
-    private void refreshRecentComponent(JSONArray data) {
+    private void refreshRecentComponent(JSONArray data, String columnId) {
         List<RecentUpdateListItem> itemList = new ArrayList<>();
         int audioCount = 0; // 记录音频数据条数
         // 获取专栏 list
@@ -177,6 +183,17 @@ public class MicroPageFragment extends BaseFragment {
                 recentUpdateListItem.setListPlayState("");
             }
             recentUpdateListItem.setListResourceId(resourceId);
+
+            recentUpdateListItem.setAppId(dataJsonItem.getString("app_id"));
+            recentUpdateListItem.setImgUrl(dataJsonItem.getString("img_url"));
+            recentUpdateListItem.setImgUrlCompress(dataJsonItem.getString("img_url_compress"));
+            recentUpdateListItem.setResourceType(dataJsonItem.getIntValue("resource_type"));
+            recentUpdateListItem.setAudioLength(dataJsonItem.getIntValue("audio_length"));
+            recentUpdateListItem.setVideoLength(dataJsonItem.getIntValue("video_length"));
+            recentUpdateListItem.setAudioUrl(dataJsonItem.getString("audio_url"));
+            recentUpdateListItem.setColumnId(columnId);
+            recentUpdateListItem.setBigColumnId("");
+
             itemList.add(recentUpdateListItem);
         }
         // 更新频道组件
@@ -264,6 +281,11 @@ public class MicroPageFragment extends BaseFragment {
                     component_recent.setDesc(updateCountStr);
                     // 最近更新需要设置专栏 id
                     component_recent.setColumnId(recentId);
+                    if(TextUtils.isEmpty(jsonItem.getString("show_price"))){
+                        component_recent.setHasBuy(true);
+                    }else{
+                        component_recent.setHasBuy(false);
+                    }
                     if (recentId != null) {
                         ColumnPresenter columnPresenter = new ColumnPresenter(this);
                         // 请求该专栏下三条数据
@@ -458,6 +480,7 @@ public class MicroPageFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         destroyView = true;
+        EventBus.getDefault().unregister(this);
         if (unbinder != null) {
             unbinder.unbind();
         }
@@ -482,6 +505,20 @@ public class MicroPageFragment extends BaseFragment {
                 return DecorateEntityType.TOPIC;
             default:
                 return null;
+        }
+    }
+    @Subscribe
+    public void onEventMainThread(AudioPlayEvent event) {
+        switch (event.getState()){
+            case AudioPlayEvent.NEXT:
+            case AudioPlayEvent.LAST:
+            case AudioPlayEvent.PAUSE:
+            case AudioPlayEvent.PLAY:
+            case AudioPlayEvent.STOP:
+                microPageAdapter.notifyDataSetChangedRecentUpdate();
+                break;
+            default:
+                break;
         }
     }
 }

@@ -2,7 +2,6 @@ package xiaoe.com.shop.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ScrollView;
 
 import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
@@ -50,8 +49,8 @@ public class CustomScrollView extends ScrollView {
         }
     }
 
-    public void setLoadHeigth(int heigth){
-        loadHeight = heigth;
+    public void setLoadHeight(int height){
+        loadHeight = height;
     }
 
     public void setLoadState(int loadState) {

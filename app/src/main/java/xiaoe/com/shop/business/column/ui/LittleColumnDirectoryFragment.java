@@ -223,7 +223,14 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
 
     @Subscribe
     public void onEventMainThread(AudioPlayEvent event) {
-
+        switch (event.getState()){
+            case AudioPlayEvent.NEXT:
+            case AudioPlayEvent.LAST:
+                directoryAdapter.notifyDataSetChanged();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
