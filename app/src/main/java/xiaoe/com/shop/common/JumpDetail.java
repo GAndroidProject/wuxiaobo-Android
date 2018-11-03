@@ -19,6 +19,7 @@ import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.login.ui.LoginActivity;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
+import xiaoe.com.shop.business.search.ui.SearchActivity;
 import xiaoe.com.shop.business.setting.ui.SettingAccountActivity;
 import xiaoe.com.shop.business.setting.ui.SettingPersonActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
@@ -180,6 +181,15 @@ public class JumpDetail {
         Bundle bundle = new Bundle();
         bundle.putSerializable("coupon_info", couponInfo);
         intent.putExtra("coupon_bundle", bundle);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到搜索页面
+     * @param context
+     */
+    public static void jumpSearch(Context context) {
+        Intent intent = new Intent(context, SearchActivity.class);
         context.startActivity(intent);
     }
 }

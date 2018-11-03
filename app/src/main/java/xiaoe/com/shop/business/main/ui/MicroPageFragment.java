@@ -47,6 +47,7 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
 import xiaoe.com.shop.business.main.presenter.PageFragmentPresenter;
 import xiaoe.com.shop.business.search.presenter.SpacesItemDecoration;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
 import xiaoe.com.shop.utils.StatusBarUtil;
@@ -464,6 +465,14 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             microPageWrap.setPadding(0, statusBarHeight, 0, 0);
             // toolbar 的内容都设置为透明
             microPageToolbar.setBackgroundColor(Color.argb(0,255,255,255));
+            microPageToolbarTitle.setVisibility(View.GONE);
+            microPageToolbarSearch.setVisibility(View.GONE);
+            microPageToolbarSearch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    JumpDetail.jumpSearch(mContext);
+                }
+            });
             isMain = false;
         } else {
             microPageTitleBg.setImageURI("");
@@ -581,6 +590,13 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 alpha = 0;
             }
             microPageToolbar.setBackgroundColor(Color.argb((int) alpha,30,89,246));
+            if (alpha == 255) {
+                microPageToolbarTitle.setVisibility(View.VISIBLE);
+                microPageToolbarSearch.setVisibility(View.VISIBLE);
+            } else {
+                microPageToolbarTitle.setVisibility(View.GONE);
+                microPageToolbarSearch.setVisibility(View.GONE);
+            }
         }
     }
 
