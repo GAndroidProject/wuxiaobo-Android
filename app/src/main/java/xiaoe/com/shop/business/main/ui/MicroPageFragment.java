@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -66,7 +67,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     CustomScrollView microPageScroller;
 
     @BindView(R.id.micro_page_wrap)
-    FrameLayout microPageWrap;
+    RelativeLayout microPageWrap;
     @BindView(R.id.micro_page_title_bg)
     SimpleDraweeView microPageTitleBg;
     @BindView(R.id.micro_page_content)
@@ -110,6 +111,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         super.onViewCreated(view, savedInstanceState);
         init();
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -37,6 +37,8 @@ public class AudioPlayTable {
             updateAt+" "+TYPE_DATETIME+" default '0000-00-00 00:00:00',"+
             "primary key ("+appId +","+ resourceId+"))";
 
+    public static final String DELETE_DATA = "DELETE FROM "+TABLE_NAME;
+
     public static String getAppId() {
         return appId;
     }
