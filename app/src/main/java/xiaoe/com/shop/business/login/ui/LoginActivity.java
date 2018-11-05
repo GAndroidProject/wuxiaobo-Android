@@ -21,9 +21,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.LoginUser;
+import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.network.requests.LoginCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginFindPwdCodeVerifyRequest;
 import xiaoe.com.network.requests.ResetPasswordRequest;
+import xiaoe.com.network.requests.SettingPseronMsgRequest;
+import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.JudgeUtil;
 import xiaoe.com.common.utils.SQLiteUtil;
@@ -76,6 +79,8 @@ public class LoginActivity extends XiaoeActivity {
     protected boolean isRegister; // 是否为注册流程
 
     protected LoginPresenter loginPresenter;
+    protected SettingPresenter settingPresenter;
+    protected List<LoginUserInfo> loginUserList;
 
     protected String getPhoneNum() {
         return phoneNum;
@@ -109,8 +114,11 @@ public class LoginActivity extends XiaoeActivity {
         currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_main);
         getSupportFragmentManager().beginTransaction().add(R.id.login_container, currentFragment, MAIN).commit();
 
+        loginUserList = getLoginUserInfoList();
+
         // 网络请求
         loginPresenter = new LoginPresenter(this, this);
+        settingPresenter = new SettingPresenter(this);
 
         initData();
         initView();
@@ -406,10 +414,54 @@ public class LoginActivity extends XiaoeActivity {
                     Log.d(TAG, "onMainThreadResponse: 修改失败");
                     Toast("修改失败，请重试");
                 }
+            } if (iRequest instanceof SettingPseronMsgRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    initMineMsg(data);
+                } else if (code == NetworkCodes.CODE_PERSON_PARAM_LOSE) {
+                    Log.d(TAG, "onMainThreadResponse: 必选字段缺失");
+                } else if (code == NetworkCodes.CODE_PERSON_PARAM_UNUSEFUL) {
+                    Log.d(TAG, "onMainThreadResponse: 字段格式无效");
+                } else if (code == NetworkCodes.CODE_PERSON_NOT_FOUND) {
+                    Log.d(TAG, "onMainThreadResponse: 当前用户不存在");
+                }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail");
         }
+    }
+
+    // 初始化用户信息
+    private void initMineMsg(JSONObject data) {
+
+        String wxNickname = data.getString("wx_nickname");
+        String wxAvatar = data.getString("wx_avatar");
+        String shopId = data.getString("app_id");
+        String userId = data.getString("user_id");
+        String phone = data.getString("phone");
+
+        LoginUserInfo loginUserInfo = new LoginUserInfo();
+        loginUserInfo.setUserId(userId);
+        loginUserInfo.setWxNickname(wxNickname);
+        loginUserInfo.setWxAvatar(wxAvatar);
+        loginUserInfo.setPhone(phone);
+        loginUserInfo.setShopId(shopId);
+
+        if (loginUserList.size() == 1) { // 已经有用户登录过，此时需要更新数据
+            LoginUserInfo hadLoginUserInfo = loginUserList.get(0);
+            if (hadLoginUserInfo.getUserId().equals(loginUserInfo.getUserId())) { // 同一个用户
+                SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo, "user_id = ?", new String[]{ hadLoginUserInfo.getUserId() });
+            } else { // 不同用户，先把原来的用户删掉，然后将新用户插入
+                SQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "user_id = ?", new String[]{ hadLoginUserInfo.getUserId() });
+                SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo);
+            }
+        } else { // 没有，则直接插入数据
+            SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo);
+        }
+
+        Toast("登录成功");
+        JumpDetail.jumpMain(this, true);
     }
 
     // 获取受限用户信息（此时需要去绑定微信或者手机）
@@ -441,6 +493,8 @@ public class LoginActivity extends XiaoeActivity {
         user.setWxUnionId(wxUnionId);
         user.setApi_token(apiToken);
 
+        settingPresenter.requestPersonData(apiToken, false);
+
         List<LoginUser> userList = getLoginUserList();
         if (userList.size() == 1) {
             // 已经有用户注册过，此时需要先将已注册用户的信息删掉
@@ -470,6 +524,8 @@ public class LoginActivity extends XiaoeActivity {
 //        user.setPhone(phone);
         user.setApi_token(apiToken);
 
+        settingPresenter.requestPersonData(apiToken, false);
+
         List<LoginUser> userList = getLoginUserList();
 
         if (userList.size() == 1) { // 证明有登录或者注册过的用户
@@ -483,9 +539,6 @@ public class LoginActivity extends XiaoeActivity {
         } else { // 表中没有用户登录记录
             SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, user);
         }
-
-        Toast("登录成功");
-        JumpDetail.jumpMain(this, true);
     }
 
     /**
@@ -511,7 +564,7 @@ public class LoginActivity extends XiaoeActivity {
 //        Log.d(TAG, "onResume: code --- " + code);
 //        Log.d(TAG, "onResume: preTag --- " + preTag);
         String apiToken = CommonUserInfo.getApiToken();
-        if (!apiToken.equals("")) { // 有用户登录信息，直接去主页
+        if (apiToken != null && !apiToken.equals("")) { // 有用户登录信息，直接去主页
             JumpDetail.jumpMain(this, true);
             return;
         }
