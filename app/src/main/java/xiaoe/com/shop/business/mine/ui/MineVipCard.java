@@ -8,6 +8,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import xiaoe.com.common.utils.MeasureUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
@@ -19,7 +21,7 @@ public class MineVipCard extends RelativeLayout {
     // 续费按钮
     private Button card_renewal;
     // 更多权益
-    private TextView card_equity_more;
+//    private TextView card_equity_more;
     // 有效期
     private TextView card_deadline;
     // 权益列表
@@ -51,7 +53,7 @@ public class MineVipCard extends RelativeLayout {
         mContext = context;
         View view = View.inflate(context, R.layout.mine_vip_card, this);
         card_renewal = (Button) view.findViewById(R.id.card_renewal);
-        card_equity_more = (TextView) view.findViewById(R.id.card_equity_more);
+//        card_equity_more = (TextView) view.findViewById(R.id.card_equity_more);
         card_deadline = (TextView) view.findViewById(R.id.card_deadline);
         card_equity_list = (ListView) view.findViewById(R.id.card_equity_list);
         card_container = (RelativeLayout) view.findViewById(R.id.card_container);
@@ -61,9 +63,9 @@ public class MineVipCard extends RelativeLayout {
         card_renewal.setOnClickListener(listener);
     }
 
-    public void setMoreEquityClickListener(OnClickListener listener) {
-        card_equity_more.setOnClickListener(listener);
-    }
+//    public void setMoreEquityClickListener(OnClickListener listener) {
+//        card_equity_more.setOnClickListener(listener);
+//    }
 
     public void setDeadLine(String deadLine) {
         card_deadline.setText(deadLine);

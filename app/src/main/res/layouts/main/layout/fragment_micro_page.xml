@@ -10,7 +10,8 @@
         android:id="@+id/micro_page_scroller"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="never">
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
         <RelativeLayout
             android:id="@+id/micro_page_wrap"
@@ -27,7 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"/>
+                android:overScrollMode="never"
+                android:scrollbars="none"/>
 
         </RelativeLayout>
 

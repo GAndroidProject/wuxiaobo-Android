@@ -23,11 +23,14 @@ import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import xiaoe.com.common.utils.CacheManagerUtil;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
+import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
+import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
+import xiaoe.com.shop.utils.ActivityCollector;
 
 public class MainAccountFragment extends BaseFragment implements OnItemClickWithSettingItemInfoListener {
 
@@ -97,7 +100,10 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
         accountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "退出登录", Toast.LENGTH_SHORT).show();
+                SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
+                SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+                ActivityCollector.finishAll();
+                System.exit(0);
             }
         });
     }

@@ -10,6 +10,7 @@ import java.util.List;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.main.ui.MicroPageFragment;
+import xiaoe.com.shop.business.main.ui.ScholarshipFragment;
 import xiaoe.com.shop.business.mine.ui.MineFragment;
 
 /**
@@ -26,9 +27,13 @@ public class MainFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
         MicroPageFragment homePageFragment = MicroPageFragment.newInstance(MainActivity.MICRO_PAGE_MAIN);
         // 课程页微页面
         MicroPageFragment coursePageFragment = MicroPageFragment.newInstance(MainActivity.MICRO_PAGE_COURSE);
+        // 任务奖学金页面
+        ScholarshipFragment scholarshipFragment = new ScholarshipFragment();
+        // 我的页面
         MineFragment mineFragment = new MineFragment();
         list.add(homePageFragment);
         list.add(coursePageFragment);
+        list.add(scholarshipFragment);
         list.add(mineFragment);
     }
 

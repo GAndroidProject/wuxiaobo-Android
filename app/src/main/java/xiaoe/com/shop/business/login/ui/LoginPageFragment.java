@@ -354,7 +354,6 @@ public class LoginPageFragment extends BaseFragment {
                 toggleSoftKeyboard();
                 String phoneNum = phoneContent.getText().toString();
                 String password = passwordContent.getText().toString();
-                phoneContent.setText("");
                 passwordContent.setText("");
                 loginActivity.loginPresenter.loginByPassword(phoneNum, password);
             }

@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.LoginUser;
-import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.common.entitys.MineMoneyItemInfo;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SQLiteUtil;
@@ -83,22 +82,22 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         List<String> contentList = new ArrayList<>();
         contentList.add("四大体系课程免费听");
         contentList.add("分享赢双倍奖学金");
-        MineEquityListAdapter mineEquityListAdapter = new MineEquityListAdapter(getActivity(), contentList);
+        MineEquityListAdapter mineEquityListAdapter = new MineEquityListAdapter(mContext, contentList);
         mineVipCard.setEquityListAdapter(mineEquityListAdapter);
         mineVipCard.setDeadLine("2019/10/15");
         // TODO: 判断是否为超级会员显示超级会员卡片
         if (mineVipCard.getVisibility() == View.VISIBLE) { // 超级会员卡片存在
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int left = Dp2Px2SpUtil.dp2px(getActivity(), 20);
-            int top = Dp2Px2SpUtil.dp2px(getActivity(), 16);
-            int right = Dp2Px2SpUtil.dp2px(getActivity(), 20);
+            int left = Dp2Px2SpUtil.dp2px(mContext, 20);
+            int top = Dp2Px2SpUtil.dp2px(mContext, 16);
+            int right = Dp2Px2SpUtil.dp2px(mContext, 20);
             layoutParams.setMargins(left,top,right,0);
             mineMoneyWrapView.setLayoutParams(layoutParams);
         } else if (mineVipCard.getVisibility() == View.GONE) { // 超级会员卡片不存在
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int left = Dp2Px2SpUtil.dp2px(getActivity(), 20);
-            int top = Dp2Px2SpUtil.dp2px(getActivity(), -36);
-            int right = Dp2Px2SpUtil.dp2px(getActivity(), 20);
+            int left = Dp2Px2SpUtil.dp2px(mContext, 20);
+            int top = Dp2Px2SpUtil.dp2px(mContext, -36);
+            int right = Dp2Px2SpUtil.dp2px(mContext, 20);
             layoutParams.setMargins(left, top, right ,0);
             mineMoneyWrapView.setLayoutParams(layoutParams);
         }
@@ -112,7 +111,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         item_2.setItemDesc("优惠券");
         itemInfoList.add(item_1);
         itemInfoList.add(item_2);
-        MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(getActivity(), itemInfoList);
+        MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
         mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
         // 我正在学假数据
         // TODO: 根据是否登录显示正在学的 item
@@ -122,7 +121,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mineLearningWrapView.setLearningUpdate("已更新至07-22期");
         // TODO: 如果没有登录或者登录了没有在学课程就需要将登录描述显示出来否则隐藏
         mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
-        MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
+        MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(mContext);
         mineLearningWrapView.setLearningListAdapter(learningListAdapter);
     }
 
@@ -132,7 +131,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mineMsgView.setBuyVipClickListener(this);
         mineMsgView.setAvatarClickListener(this);
         mineVipCard.setBtnRenewalClickListener(this);
-        mineVipCard.setMoreEquityClickListener(this);
+//        mineVipCard.setMoreEquityClickListener(this);
         if (mineLearningWrapView.getLearningContainerVisibility() == View.VISIBLE) { // 可见就设置点击事件
             mineLearningWrapView.setLearningContainerClickListener(this);
         }
@@ -162,9 +161,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             mineVipCard.setVisibility(View.GONE);
             // 超级会员隐藏后奖学金的位置
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int left = Dp2Px2SpUtil.dp2px(getActivity(), 20);
-            int top = Dp2Px2SpUtil.dp2px(getActivity(), -36);
-            int right = Dp2Px2SpUtil.dp2px(getActivity(), 20);
+            int left = Dp2Px2SpUtil.dp2px(mContext, 20);
+            int top = Dp2Px2SpUtil.dp2px(mContext, -36);
+            int right = Dp2Px2SpUtil.dp2px(mContext, 20);
             layoutParams.setMargins(left, top, right ,0);
             mineMoneyWrapView.setLayoutParams(layoutParams);
             // 金钱容器假数据
@@ -177,7 +176,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             item_2.setItemDesc("优惠券");
             itemInfoList.add(item_1);
             itemInfoList.add(item_2);
-            MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(getActivity(), itemInfoList);
+            MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
             mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
             // 我正在学假数据
             // TODO: 根据是否登录显示正在学的 item
@@ -187,7 +186,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             mineLearningWrapView.setLearningUpdate("已更新至07-22期");
             // TODO: 如果没有登录或者登录了没有在学课程就需要将登录描述显示出来否则隐藏
             mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
-            MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
+            MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(mContext);
             mineLearningWrapView.setLearningListAdapter(learningListAdapter);
         }
 
@@ -209,13 +208,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         String wxNickname = CommonUserInfo.getWxNickname();
         String wxAvatar = CommonUserInfo.getWxAvatar();
         // 设置界面信息
-        if (wxNickname.equals("") || wxNickname.equals("null")) {
+        if ("".equals(wxNickname) || "null".equals(wxNickname)) {
             // 微信昵称为空
             mineMsgView.setNickName("请设置昵称");
         } else {
             mineMsgView.setNickName(wxNickname);
         }
-        if (wxAvatar.equals("") || wxAvatar.equals("null")) {
+        if ("".equals(wxAvatar) || "null".equals(wxAvatar)) {
             mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
         } else {
             mineMsgView.setAvatar(wxAvatar);
@@ -232,38 +231,35 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 
     @Override
     public void onClick(View v) {
-        Intent intent = null;
         switch (v.getId()) {
             case R.id.mine_title_msg: // 信息
-                Toast.makeText(getActivity(), "点击信息按钮", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "点击信息按钮", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.mine_title_setting: // 设置
-                JumpDetail.jumpAccount(getActivity());
+                JumpDetail.jumpAccount(mContext);
                 break;
             case R.id.title_avatar: // 头像
                 String avatar = CommonUserInfo.getWxAvatar();
-                JumpDetail.jumpMineMsg(getActivity(), avatar);
+                JumpDetail.jumpMineMsg(mContext, avatar);
                 break;
             case R.id.title_buy_vip: // 超级会员
-                Toast.makeText(getActivity(), "成为超级会员", Toast.LENGTH_SHORT).show();
+                JumpDetail.jumpSuperVip(mContext);
                 break;
-            case R.id.card_equity_more: // 更多权益
-                Toast.makeText(getActivity(), "点击更多权益", Toast.LENGTH_SHORT).show();
-                break;
+//            case R.id.card_equity_more: // 更多权益
+//                Toast.makeText(mContext, "点击更多权益", Toast.LENGTH_SHORT).show();
+//                break;
             case R.id.card_renewal: // 续费
-                Toast.makeText(getActivity(), "点击续费按钮", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "点击续费按钮", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.learning_more: // 我正在学 -> 查看更多
-                intent = new Intent(getActivity(), MineLearningActivity.class);
-                intent.putExtra("pageTitle", "我正在学");
-                getActivity().startActivity(intent);
+                JumpDetail.jumpMineLearning(mContext, "我正在学");
                 break;
             case R.id.learning_item_container: // 我正在学的详情页
                 // TODO: 根据不同类型跳转到对应的详情页
-                Toast.makeText(getActivity(), "我正在学", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "我正在学", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.card_container: // 超级会员卡片
-                Toast.makeText(getActivity(), "超级会员卡片", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "超级会员卡片", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -273,23 +269,21 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         Intent intent = null;
         switch (position) {
             case 0: // 我的任务
-                Toast.makeText(getActivity(), "我的任务", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "我的任务", Toast.LENGTH_SHORT).show();
                 break;
             case 1: // 优惠券
-                intent = new Intent(getActivity(), CouponActivity.class);
+                intent = new Intent(mContext, CouponActivity.class);
                 startActivity(intent);
                 break;
             case 2: // 我的收藏
-                intent = new Intent(getActivity(), MineLearningActivity.class);
-                intent.putExtra("pageTitle", "我的收藏");
-                getActivity().startActivity(intent);
+                JumpDetail.jumpMineLearning(mContext, "我的收藏");
                 break;
             case 3: // 离线缓存
-                intent = new Intent(getActivity(), OffLineCacheActivity.class);
+                intent = new Intent(mContext, OffLineCacheActivity.class);
                 startActivity(intent);
                 break;
             case 4: // 兑换码
-                intent = new Intent(getActivity(), CdKeyActivity.class);
+                intent = new Intent(mContext, CdKeyActivity.class);
                 startActivity(intent);
                 break;
             default:

@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
-import xiaoe.com.common.entitys.LoginUserInfo;
+import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.CacheManagerUtil;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.network.NetworkCodes;
@@ -365,10 +365,10 @@ public class SettingAccountActivity extends XiaoeActivity {
     }
 
     private void updateLocalUserInfo() {
-        LoginUserInfo userInfo = getLoginUserInfoList().get(0);
+        LoginUser userInfo = getLoginUserList().get(0);
         userInfo.setPhone(newPhone);
 
-        SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER_INFO, userInfo, "user_id = ?", new String[]{ userInfo.getUserId() });
+        SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER, userInfo, "user_id = ?", new String[]{ userInfo.getUserId() });
 
         // TODO: 更新 recyclerView
     }

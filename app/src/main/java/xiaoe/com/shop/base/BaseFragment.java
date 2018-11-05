@@ -19,7 +19,6 @@ import java.util.List;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.LoginUser;
-import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
@@ -63,12 +62,9 @@ public class BaseFragment extends Fragment implements INetworkResponse {
 
     // 登录的信息
     List<LoginUser> userList;
-    List<LoginUserInfo> userInfoList;
 
     // 用户登录信息
     LoginUser user = null;
-    // 用户详细信息
-    LoginUserInfo userInfo = null;
 
     // 这个方法除了 Fragment 的可见状态发生变化时会被回调外，创建 Fragment 实例时候也会调用
     @Override
@@ -101,23 +97,17 @@ public class BaseFragment extends Fragment implements INetworkResponse {
         if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
             SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
         }
-        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER_INFO)) {
-            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER_INFO);
-        }
 
         userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
-        userInfoList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER_INFO, null);
+
         if (userList.size() == 1) {
             user = userList.get(0);
             CommonUserInfo.setApiToken(user.getApi_token());
-        }
-        if (userList.size() == 1 && userInfoList.size() == 1) {
-            userInfo = userInfoList.get(0);
-            CommonUserInfo.setWxAvatar(userInfo.getWxAvatar());
-            CommonUserInfo.setWxNickname(userInfo.getWxNickname());
-            CommonUserInfo.setPhone(userInfo.getPhone());
-            CommonUserInfo.setUserId(userInfo.getUserId());
-            CommonUserInfo.setShopId(userInfo.getShopId());
+            CommonUserInfo.setWxAvatar(user.getWxAvatar());
+            CommonUserInfo.setWxNickname(user.getWxNickname());
+            CommonUserInfo.setPhone(user.getPhone());
+            CommonUserInfo.setUserId(user.getUserId());
+            CommonUserInfo.setShopId(user.getShopId());
         }
 
         initVariable();
@@ -126,11 +116,6 @@ public class BaseFragment extends Fragment implements INetworkResponse {
     // 获取登录用户登录信息集合
     protected List<LoginUser> getLoginUserList() {
         return userList;
-    }
-
-    // 获取登录用户详细信息集合
-    protected List<LoginUserInfo> getLoginUserInfoList() {
-        return userInfoList;
     }
 
     @Override

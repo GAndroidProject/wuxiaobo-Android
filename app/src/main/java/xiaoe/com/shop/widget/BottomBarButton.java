@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 
 public class BottomBarButton extends FrameLayout {
@@ -55,6 +56,9 @@ public class BottomBarButton extends FrameLayout {
      */
     public void setButtonText(String text){
         buttonNameText = text;
+    }
+    public void setButtonTextSize(int dp) {
+        buttonName.setTextSize(dp);
     }
     public void setButtonNameColor(int nameColor, int nameCheckedColor){
         buttonNameColor = nameColor;

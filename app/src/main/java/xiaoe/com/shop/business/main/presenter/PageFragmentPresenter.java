@@ -42,7 +42,7 @@ public class PageFragmentPresenter implements IBizCallback {
     public void requestMicroPageData(String microPageId) {
         // appiOW1KfWe9943 u_5bd995b7db6ac_65ACBvuFTU -- 暂时测信息流
         // apppcHqlTPT3482 u_5ad010f47073c_yeHaGL9bEG -- 主干数据
-        if (CommonUserInfo.getUserId().equals("") || CommonUserInfo.getShopId().equals("")) {
+        if ("".equals(CommonUserInfo.getUserId()) || "".equals(CommonUserInfo.getShopId())) {
             // 登录用户信息为空
             Log.d(TAG, "requestMicroPageData: 游客登录吧....");
             return;

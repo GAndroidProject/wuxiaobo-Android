@@ -19,7 +19,6 @@ import java.util.List;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
-import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.network.NetworkCodes;
@@ -46,10 +45,10 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     public static final String MICRO_PAGE_MAIN = "app_home_page";
     public static final String MICRO_PAGE_COURSE = "app_course_page";
 
-    SettingPresenter settingPresenter;
+//    SettingPresenter settingPresenter;
 
-    String apiToken;
-    List<LoginUserInfo> loginUserList;
+//    String apiToken;
+//    List<LoginUserInfo> loginUserList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +60,10 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         EventBus.getDefault().register(this);
 
-        apiToken = CommonUserInfo.getApiToken();
-        loginUserList = getLoginUserInfoList();
-        settingPresenter = new SettingPresenter(this);
-        settingPresenter.requestPersonData(apiToken, false);
+//        apiToken = CommonUserInfo.getApiToken();
+//        loginUserList = getLoginUserInfoList();
+//        settingPresenter = new SettingPresenter(this);
+//        settingPresenter.requestPersonData(apiToken, false);
 
         initView();
         initPermission();
@@ -77,21 +76,24 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         mainActivityRootView.setBackgroundColor(Color.parseColor(Global.g().getGlobalColor()));
         bottomTabBar = (BottomTabBar) findViewById(R.id.bottom_tab_bar_layout);
         bottomTabBar.setBottomTabBarOrientation(LinearLayout.HORIZONTAL);
-        bottomTabBar.setTabBarWeightSum(3);
+        bottomTabBar.setTabBarWeightSum(4);
         bottomTabBar.setBottomTabSelectListener(this);
         List<String> buttonNames = new ArrayList<String>();
         buttonNames.add("今日");
         buttonNames.add("课程");
+        buttonNames.add("任务");
         buttonNames.add("我的");
         List<Integer> buttonCheckedIcons = new ArrayList<Integer>();
         buttonCheckedIcons.add(R.mipmap.today_selected);
         buttonCheckedIcons.add(R.mipmap.class_selected);
+        buttonCheckedIcons.add(R.mipmap.task_selected);
         buttonCheckedIcons.add(R.mipmap.profile_selected);
         List<Integer> buttonIcons = new ArrayList<Integer>();
         buttonIcons.add(R.mipmap.today_default);
         buttonIcons.add(R.mipmap.class_default);
+        buttonIcons.add(R.mipmap.task_default);
         buttonIcons.add(R.mipmap.profile_default);
-        bottomTabBar.addTabButton(3, buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
+        bottomTabBar.addTabButton(4, buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
 
         mainViewPager = (ScrollViewPager) findViewById(R.id.main_view_pager);
         mainViewPager.setScroll(false);
@@ -161,51 +163,5 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        JSONObject result = (JSONObject) entity;
-        if (success) {
-            if (iRequest instanceof SettingPseronMsgRequest) {
-                int code = result.getInteger("code");
-                if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data = (JSONObject) result.get("data");
-                    initMineMsg(data);
-                } else if (code == NetworkCodes.CODE_PERSON_PARAM_LOSE) {
-                    Log.d(TAG, "onMainThreadResponse: 必选字段缺失");
-                } else if (code == NetworkCodes.CODE_PERSON_PARAM_UNUSEFUL) {
-                    Log.d(TAG, "onMainThreadResponse: 字段格式无效");
-                } else if (code == NetworkCodes.CODE_PERSON_NOT_FOUND) {
-                    Log.d(TAG, "onMainThreadResponse: 当前用户不存在");
-                }
-            }
-        } else {
-            Log.d(TAG, "onMainThreadResponse: request fail, param error may be...");
-        }
-    }
-
-    private void initMineMsg(JSONObject data) {
-
-        String wxNickname = data.getString("wx_nickname");
-        String wxAvatar = data.getString("wx_avatar");
-        String shopId = data.getString("app_id");
-        String userId = data.getString("user_id");
-        String phone = data.getString("phone");
-
-        LoginUserInfo loginUserInfo = new LoginUserInfo();
-        loginUserInfo.setUserId(userId);
-        loginUserInfo.setWxNickname(wxNickname);
-        loginUserInfo.setWxAvatar(wxAvatar);
-        loginUserInfo.setPhone(phone);
-        loginUserInfo.setShopId(shopId);
-
-        if (loginUserList.size() == 1) { // 已经有用户登录过，此时需要更新数据
-            LoginUserInfo hadLoginUserInfo = loginUserList.get(0);
-            if (hadLoginUserInfo.getUserId().equals(loginUserInfo.getUserId())) { // 同一个用户
-                SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo, "user_id = ?", new String[]{ hadLoginUserInfo.getUserId() });
-            } else { // 不同用户，先把原来的用户删掉，然后将新用户插入
-                SQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "user_id = ?", new String[]{ hadLoginUserInfo.getUserId() });
-                SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo);
-            }
-        } else { // 没有，则直接插入数据
-            SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo);
-        }
     }
 }

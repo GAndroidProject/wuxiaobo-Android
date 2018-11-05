@@ -21,7 +21,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.LoginUser;
-import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.network.requests.LoginCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginFindPwdCodeVerifyRequest;
 import xiaoe.com.network.requests.ResetPasswordRequest;
@@ -80,7 +79,8 @@ public class LoginActivity extends XiaoeActivity {
 
     protected LoginPresenter loginPresenter;
     protected SettingPresenter settingPresenter;
-    protected List<LoginUserInfo> loginUserList;
+    protected List<LoginUser> loginUserList;
+    private LoginUser loginUser;
 
     protected String getPhoneNum() {
         return phoneNum;
@@ -114,7 +114,7 @@ public class LoginActivity extends XiaoeActivity {
         currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_main);
         getSupportFragmentManager().beginTransaction().add(R.id.login_container, currentFragment, MAIN).commit();
 
-        loginUserList = getLoginUserInfoList();
+        loginUserList = getLoginUserList();
 
         // 网络请求
         loginPresenter = new LoginPresenter(this, this);
@@ -368,7 +368,7 @@ public class LoginActivity extends XiaoeActivity {
                     loginPresenter.obtainPhoneCode(phoneNum);
                 } else if (code == NetworkCodes.CODE_NO_REGISTER) { // 没有注册
                     ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(false);
-                    ((LoginPageFragment) currentFragment).phoneErrorTip.setText("该手机号未注册，请返回注册");
+                    ((LoginPageFragment) currentFragment).phoneErrorTip.setText("该手机未注册，请先注册");
                     JudgeUtil.showErrorViewIfNeed(this, REGISTER_ERROR_TIP, ((LoginPageFragment) currentFragment).phoneErrorTip, ((LoginPageFragment) currentFragment).phoneObtainCode);
                 }
             } else if (iRequest instanceof LoginDoRegisterRequest) { // 执行注册操作
@@ -441,24 +441,21 @@ public class LoginActivity extends XiaoeActivity {
         String userId = data.getString("user_id");
         String phone = data.getString("phone");
 
-        LoginUserInfo loginUserInfo = new LoginUserInfo();
-        loginUserInfo.setUserId(userId);
-        loginUserInfo.setWxNickname(wxNickname);
-        loginUserInfo.setWxAvatar(wxAvatar);
-        loginUserInfo.setPhone(phone);
-        loginUserInfo.setShopId(shopId);
+        List<LoginUser> list = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
 
-        if (loginUserList.size() == 1) { // 已经有用户登录过，此时需要更新数据
-            LoginUserInfo hadLoginUserInfo = loginUserList.get(0);
-            if (hadLoginUserInfo.getUserId().equals(loginUserInfo.getUserId())) { // 同一个用户
-                SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo, "user_id = ?", new String[]{ hadLoginUserInfo.getUserId() });
-            } else { // 不同用户，先把原来的用户删掉，然后将新用户插入
-                SQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "user_id = ?", new String[]{ hadLoginUserInfo.getUserId() });
-                SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo);
-            }
-        } else { // 没有，则直接插入数据
-            SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER_INFO, loginUserInfo);
-        }
+        LoginUser localLoginUser = list.get(0);
+
+        localLoginUser.setId(loginUser.getId());
+        localLoginUser.setApi_token(loginUser.getApi_token());
+        localLoginUser.setWxUnionId(loginUser.getWxUnionId());
+        localLoginUser.setWxOpenId(loginUser.getWxOpenId());
+        localLoginUser.setUserId(userId);
+        localLoginUser.setWxNickname(wxNickname);
+        localLoginUser.setWxAvatar(wxAvatar);
+        localLoginUser.setPhone(phone);
+        localLoginUser.setShopId(shopId);
+        SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+        SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, localLoginUser);
 
         Toast("登录成功");
         JumpDetail.jumpMain(this, true);
@@ -487,13 +484,12 @@ public class LoginActivity extends XiaoeActivity {
         String wxUnionId = data.getString("wx_union_id");
         String apiToken = data.getString("api_token");
 
-        LoginUser user = new LoginUser();
-        user.setId(id);
-        user.setWxOpenId(wxOpenId);
-        user.setWxUnionId(wxUnionId);
-        user.setApi_token(apiToken);
+        loginUser = new LoginUser();
 
-        settingPresenter.requestPersonData(apiToken, false);
+        loginUser.setId(id);
+        loginUser.setWxOpenId(wxOpenId);
+        loginUser.setWxUnionId(wxUnionId);
+        loginUser.setApi_token(apiToken);
 
         List<LoginUser> userList = getLoginUserList();
         if (userList.size() == 1) {
@@ -502,7 +498,9 @@ public class LoginActivity extends XiaoeActivity {
             SQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER, "id = ?", new String[]{tempId});
         }
         // 存储用户信息
-        SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, user);
+        SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser);
+
+        settingPresenter.requestPersonData(apiToken, false);
 
         Toast("注册成功");
         // 注册成功跳转到首页
@@ -517,28 +515,34 @@ public class LoginActivity extends XiaoeActivity {
 //        String phone = data.getString("phone");
         String apiToken = data.getString("api_token");
 
-        LoginUser user = new LoginUser();
-        user.setId(id);
-        user.setWxOpenId(wxOpenId);
-        user.setWxUnionId(wxUnionId);
-//        user.setPhone(phone);
-        user.setApi_token(apiToken);
+        List<LoginUser> list = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
 
-        settingPresenter.requestPersonData(apiToken, false);
+        if (list.size() > 0) {
+            loginUser = list.get(0);
+        } else {
+            loginUser = new LoginUser();
+        }
+
+        loginUser.setId(id);
+        loginUser.setWxOpenId(wxOpenId);
+        loginUser.setWxUnionId(wxUnionId);
+        loginUser.setApi_token(apiToken);
 
         List<LoginUser> userList = getLoginUserList();
 
         if (userList.size() == 1) { // 证明有登录或者注册过的用户
             String localId = userList.get(0).getId();
             if (localId.equals(id)) { // 同一个用户
-                SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER, user, "id = ?", new String[]{id}); // 更新该用户信息
+                SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER, loginUser, "id = ?", new String[]{id}); // 更新该用户信息
             } else { // 不同一个用户
                 SQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER, "id = ?", new String[]{localId});
-                SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, user); // 删掉原来的用户，插入新用户
+                SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser); // 删掉原来的用户，插入新用户
             }
         } else { // 表中没有用户登录记录
-            SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, user);
+            SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser);
         }
+
+        settingPresenter.requestPersonData(apiToken, false);
     }
 
     /**

@@ -67,6 +67,7 @@ public class BottomTabBar extends FrameLayout implements View.OnClickListener {
 
             bottomBarButton.setId(ids[i]);
             bottomBarButton.setButtonText(buttonNames.get(i));
+            bottomBarButton.setButtonTextSize(10);
             bottomBarButton.setButtonNameColor(textColor,textCheckedColor);
             bottomBarButton.setButtonImageResource(buttonIcons.get(i), buttonCheckedIcons.get(i));
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);

@@ -35,7 +35,6 @@ import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.AudioPlayTable;
 import xiaoe.com.common.entitys.LoginUser;
-import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -53,6 +52,7 @@ import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.common.pay.presenter.PayPresenter;
 import xiaoe.com.shop.interfaces.OnCancelListener;
 import xiaoe.com.shop.interfaces.OnConfirmListener;
+import xiaoe.com.shop.utils.ActivityCollector;
 import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.CustomDialog;
 
@@ -80,12 +80,9 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
     // 登录的信息
     List<LoginUser> userList;
-    List<xiaoe.com.common.entitys.LoginUserInfo> loginUserInfoList;
 
     // 用户登录信息
     LoginUser user = null;
-    // 用户详细信息
-    xiaoe.com.common.entitys.LoginUserInfo loginUserInfo = null;
 
     static class XeHandler extends Handler {
 
@@ -113,6 +110,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityCollector.addActivity(this);
         popupWindow = new PopupWindow(this);
         popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -134,23 +132,16 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
             SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
         }
-        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER_INFO)) {
-            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER_INFO);
-        }
 
         userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
-        loginUserInfoList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER_INFO, null);
         if (userList.size() == 1) {
             user = userList.get(0);
             CommonUserInfo.setApiToken(user.getApi_token());
-        }
-        if (loginUserInfoList.size() == 1) {
-            loginUserInfo = loginUserInfoList.get(0);
-            CommonUserInfo.setWxAvatar(loginUserInfo.getWxAvatar());
-            CommonUserInfo.setWxNickname(loginUserInfo.getWxNickname());
-            CommonUserInfo.setPhone(loginUserInfo.getPhone());
-            CommonUserInfo.setUserId(loginUserInfo.getUserId());
-            CommonUserInfo.setShopId(loginUserInfo.getShopId());
+            CommonUserInfo.setWxAvatar(user.getWxAvatar());
+            CommonUserInfo.setWxNickname(user.getWxNickname());
+            CommonUserInfo.setPhone(user.getPhone());
+            CommonUserInfo.setUserId(user.getUserId());
+            CommonUserInfo.setShopId(user.getShopId());
         }
     }
     // 状态栏设置
@@ -169,11 +160,6 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     // 获取登录用户登录信息集合
     protected List<LoginUser> getLoginUserList() {
         return userList;
-    }
-
-    // 获取登录用户详细信息集合
-    protected List<LoginUserInfo> getLoginUserInfoList() {
-        return loginUserInfoList;
     }
 
     @Override
@@ -297,6 +283,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ActivityCollector.removeActivity(this);
         activityDestroy = true;
         isActivityDestroy = true;
         if(toast != null){

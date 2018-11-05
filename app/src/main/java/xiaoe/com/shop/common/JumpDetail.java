@@ -19,10 +19,12 @@ import xiaoe.com.shop.business.coupon.ui.CouponDetailActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.login.ui.LoginActivity;
 import xiaoe.com.shop.business.main.ui.MainActivity;
+import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.business.navigate_detail.ui.NavigateDetailActivity;
 import xiaoe.com.shop.business.search.ui.SearchActivity;
 import xiaoe.com.shop.business.setting.ui.SettingAccountActivity;
 import xiaoe.com.shop.business.setting.ui.SettingPersonActivity;
+import xiaoe.com.shop.business.super_vip.ui.SuperVipActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
 import xiaoe.com.shop.common.pay.ui.PayActivity;
 
@@ -191,6 +193,25 @@ public class JumpDetail {
      */
     public static void jumpSearch(Context context) {
         Intent intent = new Intent(context, SearchActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到超级会员页
+     * @param context
+     */
+    public static void jumpSuperVip(Context context) {
+        Intent intent = new Intent(context, SuperVipActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到我的首页和我正在学页面
+     * @param context
+     */
+    public static void jumpMineLearning(Context context, String pageTitle) {
+        Intent intent = new Intent(context, MineLearningActivity.class);
+        intent.putExtra("pageTitle", pageTitle);
         context.startActivity(intent);
     }
 }
