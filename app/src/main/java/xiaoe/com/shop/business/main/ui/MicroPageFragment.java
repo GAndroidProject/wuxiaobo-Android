@@ -36,6 +36,7 @@ import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.FlowInfoItem;
 import xiaoe.com.common.entitys.GraphicNavItem;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
+import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.NetworkCodes;
@@ -88,6 +89,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     int toolbarHeight;
     boolean isMain = true;
 
+    LoginUserInfo loginUserInfo;
+
     public static MicroPageFragment newInstance(String microPageId) {
         MicroPageFragment microPageFragment = new MicroPageFragment();
         Bundle bundle = new Bundle();
@@ -138,7 +141,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         super.onFragmentFirstVisible();
         // 网络请求数据代码
         PageFragmentPresenter hp = new PageFragmentPresenter(this);
-        hp.requestMicroPageData(microPageId);
+        hp.requestMicroPageData(loginUserInfo, microPageId);
     }
 
     @Override

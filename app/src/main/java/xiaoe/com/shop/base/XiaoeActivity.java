@@ -195,6 +195,15 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         }
     }
 
+    // 获取登录账号的店铺 id，为空表示没有登录态
+    protected String getShopId() {
+        if (user != null && userInfo != null) {
+            return userInfo.getShopId();
+        } else {
+            return "";
+        }
+    }
+
     // 获取登录用户登录信息集合
     protected List<LoginUser> getLoginUserList() {
         return userList;
@@ -203,6 +212,16 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     // 获取登录用户详细信息集合
     protected List<LoginUserInfo> getLoginUserInfoList() {
         return userInfoList;
+    }
+
+    // 获取登录用户
+    protected LoginUser getLoginUser() {
+        return user;
+    }
+
+    // 获取登录用户信息
+    protected LoginUserInfo getLoginUserInfo() {
+        return userInfo;
     }
 
     @Override
