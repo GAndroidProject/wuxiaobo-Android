@@ -29,6 +29,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
@@ -79,12 +80,12 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
     // 登录的信息
     List<LoginUser> userList;
-    List<LoginUserInfo> userInfoList;
+    List<xiaoe.com.common.entitys.LoginUserInfo> loginUserInfoList;
 
     // 用户登录信息
     LoginUser user = null;
     // 用户详细信息
-    LoginUserInfo userInfo = null;
+    xiaoe.com.common.entitys.LoginUserInfo loginUserInfo = null;
 
     static class XeHandler extends Handler {
 
@@ -138,12 +139,18 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         }
 
         userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
-        userInfoList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER_INFO, null);
+        loginUserInfoList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER_INFO, null);
         if (userList.size() == 1) {
             user = userList.get(0);
+            CommonUserInfo.setApiToken(user.getApi_token());
         }
-        if (userInfoList.size() == 1) {
-            userInfo = userInfoList.get(0);
+        if (loginUserInfoList.size() == 1) {
+            loginUserInfo = loginUserInfoList.get(0);
+            CommonUserInfo.setWxAvatar(loginUserInfo.getWxAvatar());
+            CommonUserInfo.setWxNickname(loginUserInfo.getWxNickname());
+            CommonUserInfo.setPhone(loginUserInfo.getPhone());
+            CommonUserInfo.setUserId(loginUserInfo.getUserId());
+            CommonUserInfo.setShopId(loginUserInfo.getShopId());
         }
     }
     // 状态栏设置
@@ -159,51 +166,6 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         }
     }
 
-    // 获取登录 api_token，为空表示没有登录态
-    protected String getLoginApiToke() {
-        if (user != null) {
-            return user.getApi_token();
-        } else {
-            return "";
-        }
-    }
-
-    // 获取登录手机，为空表示没有登录态
-    protected String getLoginPhone() {
-        if (user != null && userInfo != null) {
-            return userInfo.getPhone();
-        } else {
-            return "";
-        }
-    }
-
-    // 获取微信昵称，为空表示没有登录态
-    protected String getWxNickname() {
-        if (user != null && userInfo != null) {
-            return userInfo.getWxNickname();
-        } else {
-            return "";
-        }
-    }
-
-    // 获取微信头像，为空表示没有登录态
-    protected String getWxAvatar() {
-        if (user != null && userInfo != null) {
-            return userInfo.getWxAvatar();
-        } else {
-            return "";
-        }
-    }
-
-    // 获取登录账号的店铺 id，为空表示没有登录态
-    protected String getShopId() {
-        if (user != null && userInfo != null) {
-            return userInfo.getShopId();
-        } else {
-            return "";
-        }
-    }
-
     // 获取登录用户登录信息集合
     protected List<LoginUser> getLoginUserList() {
         return userList;
@@ -211,17 +173,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
     // 获取登录用户详细信息集合
     protected List<LoginUserInfo> getLoginUserInfoList() {
-        return userInfoList;
-    }
-
-    // 获取登录用户
-    protected LoginUser getLoginUser() {
-        return user;
-    }
-
-    // 获取登录用户信息
-    protected LoginUserInfo getLoginUserInfo() {
-        return userInfo;
+        return loginUserInfoList;
     }
 
     @Override

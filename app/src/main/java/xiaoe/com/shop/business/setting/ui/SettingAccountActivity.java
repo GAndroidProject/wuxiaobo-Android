@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.common.utils.CacheManagerUtil;
@@ -95,8 +96,8 @@ public class SettingAccountActivity extends XiaoeActivity {
         // 网络请求
         // SettingPresenter settingPresenter = new SettingPresenter(this);
         // settingPresenter.requestSearchResult();
-        apiToken = getLoginApiToke();
-        localPhone = getLoginPhone();
+        apiToken = CommonUserInfo.getApiToken();
+        localPhone = CommonUserInfo.getPhone();
         currentFragment = new MainAccountFragment();
         loginPresenter = new LoginPresenter(this, this);
         getSupportFragmentManager().beginTransaction().add(R.id.account_container, currentFragment, MAIN).commit();

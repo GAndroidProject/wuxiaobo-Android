@@ -16,6 +16,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.LoginUserInfo;
@@ -60,7 +61,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         EventBus.getDefault().register(this);
 
-        apiToken = getLoginApiToke();
+        apiToken = CommonUserInfo.getApiToken();
         loginUserList = getLoginUserInfoList();
         settingPresenter = new SettingPresenter(this);
         settingPresenter.requestPersonData(apiToken, false);

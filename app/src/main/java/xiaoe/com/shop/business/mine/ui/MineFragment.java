@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.LoginUserInfo;
 import xiaoe.com.common.entitys.MineMoneyItemInfo;
@@ -205,8 +206,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 
     // 初始化我的信息
     private void initMineMsg() {
-        String wxNickname = getWxNickname();
-        String wxAvatar = getWxAvatar();
+        String wxNickname = CommonUserInfo.getWxNickname();
+        String wxAvatar = CommonUserInfo.getWxAvatar();
         // 设置界面信息
         if (wxNickname.equals("") || wxNickname.equals("null")) {
             // 微信昵称为空
@@ -240,7 +241,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 JumpDetail.jumpAccount(getActivity());
                 break;
             case R.id.title_avatar: // 头像
-                String avatar = getWxAvatar();
+                String avatar = CommonUserInfo.getWxAvatar();
                 JumpDetail.jumpMineMsg(getActivity(), avatar);
                 break;
             case R.id.title_buy_vip: // 超级会员

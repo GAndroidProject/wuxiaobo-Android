@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.LoginUserInfo;
@@ -108,57 +109,18 @@ public class BaseFragment extends Fragment implements INetworkResponse {
         userInfoList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER_INFO, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER_INFO, null);
         if (userList.size() == 1) {
             user = userList.get(0);
+            CommonUserInfo.setApiToken(user.getApi_token());
         }
-        if (userInfoList.size() == 1) {
+        if (userList.size() == 1 && userInfoList.size() == 1) {
             userInfo = userInfoList.get(0);
+            CommonUserInfo.setWxAvatar(userInfo.getWxAvatar());
+            CommonUserInfo.setWxNickname(userInfo.getWxNickname());
+            CommonUserInfo.setPhone(userInfo.getPhone());
+            CommonUserInfo.setUserId(userInfo.getUserId());
+            CommonUserInfo.setShopId(userInfo.getShopId());
         }
 
         initVariable();
-    }
-
-    // 获取登录 api_token，为空表示没有登录态
-    protected String getLoginApiToke() {
-        if (user != null) {
-            return user.getApi_token();
-        } else {
-            return "";
-        }
-    }
-
-    // 获取登录手机，为空表示没有登录态
-    protected String getLoginPhone() {
-        if (user != null && userInfo != null) {
-            return userInfo.getPhone();
-        } else {
-            return "";
-        }
-    }
-
-    // 获取微信昵称，为空表示没有登录态
-    protected String getWxNickname() {
-        if (user != null && userInfo != null) {
-            return userInfo.getWxNickname();
-        } else {
-            return "";
-        }
-    }
-
-    // 获取微信头像，为空表示没有登录态
-    protected String getWxAvatar() {
-        if (user != null && userInfo != null) {
-            return userInfo.getWxAvatar();
-        } else {
-            return "";
-        }
-    }
-
-    // 获取登录账号的店铺 id，为空表示没有登录态
-    protected String getShopId() {
-        if (user != null && userInfo != null) {
-            return userInfo.getShopId();
-        } else {
-            return "";
-        }
     }
 
     // 获取登录用户登录信息集合
@@ -169,16 +131,6 @@ public class BaseFragment extends Fragment implements INetworkResponse {
     // 获取登录用户详细信息集合
     protected List<LoginUserInfo> getLoginUserInfoList() {
         return userInfoList;
-    }
-
-    // 获取登录用户
-    protected LoginUser getLoginUser() {
-        return user;
-    }
-
-    // 获取登录用户信息
-    protected LoginUserInfo getLoginUserInfo() {
-        return userInfo;
     }
 
     @Override

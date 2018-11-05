@@ -19,6 +19,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.network.requests.LoginCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginFindPwdCodeVerifyRequest;
@@ -506,10 +507,10 @@ public class LoginActivity extends XiaoeActivity {
         String code = SharedPreferencesUtil.getData("wx_code", "").toString();
         // 获取注册所需要的信息
         String accessToken = SharedPreferencesUtil.getData("accessToken", "").toString();
-        Log.d(TAG, "onResume: accessToken --- " + accessToken);
-        Log.d(TAG, "onResume: code --- " + code);
+//        Log.d(TAG, "onResume: accessToken --- " + accessToken);
+//        Log.d(TAG, "onResume: code --- " + code);
 //        Log.d(TAG, "onResume: preTag --- " + preTag);
-        String apiToken = getLoginApiToke();
+        String apiToken = CommonUserInfo.getApiToken();
         if (!apiToken.equals("")) { // 有用户登录信息，直接去主页
             JumpDetail.jumpMain(this, true);
             return;

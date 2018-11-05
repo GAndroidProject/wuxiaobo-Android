@@ -141,7 +141,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         super.onFragmentFirstVisible();
         // 网络请求数据代码
         PageFragmentPresenter hp = new PageFragmentPresenter(this);
-        hp.requestMicroPageData(loginUserInfo, microPageId);
+        hp.requestMicroPageData(microPageId);
     }
 
     @Override

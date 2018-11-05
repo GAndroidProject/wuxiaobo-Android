@@ -74,7 +74,7 @@ public class NetworkEngine {
     public void sendRequest(final IRequest iRequest) {
 
 
-//        UserInfo userInfo = StatusKeepUtil.getUserInfo();
+//        CommonUserInfo userInfo = StatusKeepUtil.getUserInfo();
 //        if (userInfo == null) {
 //            if (!(iRequest instanceof LoginRequest)) {
 //                iRequest.onResponse(false, "not login");
