@@ -32,6 +32,7 @@ import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -59,6 +60,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         View view = inflater.inflate(R.layout.fragment_mine, null, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getContext();
+        view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
         return view;
     }
 

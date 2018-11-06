@@ -83,12 +83,12 @@ public class CourseImageTextActivity extends XiaoeActivity {
 
     @BindView(R.id.image_text_advertise_img)
     SimpleDraweeView itDescImg;
-    @BindView(R.id.image_text_advertise_title)
-    TextView itDescTitle;
-    @BindView(R.id.image_text_advertise_desc)
-    TextView itDescDesc;
-    @BindView(R.id.image_text_advertise_btn)
-    TextView itDescBtn;
+//    @BindView(R.id.image_text_advertise_title)
+//    TextView itDescTitle;
+//    @BindView(R.id.image_text_advertise_desc)
+//    TextView itDescDesc;
+//    @BindView(R.id.image_text_advertise_btn)
+//    TextView itDescBtn;
 
     @BindView(R.id.image_text_org_content)
     WebView itOrgContent;
@@ -197,12 +197,12 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 // TODO: 收藏数据的验证
                 if (isCollected) { // 收藏了，点击之后取消收藏
                     itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
-                    itTitleView.setTitleCollectDrawable(R.mipmap.video_collect);
+//                    itTitleView.setTitleCollectDrawable(R.mipmap.video_collect);
                     collectionUtils.requestRemoveCollection(resourceId, resourceType);
                 } else { // 没有收藏，点击之后收藏\
                     // 改变图标
                     itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
-                    itTitleView.setTitleCollectDrawable(R.mipmap.audio_collect);
+//                    itTitleView.setTitleCollectDrawable(R.mipmap.audio_collect);
                     JSONObject collectionContent = new JSONObject();
                     collectionContent.put("title", collectionTitle);
                     collectionContent.put("author", collectionAuthor);
@@ -231,46 +231,46 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 JumpDetail.jumpPay(CourseImageTextActivity.this, resourceId, 1, collectionImgUrl, collectionTitle, resPrice);
             }
         });
-        itDescBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast("领取奖学金");
-            }
-        });
+//        itDescBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast("领取奖学金");
+//            }
+//        });
         itTitleView.setTitleBackClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        itTitleView.setTitleShareClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                umShare();
-            }
-        });
-        itTitleView.setTitleCollectClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: 收藏数据的验证
-                if (isCollected) { // 收藏了，点击之后取消收藏
-                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
-                    itTitleView.setTitleCollectDrawable(R.mipmap.video_collect);
-                    collectionUtils.requestRemoveCollection(resourceId, resourceType);
-                } else { // 没有收藏，点击之后收藏\
-                    // 改变图标
-                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
-                    itTitleView.setTitleCollectDrawable(R.mipmap.audio_collect);
-                    JSONObject collectionContent = new JSONObject();
-                    collectionContent.put("title", collectionTitle);
-                    collectionContent.put("author", collectionAuthor);
-                    collectionContent.put("img_url", collectionImgUrl);
-                    collectionContent.put("img_url_compressed", collectionImgUrlCompressed);
-                    collectionContent.put("price", collectionPrice);
-                    collectionUtils.requestAddCollection(resourceId, resourceType, collectionContent);
-                }
-            }
-        });
+//        itTitleView.setTitleShareClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                umShare();
+//            }
+//        });
+//        itTitleView.setTitleCollectClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // TODO: 收藏数据的验证
+//                if (isCollected) { // 收藏了，点击之后取消收藏
+//                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+//                    itTitleView.setTitleCollectDrawable(R.mipmap.video_collect);
+//                    collectionUtils.requestRemoveCollection(resourceId, resourceType);
+//                } else { // 没有收藏，点击之后收藏\
+//                    // 改变图标
+//                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
+//                    itTitleView.setTitleCollectDrawable(R.mipmap.audio_collect);
+//                    JSONObject collectionContent = new JSONObject();
+//                    collectionContent.put("title", collectionTitle);
+//                    collectionContent.put("author", collectionAuthor);
+//                    collectionContent.put("img_url", collectionImgUrl);
+//                    collectionContent.put("img_url_compressed", collectionImgUrlCompressed);
+//                    collectionContent.put("price", collectionPrice);
+//                    collectionUtils.requestAddCollection(resourceId, resourceType, collectionContent);
+//                }
+//            }
+//        });
 //        itWrap.setNestedScrollingEnabled(false);
         itWrap.setSmoothScrollingEnabled(true);
     }
@@ -499,10 +499,10 @@ public class CourseImageTextActivity extends XiaoeActivity {
             isCollected = isFavorite == 1;
             if (isCollected) { // 收藏了
                 itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
-                itTitleView.setTitleCollectDrawable(R.mipmap.audio_collect);
+//                itTitleView.setTitleCollectDrawable(R.mipmap.audio_collect);
             } else {
                 itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
-                itTitleView.setTitleCollectDrawable(R.mipmap.video_collect);
+//                itTitleView.setTitleCollectDrawable(R.mipmap.video_collect);
             }
         }
     }

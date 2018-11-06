@@ -19,8 +19,8 @@ public class CommonTitleView extends Toolbar {
 
     private ImageView titleBack;
     private TextView titleContent;
-    private ImageView titleCollect;
-    private ImageView titleShare;
+//    private ImageView titleCollect;
+//    private ImageView titleShare;
 
     public CommonTitleView(@NonNull Context context) {
         super(context);
@@ -42,8 +42,8 @@ public class CommonTitleView extends Toolbar {
         View view = LayoutInflater.from(context).inflate(R.layout.common_title_view, this);
         titleBack = (ImageView) view.findViewById(R.id.title_back);
         titleContent = (TextView) view.findViewById(R.id.title_content);
-        titleCollect = (ImageView) view.findViewById(R.id.title_collect);
-        titleShare = (ImageView) view.findViewById(R.id.title_share);
+//        titleCollect = (ImageView) view.findViewById(R.id.title_collect);
+//        titleShare = (ImageView) view.findViewById(R.id.title_share);
     }
 
     public void setTitleBackClickListener(OnClickListener listener) {
@@ -54,31 +54,31 @@ public class CommonTitleView extends Toolbar {
         titleContent.setText(content);
     }
 
-    public void setTitleCollectClickListener(OnClickListener listener) {
-        titleCollect.setOnClickListener(listener);
-    }
-
-    public void setTitleShareClickListener(OnClickListener listener) {
-        titleShare.setOnClickListener(listener);
-    }
+//    public void setTitleCollectClickListener(OnClickListener listener) {
+//        titleCollect.setOnClickListener(listener);
+//    }
+//
+//    public void setTitleShareClickListener(OnClickListener listener) {
+//        titleShare.setOnClickListener(listener);
+//    }
 
     public void setTitleBackVisibility(int visibility) {
         titleBack.setVisibility(visibility);
     }
 
-    public void setTitleContentVisibility(int visibility) {
-        titleShare.setVisibility(visibility);
-    }
+//    public void setTitleContentVisibility(int visibility) {
+//        titleShare.setVisibility(visibility);
+//    }
+//
+//    public void setTitleCollectVisibility(int visibility) {
+//        titleCollect.setVisibility(visibility);
+//    }
 
-    public void setTitleCollectVisibility(int visibility) {
-        titleCollect.setVisibility(visibility);
-    }
-
-    public void setTitleShareVisibility(int visibility) {
-        titleShare.setVisibility(visibility);
-    }
-
-    public void setTitleCollectDrawable(int drawable) {
-        titleCollect.setImageDrawable(mContext.getResources().getDrawable(drawable));
-    }
+//    public void setTitleShareVisibility(int visibility) {
+//        titleShare.setVisibility(visibility);
+//    }
+//
+//    public void setTitleCollectDrawable(int drawable) {
+//        titleCollect.setImageDrawable(mContext.getResources().getDrawable(drawable));
+//    }
 }

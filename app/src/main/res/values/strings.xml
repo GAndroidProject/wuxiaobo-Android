@@ -188,5 +188,18 @@
 
     <string name="scholarship_title">奖学金</string>
     <string name="scholarship_rule">活动规则</string>
-    <string name="scholarship_btn_money">开通会员￥1800</string>
+    <string name="scholarship_day_title">每天瓜分</string>
+    <string name="scholarship_money_head">￥ </string>
+    <string name="scholarship_money_content">10000</string>
+    <string name="scholarship_money_submit">去瓜分</string>
+    <string name="scholarship_range_title">奖学金排行榜</string>
+    <string name="scholarship_range_real">实时榜</string>
+    <string name="scholarship_range_total">总排行</string>
+    <string name="scholarship_dialog_rule_title">活动规则</string>
+    <string name="scholarship_dialog_rule_content">1.瓜分奖学金暂时只对付费用户开放。\n2.付费用户完成分享任务（分享给微信朋友或分享朋友圈），即可参与开奖，每人每天只能参与一次。\n3.同一个内容被分享多次，默认只记一次参与瓜分奖学金的机会。\n4.若瓜分奖学金失败，可获得10个积分，超级会员享受积分翻倍权益。\n5.瓜分到的奖学金支持提现。\n6.瓜分奖学金的活动仅限在吴晓波频道App上进行。</string>
+    <string name="scholarship_dialog_rule_btn">我知道了</string>
+    <string name="scholarship_dialog_go_buy_content">瓜分奖学金仅对付费用户开放，点击下方按钮，选购喜欢的课程，即可参与</string>
+    <string name="scholarship_dialog_go_buy_btn">去选购课程</string>
+
+    <string name="vip_btn_money">开通会员￥1800</string>
 </resources>

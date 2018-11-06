@@ -34,17 +34,22 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
     private SQLiteUtil(Context context, ISQLiteCallBack callBack) {
         super(context, DATABASE_NAME, null, callBack.getVersion());
 //        this.callBack = callBack;
-        if(sqlCallBack == null){
-            sqlCallBack = new ConcurrentHashMap<String, ISQLiteCallBack>();
-        }
-        if(!TextUtils.isEmpty(callBack.getTableName())){
-            sqlCallBack.put(callBack.getTableName(), callBack);
-        }
-
     }
 
     public static void init(@NonNull Context context, @NonNull ISQLiteCallBack callBack) {
-        INSTANCE = new SQLiteUtil(context, callBack);
+        if(INSTANCE == null){
+            synchronized (SQLiteUtil.class){
+                if(INSTANCE == null){
+                    INSTANCE = new SQLiteUtil(context, callBack);
+                }
+            }
+        }
+        if(INSTANCE.sqlCallBack == null){
+            INSTANCE.sqlCallBack = new ConcurrentHashMap<String, ISQLiteCallBack>();
+        }
+        if(!TextUtils.isEmpty(callBack.getTableName())){
+            INSTANCE.sqlCallBack.put(callBack.getTableName(), callBack);
+        }
     }
 
 
@@ -180,7 +185,7 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        for(Map.Entry<String ,ISQLiteCallBack> entry : sqlCallBack.entrySet() ){
+        for(Map.Entry<String ,ISQLiteCallBack> entry : INSTANCE.sqlCallBack.entrySet() ){
             for (String sql : entry.getValue().createTablesSQL()){
                 db.execSQL(sql);
             }
@@ -189,7 +194,7 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        for(Map.Entry<String ,ISQLiteCallBack> entry : sqlCallBack.entrySet() ){
+        for(Map.Entry<String ,ISQLiteCallBack> entry : INSTANCE.sqlCallBack.entrySet() ){
             entry.getValue().onUpgrade(sqLiteDatabase, oldVersion, newVersion);
         }
     }

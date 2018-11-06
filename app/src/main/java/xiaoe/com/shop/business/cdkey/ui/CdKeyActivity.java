@@ -33,8 +33,8 @@ public class CdKeyActivity extends XiaoeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cd_key);
         ButterKnife.bind(this);
-        CdKeyPresenter cdKeyPresenter = new CdKeyPresenter(this);
-        cdKeyPresenter.requestData();
+//        CdKeyPresenter cdKeyPresenter = new CdKeyPresenter(this);
+//        cdKeyPresenter.requestData();
 
 
         initListener();

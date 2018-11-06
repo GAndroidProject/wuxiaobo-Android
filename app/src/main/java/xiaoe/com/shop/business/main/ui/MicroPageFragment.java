@@ -102,6 +102,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         View view = inflater.inflate(R.layout.fragment_micro_page, null, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getContext();
+        view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
         EventBus.getDefault().register(this);
         return view;
     }

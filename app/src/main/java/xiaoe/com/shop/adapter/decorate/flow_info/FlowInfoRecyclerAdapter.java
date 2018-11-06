@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
+import xiaoe.com.shop.common.JumpDetail;
 
 public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -83,7 +85,12 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 final View columnBg = view.findViewById(R.id.flow_info_img_text_bg);
                 final View columnTitle = view.findViewById(R.id.flow_info_img_text_title);
                 final String columnImgUrl = currentItem.getItemImg();
-                // TODO: 跳转到专栏
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        JumpDetail.jumpColumn(mContext, currentItem.getItemId(), currentItem.getItemType(), false);
+                    }
+                });
                 return new FlowInfoImgTextViewHolder(view);
             case DecorateEntityType.FLOW_INFO_TOPIC:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_img_text, null);
@@ -94,7 +101,12 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 final View topicBg = view.findViewById(R.id.flow_info_img_text_bg);
                 final View topicTitle = view.findViewById(R.id.flow_info_img_text_title);
                 final String topicImgUrl = currentItem.getItemImg();
-                // TODO: 跳转大专栏
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        JumpDetail.jumpColumn(mContext, currentItem.getItemId(), currentItem.getItemType(), true);
+                    }
+                });
                 return new FlowInfoImgTextViewHolder(view);
             case DecorateEntityType.FLOW_INFO_AUDIO: // 音频
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_audio, null);
@@ -102,7 +114,10 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 final View audioBG = view.findViewById(R.id.flow_info_audio_bg);
                 final View audioRing = view.findViewById(R.id.flow_info_audio_avatar);
                 if (currentItem.isItemHasBuy()) {
-                    view.findViewById(R.id.flow_info_img_text_price).setVisibility(View.GONE);
+                    TextView textView = (TextView) view.findViewById(R.id.flow_info_img_text_price);
+                    if (textView != null) {
+                        textView.setVisibility(View.GONE);
+                    }
                 }
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override

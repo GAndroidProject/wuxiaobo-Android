@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- 填充的颜色 -->
+    <!--<solid android:color="@color/scholarship_btn_press" />-->
+
+    <!--设置渐变-->
+    <gradient
+        android:startColor="@color/scholarship_btn_normal"
+        android:endColor="@color/scholarship_btn_press"
+        android:angle="-90"/>
+    <!--angle控制渐变的方向-->
+
+    <corners android:radius="54dp" />
+
+    <size
+        android:width="108dp"
+        android:height="108dp"/>
+
+</shape>

@@ -12,7 +12,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
-import xiaoe.com.shop.common.JumpDetail;
 
 public class SuperVipActivity extends XiaoeActivity {
 
@@ -29,7 +28,7 @@ public class SuperVipActivity extends XiaoeActivity {
         setContentView(R.layout.activity_super_vip);
         unbinder = ButterKnife.bind(this);
         superVipBg.setImageURI("res:///" + R.mipmap.super_vip);
-        superVipSubmit.setText(getResources().getString(R.string.scholarship_btn_money));
+        superVipSubmit.setText(getResources().getString(R.string.vip_btn_money));
         superVipSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
