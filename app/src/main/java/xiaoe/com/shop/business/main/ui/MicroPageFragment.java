@@ -321,6 +321,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     componentInfo_know_list.setGroupId(itemObj.getString("tag_id"));
                     List<KnowledgeCommodityItem> listItems = new ArrayList<>();
                     JSONArray knowledgeListSubList = (JSONArray) itemObj.get("list");
+                    if (knowledgeListSubList == null) {
+                        return;
+                    }
                     initKnowledgeData(listItems, knowledgeListSubList);
                     componentInfo_know_list.setKnowledgeCommodityItemList(listItems);
                     microPageList.add(componentInfo_know_list);
@@ -333,6 +336,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     componentInfo_know_group.setGroupId(itemObj.getString("tag_id"));
                     List<KnowledgeCommodityItem> groupItems = new ArrayList<>();
                     JSONArray knowledgeGroupSubList = (JSONArray) itemObj.get("list");
+                    if (knowledgeGroupSubList == null) {
+                        return;
+                    }
                     initKnowledgeData(groupItems, knowledgeGroupSubList);
                     componentInfo_know_group.setKnowledgeCommodityItemList(groupItems);
                     microPageList.add(componentInfo_know_group);
