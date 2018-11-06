@@ -7,6 +7,7 @@ import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -52,8 +53,8 @@ public class PayPresenter implements IBizCallback {
         if(!TextUtils.isEmpty(couponId)){
             payOrderRequest.addBUZDataParam("cu_id", couponId);
         }
-        payOrderRequest.addRequestParam("app_id", Constants.getAppId());
-        payOrderRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        payOrderRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
+        payOrderRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         payOrderRequest.sendRequest();
     }
 

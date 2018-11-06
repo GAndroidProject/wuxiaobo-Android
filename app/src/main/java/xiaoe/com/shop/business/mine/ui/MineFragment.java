@@ -4,15 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,23 +21,16 @@ import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.MineMoneyItemInfo;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
-import xiaoe.com.common.utils.SQLiteUtil;
-import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.SettingPseronMsgRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.cdkey.ui.CdKeyActivity;
 import xiaoe.com.shop.business.coupon.ui.CouponActivity;
 import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
-import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
-import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
-import xiaoe.com.shop.business.setting.ui.SettingAccountActivity;
-import xiaoe.com.shop.business.setting.ui.SettingPersonActivity;
 import xiaoe.com.shop.common.JumpDetail;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {

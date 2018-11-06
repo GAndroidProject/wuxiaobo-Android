@@ -9,7 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import xiaoe.com.common.entitys.ItemData;
+import xiaoe.com.common.entitys.ColumnDirectoryEntity;
+import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
@@ -27,7 +28,7 @@ public class BatchDownloadHolder extends BaseViewHolder implements View.OnClickL
     private RelativeLayout btnExpandTop;
     private final Context mContext;
     private BatchChildDownloadAdapter childDownloadAdapter;
-    private ItemData mItemData = null;
+    private ColumnDirectoryEntity mItemData = null;
     private ImageView allSelectIcon;
     private OnSelectListener parentSelectListener;
     private int mPosition;
@@ -61,7 +62,7 @@ public class BatchDownloadHolder extends BaseViewHolder implements View.OnClickL
         btnExpandTop = (RelativeLayout) mItemView.findViewById(R.id.expand_top_btn);
     }
 
-    public void bindView(ItemData itemData, int position){
+    public void bindView(ColumnDirectoryEntity itemData, int position){
         mItemData = itemData;
         mPosition = position;
         //展开事件
@@ -76,7 +77,7 @@ public class BatchDownloadHolder extends BaseViewHolder implements View.OnClickL
         setAllSelect(itemData.isSelect());
         childDownloadAdapter.setSelectListener(this);
         childDownloadAdapter.setParentPosition(position);
-        childDownloadAdapter.setItemData(itemData.getChildren());
+        childDownloadAdapter.setItemData(itemData.getResource_list());
     }
     private void setExpandShow(){
         btnExpandDown.setVisibility(View.GONE);
@@ -124,12 +125,12 @@ public class BatchDownloadHolder extends BaseViewHolder implements View.OnClickL
     }
     private void clickAllSelect() {
         if(mItemData.isSelect()){
-            for (ItemData item: mItemData.getChildren()) {
+            for (ColumnSecondDirectoryEntity item: mItemData.getResource_list()) {
                 item.setSelect(false);
             }
             mItemData.setSelect(false);
         }else{
-            for (ItemData item: mItemData.getChildren()) {
+            for (ColumnSecondDirectoryEntity item: mItemData.getResource_list()) {
                 item.setSelect(true);
             }
             mItemData.setSelect(true);
@@ -141,11 +142,11 @@ public class BatchDownloadHolder extends BaseViewHolder implements View.OnClickL
     @Override
     public void onSelect(int positiont) {
         int select = 0;
-        for (ItemData item : mItemData.getChildren()) {
+        for (ColumnSecondDirectoryEntity item : mItemData.getResource_list()) {
             if(item.isSelect()){
                 select++;
             }
         }
-        setAllSelect(select == mItemData.getChildren().size());
+        setAllSelect(select == mItemData.getResource_list().size());
     }
 }

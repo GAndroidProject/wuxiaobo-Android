@@ -71,6 +71,11 @@ public class SearchSQLiteCallback implements ISQLiteCallBack {
     }
 
     @Override
+    public String getTableName() {
+        return TABLE_NAME_CONTENT;
+    }
+
+    @Override
     public Object newEntityByCursor(String tableName, Cursor cursor) {
         switch (tableName) {
             case TABLE_NAME_CONTENT:

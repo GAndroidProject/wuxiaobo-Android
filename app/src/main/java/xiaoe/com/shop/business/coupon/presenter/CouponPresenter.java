@@ -1,6 +1,6 @@
 package xiaoe.com.shop.business.coupon.presenter;
 
-import xiaoe.com.common.app.Constants;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.CouponCanResourceRequest;
@@ -29,16 +29,16 @@ public class CouponPresenter implements IBizCallback {
      */
     public void requestMineCoupon(String type) {
         MineCouponRequest couponRequest = new MineCouponRequest(this);
-        couponRequest.addRequestParam("app_id", Constants.getAppId());
-        couponRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        couponRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
+        couponRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         couponRequest.addRequestParam("type", type);
         couponRequest.sendRequest();
     }
 
     public void requestResourceUseCoupon(String resourceId, int price){
         ResourceUseCouponRequest useCouponRequest = new ResourceUseCouponRequest(this);
-        useCouponRequest.addRequestParam("app_id", Constants.getAppId());
-        useCouponRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        useCouponRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
+        useCouponRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         useCouponRequest.addRequestParam("price", price);
         useCouponRequest.addRequestParam("resource_id", resourceId);
         useCouponRequest.sendRequest();
@@ -46,8 +46,8 @@ public class CouponPresenter implements IBizCallback {
 
     public void requestCouponCanResource(String couponId){
         CouponCanResourceRequest canResourceRequest = new CouponCanResourceRequest(this);
-        canResourceRequest.addRequestParam("app_id", Constants.getAppId());
-        canResourceRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        canResourceRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
+        canResourceRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         canResourceRequest.addRequestParam("coupon_id", couponId);
 
         canResourceRequest.sendRequest();

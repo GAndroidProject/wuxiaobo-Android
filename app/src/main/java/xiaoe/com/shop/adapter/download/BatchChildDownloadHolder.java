@@ -5,7 +5,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import xiaoe.com.common.entitys.ItemData;
+import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.OnSelectListener;
@@ -18,7 +18,7 @@ public class BatchChildDownloadHolder extends BaseViewHolder implements View.OnC
     private View line;
     private TextView time;
     private ImageView selectIcon;
-    private ItemData mData = null;
+    private ColumnSecondDirectoryEntity mData = null;
     private int mParentPosition;
     private OnSelectListener mSelectListener;
 
@@ -39,7 +39,7 @@ public class BatchChildDownloadHolder extends BaseViewHolder implements View.OnC
         time = (TextView) mItemView.findViewById(R.id.item_time);
     }
 
-    public void bindView(ItemData itemData, int position){
+    public void bindView(ColumnSecondDirectoryEntity itemData, int position){
         mData = itemData;
         if(itemData.isSelect()){
             selectIcon.setImageResource(R.mipmap.download_checking);

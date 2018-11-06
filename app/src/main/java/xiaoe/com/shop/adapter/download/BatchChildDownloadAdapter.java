@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import xiaoe.com.common.entitys.ItemData;
+import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.OnSelectListener;
@@ -18,7 +18,7 @@ public class BatchChildDownloadAdapter extends RecyclerView.Adapter<BaseViewHold
     private static final String TAG = "BatchDownloadRecycler";
     private final Context mContext;
     private int mParentPosition = 0;
-    private List<ItemData> itemData = new ArrayList<ItemData>();
+    private List<ColumnSecondDirectoryEntity> itemData = new ArrayList<ColumnSecondDirectoryEntity>();
     private OnSelectListener selectListener;
 
     public BatchChildDownloadAdapter(Context context) {
@@ -51,7 +51,7 @@ public class BatchChildDownloadAdapter extends RecyclerView.Adapter<BaseViewHold
         return itemData.size();
     }
 
-    public void setItemData(List<ItemData> date){
+    public void setItemData(List<ColumnSecondDirectoryEntity> date){
         itemData = date;
         notifyDataSetChanged();
     }

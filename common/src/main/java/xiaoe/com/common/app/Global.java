@@ -158,7 +158,7 @@ public class Global
      */
     public String getDefaultDirectory() {
         return Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + "AtTen" + File.separator;
+                + File.separator + "wxb" + File.separator;
     }
     public String getUUID(){
         String uuid = UUID.randomUUID().toString().replaceAll("-","");

@@ -209,6 +209,13 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     public static int getCurrentPosition(){
         if(mediaPlayer != null){
+            SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
+            boolean tableExist = SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
+            if(!tableExist){
+                SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+            }else{
+                SQLiteUtil.query(AudioPlayTable.TABLE_NAME, "select * from "+AudioPlayTable.TABLE_NAME, null);
+            }
             return mediaPlayer.getCurrentPosition();
         }
         return  -1;

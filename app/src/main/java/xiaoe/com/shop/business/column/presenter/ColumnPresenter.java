@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import xiaoe.com.common.app.Constants;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.network.network_interface.IBizCallback;
@@ -39,17 +39,17 @@ public class ColumnPresenter implements IBizCallback {
      */
     public void requestDetail(String resourceId, String resourceType){
         DetailRequest detailRequest = new DetailRequest( this);
-        detailRequest.addRequestParam("shop_id",Constants.getAppId());
+        detailRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
         detailRequest.addDataParam("resource_id",resourceId);
         detailRequest.addDataParam("resource_type",resourceType);
-        detailRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        detailRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         detailRequest.sendRequest();
     }
 
     public void requestColumnList(String resourceId, String resourceType, int page, int pageSize){
         ColumnListRequst columnListRequst = new ColumnListRequst(this);
-        columnListRequst.addRequestParam("shop_id",Constants.getAppId());
-        columnListRequst.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        columnListRequst.addRequestParam("shop_id",CommonUserInfo.getShopId());
+        columnListRequst.addRequestParam("user_id",CommonUserInfo.getUserId());
         columnListRequst.addDataParam("goods_id",resourceId);
         columnListRequst.addDataParam("resource_type",resourceType);
         columnListRequst.addDataParam("page", ""+page);
@@ -112,8 +112,8 @@ public class ColumnPresenter implements IBizCallback {
      */
     public void requestColumnListByNum(String resourceId, String resourceType, int pageSize) {
         ColumnListRequst columnListRequst = new ColumnListRequst(this);
-        columnListRequst.addRequestParam("shop_id",Constants.getAppId());
-        columnListRequst.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        columnListRequst.addRequestParam("shop_id",CommonUserInfo.getShopId());
+        columnListRequst.addRequestParam("user_id",CommonUserInfo.getUserId());
         columnListRequst.addDataParam("goods_id",resourceId);
         columnListRequst.addDataParam("resource_type",resourceType);
         columnListRequst.addDataParam("page", "1");

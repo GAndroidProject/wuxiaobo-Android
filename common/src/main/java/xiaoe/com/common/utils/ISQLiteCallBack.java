@@ -18,4 +18,6 @@ public interface ISQLiteCallBack {
     <T> void assignValuesByEntity(String tableName, T entity, ContentValues values);
 
     <T> T newEntityByCursor(String tableName, Cursor cursor);
+
+    String getTableName();
 }

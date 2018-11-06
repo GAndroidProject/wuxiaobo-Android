@@ -9,7 +9,6 @@ import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.AudioPlayTable;
 import xiaoe.com.common.utils.SQLiteUtil;
-import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 
 public class AudioPlayUtil {
     private static final String TAG = "AudioPlayUtil";
@@ -35,8 +34,8 @@ public class AudioPlayUtil {
 
     public void setAudioList(List<AudioPlayEntity> audioList) {
         this.audioList = audioList;
-//        deleteCache();
-//        addCache();
+        deleteCache();
+        addCache();
     }
 
     public void addAudio(AudioPlayEntity audio){
@@ -60,8 +59,8 @@ public class AudioPlayUtil {
             audioList.clear();
             audioList.add(audio);
         }
-//        deleteCache();
-//        addCache();
+        deleteCache();
+        addCache();
     }
 
     /**
@@ -103,8 +102,8 @@ public class AudioPlayUtil {
     private void deleteCache(){
         SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
         // 如果表不存在，就去创建
-        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
-            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
+        if (!SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)) {
+            SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
         }else{
             SQLiteUtil.deleteFrom(AudioPlayTable.TABLE_NAME);
         }
@@ -113,8 +112,8 @@ public class AudioPlayUtil {
     private void addCache(){
         SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
         // 如果表不存在，就去创建
-        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
-            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
+        if (!SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)) {
+            SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
         }else{
             SQLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioList);
         }

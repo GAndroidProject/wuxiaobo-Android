@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import xiaoe.com.common.entitys.ItemData;
+import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.OnSelectListener;
@@ -17,7 +17,7 @@ import xiaoe.com.shop.interfaces.OnSelectListener;
 public class BatchDownloadAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
     private static final String TAG = "BatchDownloadRecycler";
     private final Context mContext;
-    private List<ItemData> itemData = new ArrayList<ItemData>();
+    private List<ColumnDirectoryEntity> itemData = new ArrayList<ColumnDirectoryEntity>();
     private OnSelectListener selectListener;
 
     public BatchDownloadAdapter(Context context) {
@@ -42,12 +42,12 @@ public class BatchDownloadAdapter extends RecyclerView.Adapter<BaseViewHolder>  
         return itemData.size();
     }
 
-    public void setItemData(List<ItemData> date){
+    public void setItemData(List<ColumnDirectoryEntity> date){
         itemData = date;
         notifyDataSetChanged();
     }
 
-    public List<ItemData> getDate(){
+    public List<ColumnDirectoryEntity> getDate(){
         return itemData;
     }
 

@@ -2,7 +2,7 @@ package xiaoe.com.shop.utils;
 
 import com.alibaba.fastjson.JSONObject;
 
-import xiaoe.com.common.app.Constants;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -46,8 +46,8 @@ public class CollectionUtils implements IBizCallback {
      */
     public void requestCheckCollection(String resourceId, String resourceType) {
         CheckCollectionRequest checkCollectionRequest = new CheckCollectionRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.favorites.check/1.0.0", this);
-        checkCollectionRequest.addRequestParam("shop_id", Constants.getAppId());
-        checkCollectionRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        checkCollectionRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
+        checkCollectionRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         checkCollectionRequest.addDataParam("content_id", resourceId);
         checkCollectionRequest.addDataParam("content_type", Integer.parseInt(resourceType));
         NetworkEngine.getInstance().sendRequest(checkCollectionRequest);
@@ -61,8 +61,8 @@ public class CollectionUtils implements IBizCallback {
      */
     public void requestAddCollection(String resourceId, String resourceType, JSONObject collectionContent) {
         AddCollectionRequest addCollectionRequest = new AddCollectionRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.favorites.add/1.0.0", this);
-        addCollectionRequest.addRequestParam("shop_id", Constants.getAppId());
-        addCollectionRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        addCollectionRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
+        addCollectionRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         addCollectionRequest.addDataParam("content_id", resourceId);
         addCollectionRequest.addDataParam("content_type", Integer.parseInt(resourceType));
         addCollectionRequest.addDataParam("content", collectionContent);
@@ -77,8 +77,8 @@ public class CollectionUtils implements IBizCallback {
      */
     public void requestRemoveCollection(String resourceId, String resourceType) {
         RemoveCollectionRequest removeCollectionRequest = new RemoveCollectionRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.favorites.del/1.0.0", this);
-        removeCollectionRequest.addRequestParam("shop_id", Constants.getAppId());
-        removeCollectionRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        removeCollectionRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
+        removeCollectionRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         removeCollectionRequest.addDataParam("content_id", resourceId);
         removeCollectionRequest.addDataParam("content_type", Integer.parseInt(resourceType));
         removeCollectionRequest.addDataParam("type", 1);
@@ -92,8 +92,8 @@ public class CollectionUtils implements IBizCallback {
      */
     public void requestCollectionList(int pageIndex, int pageSize) {
         CollectionListRequest collectionListRequest = new CollectionListRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.favorites.get/1.0.0", this);
-        collectionListRequest.addRequestParam("shop_id", Constants.getAppId());
-        collectionListRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        collectionListRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
+        collectionListRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         collectionListRequest.addDataParam("page", pageIndex);
         collectionListRequest.addDataParam("page_size", pageSize);
         NetworkEngine.getInstance().sendRequest(collectionListRequest);
@@ -105,8 +105,8 @@ public class CollectionUtils implements IBizCallback {
      */
     public void requestRemoveAllCollection(JSONObject delList) {
         RemoveCollectioinByObjRequest removeCollectioinByObjRequest = new RemoveCollectioinByObjRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.favorites.multi.del/1.0.0", this);
-        removeCollectioinByObjRequest.addRequestParam("shop_id", Constants.getAppId());
-        removeCollectioinByObjRequest.addRequestParam("user_id", "u_591d643ce9c2c_fAbTq44T");
+        removeCollectioinByObjRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
+        removeCollectioinByObjRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         removeCollectioinByObjRequest.addDataParam("del_list", delList);
         NetworkEngine.getInstance().sendRequest(removeCollectioinByObjRequest);
     }

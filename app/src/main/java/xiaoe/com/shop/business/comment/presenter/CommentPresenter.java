@@ -2,7 +2,7 @@ package xiaoe.com.shop.business.comment.presenter;
 
 import android.text.TextUtils;
 
-import xiaoe.com.common.app.Constants;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.CommentEntity;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -41,12 +41,12 @@ public class CommentPresenter implements IBizCallback {
      */
     public void requestCommentList(String recordId, int recordType, int pageSize, int lastCommentId, String label){
         CommentListRequest listRequest = new CommentListRequest(this);
-        listRequest.addRequestParam("shop_id",Constants.getAppId());
+        listRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
         listRequest.addRequestParam("record_id",recordId);
         listRequest.addRequestParam("record_type",recordType);
         listRequest.addRequestParam("page_size",pageSize);
         listRequest.addRequestParam("last_comment_id",lastCommentId);
-        listRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        listRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         if (TextUtils.isEmpty(label)) {
             label = "last";
         }
@@ -64,8 +64,8 @@ public class CommentPresenter implements IBizCallback {
      */
     public void sendComment(String recordId, int recordType, String recordTitle, String content, CommentEntity replyComment){
         SendCommentRequest commentRequest = new SendCommentRequest(this);
-        commentRequest.addRequestParam("shop_id",Constants.getAppId());
-        commentRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        commentRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
+        commentRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         commentRequest.addRequestParam("record_id",recordId);
         commentRequest.addRequestParam("record_type",recordType);
         commentRequest.addRequestParam("record_title",recordTitle);
@@ -91,8 +91,8 @@ public class CommentPresenter implements IBizCallback {
      */
     public void likeComment(String recordId, int recordType, int commentId, String srcUserId, String commentContent, boolean praised){
         CommentLikeRequest commentLikeRequest = new CommentLikeRequest(this);
-        commentLikeRequest.addRequestParam("shop_id",Constants.getAppId());
-        commentLikeRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        commentLikeRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
+        commentLikeRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         commentLikeRequest.addRequestParam("record_id",recordId);
         commentLikeRequest.addRequestParam("record_type",recordType);
         commentLikeRequest.addRequestParam("comment_id",commentId);
@@ -103,8 +103,8 @@ public class CommentPresenter implements IBizCallback {
     }
     public void deleteComment(String recordId, int recordType, int commentId){
         CommentDeleteRequest commentDeleteRequest = new CommentDeleteRequest(this);
-        commentDeleteRequest.addRequestParam("shop_id",Constants.getAppId());
-        commentDeleteRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        commentDeleteRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
+        commentDeleteRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         commentDeleteRequest.addRequestParam("comment_id",commentId);
         commentDeleteRequest.addRequestParam("record_id",recordId);
         commentDeleteRequest.addRequestParam("record_type",recordType);

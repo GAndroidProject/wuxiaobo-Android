@@ -1,8 +1,9 @@
 package xiaoe.com.common.entitys;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ColumnDirectoryEntity {
+public class ColumnDirectoryEntity implements Serializable {
 
 
     private List<ColumnSecondDirectoryEntity> resource_list;

@@ -28,7 +28,7 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if(newVersion > oldVersion){
-//            db.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+            db.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
         }
     }
 
@@ -53,6 +53,11 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
         if(tableEntity.getCreateAt() != null){
             values.put(AudioPlayTable.getCreateAt(), tableEntity.getCreateAt());
         }
+    }
+
+    @Override
+    public String getTableName() {
+        return AudioPlayTable.TABLE_NAME;
     }
 
     @Override

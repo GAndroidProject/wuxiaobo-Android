@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.alibaba.fastjson.JSONObject;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -85,7 +87,14 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     }
 
     private void clickBatchDownload() {
+        if(!isHasBuy){
+            toastCustom("未购买课程");
+            return;
+        }
         Intent intent = new Intent(getContext(), DownloadActivity.class);
+        String dataJSON = JSONObject.toJSONString(directoryAdapter.getData());
+        intent.putExtra("bundle_dataJSON", dataJSON);
+        intent.putExtra("from_type", "ColumnDirectoryFragment");
         startActivity(intent);
     }
 

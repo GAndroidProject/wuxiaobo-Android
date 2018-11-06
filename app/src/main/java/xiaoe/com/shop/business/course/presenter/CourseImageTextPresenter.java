@@ -1,6 +1,6 @@
 package xiaoe.com.shop.business.course.presenter;
 
-import xiaoe.com.common.app.Constants;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -34,20 +34,20 @@ public class CourseImageTextPresenter implements IBizCallback {
     // 请求购买前的信息
     public void requestBeforeBuy (String resourceId, String resourceType) {
         CourseITBeforeBuyRequest courseITBeforeBuyRequest = new CourseITBeforeBuyRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + "xe.goods.info.get/1.0.0", this);
-        courseITBeforeBuyRequest.addRequestParam("shop_id",Constants.getAppId());
+        courseITBeforeBuyRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
         courseITBeforeBuyRequest.addDataParam("resource_id", resourceId);
         courseITBeforeBuyRequest.addDataParam("resource_type", resourceType);
-        courseITBeforeBuyRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        courseITBeforeBuyRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         NetworkEngine.getInstance().sendRequest(courseITBeforeBuyRequest);
     }
 
     // 请求购买后的信息
     public void requestAfterBuy (String resourceId, String resourceType) {
         CourseITAfterBuyRequest courseITAfterBuyRequest = new CourseITAfterBuyRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + "xe.resource.content.get/1.0.0", this);
-        courseITAfterBuyRequest.addRequestParam("shop_id",Constants.getAppId());
+        courseITAfterBuyRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
         courseITAfterBuyRequest.addDataParam("resource_id", resourceId);
         courseITAfterBuyRequest.addDataParam("resource_type", resourceType);
-        courseITAfterBuyRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        courseITAfterBuyRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         NetworkEngine.getInstance().sendRequest(courseITAfterBuyRequest);
     }
 }

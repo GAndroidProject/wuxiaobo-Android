@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import org.greenrobot.eventbus.EventBus;
 
-import xiaoe.com.common.app.Constants;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.network_interface.IBizCallback;
@@ -66,7 +66,7 @@ public class AudioPresenter implements IBizCallback {
         if(playEntity == null){
             playEntity = new AudioPlayEntity();
             playEntity.setResourceId(resourceId);
-            playEntity.setAppId(Constants.getAppId());
+            playEntity.setAppId(CommonUserInfo.getShopId());
             playEntity.setIndex(0);
             playEntity.setPlay(false);
         }
@@ -113,10 +113,10 @@ public class AudioPresenter implements IBizCallback {
      */
     public void requestDetail(String resourceId){
         DetailRequest detailRequest = new DetailRequest( this);
-        detailRequest.addRequestParam("shop_id",Constants.getAppId());
+        detailRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
         detailRequest.addDataParam("resource_id",resourceId);
         detailRequest.addDataParam("resource_type","2");
-        detailRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        detailRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         detailRequest.sendRequest();
     }
 
@@ -125,10 +125,10 @@ public class AudioPresenter implements IBizCallback {
      */
     private void requestContent(String resourceId){
         ContentRequest contentRequest = new ContentRequest( this);
-        contentRequest.addRequestParam("shop_id",Constants.getAppId());
+        contentRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
         contentRequest.addRequestParam("resource_id",resourceId);
         contentRequest.addRequestParam("resource_type","2");
-        contentRequest.addRequestParam("user_id","u_591d643ce9c2c_fAbTq44T");
+        contentRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         contentRequest.sendRequest();
     }
 }

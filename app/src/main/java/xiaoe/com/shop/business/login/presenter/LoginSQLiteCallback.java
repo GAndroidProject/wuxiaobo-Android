@@ -83,6 +83,11 @@ public class LoginSQLiteCallback implements ISQLiteCallBack {
     }
 
     @Override
+    public String getTableName() {
+        return TABLE_NAME_USER;
+    }
+
+    @Override
     public Object newEntityByCursor(String tableName, Cursor cursor) {
         switch (tableName) {
             case TABLE_NAME_USER:
@@ -101,4 +106,5 @@ public class LoginSQLiteCallback implements ISQLiteCallBack {
         }
         return null;
     }
+
 }

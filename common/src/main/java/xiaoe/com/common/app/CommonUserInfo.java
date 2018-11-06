@@ -14,7 +14,6 @@ public class CommonUserInfo {
     }
 
     public static String getShopId() {
-
         return shopId;
     }
 
@@ -39,7 +38,6 @@ public class CommonUserInfo {
     }
 
     public static String getApiToken() {
-
         return apiToken;
     }
 

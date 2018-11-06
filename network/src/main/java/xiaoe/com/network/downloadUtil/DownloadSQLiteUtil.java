@@ -1,4 +1,4 @@
-package xiaoe.com.common.utils;
+package xiaoe.com.network.downloadUtil;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,16 +14,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import xiaoe.com.common.utils.ISQLiteCallBack;
+
 /**
  * 一个通用的SQLite，通过简单的配置快速搭建一个数据库存储的方案；
  */
 
-public final class SQLiteUtil extends SQLiteOpenHelper {
+public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
 
-    private static final String TAG = "SQLiteUtil";
-    private static final  String DATABASE_NAME = "xiaoeshop.db";
-    private static SQLiteUtil INSTANCE;
-//    private final ISQLiteCallBack callBack;
+    private final String TAG = "SQLiteUtil";
+    private static final String DATABASE_NAME = "xiaoeshop.db";
+    private DownloadSQLiteUtil INSTANCE;
+    SQLiteDatabase mDB = null;
     /**
      * ConcurrentHashMap可以高并发操作，线程安全，高效
      */
@@ -31,28 +33,30 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
 
 
 
-    private SQLiteUtil(Context context, ISQLiteCallBack callBack) {
+    public DownloadSQLiteUtil(Context context, ISQLiteCallBack callBack) {
         super(context, DATABASE_NAME, null, callBack.getVersion());
-//        this.callBack = callBack;
         if(sqlCallBack == null){
             sqlCallBack = new ConcurrentHashMap<String, ISQLiteCallBack>();
         }
         if(!TextUtils.isEmpty(callBack.getTableName())){
             sqlCallBack.put(callBack.getTableName(), callBack);
         }
-
+        INSTANCE = this;
+        mDB = INSTANCE.getWritableDatabase();
     }
 
-    public static void init(@NonNull Context context, @NonNull ISQLiteCallBack callBack) {
-        INSTANCE = new SQLiteUtil(context, callBack);
+    private SQLiteDatabase getDB(){
+        if(mDB == null || !mDB.isOpen()){
+            mDB = INSTANCE.getWritableDatabase();
+        }
+        return mDB;
     }
 
-
-    public static <T> void insert(String tableName, T entity) {
+    public <T> void insert(String tableName, T entity) {
         if(INSTANCE.sqlCallBack.get(tableName) == null){
             return;
         }
-        SQLiteDatabase db = INSTANCE.getWritableDatabase();
+        SQLiteDatabase db = getDB();
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -62,36 +66,17 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-            db.close();
+//            db.close();
         }
     }
 
 
-    public static <T> void insert(String tableName, List<T> entities) {
-        if(INSTANCE.sqlCallBack.get(tableName) == null){
-            return;
-        }
-        SQLiteDatabase db = INSTANCE.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            ContentValues values = new ContentValues();
-            for (T entity : entities) {
-                INSTANCE.sqlCallBack.get(tableName).assignValuesByEntity(tableName, entity, values);
-                db.insert(tableName, null, values);
-                values.clear();
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-            db.close();
-        }
-    }
 
-    public static <T> void update(String tableName, T entity, String whereClause, String[] whereArgs) {
+    public <T> void update(String tableName, T entity, String whereClause, String[] whereArgs) {
         if(INSTANCE.sqlCallBack.get(tableName) == null){
             return;
         }
-        SQLiteDatabase db = INSTANCE.getWritableDatabase();
+        SQLiteDatabase db = getDB();
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -101,13 +86,13 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-            db.close();
+//            db.close();
         }
     }
 
 
-    public static <T> List<T> query(String tableName, @NonNull String queryStr, @Nullable String[] whereArgs) {
-        SQLiteDatabase db = INSTANCE.getReadableDatabase();
+    public <T> List<T> query(String tableName, @NonNull String queryStr, @Nullable String[] whereArgs) {
+        SQLiteDatabase db = getDB();
         Cursor cursor = db.rawQuery(queryStr, whereArgs);
         try {
             List<T> lists = new ArrayList<>(cursor.getCount());
@@ -126,13 +111,13 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
             return lists;
         } finally {
             cursor.close();
-            db.close();
+//            db.close();
         }
     }
 
-    public static void deleteFrom(String tableName) {
+    public void deleteFrom(String tableName) {
 
-        SQLiteDatabase db = INSTANCE.getWritableDatabase();
+        SQLiteDatabase db = getDB();
         db.beginTransaction();
         try {
             String sql = "DELETE FROM " + tableName;
@@ -140,21 +125,21 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-            db.close();
+//            db.close();
         }
     }
 
     // delete的适用场合是涉及到删除的对象数量较少时。
     // 当删除多条数据时（例如：500条），通过循环的方式来一个一个的删除需要12s，而使用execSQL语句结合(delete from table id in("1", "2", "3"))的方式只需要50ms
-    public static void delete(String tableName, String whereClause, String[] whereArgs) {
-        SQLiteDatabase db = INSTANCE.getWritableDatabase();
+    public void delete(String tableName, String whereClause, String[] whereArgs) {
+        SQLiteDatabase db = getDB();
         db.beginTransaction();
         try {
             db.delete(tableName, whereClause, whereArgs);
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-            db.close();
+//            db.close();
         }
     }
 
@@ -166,15 +151,15 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
      * 也就是说通过分号分割的多个statement操作是不支持的。
      *
      */
-    public static void execSQL(String sql) {
-        SQLiteDatabase db = INSTANCE.getWritableDatabase();
+    public void execSQL(String sql) {
+        SQLiteDatabase db = getDB();
         db.beginTransaction();
         try {
             db.execSQL(sql);
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-            db.close();
+//            db.close();
         }
     }
 
@@ -194,12 +179,12 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
         }
     }
 
-    public static boolean tabIsExist(String tabName){
+    public boolean tabIsExist(String tabName){
         boolean result = false;
         if(tabName == null){
             return false;
         }
-        SQLiteDatabase db = INSTANCE.getWritableDatabase();
+        SQLiteDatabase db = getDB();
         Cursor cursor = null;
         try {
             String sql = "select count(*) as c from sqlite_master where type ='table' and name = '"+tabName.trim()+"'";
@@ -217,9 +202,15 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
                 cursor.close();
             }
             if(db != null){
-                db.close();
+//                db.close();
             }
         }
         return result;
+    }
+
+    public void dbClose(){
+        if(mDB != null && mDB.isOpen()){
+            mDB.close();
+        }
     }
 }

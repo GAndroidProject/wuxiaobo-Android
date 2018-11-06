@@ -1,6 +1,8 @@
 package xiaoe.com.common.entitys;
 
-public class ColumnSecondDirectoryEntity {
+import java.io.Serializable;
+
+public class ColumnSecondDirectoryEntity implements Serializable {
 
 
 

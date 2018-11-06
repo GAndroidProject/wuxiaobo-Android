@@ -3,7 +3,6 @@ package xiaoe.com.shop.business.main.presenter;
 import android.util.Log;
 
 import xiaoe.com.common.app.CommonUserInfo;
-import xiaoe.com.common.entitys.TestComponent;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
