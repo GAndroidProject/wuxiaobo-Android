@@ -26,8 +26,10 @@ public class SuperVipActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_super_vip);
         unbinder = ButterKnife.bind(this);
         superVipBg.setImageURI("res:///" + R.mipmap.super_vip);
+        superVipSubmit.setText(getResources().getString(R.string.scholarship_btn_money));
         superVipSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
