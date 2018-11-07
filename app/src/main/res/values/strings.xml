@@ -206,6 +206,14 @@
     <string name="scholarship_dialog_rule_btn">我知道了</string>
     <string name="scholarship_dialog_go_buy_content">瓜分奖学金仅对付费用户开放，点击下方按钮，选购喜欢的课程，即可参与</string>
     <string name="scholarship_dialog_go_buy_btn">去选购课程</string>
+    <string name="scholarship_range">排名</string>
+    <string name="scholarship_user">用户</string>
+    <string name="scholarship_bought_list_title">点击分享，马上瓜分奖学金</string>
+    <string name="scholarship_earn_btn">查看收益</string>
+    <string name="scholarship_yuan">元</string>
+    <string name="scholarship_earn_tip">超级会员翻倍（10积分×2）</string>
 
     <string name="vip_btn_money">开通会员￥1800</string>
+
+    <string name="common_bottom_tip">小鹅通提供技术支持</string>
 </resources>

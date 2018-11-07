@@ -218,6 +218,7 @@
 
         <!-- 极光推送相关配置 end -->
 
+        <activity android:name=".business.bought_list.ui.BoughtListActivity"/>
     </application>
 
 </manifest>

@@ -4,7 +4,7 @@ public class FlowInfoItem {
 
     // item 类型
     private String itemType;
-    // item id
+    // item id（信息流的 id 跳转详情页会做转换）
     private String itemId;
     // item 标题
     private String itemTitle;

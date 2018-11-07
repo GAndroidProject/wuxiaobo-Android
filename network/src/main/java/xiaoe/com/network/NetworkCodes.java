@@ -49,4 +49,6 @@ public class NetworkCodes {
     public static final int CODE_PERSON_PARAM_UNUSEFUL = 2502;
     public static final int CODE_PERSON_PHONE_REPEAT = 2504;
     public static final int CODE_PERSON_NOT_FOUND = 2506;
+
+    public static final int CODE_REQUEST_ERROR = -1;
 }

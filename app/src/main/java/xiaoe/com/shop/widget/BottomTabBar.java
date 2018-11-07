@@ -110,7 +110,7 @@ public class BottomTabBar extends FrameLayout implements View.OnClickListener {
                 break;
         }
     }
-    private void setCheckedButton(int index){
+    public void setCheckedButton(int index){
         for (int i = 0; i < bottomTabBar.getChildCount(); i++){
             if(index == i){
                 continue;

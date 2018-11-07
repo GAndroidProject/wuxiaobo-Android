@@ -13,6 +13,7 @@ import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
+import xiaoe.com.shop.business.bought_list.ui.BoughtListActivity;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.comment.ui.CommentActivity;
 import xiaoe.com.shop.business.coupon.ui.CouponDetailActivity;
@@ -212,6 +213,15 @@ public class JumpDetail {
     public static void jumpMineLearning(Context context, String pageTitle) {
         Intent intent = new Intent(context, MineLearningActivity.class);
         intent.putExtra("pageTitle", pageTitle);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到已购列表页面
+     * @param context
+     */
+    public static void jumpBoughtList(Context context) {
+        Intent intent = new Intent(context, BoughtListActivity.class);
         context.startActivity(intent);
     }
 }

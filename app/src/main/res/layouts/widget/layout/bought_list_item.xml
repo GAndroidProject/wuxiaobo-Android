@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/bought_list_item_icon"
+        android:layout_width="100dp"
+        android:layout_height="76dp"
+        android:layout_gravity="start|center"/>
+
+    <TextView
+        android:id="@+id/bought_list_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textSize="16sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_marginStart="112dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="200dp"/>
+
+    <ImageView
+        android:id="@+id/bought_list_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center"
+        android:src="@mipmap/audio_share"
+        android:padding="16dp"
+        tools:ignore="ContentDescription" />
+
+</FrameLayout>

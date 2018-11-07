@@ -119,6 +119,11 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         Log.d(TAG, "onCheckedTab: I "+mainViewPager.getCurrentItem());
     }
 
+    protected void replaceFragment(int index) {
+        mainViewPager.setCurrentItem(index);
+        bottomTabBar.setCheckedButton(index);
+    }
+
     @Subscribe
     public void onEventMainThread(AudioPlayEvent event) {
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();

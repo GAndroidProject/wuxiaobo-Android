@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/scholarship_dialog_close"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@mipmap/audiolist_cancle"
+        android:layout_gravity="end"
+        tools:ignore="ContentDescription" />
+    
+    <View
+        android:layout_width="1dp"
+        android:layout_height="20dp"
+        android:background="@color/white"
+        android:layout_marginEnd="13dp"
+        android:layout_gravity="end"/>
+
+    <LinearLayout
+        android:id="@+id/scholarship_content_wrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/scholarship_popup"
+            android:layout_gravity="center"
+            android:layout_marginTop="28dp"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/scholarship_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/main_title_color"
+            android:layout_marginTop="42dp"
+            android:layout_gravity="center"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/scholarship_dialog_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="40sp"
+                android:textColor="@color/scholarship_content_color"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/scholarship_dialog_content_tail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scholarship_yuan"
+                android:textSize="16sp"
+                android:textColor="@color/main_title_color"
+                android:layout_gravity="bottom|center"
+                android:layout_marginStart="68dp"
+                android:layout_marginTop="10dp"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/scholarship_dialog_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@color/audio_page_bg_color"
+            android:text="@string/scholarship_earn_tip"
+            android:textSize="14sp"
+            android:textColor="@color/price_color"
+            android:gravity="center"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:drawableStart="@mipmap/profile_diamond"
+            android:paddingStart="90dp"
+            android:paddingEnd="90dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/scholarship_dialog_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scholarship_earn_btn"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:background="@drawable/recent_update_btn_pressed"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>
