@@ -11,6 +11,9 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.common.entitys.GetSuperMemberSuccessEvent;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.MineMoneyItemInfo;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
@@ -30,7 +34,6 @@ import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
-import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.StatusBarUtil;
 
@@ -135,6 +138,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         // 网络请求数据代码
 //        MinePresenter minePresenter = new MinePresenter(this);
     }
@@ -218,6 +222,19 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         super.onDestroyView();
         if (unbinder != null) {
             unbinder.unbind();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEventMainThread(GetSuperMemberSuccessEvent event) {
+        if (event != null && event.isRefresh){//兑换码到超级会员成功后，刷新我的页面UI
+
         }
     }
 

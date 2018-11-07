@@ -1,10 +1,12 @@
 package xiaoe.com.shop.business.cdkey.presenter;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.CdKeyRequest;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class CdKeyPresenter implements IBizCallback {
 
@@ -13,7 +15,7 @@ public class CdKeyPresenter implements IBizCallback {
 
     public CdKeyPresenter(INetworkResponse inr) {
         this.inr = inr;
-        this.cmd = "";
+        this.cmd = "api/xe.redeem_code.redeem/1.0.0";
     }
 
     public CdKeyPresenter(INetworkResponse inr, String cmd) {
@@ -22,13 +24,20 @@ public class CdKeyPresenter implements IBizCallback {
     }
 
     @Override
-    public void onResponse(IRequest iRequest, boolean success, Object entity) {
-        inr.onResponse(iRequest, success, entity);
+    public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
+        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                inr.onMainThreadResponse(iRequest, success, entity);
+            }
+        });
     }
 
-    public void requestData() {
-        CdKeyRequest cdKeyRequest = new CdKeyRequest(cmd, null, this);
-        cdKeyRequest.addRequestParam("app_id", "123456");
+    public void requestData(String code) {
+        CdKeyRequest cdKeyRequest = new CdKeyRequest(NetworkEngine.PLY_BASE_URL + cmd, null, this);
+        cdKeyRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
+        cdKeyRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
+        cdKeyRequest.addRequestParam("code", code);
         NetworkEngine.getInstance().sendRequest(cdKeyRequest);
     }
 }

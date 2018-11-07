@@ -129,6 +129,11 @@
     <string name="cd_key_submit">立即兑换</string>
     <string name="cd_key_digits">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="cd_key_error">兑换码不存在，请重新输入</string>
+    <string name="cd_key_success">兑换成功！</string>
+    <string name="cd_key_see">去查看</string>
+    <string name="cd_key_error_msg">兑换码不存在，请重新输入</string>
+    <string name="cd_key_fail_msg">兑换失败，请重试！</string>
+    <string name="cd_key_super_member">兑换超级会员成功</string>
 
 
 
@@ -138,6 +143,7 @@
     <string name="course_image_text_page_bottom">页面是有限的，潜力是无限的</string>
 
     <string name="loading_text">加载中...</string>
+    <string name="exchanging_text">兑换中...</string>
     <string name="click_load_more_text">点击加载更多</string>
     <string name="load_all_text">已加载全部</string>
 

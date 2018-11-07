@@ -4,67 +4,92 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-
+    android:layout_height="match_parent">
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@mipmap/line_bg">
-
-        <android.support.v7.widget.Toolbar
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_collapseMode="pin">
-
-            <ImageView
-                android:id="@+id/cd_key_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="ContentDescription"
-                android:src="@mipmap/download_back"/>
-
-            <TextView
-                android:id="@+id/cd_key_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cd_key_title"
-                android:textSize="16sp"
-                android:textColor="@color/main_title_color"
-                android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="20dp"/>
-
-        </android.support.v7.widget.Toolbar>
-
-        <EditText
-            android:id="@+id/cd_key_content"
+        android:layout_height="wrap_content">
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/cd_key_hint"
-            android:paddingTop="18dp"
-            android:paddingBottom="18dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_gravity="bottom"
-            android:inputType="number"
-            android:digits="@string/cd_key_digits"/>
-
+            android:orientation="vertical"
+            android:background="@mipmap/line_bg">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/exchange_tool_bar"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                app:layout_collapseMode="pin">
+                <ImageView
+                    android:id="@+id/cd_key_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="ContentDescription"
+                    android:src="@mipmap/download_back"/>
+                <TextView
+                    android:id="@+id/cd_key_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cd_key_title"
+                    android:textSize="18sp"
+                    android:textColor="@color/main_title_color"
+                    android:layout_gravity="center"/>
+            </android.support.v7.widget.Toolbar>
+        </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_layout_exchange"
+            android:orientation="vertical"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingBottom="39dp"
+            android:paddingTop="34dp"
+            android:layout_marginTop="109dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+            <EditText
+                android:id="@+id/cd_key_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/cd_key_hint"
+                android:paddingBottom="11dp"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textColor="@color/main_title_color"
+                android:textSize="20sp"
+                android:background="@null"
+                android:textColorHint="@color/knowledge_item_desc_color"
+                android:digits="@string/cd_key_digits"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/layout_line"/>
+            <TextView
+                android:id="@+id/cd_error_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/cd_key_error_msg"
+                android:visibility="invisible"
+                android:textColor="@color/login_error"
+                android:textSize="12sp"/>
+            <Button
+                android:id="@+id/cd_key_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cd_key_submit"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:background="@drawable/person_submit_bg"
+                android:alpha="0.6"
+                android:layout_marginTop="14dp"
+                android:enabled="false"/>
+        </LinearLayout>
     </FrameLayout>
-
-    <Button
-        android:id="@+id/cd_key_submit"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/cd_key_submit"
-        android:textSize="16sp"
-        android:textColor="@color/white"
-        android:background="@drawable/person_submit_bg"
-        android:alpha="0.6"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="56dp"
-        android:enabled="false"/>
-
+        android:layout_height="0dp"
+        android:background="@mipmap/ck_code_bg"
+        android:layout_weight="1"/>
 </LinearLayout>
