@@ -47,8 +47,8 @@ public class BoughtListActivity extends XiaoeActivity {
             if (iRequest instanceof ScholarshipBoughtListRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data = (JSONObject) ((JSONObject) ((JSONObject) result.get("data")).get("allData")).get("audio");
-                    initPageData(data);
+//                    JSONObject data = (JSONObject) ((JSONObject) ((JSONObject) result.get("data")).get("allData")).get("audio");
+//                    initPageData(data);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: request fail...");
                 }
