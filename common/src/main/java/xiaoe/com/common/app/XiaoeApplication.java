@@ -10,6 +10,7 @@ import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
 
 import xiaoe.com.common.utils.SharedPreferencesUtil;
+import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by Administrator on 2017/7/17.
@@ -47,6 +48,9 @@ public class XiaoeApplication extends Application {
         PlatformConfig.setWeixin(Constants.getWXAppId(), Constants.getWxSecret());
         SharedPreferencesUtil.getInstance(mContext, SharedPreferencesUtil.FILE_NAME);
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+
+        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);     		// 初始化 JPush
     }
     public static Context getmContext() {
         return mContext;

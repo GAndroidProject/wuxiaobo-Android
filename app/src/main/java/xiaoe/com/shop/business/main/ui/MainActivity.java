@@ -1,6 +1,9 @@
 package xiaoe.com.shop.business.main.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,31 +11,25 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.alibaba.fastjson.JSONObject;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
-import xiaoe.com.common.utils.SQLiteUtil;
-import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.SettingPseronMsgRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
-import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
-import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
+import xiaoe.com.shop.jpush.ExampleUtil;
+import xiaoe.com.shop.jpush.LocalBroadcastManager;
 import xiaoe.com.shop.widget.BottomTabBar;
 import xiaoe.com.shop.widget.ScrollViewPager;
 
@@ -44,6 +41,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
     public static final String MICRO_PAGE_MAIN = "app_home_page";
     public static final String MICRO_PAGE_COURSE = "app_course_page";
+
+    public static boolean isForeground = false;
 
 //    SettingPresenter settingPresenter;
 
@@ -69,6 +68,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         initPermission();
         Intent audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
         startService(audioPlayServiceIntent);
+
+        registerMessageReceiver();  // used for receive msg
     }
 
     private void initView() {
@@ -152,16 +153,72 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     }
 
     @Override
+    protected void onResume() {
+        isForeground = true;
+        super.onResume();
+    }
+
+
+    @Override
+    protected void onPause() {
+        isForeground = false;
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         if(!AudioMediaPlayer.isStop()){
             AudioMediaPlayer.release();
         }
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
 
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
+    }
+
+    //for receive customer msg from jpush server
+    private MessageReceiver mMessageReceiver;
+    public static final String MESSAGE_RECEIVED_ACTION = "com.example.jpushdemo.MESSAGE_RECEIVED_ACTION";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_EXTRAS = "extras";
+
+    public void registerMessageReceiver() {
+        mMessageReceiver = new MessageReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        filter.addAction(MESSAGE_RECEIVED_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, filter);
+    }
+
+    public class MessageReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
+                    String messge = intent.getStringExtra(KEY_MESSAGE);
+                    String extras = intent.getStringExtra(KEY_EXTRAS);
+                    StringBuilder showMsg = new StringBuilder();
+                    showMsg.append(KEY_MESSAGE + " : " + messge + "\n");
+                    if (!ExampleUtil.isEmpty(extras)) {
+                        showMsg.append(KEY_EXTRAS + " : " + extras + "\n");
+                    }
+                    setCustomMsg(showMsg.toString());
+                }
+            } catch (Exception ignored){
+            }
+        }
+    }
+
+    private void setCustomMsg(String msg){
+//        if (null != msgText) {
+//            msgText.setText(msg);
+//            msgText.setVisibility(android.view.View.VISIBLE);
+//        }
     }
 }
