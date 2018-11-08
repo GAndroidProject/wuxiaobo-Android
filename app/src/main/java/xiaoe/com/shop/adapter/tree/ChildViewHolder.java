@@ -72,6 +72,7 @@ public class ChildViewHolder extends BaseViewHolder {
 			}
 		});
 		setPlayState(itemData.getResource_id(), itemData.getColumnId(), itemData.getBigColumnId());
+		btnItemPlay.setClickable(3 != type);//修复点击视频按钮不能跳转
 	}
 	//设置播放态
 	private void setPlayState(String resourceId, String columnId, String bigColumnId) {

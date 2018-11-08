@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,7 +18,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import xiaoe.com.common.utils.DateFormat;
+import xiaoe.com.network.utils.ThreadPoolUtils;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.video.presenter.VideoPlayer;
 import xiaoe.com.shop.events.VideoPlayEvent;
@@ -46,6 +51,10 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private VideoPlayEvent videoPlayEvent;
     private RelativeLayout playProgressWidget;
 
+    private Timer mTimer;
+    private TimerTask mTimerTask;
+    private boolean isTouchSeekBar;
+
     public VideoPlayControllerView(@NonNull Context context) {
         this(context,null);
     }
@@ -63,7 +72,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         videoLayout = (RelativeLayout) rootView.findViewById(R.id.video_layout);
         videoLayout.setOnClickListener(this);
         playControllerPage = (RelativeLayout) rootView.findViewById(R.id.play_controller_page);
-        playControllerPage.setVisibility(View.GONE);
+        playControllerPage.setVisibility(View.VISIBLE);
         previewImage = (SimpleDraweeView) rootView.findViewById(R.id.id_preview_img);
         btnPlay = (ImageView) rootView.findViewById(R.id.id_btn_playVideo);
         btnPlay.setOnClickListener(this);
@@ -116,6 +125,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                 touchVideoLayout();
                 break;
             case R.id.id_btn_playVideo:
+            case R.id.id_video_progress_play:
                 clickPlayView();
                 break;
             case R.id.id_full_screen_play:
@@ -159,6 +169,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             playControllerPage.setVisibility(View.VISIBLE);
             btnPlay.setVisibility(View.VISIBLE);
             isShowControl = true;
+            controlDelayAutoDismiss(2);
         }
     }
 
@@ -172,21 +183,62 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         if(mVideoPlayer != null){
             mVideoPlayer.release();
         }
+        if (mTimer != null)
+            mTimer.cancel();
+        if (mTimerTask != null)
+            mTimerTask.cancel();
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mVideoPlayer.play();
+//        mVideoPlayer.play();
         isPrepareMedia = true;
-        btnPlay.setImageResource(R.mipmap.audio_stop);
-        btnPlay.setVisibility(View.GONE);
+        isShowControl = true;
+        btnPlay.setImageResource(R.mipmap.audiolist_stop);
+        btnPlay.setVisibility(View.VISIBLE);
         playSeekBar.setMax(mVideoPlayer.getDuration());
         totalPlayTime.setText(DateFormat.longToString(mVideoPlayer.getDuration()));
         previewImage.setVisibility(View.GONE);
-        setPlayState(VideoPlayConstant.VIDEO_STATE_PLAY);
+        setPlayState(VideoPlayConstant.VIDEO_STATE_PAUSE);
 
         videoPlayEvent.setState(VideoPlayConstant.VIDEO_STATE_PLAY);
         EventBus.getDefault().post(videoPlayEvent);
+
+        initPlayListener();
+    }
+
+    private void initPlayListener() {
+        mVideoPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                setPlayState(VideoPlayConstant.VIDEO_STATE_PAUSE);
+            }
+        });
+        if (mTimer == null){
+            mTimer = new Timer();
+            mTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (mVideoPlayer != null && mVideoPlayer.isPlaying()) {
+                        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                int currentPosition = mVideoPlayer.getCurrentPosition();
+                                if (!isTouchSeekBar)
+                                    setProgress(currentPosition);
+                            }
+                        });
+                    }
+                }
+            };
+            mTimer.schedule(mTimerTask,0,1000);
+        }
+    }
+
+    private void setProgress(int currentPosition) {
+        Log.d(TAG,"currentPosition = " + currentPosition);
+        playSeekBar.setProgress(currentPosition);
+        currentPlayTime.setText(DateFormat.longToString(currentPosition));
     }
 
     private void setPlayState(int state){
@@ -195,12 +247,38 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             btnPlay.setImageResource(R.mipmap.icon_play_video_loading);
         }else if(state == VideoPlayConstant.VIDEO_STATE_PLAY){
             //播放
-            btnPlay.setImageResource(R.mipmap.audio_stop);
+            btnPlay.setImageResource(R.mipmap.audiolist_stop);
+            btnProgressPlay.setImageResource(R.mipmap.btn_video_play);
+            controlDelayAutoDismiss(1);
         }else if(state == VideoPlayConstant.VIDEO_STATE_PAUSE){
             //停止
-            btnPlay.setImageResource(R.mipmap.audio_play);
+            btnPlay.setImageResource(R.mipmap.audiolist_play);
+            btnProgressPlay.setImageResource(R.mipmap.btn_video_pause);
         }
     }
+
+    /**
+     * 视频控制自动延迟消失
+     */
+    private void controlDelayAutoDismiss(int state) {
+        Log.d(TAG,"state = " + state + "--- mVideoPlayer.isPlaying() = " + mVideoPlayer.isPlaying());
+        btnPlay.removeCallbacks(mControlDelayDismissRunnable);
+        if(!mVideoPlayer.isPlaying())  return;
+        btnPlay.postDelayed(mControlDelayDismissRunnable,1500);
+    }
+
+    Runnable mControlDelayDismissRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!isTouchSeekBar && btnPlay != null && VISIBLE == btnPlay.getVisibility()
+                    && playControllerPage != null
+                    && VISIBLE == playControllerPage.getVisibility()){
+                btnPlay.setVisibility(GONE);
+                playControllerPage.setVisibility(View.GONE);
+                isShowControl = false;
+            }
+        }
+    };
 
     public void setPlayProgressWidgetVisibility(int v){
         playProgressWidget.setVisibility(v);
@@ -216,16 +294,20 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        
+        if (isTouchSeekBar) {
+            currentPlayTime.setText(DateFormat.longToString(progress));
+        }
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
+        isTouchSeekBar = true;
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        mVideoPlayer.seekTo(seekBar.getProgress());
+        isTouchSeekBar = false;
+        controlDelayAutoDismiss(3);
     }
 }
