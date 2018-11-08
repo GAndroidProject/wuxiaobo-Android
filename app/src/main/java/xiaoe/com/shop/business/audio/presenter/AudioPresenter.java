@@ -25,6 +25,7 @@ public class AudioPresenter implements IBizCallback {
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
+        if (entity == null)   return;//修复报空指针
         if(iRequest instanceof DetailRequest){
             setAudioDetail(success, (JSONObject) entity, (String) iRequest.getDataParams().get("resource_id"));
         }else if(iRequest instanceof ContentRequest){

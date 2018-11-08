@@ -40,6 +40,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private static final String TAG = "ColumnActivity";
     private SimpleDraweeView columnImage;
     private TextView columnTitle;
+    private TextView barTitle;
     private TextView buyCount;
     private ScrollViewPager columnViewPager;
     private LinearLayout btnContentDetail;
@@ -53,6 +54,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private CommonBuyView buyView;
     private ColumnFragmentStatePagerAdapter columnViewPagerAdapter;
     private ListBottomLoadMoreView loadMoreView;
+    private View mBottomEndView;
     private CustomScrollView columnScrollView;
     private String resourceId;
     private Intent mIntent;
@@ -109,6 +111,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             columnImage.setImageURI(imageUrl);
         }
         columnTitle = (TextView) findViewById(R.id.column_title);
+        barTitle = (TextView) findViewById(R.id.tv_title);
         buyCount = (TextView) findViewById(R.id.buy_num);
         columnViewPager = (ScrollViewPager) findViewById(R.id.column_view_pager);
         columnViewPager.setNeedMeasure(true);
@@ -118,6 +121,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         columnViewPager.setOffscreenPageLimit(2);
         //加载更多
         loadMoreView = (ListBottomLoadMoreView) findViewById(R.id.btn_bottom_load_more);
+        mBottomEndView = findViewById(R.id.bottom_end);
         loadMoreView.setVisibility(View.GONE);
         setLoadState(ListBottomLoadMoreView.STATE_LOADING);
         //课程简介按钮
@@ -275,6 +279,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         ColumnDetailFragment detailFragment = (ColumnDetailFragment) columnViewPagerAdapter.getItem(0);
         detailFragment.setContentDetail(data.getString("content"));
         columnTitle.setText(title);
+        barTitle.setText(title);
         columnImage.setImageURI(collectImgUrl);
         int purchaseCount = data.getIntValue("purchase_count");
         if(purchaseCount > 0){
@@ -292,10 +297,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             case R.id.btn_content_detail:
                 setColumnViewPager(0);
                 loadMoreView.setVisibility(View.GONE);
+                mBottomEndView.setVisibility(View.VISIBLE);
                 break;
             case R.id.btn_content_directory:
                 setColumnViewPager(1);
                 loadMoreView.setVisibility(View.VISIBLE);
+                mBottomEndView.setVisibility(View.GONE);
                 break;
             case R.id.btn_back:
                 finish();
@@ -365,6 +372,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else if(alpha < 0){
             alpha = 0;
         }
+        barTitle.setVisibility(alpha == 255 ? View.VISIBLE : View.GONE);
+        btnBack.setImageResource(alpha > 150 ? R.mipmap.download_back :R.mipmap.detail_white_back);
         columnToolBar.setBackgroundColor(Color.argb((int) alpha,255,255,255));
     }
     @Override

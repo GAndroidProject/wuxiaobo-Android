@@ -142,6 +142,24 @@
                 android:layout_below="@id/column_view_pager"
                 android:visibility="gone"
                 />
+            <FrameLayout
+                android:id="@+id/bottom_end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btn_bottom_load_more"
+                android:background="@color/audio_page_bg_color">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/course_image_text_page_bottom"
+                    android:textSize="12sp"
+                    android:textColor="@color/course_page_bottom_color"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_gravity="center"/>
+
+            </FrameLayout>
         </RelativeLayout>
 
     </xiaoe.com.shop.widget.CustomScrollView>
@@ -162,13 +180,14 @@
             android:layout_centerVertical="true"
             />
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:layout_toStartOf="@id/btn_tool_bar_collect"
-            android:layout_toEndOf="@id/btn_back"
+            android:ellipsize="end"
+            android:maxWidth="130dp"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
             android:textColor="@color/main_title_color"
             android:textSize="18sp"
             />
@@ -180,6 +199,7 @@
             android:layout_centerVertical="true"
             android:src="@mipmap/video_collect"
             android:layout_toStartOf="@+id/btn_tool_bar_share"
+            android:visibility="gone"
             android:layout_marginStart="20dp"
             />
         <ImageView
@@ -190,6 +210,7 @@
             android:layout_marginEnd="20dp"
             android:layout_centerVertical="true"
             android:src="@mipmap/audio_share"
+            android:visibility="gone"
             android:layout_alignParentEnd="true"
             />
     </RelativeLayout>
