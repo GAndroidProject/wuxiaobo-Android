@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,7 +23,7 @@
             android:id="@+id/scholarship_page_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="可提现"
+            android:text="@string/scholarship_page_title"
             android:textSize="16sp"
             android:textColor="@color/scholarship_btn_press"
             android:layout_marginStart="20dp"
@@ -48,7 +49,7 @@
                 android:id="@+id/scholarship_page_content_tail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="元"
+                android:text="@string/scholarship"
                 android:textSize="18sp"
                 android:textColor="@color/scholarship_btn_press"
                 android:layout_gravity="bottom"
@@ -65,7 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/submit_disabled_bg"
-        android:text="提现"
+        android:text="@string/scholarship_page_submit"
         android:textSize="16sp"
         android:textColor="@color/white"
         android:gravity="center"
@@ -79,7 +80,7 @@
         android:id="@+id/scholarship_page_be_super_vip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="开通超级会员，赚取更多奖学金 >>"
+        android:text="@string/be_super_vip"
         android:textSize="16sp"
         android:textColor="@color/recent_update_btn_pressed"
         android:drawableStart="@mipmap/profile_diamond"
@@ -90,30 +91,9 @@
         android:drawablePadding="6dp"
         android:layout_marginTop="36dp"/>
 
-    <TextView
+    <include
+        layout="@layout/earning_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="我的奖学金"
-        android:textSize="18sp"
-        android:textColor="@color/main_title_color"
-        android:textStyle="bold"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="28dp"
-        android:paddingBottom="20dp"
-        android:background="@drawable/layout_bottom_line"/>
-
-    <ListView
-        android:id="@+id/scholarship_page_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:scrollbars="none"
-        android:overScrollMode="never"
-        android:layout_marginTop="12dp"
-        android:divider="@drawable/list_dotted_line"
-        android:dividerHeight="24dp"
-        android:layerType="software"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

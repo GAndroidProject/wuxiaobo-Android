@@ -164,7 +164,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 collect();
                 break;
             case R.id.btn_share:
-                umShare();
+                umShare("hello");
                 break;
             default:
                 break;

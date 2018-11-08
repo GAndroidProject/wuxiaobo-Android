@@ -216,7 +216,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
         itShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                umShare();
+                umShare("hello");
             }
         });
         itBuy.setOnVipBtnClickListener(new View.OnClickListener() {

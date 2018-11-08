@@ -383,10 +383,10 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
      *         UMShareAPI.get(this).onActivityResult(requestCode,resultCode,data);
      *     }
      */
-    public void umShare(){
+    public void umShare(String shareUrl){
         new ShareAction(this)
-                .withText("hello")
-                .setDisplayList(SHARE_MEDIA.QQ,SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
+                .withText(shareUrl)
+                .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
                 .setCallback(this).open();
     }
     @Override

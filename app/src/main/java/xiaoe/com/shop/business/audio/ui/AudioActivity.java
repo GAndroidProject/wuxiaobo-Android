@@ -305,7 +305,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 break;
             case R.id.btn_share:
             case R.id.btn_share_item:
-                umShare();
+                umShare("hello");
                 break;
             default:
                 break;

@@ -312,7 +312,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 break;
             case R.id.btn_share:
             case R.id.btn_tool_bar_share:
-                umShare();
+                umShare("hello");
                 break;
             default:
                 break;

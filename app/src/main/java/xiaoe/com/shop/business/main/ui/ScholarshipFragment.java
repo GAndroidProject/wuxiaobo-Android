@@ -133,8 +133,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 if (!hasBuy) { // 没买
                     showDialogByType(GO_BUY);
                 } else { // 买了，跳转到课程列表页面
-//                    JumpDetail.jumpBoughtList(mContext);
-                    showEarnDialog();
+                    JumpDetail.jumpBoughtList(mContext);
+//                    showEarnDialog();
                 }
                 break;
             case R.id.scholarship_real_range:

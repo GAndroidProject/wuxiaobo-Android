@@ -55,6 +55,7 @@ public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHa
     public void onResp(BaseResp resp) {
         String code = resp.errCode+"";
         String msg = "";
+        Log.d(TAG, "onResp: ---- " + resp.errCode + " ? " + resp.getType());
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 //发送成功
