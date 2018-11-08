@@ -12,9 +12,9 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
@@ -43,37 +43,39 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".business.main.ui.MainActivity"/>
-        <activity android:name=".business.course.ui.CourseImageTextActivity"/>
-        <activity android:name=".business.audio.ui.AudioActivity"
+        <activity android:name=".business.main.ui.MainActivity" />
+        <activity android:name=".business.course.ui.CourseImageTextActivity" />
+        <activity
+            android:name=".business.audio.ui.AudioActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            />
-        <activity android:name=".business.video.ui.VideoActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".business.video.ui.VideoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            />
-        <activity android:name=".business.column.ui.ColumnActivity"/>
-        <service android:name=".business.audio.presenter.AudioMediaPlayer"/>
-        <activity android:name=".business.mine_learning.ui.MineLearningActivity"/>
-        <activity android:name=".business.setting.ui.SettingPersonActivity"/>
-        <activity android:name=".business.setting.ui.SettingPersonItemActivity"/>
-        <activity android:name=".business.setting.ui.SettingAccountActivity"/>
-        <activity android:name=".business.download.ui.DownloadActivity"/>
-        <activity android:name=".business.download.ui.OffLineCacheActivity"/>
-        <activity android:name=".business.column.ui.CacheColumnActivity"/>
-        <activity android:name=".business.search.ui.SearchActivity"/>
-        <activity android:name=".business.course_more.ui.CourseMoreActivity"/>
-        <activity android:name=".business.coupon.ui.CouponActivity"/>
-		<activity android:name=".business.comment.ui.CommentActivity"
-            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".business.column.ui.ColumnActivity" />
+
+        <service android:name=".business.audio.presenter.AudioMediaPlayer" />
+
+        <activity android:name=".business.mine_learning.ui.MineLearningActivity" />
+        <activity android:name=".business.setting.ui.SettingPersonActivity" />
+        <activity android:name=".business.setting.ui.SettingPersonItemActivity" />
+        <activity android:name=".business.setting.ui.SettingAccountActivity" />
+        <activity android:name=".business.download.ui.DownloadActivity" />
+        <activity android:name=".business.download.ui.OffLineCacheActivity" />
+        <activity android:name=".business.column.ui.CacheColumnActivity" />
+        <activity android:name=".business.search.ui.SearchActivity" />
+        <activity android:name=".business.course_more.ui.CourseMoreActivity" />
+        <activity android:name=".business.coupon.ui.CouponActivity" />
+        <activity
+            android:name=".business.comment.ui.CommentActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
-            />
-        <activity android:name=".business.navigate_detail.ui.NavigateDetailActivity"/>
-        <activity android:name=".business.cdkey.ui.CdKeyActivity"/>
-        <activity android:name=".common.pay.ui.PayActivity"/>
-        <activity android:name=".business.coupon.ui.CouponDetailActivity"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".business.navigate_detail.ui.NavigateDetailActivity" />
+        <activity android:name=".business.cdkey.ui.CdKeyActivity" />
+        <activity android:name=".common.pay.ui.PayActivity" />
+        <activity android:name=".business.coupon.ui.CouponDetailActivity" />
         <!--微信sdk start-->
         <activity
             android:name=".wxapi.WXEntryActivity"
@@ -89,7 +91,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent" />
         <!--微信sdk end-->
-        
+
         <receiver android:name=".business.audio.presenter.StatusBarReceiver">
             <intent-filter>
                 <action android:name="me.wcy.music.STATUS_BAR_ACTIONS" />
@@ -99,6 +101,36 @@
         <activity android:name=".business.super_vip.ui.SuperVipActivity" />
 
         <!-- 极光推送相关配置 start -->
+        <!-- For test only 测试状态通知栏，需要打开的Activity -->
+        <activity
+            android:name=".jpush.TestActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="jpush.testAction" />
+                <category android:name="jpush.testCategory" />
+            </intent-filter>
+        </activity>
+
+        <!-- Rich push 核心功能 since 2.0.6-->
+        <activity
+            android:name="cn.jpush.android.ui.PopWinActivity"
+            android:exported="false"
+            android:theme="@style/MyDialogStyle" />
+
+        <!-- Required SDK核心功能-->
+        <activity
+            android:name="cn.jpush.android.ui.PushActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:exported="false"
+            android:theme="@android:style/Theme.NoTitleBar">
+            <intent-filter>
+                <action android:name="cn.jpush.android.ui.PushActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="xiaoe.com.shop" />
+            </intent-filter>
+        </activity>
+
         <!-- Required SDK 核心功能-->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->
         <service
@@ -129,7 +161,6 @@
                 <action android:name="cn.jpush.android.intent.DaemonService" />
                 <category android:name="xiaoe.com.shop" />
             </intent-filter>
-
         </service>
         <!-- since 3.1.0 Required SDK 核心功能-->
         <provider
@@ -192,35 +223,11 @@
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="96cf06f33b5579b8b6f8c3b4" /> <!-- 值来自开发者平台取得的AppKey -->
-
-        <!-- For test only 测试状态通知栏，需要打开的Activity -->
-        <activity
-            android:name=".jpush.TestActivity"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="jpush.testAction" />
-                <category android:name="jpush.testCategory" />
-            </intent-filter>
-        </activity>
-        <!-- Required SDK核心功能-->
-        <activity
-            android:name="cn.jpush.android.ui.PushActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:exported="false"
-            android:theme="@android:style/Theme.NoTitleBar">
-            <intent-filter>
-                <action android:name="cn.jpush.android.ui.PushActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="xiaoe.com.shop" />
-            </intent-filter>
-        </activity>
-
         <!-- 极光推送相关配置 end -->
 
-        <activity android:name=".business.bought_list.ui.BoughtListActivity"/>
-        <activity android:name=".business.scholarship.ui.ScholarshipActivity"/>
-        <activity android:name=".business.integral.ui.IntegralActivity"/>
+        <activity android:name=".business.bought_list.ui.BoughtListActivity" />
+        <activity android:name=".business.scholarship.ui.ScholarshipActivity" />
+        <activity android:name=".business.integral.ui.IntegralActivity" />
 
     </application>
 
