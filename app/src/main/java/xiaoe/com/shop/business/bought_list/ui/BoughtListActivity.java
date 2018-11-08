@@ -12,6 +12,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.umeng.socialize.UMShareAPI;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +22,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.entitys.BoughtListItem;
-import xiaoe.com.common.entitys.DecorateEntityType;
+import xiaoe.com.common.entitys.HadSharedEvent;
+import xiaoe.com.common.entitys.TaskDetailIdEvent;
 import xiaoe.com.common.interfaces.OnItemClickWithBoughtItemListener;
 import xiaoe.com.common.utils.MeasureUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.ScholarshipBoughtListRequest;
+import xiaoe.com.network.requests.ScholarshipSubmitRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.bought_list.presenter.BoughtListAdapter;
@@ -42,14 +47,25 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
     Unbinder unbinder;
 
     List<BoughtListItem> dataList;
+    ScholarshipPresenter scholarshipPresenter;
+
+    Intent intent;
+    String taskId;
+    String resourceId;
+    String resourceType;
+    boolean isSuperVip;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bought_lsit);
         unbinder = ButterKnife.bind(this);
+        intent = getIntent();
+        taskId = intent.getStringExtra("taskId");
+        isSuperVip = intent.getBooleanExtra("isSuperVip", false);
+        EventBus.getDefault().register(this);
         dataList = new ArrayList<>();
-        ScholarshipPresenter scholarshipPresenter = new ScholarshipPresenter(this);
+        scholarshipPresenter = new ScholarshipPresenter(this);
         scholarshipPresenter.requestBoughtList();
 
         initListener();
@@ -77,6 +93,15 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
                 } else {
                     Log.d(TAG, "onMainThreadResponse: request fail...");
                 }
+            } else if (iRequest instanceof ScholarshipSubmitRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    String taskDetailId = data.getString("task_detail_id");
+                    EventBus.getDefault().post(new TaskDetailIdEvent(taskDetailId));
+                } else {
+                    Log.d(TAG, "onMainThreadResponse: request fail...");
+                }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail, param error maybe");
@@ -86,8 +111,21 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         if (unbinder != null) {
             unbinder.unbind();
+        }
+    }
+
+    @Subscribe
+    public void obtainHadSharedEvent(HadSharedEvent hadSharedEvent) {
+        if (hadSharedEvent != null && hadSharedEvent.hadShared) {
+            // 已经分享了
+            if (scholarshipPresenter == null) {
+                scholarshipPresenter = new ScholarshipPresenter(this);
+            }
+            Log.d(TAG, "obtainHadSharedEvent: taskId --- " + taskId + " --- resourceId --- " + resourceId + " --- resourceType --- " + resourceType);
+            scholarshipPresenter.requestSubmitTask(taskId, resourceId, resourceType, isSuperVip);
         }
     }
 
@@ -96,18 +134,13 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
         for (Object item : data) {
             JSONObject itemJson = (JSONObject) item;
             String resourceId = itemJson.getString("resource_id");
-            int resourceType = itemJson.getInteger("resource_type");
-            String resType = "";
-            // 音频
-            if (resourceType == 2) {
-                resType = DecorateEntityType.AUDIO;
-            }
+            String resourceType = itemJson.getInteger("resource_type") == null ? "" : String.valueOf(itemJson.getInteger("resource_type"));
             String imgUrl = itemJson.getString("img_url");
             String title = itemJson.getString("purchase_name");
 
             BoughtListItem boughtListItem = new BoughtListItem();
             boughtListItem.setItemResourceId(resourceId);
-            boughtListItem.setItemResourceType(resType);
+            boughtListItem.setItemResourceType(resourceType);
             boughtListItem.setItemIcon(imgUrl);
             boughtListItem.setItemTitle(title);
 
@@ -129,12 +162,8 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
 
     @Override
     public void onBoughtListItemClick(View view, BoughtListItem boughtListItem) {
-        umShare("http:www.baidu.com");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
+        umShare("http://www.baidu.com");
+        resourceId = boughtListItem.getItemResourceId();
+        resourceType = boughtListItem.getItemResourceType();
     }
 }

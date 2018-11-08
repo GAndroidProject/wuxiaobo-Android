@@ -12,7 +12,10 @@ import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.umeng.socialize.weixin.view.WXCallbackActivity;
 
+import org.greenrobot.eventbus.EventBus;
+
 import xiaoe.com.common.app.Constants;
+import xiaoe.com.common.entitys.HadSharedEvent;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.shop.common.login.LoginPresenter;
 
@@ -55,7 +58,6 @@ public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHa
     public void onResp(BaseResp resp) {
         String code = resp.errCode+"";
         String msg = "";
-        Log.d(TAG, "onResp: ---- " + resp.errCode + " ? " + resp.getType());
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 //发送成功
@@ -93,6 +95,8 @@ public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHa
                 finish();
                 return;
             }
+        } else if (resp.getType() == ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX) { // 分享到微信后的回调
+            EventBus.getDefault().post(new HadSharedEvent(true));
         }
         finish();
     }

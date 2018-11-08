@@ -21,6 +21,7 @@ public class CommonTitleView extends Toolbar {
     private TextView titleContent;
 //    private ImageView titleCollect;
 //    private ImageView titleShare;
+    private TextView titleEnd;
 
     public CommonTitleView(@NonNull Context context) {
         super(context);
@@ -44,6 +45,7 @@ public class CommonTitleView extends Toolbar {
         titleContent = (TextView) view.findViewById(R.id.title_content);
 //        titleCollect = (ImageView) view.findViewById(R.id.title_collect);
 //        titleShare = (ImageView) view.findViewById(R.id.title_share);
+        titleEnd = (TextView) view.findViewById(R.id.title_end);
     }
 
     public void setTitleBackClickListener(OnClickListener listener) {
@@ -81,4 +83,16 @@ public class CommonTitleView extends Toolbar {
 //    public void setTitleCollectDrawable(int drawable) {
 //        titleCollect.setImageDrawable(mContext.getResources().getDrawable(drawable));
 //    }
+
+    public void setTitleEndText(String content) {
+        titleEnd.setText(content);
+    }
+
+    public void setTitleEndVisibility(int visibility) {
+        titleEnd.setVisibility(visibility);
+    }
+
+    public void setTitleEndClickListener(OnClickListener listener) {
+        titleEnd.setOnClickListener(listener);
+    }
 }

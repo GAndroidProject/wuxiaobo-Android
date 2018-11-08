@@ -22,6 +22,9 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +33,11 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.ScholarshipRangeItem;
+import xiaoe.com.common.entitys.TaskDetailIdEvent;
 import xiaoe.com.common.utils.MeasureUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.ScholarshipReceiveRequest;
 import xiaoe.com.network.requests.ScholarshipRequest;
 import xiaoe.com.network.requests.ScholarshipTaskListRequest;
 import xiaoe.com.network.requests.ScholarshipTaskStateRequest;
@@ -88,12 +93,15 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     boolean hasBuy = false;
     boolean isSuperVip = false;
     boolean hasEarnMoney = false;
+    String taskId; // 完成任务 id
+    String taskDetailId; // 提交任务成功后的 id
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_scholarship, null, false);
         unbinder = ButterKnife.bind(this, view);
+        EventBus.getDefault().register(this);
         mContext = getContext();
         view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
         return view;
@@ -117,6 +125,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         if (unbinder != null) {
             unbinder.unbind();
         }
@@ -133,8 +142,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 if (!hasBuy) { // 没买
                     showDialogByType(GO_BUY);
                 } else { // 买了，跳转到课程列表页面
-                    JumpDetail.jumpBoughtList(mContext);
-//                    showEarnDialog();
+//                    JumpDetail.jumpBoughtList(mContext, taskId, isSuperVip);
+                    showEarnDialog();
                 }
                 break;
             case R.id.scholarship_real_range:
@@ -274,6 +283,14 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 } else {
                     Log.d(TAG, "onMainThreadResponse: request fail...");
                 }
+            } else if (iRequest instanceof ScholarshipReceiveRequest) {
+                int code = data.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    // 获取成功之后显示赚取对话框
+                    showEarnDialog();
+                } else {
+                    Log.d(TAG, "onMainThreadResponse: request fail...");
+                }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail, params error error maybe...");
@@ -288,7 +305,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             if (taskType != 1) { // 不是奖学金的话就下一个
                 continue;
             }
-            String taskId = itemJson.getString("task_id");
+            taskId = itemJson.getString("task_id");
             scholarshipPresenter.requestRange(taskId);
             scholarshipPresenter.requestTaskStatues(taskId);
         }
@@ -424,6 +441,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(getActivity(), "去奖学金页面", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             });
         } else {
@@ -444,7 +462,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             earnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), "去积分页面", Toast.LENGTH_SHORT).show();
+                    JumpDetail.jumpScholarshipActivity(getActivity());
+                    dialog.dismiss();
                 }
             });
         }
@@ -465,5 +484,13 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             window.setAttributes(layoutParams);
         }
         dialog.setContentView(view);
+    }
+
+    @Subscribe
+    public void obtainTaskDetailId(TaskDetailIdEvent taskDetailIdEvent) {
+        if (taskDetailIdEvent != null) {
+            taskDetailId = taskDetailIdEvent.getTaskDetailId();
+            scholarshipPresenter.queryReceiveResult(taskId, taskDetailId);
+        }
     }
 }

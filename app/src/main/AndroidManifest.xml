@@ -225,10 +225,12 @@
             android:value="96cf06f33b5579b8b6f8c3b4" /> <!-- 值来自开发者平台取得的AppKey -->
         <!-- 极光推送相关配置 end -->
 
-        <activity android:name=".business.bought_list.ui.BoughtListActivity" />
-        <activity android:name=".business.scholarship.ui.ScholarshipActivity" />
-        <activity android:name=".business.integral.ui.IntegralActivity" />
-
+        <activity android:name=".business.bought_list.ui.BoughtListActivity"/>
+        <activity android:name=".business.earning.ui.ScholarshipActivity"/>
+        <activity android:name=".business.earning.ui.IntegralActivity"/>
+        <activity android:name=".business.earning.ui.WithdrawalRecordActivity"/>
+        <activity android:name=".business.earning.ui.WithdrawalActivity"/>
+        <activity android:name=".business.earning.ui.WithdrawalResultActivity"/>
     </application>
 
 </manifest>

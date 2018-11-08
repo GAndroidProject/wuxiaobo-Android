@@ -18,6 +18,11 @@ import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.comment.ui.CommentActivity;
 import xiaoe.com.shop.business.coupon.ui.CouponDetailActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
+import xiaoe.com.shop.business.earning.ui.IntegralActivity;
+import xiaoe.com.shop.business.earning.ui.ScholarshipActivity;
+import xiaoe.com.shop.business.earning.ui.WithdrawalActivity;
+import xiaoe.com.shop.business.earning.ui.WithdrawalRecordActivity;
+import xiaoe.com.shop.business.earning.ui.WithdrawalResultActivity;
 import xiaoe.com.shop.business.login.ui.LoginActivity;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
@@ -220,8 +225,56 @@ public class JumpDetail {
      * 跳转到已购列表页面
      * @param context
      */
-    public static void jumpBoughtList(Context context) {
+    public static void jumpBoughtList(Context context, String taskId, boolean isSuperVip) {
         Intent intent = new Intent(context, BoughtListActivity.class);
+        intent.putExtra("taskId", taskId);
+        intent.putExtra("isSuperVip", isSuperVip);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到积分页面
+     * @param context
+     */
+    public static void jumpIntegralActivity(Context context) {
+        Intent intent = new Intent(context, IntegralActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到奖学金页面
+     * @param context
+     */
+    public static void jumpScholarshipActivity(Context context) {
+        Intent intent = new Intent(context, ScholarshipActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转提现记录页面
+     * @param context
+     */
+    public static void jumpWrRecord(Context context) {
+        Intent intent = new Intent(context, WithdrawalRecordActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转提现页面
+     * @param context
+     */
+    public static void jumpWr(Context context) {
+        Intent intent = new Intent(context, WithdrawalActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到提现成功页面
+     * @param context
+     */
+    public static void jumpWrResult(Context context, String showPrice) {
+        Intent intent = new Intent(context, WithdrawalResultActivity.class);
+        intent.putExtra("showPrice", showPrice);
         context.startActivity(intent);
     }
 }

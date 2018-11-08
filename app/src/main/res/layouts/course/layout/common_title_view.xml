@@ -40,7 +40,7 @@
 
     <!-- 在奖学金和积分的页面会用到此 view -->
     <TextView
-        android:id="@+id/title_desc"
+        android:id="@+id/title_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"

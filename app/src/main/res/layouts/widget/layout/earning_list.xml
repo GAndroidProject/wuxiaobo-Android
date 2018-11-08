@@ -10,7 +10,6 @@
         android:id="@+id/earning_list_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="积分流水"
         android:textSize="18sp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
@@ -31,12 +30,14 @@
         android:layout_marginTop="12dp"
         android:divider="@drawable/list_dotted_line"
         android:dividerHeight="24dp"
-        android:layerType="software"/>
+        android:layerType="software"
+        android:nestedScrollingEnabled="false"/>
 
     <TextView
         android:id="@+id/earning_empty_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/earning_empty_tip"
         android:textSize="12sp"
         android:textColor="@color/secondary_title_color"
         android:layout_marginStart="20dp"

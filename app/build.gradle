@@ -75,8 +75,7 @@ android {
                     'src/main/res/layouts/jpush',
                     'src/main/res/layouts/super_vip',
                     'src/main/res/layouts/bought_list',
-                    'src/main/res/layouts/integral',
-                    'src/main/res/layouts/scholarship',
+                    'src/main/res/layouts/earning',
                     'src/main/res/layouts',
                     'src/main/res'
                 ]

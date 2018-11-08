@@ -221,6 +221,18 @@
     <string name="integral_build">积分商城正在疯狂建设中&#8230;</string>
     <string name="be_super_vip">开通超级会员，获取更多积分 >></string>
     <string name="integral_list_title">积分流水</string>
+    <string name="earning_empty_tip">暂无积分记录，快去做任务领取积分吧</string>
+    <string name="withdrawal_logo">￥</string>
+    <string name="withdrawal_input_hint">请输入金额</string>
+    <string name="withdrawal_error_tip">输入金额超过可提现余额</string>
+    <string name="withdrawal_left">奖学金余额 %1$f元</string> <!-- 第一个参数为数字 -->
+    <string name="withdrawal_all">全部提现</string>
+    <string name="withdrawal_to">提现到</string>
+    <string name="withdrawal_wx_account">微信账户</string>
+    <string name="withdrawal_now">立即提现</string>
+    <string name="withdrawal_success">已成功提交提现申请</string>
+    <string name="withdrawal_success_tip">预计1&#8211;3天到账</string>
+    <string name="withdrawal_bottom_tip">查看到账明细：我的&#8211;奖学金&#8211;提现记录</string>
 
     <string name="vip_btn_money">开通会员￥1800</string>
 
