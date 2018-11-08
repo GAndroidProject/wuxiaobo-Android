@@ -2,12 +2,17 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        config {
-            keyAlias 'xiaoeshop'
-            keyPassword '123456'
-            storeFile file('../../xiaoeshop.jks')
-//            storeFile file('E:/AndroidStudioProjects/XiaoeShop/xiaoeshop.jks')
-            storePassword '123456'
+        release {
+            storeFile file("../../xiaoeshop.jks")
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+        }
+        debug {
+            storeFile file("../../xiaoeshop.jks")
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
         }
     }
     compileSdkVersion 25
@@ -28,13 +33,12 @@ android {
 //            shrinkResources true//去掉不用资源
             //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            //
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
         }
     }
     sourceSets {
@@ -63,7 +67,7 @@ android {
                     'src/main/res/layouts/coupon',
                     'src/main/res/layouts/cdkey',
                     'src/main/res/layouts/navigate_detail',
-					'src/main/res/layouts/jpush',
+                    'src/main/res/layouts/jpush',
                     'src/main/res/layouts/super_vip',
                     'src/main/res/layouts/bought_list',
                     'src/main/res/layouts/integral',
@@ -71,8 +75,17 @@ android {
                     'src/main/res/layouts',
                     'src/main/res'
                 ]
+//            manifest.srcFile 'src/main/AndroidManifest.xml'
+//            java.srcDirs = ['src']
+//            resources.srcDirs = ['src']
+//            aidl.srcDirs = ['src']
+//            renderscript.srcDirs = ['src']
+//            res.srcDirs = ['src/main/res/layouts']
+//            assets.srcDirs = ['assets']
             jniLibs.srcDirs = ['libs']
         }
+
+        androidTest.setRoot('tests')
     }
     lintOptions {
         disable 'GoogleAppIndexingWarning'
