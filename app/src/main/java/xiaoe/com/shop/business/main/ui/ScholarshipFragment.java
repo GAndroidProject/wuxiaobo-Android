@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -132,7 +133,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 if (!hasBuy) { // 没买
                     showDialogByType(GO_BUY);
                 } else { // 买了，跳转到课程列表页面
-                    JumpDetail.jumpBoughtList(mContext);
+//                    JumpDetail.jumpBoughtList(mContext);
+                    showEarnDialog();
                 }
                 break;
             case R.id.scholarship_real_range:
@@ -404,6 +406,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         Window window = dialog.getWindow();
         View view = getActivity().getLayoutInflater().inflate(R.layout.scholarship_dialog, null);
         ImageView earnClose = (ImageView) view.findViewById(R.id.scholarship_dialog_close);
+        LinearLayout earnWrap = (LinearLayout) view.findViewById(R.id.scholarship_content_wrap);
         TextView earnTitle = (TextView) view.findViewById(R.id.scholarship_dialog_title);
         TextView earnContent = (TextView) view.findViewById(R.id.scholarship_dialog_content);
         TextView earnContentTail = (TextView) view.findViewById(R.id.scholarship_dialog_content_tail);
@@ -412,6 +415,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
 
         if (hasEarnMoney) { // 拿到钱了
             earnTitle.setText("恭喜你，获得奖学金");
+            earnWrap.setBackground(getActivity().getResources().getDrawable(R.mipmap.scholarship_popup_bg));
             String money = "28.96";
             earnContent.setText(money);
             earnContentTail.setVisibility(View.VISIBLE);
@@ -425,6 +429,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         } else {
             earnTitle.setText("差一点就瓜分到了");
             earnContentTail.setVisibility(View.GONE);
+            earnWrap.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
             if (isSuperVip) { // 超级会员
                 String content = "送你20积分";
                 earnContent.setText(content);
@@ -432,6 +437,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             } else {
                 String content = "送你10积分";
                 earnContent.setText(content);
+                earnContent.setTextSize(20);
+                earnContent.setTextColor(getActivity().getResources().getColor(R.color.scholarship_btn_press));
                 earnTip.setVisibility(View.GONE);
             }
             earnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -447,6 +454,16 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 dialog.dismiss();
             }
         });
+        // 先 show 后才会有宽高
+        dialog.show();
 
+        if (window != null) {
+            window.setGravity(Gravity.CENTER);
+            WindowManager.LayoutParams layoutParams = window.getAttributes();
+            Point point = Global.g().getDisplayPixel();
+            layoutParams.width = (int) (point.x * 0.8);
+            window.setAttributes(layoutParams);
+        }
+        dialog.setContentView(view);
     }
 }

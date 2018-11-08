@@ -17,10 +17,10 @@
         android:id="@+id/title_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="图文的标题"
         android:textSize="18sp"
         android:layout_gravity="center"/>
 
+    <!-- 原来需要在 title view 中显示一个收藏按钮和一个分享按钮 -->
     <!--<ImageView-->
         <!--android:id="@+id/title_collect"-->
         <!--android:layout_width="wrap_content"-->
@@ -37,5 +37,14 @@
         <!--android:src="@mipmap/audio_share"-->
         <!--android:layout_gravity="end|center"-->
         <!--tools:ignore="ContentDescription" />-->
+
+    <!-- 在奖学金和积分的页面会用到此 view -->
+    <TextView
+        android:id="@+id/title_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_gravity="end|center"/>
 
 </FrameLayout>

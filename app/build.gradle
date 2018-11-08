@@ -63,8 +63,12 @@ android {
                     'src/main/res/layouts/coupon',
                     'src/main/res/layouts/cdkey',
                     'src/main/res/layouts/navigate_detail',
-					'src/main/res/layouts/jpush',					'src/main/res/layouts/super_vip',
-                    'src/main/res/layouts/bought_list',                    'src/main/res/layouts',
+					'src/main/res/layouts/jpush',
+                    'src/main/res/layouts/super_vip',
+                    'src/main/res/layouts/bought_list',
+                    'src/main/res/layouts/integral',
+                    'src/main/res/layouts/scholarship',
+                    'src/main/res/layouts',
                     'src/main/res'
                 ]
             jniLibs.srcDirs = ['libs']

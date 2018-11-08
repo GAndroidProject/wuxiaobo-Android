@@ -219,6 +219,9 @@
         <!-- 极光推送相关配置 end -->
 
         <activity android:name=".business.bought_list.ui.BoughtListActivity"/>
+        <activity android:name=".business.scholarship.ui.ScholarshipActivity"/>
+        <activity android:name=".business.integral.ui.IntegralActivity"/>
+
     </application>
 
 </manifest>
