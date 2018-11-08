@@ -236,6 +236,8 @@
 
     <string name="vip_btn_money">开通会员￥1800</string>
 
+    <string name="wait_text">等待</string>
+
     <string name="common_bottom_tip">小鹅通提供技术支持</string>
 
     <!-- 版本升级 -->

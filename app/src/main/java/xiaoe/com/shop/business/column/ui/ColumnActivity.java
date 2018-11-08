@@ -79,12 +79,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         setContentView(R.layout.activity_column);
         mIntent = getIntent();
         isBigColumn = mIntent.getBooleanExtra("isBigColumn", false);
+        resourceId = mIntent.getStringExtra("resource_id");
         initView();
         initData();
     }
 
     private void initData() {
-        resourceId = mIntent.getStringExtra("resource_id");
         columnPresenter = new ColumnPresenter(this);
         columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
         collectionUtils = new CollectionUtils(this);
@@ -115,7 +115,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         buyCount = (TextView) findViewById(R.id.buy_num);
         columnViewPager = (ScrollViewPager) findViewById(R.id.column_view_pager);
         columnViewPager.setNeedMeasure(true);
-        columnViewPagerAdapter = new ColumnFragmentStatePagerAdapter(getSupportFragmentManager(),isBigColumn);
+        columnViewPagerAdapter = new ColumnFragmentStatePagerAdapter(getSupportFragmentManager(),isBigColumn, resourceId);
         columnViewPager.setScroll(false);
         columnViewPager.setAdapter(columnViewPagerAdapter);
         columnViewPager.setOffscreenPageLimit(2);

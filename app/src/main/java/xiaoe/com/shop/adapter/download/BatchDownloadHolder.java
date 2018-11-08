@@ -78,6 +78,7 @@ public class BatchDownloadHolder extends BaseViewHolder implements View.OnClickL
         childDownloadAdapter.setSelectListener(this);
         childDownloadAdapter.setParentPosition(position);
         childDownloadAdapter.setItemData(itemData.getResource_list());
+        title.setText(mItemData.getTitle());
     }
     private void setExpandShow(){
         btnExpandDown.setVisibility(View.GONE);

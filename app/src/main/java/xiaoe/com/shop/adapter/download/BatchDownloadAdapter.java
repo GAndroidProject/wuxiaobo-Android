@@ -22,6 +22,7 @@ public class BatchDownloadAdapter extends RecyclerView.Adapter<BaseViewHolder>  
 
     public BatchDownloadAdapter(Context context) {
         mContext = context;
+        itemData = new ArrayList<ColumnDirectoryEntity>();
     }
 
     @Override
@@ -42,8 +43,13 @@ public class BatchDownloadAdapter extends RecyclerView.Adapter<BaseViewHolder>  
         return itemData.size();
     }
 
-    public void setItemData(List<ColumnDirectoryEntity> date){
-        itemData = date;
+//    public void setItemData(List<ColumnDirectoryEntity> date){
+//        itemData = date;
+//        notifyDataSetChanged();
+//    }
+
+    public void addAllData(List<ColumnDirectoryEntity> list){
+        itemData.addAll(list);
         notifyDataSetChanged();
     }
 

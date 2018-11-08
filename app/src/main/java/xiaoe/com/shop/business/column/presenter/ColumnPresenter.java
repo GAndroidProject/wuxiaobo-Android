@@ -40,8 +40,8 @@ public class ColumnPresenter implements IBizCallback {
     public void requestDetail(String resourceId, String resourceType){
         DetailRequest detailRequest = new DetailRequest( this);
         detailRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
-        detailRequest.addDataParam("resource_id",resourceId);
-        detailRequest.addDataParam("resource_type",resourceType);
+        detailRequest.addDataParam("goods_id",resourceId);
+        detailRequest.addDataParam("goods_type",Integer.parseInt(resourceType));
         detailRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         detailRequest.sendRequest();
     }
@@ -69,6 +69,8 @@ public class ColumnPresenter implements IBizCallback {
             directoryEntity.setApp_id(jsonObject.getString("app_id"));
             directoryEntity.setTitle(jsonObject.getString("title"));
             String columnId = jsonObject.getString("resource_id");
+            directoryEntity.setImg_url(jsonObject.getString("img_url"));
+            directoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
             directoryEntity.setResource_id(columnId);
             directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
             List<ColumnSecondDirectoryEntity> childList = formatSingleResouceEntity(jsonObject.getJSONArray("resource_list"),columnId , bigColumnId);

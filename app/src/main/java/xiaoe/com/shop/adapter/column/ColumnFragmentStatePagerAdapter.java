@@ -18,16 +18,18 @@ import xiaoe.com.shop.business.column.ui.LittleColumnDirectoryFragment;
 public class ColumnFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     private final String TAG = "ColumnStatePagerAdapter";
     private List<BaseFragment> list = new ArrayList<BaseFragment>();
-    public ColumnFragmentStatePagerAdapter(FragmentManager fm, boolean bigColumn) {
+    public ColumnFragmentStatePagerAdapter(FragmentManager fm, boolean bigColumn, String resourceId) {
         super(fm);
 
         ColumnDetailFragment columnDetailFragment = new ColumnDetailFragment();
         list.add(columnDetailFragment);
         if(bigColumn){
             ColumnDirectoryFragment columnDirectoryFragment = new ColumnDirectoryFragment();
+            columnDirectoryFragment.setResourceId(resourceId);
             list.add(columnDirectoryFragment);
         }else{
             LittleColumnDirectoryFragment littleColumnDirectoryFragment = new LittleColumnDirectoryFragment();
+            littleColumnDirectoryFragment.setResourceId(resourceId);
             list.add(littleColumnDirectoryFragment);
         }
 

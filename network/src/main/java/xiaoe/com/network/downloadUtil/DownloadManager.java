@@ -3,15 +3,26 @@ package xiaoe.com.network.downloadUtil;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSONObject;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import xiaoe.com.common.app.Global;
+import xiaoe.com.common.app.XiaoeApplication;
+import xiaoe.com.common.entitys.ColumnDirectoryEntity;
+import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.common.entitys.DownloadResourceTableInfo;
 import xiaoe.com.common.entitys.DownloadTableInfo;
+import xiaoe.com.common.utils.DateFormat;
+import xiaoe.com.common.utils.MD5Utils;
+import xiaoe.com.common.utils.SQLiteUtil;
 
 /**
  * 下载管理器，断点续传
@@ -29,9 +40,9 @@ public class DownloadManager implements DownloadListner {
      * ConcurrentHashMap可以高并发操作，线程安全，高效
      */
     private ConcurrentHashMap<String, String> mSaveProgresss;//缓存下载进度集合
-    private SaveProgressThread saveProgressThread;
+//    private SaveProgressThread saveProgressThread;
     private boolean isAllDownloadFinish = true;
-    private int MAX_DOWNLOAD_COUNT = 2;
+    private int MAX_DOWNLOAD_COUNT = 1;
     private DownloadEvent downloadEvent;
 
     private DownloadManager() {
@@ -60,9 +71,9 @@ public class DownloadManager implements DownloadListner {
     }
 
     private void createSaveProgressThread() {
-        if (saveProgressThread == null) {
-            saveProgressThread = new SaveProgressThread();
-        }
+//        if (saveProgressThread == null) {
+//            saveProgressThread = new SaveProgressThread();
+//        }
     }
 
 
@@ -81,16 +92,15 @@ public class DownloadManager implements DownloadListner {
             }
             DownloadTask downloadTask = mAwaitDownloadTasks.remove(i);
             DownloadTableInfo taskDownloadInfo = downloadTask.getDownloadInfo();
-            boolean equals = compareResource(appId, resourceId, columnId, bigColumnId, taskDownloadInfo.getAppId(), taskDownloadInfo.getResourceId(), taskDownloadInfo.getColumnId(), taskDownloadInfo.getBigColumnId());
+            boolean equals = compareResource(appId, resourceId, taskDownloadInfo.getAppId(), taskDownloadInfo.getResourceId());
             if (equals) {
-                Log.d(TAG, "download: ----------------");
                 mDownloadTasks.add(downloadTask);
                 downloadTask.start();
-                DownloadTableInfo downloadInfo = downloadTask.getDownloadInfo();
-                downloadInfo.setDownloadState(0);
-                download.setDownloadState(0);
+//                DownloadTableInfo downloadInfo = downloadTask.getDownloadInfo();
+//                downloadInfo.setDownloadState(0);
+//                download.setDownloadState(0);
                 //数据库更新----
-                DownloadFileConfig.getInstance().insertDownloadInfo(downloadInfo);
+//                DownloadFileConfig.getInstance().insertDownloadInfo(downloadInfo);
                 break;
             }
         }
@@ -103,13 +113,12 @@ public class DownloadManager implements DownloadListner {
         if (download == null) {
             return;
         }
-
+        download.setDownloadState(2);
         for (int i = 0; i < mDownloadTasks.size(); i++) {
             DownloadTask task = mDownloadTasks.get(i);
             DownloadTableInfo info = task.getDownloadInfo();
-            boolean equals = compareResource(download.getAppId(), download.getResourceId(), download.getColumnId(), download.getBigColumnId(), info.getAppId(), info.getResourceId(), info.getColumnId(), info.getBigColumnId());
+            boolean equals = compareResource(download.getAppId(), download.getResourceId(), info.getAppId(), info.getResourceId());
             if (equals) {
-                info.setDownloadState(1);
                 task.pause();
                 mDownloadTasks.remove(i);
                 break;
@@ -118,16 +127,14 @@ public class DownloadManager implements DownloadListner {
         for (int i = 0; i < mAwaitDownloadTasks.size(); i++) {
             DownloadTask task = mAwaitDownloadTasks.get(i);
             DownloadTableInfo info = task.getDownloadInfo();
-            boolean equals = compareResource(download.getAppId(), download.getResourceId(), download.getColumnId(), download.getBigColumnId(), info.getAppId(), info.getResourceId(), info.getColumnId(), info.getBigColumnId());
+            boolean equals = compareResource(download.getAppId(), download.getResourceId(), info.getAppId(), info.getResourceId());
             if (equals) {
-                info.setDownloadState(1);
                 mAwaitDownloadTasks.remove(i);
                 break;
             }
         }
-//        download.setDownloadState(1);
-//        String key = download.getColumnResourceId() + "_" + download.getResourceId();
-//        DownloadFileConfig.putString(key, download.getDownloadFileJson());
+        DownloadFileConfig.getInstance().updateDownloadInfo(download);
+        sendDownloadEvent(download, 0, 2);
         //更新数据库----
     }
 
@@ -146,9 +153,8 @@ public class DownloadManager implements DownloadListner {
             //等待下载任务
             DownloadTask downloadTask = mAwaitDownloadTasks.get(i);
             DownloadTableInfo downloadTableInfo = downloadTask.getDownloadInfo();
-            boolean equals = compareResource(download.getAppId(), resourceId, columnId, bigColumnId, downloadTableInfo.getAppId(), downloadTableInfo.getResourceId(), downloadTableInfo.getColumnId(), downloadTableInfo.getBigColumnId());
+            boolean equals = compareResource(download.getAppId(), resourceId, downloadTableInfo.getAppId(), downloadTableInfo.getResourceId());
             if (equals) {
-                Log.d(TAG, "start: ++++++++");
                 isExistAwaitList = true;
                 break;
             }
@@ -158,26 +164,23 @@ public class DownloadManager implements DownloadListner {
             //正在下载任务
             DownloadTask downloadTask = mDownloadTasks.get(i);
             DownloadTableInfo downloadTableInfo = downloadTask.getDownloadInfo();
-            boolean equals = compareResource(download.getAppId(), resourceId, columnId, bigColumnId, downloadTableInfo.getAppId(), downloadTableInfo.getResourceId(), downloadTableInfo.getColumnId(), downloadTableInfo.getBigColumnId());
+            boolean equals = compareResource(download.getAppId(), resourceId, downloadTableInfo.getAppId(), downloadTableInfo.getResourceId());
             if (equals) {
-                Log.d(TAG, "start: ***********");
                 return;
             }
         }
         if (!isExistAwaitList) {
             mAwaitDownloadTasks.add(new DownloadTask(download, this));
+            download.setDownloadState(0);
+            sendDownloadEvent(download, 0, 0);
         }
         download(download);
-//        startDownloadImage(download);
-//        if (isAllDownloadFinish) {
-//            isAllDownloadFinish = false;
-//            saveProgressThread.start();
-//        }
     }
 
     //比较两个资源是否相同
-    private boolean compareResource(String appId, String resourceId, String columnId, String bigColumnId, String newAppId, String newResId, String newColumnId, String newBigColumnId) {
-        return appId.equals(newAppId) && resourceId.equals(newResId) && columnId.equals(newColumnId) && bigColumnId.equals(newBigColumnId);
+    private boolean compareResource(String appId, String resourceId, String newAppId, String newResId) {
+//        return appId.equals(newAppId) && resourceId.equals(newResId) && columnId.equals(newColumnId) && bigColumnId.equals(newBigColumnId);
+        return appId.equals(newAppId) && resourceId.equals(newResId);
     }
 
     /**
@@ -211,57 +214,241 @@ public class DownloadManager implements DownloadListner {
      *
      * @param download
      */
-    public void removeDownload(DownloadTableInfo download) {
-        String resourceId = download.getResourceId();
-        String columnId = download.getColumnId();
-        String bigColumnId = download.getBigColumnId();
-        for (int i = 0; i < mDownloadTasks.size(); i++) {
-            DownloadTask task = mDownloadTasks.get(i);
-            DownloadTableInfo info = task.getDownloadInfo();
-            boolean equals = compareResource(download.getAppId(), resourceId, columnId, bigColumnId, info.getAppId(), info.getResourceId(), info.getColumnId(), info.getBigColumnId());
-            if (equals) {
-                task.pause();
-                task.cancel();
-                mDownloadTasks.remove(i);
-                //更新数据库
-                break;
-            }
+    public void removeDownload(DownloadResourceTableInfo download) {
+
+        String md5Code = MD5Utils.encrypt(download.getResourceId());
+        String delSQL = "DELETE FROM "+DownloadFileConfig.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
+        DownloadFileConfig.getInstance().execSQL(delSQL);
+        File file = new File(download.getLocalFilePath());
+        if(file.exists() && file.isFile()){
+            file.delete();
         }
-        for (int i = 0; i < mAwaitDownloadTasks.size(); i++) {
-            DownloadTask task = mAwaitDownloadTasks.get(i);
-            DownloadTableInfo info = task.getDownloadInfo();
-            boolean equals = compareResource(download.getAppId(), resourceId, columnId, bigColumnId, info.getAppId(), info.getResourceId(), info.getColumnId(), info.getBigColumnId());
-            if (equals) {
-                //更新数据库
-                mAwaitDownloadTasks.remove(i);
-                break;
-            }
-        }
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
+        String delRelaSQL = "DELETE FROM "+RelationTable.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
+        SQLiteUtil.execSQL(delRelaSQL);
+
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
+        String delResSQL = "DELETE FROM "+DownloadResourceTable.TABLE_NAME+" where app_id='"+download.getAppId()+"' and resource_id='"+download.getResourceId()+"'";
+        SQLiteUtil.execSQL(delResSQL);
     }
+
+//    public void removeDownloadFinish(DownloadResourceTableInfo download, String topicId, String columnId){
+//        topicId = TextUtils.isEmpty(topicId) ? "" : topicId;
+//        columnId = TextUtils.isEmpty(columnId) ? "" : columnId;
+//        String md5Code = MD5Utils.encrypt(topicId+columnId+download.getResourceId());
+//        if(download.getDepth() == 0){
+//            SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
+//
+//            String delSQL = "DELETE FROM "+DownloadFileConfig.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
+//            DownloadFileConfig.getInstance().execSQL(delSQL);
+//            File file = new File(download.getLocalFilePath());
+//            if(file.exists() && file.isFile()){
+//                file.delete();
+//            }
+//            String delRelaSQL = "DELETE FROM "+RelationTable.TABLE_NAME+" app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
+//            SQLiteUtil.execSQL(delRelaSQL);
+//        }else if(download.getDepth() == 1){
+//            while (download.getChildList().size() > 0){
+//                removeDownloadFinish(download.getChildList().remove(0), topicId, download.getResourceId());
+//            }
+//        }else if(download.getDepth() == 2){
+//            while (download.getChildList().size() > 0){
+//                removeDownloadFinish(download.getChildList().remove(0), download.getResourceId(), download.getResourceId());
+//            }
+//        }
+//    }
 
     /**
      * 添加下载任务
      */
-    public void add(DownloadTableInfo download) {
-        //是否存在下载列表，如果为空则不存在
-        DownloadTableInfo existDownloadInfo = isExistInDownloadList(download);
-        if (existDownloadInfo != null) {
-            Log.d(TAG, "add: exist download list");
-            start(existDownloadInfo);
-            return;
+    public void addLittleColumn(ColumnDirectoryEntity column, String appId){
+//        SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
+//        if(!SQLiteUtil.tabIsExist(DownloadResourceTable.TABLE_NAME)){
+//            SQLiteUtil.execSQL(DownloadResourceTable.CREATE_TABLE_SQL);
+//        }
+//        String querySQL ="select * from "+DownloadResourceTable.TABLE_NAME+" where resource_id=? limit 1";
+//        if(littleColumn != null){
+//            //小专栏
+//            List<DownloadResourceTableInfo> tableInfos = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, querySQL, new String[]{littleColumn.getResource_id()});
+//            //数据不存在，则插入一条数据
+//            if(tableInfos == null || tableInfos.size() <= 0){
+//                DownloadResourceTableInfo table = new DownloadResourceTableInfo();
+//                table.setAppId(littleColumn.getApp_id());
+//                table.setResourceId(littleColumn.getResource_id());
+//                table.setTitle(littleColumn.getTitle());
+//                table.setResourceType(3);
+//                table.setImgUrl(littleColumn.getImg_url());
+//                table.setDesc("");
+//                SQLiteUtil.insert(DownloadResourceTable.TABLE_NAME, table);
+//            }
+//        }
+
+        //专栏
+        if(column != null){
+            String queryResourceSQL ="select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
+            List<DownloadResourceTableInfo> dbResourceList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResourceSQL, new String[]{appId, column.getResource_id()});
+            if(dbResourceList == null || dbResourceList.size() <= 0){
+                //没有对应的资源，则插入一条数据
+                DownloadResourceTableInfo resourceInfo = new DownloadResourceTableInfo();
+                resourceInfo.setAppId(appId);
+                resourceInfo.setResourceId(column.getResource_id());
+                resourceInfo.setTitle(column.getTitle());
+                resourceInfo.setDesc("");
+                resourceInfo.setImgUrl(column.getImg_url());
+                resourceInfo.setResourceType(3);
+                resourceInfo.setDepth(1);
+                resourceInfo.setCreateAt(DateFormat.currentTime());
+                resourceInfo.setUpdateAt(DateFormat.currentTime());
+                SQLiteUtil.insert(DownloadResourceTable.TABLE_NAME, resourceInfo);
+            }
         }
-        if (new File(download.getLocalFilePath()+"/"+download.getFileName()).exists()) {
-            //如果文件已经存在，说明已经下载过，并已下载完
-            Log.d(TAG, "add:is download exist and download finish");
-            return;
+    }
+
+    public void addBigColumn(ColumnDirectoryEntity topic, String appId){
+        //大专栏
+        if(topic != null){
+            String queryResourceSQL ="select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
+            List<DownloadResourceTableInfo> dbResourceList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResourceSQL, new String[]{appId, topic.getResource_id()});
+            if(dbResourceList == null || dbResourceList.size() <= 0){
+                //没有对应的资源，则插入一条数据
+                DownloadResourceTableInfo resourceInfo = new DownloadResourceTableInfo();
+                resourceInfo.setAppId(appId);
+                resourceInfo.setResourceId(topic.getResource_id());
+                resourceInfo.setTitle(topic.getTitle());
+                resourceInfo.setDesc("");
+                resourceInfo.setImgUrl(topic.getImg_url());
+                resourceInfo.setResourceType(4);
+                resourceInfo.setDepth(2);
+                resourceInfo.setCreateAt(DateFormat.currentTime());
+                resourceInfo.setUpdateAt(DateFormat.currentTime());
+                SQLiteUtil.insert(DownloadResourceTable.TABLE_NAME, resourceInfo);
+            }
         }
-        Log.d(TAG, "add: add finish");
-//        DownloadFileConfig.putString(key, download.getDownloadFileJson());
-//        DownloadFileConfig.saveDetails(key, download.getResourceDetails());
-        //更新数据库
-        mAwaitDownloadTasks.add(new DownloadTask(download, this));
-        start(download);
-        sendDownlaodEvent(download, 0, 1101);
+    }
+
+    public void addDownload(String tId, String cId, ColumnSecondDirectoryEntity resource){
+        String topicId = TextUtils.isEmpty(cId) ? "" : tId;
+        String columnId = TextUtils.isEmpty(cId) ? "" : cId;
+        String resourceId = resource.getResource_id();
+        String appId = resource.getApp_id();
+
+        String md5Code = MD5Utils.encrypt(topicId+columnId+resourceId);
+        //查询下载列表中是否存在
+        String querySQL ="select * from "+DownloadFileConfig.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
+        List<DownloadTableInfo> tableInfos = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resourceId});
+        //如果数据里没有，则添加
+        if(tableInfos == null || tableInfos.size() <= 0){
+            //实际下载的内容
+            DownloadTableInfo downloadTableInfo = new DownloadTableInfo();
+            downloadTableInfo.setAppId(resource.getApp_id());
+            downloadTableInfo.setId(md5Code);
+            downloadTableInfo.setResourceId(resource.getResource_id());
+            downloadTableInfo.setColumnId(resource.getColumnId());
+            downloadTableInfo.setBigColumnId(resource.getBigColumnId());
+            downloadTableInfo.setDownloadState(0);
+            downloadTableInfo.setTitle(resource.getTitle());
+            downloadTableInfo.setDesc("");
+            downloadTableInfo.setResourceType(resource.getResource_type());
+            downloadTableInfo.setImgUrl(resource.getImg_url());
+            downloadTableInfo.setLocalFilePath(Global.g().getDefaultDirectory()+md5Code);
+            if(resource.getResource_type() == 2){
+                String audioUrl = resource.getAudio_url();
+                downloadTableInfo.setFileName(resource.getTitle()+audioUrl.substring(audioUrl.lastIndexOf(".")));
+                downloadTableInfo.setFileDownloadUrl(audioUrl);
+            }else if(resource.getResource_type() == 3){
+//                downloadTableInfo.setFileDownloadUrl(resource.get);
+            }
+            downloadTableInfo.setCreateAt(DateFormat.currentTime());
+            downloadTableInfo.setUpdateAt(DateFormat.currentTime());
+            DownloadFileConfig.getInstance().insertDownloadInfo(downloadTableInfo);
+        }
+        //关系表
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
+        if(!SQLiteUtil.tabIsExist(RelationTable.TABLE_NAME)){
+            SQLiteUtil.execSQL(RelationTable.CREATE_TABLE_SQL);
+        }
+        String queryRelationSQL ="select * from "+RelationTable.TABLE_NAME+" where app_id=? and id=? and resource_id=? limit 1";
+        List<RelationTableInfo> dbRelation = SQLiteUtil.query(RelationTable.TABLE_NAME, queryRelationSQL, new String[]{appId, md5Code, resourceId});
+        if(dbRelation == null || dbRelation.size() <= 0){
+            //关系不存在，则添加插入一条关系
+            RelationTableInfo relationTableInfo = new RelationTableInfo();
+            relationTableInfo.setAppId(appId);
+            relationTableInfo.setId(md5Code);
+            relationTableInfo.setResourceId(resourceId);
+            JSONObject jsonObject = new JSONObject();
+            if(!TextUtils.isEmpty(columnId)){
+                jsonObject.put("column", columnId);
+            }
+            if(!TextUtils.isEmpty(topicId)){
+                jsonObject.put("topic", columnId);
+            }
+            if(jsonObject.size() > 0){
+                relationTableInfo.setPath(jsonObject.toJSONString());
+            }
+            SQLiteUtil.insert(RelationTable.TABLE_NAME, relationTableInfo);
+        }
+
+        //资源表
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
+        if(!SQLiteUtil.tabIsExist(DownloadResourceTable.TABLE_NAME)){
+            SQLiteUtil.execSQL(DownloadResourceTable.CREATE_TABLE_SQL);
+        }
+        String queryResourceSQL ="select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
+        List<DownloadResourceTableInfo> dbResourceList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResourceSQL, new String[]{appId, resourceId});
+        if(dbResourceList == null || dbResourceList.size() <= 0){
+            //没有对应的资源，则插入一条数据
+            DownloadResourceTableInfo resourceInfo = new DownloadResourceTableInfo();
+            resourceInfo.setAppId(appId);
+            resourceInfo.setResourceId(resourceId);
+            resourceInfo.setTitle(resource.getTitle());
+            resourceInfo.setDesc("");
+            resourceInfo.setImgUrl(resource.getImg_url());
+            if(resource.getResource_type() == 2){
+                resourceInfo.setResourceType(1);
+            }else if(resource.getResource_type() == 3){
+                resourceInfo.setResourceType(2);
+            }
+            resourceInfo.setDepth(0);
+            resourceInfo.setCreateAt(DateFormat.currentTime());
+            resourceInfo.setUpdateAt(DateFormat.currentTime());
+            SQLiteUtil.insert(DownloadResourceTable.TABLE_NAME, resourceInfo);
+        }
+
+    }
+
+    public void addDownload(List<ColumnSecondDirectoryEntity> resourceList) {
+        String querySQL ="select * from "+DownloadFileConfig.TABLE_NAME+" where resource_id=? limit 1";
+        for (ColumnSecondDirectoryEntity resInfo : resourceList) {
+//            List<DownloadResourceTableInfo> tableInfos = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, querySQL, new String[]{resInfo.getResource_id()});
+            List<DownloadTableInfo> tableInfos = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{resInfo.getResource_id()});
+            //如果数据里没有，则添加
+            if(tableInfos != null && tableInfos.size() > 0){
+                //已经存在
+                continue;
+            }
+            //实际下载的内容
+            DownloadTableInfo downloadTableInfo = new DownloadTableInfo();
+            downloadTableInfo.setAppId(resInfo.getApp_id());
+            downloadTableInfo.setResourceId(resInfo.getResource_id());
+            downloadTableInfo.setColumnId(resInfo.getColumnId());
+            downloadTableInfo.setBigColumnId(resInfo.getBigColumnId());
+            downloadTableInfo.setDownloadState(0);
+            downloadTableInfo.setTitle(resInfo.getTitle());
+            downloadTableInfo.setDesc("");
+            downloadTableInfo.setResourceType(resInfo.getResource_type());
+            downloadTableInfo.setImgUrl(resInfo.getImg_url());
+            downloadTableInfo.setLocalFilePath(Global.g().getDefaultDirectory()+resInfo.getColumnId());
+            if(resInfo.getResource_type() == 2){
+                String audioUrl = resInfo.getAudio_url();
+                downloadTableInfo.setFileName(resInfo.getTitle()+audioUrl.substring(audioUrl.lastIndexOf(".")));
+                downloadTableInfo.setFileDownloadUrl(audioUrl);
+            }else if(resInfo.getResource_type() == 3){
+//                downloadTableInfo.setFileDownloadUrl(resInfo.);
+            }
+            downloadTableInfo.setCreateAt(DateFormat.currentTime());
+            downloadTableInfo.setUpdateAt(DateFormat.currentTime());
+            DownloadFileConfig.getInstance().insertDownloadInfo(downloadTableInfo);
+        }
     }
 
 
@@ -275,36 +462,52 @@ public class DownloadManager implements DownloadListner {
     }
 
 
+    /**
+     * 移除下载任务
+     */
+    private void removeDownloadTasks(DownloadTableInfo download) {
+        for (int i = 0; i < mDownloadTasks.size(); i++) {
+            DownloadTask task = mDownloadTasks.get(i);
+            DownloadTableInfo info = task.getDownloadInfo();
+            if (compareResource(download.getAppId(), download.getResourceId(), info.getAppId(), info.getResourceId())) {
+                mDownloadTasks.remove(i);
+                break;
+            }
+        }
 
+    }
 
     @Override
     public void onDownloadFinished(DownloadTableInfo downloadInfo) {
         Log.d(TAG, "onDownloadFinished: ");
-        sendDownlaodEvent(downloadInfo, 1, 3);
+        sendDownloadEvent(downloadInfo, 1, 3);
+        removeDownloadTasks(downloadInfo);
+        autoDownloadNextAwaitTask();
     }
+
 
     @Override
     public void onDownloadProgress(DownloadTableInfo downloadInfo, float progress) {
         Log.d(TAG, "onDownloadProgress: ");
-        sendDownlaodEvent(downloadInfo, progress, 0);
+        sendDownloadEvent(downloadInfo, progress, 1);
     }
 
     @Override
     public void onDownloadPause(DownloadTableInfo downloadInfo, float progress) {
         Log.d(TAG, "onDownloadPause: ");
-        sendDownlaodEvent(downloadInfo, progress, 1);
+        sendDownloadEvent(downloadInfo, progress, 2);
     }
 
     @Override
     public void onDownloadCancel(DownloadTableInfo downloadInfo) {
         Log.d(TAG, "onDownloadCancel: ");
-        sendDownlaodEvent(downloadInfo, 0, -1);
+        sendDownloadEvent(downloadInfo, 0, -1);
     }
 
     @Override
     public void onDownloadError(DownloadTableInfo downloadInfo, int errorStatus) {
         Log.d(TAG, "onDownloadError: ");
-        sendDownlaodEvent(downloadInfo, 0, errorStatus);
+        sendDownloadEvent(downloadInfo, 0, errorStatus);
     }
 
     /**
@@ -314,42 +517,44 @@ public class DownloadManager implements DownloadListner {
      * @param progress
      * @param status
      */
-    private void sendDownlaodEvent(DownloadTableInfo downloadInfo, float progress, int status) {
+    private void sendDownloadEvent(DownloadTableInfo downloadInfo, float progress, int status) {
         getInstanceDownloadEvent();
         downloadEvent.setDownloadInfo(downloadInfo);
         downloadEvent.setProgress(progress);
         downloadEvent.setStatus(status);
 
-        String resourceId = downloadInfo.getResourceId();
-        String columnId = downloadInfo.getColumnId();
-        String bigColumnId = downloadInfo.getBigColumnId();
-        String key = columnId + "_" + resourceId;
+        downloadInfo.setUpdateAt(DateFormat.currentTime());
+        //0-等待，1-下载中，2-暂停，3-完成
         if (status == 0) {
-            //正在下载
-            Log.d(TAG, "sendDownlaodEvent: 正在下载");
+            //等待
+            Log.d(TAG, "sendDownlaodEvent: 等待");
+            //更新数据库进度
+            downloadInfo.setDownloadState(0);
         } else if (status == 1) {
-            //下载暂停
-            Log.d(TAG, "sendDownlaodEvent: 下载暂停");
-        } else if (status == 3) {
+            //下载
+            Log.d(TAG, "sendDownlaodEvent: 下载");
+            downloadInfo.setDownloadState(1);
+        } else if(status == 2){
+            //暂停
+            Log.d(TAG, "sendDownlaodEvent: 暂停");
+            downloadInfo.setDownloadState(2);
+        }else if (status == 3) {
             //下载完成
             Log.d(TAG, "sendDownlaodEvent: 完成");
-
+            downloadInfo.setDownloadState(3);
         } else if (status == -1) {
             //取消下载
-//            DownloadFileConfig.remove(resourceId);
-//            DownloadFileConfig.removeProgress(resourceId);
+            downloadInfo.setDownloadState(2);
         } else if (status == -40004 || status == -60000) {
             //-40004:请求失败
             //-60000:网络异常
-//            pause(downloadInfo);
+            pause(downloadInfo);
             Log.d(TAG, "sendDownlaodEvent: 请求失败");
+            downloadInfo.setDownloadState(2);
         }
+        DownloadFileConfig.getInstance().updateDownloadInfo(downloadInfo);
         EventBus.getDefault().post(downloadEvent);
     }
-
-
-
-
 
 
 
@@ -363,18 +568,167 @@ public class DownloadManager implements DownloadListner {
         }
     }
 
-    class SaveProgressThread extends Thread {
-        //保存下载进度线程
-        @Override
-        public void run() {
-            while (mDownloadTasks.size() > 0) {
-                for (Map.Entry<String, String> entry : mSaveProgresss.entrySet()) {
-//                    DownloadFileConfig.updataProgress(entry.getKey(), entry.getValue());
-//                    mSaveProgresss.remove(entry.getKey());
+//    class SaveProgressThread extends Thread {
+//        //保存下载进度线程
+//        @Override
+//        public void run() {
+//            while (mDownloadTasks.size() > 0) {
+//                for (Map.Entry<String, String> entry : mSaveProgresss.entrySet()) {
+////                    DownloadFileConfig.updataProgress(entry.getKey(), entry.getValue());
+////                    mSaveProgresss.remove(entry.getKey());
+//                }
+//            }
+//            isAllDownloadFinish = true;
+//        }
+//    }
+
+    /**
+     * 获取下载中的列表
+     */
+    public List<DownloadTableInfo> getDownloadingList(){
+        //获取下载资源
+        String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" where download_state!=3 order by create_at desc";
+        List<DownloadTableInfo> dbDownloadingList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
+
+        return dbDownloadingList;
+    }
+
+    public List<DownloadResourceTableInfo> getDownloaFinishList(){
+        //获取已下载完成的资源
+        String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" where download_state=3 order by create_at desc";
+        List<DownloadTableInfo> dbDownloadList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
+
+        if(dbDownloadList == null || dbDownloadList.size() <= 0){
+            return null;
+        }
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
+
+        HashMap<String,DownloadResourceTableInfo> tempFinishList = new HashMap<String,DownloadResourceTableInfo>();
+//        HashMap<String, DownloadResourceTableInfo> tempTopic = new HashMap<String, DownloadResourceTableInfo>();
+        HashMap<String, DownloadResourceTableInfo> tempColumn = new HashMap<String, DownloadResourceTableInfo>();
+
+
+        String queryRelaSQL = "select * from "+RelationTable.TABLE_NAME+" where app_id=? and resource_id=?";
+        for (DownloadTableInfo dbItem : dbDownloadList) {
+            List<RelationTableInfo> relaList = SQLiteUtil.query(RelationTable.TABLE_NAME, queryRelaSQL, new String[]{dbItem.getAppId(), dbItem.getResourceId()});
+            if(relaList == null || relaList.size() <= 0){
+                continue;
+            }
+            DownloadResourceTableInfo single = getSingleResource(dbItem);
+            if(single == null){
+                continue;
+            }
+            for (RelationTableInfo dbRelaItem : relaList){
+                String queryResSQL = "select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=?";
+                if(TextUtils.isEmpty(dbRelaItem.getPath())){
+//                    finishList.add(single);
+                    tempFinishList.put(dbRelaItem.getResourceId(), single);
+                    //单品
+                }else{
+                    JSONObject jsonObject = JSONObject.parseObject(dbRelaItem.getPath());
+                    String columnId = jsonObject.getString("column");
+                    if(TextUtils.isEmpty(columnId)){
+                        //如果专栏id都不存在，则说明路径不存在了
+                        continue;
+                    }
+                    String topicId = jsonObject.getString("topic");
+                    if(!TextUtils.isEmpty(topicId)){
+                        //查询大专栏
+                        DownloadResourceTableInfo topic = null;
+                        if(tempFinishList.containsKey(topicId)){
+                            //查询的大专栏已经存在
+                            topic = tempFinishList.get(topicId) ;
+                        }else{
+                            List<DownloadResourceTableInfo> topicList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResSQL, new String[]{dbRelaItem.getAppId(), topicId});
+                            if(topicList != null && topicList.size() > 0){
+                                topic = topicList.get(0);
+                                topic.setChildList(new ArrayList<DownloadResourceTableInfo>());
+                                tempFinishList.put(topicId, topic);
+                            }
+                        }
+                        //查询专栏
+                        DownloadResourceTableInfo column = null;
+                        if(tempColumn.containsKey(columnId)){
+                            //查询的大专栏已经存在
+                            column = tempColumn.get(columnId) ;
+                        }else{
+                            List<DownloadResourceTableInfo> columnList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResSQL, new String[]{dbRelaItem.getAppId(), columnId});
+                            if(columnList != null && columnList.size() > 0){
+                                column = columnList.get(0);
+                                column.setChildList(new ArrayList<DownloadResourceTableInfo>());
+                                tempColumn.put(columnId, column);
+                            }
+                        }
+                        //将商品归类
+                        if(topic != null && column != null){
+                            boolean exist = false;
+                            for (DownloadResourceTableInfo childItem : topic.getChildList()){
+                                if(columnId.equals(childItem.getResourceId())){
+                                    //专栏已经存在，则直接添加商品到给专栏
+                                    exist = true;
+                                    childItem.getChildList().add(single);
+                                    break;
+                                }
+                            }
+                            if(!exist){
+                                //专栏不存在，则直接添加商品到给专栏
+                                column.getChildList().add(single);
+                                topic.getChildList().add(column);
+                            }
+                        }
+                    }else{
+                        //查询专栏
+                        DownloadResourceTableInfo column = null;
+                        if(tempFinishList.containsKey(columnId)){
+                            //查询的专栏已经存在
+                            column = tempFinishList.get(columnId) ;
+                        }else{
+                            List<DownloadResourceTableInfo> columnList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResSQL, new String[]{dbRelaItem.getAppId(), columnId});
+                            if(columnList != null && columnList.size() > 0){
+                                column = columnList.get(0);
+                                column.setChildList(new ArrayList<DownloadResourceTableInfo>());
+                                tempFinishList.put(columnId, column);
+                            }
+                        }
+                        if(column == null){
+                            continue;
+                        }
+                        boolean exist = false;
+                        for (DownloadResourceTableInfo childItem : column.getChildList()){
+                            if(columnId.equals(childItem.getResourceId())){
+                                //专栏已经存在，则直接添加商品到给专栏
+                                exist = true;
+                                childItem.getChildList().add(single);
+                                break;
+                            }
+                        }
+                        if(!exist){
+                            //专栏不存在，则直接添加商品到给专栏
+                            column.getChildList().add(single);
+                        }
+                    }
                 }
             }
-            isAllDownloadFinish = true;
-            Log.d(TAG, "SaveProgressThread: all download finish");
         }
+        List<DownloadResourceTableInfo> finishList = new ArrayList<DownloadResourceTableInfo>();
+        for (Map.Entry<String, DownloadResourceTableInfo> item : tempFinishList.entrySet()){
+            finishList.add(item.getValue());
+        }
+
+        return finishList;
+    }
+    private DownloadResourceTableInfo getSingleResource(DownloadTableInfo dbItem){
+        String queryResSQL = "select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=?";
+        List<DownloadResourceTableInfo> singleList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResSQL, new String[]{dbItem.getAppId(), dbItem.getResourceId()});
+        DownloadResourceTableInfo single = null;
+        if(singleList != null && singleList.size() > 0){
+            single = singleList.get(0);
+            single.setTotalSize(dbItem.getTotalSize());
+            single.setProgress(dbItem.getProgress());
+            single.setLocalFilePath(dbItem.getLocalFilePath()+"/"+dbItem.getFileName());
+            single.setFileUrl(dbItem.getFileDownloadUrl());
+        }
+        return single;
     }
 }

@@ -44,16 +44,17 @@ public class AudioPresenter implements IBizCallback {
     }
 
     private void setAudioContent(boolean success, JSONObject jsonObject) {
-        JSONObject data = jsonObject.getJSONObject("data");
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
         if(playEntity == null){
             playEntity = new AudioPlayEntity();
         }
-        if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
+        if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED ){
             playEntity.setCode(1);
             playAudio(playEntity.isPlay());
             return;
         }
+        JSONObject data = jsonObject.getJSONObject("data");
+
         playEntity.setPlayUrl(data.getString("audio_url"));
         playEntity.setContent(data.getString("content"));
         playEntity.setCode(0);
@@ -62,7 +63,7 @@ public class AudioPresenter implements IBizCallback {
     }
 
     private void setAudioDetail(boolean success, JSONObject jsonObject, String resourceId) {
-        JSONObject data = jsonObject.getJSONObject("data");
+
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
         if(playEntity == null){
             playEntity = new AudioPlayEntity();
@@ -71,15 +72,16 @@ public class AudioPresenter implements IBizCallback {
             playEntity.setIndex(0);
             playEntity.setPlay(false);
         }
+        if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED ){
+            playEntity.setCode(1);
+            return;
+        }
+        JSONObject data = jsonObject.getJSONObject("data");
         if(!resourceId.equals(playEntity.getResourceId())){
             //当前播放的音频与请求到的音频数据不是同一资源，则放弃结果
             return;
         }
         playEntity.setCurrentPlayState(1);
-        if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
-            playEntity.setCode(1);
-            return;
-        }
         JSONObject resourceInfo = data.getJSONObject("resource_info");
         playEntity.setTitle(resourceInfo.getString("title"));
         playEntity.setHasFavorite(resourceInfo.getIntValue("has_favorite"));
@@ -115,8 +117,8 @@ public class AudioPresenter implements IBizCallback {
     public void requestDetail(String resourceId){
         DetailRequest detailRequest = new DetailRequest( this);
         detailRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
-        detailRequest.addDataParam("resource_id",resourceId);
-        detailRequest.addDataParam("resource_type","2");
+        detailRequest.addDataParam("goods_id",resourceId);
+        detailRequest.addDataParam("goods_type",2);
         detailRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         detailRequest.sendRequest();
     }
@@ -128,7 +130,7 @@ public class AudioPresenter implements IBizCallback {
         ContentRequest contentRequest = new ContentRequest( this);
         contentRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
         contentRequest.addRequestParam("resource_id",resourceId);
-        contentRequest.addRequestParam("resource_type","2");
+        contentRequest.addRequestParam("resource_type",2);
         contentRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         contentRequest.sendRequest();
     }

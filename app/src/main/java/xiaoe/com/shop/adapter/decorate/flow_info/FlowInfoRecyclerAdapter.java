@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -122,7 +121,8 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                    jumpAudioActivity(audioBG, audioRing);
+//                        jumpAudioActivity(audioBG, audioRing);
+                        JumpDetail.jumpAudio(mContext, currentItem.getItemId(), currentItem.isItemHasBuy() ? 1 : 0 );
                     }
                 });
                 return new FlowInfoAudioViewHolder(view);

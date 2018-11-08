@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import xiaoe.com.common.app.Global;
+import xiaoe.com.common.entitys.DownloadResourceTableInfo;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.interfaces.IonSlidingButtonListener;
 import xiaoe.com.shop.interfaces.IonSlidingViewClickListener;
@@ -28,9 +29,6 @@ public class FinishDownloadListHolder extends RecyclerView.ViewHolder implements
     private TextView totalSize;
     private IonSlidingViewClickListener mIonSlidingViewClickListener;
     private int mPosition;
-    private String[] urls = {"http://img.zcool.cn/community/01a9e45a60510ca8012113c7899c89.jpg@1280w_1l_2o_100sh.jpg",
-                            "http://gbres.dfcfw.com/Files/picture/20170925/9B00CEC6F06B756A4A9C256E870A324B.jpg",
-                            "http://pic38.nipic.com/20140212/17942401_101320663138_2.jpg"};
     private RelativeLayout btnDelete;
 
     public FinishDownloadListHolder(Context context, View itemView, IonSlidingButtonListener slidingButtonListener, IonSlidingViewClickListener slidingViewClickListener) {
@@ -54,14 +52,13 @@ public class FinishDownloadListHolder extends RecyclerView.ViewHolder implements
         btnDelete.setOnClickListener(this);
     }
 
-    public void bindView(String s, int position){
+    public void bindView(DownloadResourceTableInfo info, int position){
         mPosition = position;
-        title.setText("标题-"+s);
-        desc.setText("描述-"+s);
+        title.setText(info.getTitle());
         layoutContent.getLayoutParams().width = displayWidth;
-        count.setText("12/15集");
-        totalSize.setText("共"+(302* (position+1))+"M");
-        image.setImageURI(urls[position % 3]);
+//        count.setText("12/15集");
+//        totalSize.setText("共"+(302* (position+1))+"M");
+        image.setImageURI(info.getImgUrl());
         layoutContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

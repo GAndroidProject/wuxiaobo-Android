@@ -10,7 +10,7 @@ import xiaoe.com.common.entitys.DownloadTableInfo;
 public class DownloadEvent {
     private DownloadTableInfo downloadInfo;
     private float progress;//0～1,0代表下载0%；1代表下载100%。
-    private int status;//-1代表取消下载（删除），0代表正在下载，1代表下载完成，2代表暂停下载
+    private int status;//-1代表取消下载（删除），0代表正在下载，1-暂停下载，3代表完成
 
     public DownloadTableInfo getDownloadInfo() {
         return downloadInfo;

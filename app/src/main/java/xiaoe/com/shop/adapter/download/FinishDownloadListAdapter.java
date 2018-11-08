@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import xiaoe.com.common.entitys.DownloadResourceTableInfo;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.interfaces.IonSlidingButtonListener;
 import xiaoe.com.shop.interfaces.IonSlidingViewClickListener;
@@ -20,14 +21,12 @@ public class FinishDownloadListAdapter extends RecyclerView.Adapter<FinishDownlo
     private Context mContext;
     private SlidingButtonView bntDelete;
     private IonSlidingViewClickListener mSlidingViewClickListener;
-    private List<String> mDatas = new ArrayList<String>();
+    private List<DownloadResourceTableInfo> mDatas = new ArrayList<DownloadResourceTableInfo>();
 
     public FinishDownloadListAdapter(Context context, IonSlidingViewClickListener slidingViewClickListener){
         mContext = context;
         mSlidingViewClickListener = slidingViewClickListener;
-        for (int i = 0; i < 20; i++){
-            mDatas.add(""+i);
-        }
+
     }
 
     @Override
@@ -38,9 +37,7 @@ public class FinishDownloadListAdapter extends RecyclerView.Adapter<FinishDownlo
 
     @Override
     public void onBindViewHolder(FinishDownloadListHolder holder, int position) {
-//        FinishDownloadListHolder h = (FinishDownloadListHolder) holder;
         holder.bindView(mDatas.get(position), position);
-//        h.bindView(mDatas.get(position), position);
     }
 
     @Override
@@ -79,8 +76,15 @@ public class FinishDownloadListAdapter extends RecyclerView.Adapter<FinishDownlo
         return false;
     }
 
-    public void removeData(int position){
-        mDatas.remove(position);
+    public void setData(List<DownloadResourceTableInfo> list){
+        mDatas.clear();
+        mDatas.addAll(list);
         notifyDataSetChanged();
+    }
+
+    public DownloadResourceTableInfo removeData(int position){
+        DownloadResourceTableInfo remove = mDatas.remove(position);
+        notifyDataSetChanged();
+        return remove;
     }
 }

@@ -12,8 +12,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.download.BatchDownloadAdapter;
 import xiaoe.com.shop.base.BaseFragment;
@@ -28,6 +34,9 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
     private RelativeLayout btnAllSelect;
     private boolean isAllSelect = false;
     private View mRootView;
+    private TextView btnDownload;
+    private String resourceId;
+    private String fromType;
 
     @Nullable
     @Override
@@ -46,7 +55,10 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
     private void initData() {
         Intent intent = getActivity().getIntent();
         String dataJson = intent.getStringExtra("bundle_dataJSON");
-
+        resourceId = intent.getStringExtra("resourceId");
+        fromType = intent.getStringExtra("from_type");
+        List<ColumnDirectoryEntity> dataList = JSONObject.parseArray(dataJson, ColumnDirectoryEntity.class);
+        adapter.addAllData(dataList);
     }
 
     private void initView() {
@@ -62,6 +74,9 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
         allSelectText = (TextView) mRootView.findViewById(R.id.all_select_text);
         btnAllSelect = (RelativeLayout) mRootView.findViewById(R.id.btn_all_select);
         btnAllSelect.setOnClickListener(this);
+
+        btnDownload = (TextView) mRootView.findViewById(R.id.btn_download);
+        btnDownload.setOnClickListener(this);
     }
 
     @Override
@@ -70,8 +85,29 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
             case R.id.btn_all_select:
                 clickAllSelect();
                 break;
+            case R.id.btn_download:
+                clickDownload();
+                break;
             default:
                 break;
+        }
+    }
+
+    private void clickDownload() {
+        if("ColumnDirectoryFragment".equals(fromType)){
+            for (ColumnDirectoryEntity directoryEntity : adapter.getDate()){
+                List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
+                boolean select = false;//小专栏里有选择下载的
+                for (ColumnSecondDirectoryEntity secondDirectoryEntity : directoryEntity.getResource_list()){
+                    if(secondDirectoryEntity.isSelect()){
+                        select = true;
+                        DownloadManager.getInstance().addDownload(null, null, secondDirectoryEntity);
+                    }
+                }
+//                if(select){
+//                    DownloadManager.getInstance().addLittleColumn(directoryEntity, directoryEntity.getApp_id());
+//                }
+            }
         }
     }
 

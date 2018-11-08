@@ -3,11 +3,13 @@ package xiaoe.com.shop.adapter.download;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import xiaoe.com.common.entitys.DownloadResourceTableInfo;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
@@ -34,7 +36,6 @@ public class DownloadProceedListHolder extends BaseViewHolder implements View.On
 
     private void initViews() {
         title = (TextView) rootView.findViewById(R.id.title);
-        title.setText("【初级】我的房产计划");
         btnExpandDown = (LinearLayout) rootView.findViewById(R.id.btn_expand_down);
         btnExpandDown.setOnClickListener(this);
 
@@ -50,19 +51,22 @@ public class DownloadProceedListHolder extends BaseViewHolder implements View.On
         btnExpandTop.setOnClickListener(this);
     }
 
-    public void bindView(){
-
+    public void bindView(DownloadResourceTableInfo info, int position){
+        title.setText(info.getTitle());
+        childListAdapter.setData(info.getChildResourceList());
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_expand_down:
+                Log.d(TAG, "onClick: btn_expand_down");
                 childRecyclerView.setVisibility(View.VISIBLE);
                 btnExpandTop.setVisibility(View.VISIBLE);
                 btnExpandDown.setVisibility(View.GONE);
                 break;
             case R.id.btn_expand_top:
+                Log.d(TAG, "onClick: btn_expand_top");
                 childRecyclerView.setVisibility(View.GONE);
                 btnExpandTop.setVisibility(View.GONE);
                 btnExpandDown.setVisibility(View.VISIBLE);

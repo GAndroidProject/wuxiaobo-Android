@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.OnSelectListener;
@@ -45,6 +46,12 @@ public class BatchChildDownloadHolder extends BaseViewHolder implements View.OnC
             selectIcon.setImageResource(R.mipmap.download_checking);
         }else{
             selectIcon.setImageResource(R.mipmap.download_tocheck);
+        }
+        title.setText(mData.getTitle());
+        if(mData.getResource_type() == 2){
+            time.setText(DateFormat.longToString(mData.getAudio_length() * 1000));
+        }else{
+            time.setText(DateFormat.longToString(mData.getVideo_length() * 1000));
         }
     }
 

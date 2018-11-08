@@ -38,6 +38,7 @@ public class ColumnSecondDirectoryEntity implements Serializable {
     private String audio_url;
     private String audio_compress_url;
     private String m3u8_url;
+    private String video_url;
 
     private String columnId = "";
     private String bigColumnId = "";
@@ -201,5 +202,13 @@ public class ColumnSecondDirectoryEntity implements Serializable {
 
     public void setBigColumnId(String bigColumnId) {
         this.bigColumnId = bigColumnId;
+    }
+
+    public String getVideo_url() {
+        return video_url;
+    }
+
+    public void setVideo_url(String video_url) {
+        this.video_url = video_url;
     }
 }

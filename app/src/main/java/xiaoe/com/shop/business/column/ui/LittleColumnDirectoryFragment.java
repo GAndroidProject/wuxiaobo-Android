@@ -38,6 +38,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     private List<AudioPlayEntity> playList = null;
     private boolean isAddPlayList = false;
     private boolean isHasBuy = false;
+    private String resourceId;
 
     public LittleColumnDirectoryFragment() {
         playList = new ArrayList<AudioPlayEntity>();
@@ -237,5 +238,9 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    public void setResourceId(String resourceId) {
+        this.resourceId = resourceId;
     }
 }

@@ -6,6 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import xiaoe.com.common.entitys.DownloadTableInfo;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.IonSlidingButtonListener;
@@ -15,9 +19,11 @@ public class DownloadProceedChildListAdapter extends RecyclerView.Adapter<BaseVi
     private static final String TAG = "DownloadProceedListAdap";
     private final Context mContext;
     private SlidingButtonView bntDelete;
+    private List<DownloadTableInfo> downloadResourceList;
 
     public DownloadProceedChildListAdapter(Context context) {
         mContext = context;
+        downloadResourceList = new ArrayList<DownloadTableInfo>();
     }
 
     @Override
@@ -29,12 +35,12 @@ public class DownloadProceedChildListAdapter extends RecyclerView.Adapter<BaseVi
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         DownloadProceedChildListHolder childListHolder = (DownloadProceedChildListHolder) holder;
-        childListHolder.bindView();
+        childListHolder.bindView(downloadResourceList.get(position), position);
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return downloadResourceList.size();
     }
 
     @Override
@@ -57,7 +63,6 @@ public class DownloadProceedChildListAdapter extends RecyclerView.Adapter<BaseVi
     public void closeMenu() {
         bntDelete.closeMenu();
         bntDelete = null;
-
     }
     /**
      * 判断是否有菜单打开
@@ -67,5 +72,18 @@ public class DownloadProceedChildListAdapter extends RecyclerView.Adapter<BaseVi
             return true;
         }
         return false;
+    }
+    public void addAllData(List<DownloadTableInfo> list){
+        downloadResourceList.addAll(list);
+        notifyDataSetChanged();
+    }
+    public void setData(List<DownloadTableInfo> list){
+        downloadResourceList.clear();
+        downloadResourceList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public List<DownloadTableInfo> getData(){
+        return downloadResourceList;
     }
 }

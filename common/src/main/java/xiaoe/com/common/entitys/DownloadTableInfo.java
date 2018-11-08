@@ -3,9 +3,10 @@ package xiaoe.com.common.entitys;
 public class DownloadTableInfo {
     private String tableName;
     private String appId ;
+    private String id;
     private String resourceId ;//不可为空
-    private String columnId;//如果没有专栏id,在填默认empty_column_id
-    private String bigColumnId ;//如果没有专栏id,在填默认empty_big_column_id
+    private String columnId;
+    private String bigColumnId ;
     private long progress;//下载进度
     private long totalSize;//文件大小
     private String localFilePath;//下载本地文件路径
@@ -14,6 +15,10 @@ public class DownloadTableInfo {
     private int fileType;//1-mp3,2-mp4
     private String fileName;
     private String fileDownloadUrl;
+    private String title;
+    private String desc;
+    private String imgUrl;
+    private int resourceType;
     private String createAt;
     private String updateAt;
 
@@ -135,5 +140,45 @@ public class DownloadTableInfo {
 
     public void setFileDownloadUrl(String fileDownloadUrl) {
         this.fileDownloadUrl = fileDownloadUrl;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public int getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(int resourceType) {
+        this.resourceType = resourceType;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
