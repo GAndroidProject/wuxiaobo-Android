@@ -7,9 +7,10 @@
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_weight="7"
+        android:layout_height="0dp">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,14 +39,14 @@
         </FrameLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_layout_exchange"
+            android:layout_height="200dp"
+            android:background="@mipmap/bg_exchange_shadow"
             android:orientation="vertical"
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:paddingBottom="39dp"
             android:paddingTop="34dp"
-            android:layout_marginTop="109dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
             <EditText
@@ -86,10 +87,10 @@
                 android:layout_marginTop="14dp"
                 android:enabled="false"/>
         </LinearLayout>
-    </FrameLayout>
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@mipmap/ck_code_bg"
-        android:layout_weight="1"/>
+        android:layout_weight="8"/>
 </LinearLayout>

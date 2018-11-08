@@ -225,4 +225,20 @@
     <string name="vip_btn_money">开通会员￥1800</string>
 
     <string name="common_bottom_tip">小鹅通提供技术支持</string>
+
+    <!-- 版本升级 -->
+    <string name="find_a_new_version">发现新版本</string>
+    <string name="upgrade_do_it_later">以后再说</string>
+    <string name="upgrade_now">立即升级</string>
+    <string name="upgrade_downloading">正在下载更新</string>
+    <string name="upgrade_already_latest_version">你已经是最新版了</string>
+    <string name="upgrade_my_content">发现新版本！请及时更新</string>
+    <string name="upgrade_version_downloaded">新版本已经下载完成！</string>
+    <string name="upgrade_install">安装</string>
+    <string name="upgrade_redownload">重新下载</string>
+    <string name="upgrade_version_download_fail">新版本下载失败，请检查网络连接后重新下载！</string>
+    <string name="setting_about">关于</string>
+    <string name="setting_about_us">关于我们</string>
+    <string name="setting_version">版本号:V%s</string>
+    <string name="setting_check_update">检查更新</string>
 </resources>

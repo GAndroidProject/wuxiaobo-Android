@@ -26,6 +26,7 @@ import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
+import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
 import xiaoe.com.shop.jpush.ExampleUtil;
@@ -70,6 +71,10 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         startService(audioPlayServiceIntent);
 
         registerMessageReceiver();  // used for receive msg
+
+        //启动应用时自动检测版本更新
+        AppUpgradeHelper.getInstance().registerEventBus();
+//        AppUpgradeHelper.getInstance().checkUpgrade(false, this);
     }
 
     private void initView() {
@@ -178,6 +183,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             AudioMediaPlayer.release();
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        AppUpgradeHelper.getInstance().unregisterEventBus();
     }
 
     @Override
