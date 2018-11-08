@@ -241,4 +241,7 @@
     <string name="setting_about_us">关于我们</string>
     <string name="setting_version">版本号:V%s</string>
     <string name="setting_check_update">检查更新</string>
+
+    <string name="phone_not_reg_text">该手机号未注册，请先注册</string>
+
 </resources>

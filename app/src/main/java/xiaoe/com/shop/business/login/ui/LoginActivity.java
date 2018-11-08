@@ -261,6 +261,8 @@ public class LoginActivity extends XiaoeActivity {
                     loginRegister.setVisibility(View.GONE);
                     currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_we_chat);
                     break;
+                default:
+                    break;
             }
             if (currentFragment != null) {
                 getSupportFragmentManager().beginTransaction().add(R.id.login_container, currentFragment, tag).commit();
@@ -280,6 +282,8 @@ public class LoginActivity extends XiaoeActivity {
                 case BIND_PHONE:
                     loginBack.setVisibility(View.VISIBLE);
                     loginRegister.setVisibility(View.GONE);
+                    break;
+                default:
                     break;
             }
             getSupportFragmentManager().beginTransaction().show(currentFragment).commit();
@@ -368,7 +372,7 @@ public class LoginActivity extends XiaoeActivity {
                     loginPresenter.obtainPhoneCode(phoneNum);
                 } else if (code == NetworkCodes.CODE_NO_REGISTER) { // 没有注册
                     ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(false);
-                    ((LoginPageFragment) currentFragment).phoneErrorTip.setText("该手机未注册，请先注册");
+                    ((LoginPageFragment) currentFragment).phoneErrorTip.setText(R.string.phone_not_reg_text);
                     JudgeUtil.showErrorViewIfNeed(this, REGISTER_ERROR_TIP, ((LoginPageFragment) currentFragment).phoneErrorTip, ((LoginPageFragment) currentFragment).phoneObtainCode);
                 }
             } else if (iRequest instanceof LoginDoRegisterRequest) { // 执行注册操作

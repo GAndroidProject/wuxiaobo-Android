@@ -153,6 +153,8 @@ public class LoginPageFragment extends BaseFragment {
                 break;
             case R.layout.fragment_login_bind_phone:
                 initLoginBindPhoneFragment();
+            default:
+                break;
         }
     }
 
@@ -292,6 +294,8 @@ public class LoginPageFragment extends BaseFragment {
                         break;
                     case LoginActivity.FIND_PWD: // 确认找回密码验证码
                         loginActivity.loginPresenter.verifyFindPwdCode(phoneNum, content);
+                        break;
+                    default:
                         break;
                 }
                 loginActivity.setPhoneNum(phoneNum);
@@ -579,16 +583,14 @@ public class LoginPageFragment extends BaseFragment {
                 phoneObtainCode.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (phoneContent.getText().toString().length() == 11) {
+                        String phoneNumber = phoneContent.getText().toString();
+                        if (phoneNumber.length() == 11) {
                             if (phoneContent.isCursorVisible()) {
                                 phoneContent.setCursorVisible(false);
                             }
                             toggleSoftKeyboard();
                             // TODO: 已经注册就直接走登录逻辑，否则 toast 提示去注册
-                            String phoneNumber = phoneContent.getText().toString();
-                            if (phoneNumber.length() == 11) {
-                                loginActivity.loginPresenter.checkRegister(phoneNumber);
-                            }
+                            loginActivity.loginPresenter.checkRegister(phoneNumber);
                             loginActivity.setPhoneNum(phoneNumber);
                         }
                     }
@@ -616,14 +618,20 @@ public class LoginPageFragment extends BaseFragment {
                 phoneObtainCode.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String phoneNum = phoneContent.getText().toString();
-                        phoneContent.setText("");
-                        toggleSoftKeyboard();
-                        loginActivity.setPhoneNum(phoneNum);
-                        loginActivity.loginPresenter.obtainPhoneCode(phoneNum);
-                        loginActivity.replaceFragment(LoginActivity.CODE);
+                        String phoneNumber = phoneContent.getText().toString();
+                        if (phoneNumber.length() == 11) {
+                            phoneContent.setText("");
+                            toggleSoftKeyboard();
+                            // TODO: 已经注册就直接走登录逻辑，否则 toast 提示去注册
+                            loginActivity.loginPresenter.checkRegister(phoneNumber);
+                            loginActivity.setPhoneNum(phoneNumber);
+                        }
+//                        loginActivity.loginPresenter.obtainPhoneCode(phoneNumber);
+//                        loginActivity.replaceFragment(LoginActivity.CODE);
                     }
                 });
+                break;
+            default:
                 break;
         }
     }
