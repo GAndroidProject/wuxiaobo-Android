@@ -389,6 +389,7 @@ public class LoginActivity extends XiaoeActivity {
                 if (code == NetworkCodes.CODE_LIMIT_USER) { // 受限用户
                     JSONObject data = (JSONObject) result.get("data");
                     obtainLimitUserInfo(data, true);
+                    return;
                 } else if (code == NetworkCodes.CODE_PARAMS_ERROR) { // 参数错误
                     Log.d(TAG, "onMainThreadResponse: register --- " + msg);
                 } else if (code == NetworkCodes.CODE_REGISTER_FAIL) { // 注册失败
