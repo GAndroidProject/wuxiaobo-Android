@@ -563,7 +563,10 @@ public class DownloadManager implements DownloadListner {
             downloadInfo.setDownloadState(3);
         } else if (status == -1) {
             //取消下载
-            downloadInfo.setDownloadState(2);
+            Log.d(TAG, "sendDownlaodEvent: 取消");
+            if(downloadInfo.getDownloadState() != 3){
+                downloadInfo.setDownloadState(2);
+            }
         } else if (status == -40004 || status == -60000) {
             //-40004:请求失败
             //-60000:网络异常
@@ -587,19 +590,13 @@ public class DownloadManager implements DownloadListner {
         }
     }
 
-//    class SaveProgressThread extends Thread {
-//        //保存下载进度线程
-//        @Override
-//        public void run() {
-//            while (mDownloadTasks.size() > 0) {
-//                for (Map.Entry<String, String> entry : mSaveProgresss.entrySet()) {
-////                    DownloadFileConfig.updataProgress(entry.getKey(), entry.getValue());
-////                    mSaveProgresss.remove(entry.getKey());
-//                }
-//            }
-//            isAllDownloadFinish = true;
-//        }
-//    }
+    /**
+     * 设置下载状态未暂停
+     */
+    public void setDownloadPause(){
+        String querySQL = "update "+DownloadFileConfig.TABLE_NAME+" SET download_state = 2 where download_state!=3";
+        DownloadFileConfig.getInstance().execSQL(querySQL);
+    }
 
     /**
      * 获取下载中的列表
@@ -749,5 +746,14 @@ public class DownloadManager implements DownloadListner {
             single.setFileUrl(dbItem.getFileDownloadUrl());
         }
         return single;
+    }
+
+    public boolean isDownload(String appId, String resourceId){
+        String querySQL ="select * from "+DownloadFileConfig.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
+        List<DownloadTableInfo> tableInfos = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resourceId});
+        if(tableInfos != null && tableInfos.size() > 0){
+            return true;
+        }
+        return false;
     }
 }

@@ -65,7 +65,7 @@ public class DownloadProceedChildListHolder extends BaseViewHolder implements Vi
             downloadStartIcon.setImageResource(R.mipmap.download_play);
         }
         float progress = info.getProgress() / (1024f * 1024f);
-        long totalSize = info.getTotalSize() / (1024 * 1024);
+        float totalSize = info.getTotalSize() / (1024f * 1024f);
         float strCount = (float)(Math.round(progress*10*2))/(10*2);
         float strTotal = (float)(Math.round(totalSize*10*2))/(10*2);
         downloadSpeed.setText(strCount+"MB/"+strTotal+"MB");

@@ -1,6 +1,5 @@
 package xiaoe.com.shop.business.download.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +16,6 @@ import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.download.FinishDownloadListAdapter;
 import xiaoe.com.shop.base.BaseFragment;
-import xiaoe.com.shop.business.column.ui.CacheColumnActivity;
 import xiaoe.com.shop.interfaces.IonSlidingViewClickListener;
 
 public class FinishDownloadFragment extends BaseFragment implements IonSlidingViewClickListener {
@@ -57,8 +55,8 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
         if(finishDownloadListAdapter.menuIsOpen()){
             finishDownloadListAdapter.closeMenu();
         }else{
-            Intent intent = new Intent(getActivity(), CacheColumnActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(getActivity(), CacheColumnActivity.class);
+//            startActivity(intent);
         }
     }
     @Override

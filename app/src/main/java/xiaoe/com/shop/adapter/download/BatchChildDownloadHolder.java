@@ -42,11 +42,16 @@ public class BatchChildDownloadHolder extends BaseViewHolder implements View.OnC
 
     public void bindView(ColumnSecondDirectoryEntity itemData, int position){
         mData = itemData;
-        if(itemData.isSelect()){
+        if(itemData.isSelect() && itemData.isEnable()){
             selectIcon.setImageResource(R.mipmap.download_checking);
         }else{
-            selectIcon.setImageResource(R.mipmap.download_tocheck);
+            if(!itemData.isEnable()){
+                selectIcon.setImageResource(R.mipmap.download_alreadychecked);
+            }else{
+                selectIcon.setImageResource(R.mipmap.download_tocheck);
+            }
         }
+
         title.setText(mData.getTitle());
         if(mData.getResource_type() == 2){
             time.setText(DateFormat.longToString(mData.getAudio_length() * 1000));
@@ -74,6 +79,9 @@ public class BatchChildDownloadHolder extends BaseViewHolder implements View.OnC
     }
 
     private void clickSelect() {
+        if(!mData.isEnable()){
+            return;
+        }
         mData.setSelect(!mData.isSelect());
         setSelect(mData.isSelect());
         if(mSelectListener != null){

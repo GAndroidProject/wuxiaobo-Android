@@ -182,11 +182,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         if(iRequest instanceof DetailRequest){
             JSONObject data = (JSONObject) dataObject;
-            if(data.getBoolean("available")){
-                detailRequest(data, true);
-            }else{
-                detailRequest(data.getJSONObject("resource_info"), false);
-            }
+            detailRequest(data.getJSONObject("resource_info"), data.getBoolean("available"));
         }else if(iRequest instanceof ColumnListRequst){
             JSONArray data = (JSONArray) dataObject;
             columnListRequest(iRequest, data);

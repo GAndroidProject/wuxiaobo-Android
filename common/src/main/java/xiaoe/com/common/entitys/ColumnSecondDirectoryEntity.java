@@ -10,6 +10,7 @@ public class ColumnSecondDirectoryEntity implements Serializable {
     private int pageSize = 20;
     private boolean expand = false;// 是否展开
     private boolean isSelect = false; //是否选择
+    private boolean enable = true;//是否可选
     /**
      * app_id : apppcHqlTPT3482
      * resource_id : i_5bce7fe2265ac_mD4vEOaj
@@ -210,5 +211,13 @@ public class ColumnSecondDirectoryEntity implements Serializable {
 
     public void setVideo_url(String video_url) {
         this.video_url = video_url;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

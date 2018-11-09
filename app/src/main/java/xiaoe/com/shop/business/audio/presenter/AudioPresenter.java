@@ -27,7 +27,7 @@ public class AudioPresenter implements IBizCallback {
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
         if (entity == null)   return;//修复报空指针
         if(iRequest instanceof DetailRequest){
-            setAudioDetail(success, (JSONObject) entity, (String) iRequest.getDataParams().get("resource_id"));
+            setAudioDetail(success, (JSONObject) entity, (String) iRequest.getDataParams().get("goods_id"));
         }else if(iRequest instanceof ContentRequest){
             setAudioContent(success, (JSONObject)entity);
         }else{
@@ -81,22 +81,32 @@ public class AudioPresenter implements IBizCallback {
             //当前播放的音频与请求到的音频数据不是同一资源，则放弃结果
             return;
         }
+        boolean available = data.getBoolean("available");
+        JSONObject resourceInfo = null;
+        if(available){
+            resourceInfo = data;
+        }else{
+            resourceInfo = data.getJSONObject("resource_info");
+        }
+
         playEntity.setCurrentPlayState(1);
-        JSONObject resourceInfo = data.getJSONObject("resource_info");
         playEntity.setTitle(resourceInfo.getString("title"));
         playEntity.setHasFavorite(resourceInfo.getIntValue("has_favorite"));
         playEntity.setPlayCount(resourceInfo.getIntValue("audio_play_count"));
-        playEntity.setHasBuy(resourceInfo.getIntValue("has_buy"));
+        playEntity.setHasBuy(available ? 1 : 0);
         playEntity.setResourceId(resourceId);
         playEntity.setPrice(resourceInfo.getIntValue("price"));
         playEntity.setImgUrl(resourceInfo.getString("img_url"));
         playEntity.setImgUrlCompressed(resourceInfo.getString("img_url_compressed"));
-        if(resourceInfo.getIntValue("has_buy") == 0){
+        if(available){
+            playEntity.setPlayUrl(data.getString("audio_url"));
+            playEntity.setContent(data.getString("content"));
+            playEntity.setCode(0);
+            playAudio(playEntity.isPlay());
+        }else{
             playEntity.setCode(0);
             playEntity.setContent(resourceInfo.getString("content"));
             playAudio(false);
-        }else{
-            requestContent(resourceId);
         }
     }
 

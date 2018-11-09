@@ -385,7 +385,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             case AudioPlayEvent.LOADING:
                 audioPlayController.setPlayButtonEnabled(false);
                 break;
-
             case AudioPlayEvent.PLAY:
                 audioPlayController.setPlayButtonEnabled(true);
                 audioPlayController.setPlayState(true);
@@ -394,6 +393,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 setDiskRotateAnimator(true);
                 break;
             case AudioPlayEvent.PAUSE:
+                audioPlayController.setPlayButtonEnabled(true);
                 audioPlayController.setPlayState(false);
                 audioHoverPlayController.setPlayState(false);
                 setDiskRotateAnimator(false);

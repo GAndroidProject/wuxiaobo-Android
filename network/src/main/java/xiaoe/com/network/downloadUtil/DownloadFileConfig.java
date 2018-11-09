@@ -220,4 +220,8 @@ public class DownloadFileConfig implements ISQLiteCallBack {
     public void execSQL(String sql){
         downloadSQLiteUtil.execSQL(sql);
     }
+
+    public void dbClose(){
+        downloadSQLiteUtil.dbClose();
+    }
 }

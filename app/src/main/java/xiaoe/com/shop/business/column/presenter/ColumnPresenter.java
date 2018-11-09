@@ -9,6 +9,7 @@ import java.util.List;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.ColumnListRequst;
@@ -101,6 +102,10 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setAudio_url(jsonObject.getString("audio_url"));
             secondDirectoryEntity.setColumnId(columnId);
             secondDirectoryEntity.setBigColumnId(bigColumnId);
+
+            boolean isDownload = DownloadManager.getInstance().isDownload(secondDirectoryEntity.getApp_id(),secondDirectoryEntity.getResource_id());
+            secondDirectoryEntity.setEnable(!isDownload);
+
             directoryEntityList.add(secondDirectoryEntity);
         }
         return directoryEntityList;

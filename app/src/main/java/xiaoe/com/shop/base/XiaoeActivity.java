@@ -339,9 +339,10 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             getDialog().setHintMessage(getResources().getString(R.string.not_can_pay));
             getDialog().showDialog(-1);
         }else if(code == -2 && hint){
-            getDialog().dismissDialog();
-            getDialog().setHintMessage(getResources().getString(R.string.pay_fail));
-            getDialog().showDialog(-2);
+//            getDialog().dismissDialog();
+//            getDialog().setHintMessage(getResources().getString(R.string.pay_fail));
+//            getDialog().showDialog(-2);
+            toastCustom(getResources().getString(R.string.pay_fail));
         }
         return code;
     }

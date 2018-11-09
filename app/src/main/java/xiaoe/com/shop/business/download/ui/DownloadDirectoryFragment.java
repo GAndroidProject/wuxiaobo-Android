@@ -99,14 +99,11 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
                 List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
                 boolean select = false;//小专栏里有选择下载的
                 for (ColumnSecondDirectoryEntity secondDirectoryEntity : directoryEntity.getResource_list()){
-                    if(secondDirectoryEntity.isSelect()){
+                    if(secondDirectoryEntity.isSelect() && secondDirectoryEntity.isExpand()){
                         select = true;
                         DownloadManager.getInstance().addDownload(null, null, secondDirectoryEntity);
                     }
                 }
-//                if(select){
-//                    DownloadManager.getInstance().addLittleColumn(directoryEntity, directoryEntity.getApp_id());
-//                }
             }
         }
     }
@@ -126,7 +123,9 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
         for (ColumnDirectoryEntity item : adapter.getDate()) {
             item.setSelect(isAllSelect);
             for (ColumnSecondDirectoryEntity childItem : item.getResource_list()) {
-                childItem.setSelect(isAllSelect);
+                if(childItem.isExpand()){
+                    childItem.setSelect(isAllSelect);
+                }
             }
         }
         adapter.notifyDataSetChanged();

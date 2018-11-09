@@ -144,7 +144,7 @@ public class BatchDownloadHolder extends BaseViewHolder implements View.OnClickL
     public void onSelect(int positiont) {
         int select = 0;
         for (ColumnSecondDirectoryEntity item : mItemData.getResource_list()) {
-            if(item.isSelect()){
+            if(item.isSelect() || !item.isEnable()){
                 select++;
             }
         }

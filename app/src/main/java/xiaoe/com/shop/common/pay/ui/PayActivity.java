@@ -121,6 +121,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             }
         }else{
             if(iRequest instanceof PayOrderRequest){
+                paying = false;
                 getDialog().dismissDialog();
                 getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
                 getDialog().showDialog(-1);
@@ -229,6 +230,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
 
     private void payOrderRequest(JSONObject object) {
         if(object.getIntValue("code") != NetworkCodes.CODE_SUCCEED){
+            paying = false;
             getDialog().dismissDialog();
             getDialog().setHintMessage(getResources().getString(R.string.pay_info_error));
             getDialog().showDialog(-1);
