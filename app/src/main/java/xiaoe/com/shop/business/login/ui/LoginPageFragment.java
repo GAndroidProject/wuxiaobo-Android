@@ -598,6 +598,9 @@ public class LoginPageFragment extends BaseFragment {
                         et.setCompoundDrawables(null, null, right, null);
                         et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     }
+                    if (!TextUtils.isEmpty(et.getText().toString())) {
+                        et.setSelection(et.getText().toString().trim().length() - 1);
+                    }
                     return true;
                 }
                 return false;
