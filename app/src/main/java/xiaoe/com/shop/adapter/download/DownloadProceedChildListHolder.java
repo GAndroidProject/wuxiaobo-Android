@@ -7,17 +7,16 @@ import android.widget.TextView;
 
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.DownloadTableInfo;
-import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.interfaces.IonSlidingButtonListener;
-import xiaoe.com.shop.widget.SlidingButtonView;
+import xiaoe.com.shop.interfaces.OnDownloadListListener;
 
-public class DownloadProceedChildListHolder extends BaseViewHolder implements View.OnClickListener {
+public class DownloadProceedChildListHolder extends BaseViewHolder implements View.OnClickListener, View.OnLongClickListener {
     private static final String TAG = "DownloadProceedListHold";
     private final View rootView;
-    private RelativeLayout btnDelete;
-    private RelativeLayout layoutContent;
+//    private RelativeLayout btnDelete;
+//    private RelativeLayout layoutContent;
     private TextView childTitle;
     private TextView downloadSpeed;
     private RelativeLayout btnDownloadStart;
@@ -25,30 +24,33 @@ public class DownloadProceedChildListHolder extends BaseViewHolder implements Vi
     private DownloadTableInfo downloadInfo;
     private TextView downloadWait;
     private ImageView downloadStartIcon;
+    private OnDownloadListListener listListener;
+    private int mPosition;
 
-    public DownloadProceedChildListHolder(View itemView, IonSlidingButtonListener buttonListener) {
+    public DownloadProceedChildListHolder(View itemView, IonSlidingButtonListener buttonListener, OnDownloadListListener listener) {
         super(itemView);
         rootView = itemView;
-        ((SlidingButtonView)itemView).setSlidingButtonListener(buttonListener);
+//        ((SlidingButtonView)itemView).setSlidingButtonListener(buttonListener);
         displayWidth = Global.g().getDisplayPixel().x;
+        listListener = listener;
         initViews();
     }
 
     private void initViews() {
-        btnDelete = (RelativeLayout) rootView.findViewById(R.id.btn_delete);
-        btnDelete.setOnClickListener(this);
-        layoutContent = (RelativeLayout) rootView.findViewById(R.id.layout_content);
         childTitle = (TextView) rootView.findViewById(R.id.child_title);
         downloadSpeed = (TextView) rootView.findViewById(R.id.download_speed);
         btnDownloadStart = (RelativeLayout) rootView.findViewById(R.id.btn_download_start);
         btnDownloadStart.setOnClickListener(this);
         downloadWait = (TextView) rootView.findViewById(R.id.download_wait_text);
         downloadStartIcon = (ImageView) rootView.findViewById(R.id.btn_download_start_icon);
+        RelativeLayout childItem = (RelativeLayout) rootView.findViewById(R.id.child_item);
+        childItem.setOnLongClickListener(this);
     }
 
     public void bindView(DownloadTableInfo info, int position){
+        mPosition = position;
         downloadInfo = info;
-        layoutContent.getLayoutParams().width = displayWidth;
+//        layoutContent.getLayoutParams().width = displayWidth;
         childTitle.setText(info.getTitle());
         downloadWait.setVisibility(View.GONE);
         downloadStartIcon.setVisibility(View.VISIBLE);
@@ -62,23 +64,32 @@ public class DownloadProceedChildListHolder extends BaseViewHolder implements Vi
         }else if(state == 2){
             downloadStartIcon.setImageResource(R.mipmap.download_play);
         }
-        long progress = info.getProgress() / (1024 * 1024);
+        float progress = info.getProgress() / (1024f * 1024f);
         long totalSize = info.getTotalSize() / (1024 * 1024);
-        downloadSpeed.setText(progress+"MB/"+totalSize+"MB");
+        float strCount = (float)(Math.round(progress*10*2))/(10*2);
+        float strTotal = (float)(Math.round(totalSize*10*2))/(10*2);
+        downloadSpeed.setText(strCount+"MB/"+strTotal+"MB");
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_download_start:
-                if(downloadInfo.getDownloadState() == 0 || downloadInfo.getDownloadState() == 1){
-                    DownloadManager.getInstance().pause(downloadInfo);
-                }else if(downloadInfo.getDownloadState() == 2){
-                    DownloadManager.getInstance().start(downloadInfo);
+                if(listListener != null){
+                    //0 开始、暂停
+                    listListener.downloadItem(downloadInfo, mPosition, 0);
                 }
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if(v.getId() == R.id.child_item && listListener != null){
+            listListener.downloadItem(downloadInfo, mPosition, 1);
+        }
+        return false;
     }
 }

@@ -27,7 +27,7 @@ public class DownloadProceedListAdapter extends RecyclerView.Adapter<BaseViewHol
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == 0){
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_child_download_proceed, parent, false);
-            return new DownloadProceedChildListHolder(view, null);
+            return new DownloadProceedChildListHolder(view, null, null);
         }else if (viewType == 1){
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_download_proceed, parent, false);
             return new DownloadProceedListHolder(mContext, view);

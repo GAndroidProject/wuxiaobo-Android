@@ -26,10 +26,9 @@ import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.AddCollectionRequest;
-import xiaoe.com.network.requests.ContentRequest;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.RemoveCollectionRequest;
+import xiaoe.com.network.requests.RemoveCollectionListRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
@@ -287,13 +286,11 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             return;
         }
         JSONObject jsonObject = (JSONObject) entity;
-        if(iRequest instanceof ContentRequest){
-            contentRequest(jsonObject);
-        }else if(iRequest instanceof DetailRequest){
+        if(iRequest instanceof DetailRequest){
             detailRequest(jsonObject);
         }else if(iRequest instanceof AddCollectionRequest){
             addCollectionRequest(jsonObject);
-        }else if(iRequest instanceof RemoveCollectionRequest){
+        }else if(iRequest instanceof RemoveCollectionListRequest){
             removeCollectionRequest(jsonObject);
         }
 
@@ -332,10 +329,19 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             setPagerState(true);
             return;
         }
-        JSONObject resourceInfo = data.getJSONObject("resource_info");
-        String title = resourceInfo.getString("title");
+        //已购或者免费
+        if(data.getBoolean("available")){
+            setContent(data, true);
+        }else{
+            //未购
+            setContent(data.getJSONObject("resource_info"), false);
+        }
+    }
+
+    private void setContent(JSONObject data, boolean available) {
+        String title = data.getString("title");
         videoTitle.setText(title);
-        int count = resourceInfo.getIntValue("audio_play_count");
+        int count = data.getIntValue("view_count");
         if(count > 0){
             playCount.setVisibility(View.VISIBLE);
             playCount.setText(NumberFormat.viewCountToString(count)+"次播放");
@@ -343,37 +349,29 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             playCount.setVisibility(View.GONE);
         }
         collectTitle = title;
-        collectImgUrl = resourceInfo.getString("img_url");
-        collectImgUrlCompressed = resourceInfo.getString("img_url_compressed");
-        setCollectState(resourceInfo.getIntValue("has_favorite") == 1);
-        if(resourceInfo.getIntValue("has_buy") == 1){
+        collectImgUrl = data.getString("img_url");
+        collectImgUrlCompressed = data.getString("img_url_compressed");
+        setCollectState(data.getIntValue("has_favorite") == 1);
+        if(available){
             collectPrice = "";
             buyView.setVisibility(View.GONE);
-            videoPresenter.requestContent(mResourceId);
+            String detail = data.getString("content");
+            setContentDetail(detail);
+            playControllerView.setPlayUrl(data.getString("video_mp4"));
+            setPagerState(false);
+            collectImgUrl = data.getString("img_url");
         }else{
             buyView.setVisibility(View.VISIBLE);
-            int price = resourceInfo.getIntValue("price");
+            int price = data.getIntValue("price");
             resPrice = price;
             collectPrice = ""+price;
             buyView.setBuyPrice(price);
-            String detail = resourceInfo.getString("content");
+            String detail = data.getString("content");
             setContentDetail(detail);
             setPagerState(false);
         }
     }
 
-    private void contentRequest(JSONObject jsonObject) {
-        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED){
-            setPagerState(true);
-            return;
-        }
-        JSONObject data = jsonObject.getJSONObject("data");
-        String detail = data.getString("content");
-        setContentDetail(detail);
-        playControllerView.setPlayUrl(data.getString("video_mp4"));
-        setPagerState(false);
-        collectImgUrl = data.getString("img_url");
-    }
 
     private void setContentDetail(String detail){
         videoContentWebView.loadDataWithBaseURL(null, NetworkState.getNewContent(detail), "text/html", "UFT-8", null);

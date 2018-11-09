@@ -64,6 +64,6 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
     @Override
     public void onDeleteBtnCilck(View view, int position) {
         DownloadResourceTableInfo remove = finishDownloadListAdapter.removeData(position);
-        DownloadManager.getInstance().removeDownload(remove);
+        DownloadManager.getInstance().removeDownloadFinish(remove);
     }
 }

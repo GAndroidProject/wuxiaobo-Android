@@ -32,8 +32,8 @@ public class VideoPresenter implements IBizCallback {
     public void requestDetail(String resourceId){
         DetailRequest detailRequest = new DetailRequest( this);
         detailRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
-        detailRequest.addDataParam("resource_id",resourceId);
-        detailRequest.addDataParam("resource_type","3");
+        detailRequest.addDataParam("goods_id",resourceId);
+        detailRequest.addDataParam("goods_type",3);
         detailRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         detailRequest.sendRequest();
     }

@@ -2,6 +2,9 @@ package xiaoe.com.shop.utils;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
@@ -11,6 +14,7 @@ import xiaoe.com.network.requests.CheckCollectionRequest;
 import xiaoe.com.network.requests.CollectionListRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.RemoveCollectioinByObjRequest;
+import xiaoe.com.network.requests.RemoveCollectionListRequest;
 import xiaoe.com.network.requests.RemoveCollectionRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
@@ -75,7 +79,7 @@ public class CollectionUtils implements IBizCallback {
      * @param resourceId   删除收藏的资源 id
      * @param resourceType 删除受从昂的资源类型
      */
-    public void requestRemoveCollection(String resourceId, String resourceType) {
+    public void requestRemoveCollection1(String resourceId, String resourceType) {
         RemoveCollectionRequest removeCollectionRequest = new RemoveCollectionRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.favorites.del/1.0.0", this);
         removeCollectionRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
         removeCollectionRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
@@ -84,6 +88,26 @@ public class CollectionUtils implements IBizCallback {
         removeCollectionRequest.addDataParam("type", 1);
         NetworkEngine.getInstance().sendRequest(removeCollectionRequest);
     }
+
+    /**
+     *
+     * @param resourceId
+     * @param resourceType
+     */
+    public void requestRemoveCollection(String resourceId, String resourceType) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("content_id", resourceId);
+        jsonObject.put("content_type", Integer.parseInt(resourceType));
+        jsonObject.put("type", 1);
+        List<JSONObject> delList = new ArrayList<JSONObject>();
+        delList.add(jsonObject);
+        RemoveCollectionListRequest removeCollectionRequest = new RemoveCollectionListRequest( this);
+        removeCollectionRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
+        removeCollectionRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
+        removeCollectionRequest.addDataParam("del_list", delList);
+        NetworkEngine.getInstance().sendRequest(removeCollectionRequest);
+    }
+
 
     /**
      * 请求收藏列表

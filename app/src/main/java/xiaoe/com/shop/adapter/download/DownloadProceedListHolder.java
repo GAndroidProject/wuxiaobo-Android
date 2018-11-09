@@ -45,7 +45,7 @@ public class DownloadProceedListHolder extends BaseViewHolder implements View.On
         childRecyclerView.setLayoutManager(layoutManager);
         childRecyclerView.setNestedScrollingEnabled(false);
         childRecyclerView.addItemDecoration(new DashlineItemDivider(padding, padding));
-        childListAdapter = new DownloadProceedChildListAdapter(mContext);
+        childListAdapter = new DownloadProceedChildListAdapter(mContext, null);
         childRecyclerView.setAdapter(childListAdapter);
         btnExpandTop = (RelativeLayout) rootView.findViewById(R.id.btn_expand_top);
         btnExpandTop.setOnClickListener(this);

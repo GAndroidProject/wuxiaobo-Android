@@ -210,11 +210,11 @@ public class DownloadManager implements DownloadListner {
     }
 
     /**
-     * 移除下载
+     * 移除已下载完成的
      *
      * @param download
      */
-    public void removeDownload(DownloadResourceTableInfo download) {
+    public void removeDownloadFinish(DownloadResourceTableInfo download) {
 
         String md5Code = MD5Utils.encrypt(download.getResourceId());
         String delSQL = "DELETE FROM "+DownloadFileConfig.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
@@ -232,32 +232,41 @@ public class DownloadManager implements DownloadListner {
         SQLiteUtil.execSQL(delResSQL);
     }
 
-//    public void removeDownloadFinish(DownloadResourceTableInfo download, String topicId, String columnId){
-//        topicId = TextUtils.isEmpty(topicId) ? "" : topicId;
-//        columnId = TextUtils.isEmpty(columnId) ? "" : columnId;
-//        String md5Code = MD5Utils.encrypt(topicId+columnId+download.getResourceId());
-//        if(download.getDepth() == 0){
-//            SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
-//
-//            String delSQL = "DELETE FROM "+DownloadFileConfig.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
-//            DownloadFileConfig.getInstance().execSQL(delSQL);
-//            File file = new File(download.getLocalFilePath());
-//            if(file.exists() && file.isFile()){
-//                file.delete();
-//            }
-//            String delRelaSQL = "DELETE FROM "+RelationTable.TABLE_NAME+" app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
-//            SQLiteUtil.execSQL(delRelaSQL);
-//        }else if(download.getDepth() == 1){
-//            while (download.getChildList().size() > 0){
-//                removeDownloadFinish(download.getChildList().remove(0), topicId, download.getResourceId());
-//            }
-//        }else if(download.getDepth() == 2){
-//            while (download.getChildList().size() > 0){
-//                removeDownloadFinish(download.getChildList().remove(0), download.getResourceId(), download.getResourceId());
-//            }
-//        }
-//    }
+    /**
+     * 移除下载中的
+     * @param download
+     */
+    public void removeDownloading(DownloadTableInfo download) {
+        removeDownloadTasks(download);
 
+        String md5Code = MD5Utils.encrypt(download.getResourceId());
+        String delSQL = "DELETE FROM "+DownloadFileConfig.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
+        DownloadFileConfig.getInstance().execSQL(delSQL);
+        File file = new File(download.getLocalFilePath());
+
+        deleteDirWihtFile(file);
+
+
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
+        String delRelaSQL = "DELETE FROM "+RelationTable.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
+        SQLiteUtil.execSQL(delRelaSQL);
+
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
+        String delResSQL = "DELETE FROM "+DownloadResourceTable.TABLE_NAME+" where app_id='"+download.getAppId()+"' and resource_id='"+download.getResourceId()+"'";
+        SQLiteUtil.execSQL(delResSQL);
+    }
+
+    private static void deleteDirWihtFile(File dir) {
+        if (dir == null || !dir.exists() || !dir.isDirectory())
+            return;
+        for (File file : dir.listFiles()) {
+            if (file.isFile())
+                file.delete(); // 删除所有文件
+            else if (file.isDirectory())
+                deleteDirWihtFile(file); // 递规的方式删除文件夹
+        }
+        dir.delete();// 删除目录本身
+    }
     /**
      * 添加下载任务
      */
@@ -470,7 +479,17 @@ public class DownloadManager implements DownloadListner {
             DownloadTask task = mDownloadTasks.get(i);
             DownloadTableInfo info = task.getDownloadInfo();
             if (compareResource(download.getAppId(), download.getResourceId(), info.getAppId(), info.getResourceId())) {
+                task.cancel();
                 mDownloadTasks.remove(i);
+                break;
+            }
+        }
+        for (int i = 0; i < mAwaitDownloadTasks.size(); i++){
+            DownloadTask task = mAwaitDownloadTasks.get(i);
+            DownloadTableInfo info = task.getDownloadInfo();
+            if (compareResource(download.getAppId(), download.getResourceId(), info.getAppId(), info.getResourceId())) {
+                task.cancel();
+                mAwaitDownloadTasks.remove(i);
                 break;
             }
         }

@@ -29,7 +29,7 @@ import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.RemoveCollectionRequest;
+import xiaoe.com.network.requests.RemoveCollectionListRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.ViewAnim;
 import xiaoe.com.shop.base.XiaoeActivity;
@@ -220,7 +220,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }
         if(iRequest instanceof AddCollectionRequest){
             addCollectionRequest(jsonObject);
-        }else if(iRequest instanceof RemoveCollectionRequest){
+        }else if(iRequest instanceof RemoveCollectionListRequest){
             removeCollectionRequest(jsonObject);
         }
 

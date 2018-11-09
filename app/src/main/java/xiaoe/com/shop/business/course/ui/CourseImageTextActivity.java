@@ -35,7 +35,7 @@ import xiaoe.com.network.requests.CheckCollectionRequest;
 import xiaoe.com.network.requests.CourseITAfterBuyRequest;
 import xiaoe.com.network.requests.CourseITBeforeBuyRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.RemoveCollectionRequest;
+import xiaoe.com.network.requests.RemoveCollectionListRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.course.presenter.CourseImageTextPresenter;
@@ -365,7 +365,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 } else if (code == NetworkCodes.CODE_COLLECT_FAILED) {
                     Toast("收藏失败");
                 }
-            } else if (iRequest instanceof RemoveCollectionRequest) {
+            } else if (iRequest instanceof RemoveCollectionListRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     Toast("取消收藏成功");

@@ -21,6 +21,10 @@
         <attr name="ringColor" format="color"/>
     </declare-styleable>
 
+    <!---->
+    <declare-styleable name="SlidingButtonView">
+        <attr name="sliding_delete" format="boolean"/>
+    </declare-styleable>
     <!-- 自定义验证码输入框-->
     <declare-styleable name="CodeVerifyView">
 

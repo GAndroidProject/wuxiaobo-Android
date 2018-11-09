@@ -22,7 +22,7 @@ import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.ColumnListRequst;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.RemoveCollectionRequest;
+import xiaoe.com.network.requests.RemoveCollectionListRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.column.ColumnFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
@@ -182,13 +182,17 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         if(iRequest instanceof DetailRequest){
             JSONObject data = (JSONObject) dataObject;
-            detailRequest(data.getJSONObject("resource_info"));
+            if(data.getBoolean("available")){
+                detailRequest(data, true);
+            }else{
+                detailRequest(data.getJSONObject("resource_info"), false);
+            }
         }else if(iRequest instanceof ColumnListRequst){
             JSONArray data = (JSONArray) dataObject;
             columnListRequest(iRequest, data);
         }else if(iRequest instanceof AddCollectionRequest){
             addCollectionRequest(jsonObject);
-        }else if(iRequest instanceof RemoveCollectionRequest){
+        }else if(iRequest instanceof RemoveCollectionListRequest){
             removeCollectionRequest(jsonObject);
         }
     }
@@ -246,7 +250,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
     }
 
-    private void detailRequest(JSONObject data) {
+    private void detailRequest(JSONObject data, boolean available) {
         getDialog().dismissDialog();
         if(refreshData){
             if(isBigColumn){
@@ -258,16 +262,16 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             }
             setLoadState(ListBottomLoadMoreView.STATE_NOT_LOAD);
         }
-        if(data.getIntValue("has_buy") == 0){
+        if(available){
+            buyView.setVisibility(View.GONE);
+            isHasBuy = true;
+            collectPrice = "";
+        }else{
             price = data.getIntValue("price");
             buyView.setVisibility(View.VISIBLE);
             buyView.setBuyPrice(price);
             isHasBuy = false;
             collectPrice = ""+price;
-        }else{
-            buyView.setVisibility(View.GONE);
-            isHasBuy = true;
-            collectPrice = "";
         }
         String title = data.getString("title");
         //收藏内容
