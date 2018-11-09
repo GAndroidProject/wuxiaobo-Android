@@ -218,6 +218,7 @@ public class LoginPageFragment extends BaseFragment {
             phoneErrorTip.setText("");
         }
         phoneNum = loginActivity.getPhoneNum();
+        smsCode = loginActivity.getSmsCode();
         switch (layoutId) {
             case R.layout.fragment_login_main:
 //                initLoginMainFragment();
