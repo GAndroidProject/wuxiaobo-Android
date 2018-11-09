@@ -396,6 +396,7 @@ public class LoginActivity extends XiaoeActivity {
                 } else if (code == NetworkCodes.CODE_PHONE_CODE_ERROR) { // 验证码错误
                     Log.d(TAG, "onMainThreadResponse: register --- " + msg);
                 }
+                Toast(msg);
             } else if (iRequest instanceof LoginBindRequest) { // 绑定操作回调
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) { // 注册成功
