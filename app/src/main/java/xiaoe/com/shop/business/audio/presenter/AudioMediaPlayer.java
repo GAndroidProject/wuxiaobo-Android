@@ -148,6 +148,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(mediaPlayer == null || !prepared){
             return;
         }
+        if (getAudio() != null && mediaPlayer.isPlaying())
+            getAudio().setPlaying(false);
         if(mediaPlayer.isPlaying()){
             mediaPlayer.pause();
             event.setState(AudioPlayEvent.PAUSE);

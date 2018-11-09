@@ -88,9 +88,11 @@ public class ChildViewHolder extends BaseViewHolder {
 			int hightColor = mContext.getResources().getColor(R.color.high_title_color);
 			text.setTextColor(hightColor);
 			playLength.setTextColor(hightColor);
-			if(AudioMediaPlayer.isPlaying()){
+			if(AudioMediaPlayer.isPlaying() || playEntity.isPlaying()){
+				playEntity.setPlaying(true);
 				playIcon.setImageResource(R.mipmap.audiolist_playing);
 			}else{
+				playEntity.setPlaying(false);
 				playIcon.setImageResource(R.mipmap.class_play);
 			}
 		}else{

@@ -267,6 +267,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         if(playAudio != null){
             resourceEquals = AudioPlayUtil.resourceEquals(playAudio.getResourceId(), playAudio.getColumnId(), playAudio.getBigColumnId(),
                                                         resourceId, columnId, bigColumnId);
+            playAudio.setPlaying(!playAudio.isPlaying());
         }
         //正在播放的资源和点击的资源相同，则播放暂停操作
         if(playAudio != null && resourceEquals){
@@ -280,6 +281,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         AudioMediaPlayer.stop();
         for (AudioPlayEntity playEntity : playList) {
             if(playEntity.getResourceId().equals(resourceId)){
+                playEntity.setPlaying(!playEntity.isPlaying());
                 playEntity.setPlay(true);
                 AudioMediaPlayer.setAudio(playEntity, true);
                 new AudioPresenter(null).requestDetail(playEntity.getResourceId());
@@ -294,6 +296,11 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             case AudioPlayEvent.NEXT:
             case AudioPlayEvent.LAST:
                 notifyDataSetChanged(playParentPosition, -1);
+                break;
+            case AudioPlayEvent.PAUSE:
+            case AudioPlayEvent.PLAY:
+            case AudioPlayEvent.STOP:
+                directoryAdapter.notifyDataSetChanged();
                 break;
             default:
                 break;

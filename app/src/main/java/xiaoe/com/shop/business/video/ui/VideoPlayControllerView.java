@@ -191,15 +191,14 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-//        mVideoPlayer.play();
+        mVideoPlayer.play();
         isPrepareMedia = true;
-        isShowControl = true;
         btnPlay.setImageResource(R.mipmap.audiolist_stop);
-        btnPlay.setVisibility(View.VISIBLE);
+        btnPlay.setVisibility(View.GONE);
         playSeekBar.setMax(mVideoPlayer.getDuration());
         totalPlayTime.setText(DateFormat.longToString(mVideoPlayer.getDuration()));
         previewImage.setVisibility(View.GONE);
-        setPlayState(VideoPlayConstant.VIDEO_STATE_PAUSE);
+        setPlayState(VideoPlayConstant.VIDEO_STATE_PLAY);
 
         videoPlayEvent.setState(VideoPlayConstant.VIDEO_STATE_PLAY);
         EventBus.getDefault().post(videoPlayEvent);
@@ -254,6 +253,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             //停止
             btnPlay.setImageResource(R.mipmap.audiolist_play);
             btnProgressPlay.setImageResource(R.mipmap.btn_video_pause);
+            controlDelayAutoDismiss(1);
         }
     }
 

@@ -64,8 +64,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private static final String TAG = "XiaoeActivity";
     private static final int DISMISS_POPUP_WINDOW = 1;
     private static final int DISMISS_TOAST = 2;
-    private static PopupWindow popupWindow;
-    private static Toast toast;
+    private PopupWindow popupWindow;
+    private Toast toast;
     private TextView mToastText;
     private boolean isInit = true;
     private int miniPlayerAnimHeight = 0;//音频迷你播放器动画滑动的高度
@@ -84,7 +84,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     // 用户登录信息
     LoginUser user = null;
 
-    static class XeHandler extends Handler {
+    class XeHandler extends Handler {
 
         WeakReference<XiaoeActivity> wrf;
 

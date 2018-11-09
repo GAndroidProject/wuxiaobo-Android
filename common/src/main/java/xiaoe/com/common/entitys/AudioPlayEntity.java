@@ -27,7 +27,7 @@ public class AudioPlayEntity {
     private int code = -2;//-2:正在请求详情（没有图文详情和播放地址），-1:只有播放地址，0:请求成功，1：请求失败
     private int index = -1;
     private boolean isPlay = false;
-
+    private boolean isPlaying;
 
     public String getAppId() {
         return appId;
@@ -123,6 +123,14 @@ public class AudioPlayEntity {
 
     public void setPlay(boolean play) {
         isPlay = play;
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
     }
 
     public int getPlayCount() {
