@@ -514,9 +514,10 @@ public class LoginActivity extends XiaoeActivity {
 
         settingPresenter.requestPersonData(apiToken, false);
 
-        Toast("注册成功");
+        // 因为还需要获取个人信息，所以先不跳转到主页
+//        Toast("注册成功");
         // 注册成功跳转到首页
-        JumpDetail.jumpMain(this, true);
+//        JumpDetail.jumpMain(this, true);
     }
 
     // 登录成功之后，拿到的登录信息更新到本地数据库

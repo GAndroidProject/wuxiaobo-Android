@@ -165,21 +165,23 @@ public class MineLearningActivity extends XiaoeActivity {
         knowledgeList.setHideTitle(true);
         // 因为这个接口拿到的 resourceType 是 int 类型，转成字符串存起来
         for (Object goodItem : goodsList) {
-            JSONObject goodJsonItem = (JSONObject) ((JSONObject) goodItem).get("info");
+            JSONObject infoItem = (JSONObject) goodItem;
+            JSONObject goodJsonItem = (JSONObject) infoItem.get("info");
             KnowledgeCommodityItem item = new KnowledgeCommodityItem();
+            // id 和 type 通过 info 拿到
             String resourceId = goodJsonItem.getString("goods_id");
             String resourceType = convertInt2Str(goodJsonItem.getInteger("goods_type"));
-            String title = goodJsonItem.getString("title");
-            String imgUrl = goodJsonItem.getString("img_url");
             // 专栏、会员、大专栏的简介
             String desc = goodJsonItem.getString("org_summary");
-            int price = goodJsonItem.getInteger("price");
-            // 收藏的都存了价格，没有存是否买
-            String priceStr;
-            if (price > 0) {
-                priceStr = "￥" + price;
+            // 其余数据通过收藏的数据拿到
+            JSONObject orgContent = (JSONObject) infoItem.get("org_content");
+            String title = orgContent.getString("title");
+            String imgUrl = orgContent.getString("img_url");
+            String priceStr = orgContent.getString("price");
+            if ("0".equals(priceStr) || "0.0".equals(priceStr)) {
+                priceStr = "已购";
             } else {
-                priceStr = "";
+                priceStr = "￥" + priceStr;
             }
             // 收藏没有保存描述和人数
             item.setItemImg(imgUrl);

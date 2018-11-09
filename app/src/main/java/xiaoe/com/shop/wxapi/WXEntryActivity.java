@@ -42,6 +42,7 @@ public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
         mApi = WXAPIFactory.createWXAPI(this, Constants.getWXAppId(), true);
         mApi.handleIntent(this.getIntent(), this);
     }

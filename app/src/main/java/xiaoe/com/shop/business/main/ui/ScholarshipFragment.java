@@ -142,8 +142,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 if (!hasBuy) { // 没买
                     showDialogByType(GO_BUY);
                 } else { // 买了，跳转到课程列表页面
-//                    JumpDetail.jumpBoughtList(mContext, taskId, isSuperVip);
-                    showEarnDialog();
+                    JumpDetail.jumpBoughtList(mContext, taskId, isSuperVip);
+//                    showEarnDialog();
                 }
                 break;
             case R.id.scholarship_real_range:
@@ -286,8 +286,9 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             } else if (iRequest instanceof ScholarshipReceiveRequest) {
                 int code = data.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    // 获取成功之后显示赚取对话框
-                    showEarnDialog();
+                    // 获取成功之后查询领取结果接口
+                    JSONObject result = (JSONObject) data.get("data");
+                    updatePageState(result);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: request fail...");
                 }
@@ -490,7 +491,26 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     public void obtainTaskDetailId(TaskDetailIdEvent taskDetailIdEvent) {
         if (taskDetailIdEvent != null) {
             taskDetailId = taskDetailIdEvent.getTaskDetailId();
+
             scholarshipPresenter.queryReceiveResult(taskId, taskDetailId);
+        }
+    }
+
+    private void updatePageState(JSONObject data) {
+        int status = data.getInteger("status");
+        JSONObject reward = (JSONObject) data.get("reward");
+        if (status == 3 && reward != null) { // 已经完成并拿到数据
+            int type = reward.getInteger("type");
+            if (type == 1) { // 拿到钱
+                hasEarnMoney = true;
+            } else if (type == 2) { // 拿到积分
+                hasEarnMoney = false;
+            }
+            showEarnDialog();
+        } else if (status == 2) { // 处理中
+            Toast.makeText(getActivity(), "奖学金处理发放中", Toast.LENGTH_SHORT).show();
+        } else if (status == 1) {
+            Toast.makeText(getActivity(), "领取失败，请重试", Toast.LENGTH_SHORT).show();
         }
     }
 }

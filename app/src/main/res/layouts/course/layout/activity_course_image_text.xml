@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
@@ -9,110 +9,105 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/it_app_bar"
+    <xiaoe.com.shop.widget.PushScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        app:layout_behavior="@string/appbar_scroll_behavior"
-        android:stateListAnimator="@null">
-
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/it_collapsing_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed|exitUntilCollapsed">
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/app_layout_bg"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:src="@mipmap/ic_launcher"
-                android:transitionName="@string/share_img"/>
-
-            <ImageView
-                android:id="@+id/it_title_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/download_back"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="20dp"
-                tools:ignore="ContentDescription" />
-
-            <xiaoe.com.shop.widget.CommonTitleView
-                android:id="@+id/it_common_title_view"
-                android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:layout_gravity="bottom"
-                app:layout_collapseMode="pin"
-                android:background="@color/white"/>
-
-        </android.support.design.widget.CollapsingToolbarLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/image_text_wrap"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:scrollId="@+id/app_layout_bg"
+        app:maxZoom="120dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include
-                layout="@layout/activity_course_desc"
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/app_layout_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:src="@mipmap/ic_launcher"
+                    android:transitionName="@string/share_img"/>
+
+                <ImageView
+                    android:id="@+id/it_title_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/download_back"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    tools:ignore="ContentDescription" />
+
+            </FrameLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"/>
+                android:orientation="vertical">
 
-            <!--<include-->
+                <include
+                    layout="@layout/activity_course_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"/>
+
+                <!--<include-->
                 <!--layout="@layout/activity_course_advertise"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_marginTop="20dp"/>-->
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/image_text_advertise_img"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginTop="20dp"/>
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/image_text_advertise_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="20dp"/>
 
-            <com.tencent.smtt.sdk.WebView
-                android:id="@+id/image_text_org_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="46dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="8dp"
-                android:paddingBottom="20dp"/>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/audio_page_bg_color">
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.tencent.smtt.sdk.WebView
+                    android:id="@+id/image_text_org_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/course_image_text_page_bottom"
-                    android:textSize="12sp"
-                    android:textColor="@color/course_page_bottom_color"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_gravity="center"/>
+                    android:minHeight="46dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="8dp"
+                    android:paddingBottom="20dp"/>
 
-            </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/audio_page_bg_color">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/course_image_text_page_bottom"
+                        android:textSize="12sp"
+                        android:textColor="@color/course_page_bottom_color"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_gravity="center"/>
+
+                </FrameLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </xiaoe.com.shop.widget.PushScrollView>
+
+    <xiaoe.com.shop.widget.CommonTitleView
+        android:id="@+id/it_common_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom"
+        app:layout_collapseMode="pin"
+        android:background="@color/white"
+        android:visibility="gone"/>
 
     <xiaoe.com.shop.widget.CommonBuyView
         android:id="@+id/image_text_buy"
@@ -125,4 +120,4 @@
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"/>-->
 
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>

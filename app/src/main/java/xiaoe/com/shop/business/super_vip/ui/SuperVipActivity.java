@@ -33,8 +33,8 @@ public class SuperVipActivity extends XiaoeActivity {
         superVipSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 获取资源类型和资源 id
-//                JumpDetail.jumpPay(SuperVipActivity.this, "", "", "", 0);
+                // 默认超级会员的 resourceType 为 -10，resourceId 为 super_vip
+//                JumpDetail.jumpPay(SuperVipActivity.this, "super_vip", -10, "", "超级会员", 0);
             }
         });
     }

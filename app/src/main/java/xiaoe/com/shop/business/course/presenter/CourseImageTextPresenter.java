@@ -6,6 +6,7 @@ import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.CourseITAfterBuyRequest;
 import xiaoe.com.network.requests.CourseITBeforeBuyRequest;
+import xiaoe.com.network.requests.CourseITDetailRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
@@ -49,5 +50,17 @@ public class CourseImageTextPresenter implements IBizCallback {
         courseITAfterBuyRequest.addDataParam("resource_type", resourceType);
         courseITAfterBuyRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         NetworkEngine.getInstance().sendRequest(courseITAfterBuyRequest);
+    }
+
+    // 请求资源详情页信息（包含购买前和购买后）
+    public void requestITDetail(String resourceId, int resourceType) {
+        CourseITDetailRequest courseITDetailRequest = new CourseITDetailRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + "xe.goods.detail.get/1.0.0", this);
+
+        courseITDetailRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
+        courseITDetailRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
+        courseITDetailRequest.addDataParam("goods_id", resourceId);
+        courseITDetailRequest.addDataParam("goods_type", resourceType);
+
+        NetworkEngine.getInstance().sendRequest(courseITDetailRequest);
     }
 }

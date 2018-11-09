@@ -9,10 +9,12 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Constants;
+import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.PayOrderRequest;
+import xiaoe.com.network.requests.PaySuperVipRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class PayPresenter implements IBizCallback {
@@ -75,5 +77,17 @@ public class PayPresenter implements IBizCallback {
         req.packageValue	= wxPay;
         req.sign			= sign;
         wxapi.sendReq(req);
+    }
+
+    /**
+     * 购买超级会员
+     */
+    public void paySuperVip() {
+        PaySuperVipRequest paySuperVipRequest = new PaySuperVipRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + "xe.user.svip.pay.info.get/1.0.0", this);
+
+        paySuperVipRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
+        paySuperVipRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
+
+        NetworkEngine.getInstance().sendRequest(paySuperVipRequest);
     }
 }

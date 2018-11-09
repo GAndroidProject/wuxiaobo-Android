@@ -99,6 +99,7 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
                     JSONObject data = (JSONObject) result.get("data");
                     String taskDetailId = data.getString("task_detail_id");
                     EventBus.getDefault().post(new TaskDetailIdEvent(taskDetailId));
+                    finish();
                 } else {
                     Log.d(TAG, "onMainThreadResponse: request fail...");
                 }
