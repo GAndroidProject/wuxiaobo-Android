@@ -43,6 +43,7 @@ import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.ContentMenuLayout;
+import xiaoe.com.shop.widget.SpeedMenuLayout;
 import xiaoe.com.shop.widget.StatusPagerView;
 
 public class AudioActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener {
@@ -60,6 +61,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private ObjectAnimator diskRotate;
     private AudioHoverControllerLayout audioHoverPlayController;
     private ContentMenuLayout contentMenuLayout;
+    private SpeedMenuLayout mSpeedMenuLayout;
     private WebView detailContent;
     private CommonBuyView commonBuyView;
     private StatusPagerView statusPagerView;
@@ -124,6 +126,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
         //倍速按钮
         btnSpeedPlay = (TextView) findViewById(R.id.audio_speed_play);
+        btnSpeedPlay.setOnClickListener(this);
         //音频播放控制器
         audioPlayController = (AudioPlayControllerView) findViewById(R.id.audio_play_controller);
         //悬浮播放控制器
@@ -132,6 +135,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         //菜单栏
         contentMenuLayout = (ContentMenuLayout) findViewById(R.id.content_menu_layout);
         contentMenuLayout.setButtonClickListener(this);
+        //播放倍数菜单
+        mSpeedMenuLayout = (SpeedMenuLayout) findViewById(R.id.speed_menu_layout);
+        mSpeedMenuLayout.setButtonClickListener(this);
 
         //播放列表
         audioPlayList = (AudioPlayListLayout) findViewById(R.id.audio_play_list);
@@ -307,9 +313,40 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             case R.id.btn_share_item:
                 umShare("hello");
                 break;
+            case R.id.audio_speed_play:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    if (View.VISIBLE != mSpeedMenuLayout.getVisibility())
+                        mSpeedMenuLayout.setVisibility(View.VISIBLE);
+                }else {
+                    toastCustom(getString(R.string.speed_play_not_support));
+                }
+                break;
+            case R.id.btn_speed_1:
+                changePlaySpeed(0.7f);
+                break;
+            case R.id.btn_speed_2:
+                changePlaySpeed(1f);
+                break;
+            case R.id.btn_speed_3:
+                changePlaySpeed(1.5f);
+                break;
+            case R.id.btn_speed_4:
+                changePlaySpeed(2.0f);
+                break;
             default:
                 break;
         }
+    }
+
+    private void changePlaySpeed(float speed) {
+        AudioMediaPlayer.changePlayerSpeed(speed);
+        String format = getString(R.string.speed_play_text);
+        if (speed != 1)   format = "%s" + format;
+        java.text.NumberFormat numberFormat = java.text.NumberFormat.getNumberInstance();
+        numberFormat.setMaximumIntegerDigits(1);
+        btnSpeedPlay.setText(String.format(format,numberFormat.format(speed)));
+        if (View.VISIBLE == mSpeedMenuLayout.getVisibility())
+            mSpeedMenuLayout.setVisibility(View.GONE);
     }
 
     @Override

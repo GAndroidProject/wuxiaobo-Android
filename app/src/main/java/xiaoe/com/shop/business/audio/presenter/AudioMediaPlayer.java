@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -291,6 +292,18 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 //            audio = lastAudio;
 //            new AudioPresenter(null).requestDetail(lastAudio.getResourceId());
 //        }
+    }
+
+    public static void changePlayerSpeed(float speed) {
+        // this checks on API 23 and up
+        if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
+            } else {
+                mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
+                mediaPlayer.pause();
+            }
+        }
     }
 
     private static void playProgress() {
