@@ -206,7 +206,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         aboutDesc.setText("吴晓波 版权所有");
         aboutContent = (RecyclerView) viewWrap.findViewById(R.id.about_content);
         // 关于布局假数据
-        aboutLogo.setImageURI("http://pic24.nipic.com/20121008/6298817_164144357169_2.jpg");
+        aboutLogo.setImageURI("res:///" + R.mipmap.logo);
         itemList = new ArrayList<>();
         SettingItemInfo connectUs = new SettingItemInfo("联系我们", "", "462436501@gmail.com");
         SettingItemInfo service = new SettingItemInfo("服务协议", "" ,"");
