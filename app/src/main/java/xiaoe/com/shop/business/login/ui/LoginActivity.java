@@ -46,6 +46,13 @@ import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class LoginActivity extends XiaoeActivity {
 
+    @BindView(R.id.login_title)
+    FrameLayout loginTitle;
+    @BindView(R.id.login_back)
+    ImageView loginBack;
+    @BindView(R.id.login_register)
+    TextView loginRegister;
+
     private static final String TAG = "LoginActivity";
 
     public static final String REGISTER_ERROR_TIP = "register_error_tip"; // 手机没有注册则显示没有注册 tip
@@ -59,13 +66,6 @@ public class LoginActivity extends XiaoeActivity {
     protected static final String SET_PWD = "login_set_pwd"; // 设置密码页
     protected static final String REGISTER = "login_register"; // 注页面
     protected static final String BIND_WE_CHAT = "bind_we_chat"; // 绑定微信页
-
-    @BindView(R.id.login_title)
-    FrameLayout loginTitle;
-    @BindView(R.id.login_back)
-    ImageView loginBack;
-    @BindView(R.id.login_register)
-    TextView loginRegister;
 
     private Fragment currentFragment;
     // 软键盘
@@ -176,7 +176,11 @@ public class LoginActivity extends XiaoeActivity {
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
                     preTag = null;
-                    replaceFragment(MAIN);
+                    if (isRegister) {
+                        replaceFragment(REGISTER);
+                    } else {
+                        replaceFragment(MAIN);
+                    }
                     break;
                 case PWD:
                     loginBack.setVisibility(View.GONE);
@@ -191,7 +195,11 @@ public class LoginActivity extends XiaoeActivity {
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
                     preTag = null;
-                    replaceFragment(MAIN);
+                    if (isRegister) {
+                        replaceFragment(REGISTER);
+                    } else {
+                        replaceFragment(MAIN);
+                    }
                     break;
                 case BIND_WE_CHAT:
                     loginBack.setVisibility(View.GONE);
