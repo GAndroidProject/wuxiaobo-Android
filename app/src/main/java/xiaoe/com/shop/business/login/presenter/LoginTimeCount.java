@@ -7,6 +7,10 @@ import android.widget.TextView;
 
 import xiaoe.com.shop.R;
 
+/**
+ * @author zak
+ * @date 2018/10/19
+ */
 public class LoginTimeCount extends CountDownTimer {
 
     private Context mContext;
@@ -39,14 +43,13 @@ public class LoginTimeCount extends CountDownTimer {
         tvSecond.setVisibility(View.VISIBLE);
         tvObtain.setEnabled(false);
         tvObtain.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
-        int second = (int) (millisUntilFinished / 1000);
-        tvSecond.setText(String.format(mContext.getResources().getString(R.string.login_code_desc_content), second));
+        tvSecond.setText(String.format(mContext.getResources().getString(R.string.login_code_desc_content), (int) (millisUntilFinished / 1000)));
     }
 
     @Override
     public void onFinish() {
         tvSecond.setVisibility(View.GONE);
-        tvObtain.setClickable(true);
+        tvObtain.setEnabled(true);
         tvObtain.setTextColor(mContext.getResources().getColor(R.color.edit_cursor));
     }
 }

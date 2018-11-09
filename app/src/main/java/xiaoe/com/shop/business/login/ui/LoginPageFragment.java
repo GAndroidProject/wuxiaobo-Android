@@ -25,31 +25,49 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
-import xiaoe.com.shop.utils.JudgeUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.login.presenter.LoginTimeCount;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.utils.JudgeUtil;
 import xiaoe.com.shop.widget.CodeVerifyView;
 
+/**
+ * @author zak
+ * @date 2018/10/19
+ */
 public class LoginPageFragment extends BaseFragment {
+
+    /**
+     * 手机号输入
+     */
+    protected EditText phoneContent;
+    protected Button phoneObtainCode;
+    protected TextView phoneErrorTip;
+
+    protected EditText passwordContent;
+    private TextView loginCodeDesc;
 
     private static final String TAG = "LoginPageFragment";
 
-    private Unbinder unbinder;
     private Context mContext;
-    private boolean destroyView = false;
+    private Unbinder unbinder;
     protected View viewWrap;
 
     private int layoutId = -1;
     private LoginActivity loginActivity;
 
-    // 软键盘
-    InputMethodManager imm;
+    private InputMethodManager imm;
 
-    private String phoneNum; // 手机号
-    private String smsCode;  // 验证码
+    /**
+     * 手机号
+     */
+    private String phoneNum;
+    /**
+     * 验证码
+     */
+    private String smsCode;
 
     public static LoginPageFragment newInstance(int layoutId) {
         LoginPageFragment loginPageFragment = new LoginPageFragment();
@@ -59,7 +77,13 @@ public class LoginPageFragment extends BaseFragment {
         return loginPageFragment;
     }
 
-    // 验证码 fragment 需要知道手机号
+    /**
+     * 验证码 fragment 需要知道手机号
+     *
+     * @param layoutId
+     * @param phoneNum
+     * @return
+     */
     public static LoginPageFragment newInstance(int layoutId, String phoneNum) {
         LoginPageFragment loginPageFragment = new LoginPageFragment();
         Bundle bundle = new Bundle();
@@ -69,7 +93,14 @@ public class LoginPageFragment extends BaseFragment {
         return loginPageFragment;
     }
 
-    // 设置密码 fragment 需要知道手机号和输入的验证码
+    /**
+     * 设置密码 fragment 需要知道手机号和输入的验证码
+     *
+     * @param layoutId
+     * @param phoneNum
+     * @param smsCode
+     * @return
+     */
     public static LoginPageFragment newInstance(int layoutId, String phoneNum, String smsCode) {
         LoginPageFragment loginPageFragment = new LoginPageFragment();
         Bundle bundle = new Bundle();
@@ -103,6 +134,9 @@ public class LoginPageFragment extends BaseFragment {
         mContext = getContext();
         imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         loginActivity = (LoginActivity) getActivity();
+        if (layoutId != -1) {
+            initView();
+        }
         return viewWrap;
     }
 
@@ -114,15 +148,14 @@ public class LoginPageFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (layoutId != -1) {
-            initView();
-        }
+//        if (layoutId != -1) {
+//            initView();
+//        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        destroyView = true;
         if (unbinder != null) {
             unbinder.unbind();
         }
@@ -167,14 +200,62 @@ public class LoginPageFragment extends BaseFragment {
             }
             if (loginTimeCount != null) {
                 loginTimeCount.cancel();
+                loginTimeCount = null;
             }
             if (passwordContent != null && !TextUtils.isEmpty(passwordContent.getText().toString())) {
                 passwordContent.setText("");
             }
+        } else {
+            if (layoutId != -1) {
+                updateView();
+            }
         }
     }
 
-    // 弹出或关闭软键盘
+    private void updateView() {
+        if (phoneErrorTip != null) {
+            phoneErrorTip.setVisibility(View.GONE);
+            phoneErrorTip.setText("");
+        }
+        phoneNum = loginActivity.getPhoneNum();.
+        switch (layoutId) {
+            case R.layout.fragment_login_main:
+//                initLoginMainFragment();
+                break;
+            case R.layout.fragment_login_register:
+//                initLoginRegisterFragment();
+                loginActivity.isRegister = true;
+                break;
+            case R.layout.fragment_login_code:
+//                initLoginCodeFragment();
+                if (loginCodeDesc != null) {
+                    loginCodeDesc.setText(String.format(getActivity().getResources().getString(R.string.login_code_desc), phoneNum));
+                }
+                loginTimeCount = new LoginTimeCount(getActivity(), 60000, 1000, viewWrap);
+                loginTimeCount.start();
+                break;
+            case R.layout.fragment_login_pwd:
+//                initLoginPwdFragment();
+                break;
+            case R.layout.fragment_login_find:
+//                initLoginFindFragment();
+                break;
+            case R.layout.fragment_login_set_pwd:
+//                initLoginSetPwdFragment();
+                break;
+            case R.layout.fragment_login_we_chat:
+//                initLoginWeChatFragment();
+                break;
+            case R.layout.fragment_login_bind_phone:
+//                initLoginBindPhoneFragment();
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 弹出或关闭软键盘
+     */
     private void toggleSoftKeyboard() {
         if (imm != null && imm.isActive()) {
             View view = getActivity().getCurrentFocus();
@@ -185,19 +266,15 @@ public class LoginPageFragment extends BaseFragment {
         }
     }
 
-    // 手机号输入
-    protected EditText phoneContent;
-    protected Button phoneObtainCode;
-    protected TextView phoneErrorTip;
-
-    protected EditText passwordContent;
-
-    // 初始化主页面
+    /**
+     * 初始化主页面
+     */
     private void initLoginMainFragment() {
 
         phoneContent = (EditText) viewWrap.findViewById(R.id.login_input_num_content);
         phoneErrorTip = (TextView) viewWrap.findViewById(R.id.login_error_tip);
         phoneObtainCode = (Button) viewWrap.findViewById(R.id.login_submit_btn);
+
         initPhoneInputListener(LoginActivity.MAIN);
 
         TextView mainPhonePwd = (TextView) viewWrap.findViewById(R.id.login_main_pwd);
@@ -218,12 +295,11 @@ public class LoginPageFragment extends BaseFragment {
         mainPhoneWeChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 判断是否已经绑定了微信
                 toggleSoftKeyboard();
                 phoneContent.setText("");
                 phoneErrorTip.setVisibility(View.GONE);
+                // 判断是否已经绑定了微信
                 ((LoginActivity) getActivity()).loginPresenter.reqWXLogin();
-//                loginActivity.replaceFragment(LoginActivity.BIND_WE_CHAT);
             }
         });
 
@@ -237,39 +313,43 @@ public class LoginPageFragment extends BaseFragment {
         });
     }
 
-    // 初始化注册页面
+    /**
+     * 初始化注册页面
+     */
     private void initLoginRegisterFragment() {
-        loginActivity.isRegister = true;
+
         phoneContent = (EditText) viewWrap.findViewById(R.id.login_input_num_content);
         phoneErrorTip = (TextView) viewWrap.findViewById(R.id.login_error_tip);
         phoneObtainCode = (Button) viewWrap.findViewById(R.id.login_submit_btn);
 
-        TextView registerPhoneProvision = (TextView) viewWrap.findViewById(R.id.login_register_provision);
-
         initPhoneInputListener(LoginActivity.REGISTER);
 
+        TextView registerPhoneProvision = (TextView) viewWrap.findViewById(R.id.login_register_provision);
         registerPhoneProvision.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 跳转到服务协议页面
+                // 跳转到服务协议页面
                 Toast.makeText(getActivity(), "服务协议...", Toast.LENGTH_SHORT).show();
             }
         });
+
+        loginActivity.isRegister = true;
     }
 
     protected LoginTimeCount loginTimeCount;
     protected CodeVerifyView loginCodeContent;
-    // 初始化验证码页面
+
+    /**
+     * 初始化验证码页面
+     */
     private void initLoginCodeFragment() {
-        loginTimeCount = new LoginTimeCount(getActivity(), 60000, 1000, viewWrap);
-        loginTimeCount.start();
-        TextView loginCodeDesc = (TextView) viewWrap.findViewById(R.id.login_register_code_desc);
+
+        loginCodeDesc = (TextView) viewWrap.findViewById(R.id.login_register_code_desc);
         loginCodeContent = (CodeVerifyView) viewWrap.findViewById(R.id.login_register_code_content);
         final TextView loginCodeObtain = (TextView) viewWrap.findViewById(R.id.login_register_code_obtain);
         final TextView loginCodeSecond = (TextView) viewWrap.findViewById(R.id.login_register_code_second);
 
-        // TODO: 手机号码添加两个空格
-
+        // 手机号码添加两个空格
         loginCodeDesc.setText(String.format(getActivity().getResources().getString(R.string.login_code_desc), phoneNum));
 
         loginCodeContent.setOnCodeFinishListener(new CodeVerifyView.OnCodeFinishListener() {
@@ -277,22 +357,26 @@ public class LoginPageFragment extends BaseFragment {
             public void onComplete(String content) {
                 // 拿到用户输入的验证码，然后跟返回的验证码对比
                 switch (loginActivity.preTag) {
-                    case LoginActivity.MAIN: // 通过验证码登录
+                    // 通过验证码登录
+                    case LoginActivity.MAIN:
                         loginActivity.loginPresenter.loginBySmsCode(phoneNum, content);
                         break;
-                    case LoginActivity.BIND_PHONE: // 绑定手机
-//                        loginActivity.loginPresenter.verifyLoginCode(phoneNum, content);
+                    // 绑定手机
+                    case LoginActivity.BIND_PHONE:
                         String accessToken = SharedPreferencesUtil.getData("accessToken", "").toString();
                         if (accessToken != null && !accessToken.equals("")) {
                             loginActivity.loginPresenter.bindPhone(accessToken, phoneNum, content);
-                            SharedPreferencesUtil.putData("accessToken", ""); // 用完就清空
+                            // 用完就清空
+                            SharedPreferencesUtil.putData("accessToken", "");
                             toggleSoftKeyboard();
                         }
                         break;
-                    case LoginActivity.REGISTER: // 确认注册验证码
+                    // 确认注册验证码
+                    case LoginActivity.REGISTER:
                         loginActivity.loginPresenter.verifyRegisterCode(phoneNum, content);
                         break;
-                    case LoginActivity.FIND_PWD: // 确认找回密码验证码
+                    // 确认找回密码验证码
+                    case LoginActivity.FIND_PWD:
                         loginActivity.loginPresenter.verifyFindPwdCode(phoneNum, content);
                         break;
                     default:
@@ -308,26 +392,35 @@ public class LoginPageFragment extends BaseFragment {
             public void onClick(View v) {
                 loginActivity.loginPresenter.obtainPhoneCode(phoneNum);
                 loginCodeSecond.setVisibility(View.VISIBLE);
+                if (loginCodeObtain == null) {
+                    loginTimeCount = new LoginTimeCount(getActivity(), 60000, 1000, viewWrap);
+                }
                 loginTimeCount.start();
             }
         });
+
+        loginTimeCount = new LoginTimeCount(getActivity(), 60000, 1000, viewWrap);
+        loginTimeCount.start();
     }
 
-    // 初始化密码登录页面
+    /**
+     * 初始化密码登录页面
+     */
     private void initLoginPwdFragment() {
 
         phoneContent = (EditText) viewWrap.findViewById(R.id.login_input_num_content);
         phoneErrorTip = (TextView) viewWrap.findViewById(R.id.login_error_tip);
         phoneObtainCode = (Button) viewWrap.findViewById(R.id.login_submit_btn);
-        phoneObtainCode.setVisibility(View.GONE);
-        initPhoneInputListener(LoginActivity.PWD);
 
         phoneErrorTip.setVisibility(View.GONE);
+        phoneObtainCode.setVisibility(View.GONE);
+
+        initPhoneInputListener(LoginActivity.PWD);
+
         passwordContent = (EditText) viewWrap.findViewById(R.id.login_pwd_pass_word);
-        final Button pwdSubmit = (Button) viewWrap.findViewById(R.id.login_pwd_submit);
-        TextView pwdForget = (TextView) viewWrap.findViewById(R.id.login_pwd_forget);
-        final TextView pwdError = (TextView) viewWrap.findViewById(R.id.login_pwd_error);
         setEditTextOnTouchListener(passwordContent);
+
+        final Button pwdSubmit = (Button) viewWrap.findViewById(R.id.login_pwd_submit);
         passwordContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -351,6 +444,7 @@ public class LoginPageFragment extends BaseFragment {
 
             }
         });
+
         pwdSubmit.setAlpha(0.6f);
         pwdSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,6 +456,10 @@ public class LoginPageFragment extends BaseFragment {
                 loginActivity.loginPresenter.loginByPassword(phoneNum, password);
             }
         });
+
+        TextView pwdForget = (TextView) viewWrap.findViewById(R.id.login_pwd_forget);
+        final TextView pwdError = (TextView) viewWrap.findViewById(R.id.login_pwd_error);
+
         pwdForget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -373,7 +471,9 @@ public class LoginPageFragment extends BaseFragment {
         });
     }
 
-    // 初始化找回密码页面
+    /**
+     * 初始化找回密码页面
+     */
     private void initLoginFindFragment() {
 
         phoneContent = (EditText) viewWrap.findViewById(R.id.login_input_num_content);
@@ -383,8 +483,11 @@ public class LoginPageFragment extends BaseFragment {
         initPhoneInputListener(LoginActivity.FIND_PWD);
     }
 
-    // 设置密码页面
+    /**
+     * 设置密码页面
+     */
     private void initLoginSetPwdFragment() {
+
         passwordContent = (EditText) viewWrap.findViewById(R.id.login_set_pwd_content);
         final Button setPwdSubmit = (Button) viewWrap.findViewById(R.id.login_set_pwd_submit);
 
@@ -418,13 +521,14 @@ public class LoginPageFragment extends BaseFragment {
         setPwdSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 进行注册操作
                 String password = passwordContent.getText().toString();
                 if (password.length() >= 6) {
                     // 判断是注册流程还是修改密码流程
-                    if (loginActivity.isRegister) { // 注册流程
+                    if (loginActivity.isRegister) {
+                        // 注册流程
                         loginActivity.loginPresenter.doRegister(phoneNum, password, smsCode);
-                    } else { // 修改密码流程
+                    } else {
+                        // 修改密码流程
                         loginActivity.loginPresenter.resetPasswordBySms(phoneNum, smsCode, password);
                     }
                     passwordContent.setText("");
@@ -434,6 +538,9 @@ public class LoginPageFragment extends BaseFragment {
         });
     }
 
+    /**
+     * 初始化绑定微信页面
+     */
     private void initLoginWeChatFragment() {
         Button weChatSubmit = (Button) viewWrap.findViewById(R.id.login_we_chat_submit);
 
@@ -441,14 +548,16 @@ public class LoginPageFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 ((LoginActivity) getActivity()).loginPresenter.reqWXLogin();
-                // TODO: 调取微信登录页面回来之后，先判断是否是老用户，是就直接登录，否则跳转绑定手机号，
+                // 调取微信登录页面回来之后，先判断是否是老用户，是就直接登录，否则跳转绑定手机号，
                 // 绑定手机号
 //                loginActivity.replaceFragment(LoginActivity.BIND_PHONE);
             }
         });
     }
 
-    // 初始化绑定手机 fragment
+    /**
+     * 初始化绑定手机页面
+     */
     private void initLoginBindPhoneFragment() {
 
         phoneContent = (EditText) viewWrap.findViewById(R.id.login_input_num_content);
@@ -457,7 +566,6 @@ public class LoginPageFragment extends BaseFragment {
 
         initPhoneInputListener(LoginActivity.BIND_PHONE);
     }
-
 
     @SuppressLint("ClickableViewAccessibility")
     private void setEditTextOnTouchListener(final EditText et) {
@@ -487,7 +595,7 @@ public class LoginPageFragment extends BaseFragment {
                         Drawable right = getActivity().getResources().getDrawable(R.mipmap.icon_show);
                         right.setBounds(0, 0, right.getMinimumWidth(), drawable.getMinimumHeight());
                         et.setCompoundDrawables(null, null, right, null);
-                        et.setInputType(InputType.TYPE_CLASS_TEXT |InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     }
                     return true;
                 }
@@ -496,11 +604,16 @@ public class LoginPageFragment extends BaseFragment {
         });
     }
 
-    // 初始化手机号输入、按钮监听
+    /**
+     * 初始化手机号输入、按钮监听
+     *
+     * @param tag
+     */
     private void initPhoneInputListener(String tag) {
+
         phoneObtainCode.setEnabled(false);
         phoneObtainCode.setAlpha(0.6f);
-        // 监听文字变化
+
         phoneContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -527,7 +640,6 @@ public class LoginPageFragment extends BaseFragment {
             }
         });
 
-        // 设置布局点击
         viewWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -538,23 +650,6 @@ public class LoginPageFragment extends BaseFragment {
             }
         });
 
-        // 设置焦点监听
-//        phoneContent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (tag.equals(LoginActivity.REGISTER)) {
-//                    return;
-//                }
-//                if (!hasFocus) { // 失去焦点的时候，如果手机号长度为 11 就可以检测这个手机号是否已经注册
-//                    String phoneNumber = phoneContent.getText().toString();
-//                    if (phoneNumber.length() == 11) {
-//                        loginActivity.loginPresenter.checkRegister(phoneNumber);
-//                    }
-//                }
-//            }
-//        });
-
-        // 设置点击事件
         phoneContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -577,6 +672,10 @@ public class LoginPageFragment extends BaseFragment {
             }
         });
 
+        obtainSmsCode(tag);
+    }
+
+    private void obtainSmsCode(String tag) {
         switch (tag) {
             case LoginActivity.MAIN:
                 // 首页获取验证码按钮
@@ -589,7 +688,7 @@ public class LoginPageFragment extends BaseFragment {
                                 phoneContent.setCursorVisible(false);
                             }
                             toggleSoftKeyboard();
-                            // TODO: 已经注册就直接走登录逻辑，否则 toast 提示去注册
+                            // 已经注册就直接走登录逻辑，否则 toast 提示去注册
                             loginActivity.loginPresenter.checkRegister(phoneNumber);
                             loginActivity.setPhoneNum(phoneNumber);
                         }
@@ -622,12 +721,10 @@ public class LoginPageFragment extends BaseFragment {
                         if (phoneNumber.length() == 11) {
                             phoneContent.setText("");
                             toggleSoftKeyboard();
-                            // TODO: 已经注册就直接走登录逻辑，否则 toast 提示去注册
+                            // 已经注册就直接走登录逻辑，否则 toast 提示去注册
                             loginActivity.loginPresenter.checkRegister(phoneNumber);
                             loginActivity.setPhoneNum(phoneNumber);
                         }
-//                        loginActivity.loginPresenter.obtainPhoneCode(phoneNumber);
-//                        loginActivity.replaceFragment(LoginActivity.CODE);
                     }
                 });
                 break;
