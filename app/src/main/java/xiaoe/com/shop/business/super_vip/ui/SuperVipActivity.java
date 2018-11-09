@@ -12,6 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.common.JumpDetail;
 
 public class SuperVipActivity extends XiaoeActivity {
 
@@ -33,7 +34,7 @@ public class SuperVipActivity extends XiaoeActivity {
             @Override
             public void onClick(View v) {
                 // 获取资源类型和资源 id
-//                JumpDetail.jumpPay(this, );
+//                JumpDetail.jumpPay(SuperVipActivity.this, "", "", "", 0);
             }
         });
     }

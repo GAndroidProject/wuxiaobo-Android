@@ -127,7 +127,7 @@ public class LoginActivity extends XiaoeActivity {
 
     private void initData() {
         // 初始化 SharedPreference
-        SharedPreferencesUtil.getInstance(this, "xiaoe_file");
+        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
     }
 
     private void initView() {

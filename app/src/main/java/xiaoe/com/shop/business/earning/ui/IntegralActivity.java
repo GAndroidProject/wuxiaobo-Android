@@ -30,8 +30,6 @@ public class IntegralActivity extends XiaoeActivity {
     @BindView(R.id.integral_content)
     TextView integralContent;
     @BindView(R.id.integral_be_super_vip)
-    TextView integralBuildTip;
-    @BindView(R.id.integral_be_super_vip)
     TextView integralBeSuperVip;
 
     @BindView(R.id.earning_list_title)
@@ -40,6 +38,8 @@ public class IntegralActivity extends XiaoeActivity {
     ListView integralList;
 
     Unbinder unbinder;
+
+    boolean isSuperVip;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,7 +54,15 @@ public class IntegralActivity extends XiaoeActivity {
     }
 
     private void initData() {
-
+        integralTitle.setText("积分");
+        integralDesc.setVisibility(View.GONE);
+        if (isSuperVip) {
+            integralBeSuperVip.setVisibility(View.VISIBLE);
+        } else {
+            integralBeSuperVip.setVisibility(View.GONE);
+        }
+        integralListTitle.setText("积分流水");
+        integralContent.setText("168");
     }
 
     private void initListener() {
