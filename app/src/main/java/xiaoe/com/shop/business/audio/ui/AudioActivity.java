@@ -81,7 +81,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setWindowAnimations(R.style.ActionSheetDialogAnimation);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setSharedElementEnterTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
             getWindow().setSharedElementReturnTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.CENTER_CROP));
@@ -208,6 +207,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         setViewAnim(audioRing, 1, 0, 1, 0, 1, 0);
         setViewAnim(btnPageClose, 1, 0, 1, 0, 1, 0);
         super.onBackPressed();
+        overridePendingTransition(R.anim.no_anim,R.anim.slide_bottom_out);
     }
 
     private void setViewAnim(final View fromView, float startScaleX, float finaScaleX,

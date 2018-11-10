@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.CouponInfo;
+import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
@@ -71,6 +72,8 @@ public class JumpDetail {
         }
         Intent intent = new Intent(context, AudioActivity.class);
         context.startActivity(intent);
+        if (context instanceof Activity)
+            ((Activity)context).overridePendingTransition(R.anim.slide_bottom_in,R.anim.slide_top_out);
     }
 
     /**

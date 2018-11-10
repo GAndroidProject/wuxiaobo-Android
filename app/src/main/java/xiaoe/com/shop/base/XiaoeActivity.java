@@ -322,6 +322,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             public void onClick(View v) {
                 Intent intent = new Intent(XiaoeActivity.this, AudioActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_bottom_in,R.anim.slide_top_out);
             }
         });
     }
