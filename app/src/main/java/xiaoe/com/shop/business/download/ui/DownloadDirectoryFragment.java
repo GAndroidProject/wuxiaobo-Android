@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import xiaoe.com.common.entitys.ColumnDirectoryEntity;
@@ -94,17 +93,24 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
     }
 
     private void clickDownload() {
+        boolean download = false;
         if("ColumnDirectoryFragment".equals(fromType)){
             for (ColumnDirectoryEntity directoryEntity : adapter.getDate()){
-                List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
-                boolean select = false;//小专栏里有选择下载的
                 for (ColumnSecondDirectoryEntity secondDirectoryEntity : directoryEntity.getResource_list()){
                     if(secondDirectoryEntity.isSelect() && secondDirectoryEntity.isExpand()){
-                        select = true;
+                        download = true;
+                        secondDirectoryEntity.setEnable(false);
                         DownloadManager.getInstance().addDownload(null, null, secondDirectoryEntity);
                     }
                 }
             }
+        }
+        if(download){
+            download = false;
+            toastCustom(getString(R.string.add_download_list));
+            adapter.notifyDataSetChanged();
+        }else{
+            toastCustom(getString(R.string.please_select_download));
         }
     }
 

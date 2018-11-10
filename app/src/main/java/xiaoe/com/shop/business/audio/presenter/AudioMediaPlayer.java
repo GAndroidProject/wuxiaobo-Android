@@ -322,11 +322,11 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     public static void setAudio(AudioPlayEntity audio, boolean autoPlay) {
-        audio.setPlay(true);
         AudioMediaPlayer.audio = audio;
-        if(!autoPlay){
+        if(!autoPlay || audio.getHasBuy() == 0){
             return;
         }
+        audio.setPlay(true);
         start();
     }
     private static void saveAudioDB(){

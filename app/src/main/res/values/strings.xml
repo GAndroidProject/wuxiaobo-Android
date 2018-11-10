@@ -78,6 +78,8 @@
 
     <string name="finish_download">已完成</string>
     <string name="download_proceed">下载中</string>
+    <string name="add_download_list">已成功添加至下载列表</string>
+    <string name="please_select_download">请选择下载资源</string>
 
     <!--删除提示 start-->
     <string name="all_start_download">全部开始</string>

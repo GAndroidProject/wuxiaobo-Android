@@ -365,11 +365,14 @@ public class DownloadManager implements DownloadListner {
                 downloadTableInfo.setFileName(resource.getTitle()+audioUrl.substring(audioUrl.lastIndexOf(".")));
                 downloadTableInfo.setFileDownloadUrl(audioUrl);
             }else if(resource.getResource_type() == 3){
-//                downloadTableInfo.setFileDownloadUrl(resource.get);
+                String videoUrl = resource.getVideo_url();
+                downloadTableInfo.setFileName(resource.getTitle()+videoUrl.substring(videoUrl.lastIndexOf(".")));
+                downloadTableInfo.setFileDownloadUrl(videoUrl);
             }
             downloadTableInfo.setCreateAt(DateFormat.currentTime());
             downloadTableInfo.setUpdateAt(DateFormat.currentTime());
             DownloadFileConfig.getInstance().insertDownloadInfo(downloadTableInfo);
+            start(downloadTableInfo);
         }
         //关系表
         SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
