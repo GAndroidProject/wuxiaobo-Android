@@ -23,7 +23,10 @@ import com.umeng.socialize.UMShareAPI;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
+
 import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
@@ -73,6 +76,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private CollectionUtils collectionUtils;
     private ImageView btnAudioDownload;
 
+    List<LoginUser> loginUserList;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +89,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         EventBus.getDefault().register(this);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         setContentView(R.layout.activity_audio);
+        loginUserList = getLoginUserList();
         mIntent = getIntent();
         initViews();
         initDatas();
@@ -305,14 +311,26 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 }
                 break;
             case R.id.buy_course:
-                buyResource();
+                if (loginUserList.size() == 1) {
+                    buyResource();
+                } else {
+                    Toast("请先登录呦");
+                }
                 break;
             case R.id.buy_vip:
-                toastCustom("购买超级会员");
+                if (loginUserList.size() == 1) {
+                    JumpDetail.jumpSuperVip(this);
+                } else {
+                    Toast("请先登录呦");
+                }
                 break;
             case R.id.btn_collect:
             case R.id.btn_collect_item:
-                collect();
+                if (loginUserList.size() == 1) {
+                    collect();
+                } else {
+                    Toast("请先登录呦");
+                }
                 break;
             case R.id.btn_share:
             case R.id.btn_share_item:

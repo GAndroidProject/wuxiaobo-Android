@@ -43,8 +43,9 @@ public class TreeChildRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 
 	@Override
 	public void onBindViewHolder(BaseViewHolder holder, int position) {
+		int bindPos = holder.getAdapterPosition();
 		ChildViewHolder imageViewHolder = (ChildViewHolder) holder;
-		imageViewHolder.bindView(mDataSet.get(position), parentPosition, position, mListPlayListener);
+		imageViewHolder.bindView(mDataSet.get(bindPos), parentPosition, bindPos, mListPlayListener);
 	}
 
 

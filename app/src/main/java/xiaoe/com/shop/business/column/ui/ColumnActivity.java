@@ -15,6 +15,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
 
+import java.util.List;
+
+import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
@@ -73,11 +76,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private String collectPrice = "";
     private int price = 0;
 
+    List<LoginUser> loginUserList;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_column);
         mIntent = getIntent();
+        loginUserList = getLoginUserList();
         isBigColumn = mIntent.getBooleanExtra("isBigColumn", false);
         resourceId = mIntent.getStringExtra("resource_id");
         initView();
@@ -308,14 +314,26 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 finish();
                 break;
             case R.id.buy_vip:
-                toastCustom("购买超级会员");
+                if (loginUserList.size() == 1) {
+                    JumpDetail.jumpSuperVip(this);
+                } else {
+                    toastCustom("请先登录呦");
+                }
                 break;
             case R.id.buy_course:
-                int resourceType = isBigColumn ? 8 : 6;
-                JumpDetail.jumpPay(this,resourceId,resourceType, collectImgUrl, collectTitle, price);
+                if (loginUserList.size() == 1) {
+                    int resourceType = isBigColumn ? 8 : 6;
+                    JumpDetail.jumpPay(this,resourceId,resourceType, collectImgUrl, collectTitle, price);
+                } else {
+                    toastCustom("请先登录呦");
+                }
                 break;
             case R.id.btn_collect:
-                collect();
+                if (loginUserList.size() == 1) {
+                    collect();
+                } else {
+                    toastCustom("请先登录呦");
+                }
                 break;
             case R.id.btn_share:
             case R.id.btn_tool_bar_share:

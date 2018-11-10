@@ -24,8 +24,11 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 
+import java.util.List;
+
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.DownloadResourceTableInfo;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
@@ -72,6 +75,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private String mLocalVideoUrl;
     private boolean localResource = false;
 
+    List<LoginUser> loginUserList;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +90,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }
         setContentView(R.layout.activity_video);
         EventBus.getDefault().register(this);
+        loginUserList = getLoginUserList();
         videoPresenter = new VideoPresenter(this);
         collectionUtils = new CollectionUtils(this);
         mIntent = getIntent();
@@ -166,12 +172,24 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.buy_course:
-                JumpDetail.jumpPay(this, mResourceId, 3, collectImgUrl, collectTitle, resPrice);
+                if (loginUserList.size() == 1) {
+                    JumpDetail.jumpPay(this, mResourceId, 3, collectImgUrl, collectTitle, resPrice);
+                } else {
+                    Toast("请先登录呦");
+                }
                 break;
             case R.id.buy_vip:
-                toastCustom("购买超级会员");
+                if (loginUserList.size() == 1) {
+                    JumpDetail.jumpSuperVip(this);
+                } else {
+                    Toast("请先登录呦");
+                }
             case R.id.btn_collect:
-                collect();
+                if (loginUserList.size() == 1) {
+                    collect();
+                } else {
+                    Toast("请先登录呦");
+                }
                 break;
             case R.id.btn_share:
                 umShare("hello");
@@ -281,22 +299,26 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         if(type == VideoPlayConstant.VIDEO_FULL_SCREEN){
 
         }else if(type == VideoPlayConstant.VIDEO_STATE_DOWNLOAD){
-            if(TextUtils.isEmpty(mVideoUrl)){
-                toastCustom(getString(R.string.cannot_download));
-                return;
+            if (loginUserList.size() == 1) {
+                if(TextUtils.isEmpty(mVideoUrl)){
+                    toastCustom(getString(R.string.cannot_download));
+                    return;
+                }
+                boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), mResourceId);
+                if(!isDownload){
+                    ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
+                    download.setApp_id(CommonUserInfo.getShopId());
+                    download.setResource_id(mResourceId);
+                    download.setTitle(collectTitle);
+                    download.setResource_type(3);
+                    download.setImg_url(collectImgUrl);
+                    download.setVideo_url(mVideoUrl);
+                    DownloadManager.getInstance().addDownload(null, null, download);
+                }
+                toastCustom(getString(R.string.add_download_list));
+            } else {
+                Toast("请先登录呦");
             }
-            boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), mResourceId);
-            if(!isDownload){
-                ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
-                download.setApp_id(CommonUserInfo.getShopId());
-                download.setResource_id(mResourceId);
-                download.setTitle(collectTitle);
-                download.setResource_type(3);
-                download.setImg_url(collectImgUrl);
-                download.setVideo_url(mVideoUrl);
-                DownloadManager.getInstance().addDownload(null, null, download);
-            }
-            toastCustom(getString(R.string.add_download_list));
         }else{
             onBackPressed();
         }

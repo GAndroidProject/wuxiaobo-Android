@@ -1,6 +1,7 @@
 package xiaoe.com.shop.adapter.decorate.flow_info;
 
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -15,6 +16,8 @@ import xiaoe.com.shop.base.BaseViewHolder;
  */
 public class FlowInfoImgTextViewHolder extends BaseViewHolder {
 
+    @BindView(R.id.flow_info_img_text_wrap)
+    public FrameLayout flowInfoWrap;
     @BindView(R.id.flow_info_img_text_bg)
     public SimpleDraweeView flowInfoBg;
     @BindView(R.id.flow_info_img_text_title)

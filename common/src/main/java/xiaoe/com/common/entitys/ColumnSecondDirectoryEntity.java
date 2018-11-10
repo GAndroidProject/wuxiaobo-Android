@@ -11,6 +11,7 @@ public class ColumnSecondDirectoryEntity implements Serializable {
     private boolean expand = false;// 是否展开
     private boolean isSelect = false; //是否选择
     private boolean enable = true;//是否可选
+    private boolean isTourists; // 是否为游客
     /**
      * app_id : apppcHqlTPT3482
      * resource_id : i_5bce7fe2265ac_mD4vEOaj
@@ -219,5 +220,14 @@ public class ColumnSecondDirectoryEntity implements Serializable {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    public void setTourists(boolean tourists) {
+        isTourists = tourists;
+    }
+
+    public boolean isTourists() {
+        return isTourists;
+
     }
 }

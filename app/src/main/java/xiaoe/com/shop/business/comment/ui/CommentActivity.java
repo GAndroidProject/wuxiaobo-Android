@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.List;
 
 import xiaoe.com.common.entitys.CommentEntity;
+import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.CommentLikeRequest;
 import xiaoe.com.network.requests.CommentListRequest;
@@ -57,11 +58,14 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
     private int lastVisibleItemPosition = -1;
     private boolean isCommentFinished = false;
 
+    List<LoginUser> loginUserList;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
         commentPresenter = new CommentPresenter(this);
+        loginUserList = getLoginUserList();
         mIntent = getIntent();
         initView();
         initData();
@@ -112,6 +116,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         commentView = (CommentView) findViewById(R.id.comment_view);
         commentView.setActivityRootView(activityRootView);
         commentView.setSendListener(this);
+        commentView.setIsTourists(loginUserList.size() != 1);
 
         statusPagerView = (StatusPagerView) findViewById(R.id.status_pager);
         setPagerState(-1);
@@ -269,32 +274,44 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
     public void onClickComment(CommentEntity commentEntity, int type, int position) {
         if(type == CommentView.TYPE_REPLY){
             //回复
-            commentView.setSrcCommentHint(commentEntity.getUser_nickname());
-            replyCommentEntity = commentEntity;
+            if (loginUserList.size() == 1) {
+                commentView.setSrcCommentHint(commentEntity.getUser_nickname());
+                replyCommentEntity = commentEntity;
+            } else {
+                Toast("请先登录呦");
+            }
         }else if(type == CommentView.TYPE_LIKE){
             //点赞
-            mPosition = position;
-            boolean praise = !commentEntity.isIs_praise();
-            commentEntity.setIs_praise(praise);
-            int likeCount = commentEntity.getLike_num();
-            if(praise){
-                likeCount++;
-            }else{
-                likeCount--;
+            if (loginUserList.size() == 1) {
+                mPosition = position;
+                boolean praise = !commentEntity.isIs_praise();
+                commentEntity.setIs_praise(praise);
+                int likeCount = commentEntity.getLike_num();
+                if(praise){
+                    likeCount++;
+                }else{
+                    likeCount--;
+                }
+                commentEntity.setLike_num(likeCount);
+                commentPresenter.likeComment(resourceId, resourceType, commentEntity.getComment_id(), commentEntity.getUser_id(), commentEntity.getContent(), praise);
+            } else {
+                Toast("请先登录呦");
             }
-            commentEntity.setLike_num(likeCount);
-            commentPresenter.likeComment(resourceId, resourceType, commentEntity.getComment_id(), commentEntity.getUser_id(), commentEntity.getContent(), praise);
         }else if(type == CommentView.TYPE_DELETE){
             //删除
-            if(commentEntity.isDelete()){
-                return;
+            if (loginUserList.size() == 1) {
+                if(commentEntity.isDelete()){
+                    return;
+                }
+                mCommentCount--;
+                commentCountView.setText("评论 "+mCommentCount+" 条");
+                commentEntity.setDelete(true);
+                commentPresenter.deleteComment(resourceId, resourceType, commentEntity.getComment_id());
+                commentAdapter.getData().remove(position);
+                commentAdapter.notifyItemRangeChanged(0, commentAdapter.getItemCount());
+            } else {
+                Toast("请先登录呦");
             }
-            mCommentCount--;
-            commentCountView.setText("评论 "+mCommentCount+" 条");
-            commentEntity.setDelete(true);
-            commentPresenter.deleteComment(resourceId, resourceType, commentEntity.getComment_id());
-            commentAdapter.getData().remove(position);
-            commentAdapter.notifyItemRangeChanged(0, commentAdapter.getItemCount());
         }
     }
 

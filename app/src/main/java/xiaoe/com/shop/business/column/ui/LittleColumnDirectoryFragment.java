@@ -21,6 +21,7 @@ import java.util.List;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.tree.TreeChildRecyclerAdapter;
@@ -45,6 +46,8 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     private boolean isHasBuy = false;
     private String resourceId;
 
+    List<LoginUser> loginUserList;
+
     public LittleColumnDirectoryFragment() {
         playList = new ArrayList<AudioPlayEntity>();
     }
@@ -54,6 +57,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_little_column_directory, null, false);
         EventBus.getDefault().register(this);
+        loginUserList = getLoginUserList();
         return rootView;
     }
 
@@ -114,30 +118,34 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     }
 
     private void clickBatchDownload() {
-        if(!isHasBuy){
-            toastCustom("未购买课程");
-            return;
-        }
-        List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
-        for (ColumnSecondDirectoryEntity item : directoryAdapter.getData()){
-            if(item.getResource_type() == 2 || item.getResource_type() == 3){
-                newChildDataList.add(item);
+        if (loginUserList.size() == 1) {
+            if(!isHasBuy){
+                toastCustom("未购买课程");
+                return;
             }
-        }
+            List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
+            for (ColumnSecondDirectoryEntity item : directoryAdapter.getData()){
+                if(item.getResource_type() == 2 || item.getResource_type() == 3){
+                    newChildDataList.add(item);
+                }
+            }
 
-        List<ColumnDirectoryEntity> newDataList = new ArrayList<ColumnDirectoryEntity>();
-        if(newChildDataList.size() > 0){
-            ColumnDirectoryEntity directoryEntity = new ColumnDirectoryEntity();
-            directoryEntity.setTitle(((ColumnActivity)getActivity()).getColumnTitle());
-            directoryEntity.setResource_list(newChildDataList);
-            newDataList.add(directoryEntity);
+            List<ColumnDirectoryEntity> newDataList = new ArrayList<ColumnDirectoryEntity>();
+            if(newChildDataList.size() > 0){
+                ColumnDirectoryEntity directoryEntity = new ColumnDirectoryEntity();
+                directoryEntity.setTitle(((ColumnActivity)getActivity()).getColumnTitle());
+                directoryEntity.setResource_list(newChildDataList);
+                newDataList.add(directoryEntity);
+            }
+            String dataJSON = JSONObject.toJSONString(newDataList);
+            Intent intent = new Intent(getContext(), DownloadActivity.class);
+            intent.putExtra("bundle_dataJSON", dataJSON);
+            intent.putExtra("from_type", "LittleColumnDirectoryFragment");
+            intent.putExtra("resourceId", resourceId);
+            startActivity(intent);
+        } else {
+            toastCustom("请先登录呦");
         }
-        String dataJSON = JSONObject.toJSONString(newDataList);
-        Intent intent = new Intent(getContext(), DownloadActivity.class);
-        intent.putExtra("bundle_dataJSON", dataJSON);
-        intent.putExtra("from_type", "LittleColumnDirectoryFragment");
-        intent.putExtra("resourceId", resourceId);
-        startActivity(intent);
     }
 
     private void setAudioPlayList(List<ColumnSecondDirectoryEntity> list){
@@ -166,24 +174,28 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     }
 
     private void clickPlayAll() {
-        if(!isHasBuy){
-            toastCustom("未购买课程");
-            return;
-        }
-        if(playList.size() > 0){
-            if(!isAddPlayList){
-                AudioPlayUtil.getInstance().setAudioList(playList);
-                AudioPlayUtil.getInstance().setSingleAudio(false);
+        if (loginUserList.size() == 1) {
+            if(!isHasBuy){
+                toastCustom("未购买课程");
+                return;
             }
-            isAddPlayList = true;
-            AudioMediaPlayer.stop();
-            AudioPlayEntity playEntity = playList.get(0);
-            playEntity.setPlaying(!playEntity.isPlaying());
-            playEntity.setPlay(true);
-            AudioMediaPlayer.setAudio(playEntity, true);
-            new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+            if(playList.size() > 0){
+                if(!isAddPlayList){
+                    AudioPlayUtil.getInstance().setAudioList(playList);
+                    AudioPlayUtil.getInstance().setSingleAudio(false);
+                }
+                isAddPlayList = true;
+                AudioMediaPlayer.stop();
+                AudioPlayEntity playEntity = playList.get(0);
+                playEntity.setPlaying(!playEntity.isPlaying());
+                playEntity.setPlay(true);
+                AudioMediaPlayer.setAudio(playEntity, true);
+                new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+            }
+            directoryAdapter.notifyDataSetChanged();
+        } else {
+            toastCustom("请先登录呦");
         }
-        directoryAdapter.notifyDataSetChanged();
     }
 
     private void playPosition(String resourceId, String columnId, String bigColumnId){
@@ -224,37 +236,45 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
 
     @Override
     public void onPlayPosition(View view,int parentPosition, int position) {
-        if(!isHasBuy){
-            toastCustom("未购买课程");
-            return;
-        }
-        ColumnSecondDirectoryEntity itemData = directoryAdapter.getData().get(position);
-        if(itemData.getResource_type() == 2){
-            playPosition(itemData.getResource_id(), itemData.getColumnId(), itemData.getBigColumnId());
+        if (loginUserList.size() == 1) {
+            if(!isHasBuy){
+                toastCustom("未购买课程");
+                return;
+            }
+            ColumnSecondDirectoryEntity itemData = directoryAdapter.getData().get(position);
+            if(itemData.getResource_type() == 2){
+                playPosition(itemData.getResource_id(), itemData.getColumnId(), itemData.getBigColumnId());
+            }
+        } else {
+            toastCustom("请先登录呦");
         }
     }
 
     @Override
     public void onJumpDetail(ColumnSecondDirectoryEntity itemData, int parentPosition, int position) {
-        if(!isHasBuy){
-            toastCustom("未购买课程");
-            return;
-        }
-        int resourceType = itemData.getResource_type();
-        String resourceId = itemData.getResource_id();
-        if(resourceType == 1){
-            //图文
-           JumpDetail.jumpImageText(getContext(), resourceId, null);
-        }else if(resourceType == 2){
-            //音频
-            onPlayPosition(null, parentPosition, position);
-            JumpDetail.jumpAudio(getContext(), resourceId, 1);
-        }else if(resourceType == 3){
-            //视频
-            JumpDetail.jumpVideo(getContext(), resourceId, "",false);
-        }else{
-            toastCustom("未知课程");
-            return;
+        if (loginUserList.size() == 1) {
+            if(!isHasBuy){
+                toastCustom("未购买课程");
+                return;
+            }
+            int resourceType = itemData.getResource_type();
+            String resourceId = itemData.getResource_id();
+            if(resourceType == 1){
+                //图文
+                JumpDetail.jumpImageText(getContext(), resourceId, null);
+            }else if(resourceType == 2){
+                //音频
+                onPlayPosition(null, parentPosition, position);
+                JumpDetail.jumpAudio(getContext(), resourceId, 1);
+            }else if(resourceType == 3){
+                //视频
+                JumpDetail.jumpVideo(getContext(), resourceId, "",false);
+            }else{
+                toastCustom("未知课程");
+                return;
+            }
+        } else {
+            toastCustom("请先登录呦");
         }
     }
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.tree.ParentViewHolder;
 import xiaoe.com.shop.adapter.tree.TreeRecyclerAdapter;
@@ -44,6 +46,8 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     private int playParentPosition = -1;
     private String resourceId;
 
+    List<LoginUser> loginUserList;
+
     public ColumnDirectoryFragment() {
     }
 
@@ -52,6 +56,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_column_directory, null, false);
         EventBus.getDefault().register(this);
+        loginUserList = getLoginUserList();
         return rootView;
     }
 
@@ -88,44 +93,48 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     }
 
     private void clickBatchDownload() {
-        if(!isHasBuy){
-            toastCustom("未购买课程");
-            return;
-        }
-        List<ColumnDirectoryEntity> newDataList = new ArrayList<ColumnDirectoryEntity>();
-        for (ColumnDirectoryEntity directoryEntity : directoryAdapter.getData()){
-            List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
-            for (ColumnSecondDirectoryEntity secondDirectoryEntity : directoryEntity.getResource_list()){
-                if(secondDirectoryEntity.getResource_type() == 2 || secondDirectoryEntity.getResource_type() == 3){
-                    newChildDataList.add(secondDirectoryEntity);
+        if (loginUserList.size() == 1) {
+            if(!isHasBuy){
+                toastCustom("未购买课程");
+                return;
+            }
+            List<ColumnDirectoryEntity> newDataList = new ArrayList<ColumnDirectoryEntity>();
+            for (ColumnDirectoryEntity directoryEntity : directoryAdapter.getData()){
+                List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
+                for (ColumnSecondDirectoryEntity secondDirectoryEntity : directoryEntity.getResource_list()){
+                    if(secondDirectoryEntity.getResource_type() == 2 || secondDirectoryEntity.getResource_type() == 3){
+                        newChildDataList.add(secondDirectoryEntity);
+                    }
+                }
+                if(newChildDataList.size() > 0){
+                    ColumnDirectoryEntity newDirectoryEntity = new ColumnDirectoryEntity();
+                    newDirectoryEntity.setApp_id(directoryEntity.getApp_id());
+                    newDirectoryEntity.setResource_type(directoryEntity.getResource_type());
+                    newDirectoryEntity.setResource_id(directoryEntity.getResource_id());
+                    newDirectoryEntity.setTitle(directoryEntity.getTitle());
+                    newDirectoryEntity.setResource_list(newChildDataList);
+                    newDirectoryEntity.setAudio_compress_url(directoryEntity.getAudio_compress_url());
+                    newDirectoryEntity.setAudio_length(directoryEntity.getAudio_length());
+                    newDirectoryEntity.setAudio_url(directoryEntity.getAudio_url());
+                    newDirectoryEntity.setExpand(false);
+                    newDirectoryEntity.setImg_url(directoryEntity.getImg_url());
+                    newDirectoryEntity.setImg_url_compress(directoryEntity.getImg_url_compress());
+                    newDirectoryEntity.setM3u8_url(directoryEntity.getM3u8_url());
+                    newDirectoryEntity.setSelect(false);
+                    newDirectoryEntity.setStart_at(directoryEntity.getStart_at());
+
+                    newDataList.add(newDirectoryEntity);
                 }
             }
-            if(newChildDataList.size() > 0){
-                ColumnDirectoryEntity newDirectoryEntity = new ColumnDirectoryEntity();
-                newDirectoryEntity.setApp_id(directoryEntity.getApp_id());
-                newDirectoryEntity.setResource_type(directoryEntity.getResource_type());
-                newDirectoryEntity.setResource_id(directoryEntity.getResource_id());
-                newDirectoryEntity.setTitle(directoryEntity.getTitle());
-                newDirectoryEntity.setResource_list(newChildDataList);
-                newDirectoryEntity.setAudio_compress_url(directoryEntity.getAudio_compress_url());
-                newDirectoryEntity.setAudio_length(directoryEntity.getAudio_length());
-                newDirectoryEntity.setAudio_url(directoryEntity.getAudio_url());
-                newDirectoryEntity.setExpand(false);
-                newDirectoryEntity.setImg_url(directoryEntity.getImg_url());
-                newDirectoryEntity.setImg_url_compress(directoryEntity.getImg_url_compress());
-                newDirectoryEntity.setM3u8_url(directoryEntity.getM3u8_url());
-                newDirectoryEntity.setSelect(false);
-                newDirectoryEntity.setStart_at(directoryEntity.getStart_at());
-
-                newDataList.add(newDirectoryEntity);
-            }
+            String dataJSON = JSONObject.toJSONString(newDataList);
+            Intent intent = new Intent(getContext(), DownloadActivity.class);
+            intent.putExtra("bundle_dataJSON", dataJSON);
+            intent.putExtra("from_type", "ColumnDirectoryFragment");
+            intent.putExtra("resourceId", resourceId);
+            startActivity(intent);
+        } else {
+            toastCustom("请先登录呦");
         }
-        String dataJSON = JSONObject.toJSONString(newDataList);
-        Intent intent = new Intent(getContext(), DownloadActivity.class);
-        intent.putExtra("bundle_dataJSON", dataJSON);
-        intent.putExtra("from_type", "ColumnDirectoryFragment");
-        intent.putExtra("resourceId", resourceId);
-        startActivity(intent);
     }
 
     public void addData(List<ColumnDirectoryEntity> list){
@@ -143,35 +152,39 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
 
     @Override
     public void onPlayPosition(View view, int parentPosition, int position) {
-        if(!isHasBuy){
-            toastCustom("未购买课程");
-            return;
-        }
-        ColumnDirectoryEntity parentEntity = directoryAdapter.getPositionData(parentPosition);
-        isAddPlayList = playParentPosition == parentPosition;
-        if(position == -1){
-            //播放全部
-            List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
-            clickPlayAll(playList);
-        }else{
-            //播放某一个，同时获取播放列表
-            ColumnSecondDirectoryEntity playEntity = parentEntity.getResource_list().get(position);
-            if(playEntity.getResource_type() == 2){
-                //音频
-                List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
-                if(!isAddPlayList){
-                    AudioPlayUtil.getInstance().setAudioList(playList);
-                    AudioPlayUtil.getInstance().setSingleAudio(false);
-                }
-                isAddPlayList = true;
-                playPosition(playList, playEntity.getResource_id(), playEntity.getColumnId(), playEntity.getBigColumnId());
+        if (loginUserList.size() == 1) {
+            if(!isHasBuy){
+                toastCustom("未购买课程");
+                return;
             }
-        }
-        if(playParentPosition < 0){
+            ColumnDirectoryEntity parentEntity = directoryAdapter.getPositionData(parentPosition);
+            isAddPlayList = playParentPosition == parentPosition;
+            if(position == -1){
+                //播放全部
+                List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
+                clickPlayAll(playList);
+            }else{
+                //播放某一个，同时获取播放列表
+                ColumnSecondDirectoryEntity playEntity = parentEntity.getResource_list().get(position);
+                if(playEntity.getResource_type() == 2){
+                    //音频
+                    List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
+                    if(!isAddPlayList){
+                        AudioPlayUtil.getInstance().setAudioList(playList);
+                        AudioPlayUtil.getInstance().setSingleAudio(false);
+                    }
+                    isAddPlayList = true;
+                    playPosition(playList, playEntity.getResource_id(), playEntity.getColumnId(), playEntity.getBigColumnId());
+                }
+            }
+            if(playParentPosition < 0){
+                playParentPosition = parentPosition;
+            }
+            notifyDataSetChanged(parentPosition, position);
             playParentPosition = parentPosition;
+        } else {
+            toastCustom("请先登录呦");
         }
-        notifyDataSetChanged(parentPosition, position);
-        playParentPosition = parentPosition;
     }
     private void notifyDataSetChanged(int parentPosition, int position){
         ParentViewHolder parentViewHolder= (ParentViewHolder) directoryAdapter.getViewHolderList().get(parentPosition);
@@ -188,25 +201,29 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     }
     @Override
     public void onJumpDetail(ColumnSecondDirectoryEntity itemData, int parentPosition, int position) {
-        if(!isHasBuy){
-            toastCustom("未购买课程");
-            return;
-        }
-        int resourceType = itemData.getResource_type();
-        String resourceId = itemData.getResource_id();
-        if(resourceType == 1){
-            //图文
-            JumpDetail.jumpImageText(getContext(), resourceId, null);
-        }else if(resourceType == 2){
-            //音频
-            onPlayPosition(null, parentPosition, position);
-            JumpDetail.jumpAudio(getContext(), resourceId, 1);
-        }else if(resourceType == 3){
-            //视频
-            JumpDetail.jumpVideo(getContext(), resourceId, "",false);
-        }else{
-            toastCustom("未知课程");
-            return;
+        if (loginUserList.size() == 1) {
+            if(!isHasBuy){
+                toastCustom("未购买课程");
+                return;
+            }
+            int resourceType = itemData.getResource_type();
+            String resourceId = itemData.getResource_id();
+            if(resourceType == 1){
+                //图文
+                JumpDetail.jumpImageText(getContext(), resourceId, null);
+            }else if(resourceType == 2){
+                //音频
+                onPlayPosition(null, parentPosition, position);
+                JumpDetail.jumpAudio(getContext(), resourceId, 1);
+            }else if(resourceType == 3){
+                //视频
+                JumpDetail.jumpVideo(getContext(), resourceId, "",false);
+            }else{
+                toastCustom("未知课程");
+                return;
+            }
+        } else {
+            toastCustom("请先登录呦");
         }
     }
 
