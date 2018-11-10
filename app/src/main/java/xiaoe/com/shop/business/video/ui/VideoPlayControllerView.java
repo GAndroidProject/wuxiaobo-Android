@@ -270,12 +270,14 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     Runnable mControlDelayDismissRunnable = new Runnable() {
         @Override
         public void run() {
-            if (!isTouchSeekBar && btnPlay != null && VISIBLE == btnPlay.getVisibility()
-                    && playControllerPage != null
-                    && VISIBLE == playControllerPage.getVisibility()){
-                btnPlay.setVisibility(GONE);
-                playControllerPage.setVisibility(View.GONE);
-                isShowControl = false;
+            if (!isTouchSeekBar){
+                if (btnPlay != null && VISIBLE == btnPlay.getVisibility()){
+                    btnPlay.setVisibility(GONE);
+                }
+                if (playControllerPage != null && VISIBLE == playControllerPage.getVisibility()){
+                    playControllerPage.setVisibility(View.GONE);
+                    isShowControl = false;
+                }
             }
         }
     };

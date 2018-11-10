@@ -1,6 +1,7 @@
 package xiaoe.com.shop.business.audio.presenter;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -10,6 +11,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -21,6 +23,7 @@ import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.AudioPlayTable;
 import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.shop.R;
 import xiaoe.com.shop.events.AudioPlayEvent;
 
 public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedListener,
@@ -122,6 +125,11 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
      */
     public static void start(){
         if(audio == null || mediaPlayer == null || TextUtils.isEmpty(audio.getPlayUrl())){
+            return;
+        }
+        if (0 == audio.getHasBuy()){//如果未购买时
+            Context context = XiaoeApplication.getmContext();
+            Toast.makeText(context,context.getString(R.string.listen_after_purchase),Toast.LENGTH_SHORT).show();
             return;
         }
         prepared = false;

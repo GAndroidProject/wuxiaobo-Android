@@ -52,6 +52,7 @@ public class AudioPlayControllerView extends FrameLayout implements View.OnClick
         btnPlayLast = (ImageView) mRootView.findViewById(R.id.audio_play_last);
         btnPlayLast.setOnClickListener(this);
         btnPlay = (ImageView) mRootView.findViewById(R.id.audio_play);
+        btnPlay.setAlpha(0.3f);
         btnPlay.setOnClickListener(this);
         btnPlayNext = (ImageView) mRootView.findViewById(R.id.audio_play_next);
         btnPlayNext.setOnClickListener(this);
@@ -76,9 +77,23 @@ public class AudioPlayControllerView extends FrameLayout implements View.OnClick
         }
         AudioMediaPlayer.getAudio().setPlay(isPlay);
     }
+
     public void setPlayButtonEnabled(boolean enabled){
-        btnPlay.setEnabled(enabled);
+        btnPlay.setTag(enabled);
+        btnPlay.removeCallbacks(mRunnable);
+        btnPlay.postDelayed(mRunnable,enabled ? 200 : 0);
     }
+
+    Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (btnPlay != null) {
+                boolean enabled = (boolean) btnPlay.getTag();
+                btnPlay.setEnabled(enabled);
+                btnPlay.setAlpha(btnPlay.isEnabled() ? 1f : 0.3f);
+            }
+        }
+    };
 
     public void setPlayDuration(int playProgress){
         if(!touchSeekBar){
@@ -173,5 +188,6 @@ public class AudioPlayControllerView extends FrameLayout implements View.OnClick
         btnPlayLast.setEnabled(enabled);
         btnPlayBack.setEnabled(enabled);
         btnPlay.setEnabled(enabled);
+        btnPlay.setAlpha(btnPlay.isEnabled()? 1f : 0.3f);
     }
 }
