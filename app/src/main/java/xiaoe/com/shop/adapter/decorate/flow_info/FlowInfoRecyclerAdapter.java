@@ -157,38 +157,40 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             Log.d(TAG, "onBindViewHolder: flow_info component viewType get -1");
             return;
         }
+        int bindPos = holder.getAdapterPosition();
+        FlowInfoItem bindItem = mItemList.get(bindPos);
         switch (itemType) {
             case DecorateEntityType.FLOW_INFO_IMG_TEXT: // 图文
             case DecorateEntityType.FLOW_INFO_COLUMN: // 专栏
             case DecorateEntityType.FLOW_INFO_TOPIC: // 大专栏
                 FlowInfoImgTextViewHolder itViewHolder = (FlowInfoImgTextViewHolder) holder;
-                itViewHolder.flowInfoBg.setImageURI(currentItem.getItemImg());
-                itViewHolder.flowInfoTitle.setText(currentItem.getItemTitle());
-                itViewHolder.flowInfoDesc.setText(currentItem.getItemDesc());
-                itViewHolder.flowInfoPrice.setText(currentItem.getItemPrice());
+                itViewHolder.flowInfoBg.setImageURI(bindItem.getItemImg());
+                itViewHolder.flowInfoTitle.setText(bindItem.getItemTitle());
+                itViewHolder.flowInfoDesc.setText(bindItem.getItemDesc());
+                itViewHolder.flowInfoPrice.setText(bindItem.getItemPrice());
                 break;
             case DecorateEntityType.FLOW_INFO_AUDIO: // 音频
                 FlowInfoAudioViewHolder audioViewHolder = (FlowInfoAudioViewHolder) holder;
                 audioViewHolder.flowInfoBg.setImageURI(Uri.parse("res:///" + R.mipmap.audio_bg));
                 audioViewHolder.flowInfoAvatar.setImageURI(Uri.parse("res:///" + R.mipmap.audio_ring));
-                audioViewHolder.flowInfoTitle.setText(currentItem.getItemTitle());
-                audioViewHolder.flowInfoDesc.setText(currentItem.getItemDesc());
-                audioViewHolder.flowInfoPrice.setText(currentItem.getItemPrice());
+                audioViewHolder.flowInfoTitle.setText(bindItem.getItemTitle());
+                audioViewHolder.flowInfoDesc.setText(bindItem.getItemDesc());
+                audioViewHolder.flowInfoPrice.setText(bindItem.getItemPrice());
                 String joinedDesc;
-                if (currentItem.getItemJoinedDesc() == null) {
+                if (bindItem.getItemJoinedDesc() == null) {
                     joinedDesc = "";
                 } else {
-                    joinedDesc = currentItem.getItemJoinedDesc() + "人在听";
+                    joinedDesc = bindItem.getItemJoinedDesc() + "人在听";
                 }
                 audioViewHolder.flowInfoJoinedDesc.setText(joinedDesc);
-                audioViewHolder.flowInfoPrice.setText(currentItem.getItemPrice());
+                audioViewHolder.flowInfoPrice.setText(bindItem.getItemPrice());
                 break;
             case DecorateEntityType.FLOW_INFO_VIDEO: // 视频
                 FlowInfoVideoViewHolder videoViewHolder = (FlowInfoVideoViewHolder) holder;
-                videoViewHolder.flowInfoBg.setImageURI(currentItem.getItemImg());
-                videoViewHolder.flowInfoTitle.setText(currentItem.getItemTitle());
-                videoViewHolder.flowInfoDesc.setText(currentItem.getItemDesc());
-                videoViewHolder.flowInfoPrice.setText(currentItem.getItemPrice());
+                videoViewHolder.flowInfoBg.setImageURI(bindItem.getItemImg());
+                videoViewHolder.flowInfoTitle.setText(bindItem.getItemTitle());
+                videoViewHolder.flowInfoDesc.setText(bindItem.getItemDesc());
+                videoViewHolder.flowInfoPrice.setText(bindItem.getItemPrice());
                 break;
         }
     }

@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.interfaces.OnClickSendCommentListener;
@@ -38,6 +39,8 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
     private boolean isReply = false;
     private ForegroundColorSpan colorSpan;
     private SpannableStringBuilder stringBuilder;
+    // 当前登录用户是否为游客
+    private boolean isTourists;
 
     public CommentView(Context context) {
         this(context, null);
@@ -217,11 +220,16 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if(v.getId() == R.id.id_edit_comment){
-            editComment.requestFocus();
-            editComment.setFocusable(true);
-            editComment.setFocusableInTouchMode(true);
+        if (!isTourists) {
+            if(v.getId() == R.id.id_edit_comment){
+                editComment.requestFocus();
+                editComment.setFocusable(true);
+                editComment.setFocusableInTouchMode(true);
+            }
+        } else {
+            Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
         }
+
         return false;
     }
 
@@ -235,5 +243,9 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
 
     public void setReply(boolean reply) {
         isReply = reply;
+    }
+
+    public void setIsTourists(boolean isTourists) {
+        this.isTourists = isTourists;
     }
 }
