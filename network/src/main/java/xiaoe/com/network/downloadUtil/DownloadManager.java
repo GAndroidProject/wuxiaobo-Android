@@ -41,13 +41,13 @@ public class DownloadManager implements DownloadListner {
 //    private SaveProgressThread saveProgressThread;
     private boolean isAllDownloadFinish = true;
     private int MAX_DOWNLOAD_COUNT = 1;
-    private DownloadEvent downloadEvent;
+//    private DownloadEvent downloadEvent;
 
     private DownloadManager() {
         mDownloadTasks = new ArrayList<DownloadTask>();
         mAwaitDownloadTasks = new ArrayList<DownloadTask>();
         mSaveProgresss = new ConcurrentHashMap<String, String>();
-        getInstanceDownloadEvent();
+//        getInstanceDownloadEvent();
         createSaveProgressThread();
     }
 
@@ -62,11 +62,6 @@ public class DownloadManager implements DownloadListner {
         return mInstance;
     }
 
-    private void getInstanceDownloadEvent() {
-        if (downloadEvent == null) {
-            downloadEvent = new DownloadEvent();
-        }
-    }
 
     private void createSaveProgressThread() {
 //        if (saveProgressThread == null) {
@@ -538,7 +533,8 @@ public class DownloadManager implements DownloadListner {
      * @param status
      */
     private void sendDownloadEvent(DownloadTableInfo downloadInfo, float progress, int status) {
-        getInstanceDownloadEvent();
+//        getInstanceDownloadEvent();
+        DownloadEvent downloadEvent = new DownloadEvent();
         downloadEvent.setDownloadInfo(downloadInfo);
         downloadEvent.setProgress(progress);
         downloadEvent.setStatus(status);

@@ -1,12 +1,18 @@
 package xiaoe.com.shop.business.audio.presenter;
 
+import android.text.TextUtils;
+
 import com.alibaba.fastjson.JSONObject;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.DownloadResourceTableInfo;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.ContentRequest;
@@ -98,8 +104,22 @@ public class AudioPresenter implements IBizCallback {
         playEntity.setPrice(resourceInfo.getIntValue("price"));
         playEntity.setImgUrl(resourceInfo.getString("img_url"));
         playEntity.setImgUrlCompressed(resourceInfo.getString("img_url_compressed"));
+
+        //如果存在本地音频则播放本地是否
+        DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(CommonUserInfo.getShopId(), resourceId);
+        String localAudioPath = "";
+        if(download != null){
+            File file = new File(download.getLocalFilePath());
+            if(file.exists()){
+                localAudioPath = download.getLocalFilePath();
+            }
+        }
         if(available){
-            playEntity.setPlayUrl(data.getString("audio_url"));
+            if(TextUtils.isEmpty(localAudioPath)){
+                playEntity.setPlayUrl(data.getString("audio_url"));
+            }else{
+                playEntity.setPlayUrl(localAudioPath);
+            }
             playEntity.setContent(data.getString("content"));
             playEntity.setCode(0);
             playAudio(playEntity.isPlay());

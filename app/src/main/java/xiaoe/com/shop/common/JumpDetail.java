@@ -52,7 +52,6 @@ public class JumpDetail {
         String resourceId = "";
         if(playEntity != null){
             resourceId = playEntity.getResourceId();
-            playEntity.setHasBuy(hasBuy);
         }
         if(!resourceId.equals(resId)){
             AudioMediaPlayer.stop();

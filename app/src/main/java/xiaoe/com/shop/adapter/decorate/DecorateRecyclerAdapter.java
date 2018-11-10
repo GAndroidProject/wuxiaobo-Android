@@ -372,6 +372,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         }
     }
     public void notifyDataSetChangedRecentUpdate(){
-        recentUpdateListAdapter.notifyDataSetChanged();
+        if(recentUpdateListAdapter != null){
+            recentUpdateListAdapter.notifyDataSetChanged();
+        }
     }
 }

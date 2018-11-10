@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -20,7 +19,6 @@ import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.FlowInfoItem;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
-import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
 import xiaoe.com.shop.common.JumpDetail;
@@ -232,12 +230,4 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         }
     }
 
-    private void jumpAudioActivity(View audioBG, View audioRing){
-        ActivityOptions options =
-                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
-                        Pair.create(audioBG, "share_img_audio_bg"),
-                        Pair.create(audioRing, mContext.getResources().getString(R.string.share_img)));
-        Intent audioIntent = new Intent(mContext, AudioActivity.class);
-        mContext.startActivity(audioIntent, options.toBundle());
-    }
 }

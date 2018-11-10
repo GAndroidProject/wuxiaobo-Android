@@ -45,6 +45,8 @@ public class DownloadTask extends Handler {
     private DownloadListner mListner;//下载回调监听
     private DownloadTableInfo mDownloadInfo ;//下载资源信息
 
+    private long lastProgress = 0;//上一次的进度
+
     /**
      * 任务管理器初始化数据
      * @param downloadInfo
@@ -71,9 +73,11 @@ public class DownloadTask extends Handler {
         switch (msg.what) {
             case MSG_PROGRESS://进度
                 long progress = getCurrentProgress();
-                Log.d(TAG, "handleMessage: "+progress);
-                mDownloadInfo.setProgress(progress);
-                mListner.onDownloadProgress(mDownloadInfo,progress * 1.0f / mFileLength);
+                if(progress + 10240 > lastProgress){
+                    lastProgress = progress;
+                    mDownloadInfo.setProgress(progress);
+                    mListner.onDownloadProgress(mDownloadInfo,progress * 1.0f / mFileLength);
+                }
                 break;
             case MSG_PAUSE://暂停
                 childPauseCount++;
@@ -115,6 +119,10 @@ public class DownloadTask extends Handler {
 
     public synchronized void start() {
         try {
+            if(TextUtils.isEmpty(mDownloadInfo.getFileDownloadUrl())){
+                sendEmptyMessage(MSG_NETWORK_ERROR);
+                return;
+            }
             if (isDownloading) return;
             isDownloading = true;
             mHttpUtil.getContentLength(mDownloadInfo.getFileDownloadUrl(), new okhttp3.Callback() {

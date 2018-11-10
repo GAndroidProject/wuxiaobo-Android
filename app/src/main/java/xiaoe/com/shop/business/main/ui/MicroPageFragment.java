@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -587,7 +586,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             case AudioPlayEvent.PAUSE:
             case AudioPlayEvent.PLAY:
             case AudioPlayEvent.STOP:
-                microPageAdapter.notifyDataSetChangedRecentUpdate();
+                if(microPageAdapter != null){
+                    microPageAdapter.notifyDataSetChangedRecentUpdate();
+                }
                 break;
             default:
                 break;

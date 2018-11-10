@@ -6,6 +6,7 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -25,11 +26,14 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.LoginUser;
+import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.RemoveCollectionListRequest;
@@ -177,6 +181,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         ImageView btnShare = (ImageView) findViewById(R.id.btn_share);
         btnShare.setOnClickListener(this);
 
+        //下载按钮
         btnAudioDownload = (ImageView) findViewById(R.id.btn_audio_download);
         btnAudioDownload.setOnClickListener(this);
     }
@@ -356,10 +361,31 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 changePlaySpeed(2.0f);
                 break;
             case R.id.btn_audio_download:
-
+            case R.id.btn_download:
+                clickDownload();
                 break;
             default:
                 break;
+        }
+    }
+
+    private void clickDownload() {
+        if(TextUtils.isEmpty(AudioMediaPlayer.getAudio().getPlayUrl())){
+            toastCustom(getString(R.string.cannot_download));
+        }else{
+            AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
+            boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), audioPlayEntity.getResourceId());
+            if(!isDownload){
+                ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
+                download.setApp_id(CommonUserInfo.getShopId());
+                download.setResource_id(audioPlayEntity.getResourceId());
+                download.setTitle(audioPlayEntity.getTitle());
+                download.setResource_type(2);
+                download.setImg_url(audioPlayEntity.getImgUrl());
+                download.setAudio_url(audioPlayEntity.getPlayUrl());
+                DownloadManager.getInstance().addDownload(null, null, download);
+            }
+            toastCustom(getString(R.string.add_download_list));
         }
     }
 
@@ -505,6 +531,16 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             playNum.setVisibility(View.GONE);
         }
         setCollectState(playEntity.getHasFavorite() == 1);
+        boolean isDownload = DownloadManager.getInstance().isDownload(playEntity.getAppId(), playEntity.getResourceId());
+        setDownloadState(isDownload);
+    }
+    private void setDownloadState(boolean download){
+        if(download){
+            btnAudioDownload.setImageResource(R.mipmap.audio_alreadydownload);
+        }else{
+            btnAudioDownload.setImageResource(R.mipmap.audio_download);
+        }
+        contentMenuLayout.setDownloadState(download);
     }
     /**
      * 设置收藏状态

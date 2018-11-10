@@ -22,6 +22,7 @@ public class ContentMenuLayout extends FrameLayout implements View.OnClickListen
     private View menuBG;
     private TextView btnCancel;
     private ImageView collectIcon;
+    private ImageView downloadIcon;
 
     public ContentMenuLayout(@NonNull Context context) {
         this(context,null);
@@ -43,6 +44,7 @@ public class ContentMenuLayout extends FrameLayout implements View.OnClickListen
         btnComment = (LinearLayout) rootView.findViewById(R.id.btn_comment);
         btnCancel = (TextView) rootView.findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(this);
+        downloadIcon = (ImageView) rootView.findViewById(R.id.download_icon);
     }
 
     public void setButtonClickListener(OnClickListener listener){
@@ -72,6 +74,14 @@ public class ContentMenuLayout extends FrameLayout implements View.OnClickListen
             collectIcon.setImageResource(R.mipmap.audio_collect);
         }else{
             collectIcon.setImageResource(R.mipmap.video_collect);
+        }
+    }
+
+    public void setDownloadState(boolean download){
+        if(download){
+            downloadIcon.setImageResource(R.mipmap.audiodetail_alreadydownload);
+        }else{
+            downloadIcon.setImageResource(R.mipmap.audio_download);
         }
     }
 }

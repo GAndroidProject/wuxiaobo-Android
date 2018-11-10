@@ -60,13 +60,11 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
                 return;
             }else if(download.getResourceType() == 1){
                 //音频
-
+                JumpDetail.jumpAudio(getContext(), download.getResourceId(), 1);
             }else if(download.getResourceType() == 2){
                 //视频
                 JumpDetail.jumpVideo(getContext(), download.getResourceId(), null, true);
             }
-//            Intent intent = new Intent(getActivity(), CacheColumnActivity.class);
-//            startActivity(intent);
         }
     }
     @Override
