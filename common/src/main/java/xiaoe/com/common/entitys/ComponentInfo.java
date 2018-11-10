@@ -41,9 +41,10 @@ public class ComponentInfo {
     private String groupId;
     // 专栏 id
     private String columnId;
+    // 是否正式用户
+    private boolean isFormUser;
 
     public ComponentInfo() { }
-
 
     public void setNeedDecorate(boolean needDecorate) {
         this.needDecorate = needDecorate;
@@ -180,6 +181,14 @@ public class ComponentInfo {
     public String getColumnId() {
 
         return columnId;
+    }
+
+    public boolean isFormUser() {
+        return isFormUser;
+    }
+
+    public void setFormUser(boolean formUser) {
+        isFormUser = formUser;
     }
 
     @Override

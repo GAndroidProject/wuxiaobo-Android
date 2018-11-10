@@ -18,6 +18,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.SettingItemInfo;
 import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.interfaces.OnItemClickWithSettingItemInfoListener;
@@ -30,6 +31,7 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.ActivityCollector;
 
 public class MainAccountFragment extends BaseFragment implements OnItemClickWithSettingItemInfoListener {
@@ -103,7 +105,8 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
                 SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
                 SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
                 ActivityCollector.finishAll();
-                System.exit(0);
+                CommonUserInfo.setApiToken("");
+                JumpDetail.jumpLogin(getActivity());
             }
         });
     }

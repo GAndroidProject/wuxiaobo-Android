@@ -4,13 +4,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,17 +18,20 @@ import com.tencent.smtt.sdk.CookieSyncManager;
 import com.tencent.smtt.sdk.WebView;
 import com.umeng.socialize.UMShareAPI;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import xiaoe.com.common.utils.Dp2Px2SpUtil;
+import xiaoe.com.common.entitys.ChangeToScholarshipEvent;
+import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.CheckCollectionRequest;
-import xiaoe.com.network.requests.CourseITAfterBuyRequest;
-import xiaoe.com.network.requests.CourseITBeforeBuyRequest;
 import xiaoe.com.network.requests.CourseITDetailRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.RemoveCollectionListRequest;
@@ -111,6 +109,8 @@ public class CourseImageTextActivity extends XiaoeActivity {
     private int resPrice = 0;
     boolean hasBuy;
 
+    List<LoginUser> loginList;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +132,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
         imgUrl = transitionIntent.getStringExtra("imgUrl");
         resourceId = transitionIntent.getStringExtra("resourceId");
         resourceType = "1"; // 图文的资源类型为 1
+        loginList = getLoginUserList();
 
         initTitle();
         initData();
@@ -172,45 +173,67 @@ public class CourseImageTextActivity extends XiaoeActivity {
         itCollection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 收藏数据的验证
-                if (isCollected) { // 收藏了，点击之后取消收藏
-                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
-                    collectionUtils.requestRemoveCollection(resourceId, resourceType);
-                } else { // 没有收藏，点击之后收藏\
-                    // 改变图标
-                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
-                    JSONObject collectionContent = new JSONObject();
-                    collectionContent.put("title", collectionTitle);
-                    collectionContent.put("author", collectionAuthor);
-                    collectionContent.put("img_url", collectionImgUrl);
-                    collectionContent.put("img_url_compressed", collectionImgUrlCompressed);
-                    collectionContent.put("price", collectionPrice);
-                    collectionUtils.requestAddCollection(resourceId, resourceType, collectionContent);
+                if (loginList.size() == 1) {
+                    if (isCollected) { // 收藏了，点击之后取消收藏
+                        itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+                        collectionUtils.requestRemoveCollection(resourceId, resourceType);
+                    } else { // 没有收藏，点击之后收藏\
+                        // 改变图标
+                        itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
+                        JSONObject collectionContent = new JSONObject();
+                        collectionContent.put("title", collectionTitle);
+                        collectionContent.put("author", collectionAuthor);
+                        collectionContent.put("img_url", collectionImgUrl);
+                        collectionContent.put("img_url_compressed", collectionImgUrlCompressed);
+                        collectionContent.put("price", collectionPrice);
+                        collectionUtils.requestAddCollection(resourceId, resourceType, collectionContent);
+                    }
+                } else {
+                    Toast("请先登录呦");
                 }
             }
         });
         itShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                umShare("hello");
+                if (loginList.size() == 1) {
+                    umShare("hello");
+                } else {
+                    Toast("请先登录呦");
+                }
             }
         });
         itBuy.setOnVipBtnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast("成为超级会员");
+                if (loginList.size() == 1) {
+                    JumpDetail.jumpSuperVip(CourseImageTextActivity.this);
+                } else {
+                    Toast("请先登录呦");
+                }
             }
         });
         itBuy.setOnBuyBtnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JumpDetail.jumpPay(CourseImageTextActivity.this, resourceId, 1, collectionImgUrl, collectionTitle, resPrice);
+                if (loginList.size() == 1) {
+                    JumpDetail.jumpPay(CourseImageTextActivity.this, resourceId, 1, collectionImgUrl, collectionTitle, resPrice);
+                } else {
+                    Toast("请先登录呦");
+                }
             }
         });
         itTitleView.setTitleBackClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+        itDescImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, true);
+                finish();
             }
         });
     }

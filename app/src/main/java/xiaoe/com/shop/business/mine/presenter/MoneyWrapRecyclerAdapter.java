@@ -6,13 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import xiaoe.com.common.entitys.MineMoneyItemInfo;
+import xiaoe.com.common.interfaces.OnItemClickWithMoneyItemListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
@@ -24,8 +22,11 @@ public class MoneyWrapRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
     private Context mContext;
     private List<MineMoneyItemInfo> mItemList;
 
-    private MineMoneyItemInfo currentItem;
-    private int currentPos;
+    private OnItemClickWithMoneyItemListener onItemClickWithMoneyItemListener;
+
+    public void setOnItemClickWithMoneyItemListener(OnItemClickWithMoneyItemListener listener) {
+        this.onItemClickWithMoneyItemListener = listener;
+    }
 
     public MoneyWrapRecyclerAdapter(Activity activity, List<MineMoneyItemInfo> itemList) {
         this.mContext = activity;
@@ -47,15 +48,24 @@ public class MoneyWrapRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
         int bottom = Dp2Px2SpUtil.dp2px(parent.getContext(), 12);
         layoutParams.setMargins(left, top, right, bottom);
         view.setLayoutParams(layoutParams);
-        currentItem = mItemList.get(currentPos);
         return new MoneyItemViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        int currentPos = holder.getAdapterPosition();
+        final MineMoneyItemInfo currentItem = mItemList.get(currentPos);
         MoneyItemViewHolder viewHolder = (MoneyItemViewHolder) holder;
         viewHolder.money_item_title.setText(currentItem.getItemTitle());
         viewHolder.money_item_desc.setText(currentItem.getItemDesc());
+        viewHolder.money_item_wrap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickWithMoneyItemListener != null) {
+                    onItemClickWithMoneyItemListener.onMineMoneyItemInfoClickListener(v, currentItem);
+                }
+            }
+        });
     }
 
     @Override
@@ -65,20 +75,6 @@ public class MoneyWrapRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        currentPos = position;
         return super.getItemViewType(position);
-    }
-
-    class MoneyItemViewHolder extends BaseViewHolder {
-
-        @BindView(R.id.money_item_title)
-        TextView money_item_title;
-        @BindView(R.id.money_item_desc)
-        TextView money_item_desc;
-
-        MoneyItemViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
     }
 }

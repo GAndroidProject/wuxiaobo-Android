@@ -157,9 +157,13 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 flowInfoViewHolder.flowInfoLearnWrap.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(mContext, MineLearningActivity.class);
-                        intent.putExtra("pageTitle", "我正在学");
-                        mContext.startActivity(intent);
+                        if (currentBindComponent.isFormUser()) {
+                            Intent intent = new Intent(mContext, MineLearningActivity.class);
+                            intent.putExtra("pageTitle", "我正在学");
+                            mContext.startActivity(intent);
+                        } else {
+                            Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 break;
@@ -175,11 +179,15 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     recentUpdateViewHolder.recentUpdateSubBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(!currentBindComponent.isHasBuy()){
-                                Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
-                                return;
+                            if (currentBindComponent.isFormUser()) {
+                                if(!currentBindComponent.isHasBuy()){
+                                    Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                recentUpdateListAdapter.clickPlayAll();
+                            } else {
+                                Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
                             }
-                            recentUpdateListAdapter.clickPlayAll();
                         }
                     });
                 }

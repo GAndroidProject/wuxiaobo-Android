@@ -14,10 +14,13 @@ import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.bought_list.ui.BoughtListActivity;
+import xiaoe.com.shop.business.cdkey.ui.CdKeyActivity;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.comment.ui.CommentActivity;
+import xiaoe.com.shop.business.coupon.ui.CouponActivity;
 import xiaoe.com.shop.business.coupon.ui.CouponDetailActivity;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
+import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
 import xiaoe.com.shop.business.earning.ui.IntegralActivity;
 import xiaoe.com.shop.business.earning.ui.ScholarshipActivity;
 import xiaoe.com.shop.business.earning.ui.WithdrawalActivity;
@@ -143,6 +146,17 @@ public class JumpDetail {
     }
 
     /**
+     * 跳转到主页的奖学金页面
+     * @param context  上下文
+     * @param needChange 是否需要切换
+     */
+    public static void jumpMainScholarship(Context context, boolean needChange) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra("needChange", needChange);
+        context.startActivity(intent);
+    }
+
+    /**
      * 跳转到登录页面
      * @param context 上下文
      */
@@ -263,8 +277,9 @@ public class JumpDetail {
      * 跳转提现页面
      * @param context
      */
-    public static void jumpWr(Context context) {
+    public static void jumpWr(Context context, String allMoney) {
         Intent intent = new Intent(context, WithdrawalActivity.class);
+        intent.putExtra("allMoney", allMoney);
         context.startActivity(intent);
     }
 
@@ -275,6 +290,23 @@ public class JumpDetail {
     public static void jumpWrResult(Context context, String showPrice) {
         Intent intent = new Intent(context, WithdrawalResultActivity.class);
         intent.putExtra("showPrice", showPrice);
+        context.startActivity(intent);
+    }
+
+    // 跳转优惠券
+    public static void jumpCoupon(Context context) {
+        Intent intent = new Intent(context, CouponActivity.class);
+        context.startActivity(intent);
+    }
+
+    // 跳转离线缓存
+    public static void jumpOffLine(Context context) {
+        Intent intent = new Intent(context, OffLineCacheActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void jumpCdKey(Context context) {
+        Intent intent = new Intent(context, CdKeyActivity.class);
         context.startActivity(intent);
     }
 }

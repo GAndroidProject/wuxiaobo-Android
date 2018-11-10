@@ -28,15 +28,13 @@ public class MineLearningListAdapter extends BaseAdapter {
     public MineLearningListAdapter(Context context) {
         this.mContext = context;
         this.mLayoutInflater = LayoutInflater.from(context);
-        imgList.add(R.mipmap.profile_mission);
-        imgList.add(R.mipmap.profile_coupon);
         imgList.add(R.mipmap.profile_collect);
         imgList.add(R.mipmap.profile_download);
+        imgList.add(R.mipmap.profile_coupon);
         imgList.add(R.mipmap.profile_code);
-        titleList.add("我的任务");
-        titleList.add("优惠券");
         titleList.add("我的收藏");
         titleList.add("离线缓存");
+        titleList.add("优惠券");
         titleList.add("兑换码");
     }
 

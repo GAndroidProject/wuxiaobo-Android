@@ -174,7 +174,12 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 audioViewHolder.flowInfoTitle.setText(currentItem.getItemTitle());
                 audioViewHolder.flowInfoDesc.setText(currentItem.getItemDesc());
                 audioViewHolder.flowInfoPrice.setText(currentItem.getItemPrice());
-                String joinedDesc = currentItem.getItemJoinedDesc() + "人在听";
+                String joinedDesc;
+                if (currentItem.getItemJoinedDesc() == null) {
+                    joinedDesc = "";
+                } else {
+                    joinedDesc = currentItem.getItemJoinedDesc() + "人在听";
+                }
                 audioViewHolder.flowInfoJoinedDesc.setText(joinedDesc);
                 audioViewHolder.flowInfoPrice.setText(currentItem.getItemPrice());
                 break;

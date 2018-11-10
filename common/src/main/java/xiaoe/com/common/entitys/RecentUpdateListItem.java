@@ -11,6 +11,8 @@ public class RecentUpdateListItem {
     private String listPlayState;
     // item 资源 id
     private String listResourceId;
+    // item 是否为游客
+    private boolean listIsFormUser;
 
     private String appId;
     private String imgUrl;
@@ -173,5 +175,13 @@ public class RecentUpdateListItem {
 
     public void setBigColumnId(String bigColumnId) {
         this.bigColumnId = bigColumnId;
+    }
+
+    public boolean isListIsFormUser() {
+        return listIsFormUser;
+    }
+
+    public void setListIsFormUser(boolean listIsFormUser) {
+        this.listIsFormUser = listIsFormUser;
     }
 }

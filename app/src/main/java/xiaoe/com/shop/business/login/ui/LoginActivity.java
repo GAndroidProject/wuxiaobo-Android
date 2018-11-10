@@ -25,6 +25,7 @@ import xiaoe.com.network.requests.LoginCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginFindPwdCodeVerifyRequest;
 import xiaoe.com.network.requests.ResetPasswordRequest;
 import xiaoe.com.network.requests.SettingPseronMsgRequest;
+import xiaoe.com.network.requests.TouristsShopIdRequest;
 import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.JudgeUtil;
@@ -369,19 +370,34 @@ public class LoginActivity extends XiaoeActivity {
                     this.smsCode = "";
                     ((LoginPageFragment) currentFragment).loginCodeContent.setErrorBg(R.drawable.cv_error_bg);
                 }
-            } else if (iRequest instanceof LoginCheckRegisterRequest) { // 首页注册检测
+            } else if (iRequest instanceof LoginCheckRegisterRequest) { // 验证码检测
                 int code = result.getInteger("code");
-                if (code == NetworkCodes.CODE_HAD_REGISTER) { // 已经注册
-                    ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(true);
-                    ((LoginPageFragment) currentFragment).phoneObtainCode.setAlpha(1);
-                    ((LoginPageFragment) currentFragment).phoneObtainCode.setBackground(getResources().getDrawable(R.drawable.person_submit_bg));
-                    replaceFragment(CODE);
-                    // 发送请求验证码接口
-                    loginPresenter.obtainPhoneCode(phoneNum);
-                } else if (code == NetworkCodes.CODE_NO_REGISTER) { // 没有注册
-                    ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(false);
-                    ((LoginPageFragment) currentFragment).phoneErrorTip.setText(R.string.phone_not_reg_text);
-                    JudgeUtil.showErrorViewIfNeed(this, REGISTER_ERROR_TIP, ((LoginPageFragment) currentFragment).phoneErrorTip, ((LoginPageFragment) currentFragment).phoneObtainCode);
+                if (isRegister) { // 注册流程
+                    if (code == NetworkCodes.CODE_HAD_REGISTER) {
+                        ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(false);
+                        ((LoginPageFragment) currentFragment).phoneErrorTip.setText(R.string.phone_had_reg_text);
+                        JudgeUtil.showErrorViewIfNeed(this, REGISTER_ERROR_TIP, ((LoginPageFragment) currentFragment).phoneErrorTip, ((LoginPageFragment) currentFragment).phoneObtainCode);
+                    } else {
+                        ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(true);
+                        ((LoginPageFragment) currentFragment).phoneObtainCode.setAlpha(1);
+                        ((LoginPageFragment) currentFragment).phoneObtainCode.setBackground(getResources().getDrawable(R.drawable.person_submit_bg));
+                        replaceFragment(CODE);
+                        // 发送请求验证码接口
+                        loginPresenter.obtainPhoneCode(phoneNum);
+                    }
+                } else { // 登录流程
+                    if (code == NetworkCodes.CODE_HAD_REGISTER) { // 已经注册
+                        ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(true);
+                        ((LoginPageFragment) currentFragment).phoneObtainCode.setAlpha(1);
+                        ((LoginPageFragment) currentFragment).phoneObtainCode.setBackground(getResources().getDrawable(R.drawable.person_submit_bg));
+                        replaceFragment(CODE);
+                        // 发送请求验证码接口
+                        loginPresenter.obtainPhoneCode(phoneNum);
+                    } else if (code == NetworkCodes.CODE_NO_REGISTER) { // 没有注册
+                        ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(false);
+                        ((LoginPageFragment) currentFragment).phoneErrorTip.setText(R.string.phone_not_reg_text);
+                        JudgeUtil.showErrorViewIfNeed(this, REGISTER_ERROR_TIP, ((LoginPageFragment) currentFragment).phoneErrorTip, ((LoginPageFragment) currentFragment).phoneObtainCode);
+                    }
                 }
             } else if (iRequest instanceof LoginDoRegisterRequest) { // 执行注册操作
                 int code = result.getInteger("code");
@@ -428,7 +444,7 @@ public class LoginActivity extends XiaoeActivity {
                     Log.d(TAG, "onMainThreadResponse: 修改失败");
                     Toast("修改失败，请重试");
                 }
-            } if (iRequest instanceof SettingPseronMsgRequest) {
+            } else if (iRequest instanceof SettingPseronMsgRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
@@ -439,6 +455,15 @@ public class LoginActivity extends XiaoeActivity {
                     Log.d(TAG, "onMainThreadResponse: 字段格式无效");
                 } else if (code == NetworkCodes.CODE_PERSON_NOT_FOUND) {
                     Log.d(TAG, "onMainThreadResponse: 当前用户不存在");
+                }
+            } else if (iRequest instanceof TouristsShopIdRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    String touristsShopId = ((JSONObject) result.get("data")).getString("shop_id");
+                    SharedPreferencesUtil.putData("touristsShopId", touristsShopId);
+                    JumpDetail.jumpMain(this, false);
+                } else {
+                    Log.d(TAG, "onMainThreadResponse: 游客模式获取店铺 id 失败..");
                 }
             }
         } else {

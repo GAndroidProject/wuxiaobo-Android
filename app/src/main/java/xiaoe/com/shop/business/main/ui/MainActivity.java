@@ -17,9 +17,12 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.ChangeToScholarshipEvent;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.downloadUtil.DownloadFileConfig;
 import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.network.requests.IRequest;
@@ -48,6 +51,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
     public static boolean isForeground = false;
 
+    Intent intent;
+    public boolean isFormalUser;
+
 //    SettingPresenter settingPresenter;
 
 //    String apiToken;
@@ -67,7 +73,15 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 //        loginUserList = getLoginUserInfoList();
 //        settingPresenter = new SettingPresenter(this);
 //        settingPresenter.requestPersonData(apiToken, false);
+        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
+        intent = getIntent();
 
+        isFormalUser = intent.getBooleanExtra("isFormalUser", false);
+
+        if (!isFormalUser) { // 非正式用户，需要手动设置店铺 id 和默认登录 userId
+            CommonUserInfo.setShopId(SharedPreferencesUtil.getData("touristsShopId", "").toString());
+            CommonUserInfo.setUserId("i_5bda654981f4e_avxWBhkZYk");
+        }
         initView();
         initPermission();
         Intent audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
@@ -115,6 +129,12 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         mainViewPager.setScroll(false);
         mainViewPager.setAdapter(new MainFragmentStatePagerAdapter(getSupportFragmentManager()));
         mainViewPager.setOffscreenPageLimit(3);
+
+        boolean needChange = intent.getBooleanExtra("needChange", false);
+        if (needChange) {
+            // 如果需要改变，就去到奖学金页面
+            replaceFragment(2);
+        }
 
         miniAudioPlayController = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
         setMiniAudioPlayController(miniAudioPlayController);

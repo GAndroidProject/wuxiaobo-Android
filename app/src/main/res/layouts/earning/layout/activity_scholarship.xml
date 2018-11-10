@@ -50,7 +50,6 @@
                         android:id="@+id/scholarship_page_content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="160.70"
                         android:textSize="40sp"
                         android:textColor="@color/scholarship_btn_press"
                         android:textStyle="bold"/>

@@ -61,14 +61,4 @@ public class MineEquityListAdapter extends BaseAdapter {
         viewHolder.vip_item_content.setText(mEquityList.get(position));
         return convertView;
     }
-
-    class EquityItemViewHolder {
-
-        @BindView(R.id.vip_item_content)
-        TextView vip_item_content;
-
-        EquityItemViewHolder(View itemView) {
-            ButterKnife.bind(this, itemView);
-        }
-    }
 }

@@ -309,7 +309,7 @@ public class LoginPageFragment extends BaseFragment {
             public void onClick(View v) {
                 toggleSoftKeyboard();
                 // 游客登录
-                JumpDetail.jumpMain(getActivity(), false);
+                loginActivity.loginPresenter.requestTouristsShopId();
             }
         });
     }
@@ -549,9 +549,6 @@ public class LoginPageFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 ((LoginActivity) getActivity()).loginPresenter.reqWXLogin();
-                // 调取微信登录页面回来之后，先判断是否是老用户，是就直接登录，否则跳转绑定手机号，
-                // 绑定手机号
-//                loginActivity.replaceFragment(LoginActivity.BIND_PHONE);
             }
         });
     }
@@ -682,6 +679,7 @@ public class LoginPageFragment extends BaseFragment {
     private void obtainSmsCode(String tag) {
         switch (tag) {
             case LoginActivity.MAIN:
+            case LoginActivity.REGISTER:
                 // 首页获取验证码按钮
                 phoneObtainCode.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -702,7 +700,6 @@ public class LoginPageFragment extends BaseFragment {
             case LoginActivity.PWD:
                 // do nothing, 密码登录不需要验证码，隐藏该按钮
                 break;
-            case LoginActivity.REGISTER:
             case LoginActivity.BIND_PHONE:
                 phoneObtainCode.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -735,11 +732,5 @@ public class LoginPageFragment extends BaseFragment {
             default:
                 break;
         }
-    }
-
-    @Override
-    public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
-        super.onMainThreadResponse(iRequest, success, entity);
-        Log.d(TAG, "onMainThreadResponse: loginPageFragment request result");
     }
 }

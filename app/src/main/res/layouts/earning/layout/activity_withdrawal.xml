@@ -145,12 +145,14 @@
                     android:textColor="@color/main_title_color"/>
 
                 <TextView
+                    android:id="@+id/wr_page_limit_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="账号：13*******03"
+                    android:text="账号：18888888888"
                     android:textSize="12sp"
                     android:textColor="@color/secondary_title_color"
-                    android:layout_marginTop="6dp"/>
+                    android:layout_marginTop="6dp"
+                    android:maxLines="1"/>
 
             </LinearLayout>
 

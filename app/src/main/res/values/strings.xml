@@ -237,7 +237,7 @@
     <string name="withdrawal_logo">￥</string>
     <string name="withdrawal_input_hint">请输入金额</string>
     <string name="withdrawal_error_tip">输入金额超过可提现余额</string>
-    <string name="withdrawal_left">奖学金余额 %1$f元</string> <!-- 第一个参数为数字 -->
+    <string name="withdrawal_left">奖学金余额 %1$s元</string> <!-- 第一个参数为数字 -->
     <string name="withdrawal_all">全部提现</string>
     <string name="withdrawal_to">提现到</string>
     <string name="withdrawal_wx_account">微信账户</string>
@@ -269,5 +269,7 @@
     <string name="setting_check_update">检查更新</string>
 
     <string name="phone_not_reg_text">该手机号未注册，请先注册</string>
+    <string name="phone_had_reg_text">该手机号已注册</string>
+    <string name="tourists_tip">请先登录呦</string>
 
 </resources>

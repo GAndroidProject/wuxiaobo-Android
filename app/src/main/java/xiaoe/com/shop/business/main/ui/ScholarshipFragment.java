@@ -96,6 +96,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     String taskId; // 完成任务 id
     String taskDetailId; // 提交任务成功后的 id
 
+    MainActivity mainActivity;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         unbinder = ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
         mContext = getContext();
+        mainActivity = (MainActivity) getActivity();
         view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
         return view;
     }
@@ -139,11 +142,15 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 showDialogByType(RULE);
                 break;
             case R.id.scholarship_divide:
-                if (!hasBuy) { // 没买
-                    showDialogByType(GO_BUY);
-                } else { // 买了，跳转到课程列表页面
-                    JumpDetail.jumpBoughtList(mContext, taskId, isSuperVip);
+                if (mainActivity.isFormalUser) {
+                    if (!hasBuy) { // 没买
+                        showDialogByType(GO_BUY);
+                    } else { // 买了，跳转到课程列表页面
+                        JumpDetail.jumpBoughtList(mContext, taskId, isSuperVip);
 //                    showEarnDialog();
+                    }
+                } else {
+                    Toast.makeText(mContext, "请先登录哟", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.scholarship_real_range:
@@ -377,13 +384,15 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     private void initTaskState(JSONObject data) {
         JSONArray node = (JSONArray) data.get("node");
         int status = data.getInteger("status");
-        for (Object item : node) {
-            if (item.equals("is_share")) {
-                // 已经分享
-                Log.d(TAG, "initTaskState: is_share");
-            } else if (item.equals("is_pay")) {
-                // 已经购买了
-                hasBuy = true;
+        if (node != null) {
+            for (Object item : node) {
+                if (item.equals("is_share")) {
+                    // 已经分享
+                    Log.d(TAG, "initTaskState: is_share");
+                } else if (item.equals("is_pay")) {
+                    // 已经购买了
+                    hasBuy = true;
+                }
             }
         }
         switch (status) {
@@ -496,6 +505,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
+    // 更新页面状态
     private void updatePageState(JSONObject data) {
         int status = data.getInteger("status");
         JSONObject reward = (JSONObject) data.get("reward");

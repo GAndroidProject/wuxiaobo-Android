@@ -49,6 +49,7 @@ public class NetworkEngine {
     public final static String PLY_BASE_URL = "http://134.175.39.247:4586/";//支付订单
     public final static String LOGIN_BASE_URL = "http://app-server.inside.xiaoeknow.com/api/"; // 登录接口 url
     public final static String SCHOLARSHIP_BASE_URL = "http://134.175.39.247:14585/tcs/"; // 奖学金 url
+    public final static String EARNING_BASE_URL = "http://134.175.39.247:10888/"; // 赚钱 url
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient client;

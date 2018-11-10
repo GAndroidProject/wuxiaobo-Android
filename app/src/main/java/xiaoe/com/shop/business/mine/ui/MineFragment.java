@@ -24,6 +24,7 @@ import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.GetSuperMemberSuccessEvent;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.MineMoneyItemInfo;
+import xiaoe.com.common.interfaces.OnItemClickWithMoneyItemListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
@@ -31,13 +32,14 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.cdkey.ui.CdKeyActivity;
 import xiaoe.com.shop.business.coupon.ui.CouponActivity;
 import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
+import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.StatusBarUtil;
 
-public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, OnItemClickWithMoneyItemListener {
 
     private static final String TAG = "MineFragment";
 
@@ -57,12 +59,15 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     @BindView(R.id.mine_learning_view)
     MineLearningWrapView mineLearningWrapView;
 
+    MainActivity mainActivity;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine, null, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getContext();
+        mainActivity = (MainActivity) getActivity();
         view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
         return view;
     }
@@ -102,11 +107,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         item_1.setItemTitle("￥160.7");
         item_1.setItemDesc("奖学金");
         MineMoneyItemInfo item_2 = new MineMoneyItemInfo();
-        item_2.setItemTitle("6张");
-        item_2.setItemDesc("优惠券");
+        item_2.setItemTitle("90");
+        item_2.setItemDesc("积分");
         itemInfoList.add(item_1);
         itemInfoList.add(item_2);
         MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
+        moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
         mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
         // 我正在学假数据
         // TODO: 根据是否登录显示正在学的 item
@@ -124,6 +130,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mineTitleView.setMsgClickListener(this);
         mineTitleView.setSettingListener(this);
         mineMsgView.setBuyVipClickListener(this);
+        mineMsgView.setNicknameOnClickListener(this);
         mineMsgView.setAvatarClickListener(this);
         mineVipCard.setBtnRenewalClickListener(this);
 //        mineVipCard.setMoreEquityClickListener(this);
@@ -155,6 +162,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             mineMsgView.setNickName("点击登录");
             mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
             mineVipCard.setVisibility(View.GONE);
+            mineMsgView.setBuyVipVisibility(View.GONE);
             // 超级会员隐藏后奖学金的位置
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             int left = Dp2Px2SpUtil.dp2px(mContext, 20);
@@ -168,22 +176,17 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             item_1.setItemTitle("￥0.00");
             item_1.setItemDesc("奖学金");
             MineMoneyItemInfo item_2 = new MineMoneyItemInfo();
-            item_2.setItemTitle("0张");
-            item_2.setItemDesc("优惠券");
+            item_2.setItemTitle("0");
+            item_2.setItemDesc("积分");
             itemInfoList.add(item_1);
             itemInfoList.add(item_2);
             MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
+            moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
             mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
-            // 我正在学假数据
-            // TODO: 根据是否登录显示正在学的 item
-            // mineLearningWrap.setLearningContainerVisibility(View.GONE);
-            mineLearningWrapView.setLearningIconURI("http://pic13.nipic.com/20110331/3032951_224550202000_2.jpg");
-            mineLearningWrapView.setLearningTitle("我的财富计划");
-            mineLearningWrapView.setLearningUpdate("已更新至07-22期");
-            // TODO: 如果没有登录或者登录了没有在学课程就需要将登录描述显示出来否则隐藏
-            mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
-            MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(mContext);
+            MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
             mineLearningWrapView.setLearningListAdapter(learningListAdapter);
+            mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+            mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
         }
 
         initListener();
@@ -242,61 +245,127 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.mine_title_msg: // 信息
-                Toast.makeText(mContext, "点击信息按钮", Toast.LENGTH_SHORT).show();
+                if (mainActivity.isFormalUser) {
+                    Toast.makeText(mContext, "点击信息按钮", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "请先登录哟", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.title_nickname: // 昵称
+                if (!mainActivity.isFormalUser) {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.mine_title_setting: // 设置
-                JumpDetail.jumpAccount(mContext);
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpAccount(mContext);
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.title_avatar: // 头像
-                String avatar = CommonUserInfo.getWxAvatar();
-                JumpDetail.jumpMineMsg(mContext, avatar);
+                if (mainActivity.isFormalUser) {
+                    String avatar = CommonUserInfo.getWxAvatar();
+                    JumpDetail.jumpMineMsg(mContext, avatar);
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.title_buy_vip: // 超级会员
-                JumpDetail.jumpSuperVip(mContext);
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpSuperVip(mContext);
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
 //            case R.id.card_equity_more: // 更多权益
 //                Toast.makeText(mContext, "点击更多权益", Toast.LENGTH_SHORT).show();
 //                break;
             case R.id.card_renewal: // 续费
-                Toast.makeText(mContext, "点击续费按钮", Toast.LENGTH_SHORT).show();
+                if (mainActivity.isFormalUser) {
+                    Toast.makeText(mContext, "点击续费按钮", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.learning_more: // 我正在学 -> 查看更多
-                JumpDetail.jumpMineLearning(mContext, "我正在学");
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpMineLearning(mContext, "我正在学");
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.learning_item_container: // 我正在学的详情页
-                // TODO: 根据不同类型跳转到对应的详情页
-                Toast.makeText(mContext, "我正在学", Toast.LENGTH_SHORT).show();
+                if (mainActivity.isFormalUser) {
+                    Toast.makeText(mContext, "我正在学", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.card_container: // 超级会员卡片
-                Toast.makeText(mContext, "超级会员卡片", Toast.LENGTH_SHORT).show();
+                if (mainActivity.isFormalUser) {
+                    Toast.makeText(mContext, "超级会员卡片", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = null;
         switch (position) {
-            case 0: // 我的任务
-                Toast.makeText(mContext, "我的任务", Toast.LENGTH_SHORT).show();
+            case 0: // 我的收藏
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpMineLearning(mContext, "我的收藏");
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
-            case 1: // 优惠券
-                intent = new Intent(mContext, CouponActivity.class);
-                startActivity(intent);
+            case 1: // 离线缓存
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpOffLine(mContext);
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
-            case 2: // 我的收藏
-                JumpDetail.jumpMineLearning(mContext, "我的收藏");
+            case 2: // 优惠券
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpCoupon(mContext);
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
-            case 3: // 离线缓存
-                intent = new Intent(mContext, OffLineCacheActivity.class);
-                startActivity(intent);
-                break;
-            case 4: // 兑换码
-                intent = new Intent(mContext, CdKeyActivity.class);
-                startActivity(intent);
+            case 3: // 兑换码
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpCdKey(mContext);
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:
                 //TODO: 异常判断
+                break;
+        }
+    }
+
+    @Override
+    public void onMineMoneyItemInfoClickListener(View view, MineMoneyItemInfo mineMoneyItemInfo) {
+        String desc = mineMoneyItemInfo.getItemDesc();
+        switch (desc) {
+            case "奖学金":
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpScholarshipActivity(mContext);
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case "积分":
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpIntegralActivity(mContext);
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }

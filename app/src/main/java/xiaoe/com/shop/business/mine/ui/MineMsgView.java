@@ -71,4 +71,8 @@ public class MineMsgView extends RelativeLayout {
     public void setBuyVipClickListener(OnClickListener listener) {
         title_buy_vip.setOnClickListener(listener);
     }
+
+    public void setNicknameOnClickListener(OnClickListener listener) {
+        title_nickname.setOnClickListener(listener);
+    }
 }

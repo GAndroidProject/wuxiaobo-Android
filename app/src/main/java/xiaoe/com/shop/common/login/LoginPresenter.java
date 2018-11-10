@@ -22,6 +22,7 @@ import xiaoe.com.network.requests.LoginPhoneCodeRequest;
 import xiaoe.com.network.requests.LoginRegisterCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginRequest;
 import xiaoe.com.network.requests.ResetPasswordRequest;
+import xiaoe.com.network.requests.TouristsShopIdRequest;
 import xiaoe.com.network.requests.UpdatePhoneRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
@@ -307,5 +308,14 @@ public class LoginPresenter implements IBizCallback {
         updatePhoneRequest.addRequestParam("new_sms_code", newSmsCode);
 
         NetworkEngine.getInstance().sendRequest(updatePhoneRequest);
+    }
+
+    // 游客登录模式请求店铺 id
+    public void requestTouristsShopId() {
+        TouristsShopIdRequest touristsShopIdRequest = new TouristsShopIdRequest(NetworkEngine.LOGIN_BASE_URL + "shop", this);
+
+        touristsShopIdRequest.addHeaderParam("app-id", Constants.getWXAppId());
+
+        NetworkEngine.getInstance().sendRequest(touristsShopIdRequest);
     }
 }

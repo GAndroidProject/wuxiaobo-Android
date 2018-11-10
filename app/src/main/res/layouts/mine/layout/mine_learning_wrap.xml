@@ -48,7 +48,7 @@
         android:layout_marginTop="20dp"
         android:maxLines="1"
         android:ellipsize="end"
-        android:text="请先登录哦"
+        android:text="@string/tourists_tip"
         android:textSize="14sp"
         android:textColor="@color/secondary_title_color"
         android:layout_marginStart="16dp"/>

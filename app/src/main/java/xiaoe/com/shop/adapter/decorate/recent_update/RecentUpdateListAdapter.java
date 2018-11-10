@@ -98,15 +98,19 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         viewHolder.itemIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!hasBuy){
-                    Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
-                    return;
+                if (recentUpdateListItem.isListIsFormUser()) {
+                    if(!hasBuy){
+                        Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
+                        AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
+                        AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
+                    }
+                    playPosition(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId());
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
                 }
-                if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
-                    AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
-                    AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
-                }
-                playPosition(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId());
             }
         });
         viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {

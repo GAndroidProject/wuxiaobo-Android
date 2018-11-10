@@ -67,7 +67,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     CustomScrollView microPageScroller;
 
     @BindView(R.id.micro_page_wrap)
-    RelativeLayout microPageWrap;
+    FrameLayout microPageWrap;
     @BindView(R.id.micro_page_title_bg)
     SimpleDraweeView microPageTitleBg;
     @BindView(R.id.micro_page_content)
@@ -88,6 +88,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     int toolbarHeight;
     boolean isMain = true;
 
+    MainActivity mainActivity;
+
     public static MicroPageFragment newInstance(String microPageId) {
         MicroPageFragment microPageFragment = new MicroPageFragment();
         Bundle bundle = new Bundle();
@@ -102,6 +104,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         View view = inflater.inflate(R.layout.fragment_micro_page, null, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getContext();
+        mainActivity = (MainActivity) getActivity();
         view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
         EventBus.getDefault().register(this);
         return view;
@@ -206,6 +209,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             recentUpdateListItem.setAudioUrl(dataJsonItem.getString("audio_url"));
             recentUpdateListItem.setColumnId(columnId);
             recentUpdateListItem.setBigColumnId("");
+            recentUpdateListItem.setListIsFormUser(mainActivity.isFormalUser);
 
             itemList.add(recentUpdateListItem);
         }
@@ -285,6 +289,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 for (Object listItem : recentList) {
                     ComponentInfo component_recent = new ComponentInfo();
                     component_recent.setType(DecorateEntityType.RECENT_UPDATE_STR);
+                    component_recent.setFormUser(mainActivity.isFormalUser);
                     JSONObject jsonItem = (JSONObject) listItem;
                     String recentTitle = jsonItem.getString("title");
                     // 频道组件对应的专栏 id
@@ -406,6 +411,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         for (Object listItem : informationList) {
             ComponentInfo flowInfoComponent = new ComponentInfo();
             flowInfoComponent.setType(DecorateEntityType.FLOW_INFO_STR);
+            flowInfoComponent.setFormUser(mainActivity.isFormalUser);
             JSONObject flowInfoItem = (JSONObject) listItem;
             // 拿到信息流 title 信息
             JSONArray dateTag = (JSONArray) flowInfoItem.get("date_tag");
@@ -469,7 +475,6 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             microPageToolbar.setVisibility(View.VISIBLE);
             // 初始化 toolbar
             int statusBarHeight = StatusBarUtil.getStatusBarHeight(mContext);
-            microPageToolbar.setPadding(0, statusBarHeight, 0, 0);
             // 沉浸式初始化
             microPageWrap.setPadding(0, statusBarHeight, 0, 0);
             // toolbar 的内容都设置为透明
