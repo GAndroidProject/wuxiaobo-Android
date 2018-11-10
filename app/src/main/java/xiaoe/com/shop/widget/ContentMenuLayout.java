@@ -53,6 +53,7 @@ public class ContentMenuLayout extends FrameLayout implements View.OnClickListen
         btnDownload.setOnClickListener(listener);
         btnCollect.setOnClickListener(listener);
         btnShare.setOnClickListener(listener);
+        btnDownload.setOnClickListener(listener);
     }
 
     @Override

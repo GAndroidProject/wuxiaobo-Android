@@ -9,9 +9,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import xiaoe.com.common.app.Global;
@@ -613,7 +611,7 @@ public class DownloadManager implements DownloadListner {
         return dbDownloadingList;
     }
 
-    public List<DownloadResourceTableInfo> getDownloaFinishList(){
+    public List<DownloadResourceTableInfo> getDownloadFinishList(){
         //获取已下载完成的资源
         String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" where download_state=3 order by create_at desc";
         List<DownloadTableInfo> dbDownloadList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
@@ -621,121 +619,29 @@ public class DownloadManager implements DownloadListner {
         if(dbDownloadList == null || dbDownloadList.size() <= 0){
             return null;
         }
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
         SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
-
-        HashMap<String,DownloadResourceTableInfo> tempFinishList = new HashMap<String,DownloadResourceTableInfo>();
-        HashMap<String, DownloadResourceTableInfo> tempColumn = new HashMap<String, DownloadResourceTableInfo>();
-
-
-        String queryRelaSQL = "select * from "+RelationTable.TABLE_NAME+" where app_id=? and resource_id=?";
-        for (DownloadTableInfo dbItem : dbDownloadList) {
-            List<RelationTableInfo> relaList = SQLiteUtil.query(RelationTable.TABLE_NAME, queryRelaSQL, new String[]{dbItem.getAppId(), dbItem.getResourceId()});
-            if(relaList == null || relaList.size() <= 0){
-                continue;
-            }
-            DownloadResourceTableInfo single = getSingleResource(dbItem);
-            if(single == null){
-                continue;
-            }
-            for (RelationTableInfo dbRelaItem : relaList){
-                String queryResSQL = "select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=?";
-                if(TextUtils.isEmpty(dbRelaItem.getPath())){
-//                    finishList.add(single);
-                    tempFinishList.put(dbRelaItem.getResourceId(), single);
-                    //单品
-                }else{
-                    JSONObject jsonObject = JSONObject.parseObject(dbRelaItem.getPath());
-                    String columnId = jsonObject.getString("column");
-                    if(TextUtils.isEmpty(columnId)){
-                        //如果专栏id都不存在，则说明路径不存在了
-                        continue;
-                    }
-                    String topicId = jsonObject.getString("topic");
-                    if(!TextUtils.isEmpty(topicId)){
-                        //查询大专栏
-                        DownloadResourceTableInfo topic = null;
-                        if(tempFinishList.containsKey(topicId)){
-                            //查询的大专栏已经存在
-                            topic = tempFinishList.get(topicId) ;
-                        }else{
-                            List<DownloadResourceTableInfo> topicList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResSQL, new String[]{dbRelaItem.getAppId(), topicId});
-                            if(topicList != null && topicList.size() > 0){
-                                topic = topicList.get(0);
-                                topic.setChildList(new ArrayList<DownloadResourceTableInfo>());
-                                tempFinishList.put(topicId, topic);
-                            }
-                        }
-                        //查询专栏
-                        DownloadResourceTableInfo column = null;
-                        if(tempColumn.containsKey(columnId)){
-                            //查询的大专栏已经存在
-                            column = tempColumn.get(columnId) ;
-                        }else{
-                            List<DownloadResourceTableInfo> columnList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResSQL, new String[]{dbRelaItem.getAppId(), columnId});
-                            if(columnList != null && columnList.size() > 0){
-                                column = columnList.get(0);
-                                column.setChildList(new ArrayList<DownloadResourceTableInfo>());
-                                tempColumn.put(columnId, column);
-                            }
-                        }
-                        //将商品归类
-                        if(topic != null && column != null){
-                            boolean exist = false;
-                            for (DownloadResourceTableInfo childItem : topic.getChildList()){
-                                if(columnId.equals(childItem.getResourceId())){
-                                    //专栏已经存在，则直接添加商品到给专栏
-                                    exist = true;
-                                    childItem.getChildList().add(single);
-                                    break;
-                                }
-                            }
-                            if(!exist){
-                                //专栏不存在，则直接添加商品到给专栏
-                                column.getChildList().add(single);
-                                topic.getChildList().add(column);
-                            }
-                        }
-                    }else{
-                        //查询专栏
-                        DownloadResourceTableInfo column = null;
-                        if(tempFinishList.containsKey(columnId)){
-                            //查询的专栏已经存在
-                            column = tempFinishList.get(columnId) ;
-                        }else{
-                            List<DownloadResourceTableInfo> columnList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResSQL, new String[]{dbRelaItem.getAppId(), columnId});
-                            if(columnList != null && columnList.size() > 0){
-                                column = columnList.get(0);
-                                column.setChildList(new ArrayList<DownloadResourceTableInfo>());
-                                tempFinishList.put(columnId, column);
-                            }
-                        }
-                        if(column == null){
-                            continue;
-                        }
-                        boolean exist = false;
-                        for (DownloadResourceTableInfo childItem : column.getChildList()){
-                            if(columnId.equals(childItem.getResourceId())){
-                                //专栏已经存在，则直接添加商品到给专栏
-                                exist = true;
-                                childItem.getChildList().add(single);
-                                break;
-                            }
-                        }
-                        if(!exist){
-                            //专栏不存在，则直接添加商品到给专栏
-                            column.getChildList().add(single);
-                        }
-                    }
-                }
-            }
-        }
         List<DownloadResourceTableInfo> finishList = new ArrayList<DownloadResourceTableInfo>();
-        for (Map.Entry<String, DownloadResourceTableInfo> item : tempFinishList.entrySet()){
-            finishList.add(item.getValue());
+        for (DownloadTableInfo dbItem : dbDownloadList) {
+            DownloadResourceTableInfo single = getSingleResource(dbItem);
+            if(single != null){
+                finishList.add(single);
+            }
         }
-
         return finishList;
+    }
+    public DownloadResourceTableInfo getDownloadFinish(String appId, String resId){
+        //获取已下载完成的资源
+        String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" where app_id=? and resource_id=? and download_state=3 limit 1";
+        List<DownloadTableInfo> dbDownloadList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resId});
+        if(dbDownloadList == null || dbDownloadList.size() <= 0){
+            return null;
+        }
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
+        DownloadResourceTableInfo single = getSingleResource(dbDownloadList.get(0));
+        if(single != null){
+            return single;
+        }
+        return  null;
     }
     private DownloadResourceTableInfo getSingleResource(DownloadTableInfo dbItem){
         String queryResSQL = "select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=?";

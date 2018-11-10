@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.download.FinishDownloadListAdapter;
 import xiaoe.com.shop.base.BaseFragment;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.interfaces.IonSlidingViewClickListener;
 
 public class FinishDownloadFragment extends BaseFragment implements IonSlidingViewClickListener {
@@ -42,7 +42,7 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
         finishDownloadRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         finishDownloadListAdapter = new FinishDownloadListAdapter(getContext(), this);
         finishDownloadRecyclerView.setAdapter(finishDownloadListAdapter);
-        List<DownloadResourceTableInfo> list = DownloadManager.getInstance().getDownloaFinishList();
+        List<DownloadResourceTableInfo> list = DownloadManager.getInstance().getDownloadFinishList();
         if(list !=null && list.size() > 0){
             finishDownloadListAdapter.setData(list);
         }
@@ -51,10 +51,20 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
 
     @Override
     public void onItemClick(View view, int position) {
-        Log.d(TAG, "onNavItemClick: "+position);
         if(finishDownloadListAdapter.menuIsOpen()){
             finishDownloadListAdapter.closeMenu();
         }else{
+            DownloadResourceTableInfo download = finishDownloadListAdapter.getPositionData(position);
+
+            if(download == null){
+                return;
+            }else if(download.getResourceType() == 1){
+                //音频
+
+            }else if(download.getResourceType() == 2){
+                //视频
+                JumpDetail.jumpVideo(getContext(), download.getResourceId(), null, true);
+            }
 //            Intent intent = new Intent(getActivity(), CacheColumnActivity.class);
 //            startActivity(intent);
         }

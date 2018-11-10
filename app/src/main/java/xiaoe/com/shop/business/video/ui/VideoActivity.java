@@ -22,8 +22,11 @@ import com.umeng.socialize.UMShareAPI;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
+
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.common.entitys.DownloadResourceTableInfo;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
@@ -66,6 +69,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private String collectPrice = "";
     private int resPrice = 0;
     private String mVideoUrl;
+    private String mLocalVideoUrl;
+    private boolean localResource = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -138,6 +143,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
     private void initDatas() {
         mResourceId = mIntent.getStringExtra("resourceId");
+        localResource = mIntent.getBooleanExtra("local_resource", false);
         videoPresenter.requestDetail(mResourceId);
     }
     @Override
@@ -374,16 +380,34 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         collectImgUrl = data.getString("img_url");
         collectImgUrlCompressed = data.getString("img_url_compressed");
         setCollectState(data.getIntValue("has_favorite") == 1);
+        if(localResource){
+            //如果存在本地视频则播放本地是否
+            DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(CommonUserInfo.getShopId(), mResourceId);
+            if(download != null){
+                File file = new File(download.getLocalFilePath());
+                if(file.exists()){
+                   mLocalVideoUrl = download.getLocalFilePath();
+                }
+            }
+        }
         if(available){
             collectPrice = "";
             buyView.setVisibility(View.GONE);
             String detail = data.getString("content");
             setContentDetail(detail);
             mVideoUrl = data.getString("video_mp4");
-            playControllerView.setPlayUrl(mVideoUrl);
+            if(TextUtils.isEmpty(mLocalVideoUrl)){
+                playControllerView.setPlayUrl(mVideoUrl);
+            }else{
+                playControllerView.setPlayUrl(mLocalVideoUrl);
+            }
+
             setPagerState(false);
             collectImgUrl = data.getString("img_url");
         }else{
+            if(!TextUtils.isEmpty(mLocalVideoUrl)){
+                playControllerView.setPlayUrl(mLocalVideoUrl);
+            }
             buyView.setVisibility(View.VISIBLE);
             int price = data.getIntValue("price");
             resPrice = price;
@@ -393,6 +417,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             setContentDetail(detail);
             setPagerState(false);
         }
+
     }
 
 

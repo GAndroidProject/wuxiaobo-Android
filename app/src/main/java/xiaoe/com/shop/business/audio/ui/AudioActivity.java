@@ -71,6 +71,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private ImageView btnCollect;
     private boolean hasCollect = false;//是否收藏
     private CollectionUtils collectionUtils;
+    private ImageView btnAudioDownload;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -169,6 +170,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         //分享按钮
         ImageView btnShare = (ImageView) findViewById(R.id.btn_share);
         btnShare.setOnClickListener(this);
+
+        btnAudioDownload = (ImageView) findViewById(R.id.btn_audio_download);
+        btnAudioDownload.setOnClickListener(this);
     }
     private void initDatas() {
         collectionUtils = new CollectionUtils(this);
@@ -332,6 +336,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 break;
             case R.id.btn_speed_4:
                 changePlaySpeed(2.0f);
+                break;
+            case R.id.btn_audio_download:
+
                 break;
             default:
                 break;

@@ -50,6 +50,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     public static final String MICRO_PAGE_COURSE = "app_course_page";
 
     public static boolean isForeground = false;
+    private Intent audioPlayServiceIntent;
 
     Intent intent;
     public boolean isFormalUser;
@@ -84,7 +85,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         }
         initView();
         initPermission();
-        Intent audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
+        audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
         startService(audioPlayServiceIntent);
 
         registerMessageReceiver();  // used for receive msg
@@ -210,7 +211,12 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         if(!AudioMediaPlayer.isStop()){
-            AudioMediaPlayer.release();
+            if(!AudioMediaPlayer.isPlaying()){
+                AudioMediaPlayer.release();
+                stopService(audioPlayServiceIntent);
+            }
+        }else{
+            stopService(audioPlayServiceIntent);
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         AppUpgradeHelper.getInstance().unregisterEventBus();
