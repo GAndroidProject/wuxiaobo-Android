@@ -46,6 +46,7 @@ import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.business.course_more.ui.CourseMoreActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.utils.SetImageUriUtil;
 
 /**
  * 店铺装修组件显示列表适配器
@@ -131,8 +132,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        int itemType = getItemViewType(position);
         int currentBindPos = holder.getAdapterPosition();
+        int itemType = getItemViewType(currentBindPos);
         final ComponentInfo currentBindComponent = mComponentList.get(currentBindPos);
         if (itemType == -1) {
             Log.d(TAG, "onBindViewHolder: error return -1");
@@ -144,7 +145,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 FlowInfoViewHolder flowInfoViewHolder = (FlowInfoViewHolder) holder;
                 flowInfoViewHolder.flowInfoTitle.setText(currentBindComponent.getTitle());
                 flowInfoViewHolder.flowInfoDesc.setText(currentBindComponent.getDesc());
-                flowInfoViewHolder.flowInfoIcon.setImageURI(currentBindComponent.getImgUrl());
                 flowInfoViewHolder.flowInfoIconDesc.setText(currentBindComponent.getJoinedDesc());
                 LinearLayoutManager llm = new LinearLayoutManager(mContext);
                 llm.setOrientation(LinearLayout.VERTICAL);
@@ -168,7 +168,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 break;
             case DecorateEntityType.RECENT_UPDATE:
                 RecentUpdateViewHolder recentUpdateViewHolder = (RecentUpdateViewHolder) holder;
-                recentUpdateViewHolder.recentUpdateAvatar.setImageURI(currentBindComponent.getImgUrl());
+                SetImageUriUtil.setImgURI(recentUpdateViewHolder.recentUpdateAvatar, currentBindComponent.getImgUrl(), Dp2Px2SpUtil.dp2px(mContext, 72), Dp2Px2SpUtil.dp2px(mContext, 72));
                 recentUpdateViewHolder.recentUpdateSubTitle.setText(currentBindComponent.getTitle());
                 recentUpdateViewHolder.recentUpdateSubDesc.setText(currentBindComponent.getDesc());
                 if (currentBindComponent.isHideTitle()) { // 隐藏收听全部按钮
@@ -275,7 +275,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.SEARCH:
                 SearchViewHolder searchViewHolder = (SearchViewHolder) holder;
                 searchViewHolder.searchTitle.setText(currentBindComponent.getTitle());
-                searchViewHolder.searchIcon.setImageURI("res:///" + R.mipmap.search_grey_search);
+                String searchDefault = "res:///" + R.mipmap.search_grey_search;
+                SetImageUriUtil.setImgURI(searchViewHolder.searchIcon, searchDefault, Dp2Px2SpUtil.dp2px(mContext, 375), Dp2Px2SpUtil.dp2px(mContext, 250));
                 if (!currentBindComponent.isNeedDecorate()) {
                     searchViewHolder.searchWxb.setVisibility(View.GONE);
                 }
@@ -323,7 +324,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public void onKnowledgeItemClick(View view, KnowledgeCommodityItem knowledgeCommodityItem) {
-        Intent intent = null;
         // 知识商品分组形式
         if (view.getParent() == knowledgeGroupRecycler) {
             switch (knowledgeCommodityItem.getSrcType()) {

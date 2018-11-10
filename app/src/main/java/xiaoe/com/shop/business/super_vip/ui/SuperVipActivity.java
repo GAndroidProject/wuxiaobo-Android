@@ -34,7 +34,7 @@ public class SuperVipActivity extends XiaoeActivity {
             @Override
             public void onClick(View v) {
                 // 默认超级会员的 resourceType 为 -10，resourceId 为 super_vip
-//                JumpDetail.jumpPay(SuperVipActivity.this, "super_vip", -10, "", "超级会员", 0);
+                JumpDetail.jumpPay(SuperVipActivity.this, "super_vip", -10, "res:///" + R.mipmap.pay_vip_bg, "超级会员", 0);
             }
         });
     }

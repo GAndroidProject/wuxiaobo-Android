@@ -7,11 +7,13 @@ import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.IsSuperVipRequest;
 import xiaoe.com.network.requests.LoginBindRequest;
 import xiaoe.com.network.requests.LoginCheckRegisterRequest;
 import xiaoe.com.network.requests.LoginCodeVerifyRequest;

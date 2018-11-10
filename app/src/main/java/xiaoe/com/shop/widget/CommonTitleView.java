@@ -56,6 +56,10 @@ public class CommonTitleView extends Toolbar {
         titleContent.setText(content);
     }
 
+    public void setTitleContentTextVisibility(int visibility) {
+        titleContent.setVisibility(visibility);
+    }
+
 //    public void setTitleCollectClickListener(OnClickListener listener) {
 //        titleCollect.setOnClickListener(listener);
 //    }

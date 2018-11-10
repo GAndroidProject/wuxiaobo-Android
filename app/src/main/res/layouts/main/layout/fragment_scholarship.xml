@@ -280,16 +280,14 @@
                 android:layout_height="40dp"
                 android:visibility="gone" />
 
-            <TextView
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/common_bottom_tip"
-                android:gravity="center"
-                android:paddingTop="24dp"
-                android:paddingBottom="24dp"
-                android:textSize="12sp"
-                android:textColor="@color/course_page_bottom_color"
-                android:background="@color/audio_page_bg_color"/>
+                android:src="@mipmap/logo_logo_xiaoetong"
+                android:contentDescription="@string/xet_logo"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"/>
 
         </LinearLayout>
 

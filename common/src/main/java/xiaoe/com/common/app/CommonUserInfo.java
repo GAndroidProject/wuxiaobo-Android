@@ -8,6 +8,10 @@ public class CommonUserInfo {
     private static String wxNickname;
     private static String wxAvatar;
     private static String shopId;
+    // 是否为超级会员
+    private static boolean isSuperVip;
+    // 超级会员是否可用
+    private static boolean isSuperVipAvailable;
 
     public static void setShopId(String shopId) {
         CommonUserInfo.shopId = shopId;
@@ -55,5 +59,21 @@ public class CommonUserInfo {
 
     public static String getWxAvatar() {
         return wxAvatar;
+    }
+
+    public static void setIsSuperVip(boolean isSuperVip) {
+        CommonUserInfo.isSuperVip = isSuperVip;
+    }
+
+    public static boolean isIsSuperVip() {
+        return isSuperVip;
+    }
+
+    public static void setIsSuperVipAvailable(boolean isSuperVipAvailable) {
+        CommonUserInfo.isSuperVipAvailable = isSuperVipAvailable;
+    }
+
+    public static boolean isIsSuperVipAvailable() {
+        return isSuperVipAvailable;
     }
 }

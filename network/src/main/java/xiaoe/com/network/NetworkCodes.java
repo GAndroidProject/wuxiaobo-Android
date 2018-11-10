@@ -51,4 +51,6 @@ public class NetworkCodes {
     public static final int CODE_PERSON_NOT_FOUND = 2506;
 
     public static final int CODE_REQUEST_ERROR = -1;
+
+    public static final int CODE_SUPER_VIP = 3011;
 }

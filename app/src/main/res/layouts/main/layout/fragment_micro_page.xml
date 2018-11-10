@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:layout_marginBottom="24dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -31,6 +32,16 @@
                 android:overScrollMode="never"
                 android:scrollbars="none"/>
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/logo_logo_xiaoetong"
+                android:contentDescription="@string/xet_logo"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/micro_page_content"/>
         </RelativeLayout>
 
     </xiaoe.com.shop.widget.CustomScrollView>

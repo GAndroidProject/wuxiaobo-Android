@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.utils.SetImageUriUtil;
 
 public class MineMsgView extends RelativeLayout {
 
@@ -50,7 +52,7 @@ public class MineMsgView extends RelativeLayout {
 
     public void setAvatar(String imgUrl) {
         if (title_avatar != null) {
-            title_avatar.setImageURI(imgUrl);
+            SetImageUriUtil.setImgURI(title_avatar, imgUrl, Dp2Px2SpUtil.dp2px(mContext, 72), Dp2Px2SpUtil.dp2px(mContext, 72));
         }
     }
 

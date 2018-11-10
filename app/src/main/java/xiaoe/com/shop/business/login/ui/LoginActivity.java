@@ -19,8 +19,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.LoginUser;
+import xiaoe.com.network.requests.IsSuperVipRequest;
 import xiaoe.com.network.requests.LoginCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginFindPwdCodeVerifyRequest;
 import xiaoe.com.network.requests.ResetPasswordRequest;
@@ -72,6 +74,8 @@ public class LoginActivity extends XiaoeActivity {
     // 软键盘
     InputMethodManager imm;
 
+    Unbinder unbinder;
+
     // 手机号
     protected String phoneNum;
     // 验证码
@@ -107,7 +111,7 @@ public class LoginActivity extends XiaoeActivity {
         StatusBarUtil.setRootViewFitsSystemWindows(this, false);
 
         setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         loginTitle.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
@@ -461,6 +465,7 @@ public class LoginActivity extends XiaoeActivity {
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     String touristsShopId = ((JSONObject) result.get("data")).getString("shop_id");
                     SharedPreferencesUtil.putData("touristsShopId", touristsShopId);
+                     // 游客登录
                     JumpDetail.jumpMain(this, false);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 游客模式获取店铺 id 失败..");
@@ -540,11 +545,6 @@ public class LoginActivity extends XiaoeActivity {
         SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser);
 
         settingPresenter.requestPersonData(apiToken, false);
-
-        // 因为还需要获取个人信息，所以先不跳转到主页
-//        Toast("注册成功");
-        // 注册成功跳转到首页
-//        JumpDetail.jumpMain(this, true);
     }
 
     // 登录成功之后，拿到的登录信息更新到本地数据库
@@ -625,6 +625,14 @@ public class LoginActivity extends XiaoeActivity {
             // code 如果有，都要清空
             SharedPreferencesUtil.putData("wx_code", ""); // 清空 code
             SharedPreferencesUtil.putData("accessToken", ""); // 清空 accessToken
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 }

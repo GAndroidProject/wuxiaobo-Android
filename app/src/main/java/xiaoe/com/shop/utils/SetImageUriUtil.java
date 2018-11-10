@@ -11,22 +11,37 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
 
+// SimpleDraweeView 设置图片工具类（按比例缩放图片）
 public class SetImageUriUtil {
 
-    public static DraweeController setImgURI(SimpleDraweeView simpleDraweeView, String url) {
-        Uri uri = Uri.fromFile(new File(url));
+    /**
+     * 设置 simpleDraweeView 图片，由于 simpleDraweeView 获取不了宽高，所以必须传入图片的宽高
+     * 使用时使用 Dp2pxUtil 将单位统一
+     * @param simpleDraweeView simpleDraweeView
+     * @param url              图片 url
+     * @param width 图片的宽度
+     * @param height 图片的高度
+     */
+    public static void setImgURI(SimpleDraweeView simpleDraweeView, String url, int width, int height) {
 
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                //根据View的尺寸放缩图片
-                .setResizeOptions(new ResizeOptions(simpleDraweeView.getWidth(), simpleDraweeView.getHeight()))
-                .build();
+        Uri uri = Uri.parse(url);
 
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setOldController(simpleDraweeView.getController())
-                .setImageRequest(request)
-                .setCallerContext(uri)
-                .build();
+        //根据View的尺寸放缩图片
+        if (!"".equals(uri.toString())) {
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                    .setResizeOptions(new ResizeOptions(width, height))
+                    .build();
 
-        return controller;
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setOldController(simpleDraweeView.getController())
+                    .setImageRequest(request)
+                    .setCallerContext(uri)
+                    .build();
+
+            simpleDraweeView.setController(controller);
+        } else {
+            // 如果没有图片的话就设置为空
+            simpleDraweeView.setImageURI("");
+        }
     }
 }

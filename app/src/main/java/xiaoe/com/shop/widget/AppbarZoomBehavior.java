@@ -74,7 +74,7 @@ public class AppbarZoomBehavior extends AppBarLayout.Behavior {
     private void init(AppBarLayout abl) {
         abl.setClipChildren(false);
         mAppbarHeight = abl.getHeight();
-        mImageView = (SimpleDraweeView) abl.findViewById(R.id.app_layout_bg);
+        mImageView = (SimpleDraweeView) abl.findViewById(R.id.it_title_bg);
         if (mImageView != null) {
             mImageViewHeight = mImageView.getHeight();
         }

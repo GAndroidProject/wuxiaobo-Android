@@ -106,6 +106,8 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
                 SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
                 ActivityCollector.finishAll();
                 CommonUserInfo.setApiToken("");
+                CommonUserInfo.setIsSuperVip(false);
+                CommonUserInfo.setIsSuperVipAvailable(false);
                 JumpDetail.jumpLogin(getActivity());
             }
         });

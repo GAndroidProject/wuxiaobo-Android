@@ -1,6 +1,7 @@
 package xiaoe.com.shop.business.course.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,15 +19,13 @@ import com.tencent.smtt.sdk.CookieSyncManager;
 import com.tencent.smtt.sdk.WebView;
 import com.umeng.socialize.UMShareAPI;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import xiaoe.com.common.entitys.ChangeToScholarshipEvent;
 import xiaoe.com.common.entitys.LoginUser;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
@@ -41,12 +40,14 @@ import xiaoe.com.shop.business.course.presenter.CourseImageTextPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
+import xiaoe.com.shop.utils.SetImageUriUtil;
 import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.utils.UpdateLearningUtils;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.CommonTitleView;
+import xiaoe.com.shop.widget.PushScrollView;
 
-public class CourseImageTextActivity extends XiaoeActivity {
+public class CourseImageTextActivity extends XiaoeActivity implements PushScrollView.ScrollViewListener {
 
     private static final String TAG = "CourseImageTextActivity";
 
@@ -55,12 +56,14 @@ public class CourseImageTextActivity extends XiaoeActivity {
     @BindView(R.id.it_wrap)
     FrameLayout itWrap;
 
-    @BindView(R.id.app_layout_bg)
+    @BindView(R.id.it_push_scrollview)
+    PushScrollView itPushScrollView;
+    @BindView(R.id.it_title_bg)
     SimpleDraweeView itBg;
     @BindView(R.id.it_title_back)
     ImageView itBack;
     @BindView(R.id.it_common_title_view)
-    CommonTitleView itTitleView;
+    CommonTitleView itToolbar;
     @BindView(R.id.image_text_title)
     TextView itTitle;
     @BindView(R.id.image_text_collection)
@@ -110,6 +113,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
     boolean hasBuy;
 
     List<LoginUser> loginList;
+    int toolbarHeight;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,6 +124,8 @@ public class CourseImageTextActivity extends XiaoeActivity {
         unbinder = ButterKnife.bind(this);
 
         itWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+
+        toolbarHeight = Dp2Px2SpUtil.dp2px(this,100);
 
         // SimpleDraweeView 转场显示图片的设置
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -148,6 +154,11 @@ public class CourseImageTextActivity extends XiaoeActivity {
 
     private void initTitle() {
         StatusBarUtil.setRootViewFitsSystemWindows(this, false);
+        itToolbar.setVisibility(View.VISIBLE);
+        itToolbar.setTitleEndVisibility(View.GONE);
+        itToolbar.setTitleBackVisibility(View.GONE);
+        itToolbar.setTitleContentTextVisibility(View.GONE);
+        itToolbar.setBackgroundColor(Color.argb(0,255,255,255));
     }
 
     private void initData() {
@@ -164,9 +175,11 @@ public class CourseImageTextActivity extends XiaoeActivity {
     }
 
     private void initListener() {
+        itPushScrollView.setScrollViewListener(this);
         itBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick: 1111111111111111111111111");
                 onBackPressed();
             }
         });
@@ -223,7 +236,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 }
             }
         });
-        itTitleView.setTitleBackClickListener(new View.OnClickListener() {
+        itToolbar.setTitleBackClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
@@ -242,7 +255,8 @@ public class CourseImageTextActivity extends XiaoeActivity {
         if (imgUrl != null) {
             itBg.setImageURI("");
         }
-        itDescImg.setImageURI("res:///" + R.mipmap.img_text_bg);
+        String descImgUrl = "res:///" + R.mipmap.img_text_bg;
+        SetImageUriUtil.setImgURI(itDescImg, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
     }
 
     @Override
@@ -343,7 +357,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
 
     private void initData(JSONObject data) {
 
-        itBg.setImageURI(imgUrl);
+        SetImageUriUtil.setImgURI(itBg, imgUrl, Dp2Px2SpUtil.dp2px(this, 20), Dp2Px2SpUtil.dp2px(this, 20));
         // 没有就那预览的内容
         String orgContent = data.getString("content") == null ? data.getString("preview_content") : data.getString("content");
         setOrgContent(orgContent);
@@ -374,6 +388,7 @@ public class CourseImageTextActivity extends XiaoeActivity {
             itBuy.setVisibility(View.GONE);
         }
 
+        itToolbar.setTitleContentText(title);
         // 将需要收藏的字段赋值（未购）
         collectionTitle = title;
         collectionAuthor = data.getString("author");
@@ -407,5 +422,28 @@ public class CourseImageTextActivity extends XiaoeActivity {
                 itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
             }
         }
+    }
+
+    @Override
+    public void onScrollChanged(PushScrollView scrollView, int x, int y, int oldX, int oldY) {
+        float alpha = (y / (toolbarHeight * 1.0f)) * 255;
+        if(alpha > 255){
+            alpha = 255;
+        }else if(alpha < 0){
+            alpha = 0;
+        }
+        itToolbar.setBackgroundColor(Color.argb((int) alpha,255,255,255));
+        if (alpha == 255) {
+            itToolbar.setTitleBackVisibility(View.VISIBLE);
+            itToolbar.setTitleContentTextVisibility(View.VISIBLE);
+        } else {
+            itToolbar.setTitleBackVisibility(View.GONE);
+            itToolbar.setTitleContentTextVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onLoadState(int state) {
+
     }
 }

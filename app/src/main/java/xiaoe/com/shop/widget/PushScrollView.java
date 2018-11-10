@@ -37,6 +37,9 @@ public class PushScrollView extends ScrollView {
     private ScrollViewListener scrollViewListener = null;
     private Handler handler = new PushScrollViewHandler(this);
 
+    private int loadHeight;
+    private int loadState = ListBottomLoadMoreView.STATE_NOT_LOAD;
+
     public PushScrollView(Context context) {
         super(context);
     }
@@ -150,10 +153,32 @@ public class PushScrollView extends ScrollView {
         if (scrollViewListener != null) {
             scrollViewListener.onScrollChanged(this, x, y, oldX, oldY);
         }
+        if (y > 0) { // 只有上滑才会触发
+            int height = getHeight();
+            int childHeight = getChildAt(0).getHeight();
+            boolean loadMore = y + height >= childHeight - loadHeight;
+            if(loadMore && loadState == ListBottomLoadMoreView.STATE_NOT_LOAD && scrollViewListener != null){
+                scrollViewListener.onLoadState(loadState);
+            }
+        }
+    }
+
+    @Override
+    protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
+        super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
+        if (scrollY > 0) {
+            int height = getHeight();
+            int childHeight = getChildAt(0).getHeight();
+            boolean loadMore = scrollY + height >= childHeight - loadHeight;
+            if(loadMore && loadState == ListBottomLoadMoreView.STATE_NOT_LOAD && scrollViewListener != null){
+                scrollViewListener.onLoadState(loadState);
+            }
+        }
     }
 
     public interface ScrollViewListener {
         void onScrollChanged(PushScrollView scrollView, int x, int y, int oldX, int oldY);
+        void onLoadState(int state);
     }
 
     private static class PushScrollViewHandler extends Handler {

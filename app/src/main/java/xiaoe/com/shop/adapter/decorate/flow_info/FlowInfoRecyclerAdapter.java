@@ -17,11 +17,13 @@ import java.util.List;
 
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.FlowInfoItem;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseViewHolder;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.business.video.ui.VideoActivity;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.utils.SetImageUriUtil;
 
 public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -95,7 +97,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         switch (itemType) {
             case DecorateEntityType.FLOW_INFO_IMG_TEXT: // 图文
                 final FlowInfoImgTextViewHolder itViewHolder = (FlowInfoImgTextViewHolder) holder;
-                itViewHolder.flowInfoBg.setImageURI(bindItem.getItemImg());
+                SetImageUriUtil.setImgURI(itViewHolder.flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 250), Dp2Px2SpUtil.dp2px(mContext, 375));
                 itViewHolder.flowInfoTitle.setText(bindItem.getItemTitle());
                 itViewHolder.flowInfoDesc.setText(bindItem.getItemDesc());
                 if (bindItem.isItemHasBuy()) {
@@ -120,7 +122,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 break;
             case DecorateEntityType.FLOW_INFO_COLUMN: // 专栏
                 final FlowInfoImgTextViewHolder columnViewHolder = (FlowInfoImgTextViewHolder) holder;
-                columnViewHolder.flowInfoBg.setImageURI(bindItem.getItemImg());
+                SetImageUriUtil.setImgURI(columnViewHolder.flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 250), Dp2Px2SpUtil.dp2px(mContext, 375));
                 columnViewHolder.flowInfoTitle.setText(bindItem.getItemTitle());
                 columnViewHolder.flowInfoDesc.setText(bindItem.getItemDesc());
                 if (bindItem.isItemHasBuy()) {
@@ -136,7 +138,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 });
             case DecorateEntityType.FLOW_INFO_TOPIC: // 大专栏
                 final FlowInfoImgTextViewHolder topicViewHolder = (FlowInfoImgTextViewHolder) holder;
-                topicViewHolder.flowInfoBg.setImageURI(bindItem.getItemImg());
+                SetImageUriUtil.setImgURI(topicViewHolder.flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 250), Dp2Px2SpUtil.dp2px(mContext, 375));
                 topicViewHolder.flowInfoTitle.setText(bindItem.getItemTitle());
                 topicViewHolder.flowInfoDesc.setText(bindItem.getItemDesc());
                 if (bindItem.isItemHasBuy()) {
@@ -153,8 +155,16 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 break;
             case DecorateEntityType.FLOW_INFO_AUDIO: // 音频
                 FlowInfoAudioViewHolder audioViewHolder = (FlowInfoAudioViewHolder) holder;
-                audioViewHolder.flowInfoBg.setImageURI(Uri.parse("res:///" + R.mipmap.audio_bg));
-                audioViewHolder.flowInfoAvatar.setImageURI(Uri.parse("res:///" + R.mipmap.audio_ring));
+                String audioDefault = "res:///" + R.mipmap.audio_bg;
+                audioViewHolder.flowInfoBg.getWidth();
+                SetImageUriUtil.setImgURI(audioViewHolder.flowInfoBg, audioDefault, Dp2Px2SpUtil.dp2px(mContext, 190), Dp2Px2SpUtil.dp2px(mContext, 375));
+                String url = "";
+                if (bindItem.getItemImg() != null) {
+                    url = bindItem.getItemImg();
+                } else {
+                    url = "res:///" + R.mipmap.audio_ring;
+                }
+                SetImageUriUtil.setImgURI(audioViewHolder.flowInfoAvatar, url, Dp2Px2SpUtil.dp2px(mContext, 194), Dp2Px2SpUtil.dp2px(mContext, 194));
                 audioViewHolder.flowInfoTitle.setText(bindItem.getItemTitle());
                 audioViewHolder.flowInfoDesc.setText(bindItem.getItemDesc());
                 if (bindItem.isItemHasBuy()) {
@@ -179,7 +189,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 break;
             case DecorateEntityType.FLOW_INFO_VIDEO: // 视频
                 final FlowInfoVideoViewHolder videoViewHolder = (FlowInfoVideoViewHolder) holder;
-                videoViewHolder.flowInfoBg.setImageURI(bindItem.getItemImg());
+                SetImageUriUtil.setImgURI(videoViewHolder.flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 190), Dp2Px2SpUtil.dp2px(mContext, 375));
                 videoViewHolder.flowInfoTitle.setText(bindItem.getItemTitle());
                 videoViewHolder.flowInfoDesc.setText(bindItem.getItemDesc());
                 if (bindItem.isItemHasBuy()) {

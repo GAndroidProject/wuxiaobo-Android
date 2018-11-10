@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.alibaba.fastjson.JSONObject;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -23,15 +25,18 @@ import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.ChangeToScholarshipEvent;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
+import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.downloadUtil.DownloadFileConfig;
 import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.IsSuperVipRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
+import xiaoe.com.shop.business.super_vip.presenter.SuperVipPresenter;
 import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
@@ -55,10 +60,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     Intent intent;
     public boolean isFormalUser;
 
-//    SettingPresenter settingPresenter;
-
-//    String apiToken;
-//    List<LoginUserInfo> loginUserList;
+    SuperVipPresenter superVipPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 //        settingPresenter.requestPersonData(apiToken, false);
         SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
         intent = getIntent();
+
+        superVipPresenter = new SuperVipPresenter(this);
 
         isFormalUser = intent.getBooleanExtra("isFormalUser", false);
 
@@ -226,6 +230,20 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
+        JSONObject result = (JSONObject) entity;
+        if (success) {
+            if (iRequest instanceof IsSuperVipRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED || code == NetworkCodes.CODE_SUPER_VIP) { // 返回的 code 有 0 和 3011
+                    JSONObject data = (JSONObject) result.get("data");
+                    initSuperVipMsg(data);
+                } else {
+                    Log.d(TAG, "onMainThreadResponse: 获取超级会员信息失败...");
+                }
+            }
+        } else {
+            Log.d(TAG, "onMainThreadResponse: request fail...");
+        }
     }
 
     // for receive customer msg from jpush server
@@ -269,5 +287,14 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 //            msgText.setText(msg);
 //            msgText.setVisibility(android.view.View.VISIBLE);
 //        }
+    }
+
+    // 初始化超级会员信息
+    public void initSuperVipMsg(JSONObject data) {
+        boolean isSuperVip = data.getBoolean("is_svip");
+        boolean isCanBuy = data.getBoolean("is_can_buy");
+
+        CommonUserInfo.setIsSuperVip(isSuperVip);
+        CommonUserInfo.setIsSuperVipAvailable(isCanBuy);
     }
 }
