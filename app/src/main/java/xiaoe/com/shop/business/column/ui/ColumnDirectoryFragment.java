@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -151,7 +150,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     }
 
     @Override
-    public void onPlayPosition(View view, int parentPosition, int position) {
+    public void onPlayPosition(View view, int parentPosition, int position, boolean jumpDetail) {
         if (loginUserList.size() == 1) {
             if(!isHasBuy){
                 toastCustom("未购买课程");
@@ -171,10 +170,11 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                     List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
                     if(!isAddPlayList){
                         AudioPlayUtil.getInstance().setAudioList(playList);
+                        AudioPlayUtil.getInstance().setFromTag("Topic");
                         AudioPlayUtil.getInstance().setSingleAudio(false);
                     }
                     isAddPlayList = true;
-                    playPosition(playList, playEntity.getResource_id(), playEntity.getColumnId(), playEntity.getBigColumnId());
+                    playPosition(playList, playEntity.getResource_id(), playEntity.getColumnId(), playEntity.getBigColumnId(), jumpDetail);
                 }
             }
             if(playParentPosition < 0){
@@ -213,7 +213,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                 JumpDetail.jumpImageText(getContext(), resourceId, null);
             }else if(resourceType == 2){
                 //音频
-                onPlayPosition(null, parentPosition, position);
+                onPlayPosition(null, parentPosition, position, true);
                 JumpDetail.jumpAudio(getContext(), resourceId, 1);
             }else if(resourceType == 3){
                 //视频
@@ -256,6 +256,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             playEntity.setColumnId(entity.getColumnId());
             playEntity.setBigColumnId(entity.getBigColumnId());
             playEntity.setTotalDuration(entity.getAudio_length());
+            playEntity.setProductsTitle(entity.getColumnTitle());
             index++;
             playList.add(playEntity);
         }
@@ -267,6 +268,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         if(playList.size() > 0){
             if(!isAddPlayList){
                 AudioPlayUtil.getInstance().setAudioList(playList);
+                AudioPlayUtil.getInstance().setFromTag("Topic");
                 AudioPlayUtil.getInstance().setSingleAudio(false);
             }
             isAddPlayList = true;
@@ -278,7 +280,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         }
     }
 
-    private void playPosition(List<AudioPlayEntity> playList, String resourceId, String columnId, String bigColumnId){
+    private void playPosition(List<AudioPlayEntity> playList, String resourceId, String columnId, String bigColumnId, boolean jumpDetail){
         boolean resourceEquals = false;
         AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
         if(playAudio != null){
@@ -291,7 +293,10 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             if(AudioMediaPlayer.isStop()){
                 AudioMediaPlayer.start();
             }else{
-                AudioMediaPlayer.play();
+                //如果是跳转详情页，则保持播放状态,如果不是，则进行播放暂停动作
+                if(!jumpDetail){
+                    AudioMediaPlayer.play();
+                }
             }
             return;
         }

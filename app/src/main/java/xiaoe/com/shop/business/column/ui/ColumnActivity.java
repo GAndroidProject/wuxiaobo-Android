@@ -181,7 +181,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         Object dataObject = jsonObject.get("data");
         if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || dataObject == null ){
-            if(iRequest instanceof ColumnListRequst){
+            if(iRequest instanceof ColumnListRequst || iRequest instanceof DetailRequest){
                 setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
             }
             return;
@@ -240,9 +240,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             fragment.setHasBuy(isHasBuy);
             if(refreshData){
                 refreshData = false;
-                fragment.refreshData(columnPresenter.formatSingleResouceEntity(data, resourceId, ""));
+                fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, ""));
             }else{
-                fragment.addData(columnPresenter.formatSingleResouceEntity(data, resourceId, ""));
+                fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, ""));
             }
         }
         if(data.size() < pageSize){

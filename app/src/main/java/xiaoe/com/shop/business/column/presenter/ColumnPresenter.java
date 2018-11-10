@@ -74,7 +74,7 @@ public class ColumnPresenter implements IBizCallback {
             directoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
             directoryEntity.setResource_id(columnId);
             directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
-            List<ColumnSecondDirectoryEntity> childList = formatSingleResouceEntity(jsonObject.getJSONArray("resource_list"),columnId , bigColumnId);
+            List<ColumnSecondDirectoryEntity> childList = formatSingleResourceEntity(jsonObject.getJSONArray("resource_list"), directoryEntity.getTitle(), columnId , bigColumnId);
             directoryEntity.setResource_list(childList);
             directoryEntityList.add(directoryEntity);
         }
@@ -86,7 +86,7 @@ public class ColumnPresenter implements IBizCallback {
      * @param jsonArray
      * @return
      */
-    public List<ColumnSecondDirectoryEntity> formatSingleResouceEntity(JSONArray jsonArray, String columnId, String bigColumnId){
+    public List<ColumnSecondDirectoryEntity> formatSingleResourceEntity(JSONArray jsonArray, String columnTitle, String columnId, String bigColumnId){
         List<ColumnSecondDirectoryEntity> directoryEntityList = new ArrayList<ColumnSecondDirectoryEntity>();
         for (Object object : jsonArray) {
             ColumnSecondDirectoryEntity secondDirectoryEntity = new ColumnSecondDirectoryEntity();
@@ -100,6 +100,7 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setAudio_length(jsonObject.getIntValue("audio_length"));
             secondDirectoryEntity.setVideo_length(jsonObject.getIntValue("video_length"));
             secondDirectoryEntity.setAudio_url(jsonObject.getString("audio_url"));
+            secondDirectoryEntity.setColumnTitle(columnTitle);
             secondDirectoryEntity.setColumnId(columnId);
             secondDirectoryEntity.setBigColumnId(bigColumnId);
 

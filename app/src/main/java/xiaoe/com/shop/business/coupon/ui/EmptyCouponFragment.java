@@ -6,9 +6,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 
 public class EmptyCouponFragment extends BaseFragment {
@@ -21,7 +23,7 @@ public class EmptyCouponFragment extends BaseFragment {
     protected View viewWrap;
 
     private int layoutId = -1;
-    CouponActivity couponActivity;
+    private int noUseCouponVisibility = View.GONE;
 
     public static EmptyCouponFragment newInstance(int layoutId) {
         EmptyCouponFragment couponFragment = new EmptyCouponFragment();
@@ -46,7 +48,6 @@ public class EmptyCouponFragment extends BaseFragment {
         viewWrap = inflater.inflate(layoutId, null, false);
         unbinder = ButterKnife.bind(this, viewWrap);
         mContext = getContext();
-        couponActivity = (CouponActivity) getActivity();
         return viewWrap;
     }
 
@@ -60,7 +61,14 @@ public class EmptyCouponFragment extends BaseFragment {
 
     private void initView() {
         switch (layoutId) {
-
+            case R.layout.fragment_coupone_empty:
+                RelativeLayout noUseCoupon = (RelativeLayout) viewWrap.findViewById(R.id.no_use_coupon);
+                noUseCoupon.setVisibility(noUseCouponVisibility);
+                break;
         }
+    }
+
+    public void setNoUseCouponVisibility(int noUseCouponVisibility) {
+        this.noUseCouponVisibility = noUseCouponVisibility;
     }
 }

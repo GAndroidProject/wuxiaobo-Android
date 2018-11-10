@@ -88,6 +88,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     boolean isMain = true;
 
     MainActivity mainActivity;
+    private String mColumnTitle;
 
     public static MicroPageFragment newInstance(String microPageId) {
         MicroPageFragment microPageFragment = new MicroPageFragment();
@@ -191,6 +192,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             String resourceType = convertInt2Str(dataJsonItem.getInteger("resource_type"));
             String resourceId = dataJsonItem.getString("resource_id");
             recentUpdateListItem.setListTitle(title);
+            recentUpdateListItem.setColumnTitle(mColumnTitle);
             if (resourceType.equals(DecorateEntityType.AUDIO)) { // 只有音频才需要显示播放 icon
                 recentUpdateListItem.setListPlayState(DecorateEntityType.ITEM_RECENT_PLAY);
                 audioCount++; // 视音频就加 1
@@ -290,7 +292,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     component_recent.setType(DecorateEntityType.RECENT_UPDATE_STR);
                     component_recent.setFormUser(mainActivity.isFormalUser);
                     JSONObject jsonItem = (JSONObject) listItem;
+
                     String recentTitle = jsonItem.getString("title");
+                    mColumnTitle = recentTitle;
                     // 频道组件对应的专栏 id
                     String recentId = jsonItem.getString("src_id");
                     String imgUrl = jsonItem.getString("img_url");

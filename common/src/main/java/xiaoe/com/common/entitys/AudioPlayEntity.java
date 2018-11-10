@@ -28,6 +28,7 @@ public class AudioPlayEntity {
     private int index = -1;
     private boolean isPlay = false;
     private boolean isPlaying;
+    private String productsTitle;
 
     public String getAppId() {
         return appId;
@@ -203,5 +204,13 @@ public class AudioPlayEntity {
 
     public void setImgUrlCompressed(String imgUrlCompressed) {
         this.imgUrlCompressed = imgUrlCompressed;
+    }
+
+    public String getProductsTitle() {
+        return productsTitle;
+    }
+
+    public void setProductsTitle(String productsTitle) {
+        this.productsTitle = productsTitle;
     }
 }

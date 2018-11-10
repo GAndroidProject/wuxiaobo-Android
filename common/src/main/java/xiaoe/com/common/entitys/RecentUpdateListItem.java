@@ -29,6 +29,7 @@ public class RecentUpdateListItem {
 
     private String columnId = "";
     private String bigColumnId = "";
+    private String mColumnTitle = "";
 
     public RecentUpdateListItem() {
 
@@ -183,5 +184,13 @@ public class RecentUpdateListItem {
 
     public void setListIsFormUser(boolean listIsFormUser) {
         this.listIsFormUser = listIsFormUser;
+    }
+
+    public String getColumnTitle() {
+        return mColumnTitle;
+    }
+
+    public void setColumnTitle(String mColumnTitle) {
+        this.mColumnTitle = mColumnTitle;
     }
 }

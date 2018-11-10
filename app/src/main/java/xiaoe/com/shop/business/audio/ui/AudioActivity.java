@@ -530,6 +530,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }else{
             playNum.setVisibility(View.GONE);
         }
+        audioPlayList.setProductsTitle(playEntity.getProductsTitle());
         setCollectState(playEntity.getHasFavorite() == 1);
         boolean isDownload = DownloadManager.getInstance().isDownload(playEntity.getAppId(), playEntity.getResourceId());
         setDownloadState(isDownload);

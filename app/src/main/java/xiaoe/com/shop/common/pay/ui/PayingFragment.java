@@ -96,7 +96,7 @@ public class PayingFragment extends BaseFragment {
     public void setUseConponPrice(int price){
         if(price <= 0){
             price = 0;
-            useConpon.setText(getResources().getString(R.string.no_use_coupon));
+            useConpon.setText(getResources().getString(R.string.not_can_use_or_no_sue_coupon));
             useConpon.setTextColor(getResources().getColor(R.color.secondary_title_color));
         }else{
             useConpon.setText("-"+(price / 100f));

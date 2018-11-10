@@ -25,6 +25,7 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.coupon.presenter.CouponPresenter;
 import xiaoe.com.shop.business.coupon.ui.CouponFragment;
+import xiaoe.com.shop.business.coupon.ui.EmptyCouponFragment;
 import xiaoe.com.shop.interfaces.OnSelectCouponListener;
 import xiaoe.com.shop.widget.StatusPagerView;
 
@@ -55,6 +56,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
     private int resourceType;
     private boolean paying = false;
     private boolean paySucceed = false;
+    private EmptyCouponFragment emptyCouponFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -181,6 +183,10 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             couponFragment.setSelectIcon(View.VISIBLE);
             couponFragment.setOnSelectCouponListener(this);
             return couponFragment;
+        }else if(theClass == EmptyCouponFragment.class){
+            emptyCouponFragment = EmptyCouponFragment.newInstance(R.layout.fragment_coupone_empty);
+            emptyCouponFragment.setNoUseCouponVisibility(View.VISIBLE);
+            return emptyCouponFragment;
         }
         return null;
     }
@@ -252,17 +258,18 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
     }
 
     private void clickUseCoupon() {
-        if(validCoupon.size() <= 0){
-            return;
-        }
         selectCouponPager = true;
-        showFragment(CouponFragment.class);
         payTitle.setText(getResources().getString(R.string.coupon_title));
-        if(!initCoupon){
-            statusPagerView.setVisibility(View.VISIBLE);
-        }else if(!isAdd){
-            isAdd = true;
-            couponFragment.addData(validCoupon);
+        if(validCoupon.size() > 0){
+            showFragment(CouponFragment.class);
+            if(!initCoupon){
+                statusPagerView.setVisibility(View.VISIBLE);
+            }else if(!isAdd){
+                isAdd = true;
+                couponFragment.addData(validCoupon);
+            }
+        }else{
+            showFragment(EmptyCouponFragment.class);
         }
     }
 
@@ -285,6 +292,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         initCoupon = true;
         List<CouponInfo> tempValidCoupon = jsonObject.getJSONArray("data").toJavaList(CouponInfo.class);
         if(tempValidCoupon.size() <= 0){
+            setPagerState(FINISH);
             return;
         }
         for (CouponInfo couponInfo : tempValidCoupon) {

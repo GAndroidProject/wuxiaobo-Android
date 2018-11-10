@@ -29,6 +29,7 @@ public class AudioPlayListLayout extends FrameLayout implements View.OnClickList
     private AudioPlayListAdapter playListAdapter;
     private TextView btnCancel;
     private RelativeLayout layoutAudioPlayList;
+    private TextView productsTitle;
 
     public AudioPlayListLayout(@NonNull Context context) {
         this(context, null);
@@ -57,6 +58,8 @@ public class AudioPlayListLayout extends FrameLayout implements View.OnClickList
         playListRecyclerView.addItemDecoration(new DashlineItemDivider(padding, padding));
         playListAdapter = new AudioPlayListAdapter(mContext);
         playListRecyclerView.setAdapter(playListAdapter);
+
+        productsTitle = (TextView) rootView.findViewById(R.id.products_title);
     }
 
     public void addPlayData(List<AudioPlayEntity> list){
@@ -77,5 +80,9 @@ public class AudioPlayListLayout extends FrameLayout implements View.OnClickList
             default:
                 break;
         }
+    }
+
+    public void setProductsTitle(String title) {
+        this.productsTitle.setText(title);
     }
 }

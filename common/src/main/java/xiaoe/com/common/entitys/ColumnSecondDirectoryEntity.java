@@ -42,6 +42,7 @@ public class ColumnSecondDirectoryEntity implements Serializable {
     private String m3u8_url;
     private String video_url;
 
+    private String columnTitle = "";
     private String columnId = "";
     private String bigColumnId = "";
 
@@ -228,6 +229,13 @@ public class ColumnSecondDirectoryEntity implements Serializable {
 
     public boolean isTourists() {
         return isTourists;
+    }
 
+    public String getColumnTitle() {
+        return columnTitle;
+    }
+
+    public void setColumnTitle(String columnTitle) {
+        this.columnTitle = columnTitle;
     }
 }

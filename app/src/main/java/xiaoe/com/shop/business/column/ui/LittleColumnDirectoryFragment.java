@@ -168,6 +168,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             playEntity.setColumnId(entity.getColumnId());
             playEntity.setBigColumnId(entity.getBigColumnId());
             playEntity.setTotalDuration(entity.getAudio_length());
+            playEntity.setProductsTitle(entity.getColumnTitle());
             index++;
             playList.add(playEntity);
         }
@@ -182,6 +183,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             if(playList.size() > 0){
                 if(!isAddPlayList){
                     AudioPlayUtil.getInstance().setAudioList(playList);
+                    AudioPlayUtil.getInstance().setFromTag("Column");
                     AudioPlayUtil.getInstance().setSingleAudio(false);
                 }
                 isAddPlayList = true;
@@ -198,10 +200,11 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
         }
     }
 
-    private void playPosition(String resourceId, String columnId, String bigColumnId){
+    private void playPosition(String resourceId, String columnId, String bigColumnId, boolean jumpDetail){
         if(!isAddPlayList){
             isAddPlayList = true;
             AudioPlayUtil.getInstance().setAudioList(playList);
+            AudioPlayUtil.getInstance().setFromTag("Column");
             AudioPlayUtil.getInstance().setSingleAudio(false);
         }
         AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
@@ -217,7 +220,10 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             if(AudioMediaPlayer.isStop()){
                 AudioMediaPlayer.start();
             }else{
-                AudioMediaPlayer.play();
+                //如果是跳转详情页，则保持播放状态,如果不是，则进行播放暂停动作
+                if(!jumpDetail){
+                    AudioMediaPlayer.play();
+                }
             }
             return;
         }
@@ -235,7 +241,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     }
 
     @Override
-    public void onPlayPosition(View view,int parentPosition, int position) {
+    public void onPlayPosition(View view,int parentPosition, int position, boolean jumpDetail) {
         if (loginUserList.size() == 1) {
             if(!isHasBuy){
                 toastCustom("未购买课程");
@@ -243,7 +249,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             }
             ColumnSecondDirectoryEntity itemData = directoryAdapter.getData().get(position);
             if(itemData.getResource_type() == 2){
-                playPosition(itemData.getResource_id(), itemData.getColumnId(), itemData.getBigColumnId());
+                playPosition(itemData.getResource_id(), itemData.getColumnId(), itemData.getBigColumnId(), jumpDetail);
             }
         } else {
             toastCustom("请先登录呦");
@@ -264,7 +270,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
                 JumpDetail.jumpImageText(getContext(), resourceId, null);
             }else if(resourceType == 2){
                 //音频
-                onPlayPosition(null, parentPosition, position);
+                onPlayPosition(null, parentPosition, position, true);
                 JumpDetail.jumpAudio(getContext(), resourceId, 1);
             }else if(resourceType == 3){
                 //视频

@@ -26,6 +26,7 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
+import xiaoe.com.shop.common.JumpDetail;
 
 /**
  * 最近更新列表适配器
@@ -73,7 +74,27 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             viewHolder = (RecentUpdateHolder) convertView.getTag();
         }
         viewHolder.itemTitle.setText(recentUpdateListItem.getListTitle());
-        Log.d(TAG, "getView: Type = "+recentUpdateListItem.getResourceType());
+        viewHolder.itemTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (recentUpdateListItem.isListIsFormUser()) {
+                    if(!hasBuy){
+                        Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
+                        return;
+                    }else{
+                        if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
+                            AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
+                            AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
+                            AudioPlayUtil.getInstance().setSingleAudio(false);
+                        }
+                        playPosition(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId(), true);
+                        JumpDetail.jumpAudio(mContext, recentUpdateListItem.getListResourceId(), 1);
+                    }
+                } else {
+                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         if(recentUpdateListItem.getResourceType() == 2){
             boolean resourceEqual = playResourceEquals(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId());
             Log.d(TAG, "getView: resourceEqual = "+resourceEqual+" ; "+AudioMediaPlayer.isPlaying());
@@ -106,8 +127,9 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                     if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
                         AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
                         AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
+                        AudioPlayUtil.getInstance().setSingleAudio(false);
                     }
-                    playPosition(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId());
+                    playPosition(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId(), false);
                 } else {
                     Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
                 }
@@ -165,6 +187,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             playEntity.setColumnId(entity.getColumnId());
             playEntity.setBigColumnId(entity.getBigColumnId());
             playEntity.setTotalDuration(entity.getAudioLength());
+            playEntity.setProductsTitle(entity.getColumnTitle());
             index++;
             playList.add(playEntity);
         }
@@ -177,7 +200,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
      * @param columnId
      * @param bigColumnId
      */
-    public void playPosition(String resourceId, String columnId, String bigColumnId){
+    public void playPosition(String resourceId, String columnId, String bigColumnId, boolean jump){
 
         AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
 
@@ -192,7 +215,10 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             if(AudioMediaPlayer.isStop()){
                 AudioMediaPlayer.start();
             }else{
-                AudioMediaPlayer.play();
+                //如果是跳转详情页，则保持播放状态,如果不是，则进行播放暂停动作
+                if(!jump){
+                    AudioMediaPlayer.play();
+                }
             }
             return;
         }
@@ -210,6 +236,11 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     }
 
     public void clickPlayAll() {
+        if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
+            AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
+            AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
+            AudioPlayUtil.getInstance().setSingleAudio(false);
+        }
         if(AudioPlayUtil.getInstance().getAudioList().size() > 0){
             AudioMediaPlayer.stop();
             AudioPlayEntity playEntity = AudioPlayUtil.getInstance().getAudioList().get(0);

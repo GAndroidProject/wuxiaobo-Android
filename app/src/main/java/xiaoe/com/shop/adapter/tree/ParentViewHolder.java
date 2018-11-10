@@ -74,7 +74,7 @@ public class ParentViewHolder extends BaseViewHolder {
 		btnPlayAll.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				playListener.onPlayPosition(v, position, -1);
+				playListener.onPlayPosition(v, position, -1, false);
 			}
 		});
 		treeChildRecyclerAdapter.setParentPosition(position);

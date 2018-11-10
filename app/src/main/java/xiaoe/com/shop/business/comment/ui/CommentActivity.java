@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.CommentEntity;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.network.NetworkCodes;
@@ -208,6 +209,9 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
     private void commentListRequest(JSONObject dataObject) {
         int count = dataObject.getIntValue("total_count");
         if(count <= 0){
+            isCommentFinished = true;
+            commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_ALL_FINISH);
+            commentAdapter.notifyDataSetChanged();
             setPagerState(-2);
             return;
         }
@@ -261,6 +265,9 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         getDialog().showLoadDialog(false);
         sendComment = new CommentEntity();
         sendComment.setContent(content);
+        sendComment.setUser_avatar(CommonUserInfo.getWxAvatar());
+        sendComment.setUser_id(CommonUserInfo.getUserId());
+        sendComment.setUser_nickname(CommonUserInfo.getWxNickname());
         CommentEntity tempReplyCommentEntity = null;
         if(commentView.isReply()){
             tempReplyCommentEntity = replyCommentEntity;

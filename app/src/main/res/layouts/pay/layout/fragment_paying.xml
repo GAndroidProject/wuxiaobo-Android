@@ -89,7 +89,7 @@
             android:layout_marginEnd="12dp"
             android:textSize="14sp"
             android:textColor="@color/secondary_title_color"
-            android:text="@string/not_can_use_coupon"
+            android:text="@string/not_can_use_or_no_sue_coupon"
             />
         <ImageView
             android:id="@+id/go"

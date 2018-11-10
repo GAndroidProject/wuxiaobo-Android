@@ -32,8 +32,6 @@ import java.util.List;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.app.Global;
-import xiaoe.com.common.entitys.AudioPlayEntity;
-import xiaoe.com.common.entitys.AudioPlayTable;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
@@ -41,10 +39,6 @@ import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.TranslationAnimator;
-import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
-import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
-import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
-import xiaoe.com.shop.business.audio.presenter.AudioSQLiteUtil;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
@@ -174,31 +168,33 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private void getAudioRecord() {
         if(miniAudioPlayController == null){
             return;
-        }
-        SQLiteUtil.init(this, new AudioSQLiteUtil());
-        if(SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)){
-//            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 10";
-//            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
-            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" limit 10";
-            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,null);
-            if(entityList.size() > 0){
-                AudioPlayUtil.getInstance().setSingleAudio(true);
-                AudioPlayEntity playEntity = entityList.get(0);
-                playEntity.setPlay(false);
-                playEntity.setCode(-1);
-                AudioPlayUtil.getInstance().refreshAudio(playEntity);
-
-                AudioMediaPlayer.setAudio(playEntity, false);
-                AudioPresenter audioPresenter = new AudioPresenter(null);
-                audioPresenter.requestDetail(playEntity.getResourceId());
-                miniAudioPlayController.setAudioTitle(playEntity.getTitle());
-                miniAudioPlayController.setVisibility(View.GONE);
-            }else{
-                miniAudioPlayController.setVisibility(View.GONE);
-            }
         }else{
             miniAudioPlayController.setVisibility(View.GONE);
         }
+//        SQLiteUtil.init(this, new AudioSQLiteUtil());
+//        if(SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)){
+////            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 10";
+////            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
+//            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" limit 10";
+//            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,null);
+//            if(entityList.size() > 0){
+//                AudioPlayUtil.getInstance().setSingleAudio(true);
+//                AudioPlayEntity playEntity = entityList.get(0);
+//                playEntity.setPlay(false);
+//                playEntity.setCode(-1);
+//                AudioPlayUtil.getInstance().refreshAudio(playEntity);
+//
+//                AudioMediaPlayer.setAudio(playEntity, false);
+//                AudioPresenter audioPresenter = new AudioPresenter(null);
+//                audioPresenter.requestDetail(playEntity.getResourceId());
+//                miniAudioPlayController.setAudioTitle(playEntity.getTitle());
+//                miniAudioPlayController.setVisibility(View.GONE);
+//            }else{
+//                miniAudioPlayController.setVisibility(View.GONE);
+//            }
+//        }else{
+//            miniAudioPlayController.setVisibility(View.GONE);
+//        }
     }
 
     public void Toast(String msg){

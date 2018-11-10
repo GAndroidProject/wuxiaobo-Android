@@ -82,8 +82,8 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
             statusPagerView.setStateText(getResources().getString(R.string.request_fail));
         }else if (state == EMPTY){
             statusPagerView.setLoadingState(View.GONE);
-            statusPagerView.setHintStateVisibility(View.GONE);
-            statusPagerView.setStateImage(R.mipmap.network_none);
+            statusPagerView.setHintStateVisibility(View.VISIBLE);
+            statusPagerView.setStateImage(R.mipmap.coupon_none);
             statusPagerView.setStateText(getResources().getString(R.string.coupon_empty_desc));
         }
     }
@@ -129,7 +129,6 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
             couponInfo.setValid(false);
             couponList.add(couponInfo);
         }
-
 
         currentFragment.addData(couponList);
     }
