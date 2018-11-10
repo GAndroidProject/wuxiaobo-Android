@@ -26,7 +26,7 @@ import xiaoe.com.network.utils.ThreadPoolUtils;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.video.presenter.VideoPlayer;
 import xiaoe.com.shop.events.VideoPlayEvent;
-import xiaoe.com.shop.interfaces.OnClickVideoBackListener;
+import xiaoe.com.shop.interfaces.OnClickVideoButtonListener;
 
 public class VideoPlayControllerView extends FrameLayout implements View.OnClickListener,SeekBar.OnSeekBarChangeListener, MediaPlayer.OnPreparedListener {
     private static final String TAG = "VideoPlayControllerView";
@@ -37,7 +37,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private SimpleDraweeView previewImage;
     private ImageView btnPlay;
     private ImageView btnBack;
-    private OnClickVideoBackListener clickVideoBackListener;
+    private OnClickVideoButtonListener clickVideoBackListener;
     private VideoPlayer mVideoPlayer;
     private boolean isShowControl = false;
     private boolean isPrepareMedia = false;
@@ -54,6 +54,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private Timer mTimer;
     private TimerTask mTimerTask;
     private boolean isTouchSeekBar;
+    private ImageView btnDownload;
 
     public VideoPlayControllerView(@NonNull Context context) {
         this(context,null);
@@ -97,6 +98,8 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
         videoPlayEvent = new VideoPlayEvent();
 
+        btnDownload = (ImageView) findViewById(R.id.btn_download);
+        btnDownload.setOnClickListener(this);
     }
 
     public void setPreviewImage(String imageUrl){
@@ -109,7 +112,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         mVideoPlayer.prepareMediaPlayer();
     }
 
-    public void setOnClickVideoBackListener(OnClickVideoBackListener clickVideoBackListener) {
+    public void setOnClickVideoBackListener(OnClickVideoButtonListener clickVideoBackListener) {
         this.clickVideoBackListener = clickVideoBackListener;
     }
 
@@ -118,7 +121,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         switch (v.getId()){
             case R.id.id_btn_come_back:
                 if(clickVideoBackListener != null){
-                    clickVideoBackListener.onBack(v, VideoPlayConstant.VIDEO_LITTLE_SCREEN);
+                    clickVideoBackListener.onVideoButton(v, VideoPlayConstant.VIDEO_LITTLE_SCREEN);
                 }
                 break;
             case R.id.video_layout:
@@ -130,6 +133,11 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                 break;
             case R.id.id_full_screen_play:
                 clickFullScreen();
+                break;
+            case R.id.btn_download:
+                if(clickVideoBackListener != null){
+                    clickVideoBackListener.onVideoButton(v, VideoPlayConstant.VIDEO_STATE_DOWNLOAD);
+                }
                 break;
             default:
                 break;

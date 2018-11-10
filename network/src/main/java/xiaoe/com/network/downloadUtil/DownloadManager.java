@@ -556,6 +556,7 @@ public class DownloadManager implements DownloadListner {
             //下载
             Log.d(TAG, "sendDownlaodEvent: 下载");
             downloadInfo.setDownloadState(1);
+            autoDownloadNextAwaitTask();
         } else if(status == 2){
             //暂停
             Log.d(TAG, "sendDownlaodEvent: 暂停");
@@ -624,7 +625,6 @@ public class DownloadManager implements DownloadListner {
         SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
 
         HashMap<String,DownloadResourceTableInfo> tempFinishList = new HashMap<String,DownloadResourceTableInfo>();
-//        HashMap<String, DownloadResourceTableInfo> tempTopic = new HashMap<String, DownloadResourceTableInfo>();
         HashMap<String, DownloadResourceTableInfo> tempColumn = new HashMap<String, DownloadResourceTableInfo>();
 
 

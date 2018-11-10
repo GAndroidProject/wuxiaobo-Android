@@ -1,5 +1,6 @@
 package xiaoe.com.shop.business.column.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.alibaba.fastjson.JSONObject;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
@@ -24,6 +28,7 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
+import xiaoe.com.shop.business.download.ui.DownloadActivity;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickListPlayListener;
@@ -63,6 +68,8 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
         directoryRecyclerView = (RecyclerView) rootView.findViewById(R.id.directory_recycler_view);
         btnPlayAll = (LinearLayout) rootView.findViewById(R.id.btn_all_play);
         btnPlayAll.setOnClickListener(this);
+        LinearLayout btnBatchDownload = (LinearLayout) rootView.findViewById(R.id.btn_batch_download);
+        btnBatchDownload.setOnClickListener(this);
     }
     private void initData() {
         LinearLayoutManager treeLinearLayoutManager = new LinearLayoutManager(getContext());
@@ -98,9 +105,39 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             case R.id.btn_all_play:
                 clickPlayAll();
                 break;
+            case R.id.btn_batch_download:
+                clickBatchDownload();
+                break;
             default:
                 break;
         }
+    }
+
+    private void clickBatchDownload() {
+        if(!isHasBuy){
+            toastCustom("未购买课程");
+            return;
+        }
+        List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
+        for (ColumnSecondDirectoryEntity item : directoryAdapter.getData()){
+            if(item.getResource_type() == 2 || item.getResource_type() == 3){
+                newChildDataList.add(item);
+            }
+        }
+
+        List<ColumnDirectoryEntity> newDataList = new ArrayList<ColumnDirectoryEntity>();
+        if(newChildDataList.size() > 0){
+            ColumnDirectoryEntity directoryEntity = new ColumnDirectoryEntity();
+            directoryEntity.setTitle(((ColumnActivity)getActivity()).getColumnTitle());
+            directoryEntity.setResource_list(newChildDataList);
+            newDataList.add(directoryEntity);
+        }
+        String dataJSON = JSONObject.toJSONString(newDataList);
+        Intent intent = new Intent(getContext(), DownloadActivity.class);
+        intent.putExtra("bundle_dataJSON", dataJSON);
+        intent.putExtra("from_type", "LittleColumnDirectoryFragment");
+        intent.putExtra("resourceId", resourceId);
+        startActivity(intent);
     }
 
     private void setAudioPlayList(List<ColumnSecondDirectoryEntity> list){

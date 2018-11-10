@@ -94,14 +94,12 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
 
     private void clickDownload() {
         boolean download = false;
-        if("ColumnDirectoryFragment".equals(fromType)){
-            for (ColumnDirectoryEntity directoryEntity : adapter.getDate()){
-                for (ColumnSecondDirectoryEntity secondDirectoryEntity : directoryEntity.getResource_list()){
-                    if(secondDirectoryEntity.isSelect() && secondDirectoryEntity.isExpand()){
-                        download = true;
-                        secondDirectoryEntity.setEnable(false);
-                        DownloadManager.getInstance().addDownload(null, null, secondDirectoryEntity);
-                    }
+        for (ColumnDirectoryEntity directoryEntity : adapter.getDate()){
+            for (ColumnSecondDirectoryEntity secondDirectoryEntity : directoryEntity.getResource_list()){
+                if(secondDirectoryEntity.isSelect() && secondDirectoryEntity.isEnable()){
+                    download = true;
+                    secondDirectoryEntity.setEnable(false);
+                    DownloadManager.getInstance().addDownload(null, null, secondDirectoryEntity);
                 }
             }
         }

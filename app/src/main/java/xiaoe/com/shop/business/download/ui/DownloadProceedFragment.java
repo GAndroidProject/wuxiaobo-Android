@@ -17,6 +17,8 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
+
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.DownloadTableInfo;
 import xiaoe.com.network.downloadUtil.DownloadEvent;
@@ -34,6 +36,9 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     private TextView btnAllDelete;
     private Dialog dialog;
     private Window window;
+    private TextView btnAllStart;
+    private boolean isAllDownload = false;
+    private boolean runClickAllDownload = false;
 
     @Nullable
     @Override
@@ -60,9 +65,37 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
 
         btnAllDelete = (TextView) rootView.findViewById(R.id.btn_all_delete);
         btnAllDelete.setOnClickListener(this);
+
+        btnAllStart = (TextView) rootView.findViewById(R.id.btn_all_start_download);
+        btnAllStart.setOnClickListener(this);
     }
     private void initData() {
-        adapter.addAllData(DownloadManager.getInstance().getDownloadingList());
+        List<DownloadTableInfo> list = DownloadManager.getInstance().getDownloadingList();
+        if(list == null || list.size() <= 0){
+            btnAllStart.setAlpha(0.6f);
+        }else {
+            adapter.addAllData(list);
+            isAllDownload = isAllDownload();
+        }
+        setAllbDownloadbButton(isAllDownload);
+    }
+
+    private void setAllbDownloadbButton(boolean all) {
+        if(all){
+            btnAllStart.setText(getString(R.string.all_stop_download));
+        }else{
+            btnAllStart.setText(getString(R.string.all_start_download));
+        }
+    }
+
+    private boolean isAllDownload(){
+        int downloadCount = 0;
+        for(DownloadTableInfo item : adapter.getData()){
+            if(item.getDownloadState() == 0 || item.getDownloadState() == 1){
+                downloadCount++;
+            }
+        }
+        return downloadCount == adapter.getData().size();
     }
 
     @Subscribe
@@ -106,14 +139,46 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                 allDelete();
                 break;
             case R.id.btn_all_start_download:
+                allStartDownload();
                 break;
             default:
                 break;
         }
     }
 
+    private void allStartDownload() {
+        if(adapter.getItemCount() <= 0 || runClickAllDownload){
+            return;
+        }
+        runClickAllDownload = true;
+        if(isAllDownload){
+            //先停止等待中的下载任务，因为如果先停止下载中的，会自动下载等待中的
+            for (DownloadTableInfo download : adapter.getData()){
+                if(download.getDownloadState() == 0){
+                    DownloadManager.getInstance().pause(download);
+                }
+            }
+            for (DownloadTableInfo download : adapter.getData()){
+                if(download.getDownloadState() == 1){
+                    DownloadManager.getInstance().pause(download);
+                }
+            }
+        }else{
+            for (DownloadTableInfo download : adapter.getData()){
+                if(download.getDownloadState() == 2){
+                    DownloadManager.getInstance().start(download);
+                }
+            }
+        }
+        runClickAllDownload = false;
+        isAllDownload = !isAllDownload;
+        setAllbDownloadbButton(isAllDownload);
+    }
+
     private void allDelete() {
-        deleteAll();
+        if(adapter.getItemCount() > 0){
+            deleteAll();
+        }
     }
 
     @Override
@@ -129,6 +194,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
             //删除
             delete(download, position);
         }
+        setAllbDownloadbButton(isAllDownload());
     }
 
 

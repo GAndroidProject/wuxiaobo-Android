@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -21,10 +22,13 @@ import com.umeng.socialize.UMShareAPI;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
@@ -35,13 +39,13 @@ import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.video.presenter.VideoPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.VideoPlayEvent;
-import xiaoe.com.shop.interfaces.OnClickVideoBackListener;
+import xiaoe.com.shop.interfaces.OnClickVideoButtonListener;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.StatusPagerView;
 
-public class VideoActivity extends XiaoeActivity implements View.OnClickListener, OnClickVideoBackListener {
+public class VideoActivity extends XiaoeActivity implements View.OnClickListener, OnClickVideoButtonListener {
     private static final String TAG = "VideoActivity";
     private TextView playCount;
     private VideoPlayControllerView playControllerView;
@@ -61,6 +65,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private String collectImgUrlCompressed;
     private String collectPrice = "";
     private int resPrice = 0;
+    private String mVideoUrl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -266,9 +271,26 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     @Override
-    public void onBack(View view, int type) {
+    public void onVideoButton(View view, int type) {
         if(type == VideoPlayConstant.VIDEO_FULL_SCREEN){
 
+        }else if(type == VideoPlayConstant.VIDEO_STATE_DOWNLOAD){
+            if(TextUtils.isEmpty(mVideoUrl)){
+                toastCustom(getString(R.string.cannot_download));
+                return;
+            }
+            boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), mResourceId);
+            if(!isDownload){
+                ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
+                download.setApp_id(CommonUserInfo.getShopId());
+                download.setResource_id(mResourceId);
+                download.setTitle(collectTitle);
+                download.setResource_type(3);
+                download.setImg_url(collectImgUrl);
+                download.setVideo_url(mVideoUrl);
+                DownloadManager.getInstance().addDownload(null, null, download);
+            }
+            toastCustom(getString(R.string.add_download_list));
         }else{
             onBackPressed();
         }
@@ -357,7 +379,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             buyView.setVisibility(View.GONE);
             String detail = data.getString("content");
             setContentDetail(detail);
-            playControllerView.setPlayUrl(data.getString("video_mp4"));
+            mVideoUrl = data.getString("video_mp4");
+            playControllerView.setPlayUrl(mVideoUrl);
             setPagerState(false);
             collectImgUrl = data.getString("img_url");
         }else{

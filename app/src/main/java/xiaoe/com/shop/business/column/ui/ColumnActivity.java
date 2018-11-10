@@ -402,6 +402,10 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
     }
 
+    public String getColumnTitle() {
+        return collectTitle;
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
