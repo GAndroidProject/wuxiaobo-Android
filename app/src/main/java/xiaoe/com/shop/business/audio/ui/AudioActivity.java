@@ -231,8 +231,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             return;
         }
         JSONObject jsonObject = (JSONObject) entity;
-        Object dataObject = jsonObject.get("data");
-        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || dataObject == null ){
+        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED){
             return;
         }
         if(iRequest instanceof AddCollectionRequest){
@@ -249,7 +248,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
      */
     private void removeCollectionRequest(JSONObject jsonObject) {
         if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
-//            toastCustom(getResources().getString(R.string.cancel_collect_succeed));
+            toastCustom(getString(R.string.cancel_collect_succeed));
             setCollectState(false);
             AudioMediaPlayer.getAudio().setHasFavorite(0);
         }else{
@@ -263,7 +262,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
      */
     private void addCollectionRequest(JSONObject jsonObject) {
         if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
-//            toastCustom(getResources().getString(R.string.collect_succeed));
+            toastCustom(getString(R.string.collect_succeed));
             setCollectState(true);
             AudioMediaPlayer.getAudio().setHasFavorite(1);
         }else{
