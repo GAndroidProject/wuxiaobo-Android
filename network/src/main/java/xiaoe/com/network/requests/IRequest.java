@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.UserInfo;
 import xiaoe.com.network.network_interface.IBizCallback;
@@ -31,7 +32,7 @@ public abstract class IRequest {
 
     private IBizCallback iBizCallback;
 
-    private Map<String, String> header;
+//    private Map<String, String> header;
 
     IRequest(String cmd, Class entityClass, IBizCallback iBizCallback){
         this.cmd = cmd;
@@ -61,12 +62,12 @@ public abstract class IRequest {
         return true;
     }
 
-    public void addHeaderParam(String key, String value){
-        if(header == null){
-            header = new HashMap<String, String>();
-        }
-        header.put(key, value);
-    }
+//    public void addHeaderParam(String key, String value){
+//        if(header == null){
+//            header = new HashMap<String, String>();
+//        }
+//        header.put(key, value);
+//    }
 
     /**
      * 添加请求参数
@@ -139,6 +140,7 @@ public abstract class IRequest {
         if(bizDataParams != null){
             jsonObject.put("biz_data", bizDataParams);
         }
+        jsonObject.put("access_token", CommonUserInfo.getApiToken());
         return jsonObject.toJSONString();
     }
 
@@ -181,9 +183,9 @@ public abstract class IRequest {
         isPOST = POST;
     }
 
-    public Map<String, String> getHeader() {
-        return header;
-    }
+//    public Map<String, String> getHeader() {
+//        return header;
+//    }
 
     public void onResponse(boolean success, Object entityObj){
         iBizCallback.onResponse(this,success,entityObj);

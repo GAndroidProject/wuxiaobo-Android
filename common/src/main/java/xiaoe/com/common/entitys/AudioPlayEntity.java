@@ -29,6 +29,7 @@ public class AudioPlayEntity {
     private boolean isPlay = false;
     private boolean isPlaying;
     private String productsTitle;
+    private String audioResourceId;
 
     public String getAppId() {
         return appId;
@@ -212,5 +213,13 @@ public class AudioPlayEntity {
 
     public void setProductsTitle(String productsTitle) {
         this.productsTitle = productsTitle;
+    }
+
+    public String getAudioResourceId() {
+        return audioResourceId;
+    }
+
+    public void setAudioResourceId(String audioResourceId) {
+        this.audioResourceId = audioResourceId;
     }
 }

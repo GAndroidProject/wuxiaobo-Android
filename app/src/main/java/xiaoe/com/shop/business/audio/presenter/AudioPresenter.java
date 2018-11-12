@@ -94,7 +94,6 @@ public class AudioPresenter implements IBizCallback {
         }else{
             resourceInfo = data.getJSONObject("resource_info");
         }
-
         playEntity.setCurrentPlayState(1);
         playEntity.setTitle(resourceInfo.getString("title"));
         playEntity.setHasFavorite(resourceInfo.getIntValue("has_favorite"));
@@ -116,14 +115,16 @@ public class AudioPresenter implements IBizCallback {
         }
         if(available){
             if(TextUtils.isEmpty(localAudioPath)){
-                playEntity.setPlayUrl(data.getString("audio_url"));
+                playEntity.setPlayUrl(resourceInfo.getString("audio_url"));
             }else{
                 playEntity.setPlayUrl(localAudioPath);
             }
-            playEntity.setContent(data.getString("content"));
+            playEntity.setContent(resourceInfo.getString("content"));
             playEntity.setCode(0);
+            playEntity.setAudioResourceId(resourceInfo.getString("resource_id"));
             playAudio(playEntity.isPlay());
         }else{
+            playEntity.setAudioResourceId(resourceInfo.getString("resource_id"));
             playEntity.setCode(0);
             playEntity.setContent(resourceInfo.getString("content"));
             playAudio(false);

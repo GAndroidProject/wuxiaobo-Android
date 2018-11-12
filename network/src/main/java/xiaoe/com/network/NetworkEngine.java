@@ -15,7 +15,6 @@ import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -26,6 +25,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
@@ -43,6 +43,7 @@ public class NetworkEngine {
 //    private final static String BASE_URL = XiaoeApplication.isFormalCondition() ? FORMAL_URL : TEST_URL;
 //    private final static String BASE_URL = "http://134.175.39.17:12242/";
     public final static String BASE_URL = "http://134.175.39.17:9380/";
+    public final static String API_BASE_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
     public final static String CLASS_DETAIL_BASE_URL = "http://134.175.39.17:9378/api/";
     public final static String COMMENT_BASE_URL = "http://134.175.39.17:9379/api/";
     public final static String COLLECTION_BASE_URL = "http://134.175.39.17:9381/api/"; // 收藏接口 url
@@ -103,12 +104,13 @@ public class NetworkEngine {
                 .url(url)
                 .post(formBody)
                 .tag(iRequest);
-        Map<String, String> header = iRequest.getHeader();
-        if(header != null && header.size() > 0){
-            for(Map.Entry<String ,String> entry : iRequest.getHeader().entrySet() ){
-                build.addHeader(entry.getKey(),entry.getValue());
-            }
-        }
+        build.addHeader("app-id", Constants.getWXAppId());
+//        Map<String, String> header = iRequest.getHeader();
+//        if(header != null && header.size() > 0){
+//            for(Map.Entry<String ,String> entry : iRequest.getHeader().entrySet() ){
+//                build.addHeader(entry.getKey(),entry.getValue());
+//            }
+//        }
         Request request = build.build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {

@@ -1,6 +1,5 @@
 package xiaoe.com.shop.business.setting.presenter;
 
-import xiaoe.com.common.app.Constants;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -40,7 +39,7 @@ public class SettingPresenter implements IBizCallback {
         SettingPseronMsgRequest settingPseronMsgRequest = new SettingPseronMsgRequest(NetworkEngine.LOGIN_BASE_URL + "get_person_message", this);
 
         String msgType = needAllMsg ? "2" : "1";
-        settingPseronMsgRequest.addHeaderParam("app-id", Constants.getWXAppId());
+//        settingPseronMsgRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPseronMsgRequest.addRequestParam("api_token", apiToken);
         settingPseronMsgRequest.addRequestParam("message_type", msgType);
 
@@ -51,7 +50,7 @@ public class SettingPresenter implements IBizCallback {
     public void updateWxNickname(String apiToken, String wxNickname) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(NetworkEngine.LOGIN_BASE_URL + "update_user_info", this);
 
-        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
+//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("wx_nickname", wxNickname);
 
@@ -62,7 +61,7 @@ public class SettingPresenter implements IBizCallback {
     public void updateName(String apiToken, String wxName) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(NetworkEngine.LOGIN_BASE_URL + "update_user_info", this);
 
-        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
+//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("wx_name", wxName);
 
@@ -73,7 +72,7 @@ public class SettingPresenter implements IBizCallback {
     public void updateBirth(String apiToken, String birth) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(NetworkEngine.LOGIN_BASE_URL + "update_user_info", this);
 
-        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
+//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("birth", birth);
 
@@ -85,7 +84,7 @@ public class SettingPresenter implements IBizCallback {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(NetworkEngine.LOGIN_BASE_URL + "update_user_info", this);
 
         String wxGender = gender.equals("男") ? "1" : "2";
-        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
+//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("wx_gender", wxGender);
 
@@ -96,7 +95,7 @@ public class SettingPresenter implements IBizCallback {
     public void updateAddress(String apiToken, String address) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(NetworkEngine.LOGIN_BASE_URL + "update_user_info", this);
 
-        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
+//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("address", address);
 
@@ -107,7 +106,7 @@ public class SettingPresenter implements IBizCallback {
     public void updateJob(String apiToken, String job) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(NetworkEngine.LOGIN_BASE_URL + "update_user_info", this);
 
-        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
+//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("job", job);
 
@@ -118,7 +117,7 @@ public class SettingPresenter implements IBizCallback {
     public void updateCompany(String apiToken, String company) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(NetworkEngine.LOGIN_BASE_URL + "update_user_info", this);
 
-        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
+//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("company", company);
 
@@ -129,7 +128,7 @@ public class SettingPresenter implements IBizCallback {
     public void updatePhone(String apiToken, String smsCode, String newPhone) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(NetworkEngine.LOGIN_BASE_URL + "update_user_info", this);
 
-        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
+//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("apiToken", apiToken);
         settingPersonItemRequest.addRequestParam("sms_code", smsCode);
         settingPersonItemRequest.addRequestParam("new_phone", newPhone);
