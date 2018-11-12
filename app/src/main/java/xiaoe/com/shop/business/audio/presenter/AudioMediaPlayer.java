@@ -250,7 +250,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
         int indexNext = audio.getIndex() + 1;
         if(indexNext >= playList.size()){
-            indexNext = 0;
+            Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
+            return;
         }
         audio.setPlay(false);
         stop();
@@ -278,7 +279,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
         int indexLast = audio.getIndex() - 1;
         if(indexLast < 0){
-            indexLast = playList.size() - 1;
+            Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_first_sing,Toast.LENGTH_SHORT).show();
+            return;
         }
         audio.setPlay(false);
         stop();
