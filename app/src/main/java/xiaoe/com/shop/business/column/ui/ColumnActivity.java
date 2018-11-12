@@ -31,6 +31,7 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.column.ColumnFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
+import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
 import xiaoe.com.shop.utils.CollectionUtils;
@@ -40,6 +41,7 @@ import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.CustomScrollView;
 import xiaoe.com.shop.widget.ListBottomLoadMoreView;
 import xiaoe.com.shop.widget.ScrollViewPager;
+import xiaoe.com.shop.widget.TouristDialog;
 
 public class ColumnActivity extends XiaoeActivity implements View.OnClickListener, OnCustomScrollChangedListener {
     private static final String TAG = "ColumnActivity";
@@ -79,6 +81,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private int price = 0;
 
     List<LoginUser> loginUserList;
+    TouristDialog touristDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,6 +89,24 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         setContentView(R.layout.activity_column);
         mIntent = getIntent();
         loginUserList = getLoginUserList();
+
+        if (loginUserList.size() == 0) {
+            touristDialog = new TouristDialog(this);
+            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    touristDialog.dismissDialog();
+                }
+            });
+            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ColumnActivity.this.finish();
+                    JumpDetail.jumpLogin(ColumnActivity.this);
+                }
+            });
+        }
+
         isBigColumn = mIntent.getBooleanExtra("isBigColumn", false);
         resourceId = mIntent.getStringExtra("resource_id");
         initView();
@@ -332,7 +353,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 if (loginUserList.size() == 1) {
                     JumpDetail.jumpSuperVip(this);
                 } else {
-                    toastCustom("请先登录呦");
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.buy_course:
@@ -340,14 +361,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                     int resourceType = isBigColumn ? 8 : 6;
                     JumpDetail.jumpPay(this,resourceId,resourceType, collectImgUrl, collectTitle, price);
                 } else {
-                    toastCustom("请先登录呦");
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.btn_collect:
                 if (loginUserList.size() == 1) {
                     collect();
                 } else {
-                    toastCustom("请先登录呦");
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.btn_share:

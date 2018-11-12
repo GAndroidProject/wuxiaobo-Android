@@ -33,7 +33,8 @@
             android:textSize="14sp"
             android:textColor="@color/main_title_color"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp"/>
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"/>
 
         <TextView
             android:id="@+id/flow_info_video_desc"
@@ -43,6 +44,7 @@
             android:textColor="@color/main_title_color"
             android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="16dp"
             android:maxLines="2"
             android:ellipsize="end"/>
@@ -55,6 +57,7 @@
             android:textColor="@color/price_color"
             android:layout_marginTop="24dp"
             android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="24dp"/>
     </LinearLayout>
 </FrameLayout>

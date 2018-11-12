@@ -55,6 +55,7 @@ import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.ContentMenuLayout;
 import xiaoe.com.shop.widget.SpeedMenuLayout;
 import xiaoe.com.shop.widget.StatusPagerView;
+import xiaoe.com.shop.widget.TouristDialog;
 
 public class AudioActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener {
     private static final String TAG = "AudioActivity";
@@ -85,6 +86,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
     List<LoginUser> loginUserList;
 
+    TouristDialog touristDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +99,24 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         setContentView(R.layout.activity_audio);
         loginUserList = getLoginUserList();
+
+        if (loginUserList.size() == 0) {
+            touristDialog = new TouristDialog(this);
+            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    touristDialog.dismissDialog();
+                }
+            });
+            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AudioActivity.this.finish();
+                    JumpDetail.jumpLogin(AudioActivity.this);
+                }
+            });
+        }
+
         mIntent = getIntent();
         initViews();
         initDatas();
@@ -324,14 +345,14 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 if (loginUserList.size() == 1) {
                     buyResource();
                 } else {
-                    Toast("请先登录呦");
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.buy_vip:
                 if (loginUserList.size() == 1) {
                     JumpDetail.jumpSuperVip(this);
                 } else {
-                    Toast("请先登录呦");
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.btn_collect:
@@ -339,7 +360,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 if (loginUserList.size() == 1) {
                     collect();
                 } else {
-                    Toast("请先登录呦");
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.btn_share:

@@ -1,5 +1,6 @@
 package xiaoe.com.shop.adapter.decorate;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
@@ -50,6 +51,7 @@ import xiaoe.com.shop.business.course_more.ui.CourseMoreActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.SetImageUriUtil;
+import xiaoe.com.shop.widget.TouristDialog;
 
 /**
  * 店铺装修组件显示列表适配器
@@ -167,7 +169,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                             intent.putExtra("pageTitle", "我正在学");
                             mContext.startActivity(intent);
                         } else {
-                            Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                            showTouristDialog();
                         }
                     }
                 });
@@ -191,7 +193,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                                 }
                                 recentUpdateListAdapter.clickPlayAll();
                             } else {
-                                Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                                showTouristDialog();
                             }
                         }
                     });
@@ -422,5 +424,23 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         if(recentUpdateListAdapter != null){
             recentUpdateListAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void showTouristDialog() {
+        final TouristDialog touristDialog = new TouristDialog(mContext);
+        touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                touristDialog.dismissDialog();
+            }
+        });
+        touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Activity) mContext).finish();
+                JumpDetail.jumpLogin(mContext);
+            }
+        });
+        touristDialog.showDialog();
     }
 }

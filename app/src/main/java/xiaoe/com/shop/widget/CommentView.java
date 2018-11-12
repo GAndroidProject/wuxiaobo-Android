@@ -1,5 +1,6 @@
 package xiaoe.com.shop.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.interfaces.OnClickSendCommentListener;
 
 /**
@@ -227,7 +229,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
                 editComment.setFocusableInTouchMode(true);
             }
         } else {
-            Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+            showTouristDialog();
         }
 
         return false;
@@ -247,5 +249,23 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
 
     public void setIsTourists(boolean isTourists) {
         this.isTourists = isTourists;
+    }
+
+    private void showTouristDialog() {
+        final TouristDialog touristDialog = new TouristDialog(mContext);
+        touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                touristDialog.dismissDialog();
+            }
+        });
+        touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Activity) mContext).finish();
+                JumpDetail.jumpLogin(mContext);
+            }
+        });
+        touristDialog.showDialog();
     }
 }

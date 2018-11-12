@@ -33,6 +33,7 @@ import xiaoe.com.shop.business.download.ui.DownloadActivity;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickListPlayListener;
+import xiaoe.com.shop.widget.TouristDialog;
 
 public class ColumnDirectoryFragment extends BaseFragment implements View.OnClickListener, OnClickListPlayListener {
     private static final String TAG = "ColumnDirectoryFragment";
@@ -47,6 +48,8 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
 
     List<LoginUser> loginUserList;
 
+    TouristDialog touristDialog;
+
     public ColumnDirectoryFragment() {
     }
 
@@ -56,6 +59,24 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         rootView = inflater.inflate(R.layout.fragment_column_directory, null, false);
         EventBus.getDefault().register(this);
         loginUserList = getLoginUserList();
+
+        if (loginUserList.size() == 0) {
+            touristDialog = new TouristDialog(getActivity());
+            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    touristDialog.dismissDialog();
+                }
+            });
+            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().finish();
+                    JumpDetail.jumpLogin(getActivity());
+                }
+            });
+        }
+
         return rootView;
     }
 
@@ -132,7 +153,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             intent.putExtra("resourceId", resourceId);
             startActivity(intent);
         } else {
-            toastCustom("请先登录呦");
+            touristDialog.showDialog();
         }
     }
 
@@ -183,7 +204,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             notifyDataSetChanged(parentPosition, position);
             playParentPosition = parentPosition;
         } else {
-            toastCustom("请先登录呦");
+            touristDialog.showDialog();
         }
     }
     private void notifyDataSetChanged(int parentPosition, int position){
@@ -223,7 +244,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                 return;
             }
         } else {
-            toastCustom("请先登录呦");
+            touristDialog.showDialog();
         }
     }
 

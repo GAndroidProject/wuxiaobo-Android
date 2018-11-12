@@ -28,6 +28,7 @@
             android:textSize="14sp"
             android:textColor="@color/main_title_color"
             android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginTop="18dp"
             android:transitionName="@string/share_txt"/>
         <TextView
@@ -38,6 +39,7 @@
             android:textColor="@color/main_title_color"
             android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="24dp"
             android:maxLines="2"
             android:ellipsize="end"/>

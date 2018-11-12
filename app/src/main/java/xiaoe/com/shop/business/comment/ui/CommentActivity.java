@@ -30,12 +30,15 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.comment.CommentListAdapter;
 import xiaoe.com.shop.adapter.comment.CommentLoadMoreHolder;
 import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.comment.presenter.CommentPresenter;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.interfaces.OnClickCommentListener;
 import xiaoe.com.shop.interfaces.OnClickSendCommentListener;
 import xiaoe.com.shop.widget.CommentView;
 import xiaoe.com.shop.widget.ListBottomLoadMoreView;
 import xiaoe.com.shop.widget.StatusPagerView;
+import xiaoe.com.shop.widget.TouristDialog;
 
 public class CommentActivity extends XiaoeActivity implements View.OnClickListener, OnClickSendCommentListener, OnClickCommentListener {
     private static final String TAG = "CommentActivity";
@@ -60,6 +63,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
     private boolean isCommentFinished = false;
 
     List<LoginUser> loginUserList;
+    TouristDialog touristDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +71,24 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         setContentView(R.layout.activity_comment);
         commentPresenter = new CommentPresenter(this);
         loginUserList = getLoginUserList();
+
+        if (loginUserList.size() == 0) {
+            touristDialog = new TouristDialog(this);
+            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    touristDialog.dismissDialog();
+                }
+            });
+            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CommentActivity.this.finish();
+                    JumpDetail.jumpLogin(CommentActivity.this);
+                }
+            });
+        }
+
         mIntent = getIntent();
         initView();
         initData();
@@ -285,7 +307,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                 commentView.setSrcCommentHint(commentEntity.getUser_nickname());
                 replyCommentEntity = commentEntity;
             } else {
-                Toast("请先登录呦");
+                touristDialog.showDialog();
             }
         }else if(type == CommentView.TYPE_LIKE){
             //点赞
@@ -302,7 +324,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                 commentEntity.setLike_num(likeCount);
                 commentPresenter.likeComment(resourceId, resourceType, commentEntity.getComment_id(), commentEntity.getUser_id(), commentEntity.getContent(), praise);
             } else {
-                Toast("请先登录呦");
+                touristDialog.showDialog();
             }
         }else if(type == CommentView.TYPE_DELETE){
             //删除
@@ -317,7 +339,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                 commentAdapter.getData().remove(position);
                 commentAdapter.notifyItemRangeChanged(0, commentAdapter.getItemCount());
             } else {
-                Toast("请先登录呦");
+                touristDialog.showDialog();
             }
         }
     }

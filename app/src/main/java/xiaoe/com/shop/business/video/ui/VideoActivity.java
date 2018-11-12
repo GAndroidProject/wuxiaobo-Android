@@ -42,6 +42,7 @@ import xiaoe.com.network.requests.RemoveCollectionListRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.video.presenter.VideoPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.VideoPlayEvent;
@@ -51,6 +52,7 @@ import xiaoe.com.shop.utils.NumberFormat;
 import xiaoe.com.shop.utils.UpdateLearningUtils;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.StatusPagerView;
+import xiaoe.com.shop.widget.TouristDialog;
 
 public class VideoActivity extends XiaoeActivity implements View.OnClickListener, OnClickVideoButtonListener {
     private static final String TAG = "VideoActivity";
@@ -77,6 +79,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private boolean localResource = false;
 
     List<LoginUser> loginUserList;
+    TouristDialog touristDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,6 +95,24 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         setContentView(R.layout.activity_video);
         EventBus.getDefault().register(this);
         loginUserList = getLoginUserList();
+
+        if (loginUserList.size() == 0) {
+            touristDialog = new TouristDialog(this);
+            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    touristDialog.dismissDialog();
+                }
+            });
+            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    VideoActivity.this.finish();
+                    JumpDetail.jumpLogin(VideoActivity.this);
+                }
+            });
+        }
+
         videoPresenter = new VideoPresenter(this);
         collectionUtils = new CollectionUtils(this);
         mIntent = getIntent();
@@ -179,20 +200,20 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 if (loginUserList.size() == 1) {
                     JumpDetail.jumpPay(this, mResourceId, 3, collectImgUrl, collectTitle, resPrice);
                 } else {
-                    Toast("请先登录呦");
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.buy_vip:
                 if (loginUserList.size() == 1) {
                     JumpDetail.jumpSuperVip(this);
                 } else {
-                    Toast("请先登录呦");
+                    touristDialog.showDialog();
                 }
             case R.id.btn_collect:
                 if (loginUserList.size() == 1) {
                     collect();
                 } else {
-                    Toast("请先登录呦");
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.btn_share:
@@ -321,7 +342,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 }
                 toastCustom(getString(R.string.add_download_list));
             } else {
-                Toast("请先登录呦");
+                touristDialog.showDialog();
             }
         }else{
             onBackPressed();

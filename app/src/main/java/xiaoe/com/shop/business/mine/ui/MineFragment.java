@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.GetSuperMemberSuccessEvent;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.MineMoneyItemInfo;
@@ -51,6 +53,7 @@ import xiaoe.com.shop.business.super_vip.presenter.SuperVipPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.StatusBarUtil;
 import xiaoe.com.shop.widget.StatusPagerView;
+import xiaoe.com.shop.widget.TouristDialog;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, OnItemClickWithMoneyItemListener {
 
@@ -88,6 +91,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     boolean isScholarshipFinish; // 奖学金请求完成
     boolean isIntegralFinish;    // 积分请求完成
     boolean isMineLearningFinish; // 我正在学请求完成
+
+    TouristDialog touristDialog;
+    String mineLearningId;
+    String mineLearningType;
 
     @Nullable
     @Override
@@ -130,6 +137,23 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         earningPresenter.requestDetailData(1, 1, 1);
         earningPresenter.requestIntegralData(1, 1, 1);
         mineLearningPresenter.requestLearningData(1, 1);
+        if (!mainActivity.isFormalUser) {
+
+            touristDialog = new TouristDialog(getActivity());
+            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    touristDialog.dismissDialog();
+                }
+            });
+            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().finish();
+                    JumpDetail.jumpLogin(getActivity());
+                }
+            });
+        }
     }
 
     @Override
@@ -281,6 +305,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     JSONObject data = (JSONObject) result.get("data");
                     JSONArray goodsList = (JSONArray) data.get("goods_list");
                     JSONObject listItem = (JSONObject) goodsList.get(0);
+                    mineLearningId = listItem.getString("resource_id");
+                    mineLearningType = convertInt2Str(listItem.getInteger("resource_type"));
                     JSONObject item = (JSONObject) listItem.get("info");
                     mineLearningWrapView.setLearningIconURI(item.getString("img_url"));
                     mineLearningWrapView.setLearningTitle(item.getString("title"));
@@ -304,6 +330,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     // 初始化页面数据
     private void initPageData() {
         if (isIntegralFinish && isScholarshipFinish && isMineLearningFinish) { // 奖学金和积分和我正在学都请求完后再执行
+            if (itemInfoList == null) {
+                mineLoading.setLoadingState(View.GONE);
+                mineLoading.setVisibility(View.GONE);
+                return;
+            }
             itemInfoList.add(item_1);
             itemInfoList.add(item_2);
             MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
@@ -369,19 +400,19 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 if (mainActivity.isFormalUser) {
                     Toast.makeText(mContext, "点击信息按钮", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(mContext, "请先登录哟", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.title_nickname: // 昵称
                 if (!mainActivity.isFormalUser) {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.mine_title_setting: // 设置
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpAccount(mContext);
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.title_avatar: // 头像
@@ -389,14 +420,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     String avatar = CommonUserInfo.getWxAvatar();
                     JumpDetail.jumpMineMsg(mContext, avatar);
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.title_buy_vip: // 超级会员
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpSuperVip(mContext);
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
 //            case R.id.card_equity_more: // 更多权益
@@ -406,28 +437,45 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 if (mainActivity.isFormalUser) {
                     Toast.makeText(mContext, "点击续费按钮", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.learning_more: // 我正在学 -> 查看更多
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpMineLearning(mContext, "我正在学");
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.learning_item_container: // 我正在学的详情页
                 if (mainActivity.isFormalUser) {
-                    Toast.makeText(mContext, "我正在学", Toast.LENGTH_SHORT).show();
+                    // TODO: 跳转详情页
+                    switch (mineLearningType) {
+                        case DecorateEntityType.IMAGE_TEXT:
+                            JumpDetail.jumpImageText(mContext, mineLearningId, "");
+                            break;
+                        case DecorateEntityType.AUDIO:
+                            JumpDetail.jumpAudio(mContext, mineLearningId, 1);
+                            break;
+                        case DecorateEntityType.VIDEO:
+                            JumpDetail.jumpVideo(mContext, mineLearningId, "", false);
+                            break;
+                        case DecorateEntityType.COLUMN:
+                            JumpDetail.jumpColumn(mContext, mineLearningId, "", false);
+                            break;
+                        case DecorateEntityType.TOPIC:
+                            JumpDetail.jumpColumn(mContext, mineLearningId, "", true);
+                            break;
+                    }
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case R.id.card_container: // 超级会员卡片
                 if (mainActivity.isFormalUser) {
                     Toast.makeText(mContext, "超级会员卡片", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
         }
@@ -440,28 +488,28 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpMineLearning(mContext, "我的收藏");
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case 1: // 离线缓存
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpOffLine(mContext);
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case 2: // 优惠券
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpCoupon(mContext);
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case 3: // 兑换码
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpCdKey(mContext);
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             default:
@@ -478,16 +526,38 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpScholarshipActivity(mContext);
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
             case "积分":
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpIntegralActivity(mContext);
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    touristDialog.showDialog();
                 }
                 break;
+        }
+    }
+
+    /**
+     * 资源类型转换 int - str
+     * @param resourceType 资源类型
+     * @return 资源类型的字符串形式
+     */
+    protected String convertInt2Str(int resourceType) {
+        switch (resourceType) {
+            case 1: // 图文
+                return DecorateEntityType.IMAGE_TEXT;
+            case 2: // 音频
+                return DecorateEntityType.AUDIO;
+            case 3: // 视频
+                return DecorateEntityType.VIDEO;
+            case 6: // 专栏
+                return DecorateEntityType.COLUMN;
+            case 8: // 大专栏
+                return DecorateEntityType.TOPIC;
+            default:
+                return null;
         }
     }
 }

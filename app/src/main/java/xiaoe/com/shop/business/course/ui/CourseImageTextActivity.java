@@ -37,6 +37,7 @@ import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.RemoveCollectionListRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.course.presenter.CourseImageTextPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.CollectionUtils;
@@ -47,6 +48,7 @@ import xiaoe.com.shop.utils.UpdateLearningUtils;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.CommonTitleView;
 import xiaoe.com.shop.widget.PushScrollView;
+import xiaoe.com.shop.widget.TouristDialog;
 
 public class CourseImageTextActivity extends XiaoeActivity implements PushScrollView.ScrollViewListener {
 
@@ -116,6 +118,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     List<LoginUser> loginList;
     int toolbarHeight;
 
+    TouristDialog touristDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,6 +144,23 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         resourceId = transitionIntent.getStringExtra("resourceId");
         resourceType = "1"; // 图文的资源类型为 1
         loginList = getLoginUserList();
+
+        if (loginList.size() == 0) {
+            touristDialog = new TouristDialog(this);
+            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    touristDialog.dismissDialog();
+                }
+            });
+            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CourseImageTextActivity.this.finish();
+                    JumpDetail.jumpLogin(CourseImageTextActivity.this);
+                }
+            });
+        }
 
         initTitle();
         initData();
@@ -202,7 +223,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                         collectionUtils.requestAddCollection(resourceId, resourceType, collectionContent);
                     }
                 } else {
-                    Toast("请先登录呦");
+                    touristDialog.showDialog();
                 }
             }
         });
@@ -212,7 +233,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 if (loginList.size() == 1) {
                     umShare("hello");
                 } else {
-                    Toast("请先登录呦");
+                    touristDialog.showDialog();
                 }
             }
         });
@@ -222,7 +243,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 if (loginList.size() == 1) {
                     JumpDetail.jumpSuperVip(CourseImageTextActivity.this);
                 } else {
-                    Toast("请先登录呦");
+                    touristDialog.showDialog();
                 }
             }
         });
@@ -232,7 +253,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 if (loginList.size() == 1) {
                     JumpDetail.jumpPay(CourseImageTextActivity.this, resourceId, 1, collectionImgUrl, collectionTitle, resPrice);
                 } else {
-                    Toast("请先登录呦");
+                    touristDialog.showDialog();
                 }
             }
         });

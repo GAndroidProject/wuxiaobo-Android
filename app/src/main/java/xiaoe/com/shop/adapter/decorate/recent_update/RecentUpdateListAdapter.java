@@ -27,6 +27,7 @@ import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.widget.TouristDialog;
 
 /**
  * 最近更新列表适配器
@@ -91,7 +92,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                         JumpDetail.jumpAudio(mContext, recentUpdateListItem.getListResourceId(), 1);
                     }
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    showTouristDialog();
                 }
             }
         });
@@ -131,7 +132,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                     }
                     playPosition(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId(), false);
                 } else {
-                    Toast.makeText(mContext, "请先登录呦", Toast.LENGTH_SHORT).show();
+                    showTouristDialog();
                 }
             }
         });
@@ -261,5 +262,23 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                     resourceId, columnId, bigColumnId);
         }
         return resourceEquals;
+    }
+
+    private void showTouristDialog() {
+        final TouristDialog touristDialog = new TouristDialog(mContext);
+        touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                touristDialog.dismissDialog();
+            }
+        });
+        touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Activity) mContext).finish();
+                JumpDetail.jumpLogin(mContext);
+            }
+        });
+        touristDialog.showDialog();
     }
 }

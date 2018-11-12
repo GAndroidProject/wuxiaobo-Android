@@ -34,6 +34,7 @@ import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickListPlayListener;
 import xiaoe.com.shop.widget.DashlineItemDivider;
+import xiaoe.com.shop.widget.TouristDialog;
 
 public class LittleColumnDirectoryFragment extends BaseFragment implements View.OnClickListener, OnClickListPlayListener {
     private static final String TAG = "ColumnDirectoryFragment";
@@ -47,6 +48,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     private String resourceId;
 
     List<LoginUser> loginUserList;
+    TouristDialog touristDialog;
 
     public LittleColumnDirectoryFragment() {
         playList = new ArrayList<AudioPlayEntity>();
@@ -58,6 +60,24 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
         rootView = inflater.inflate(R.layout.fragment_little_column_directory, null, false);
         EventBus.getDefault().register(this);
         loginUserList = getLoginUserList();
+
+        if (loginUserList.size() == 0) {
+            touristDialog = new TouristDialog(getActivity());
+            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    touristDialog.dismissDialog();
+                }
+            });
+            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().finish();
+                    JumpDetail.jumpLogin(getActivity());
+                }
+            });
+        }
+
         return rootView;
     }
 
@@ -144,7 +164,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             intent.putExtra("resourceId", resourceId);
             startActivity(intent);
         } else {
-            toastCustom("请先登录呦");
+            touristDialog.showDialog();
         }
     }
 
@@ -196,7 +216,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             }
             directoryAdapter.notifyDataSetChanged();
         } else {
-            toastCustom("请先登录呦");
+            touristDialog.showDialog();
         }
     }
 
@@ -252,7 +272,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
                 playPosition(itemData.getResource_id(), itemData.getColumnId(), itemData.getBigColumnId(), jumpDetail);
             }
         } else {
-            toastCustom("请先登录呦");
+            touristDialog.showDialog();
         }
     }
 
@@ -280,7 +300,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
                 return;
             }
         } else {
-            toastCustom("请先登录呦");
+            touristDialog.showDialog();
         }
     }
 
