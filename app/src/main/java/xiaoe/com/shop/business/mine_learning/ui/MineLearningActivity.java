@@ -70,7 +70,7 @@ public class MineLearningActivity extends XiaoeActivity {
         pageTitle = intent.getStringExtra("pageTitle");
 
         initTitle();
-        initPageData();
+        initPage();
         initListener();
     }
 
@@ -82,7 +82,7 @@ public class MineLearningActivity extends XiaoeActivity {
     }
 
     // 初始化页面数据
-    private void initPageData() {
+    private void initPage() {
         pageList = new ArrayList<>();
         switch (pageTitle) {
             case "我的收藏":
@@ -166,6 +166,10 @@ public class MineLearningActivity extends XiaoeActivity {
         // 因为这个接口拿到的 resourceType 是 int 类型，转成字符串存起来
         for (Object goodItem : goodsList) {
             JSONObject infoItem = (JSONObject) goodItem;
+            String srcId = infoItem.getString("resource_id");
+            if (srcId.contains("flow")) {
+                continue;
+            }
             JSONObject goodJsonItem = (JSONObject) infoItem.get("info");
             KnowledgeCommodityItem item = new KnowledgeCommodityItem();
             // id 和 type 通过 info 拿到
@@ -185,9 +189,9 @@ public class MineLearningActivity extends XiaoeActivity {
             } else { // 为空为我正在学
                 title = goodJsonItem.getString("title");
                 imgUrl = goodJsonItem.getString("img_url");
-                priceStr = goodJsonItem.getInteger("price") == null ? "0" : String.valueOf(goodJsonItem.getInteger("price"));
+                priceStr = "已购";
             }
-            if ("0".equals(priceStr) || "0.0".equals(priceStr)) {
+            if ("0".equals(priceStr) || "0.0".equals(priceStr) || "已购".equals(priceStr)) {
                 priceStr = "已购";
             } else {
                 priceStr = "￥" + priceStr;
