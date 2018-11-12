@@ -21,6 +21,7 @@ import java.util.List;
 
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.DownloadTableInfo;
+import xiaoe.com.common.interfaces.OnDownloadListener;
 import xiaoe.com.network.downloadUtil.DownloadEvent;
 import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.shop.R;
@@ -28,7 +29,7 @@ import xiaoe.com.shop.adapter.download.DownloadProceedChildListAdapter;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.interfaces.OnDownloadListListener;
 
-public class DownloadProceedFragment extends BaseFragment implements View.OnClickListener, OnDownloadListListener {
+public class DownloadProceedFragment extends BaseFragment implements View.OnClickListener, OnDownloadListListener, OnDownloadListener {
     private static final String TAG = "FinishDownloadFragment";
     private View rootView;
     private RecyclerView downloadProceedRecyclerView;
@@ -56,6 +57,8 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     }
 
     private void initViews() {
+        DownloadManager.getInstance().setOnDownloadListener(this);
+
         downloadProceedRecyclerView = (RecyclerView) rootView.findViewById(R.id.download_proceed_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setAutoMeasureEnabled(true);
@@ -100,28 +103,28 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
 
     @Subscribe
     public void onEventMainThread(DownloadEvent event) {
-        if(event.getStatus() == 3){
-            //下载完成
-            if(dialog != null && dialog.isShowing()){
-                dialog.dismiss();
-            }
-            for (DownloadTableInfo item : adapter.getData()){
-                if(item.getResourceId().equals(event.getDownloadInfo().getResourceId())){
-                    adapter.getData().remove(item);
-                    adapter.notifyDataSetChanged();
-                    break;
-                }
-            }
-        }
-        int index = -1;
-        for (DownloadTableInfo item : adapter.getData()){
-            index++;
-            if(item.getResourceId().equals(event.getDownloadInfo().getResourceId())){
-                item.setProgress(event.getDownloadInfo().getProgress());
-                adapter.notifyItemChanged(index);
-                break;
-            }
-        }
+//        if(event.getStatus() == 3){
+//            //下载完成
+//            if(dialog != null && dialog.isShowing()){
+//                dialog.dismiss();
+//            }
+//            for (DownloadTableInfo item : adapter.getData()){
+//                if(item.getResourceId().equals(event.getDownloadInfo().getResourceId())){
+//                    adapter.getData().remove(item);
+//                    adapter.notifyDataSetChanged();
+//                    break;
+//                }
+//            }
+//        }
+//        int index = -1;
+//        for (DownloadTableInfo item : adapter.getData()){
+//            index++;
+//            if(item.getResourceId().equals(event.getDownloadInfo().getResourceId())){
+//                item.setProgress(event.getDownloadInfo().getProgress());
+//                adapter.notifyItemChanged(index);
+//                break;
+//            }
+//        }
 
     }
 
@@ -276,5 +279,31 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
             window.setAttributes(layoutParams);
         }
         dialog.setContentView(view);
+    }
+
+    @Override
+    public void onDownload(DownloadTableInfo downloadInfo, float progress, int status) {
+        if(status == 3){
+            //下载完成
+            if(dialog != null && dialog.isShowing()){
+                dialog.dismiss();
+            }
+            for (DownloadTableInfo item : adapter.getData()){
+                if(item.getResourceId().equals(downloadInfo.getResourceId())){
+                    adapter.getData().remove(item);
+                    adapter.notifyDataSetChanged();
+                    break;
+                }
+            }
+        }
+        int index = -1;
+        for (DownloadTableInfo item : adapter.getData()){
+            index++;
+            if(item.getResourceId().equals(downloadInfo.getResourceId())){
+                item.setProgress(downloadInfo.getProgress());
+                adapter.notifyItemChanged(index);
+                break;
+            }
+        }
     }
 }

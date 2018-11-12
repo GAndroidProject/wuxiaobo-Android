@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -447,6 +448,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
     @Subscribe
     public void onEventMainThread(AudioPlayEvent event) {
+        Log.d(TAG, "onEventMainThread: ***");
         switch (event.getState()){
             case AudioPlayEvent.LOADING:
                 audioPlayController.setPlayButtonEnabled(false);

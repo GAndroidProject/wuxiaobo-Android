@@ -5,8 +5,6 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,9 +17,11 @@ import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.common.entitys.DownloadResourceTableInfo;
 import xiaoe.com.common.entitys.DownloadTableInfo;
+import xiaoe.com.common.interfaces.OnDownloadListener;
 import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.common.utils.MD5Utils;
 import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.network.utils.ThreadPoolUtils;
 
 /**
  * 下载管理器，断点续传
@@ -34,6 +34,7 @@ public class DownloadManager implements DownloadListner {
     private List<DownloadTask> mDownloadTasks;//下载任务
     private List<DownloadTask> mAwaitDownloadTasks;//等待下载任务
     private HashMap<String, DownloadTableInfo> allDownloadList;//全部下载列表
+    private OnDownloadListener onDownloadListener;
     /**
      * ConcurrentHashMap可以高并发操作，线程安全，高效
      */
@@ -80,20 +81,25 @@ public class DownloadManager implements DownloadListner {
         String bigColumnId = download.getBigColumnId();
         String appId = download.getAppId();
         for (int i = 0; i < mAwaitDownloadTasks.size(); i++) {
+            Log.d(TAG, "download: ****** a");
             if (mDownloadTasks.size() >= MAX_DOWNLOAD_COUNT) {
+                Log.d(TAG, "download: ********");
                 return;
             }
-            DownloadTask downloadTask = mAwaitDownloadTasks.remove(i);
+            final DownloadTask downloadTask = mAwaitDownloadTasks.remove(i);
             DownloadTableInfo taskDownloadInfo = downloadTask.getDownloadInfo();
             boolean equals = compareResource(appId, resourceId, taskDownloadInfo.getAppId(), taskDownloadInfo.getResourceId());
+            Log.d(TAG, "download: ****** b");
             if (equals) {
+                Log.d(TAG, "download: ****** c");
                 mDownloadTasks.add(downloadTask);
-                downloadTask.start();
-//                DownloadTableInfo downloadInfo = downloadTask.getDownloadInfo();
-//                downloadInfo.setDownloadState(0);
-//                download.setDownloadState(0);
-                //数据库更新----
-//                DownloadFileConfig.getInstance().insertDownloadInfo(downloadInfo);
+                ThreadPoolUtils.runTaskOnThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "run: ***********");
+                        downloadTask.start();
+                    }
+                });
                 break;
             }
         }
@@ -223,6 +229,9 @@ public class DownloadManager implements DownloadListner {
         SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
         String delResSQL = "DELETE FROM "+DownloadResourceTable.TABLE_NAME+" where app_id='"+download.getAppId()+"' and resource_id='"+download.getResourceId()+"'";
         SQLiteUtil.execSQL(delResSQL);
+        if(allDownloadList != null){
+            allDownloadList.remove(download.getResourceId());
+        }
     }
 
     /**
@@ -247,6 +256,9 @@ public class DownloadManager implements DownloadListner {
         SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
         String delResSQL = "DELETE FROM "+DownloadResourceTable.TABLE_NAME+" where app_id='"+download.getAppId()+"' and resource_id='"+download.getResourceId()+"'";
         SQLiteUtil.execSQL(delResSQL);
+        if(allDownloadList != null){
+            allDownloadList.remove(download.getResourceId());
+        }
     }
 
     private static void deleteDirWihtFile(File dir) {
@@ -495,7 +507,10 @@ public class DownloadManager implements DownloadListner {
 
     @Override
     public void onDownloadProgress(DownloadTableInfo downloadInfo, float progress) {
-        Log.d(TAG, "onDownloadProgress: ");
+//        Log.d(TAG, "onDownloadProgress: main = "+Looper.getMainLooper());
+//        Log.d(TAG, "onDownloadProgress: child = "+Looper.myLooper());
+//        Log.d(TAG, "onDownloadProgress: main id = "+Looper.getMainLooper().getThread().getId());
+//        Log.d(TAG, "onDownloadProgress: child id = "+Thread.currentThread().getId());
         sendDownloadEvent(downloadInfo, progress, 1);
     }
 
@@ -524,12 +539,12 @@ public class DownloadManager implements DownloadListner {
      * @param progress
      * @param status
      */
-    private void sendDownloadEvent(DownloadTableInfo downloadInfo, float progress, int status) {
+    private void sendDownloadEvent(final DownloadTableInfo downloadInfo, final float progress, final int status) {
 //        getInstanceDownloadEvent();
-        DownloadEvent downloadEvent = new DownloadEvent();
-        downloadEvent.setDownloadInfo(downloadInfo);
-        downloadEvent.setProgress(progress);
-        downloadEvent.setStatus(status);
+//        DownloadEvent downloadEvent = new DownloadEvent();
+//        downloadEvent.setDownloadInfo(downloadInfo);
+//        downloadEvent.setProgress(progress);
+//        downloadEvent.setStatus(status);
 
         downloadInfo.setUpdateAt(DateFormat.currentTime());
         //0-等待，1-下载中，2-暂停，3-完成
@@ -540,13 +555,13 @@ public class DownloadManager implements DownloadListner {
             downloadInfo.setDownloadState(0);
         } else if (status == 1) {
             //下载
-            Log.d(TAG, "sendDownlaodEvent: 下载");
+//            Log.d(TAG, "sendDownlaodEvent: 下载");
             downloadInfo.setDownloadState(1);
-            autoDownloadNextAwaitTask();
         } else if(status == 2){
             //暂停
             Log.d(TAG, "sendDownlaodEvent: 暂停");
             downloadInfo.setDownloadState(2);
+            autoDownloadNextAwaitTask();
         }else if (status == 3) {
             //下载完成
             Log.d(TAG, "sendDownlaodEvent: 完成");
@@ -564,8 +579,22 @@ public class DownloadManager implements DownloadListner {
             Log.d(TAG, "sendDownlaodEvent: 请求失败");
             downloadInfo.setDownloadState(2);
         }
-        DownloadFileConfig.getInstance().updateDownloadInfo(downloadInfo);
-        EventBus.getDefault().post(downloadEvent);
+        ThreadPoolUtils.runTaskOnThread(new Runnable() {
+            @Override
+            public void run() {
+                DownloadFileConfig.getInstance().updateDownloadInfo(downloadInfo);
+            }
+        });
+        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                if (onDownloadListener != null) {
+                    onDownloadListener.onDownload(downloadInfo, progress, status);
+                }
+            }
+        });
+
+//        EventBus.getDefault().post(downloadEvent);
     }
 
 
@@ -574,7 +603,6 @@ public class DownloadManager implements DownloadListner {
      * 自动下载下一个等待下载任务
      */
     private void autoDownloadNextAwaitTask() {
-        Log.d(TAG, "autoDownloadNextAwaitTask: " + mAwaitDownloadTasks.size());
         if (mAwaitDownloadTasks.size() > 0) {
             start(mAwaitDownloadTasks.get(0).getDownloadInfo());
         }
@@ -668,5 +696,9 @@ public class DownloadManager implements DownloadListner {
             return false;
         }
         return allDownloadList.containsKey(resourceId);
+    }
+
+    public void setOnDownloadListener(OnDownloadListener listener){
+        onDownloadListener = listener;
     }
 }
