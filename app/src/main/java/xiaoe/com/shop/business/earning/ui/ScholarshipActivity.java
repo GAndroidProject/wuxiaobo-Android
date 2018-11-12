@@ -80,8 +80,8 @@ public class ScholarshipActivity extends XiaoeActivity {
         scholarWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         earningPresenter = new EarningPresenter(this);
-        // 详情页面传 0
-        earningPresenter.requestDetailData(0, 1, 10);
+        // flowType 1 -- 获取 2 -- 提现
+        earningPresenter.requestDetailData(1, 1, 10);
 
         initData();
         initListener();

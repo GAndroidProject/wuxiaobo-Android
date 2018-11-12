@@ -34,6 +34,7 @@ import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
+import xiaoe.com.shop.utils.UpdateLearningUtils;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.CustomScrollView;
 import xiaoe.com.shop.widget.ListBottomLoadMoreView;
@@ -165,6 +166,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
     }
+
+    @Override
+    public void onBackPressed() {
+        UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+        updateLearningUtils.updateLearningProgress(resourceId, isBigColumn ? 8 : 6, 10);
+        super.onBackPressed();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

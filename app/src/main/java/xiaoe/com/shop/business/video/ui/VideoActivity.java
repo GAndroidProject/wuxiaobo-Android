@@ -48,6 +48,7 @@ import xiaoe.com.shop.events.VideoPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickVideoButtonListener;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
+import xiaoe.com.shop.utils.UpdateLearningUtils;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.StatusPagerView;
 
@@ -158,6 +159,9 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             playControllerView.setFullScreen(false);
             setPlayScreen(VideoPlayConstant.VIDEO_LITTLE_SCREEN);
         }else{
+            // 上报学习进度
+            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+            updateLearningUtils.updateLearningProgress(mResourceId, 3, 10);
             super.onBackPressed();
         }
     }

@@ -100,7 +100,7 @@ public class SearchActivity extends XiaoeActivity {
 
     private void initView() {
         // 先默认显示我的财富计划
-        searchContent.setText("我的财富计划");
+        searchContent.setHint("我的财富计划");
         searchContent.setSelection(searchContent.getText().toString().length());
         // 设置删除按钮
         initCloseIcon();

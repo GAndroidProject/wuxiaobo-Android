@@ -144,6 +144,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.FLOW_INFO:
                 FlowInfoViewHolder flowInfoViewHolder = (FlowInfoViewHolder) holder;
                 flowInfoViewHolder.flowInfoTitle.setText(currentBindComponent.getTitle());
+                if (currentBindComponent.getImgUrl() != null) {
+                    SetImageUriUtil.setImgURI(flowInfoViewHolder.flowInfoIcon, currentBindComponent.getImgUrl(), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20));
+                }
                 flowInfoViewHolder.flowInfoDesc.setText(currentBindComponent.getDesc());
                 flowInfoViewHolder.flowInfoIconDesc.setText(currentBindComponent.getJoinedDesc());
                 LinearLayoutManager llm = new LinearLayoutManager(mContext);

@@ -175,9 +175,18 @@ public class MineLearningActivity extends XiaoeActivity {
             String desc = goodJsonItem.getString("org_summary");
             // 其余数据通过收藏的数据拿到
             JSONObject orgContent = (JSONObject) infoItem.get("org_content");
-            String title = orgContent.getString("title");
-            String imgUrl = orgContent.getString("img_url");
-            String priceStr = orgContent.getString("price");
+            String title = null;
+            String imgUrl = null;
+            String priceStr = null;
+            if (orgContent != null) { // 不为空则为收藏
+                title = orgContent.getString("title");
+                imgUrl = orgContent.getString("img_url");
+                priceStr = orgContent.getString("price");
+            } else { // 为空为我正在学
+                title = goodJsonItem.getString("title");
+                imgUrl = goodJsonItem.getString("img_url");
+                priceStr = goodJsonItem.getInteger("price") == null ? "0" : String.valueOf(goodJsonItem.getInteger("price"));
+            }
             if ("0".equals(priceStr) || "0.0".equals(priceStr)) {
                 priceStr = "已购";
             } else {

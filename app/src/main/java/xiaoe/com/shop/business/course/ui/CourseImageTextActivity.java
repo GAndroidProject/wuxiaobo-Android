@@ -274,11 +274,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     public void onBackPressed() {
         // TODO: 获取学习进度
         UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-        updateLearningUtils.updateLearningProgress(resourceId, Integer.parseInt(resourceType), 50);
+        updateLearningUtils.updateLearningProgress(resourceId, Integer.parseInt(resourceType), 10);
         super.onBackPressed();
-//        if (itLoading.getVisibility() == View.GONE) {
-//            super.onBackPressed();
-//        }
     }
 
     @Override

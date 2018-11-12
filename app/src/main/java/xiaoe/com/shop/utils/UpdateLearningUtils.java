@@ -25,12 +25,13 @@ public class UpdateLearningUtils implements IBizCallback {
         UpdateMineLearningRequest updateMineLearningRequest = new UpdateMineLearningRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.learning.records.push/1.0.0", this);
 
         updateMineLearningRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
-        updateMineLearningRequest.addRequestParam("user_id", "u_5ad010f47073c_yeHaGL9bEG");
+        updateMineLearningRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         updateMineLearningRequest.addDataParam("resource_id", resourceId);
         updateMineLearningRequest.addDataParam("resource_type", resourceType);
         updateMineLearningRequest.addDataParam("learn_progress", progress);
         // 原始学习进度，app 没有进度，所以传 0，从头开始
         updateMineLearningRequest.addDataParam("org_learn_progress", "0");
+        updateMineLearningRequest.addDataParam("spend_time", 0);
 
         NetworkEngine.getInstance().sendRequest(updateMineLearningRequest);
     }

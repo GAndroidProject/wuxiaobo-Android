@@ -48,6 +48,7 @@ import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
+import xiaoe.com.shop.utils.UpdateLearningUtils;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.ContentMenuLayout;
 import xiaoe.com.shop.widget.SpeedMenuLayout;
@@ -211,6 +212,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     public void onBackPressed() {
         setViewAnim(audioRing, 1, 0, 1, 0, 1, 0);
         setViewAnim(btnPageClose, 1, 0, 1, 0, 1, 0);
+        // 上报学习进度
+        UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+        updateLearningUtils.updateLearningProgress(AudioMediaPlayer.getAudio().getResourceId(), 2, 10);
         super.onBackPressed();
         overridePendingTransition(R.anim.no_anim,R.anim.slide_bottom_out);
     }

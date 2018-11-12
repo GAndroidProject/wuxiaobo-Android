@@ -232,6 +232,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     // 初始化微页面数据
     private void initPageData(JSONObject data) {
         JSONArray microPageData = (JSONArray) data.get("components");
+        if (microPageData == null) {
+            return;
+        }
         for (Object item : microPageData) {
             JSONObject itemObj = ((JSONObject) item);
             switch (itemObj.getString("type")) {
