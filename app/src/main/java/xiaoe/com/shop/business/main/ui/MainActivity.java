@@ -62,6 +62,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"onCreate -- before");
         // 设置状态栏需要在 setContentView 之前进行
         setStatusBar();
 
@@ -93,6 +94,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         //启动应用时自动检测版本更新
         AppUpgradeHelper.getInstance().registerEventBus();
+        Log.d(TAG,"onCreate -- after");
     }
 
     private void initView() {
@@ -163,12 +165,14 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             case AudioPlayEvent.LOADING:
                 miniAudioPlayController.setVisibility(View.VISIBLE);
                 miniAudioPlayController.setAudioTitle(playEntity.getTitle());
+                miniAudioPlayController.setColumnTitle(playEntity.getProductsTitle());
                 miniAudioPlayController.setPlayButtonEnabled(false);
                 miniAudioPlayController.setPlayState(AudioPlayEvent.PAUSE);
                 break;
             case AudioPlayEvent.PLAY:
                 miniAudioPlayController.setPlayButtonEnabled(true);
                 miniAudioPlayController.setAudioTitle(playEntity.getTitle());
+                miniAudioPlayController.setColumnTitle(playEntity.getProductsTitle());
                 miniAudioPlayController.setPlayState(AudioPlayEvent.PLAY);
                 miniAudioPlayController.setMaxProgress(AudioMediaPlayer.getDuration());
                 break;
@@ -190,6 +194,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     protected void onResume() {
         isForeground = true;
         super.onResume();
+        Log.d(TAG,"onResume");
     }
 
 

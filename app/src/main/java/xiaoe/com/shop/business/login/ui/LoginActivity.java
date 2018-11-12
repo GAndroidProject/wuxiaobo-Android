@@ -107,7 +107,7 @@ public class LoginActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d(TAG,"onCreate -- before");
         //当做启动页时，将此处线程移至启动页
         ThreadPoolUtils.runTaskOnThread(new Runnable() {
             @Override
@@ -139,6 +139,7 @@ public class LoginActivity extends XiaoeActivity {
         initData();
         initView();
         initListener();
+        Log.d(TAG,"onCreate -- after");
     }
 
     private void initData() {
