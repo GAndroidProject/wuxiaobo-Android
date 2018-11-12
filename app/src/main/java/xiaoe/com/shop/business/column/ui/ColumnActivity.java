@@ -399,7 +399,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else if(alpha < 0){
             alpha = 0;
         }
-        barTitle.setVisibility(alpha == 255 ? View.VISIBLE : View.GONE);
+        barTitle.setVisibility(alpha > 150 ? View.VISIBLE : View.GONE);
         btnBack.setImageResource(alpha > 150 ? R.mipmap.download_back :R.mipmap.detail_white_back);
         columnToolBar.setBackgroundColor(Color.argb((int) alpha,255,255,255));
     }
