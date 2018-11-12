@@ -9,6 +9,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,8 +33,7 @@ public class DownloadManager implements DownloadListner {
     private static DownloadManager mInstance;
     private List<DownloadTask> mDownloadTasks;//下载任务
     private List<DownloadTask> mAwaitDownloadTasks;//等待下载任务
-//    private List<DownloadInfo> mDownloadInfoList;//下载列表
-//    private List<DownloadInfo> mDownloadFinishList;//下载完成列表
+    private HashMap<String, DownloadTableInfo> allDownloadList;//全部下载列表
     /**
      * ConcurrentHashMap可以高并发操作，线程安全，高效
      */
@@ -366,6 +366,7 @@ public class DownloadManager implements DownloadListner {
             downloadTableInfo.setUpdateAt(DateFormat.currentTime());
             DownloadFileConfig.getInstance().insertDownloadInfo(downloadTableInfo);
             start(downloadTableInfo);
+            allDownloadList.put(resource.getResource_id(), downloadTableInfo);
         }
         //关系表
         SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
@@ -456,15 +457,6 @@ public class DownloadManager implements DownloadListner {
         }
     }
 
-
-    /**
-     * 获取下载任务
-     *
-     * @return
-     */
-    public List<DownloadTask> getDownloadTasks() {
-        return mDownloadTasks;
-    }
 
 
     /**
@@ -653,12 +645,28 @@ public class DownloadManager implements DownloadListner {
         return single;
     }
 
-    public boolean isDownload(String appId, String resourceId){
-        String querySQL ="select * from "+DownloadFileConfig.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
-        List<DownloadTableInfo> tableInfos = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resourceId});
-        if(tableInfos != null && tableInfos.size() > 0){
-            return true;
+
+    public HashMap<String, DownloadTableInfo> getAllDownloadList() {
+        if(allDownloadList == null){
+            allDownloadList = new HashMap<String, DownloadTableInfo>();
+            String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" order by create_at desc";
+            List<DownloadTableInfo> dbDownloadingList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
+            for (DownloadTableInfo download : dbDownloadingList) {
+                allDownloadList.put(download.getResourceId(), download);
+            }
         }
-        return false;
+        return allDownloadList;
+    }
+
+    public boolean isDownload(String appId, String resourceId){
+//        String querySQL ="select * from "+DownloadFileConfig.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
+//        List<DownloadTableInfo> tableInfos = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resourceId});
+//        if(tableInfos != null && tableInfos.size() > 0){
+//            return true;
+//        }
+        if(allDownloadList == null || allDownloadList.size() <= 0){
+            return false;
+        }
+        return allDownloadList.containsKey(resourceId);
     }
 }

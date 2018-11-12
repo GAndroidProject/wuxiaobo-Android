@@ -22,15 +22,12 @@ import java.util.List;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
-import xiaoe.com.common.entitys.ChangeToScholarshipEvent;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.downloadUtil.DownloadFileConfig;
-import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.IsSuperVipRequest;
-import xiaoe.com.network.utils.ThreadPoolUtils;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
@@ -96,14 +93,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         //启动应用时自动检测版本更新
         AppUpgradeHelper.getInstance().registerEventBus();
-
-        ThreadPoolUtils.runTaskOnThread(new Runnable() {
-            @Override
-            public void run() {
-                //下载列表中，可能有正在下载状态，但是退出是还是正在下载状态，所以启动时将之前的状态置为暂停
-                DownloadManager.getInstance().setDownloadPause();
-            }
-        });
     }
 
     private void initView() {

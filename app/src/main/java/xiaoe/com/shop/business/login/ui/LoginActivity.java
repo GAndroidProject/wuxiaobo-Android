@@ -22,29 +22,30 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.LoginUser;
-import xiaoe.com.network.requests.IsSuperVipRequest;
-import xiaoe.com.network.requests.LoginCodeVerifyRequest;
-import xiaoe.com.network.requests.LoginFindPwdCodeVerifyRequest;
-import xiaoe.com.network.requests.ResetPasswordRequest;
-import xiaoe.com.network.requests.SettingPseronMsgRequest;
-import xiaoe.com.network.requests.TouristsShopIdRequest;
-import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
-import xiaoe.com.shop.common.JumpDetail;
-import xiaoe.com.shop.utils.JudgeUtil;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.LoginBindRequest;
-import xiaoe.com.network.requests.LoginRequest;
 import xiaoe.com.network.requests.LoginCheckRegisterRequest;
+import xiaoe.com.network.requests.LoginCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginDoRegisterRequest;
+import xiaoe.com.network.requests.LoginFindPwdCodeVerifyRequest;
 import xiaoe.com.network.requests.LoginPhoneCodeRequest;
 import xiaoe.com.network.requests.LoginRegisterCodeVerifyRequest;
+import xiaoe.com.network.requests.LoginRequest;
+import xiaoe.com.network.requests.ResetPasswordRequest;
+import xiaoe.com.network.requests.SettingPseronMsgRequest;
+import xiaoe.com.network.requests.TouristsShopIdRequest;
+import xiaoe.com.network.utils.ThreadPoolUtils;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
+import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.common.login.LoginPresenter;
+import xiaoe.com.shop.utils.JudgeUtil;
 import xiaoe.com.shop.utils.StatusBarUtil;
 
 public class LoginActivity extends XiaoeActivity {
@@ -106,6 +107,16 @@ public class LoginActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //当做启动页时，将此处线程移至启动页
+        ThreadPoolUtils.runTaskOnThread(new Runnable() {
+            @Override
+            public void run() {
+                //下载列表中，可能有正在下载状态，但是退出是还是正在下载状态，所以启动时将之前的状态置为暂停
+                DownloadManager.getInstance().setDownloadPause();
+                DownloadManager.getInstance().getAllDownloadList();
+            }
+        });
 
         setStatusBar();
         StatusBarUtil.setRootViewFitsSystemWindows(this, false);
