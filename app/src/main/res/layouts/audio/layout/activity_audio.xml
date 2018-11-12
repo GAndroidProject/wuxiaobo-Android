@@ -48,12 +48,14 @@
                     android:layout_width="64dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center"
-                    android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:background="@drawable/btn_speed_bg"
                     android:textSize="14sp"
                     android:textColor="@color/btn_speed_border_color"
                     android:text="@string/speed_play_text"
+                    android:drawableRight="@mipmap/icon_speed_play"
+                    android:drawablePadding="-10dp"
+                    android:paddingRight="10dp"
                     />
                 <xiaoe.com.shop.business.audio.ui.AudioPlayControllerView
                     android:id="@+id/audio_play_controller"

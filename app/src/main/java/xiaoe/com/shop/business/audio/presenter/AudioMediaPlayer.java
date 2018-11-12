@@ -302,8 +302,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 //        }
     }
 
-    public static void changePlayerSpeed(float speed) {
+    public static boolean changePlayerSpeed(float speed) {
         // this checks on API 23 and up
+        if (!isPlaying())    return false;
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
@@ -311,7 +312,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
                 mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
                 mediaPlayer.pause();
             }
+            return true;
         }
+        return false;
     }
 
     private static void playProgress() {

@@ -30,6 +30,7 @@ import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
@@ -345,11 +346,13 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 umShare("hello");
                 break;
             case R.id.audio_speed_play:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                    if (View.VISIBLE != mSpeedMenuLayout.getVisibility())
-                        mSpeedMenuLayout.setVisibility(View.VISIBLE);
-                }else {
-                    toastCustom(getString(R.string.speed_play_not_support));
+                if (AudioMediaPlayer.isPlaying()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (View.VISIBLE != mSpeedMenuLayout.getVisibility())
+                            mSpeedMenuLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        toastCustom(getString(R.string.speed_play_not_support));
+                    }
                 }
                 break;
             case R.id.btn_speed_1:
@@ -394,14 +397,22 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void changePlaySpeed(float speed) {
-        AudioMediaPlayer.changePlayerSpeed(speed);
+        if (View.VISIBLE == mSpeedMenuLayout.getVisibility())
+            mSpeedMenuLayout.setVisibility(View.GONE);
+        boolean isChange = AudioMediaPlayer.changePlayerSpeed(speed);
+        if (!isChange)   return;
         String format = getString(R.string.speed_play_text);
-        if (speed != 1)   format = "%s" + format;
+        if (speed != 1) {
+            format = "%s" + format;
+            btnSpeedPlay.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+            btnSpeedPlay.setPadding(0,0,0,0);
+        }else {
+            btnSpeedPlay.setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.mipmap.icon_speed_play),null);
+            btnSpeedPlay.setPadding(0,0,Dp2Px2SpUtil.dp2px(this,10),0);
+        }
         java.text.NumberFormat numberFormat = java.text.NumberFormat.getNumberInstance();
         numberFormat.setMaximumIntegerDigits(1);
         btnSpeedPlay.setText(String.format(format,numberFormat.format(speed)));
-        if (View.VISIBLE == mSpeedMenuLayout.getVisibility())
-            mSpeedMenuLayout.setVisibility(View.GONE);
     }
 
     @Override
