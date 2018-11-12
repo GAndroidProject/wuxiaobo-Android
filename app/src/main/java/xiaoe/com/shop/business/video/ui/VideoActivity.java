@@ -435,6 +435,11 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 playControllerView.setPlayUrl(mLocalVideoUrl);
             }
             buyView.setVisibility(View.VISIBLE);
+            if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 超级会员的判断
+                buyView.setVipBtnVisibility(View.VISIBLE);
+            } else {
+                buyView.setVipBtnVisibility(View.GONE);
+            }
             int price = data.getIntValue("price");
             resPrice = price;
             collectPrice = ""+price;

@@ -17,6 +17,7 @@ import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.MeasureUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
+import xiaoe.com.shop.utils.SetImageUriUtil;
 
 public class MineLearningWrapView extends LinearLayout {
 
@@ -74,7 +75,7 @@ public class MineLearningWrapView extends LinearLayout {
     }
 
     public void setLearningIconURI(String url) {
-        learningIcon.setImageURI(url);
+        SetImageUriUtil.setImgURI(learningIcon, url, Dp2Px2SpUtil.dp2px(mContext, 160), Dp2Px2SpUtil.dp2px(mContext, 120));
     }
 
     public void setLearningTitle(String title) {

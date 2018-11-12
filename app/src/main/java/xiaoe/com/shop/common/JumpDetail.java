@@ -183,6 +183,27 @@ public class JumpDetail {
     }
 
     /**
+     * 超级会员跳转支付重载
+     * @param context
+     * @param resourceId
+     * @param productId
+     * @param resourceType
+     * @param imgUrl
+     * @param title
+     * @param price
+     */
+    public static void jumpPay(Context context, String resourceId, String productId, int resourceType, String imgUrl, String title, int price) {
+        Intent intent = new Intent(context, PayActivity.class);
+        intent.putExtra("resourceId", resourceId);
+        intent.putExtra("productId", productId);
+        intent.putExtra("resourceType", resourceType);
+        intent.putExtra("image_url", imgUrl);
+        intent.putExtra("title", title);
+        intent.putExtra("price", price);
+        context.startActivity(intent);
+    }
+
+    /**
      * 跳转个人信息页面
      * @param context 上下文
      * @param avatar 微信头像

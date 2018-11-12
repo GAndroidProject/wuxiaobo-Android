@@ -17,6 +17,7 @@ import com.umeng.socialize.UMShareAPI;
 
 import java.util.List;
 
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
@@ -280,6 +281,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else{
             price = data.getIntValue("price");
             buyView.setVisibility(View.VISIBLE);
+            if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 超级会员判断
+                buyView.setVipBtnVisibility(View.VISIBLE);
+            } else {
+                buyView.setVipBtnVisibility(View.GONE);
+            }
             buyView.setBuyPrice(price);
             isHasBuy = false;
             collectPrice = ""+price;

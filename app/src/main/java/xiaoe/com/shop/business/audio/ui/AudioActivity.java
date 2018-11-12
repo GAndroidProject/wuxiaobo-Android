@@ -526,6 +526,11 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if(playEntity.getHasBuy() == 0){
             commonBuyView.setVisibility(View.VISIBLE);
             commonBuyView.setBuyPrice(playEntity.getPrice());
+            if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 超级会员判断
+                commonBuyView.setVipBtnVisibility(View.VISIBLE);
+            } else {
+                commonBuyView.setVipBtnVisibility(View.GONE);
+            }
             setButtonEnabled(false);
         }else{
             commonBuyView.setVisibility(View.GONE);

@@ -31,7 +31,8 @@
         android:divider="@drawable/list_dotted_line"
         android:dividerHeight="24dp"
         android:layerType="software"
-        android:nestedScrollingEnabled="false"/>
+        android:nestedScrollingEnabled="false"
+        android:clickable="false"/>
 
     <TextView
         android:id="@+id/earning_empty_tip"

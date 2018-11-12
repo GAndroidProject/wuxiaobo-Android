@@ -15,13 +15,16 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.youth.banner.BannerConfig;
+import com.youth.banner.listener.OnBannerListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import xiaoe.com.common.entitys.ComponentInfo;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.GraphicNavItem;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
+import xiaoe.com.common.entitys.ShufflingItem;
 import xiaoe.com.common.interfaces.OnItemClickWithKnowledgeListener;
 import xiaoe.com.common.interfaces.OnItemClickWithNavItemListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
@@ -256,9 +259,50 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 }
                 break;
             case DecorateEntityType.SHUFFLING_FIGURE:
-                List<String> shufflingList = currentBindComponent.getShufflingList();
+                final List<ShufflingItem> shufflingList = currentBindComponent.getShufflingList();
                 ShufflingFigureViewHolder shufflingFigureViewHolder = (ShufflingFigureViewHolder) holder;
-                shufflingFigureViewHolder.banner.setImages(shufflingList).setImageLoader(new ShufflingImageLoader()).setBannerStyle(BannerConfig.NOT_INDICATOR).start();
+                List<String> imgList = new ArrayList<>();
+                for (ShufflingItem item : shufflingList) {
+                    imgList.add(item.getImgUrl());
+                }
+                shufflingFigureViewHolder.banner.setImages(imgList).setImageLoader(new ShufflingImageLoader()).setBannerStyle(BannerConfig.NOT_INDICATOR).start();
+                shufflingFigureViewHolder.banner.setOnBannerListener(new OnBannerListener() {
+                    @Override
+                    public void OnBannerClick(int position) {
+                        ShufflingItem shufflingItem = shufflingList.get(position);
+                        String resourceType = shufflingItem.getSrcType();
+                        String resourceId = shufflingItem.getSrcId();
+                        switch (resourceType) {
+                            case DecorateEntityType.IMAGE_TEXT:
+                                JumpDetail.jumpImageText(mContext, resourceId, "");
+                                break;
+                            case DecorateEntityType.AUDIO:
+                                JumpDetail.jumpImageText(mContext, resourceId, "");
+                                break;
+                            case DecorateEntityType.VIDEO:
+                                JumpDetail.jumpVideo(mContext, resourceId, "", false);
+                                break;
+                            case DecorateEntityType.COLUMN:
+                                JumpDetail.jumpColumn(mContext, resourceId, "", false);
+                                break;
+                            case DecorateEntityType.TOPIC:
+                                JumpDetail.jumpColumn(mContext, resourceId, "", true);
+                                break;
+                            case "message": // 消息页面 TODO: 跳转到消息页面
+                                break;
+                            case "my_purchase": // 已购
+                                JumpDetail.jumpMineLearning(mContext, "我正在学");
+                                break;
+                            case "custom": // 外部链接 TODO: 跳转到外部链接
+                                break;
+                            case "micro_page": // 微页面 TODO: 跳转到微页面
+                                break;
+                            default:
+                                Log.d(TAG, "OnBannerClick: 未知链接");
+                                break;
+                        }
+                    }
+                });
                 break;
             case DecorateEntityType.BOOKCASE:
                 break;

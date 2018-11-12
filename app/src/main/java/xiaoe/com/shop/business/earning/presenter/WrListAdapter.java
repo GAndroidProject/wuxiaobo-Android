@@ -50,7 +50,7 @@ public class WrListAdapter extends BaseAdapter {
         }
 
         wrListViewHolder.wrTitle.setText(wrItemList.get(position).getWrTitle());
-        String price = "￥" + (wrItemList.get(position).getWrMoney() / 100);
+        String price = "￥" + wrItemList.get(position).getWrMoney();
         wrListViewHolder.wrMoney.setText(price);
         wrListViewHolder.wrTime.setText(wrItemList.get(position).getWrTime());
         wrListViewHolder.wrState.setText(wrItemList.get(position).getWrState());

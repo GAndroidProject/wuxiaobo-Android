@@ -8,13 +8,16 @@ import android.widget.ImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.youth.banner.loader.ImageLoader;
 
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
+import xiaoe.com.shop.utils.SetImageUriUtil;
+
 
 public class ShufflingImageLoader extends ImageLoader {
 
     @Override
     public void displayImage(Context context, Object path, ImageView imageView) {
         SimpleDraweeView simpleDraweeView = (SimpleDraweeView)imageView;
-        simpleDraweeView.setImageURI(path.toString());
+        SetImageUriUtil.setImgURI(simpleDraweeView, path.toString(), Dp2Px2SpUtil.dp2px(context, 375), Dp2Px2SpUtil.dp2px(context, 160));
     }
 
     @Override

@@ -1,9 +1,11 @@
 package xiaoe.com.common.entitys;
 
+import java.math.BigDecimal;
+
 public class WrItem {
 
     private String wrTitle; // 提现记录 item 标题
-    private int wrMoney; // 提现记录 item 金额
+    private BigDecimal wrMoney; // 提现记录 item 金额
     private String wrTime; // 提现记录 item 时间
     private String wrState; // 提现记录 item 状态
 
@@ -11,7 +13,7 @@ public class WrItem {
         this.wrTitle = wrTitle;
     }
 
-    public void setWrMoney(int wrMoney) {
+    public void setWrMoney(BigDecimal wrMoney) {
         this.wrMoney = wrMoney;
     }
 
@@ -28,7 +30,7 @@ public class WrItem {
         return wrTitle;
     }
 
-    public int getWrMoney() {
+    public BigDecimal getWrMoney() {
         return wrMoney;
     }
 

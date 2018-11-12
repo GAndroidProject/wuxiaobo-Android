@@ -36,6 +36,7 @@ import xiaoe.com.common.entitys.FlowInfoItem;
 import xiaoe.com.common.entitys.GraphicNavItem;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.entitys.RecentUpdateListItem;
+import xiaoe.com.common.entitys.ShufflingItem;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.ColumnListRequst;
@@ -86,6 +87,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 
     int toolbarHeight;
     boolean isMain = true;
+    boolean hasSearch = false;
 
     MainActivity mainActivity;
     private String mColumnTitle;
@@ -243,15 +245,27 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     componentInfo_title.setTitle("课程");
                     componentInfo_title.setType(DecorateEntityType.SEARCH_STR);
                     microPageList.add(componentInfo_title);
+                    hasSearch = true;
                     break;
                 case DecorateEntityType.SHUFFLING_FIGURE_STR: // 轮播图
                     ComponentInfo componentInfo_shuffling = new ComponentInfo();
                     componentInfo_shuffling.setType(DecorateEntityType.SHUFFLING_FIGURE_STR);
-                    List<String> urlList = new ArrayList<>();
+                    List<ShufflingItem> urlList = new ArrayList<>();
                     JSONArray shufflingSubList = (JSONArray) itemObj.get("list");
                     for (Object subItem : shufflingSubList) {
                         JSONObject subItemObj = (JSONObject) subItem;
-                        urlList.add(subItemObj.getString("img_url"));
+                        String title = subItemObj.getString("title");
+                        String imgUrl = subItemObj.getString("img_url");
+                        String resourceType = subItemObj.getString("src_type");
+                        String resourceId = subItemObj.getString("src_id");
+
+                        ShufflingItem shufflingItem = new ShufflingItem();
+                        shufflingItem.setTitle(title);
+                        shufflingItem.setImgUrl(imgUrl);
+                        shufflingItem.setSrcId(resourceId);
+                        shufflingItem.setSrcType(resourceType);
+
+                        urlList.add(shufflingItem);
                     }
                     componentInfo_shuffling.setShufflingList(urlList);
                     microPageList.add(componentInfo_shuffling);
@@ -614,7 +628,11 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             microPageToolbar.setBackgroundColor(Color.argb((int) alpha,30,89,246));
             if (alpha == 255) {
                 microPageToolbarTitle.setVisibility(View.VISIBLE);
-                microPageToolbarSearch.setVisibility(View.VISIBLE);
+                if (hasSearch) {
+                    microPageToolbarSearch.setVisibility(View.VISIBLE);
+                } else {
+                    microPageToolbarSearch.setVisibility(View.GONE);
+                }
             } else {
                 microPageToolbarTitle.setVisibility(View.GONE);
                 microPageToolbarSearch.setVisibility(View.GONE);

@@ -26,7 +26,7 @@ public class ComponentInfo {
     // 最近更新子列表集合
     private List<RecentUpdateListItem> subList;
     // 轮播图集合
-    private List<String> shufflingList;
+    private List<ShufflingItem> shufflingList;
     // 知识商品分组子列表集合
     private List<KnowledgeCommodityItem> knowledgeCommodityItemList;
     // 信息流分组子列表集合
@@ -86,11 +86,11 @@ public class ComponentInfo {
         return knowledgeCommodityItemList;
     }
 
-    public void setShufflingList(List<String> shufflingList) {
+    public void setShufflingList(List<ShufflingItem> shufflingList) {
         this.shufflingList = shufflingList;
     }
 
-    public List<String> getShufflingList() {
+    public List<ShufflingItem> getShufflingList() {
         return shufflingList;
     }
 

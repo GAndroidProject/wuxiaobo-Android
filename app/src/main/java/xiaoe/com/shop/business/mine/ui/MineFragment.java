@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,20 +31,26 @@ import xiaoe.com.common.entitys.MineMoneyItemInfo;
 import xiaoe.com.common.interfaces.OnItemClickWithMoneyItemListener;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.EarningRequest;
 import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.requests.IntegralRequest;
 import xiaoe.com.network.requests.IsSuperVipRequest;
+import xiaoe.com.network.requests.MineLearningRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.cdkey.ui.CdKeyActivity;
 import xiaoe.com.shop.business.coupon.ui.CouponActivity;
 import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
+import xiaoe.com.shop.business.earning.presenter.EarningPresenter;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MineLearningListAdapter;
 import xiaoe.com.shop.business.mine.presenter.MoneyWrapRecyclerAdapter;
+import xiaoe.com.shop.business.mine_learning.presenter.MineLearningPresenter;
 import xiaoe.com.shop.business.super_vip.presenter.SuperVipPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.StatusBarUtil;
+import xiaoe.com.shop.widget.StatusPagerView;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, OnItemClickWithMoneyItemListener {
 
@@ -64,8 +71,23 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     MineMoneyWrapView mineMoneyWrapView;
     @BindView(R.id.mine_learning_view)
     MineLearningWrapView mineLearningWrapView;
+    @BindView(R.id.mine_loading)
+    StatusPagerView mineLoading;
 
     MainActivity mainActivity;
+
+    EarningPresenter earningPresenter;
+    MineLearningPresenter mineLearningPresenter;
+
+    String balance;
+    String integral;
+
+    MineMoneyItemInfo item_1; // 奖学金
+    MineMoneyItemInfo item_2; // 积分
+    List<MineMoneyItemInfo> itemInfoList;
+    boolean isScholarshipFinish; // 奖学金请求完成
+    boolean isIntegralFinish;    // 积分请求完成
+    boolean isMineLearningFinish; // 我正在学请求完成
 
     @Nullable
     @Override
@@ -74,6 +96,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         unbinder = ButterKnife.bind(this, view);
         mContext = getContext();
         mainActivity = (MainActivity) getActivity();
+        mineLoading.setVisibility(View.VISIBLE);
+        mineLoading.setLoadingState(View.VISIBLE);
         view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
         return view;
     }
@@ -81,6 +105,73 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+        // 网络请求数据代码
+//        MinePresenter minePresenter = new MinePresenter(this);
+    }
+
+    @Override
+    protected void onFragmentFirstVisible() {
+        super.onFragmentFirstVisible();
+        if (earningPresenter == null) {
+            earningPresenter = new EarningPresenter(this);
+        }
+        if (mineLearningPresenter == null) {
+            mineLearningPresenter = new MineLearningPresenter(this);
+        }
+        isScholarshipFinish = false;
+        isIntegralFinish = false;
+        isMineLearningFinish = false;
+        earningPresenter.requestDetailData(1, 1, 1);
+        earningPresenter.requestIntegralData(1, 1, 1);
+        mineLearningPresenter.requestLearningData(1, 1);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        List<LoginUser> loginMsg = getLoginUserList();
+        if (loginMsg.size() == 1) {
+            initMineMsg();
+            initData();
+        } else {
+            // 游客登录
+            mineMsgView.setNickName("点击登录");
+            mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
+            mineVipCard.setVisibility(View.GONE);
+            mineMsgView.setBuyVipVisibility(View.GONE);
+            // 超级会员隐藏后奖学金的位置
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int left = Dp2Px2SpUtil.dp2px(mContext, 20);
+            int top = Dp2Px2SpUtil.dp2px(mContext, -36);
+            int right = Dp2Px2SpUtil.dp2px(mContext, 20);
+            layoutParams.setMargins(left, top, right ,0);
+            mineMoneyWrapView.setLayoutParams(layoutParams);
+            // 金钱容器（未登录状态）
+            List<MineMoneyItemInfo> tempList = new ArrayList<>();
+            MineMoneyItemInfo item_1_temp = new MineMoneyItemInfo();
+            item_1_temp.setItemTitle("￥0.00");
+            item_1_temp.setItemDesc("奖学金");
+            MineMoneyItemInfo item_2_temp = new MineMoneyItemInfo();
+            item_2_temp.setItemTitle("0");
+            item_2_temp.setItemDesc("积分");
+            tempList.add(item_1_temp);
+            tempList.add(item_2_temp);
+            MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, tempList);
+            moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
+            mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
+            MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
+            mineLearningWrapView.setLearningListAdapter(learningListAdapter);
+            mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+            mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
+        }
+
+        initListener();
     }
 
     private void initData() {
@@ -117,29 +208,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             layoutParams.setMargins(left, top, right ,0);
             mineMoneyWrapView.setLayoutParams(layoutParams);
         }
-        // 金钱容器假数据
-        List<MineMoneyItemInfo> itemInfoList = new ArrayList<>();
-        MineMoneyItemInfo item_1 = new MineMoneyItemInfo();
-        item_1.setItemTitle("￥0.00");
-        item_1.setItemDesc("奖学金");
-        MineMoneyItemInfo item_2 = new MineMoneyItemInfo();
-        item_2.setItemTitle("0");
-        item_2.setItemDesc("积分");
-        itemInfoList.add(item_1);
-        itemInfoList.add(item_2);
-        MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
-        moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
-        mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
-        // 我正在学假数据
-        // TODO: 根据是否登录显示正在学的 item
-        // mineLearningWrap.setLearningContainerVisibility(View.GONE);
-        mineLearningWrapView.setLearningIconURI("http://pic13.nipic.com/20110331/3032951_224550202000_2.jpg");
-        mineLearningWrapView.setLearningTitle("我的财富计划");
-        mineLearningWrapView.setLearningUpdate("已更新至07-22期");
-        // TODO: 如果没有登录或者登录了没有在学课程就需要将登录描述显示出来否则隐藏
+        // 金钱容器
+        itemInfoList = new ArrayList<>();
+        // 我正在学
         mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
-        MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(mContext);
-        mineLearningWrapView.setLearningListAdapter(learningListAdapter);
     }
 
     private void initListener() {
@@ -156,56 +228,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mineLearningWrapView.setLearningMoreClickListener(this);
         mineLearningWrapView.setLearningListItemClickListener(this);
         mineVipCard.setCardContainerClickListener(this);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-        // 网络请求数据代码
-//        MinePresenter minePresenter = new MinePresenter(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        List<LoginUser> loginMsg = getLoginUserList();
-        if (loginMsg.size() == 1) {
-            initMineMsg();
-            initData();
-        } else {
-            // 游客登录
-            mineMsgView.setNickName("点击登录");
-            mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
-            mineVipCard.setVisibility(View.GONE);
-            mineMsgView.setBuyVipVisibility(View.GONE);
-            // 超级会员隐藏后奖学金的位置
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int left = Dp2Px2SpUtil.dp2px(mContext, 20);
-            int top = Dp2Px2SpUtil.dp2px(mContext, -36);
-            int right = Dp2Px2SpUtil.dp2px(mContext, 20);
-            layoutParams.setMargins(left, top, right ,0);
-            mineMoneyWrapView.setLayoutParams(layoutParams);
-            // 金钱容器（未登录状态）
-            List<MineMoneyItemInfo> itemInfoList = new ArrayList<>();
-            MineMoneyItemInfo item_1 = new MineMoneyItemInfo();
-            item_1.setItemTitle("￥0.00");
-            item_1.setItemDesc("奖学金");
-            MineMoneyItemInfo item_2 = new MineMoneyItemInfo();
-            item_2.setItemTitle("0");
-            item_2.setItemDesc("积分");
-            itemInfoList.add(item_1);
-            itemInfoList.add(item_2);
-            MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
-            moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
-            mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
-            MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
-            mineLearningWrapView.setLearningListAdapter(learningListAdapter);
-            mineLearningWrapView.setLearningContainerVisibility(View.GONE);
-            mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-        }
-
-        initListener();
     }
 
     @Override
@@ -226,9 +248,76 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取超级会员信息失败...");
                 }
+            } else if (iRequest instanceof EarningRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    int scholarship = data.getInteger("balance");
+                    balance = "￥" + String.valueOf(scholarship / 100);
+                    item_1 = new MineMoneyItemInfo();
+                    item_1.setItemTitle(balance);
+                    item_1.setItemDesc("奖学金");
+                    isScholarshipFinish = true;
+                    initPageData();
+                } else {
+                    Log.d(TAG, "onMainThreadResponse: 请求奖学金总额失败");
+                }
+            } else if (iRequest instanceof IntegralRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    int integral = data.getInteger("balance");
+                    item_2 = new MineMoneyItemInfo();
+                    item_2.setItemTitle(String.valueOf(integral));
+                    item_2.setItemDesc("积分");
+                    isIntegralFinish = true;
+                    initPageData();
+                } else {
+                    Log.d(TAG, "onMainThreadResponse: 请求积分总额失败");
+                }
+            } else if (iRequest instanceof MineLearningRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    JSONArray goodsList = (JSONArray) data.get("goods_list");
+                    JSONObject listItem = (JSONObject) goodsList.get(0);
+                    JSONObject item = (JSONObject) listItem.get("info");
+                    mineLearningWrapView.setLearningIconURI(item.getString("img_url"));
+                    mineLearningWrapView.setLearningTitle(item.getString("title"));
+                    int updateCount = item.getInteger("periodical_count") == null ? 0 : item.getInteger("periodical_count");
+                    if (updateCount > 0) {
+                        mineLearningWrapView.setLearningUpdate("已更新至" + updateCount + "期");
+                    } else {
+                        mineLearningWrapView.setLearningUpdate("已购");
+                    }
+                    isMineLearningFinish = true;
+                    initPageData();
+                } else {
+                    Log.d(TAG, "onMainThreadResponse: 请求我正在学失败");
+                }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail...");
+        }
+    }
+
+    // 初始化页面数据
+    private void initPageData() {
+        if (isIntegralFinish && isScholarshipFinish && isMineLearningFinish) { // 奖学金和积分和我正在学都请求完后再执行
+            itemInfoList.add(item_1);
+            itemInfoList.add(item_2);
+            MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
+            moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
+            mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
+
+            MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(mContext);
+            mineLearningWrapView.setLearningListAdapter(learningListAdapter);
+
+            mineLoading.setLoadingState(View.GONE);
+            mineLoading.setVisibility(View.GONE);
+        } else {
+            mineLoading.setVisibility(View.VISIBLE);
+            mineLoading.setLoadingState(View.VISIBLE);
         }
     }
 

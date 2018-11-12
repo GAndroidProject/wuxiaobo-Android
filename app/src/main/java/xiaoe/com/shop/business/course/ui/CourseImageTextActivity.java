@@ -24,6 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
@@ -179,7 +180,6 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         itBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: 1111111111111111111111111");
                 onBackPressed();
             }
         });
@@ -257,6 +257,11 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         }
         String descImgUrl = "res:///" + R.mipmap.img_text_bg;
         SetImageUriUtil.setImgURI(itDescImg, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
+        if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) {
+            itBuy.setVipBtnVisibility(View.VISIBLE);
+        } else {
+            itBuy.setVipBtnVisibility(View.GONE);
+        }
     }
 
     @Override

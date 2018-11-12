@@ -56,4 +56,8 @@ public class CommonBuyView extends LinearLayout {
     public void setBuyBtnText(String price) {
         buyBtn.setText(price);
     }
+
+    public void setVipBtnVisibility(int visibility) {
+        vipBtn.setVisibility(visibility);
+    }
 }

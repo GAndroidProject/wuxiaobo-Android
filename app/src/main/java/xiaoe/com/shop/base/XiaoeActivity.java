@@ -350,6 +350,13 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         }
         payPresenter.payOrder(paymentType, resourceType, resourceId, resourceId, couponId);
     }
+    // 购买超级会员（下单）
+    public void payOrder(String resourceId, String productId, int resourceType, int paymentType, String couponId) {
+        if (payPresenter == null) {
+            payPresenter = new PayPresenter(this, this);
+        }
+        payPresenter.payOrder(paymentType, resourceType, resourceId, productId, couponId);
+    }
     //拉起微信支付
     public void pullWXPay(String appid, String partnerid, String prepayid, String noncestr, String timestamp, String packageValue, String sign){
         if(payPresenter == null){

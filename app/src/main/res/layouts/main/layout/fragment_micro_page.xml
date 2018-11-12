@@ -62,7 +62,9 @@
             android:text="@string/micro_fragment_title"
             android:textSize="18sp"
             android:textColor="@color/white"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"/>
 
         <ImageView
             android:id="@+id/micro_page_toolbar_search"
@@ -71,9 +73,10 @@
             android:src="@mipmap/class_search"
             android:layout_gravity="end"
             tools:ignore="ContentDescription"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"/>
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"/>
 
     </FrameLayout>
 

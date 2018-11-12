@@ -57,6 +57,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
     private boolean paying = false;
     private boolean paySucceed = false;
     private EmptyCouponFragment emptyCouponFragment;
+    private String productId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         mIntent = getIntent();
         payPrice = mIntent.getIntExtra("price",0);
         resourceId = mIntent.getStringExtra("resourceId");
+        productId = mIntent.getStringExtra("productId");
         resourceType = mIntent.getIntExtra("resourceType", 0);
         mCouponPresenter = new CouponPresenter(this);
 
@@ -227,6 +229,10 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         paying = true;
         getDialog().showLoadDialog(false);
         int paymentType = (resourceType == 8 || resourceType == 6) ? 3 : 2;
+        if (productId != null) { // productId 不为空表示为超级会员的购买
+            payOrder(resourceId, productId, resourceType, paymentType, useCouponInfo.getCu_id());
+            return;
+        }
         if(useCouponInfo != null){
             payOrder(resourceId, resourceType, paymentType, useCouponInfo.getCu_id());
         }else{

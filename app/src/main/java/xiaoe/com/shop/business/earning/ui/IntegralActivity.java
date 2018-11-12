@@ -74,7 +74,7 @@ public class IntegralActivity extends XiaoeActivity {
 
         integralWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
         earningPresenter = new EarningPresenter(this);
-        earningPresenter.requestIntegralData(1, 10);
+        earningPresenter.requestIntegralData(1, 1, 10);
 
         initData();
         initListener();
@@ -92,7 +92,6 @@ public class IntegralActivity extends XiaoeActivity {
             integralBeSuperVip.setVisibility(View.GONE);
         }
         integralListTitle.setText("积分流水");
-        integralContent.setText("168");
     }
 
     private void initListener() {
