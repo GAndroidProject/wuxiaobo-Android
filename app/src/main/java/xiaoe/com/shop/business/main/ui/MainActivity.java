@@ -25,7 +25,6 @@ import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
-import xiaoe.com.network.downloadUtil.DownloadFileConfig;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.IsSuperVipRequest;
 import xiaoe.com.shop.R;
@@ -218,7 +217,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         AppUpgradeHelper.getInstance().unregisterEventBus();
-        DownloadFileConfig.getInstance().dbClose();
+//        DownloadFileConfig.getInstance().dbClose();
     }
 
     @Override

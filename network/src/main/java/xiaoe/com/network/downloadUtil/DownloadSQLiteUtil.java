@@ -8,12 +8,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import xiaoe.com.common.entitys.DownloadTableInfo;
 import xiaoe.com.common.utils.ISQLiteCallBack;
 
 /**
@@ -66,7 +68,7 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-//            db.close();
+            db.close();
         }
     }
 
@@ -86,7 +88,7 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-//            db.close();
+            db.close();
         }
     }
 
@@ -111,7 +113,7 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
             return lists;
         } finally {
             cursor.close();
-//            db.close();
+            db.close();
         }
     }
 
@@ -125,7 +127,7 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-//            db.close();
+            db.close();
         }
     }
 
@@ -139,7 +141,7 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-//            db.close();
+            db.close();
         }
     }
 
@@ -159,7 +161,7 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-//            db.close();
+            db.close();
         }
     }
 
@@ -202,7 +204,7 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
                 cursor.close();
             }
             if(db != null){
-//                db.close();
+                db.close();
             }
         }
         return result;
@@ -212,5 +214,18 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
         if(mDB != null && mDB.isOpen()){
             mDB.close();
         }
+    }
+
+
+    public void updateDownloadInfo(DownloadTableInfo downloadTableInfo){
+        Log.d(TAG, "updateDownloadInfo: state = "+downloadTableInfo.getDownloadState());
+        String whereSQL = "app_id=? and resource_id=?";
+        String[] whereVal = {downloadTableInfo.getAppId(), downloadTableInfo.getResourceId()};
+//        SQLiteUtil.update(TABLE_NAME, downloadTableInfo, whereSQL, whereVal);
+        update(DownloadFileConfig.TABLE_NAME, downloadTableInfo, whereSQL, whereVal);
+    }
+
+    public void insertDownloadInfo(DownloadTableInfo downloadTableInfo){
+        insert(DownloadFileConfig.TABLE_NAME, downloadTableInfo);
     }
 }

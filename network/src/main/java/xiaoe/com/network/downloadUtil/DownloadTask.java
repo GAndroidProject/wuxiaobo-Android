@@ -11,8 +11,8 @@ import java.io.RandomAccessFile;
 
 import okhttp3.Call;
 import okhttp3.Response;
+import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.common.entitys.DownloadTableInfo;
-import xiaoe.com.network.utils.ThreadPoolUtils;
 
 /**
  * Created by Cheny on 2017/4/29.
@@ -47,9 +47,13 @@ public class DownloadTask{
 
     private long lastProgress = 0;//上一次的进度
 
-    private int currentDownloadState = MSG_WAIT;
+//    private int currentDownloadState = MSG_WAIT;
 
-    private DownloadListenerThread downloadListenreThread;
+//    private DownloadListenerThread downloadListenerThread;
+
+    private DownloadSQLiteUtil downloadSQLiteUtil ;
+    private DownloadSQLiteUtil updateDownloadSQLiteUtil;
+
     /**
      * 任务管理器初始化数据
      * @param downloadInfo
@@ -61,6 +65,11 @@ public class DownloadTask{
         this.mCacheFiles = new File[THREAD_COUNT];
         this.mHttpUtil = HttpUtil.getInstance();
         this.mDownloadInfo = downloadInfo;
+        downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+        updateDownloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+        if(!downloadSQLiteUtil.tabIsExist(DownloadFileConfig.TABLE_NAME)){
+            downloadSQLiteUtil.execSQL(DownloadFileConfig.CREATE_TABLE_SQL);
+        }
     }
 
     private long getCurrentProgress(){
@@ -72,23 +81,24 @@ public class DownloadTask{
     }
 
     public synchronized void start() {
-        currentDownloadState = MSG_WAIT;
-        if(downloadListenreThread == null){
-            downloadListenreThread = new DownloadListenerThread();
-        }
+//        currentDownloadState = MSG_WAIT;
+//        if(downloadListenerThread == null){
+//            downloadListenerThread = new DownloadListenerThread();
+//        }
         try {
             if(TextUtils.isEmpty(mDownloadInfo.getFileDownloadUrl())){
 //                sendEmptyMessage(MSG_NETWORK_ERROR);
-                currentDownloadState = MSG_NETWORK_ERROR;
-                downloadListenreThread.start();
+//                currentDownloadState = MSG_NETWORK_ERROR;
+                mDownloadInfo.setDownloadState(2);
+                downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
+//                downloadListenerThread.start();
                 return;
             }
             childCanleCount = 0;
             childPauseCount = 0;
             childFinshCount = 0;
             if (isDownloading) return;
-            Log.d(TAG, "start: ---------");
-            downloadListenreThread.start();
+//            downloadListenerThread.start();
             isDownloading = true;
             mHttpUtil.getContentLength(mDownloadInfo.getFileDownloadUrl(), new okhttp3.Callback() {
                 @Override
@@ -96,13 +106,16 @@ public class DownloadTask{
                     if (response.code() != 200) {
                         close(response.body());
                         resetStutus();
-                        currentDownloadState = MSG_REQUEST_FAILURE;
+//                        currentDownloadState = MSG_REQUEST_FAILURE;
+                        mDownloadInfo.setDownloadState(2);
+                        downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
                         return;
                     }
                     // 获取资源大小
                     mFileLength = response.body().contentLength();
                     mDownloadInfo.setTotalSize(mFileLength);
-                    DownloadFileConfig.getInstance().updateDownloadInfo(mDownloadInfo);
+//                    DownloadFileConfig.getInstance().updateDownloadInfo(mDownloadInfo);
+                    downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
                     close(response.body());
                     // 在本地创建一个与资源同样大小的文件来占位
                     mTmpFile = new File(mDownloadInfo.getLocalFilePath(), mDownloadInfo.getFileName() + ".tmp");
@@ -123,32 +136,24 @@ public class DownloadTask{
                         }
                         final long finalEndIndex = endIndex;
                         final int finalThreadId = threadId;
-                        ThreadPoolUtils.runTaskOnThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    download(startIndex, finalEndIndex, finalThreadId);// 开启线程下载
-                                } catch (IOException e) {
-//                                    e.printStackTrace();
-                                    e.printStackTrace();
-//                                    sendEmptyMessage(MSG_REQUEST_FAILURE);
-                                    currentDownloadState = MSG_REQUEST_FAILURE;
-                                }
-                            }
-                        });
+                        download(startIndex, finalEndIndex, finalThreadId);// 开启线程下载
                     }
                 }
 
                 @Override
                 public void onFailure(Call call, IOException e) {
 //                    sendEmptyMessage(MSG_REQUEST_FAILURE);
-                    currentDownloadState = MSG_REQUEST_FAILURE;
+//                    currentDownloadState = MSG_REQUEST_FAILURE;
+                    mDownloadInfo.setDownloadState(2);
+                    downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
                 }
             });
         } catch (IOException e) {
             e.printStackTrace();
 //            sendEmptyMessage(MSG_REQUEST_FAILURE);
-            currentDownloadState = MSG_REQUEST_FAILURE;
+//            currentDownloadState = MSG_REQUEST_FAILURE;
+            mDownloadInfo.setDownloadState(2);
+            downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
         }
     }
 
@@ -167,7 +172,9 @@ public class DownloadTask{
                     newStartIndex = Integer.parseInt(startIndexStr);//重新设置下载起点
                 } catch (NumberFormatException e) {
 //                    e.printStackTrace();
-                    currentDownloadState = MSG_REQUEST_FAILURE;
+//                    currentDownloadState = MSG_REQUEST_FAILURE;
+                    mDownloadInfo.setDownloadState(2);
+                    downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
                 }
             }
         }
@@ -178,7 +185,9 @@ public class DownloadTask{
                 Log.d(TAG, "onResponse: "+response.code());
                 if (response.code() != 206) {// 206：请求部分资源成功码
                     resetStutus();
-                    currentDownloadState = MSG_REQUEST_FAILURE;
+//                    currentDownloadState = MSG_REQUEST_FAILURE;
+                    mDownloadInfo.setDownloadState(2);
+                    downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
                     return;
                 }
                 InputStream is = response.body().byteStream();// 获取流
@@ -196,7 +205,10 @@ public class DownloadTask{
                             close(cacheAccessFile, is, response.body());
                             cleanFile(cacheFile);
 //                            sendEmptyMessage(MSG_CANCEL);
-                            currentDownloadState = MSG_CANCEL;
+//                            currentDownloadState = MSG_CANCEL;
+                            mDownloadInfo.setDownloadState(2);
+                            downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
+                            mListner.onDownloadError(mDownloadInfo, MSG_PAUSE);
                             return;
                         }
                         if (pause) {
@@ -204,7 +216,10 @@ public class DownloadTask{
                             close(cacheAccessFile, is, response.body());
                             //发送暂停消息
 //                            sendEmptyMessage(MSG_PAUSE);
-                            currentDownloadState = MSG_PAUSE;
+//                            currentDownloadState = MSG_PAUSE;
+                            mDownloadInfo.setDownloadState(2);
+                            downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
+                            mListner.onDownloadPause(mDownloadInfo, MSG_PAUSE);
                             return;
                         }
                         tmpAccessFile.write(buffer, 0, length);
@@ -217,7 +232,16 @@ public class DownloadTask{
                         //发送进度消息
                         mProgress[threadId] = progress - startIndex;
 //                        sendEmptyMessage(MSG_PROGRESS);
-                        currentDownloadState = MSG_PROGRESS;
+//                        currentDownloadState = MSG_PROGRESS;
+                        long currentProgress = getCurrentProgress();
+                        if(currentProgress + 10240 > lastProgress){
+                            lastProgress = currentProgress;
+                            mDownloadInfo.setProgress(currentProgress);
+                            mDownloadInfo.setProgress(getCurrentProgress());
+                            mDownloadInfo.setDownloadState(1);
+                            updateDownloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
+                            mListner.onDownloadProgress(mDownloadInfo,progress * 1.0f / mFileLength);
+                        }
                     }
                     //关闭资源
                     close(cacheAccessFile, is, response.body());
@@ -225,10 +249,16 @@ public class DownloadTask{
                     cleanFile(cacheFile);
                     //发送完成消息
 //                    sendEmptyMessage(MSG_FINISH);
-                    currentDownloadState = MSG_FINISH;
+//                    currentDownloadState = MSG_FINISH;
+                    mDownloadInfo.setDownloadState(3);
+                    updateDownloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
+                    mListner.onDownloadFinished(mDownloadInfo);
                 }catch (IOException e){
 //                    sendEmptyMessage(MSG_NETWORK_ERROR);
-                    currentDownloadState = MSG_NETWORK_ERROR;
+//                    currentDownloadState = MSG_NETWORK_ERROR;
+                    mDownloadInfo.setDownloadState(2);
+                    downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
+                    mListner.onDownloadError(mDownloadInfo, MSG_NETWORK_ERROR);
                 }
 
             }
@@ -238,7 +268,10 @@ public class DownloadTask{
                 Log.d(TAG, "onFailure: ------");
                 isDownloading = false;
 //                sendEmptyMessage(MSG_NETWORK_ERROR);
-                currentDownloadState = MSG_NETWORK_ERROR;
+//                currentDownloadState = MSG_NETWORK_ERROR;
+                mDownloadInfo.setDownloadState(2);
+                downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
+                mListner.onDownloadError(mDownloadInfo, MSG_NETWORK_ERROR);
             }
         });
     }
@@ -281,7 +314,6 @@ public class DownloadTask{
     public void pause() {
         pause = true;
 
-        currentDownloadState = MSG_PAUSE;
     }
 
     /**
@@ -296,7 +328,7 @@ public class DownloadTask{
                 resetStutus();
             }
         }
-        currentDownloadState = MSG_CANCEL;
+//        currentDownloadState = MSG_CANCEL;
     }
 
     public DownloadTableInfo getDownloadInfo() {
@@ -318,55 +350,5 @@ public class DownloadTask{
 
     public boolean isDownloading() {
         return isDownloading;
-    }
-
-    class DownloadListenerThread extends Thread {
-        //保存下载进度线程
-        @Override
-        public void run() {
-            boolean isTrue = true;
-            Log.d(TAG, "run:  istrue "+isTrue);
-            while (isTrue) {
-                Log.d(TAG, "run: "+currentDownloadState);
-                if(currentDownloadState == MSG_PROGRESS){
-                    long progress = getCurrentProgress();
-                    if(progress + 10240 > lastProgress){
-                        lastProgress = progress;
-                        mDownloadInfo.setProgress(progress);
-                        mListner.onDownloadProgress(mDownloadInfo,progress * 1.0f / mFileLength);
-                    }
-                } else if(currentDownloadState == MSG_PAUSE){
-                    //暂停
-                    Log.d(TAG, "run: 暂停");
-                    resetStutus();
-                    long cProgress = getCurrentProgress();
-                    mListner.onDownloadPause(mDownloadInfo,cProgress * 1.0f / mFileLength);
-                    isTrue = false;
-                    break;
-                }else if(currentDownloadState == MSG_FINISH){
-                    Log.d(TAG, "handleMessage: 完成");
-                    mTmpFile.renameTo(new File(mDownloadInfo.getLocalFilePath(), mDownloadInfo.getFileName()));//下载完毕后，重命名目标文件名
-                    resetStutus();
-                    mListner.onDownloadFinished(mDownloadInfo);
-                    isTrue = false;
-                    break;
-                }else if(currentDownloadState == MSG_CANCEL){
-                    Log.d(TAG, "run: 取消");
-                    resetStutus();
-                    mProgress = new long[THREAD_COUNT];
-                    mListner.onDownloadCancel(mDownloadInfo);
-                    isTrue = false;
-                    break;
-                }else if(currentDownloadState == MSG_REQUEST_FAILURE || currentDownloadState == MSG_NETWORK_ERROR){
-                    Log.d(TAG, "run: 异常");
-                    resetStutus();
-                    mListner.onDownloadError(mDownloadInfo,  MSG_REQUEST_FAILURE);
-                    isTrue = false;
-                    break;
-                }
-            }
-
-            Log.d(TAG, "SaveProgressThread: all download finish");
-        }
     }
 }

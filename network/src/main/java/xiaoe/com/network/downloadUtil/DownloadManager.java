@@ -81,22 +81,17 @@ public class DownloadManager implements DownloadListner {
         String bigColumnId = download.getBigColumnId();
         String appId = download.getAppId();
         for (int i = 0; i < mAwaitDownloadTasks.size(); i++) {
-            Log.d(TAG, "download: ****** a");
             if (mDownloadTasks.size() >= MAX_DOWNLOAD_COUNT) {
-                Log.d(TAG, "download: ********");
                 return;
             }
             final DownloadTask downloadTask = mAwaitDownloadTasks.remove(i);
             DownloadTableInfo taskDownloadInfo = downloadTask.getDownloadInfo();
             boolean equals = compareResource(appId, resourceId, taskDownloadInfo.getAppId(), taskDownloadInfo.getResourceId());
-            Log.d(TAG, "download: ****** b");
             if (equals) {
-                Log.d(TAG, "download: ****** c");
                 mDownloadTasks.add(downloadTask);
                 ThreadPoolUtils.runTaskOnThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "run: ***********");
                         downloadTask.start();
                     }
                 });
@@ -129,10 +124,11 @@ public class DownloadManager implements DownloadListner {
             boolean equals = compareResource(download.getAppId(), download.getResourceId(), info.getAppId(), info.getResourceId());
             if (equals) {
                 mAwaitDownloadTasks.remove(i);
+                //DownloadFileConfig.getInstance().updateDownloadInfo(download);
                 break;
             }
         }
-        DownloadFileConfig.getInstance().updateDownloadInfo(download);
+//        DownloadFileConfig.getInstance().updateDownloadInfo(download);
         sendDownloadEvent(download, 0, 2);
         //更新数据库----
     }
@@ -217,7 +213,9 @@ public class DownloadManager implements DownloadListner {
 
         String md5Code = MD5Utils.encrypt(download.getResourceId());
         String delSQL = "DELETE FROM "+DownloadFileConfig.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
-        DownloadFileConfig.getInstance().execSQL(delSQL);
+//        DownloadFileConfig.getInstance().execSQL(delSQL);
+        DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+        downloadSQLiteUtil.execSQL(delSQL);
         File file = new File(download.getLocalFilePath());
         if(file.exists() && file.isFile()){
             file.delete();
@@ -243,7 +241,9 @@ public class DownloadManager implements DownloadListner {
 
         String md5Code = MD5Utils.encrypt(download.getResourceId());
         String delSQL = "DELETE FROM "+DownloadFileConfig.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
-        DownloadFileConfig.getInstance().execSQL(delSQL);
+//        DownloadFileConfig.getInstance().execSQL(delSQL);
+        DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+        downloadSQLiteUtil.execSQL(delSQL);
         File file = new File(download.getLocalFilePath());
 
         deleteDirWihtFile(file);
@@ -349,7 +349,9 @@ public class DownloadManager implements DownloadListner {
         String md5Code = MD5Utils.encrypt(topicId+columnId+resourceId);
         //查询下载列表中是否存在
         String querySQL ="select * from "+DownloadFileConfig.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
-        List<DownloadTableInfo> tableInfos = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resourceId});
+//        List<DownloadTableInfo> tableInfos = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resourceId});
+        DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+        List<DownloadTableInfo> tableInfos = downloadSQLiteUtil.query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resourceId});
         //如果数据里没有，则添加
         if(tableInfos == null || tableInfos.size() <= 0){
             //实际下载的内容
@@ -376,7 +378,8 @@ public class DownloadManager implements DownloadListner {
             }
             downloadTableInfo.setCreateAt(DateFormat.currentTime());
             downloadTableInfo.setUpdateAt(DateFormat.currentTime());
-            DownloadFileConfig.getInstance().insertDownloadInfo(downloadTableInfo);
+//            DownloadFileConfig.getInstance().insertDownloadInfo(downloadTableInfo);
+            downloadSQLiteUtil.insertDownloadInfo(downloadTableInfo);
             start(downloadTableInfo);
             allDownloadList.put(resource.getResource_id(), downloadTableInfo);
         }
@@ -438,7 +441,9 @@ public class DownloadManager implements DownloadListner {
         String querySQL ="select * from "+DownloadFileConfig.TABLE_NAME+" where resource_id=? limit 1";
         for (ColumnSecondDirectoryEntity resInfo : resourceList) {
 //            List<DownloadResourceTableInfo> tableInfos = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, querySQL, new String[]{resInfo.getResource_id()});
-            List<DownloadTableInfo> tableInfos = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{resInfo.getResource_id()});
+//            List<DownloadTableInfo> tableInfos = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{resInfo.getResource_id()});
+            DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+            List<DownloadTableInfo> tableInfos = downloadSQLiteUtil.query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{resInfo.getResource_id()});
             //如果数据里没有，则添加
             if(tableInfos != null && tableInfos.size() > 0){
                 //已经存在
@@ -465,7 +470,8 @@ public class DownloadManager implements DownloadListner {
             }
             downloadTableInfo.setCreateAt(DateFormat.currentTime());
             downloadTableInfo.setUpdateAt(DateFormat.currentTime());
-            DownloadFileConfig.getInstance().insertDownloadInfo(downloadTableInfo);
+//            DownloadFileConfig.getInstance().insertDownloadInfo(downloadTableInfo);
+            downloadSQLiteUtil.insertDownloadInfo(downloadTableInfo);
         }
     }
 
@@ -507,10 +513,6 @@ public class DownloadManager implements DownloadListner {
 
     @Override
     public void onDownloadProgress(DownloadTableInfo downloadInfo, float progress) {
-//        Log.d(TAG, "onDownloadProgress: main = "+Looper.getMainLooper());
-//        Log.d(TAG, "onDownloadProgress: child = "+Looper.myLooper());
-//        Log.d(TAG, "onDownloadProgress: main id = "+Looper.getMainLooper().getThread().getId());
-//        Log.d(TAG, "onDownloadProgress: child id = "+Thread.currentThread().getId());
         sendDownloadEvent(downloadInfo, progress, 1);
     }
 
@@ -540,12 +542,6 @@ public class DownloadManager implements DownloadListner {
      * @param status
      */
     private void sendDownloadEvent(final DownloadTableInfo downloadInfo, final float progress, final int status) {
-//        getInstanceDownloadEvent();
-//        DownloadEvent downloadEvent = new DownloadEvent();
-//        downloadEvent.setDownloadInfo(downloadInfo);
-//        downloadEvent.setProgress(progress);
-//        downloadEvent.setStatus(status);
-
         downloadInfo.setUpdateAt(DateFormat.currentTime());
         //0-等待，1-下载中，2-暂停，3-完成
         if (status == 0) {
@@ -579,12 +575,6 @@ public class DownloadManager implements DownloadListner {
             Log.d(TAG, "sendDownlaodEvent: 请求失败");
             downloadInfo.setDownloadState(2);
         }
-        ThreadPoolUtils.runTaskOnThread(new Runnable() {
-            @Override
-            public void run() {
-                DownloadFileConfig.getInstance().updateDownloadInfo(downloadInfo);
-            }
-        });
         ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
             @Override
             public void run() {
@@ -594,7 +584,6 @@ public class DownloadManager implements DownloadListner {
             }
         });
 
-//        EventBus.getDefault().post(downloadEvent);
     }
 
 
@@ -613,7 +602,10 @@ public class DownloadManager implements DownloadListner {
      */
     public void setDownloadPause(){
         String querySQL = "update "+DownloadFileConfig.TABLE_NAME+" SET download_state = 2 where download_state!=3";
-        DownloadFileConfig.getInstance().execSQL(querySQL);
+//        DownloadFileConfig.getInstance().execSQL(querySQL);
+
+        DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+        downloadSQLiteUtil.execSQL(querySQL);
     }
 
     /**
@@ -622,16 +614,18 @@ public class DownloadManager implements DownloadListner {
     public List<DownloadTableInfo> getDownloadingList(){
         //获取下载资源
         String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" where download_state!=3 order by create_at desc";
-        List<DownloadTableInfo> dbDownloadingList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
-
+//        List<DownloadTableInfo> dbDownloadingList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
+        DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+        List<DownloadTableInfo> dbDownloadingList = downloadSQLiteUtil.query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
         return dbDownloadingList;
     }
 
     public List<DownloadResourceTableInfo> getDownloadFinishList(){
         //获取已下载完成的资源
         String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" where download_state=3 order by create_at desc";
-        List<DownloadTableInfo> dbDownloadList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
-
+//        List<DownloadTableInfo> dbDownloadList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
+        DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+        List<DownloadTableInfo> dbDownloadList = downloadSQLiteUtil.query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
         if(dbDownloadList == null || dbDownloadList.size() <= 0){
             return null;
         }
@@ -648,7 +642,9 @@ public class DownloadManager implements DownloadListner {
     public DownloadResourceTableInfo getDownloadFinish(String appId, String resId){
         //获取已下载完成的资源
         String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" where app_id=? and resource_id=? and download_state=3 limit 1";
-        List<DownloadTableInfo> dbDownloadList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resId});
+//        List<DownloadTableInfo> dbDownloadList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resId});
+        DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+        List<DownloadTableInfo> dbDownloadList = downloadSQLiteUtil.query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{appId, resId});
         if(dbDownloadList == null || dbDownloadList.size() <= 0){
             return null;
         }
@@ -678,7 +674,9 @@ public class DownloadManager implements DownloadListner {
         if(allDownloadList == null){
             allDownloadList = new HashMap<String, DownloadTableInfo>();
             String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" order by create_at desc";
-            List<DownloadTableInfo> dbDownloadingList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
+//            List<DownloadTableInfo> dbDownloadingList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
+            DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+            List<DownloadTableInfo> dbDownloadingList = downloadSQLiteUtil.query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
             for (DownloadTableInfo download : dbDownloadingList) {
                 allDownloadList.put(download.getResourceId(), download);
             }
