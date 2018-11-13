@@ -33,10 +33,9 @@ public class Constants {
     //缓存有效持续时间(秒)
     public static final int CACHE_DURATION = 432000;//5天
     //Bugly测试环境
-    private static final String TEST_BUGLY_ID = "ff632cf71b";
-    private static final String FORMAL_BUGLY_ID = "ff632cf71b";
-//    Bugly正式环境
-//    private static final String FORMAL_BUGLY_ID = "05b0bd6eec";
+    private static final String TEST_BUGLY_ID = "417b763f59";
+    //Bugly正式环境
+    private static final String FORMAL_BUGLY_ID = "417b763f59";
     //一小时秒数
     public static final int HOUR_SECOND = 3600;
     //一小时毫秒数

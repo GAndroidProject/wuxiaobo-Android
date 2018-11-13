@@ -22,9 +22,40 @@
 -dontoptimize
 -dontpreverify
 
+-dontwarn com.google.android.maps.**
+-dontwarn android.webkit.WebView
+-dontwarn com.umeng.**
+-dontwarn com.tencent.weibo.sdk.**
+-dontwarn com.facebook.**
+-keep public class javax.**
+-keep public class android.webkit.**
+-dontwarn android.support.v4.**
+
 -dontwarn cn.jpush.**
 -keep class cn.jpush.** { *; }
 -keep class * extends cn.jpush.android.helpers.JPushMessageReceiver { *; }
 
 -dontwarn cn.jiguang.**
 -keep class cn.jiguang.** { *; }
+
+#↓↓↓↓↓↓↓bugly↓↓↓↓↓↓↓↓
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
+#↑↑↑↑↑↑↑bugly↑↑↑↑↑↑↑↑
+
+#↓↓↓↓↓↓↓↓友盟↓↓↓↓↓↓↓↓
+-keep class com.umeng.** {*;}
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+-keep public class xiaoe.com.shop.R$*{
+    public static final int *;
+}
+
+
+
+#↑↑↑↑↑↑↑↑友盟↑↑↑↑↑↑↑↑

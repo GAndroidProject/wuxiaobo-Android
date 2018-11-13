@@ -21,11 +21,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.downloadUtil.DownloadFileConfig;
 import xiaoe.com.network.downloadUtil.DownloadManager;
+import xiaoe.com.network.downloadUtil.DownloadSQLiteUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.LoginBindRequest;
 import xiaoe.com.network.requests.LoginCheckRegisterRequest;
@@ -113,8 +116,14 @@ public class LoginActivity extends XiaoeActivity {
             @Override
             public void run() {
                 //下载列表中，可能有正在下载状态，但是退出是还是正在下载状态，所以启动时将之前的状态置为暂停
-                DownloadManager.getInstance().setDownloadPause();
-                DownloadManager.getInstance().getAllDownloadList();
+                if(SQLiteUtil.tabIsExist(DownloadFileConfig.TABLE_NAME)){
+                    DownloadManager.getInstance().setDownloadPause();
+                    DownloadManager.getInstance().getAllDownloadList();
+                }else{
+                    DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+                    downloadSQLiteUtil.execSQL(DownloadFileConfig.CREATE_TABLE_SQL);
+                }
+
             }
         });
 
