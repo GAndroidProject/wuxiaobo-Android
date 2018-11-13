@@ -56,6 +56,15 @@ public class NetworkEngine {
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
+    public enum HttpMethod{
+        HTTP_POST(1),
+        HTTP_GET(2);
+        HttpMethod(int value){
+            this.value = value;
+        }
+        public int value;
+    }
+
     private OkHttpClient client;
     private static NetworkEngine networkEngine;
 
@@ -96,17 +105,47 @@ public class NetworkEngine {
 
     }
 
+    public void sendRequestByGet(final IRequest iRequest) {
+        ThreadPoolUtils.runTaskOnThread(new Runnable() {
+            @Override
+            public void run() {
+                GET(iRequest.getCmd(), iRequest);
+            }
+        });
+    }
+
     private void POST(String url, IRequest iRequest) {
+        request(HttpMethod.HTTP_POST,url,iRequest);
+    }
+
+    private void GET(String url, IRequest iRequest) {
+        request(HttpMethod.HTTP_GET,url,iRequest);
+    }
+
+    private void request(HttpMethod httpMethod,String url, IRequest iRequest) {
         String formBodyString = iRequest.getWrapedFormBody();
         if (formBodyString == null || TextUtils.isEmpty(formBodyString)) {
             iRequest.onResponse(false, "param error");
             return;
         }
         RequestBody formBody = RequestBody.create(JSON, formBodyString);
-        Request.Builder build = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .tag(iRequest);
+        Request.Builder build = null;
+        if (httpMethod == HttpMethod.HTTP_POST){
+            build = new Request.Builder()
+                    .url(url)
+                    .post(formBody)
+                    .tag(iRequest);
+        }else if (httpMethod == HttpMethod.HTTP_GET){
+            build = new Request.Builder()
+                    .url(iRequest.getUrlWithParams(url))
+                    .tag(iRequest)
+                    .get();
+        }
+        if (build == null) {
+            iRequest.onResponse(false, "httpMethod error");
+            return;
+        }
+
         build.addHeader("app-id", Constants.getWXAppId());
 //        Map<String, String> header = iRequest.getHeader();
 //        if(header != null && header.size() > 0){

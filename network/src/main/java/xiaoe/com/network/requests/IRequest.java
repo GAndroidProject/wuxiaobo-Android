@@ -1,8 +1,8 @@
 package xiaoe.com.network.requests;
 
-
 import com.alibaba.fastjson.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -108,6 +108,27 @@ public abstract class IRequest {
 
     public Map<String, Object> getFormBody() {
         return formBody;
+    }
+
+    public String getUrlWithParams(String url) {
+        StringBuilder builder = new StringBuilder(url);
+        try {
+            if (formBody.size() > 0) {
+                builder.append("?");
+            }
+            int pos = 0;
+            for (String key : formBody.keySet()) {
+                if (pos > 0) {
+                    builder.append("&");
+                }
+                builder.append(String.format("%s=%s", key, URLEncoder.encode(formBody.get(key).toString(), "utf-8")));
+                pos++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+//            Log.e(TAG, "getUrlWithParams: " + e.getMessage());
+        }
+        return builder.toString();
     }
 
     public String getWrapedFormBody() {
