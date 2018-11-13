@@ -175,7 +175,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             isShowControl = false;
         }else{
             playControllerPage.setVisibility(View.VISIBLE);
-            btnPlay.setVisibility(View.VISIBLE);
+//            btnPlay.setVisibility(View.VISIBLE);
             isShowControl = true;
             controlDelayAutoDismiss(2);
         }
@@ -201,7 +201,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     public void onPrepared(MediaPlayer mp) {
         mVideoPlayer.play();
         isPrepareMedia = true;
-        btnPlay.setImageResource(R.mipmap.audiolist_stop);
+//        btnPlay.setImageResource(R.mipmap.audiolist_stop);
         btnPlay.setVisibility(View.GONE);
         playSeekBar.setMax(mVideoPlayer.getDuration());
         totalPlayTime.setText(DateFormat.longToString(mVideoPlayer.getDuration()));
@@ -252,15 +252,18 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         if(state == VideoPlayConstant.VIDEO_STATE_LOADING){
             //加载
             btnPlay.setImageResource(R.mipmap.icon_play_video_loading);
+            btnPlay.setVisibility(VISIBLE);
         }else if(state == VideoPlayConstant.VIDEO_STATE_PLAY){
             //播放
-            btnPlay.setImageResource(R.mipmap.audiolist_stop);
-            btnProgressPlay.setImageResource(R.mipmap.btn_video_play);
+//            btnPlay.setImageResource(R.mipmap.audiolist_stop);
+            btnPlay.setVisibility(GONE);
+            btnProgressPlay.setImageResource(R.mipmap.icon_video_stop);
             controlDelayAutoDismiss(1);
         }else if(state == VideoPlayConstant.VIDEO_STATE_PAUSE){
             //停止
-            btnPlay.setImageResource(R.mipmap.audiolist_play);
-            btnProgressPlay.setImageResource(R.mipmap.btn_video_pause);
+            btnPlay.setImageResource(R.mipmap.icon_video_play_big);
+            btnPlay.setVisibility(VISIBLE);
+            btnProgressPlay.setImageResource(R.mipmap.icon_video_play);
             controlDelayAutoDismiss(1);
         }
     }
