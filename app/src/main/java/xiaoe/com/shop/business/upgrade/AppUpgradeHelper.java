@@ -17,11 +17,19 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import com.alibaba.fastjson.JSON;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
+import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.network.network_interface.IBizCallback;
+import xiaoe.com.network.requests.AppUpgradeRequest;
+import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.network.utils.ThreadPoolUtils;
 import xiaoe.com.shop.BuildConfig;
 import xiaoe.com.shop.R;
+import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.widget.CustomDialog;
 
 /**
  * Created by Haley.Yang on 2018/5/31.
@@ -42,8 +50,8 @@ public class AppUpgradeHelper {
 
     Context mContext;
     Activity mActivity;
-    ProgressDialog mProgressDialog;
-    DownLoadRunnable mDownLoadRunnable;
+    public ProgressDialog mProgressDialog;
+    public DownLoadRunnable mDownLoadRunnable;
 //    MyHandler mHandler;
     String versionName;
     boolean isForceUpdate = false;
@@ -51,8 +59,13 @@ public class AppUpgradeHelper {
     boolean isRequesting = false;
     private boolean hasUpgradeCurrentApp = false;
     private String appName;
+    CustomDialog mCustomDialog;
     AlertDialog mAlertDialog;
     UpgradeResult.Data mData;
+
+    public void setActivity(Activity activity) {
+        mActivity = activity;
+    }
 
     public boolean isHasUpgradeCurrentApp() {
         return hasUpgradeCurrentApp;
@@ -69,25 +82,21 @@ public class AppUpgradeHelper {
     public void registerEventBus(){
         isDownloading = false;
         hasUpgradeCurrentApp = false;
-//        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
     }
 
     public void unregisterEventBus(){
         isDownloading = false;
         hasUpgradeCurrentApp = false;
-//        if (EventBus.getDefault().isRegistered(this))
-//            EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     /**
      * 检查更新
      */
-    public void checkUpgrade(final boolean isManual, Activity activity){
-//        RequestService service = null;
-//        Object object = ApiManager.INSTANCE.getApiService(API_TAG,RequestService.class);
-//        if (object != null && object instanceof RequestService)
-//            service = (RequestService)object;
-//        if (isRequesting || service == null)   return;//是正在请求
+    public void checkUpgrade(final boolean isManual, final Activity activity){
+        if (isRequesting)   return;//是正在请求
         mActivity = activity;
         mContext = activity.getApplicationContext();
         if (isDownloading){
@@ -98,34 +107,44 @@ public class AppUpgradeHelper {
         isRequesting = true;
         versionName = getVersionName(mContext);
 
-//        final int code = 121212;
-//        AsyncTaskManager.getInstance(mContext).request(code, new OnDataListener() {
-//            @Override
-//            public Object doInBackground(int requestCode, String parameter) throws HttpException {
-//                return new SealAction(mContext).checkAppUpgrade("android",versionName,UtilsKt.getChannel(mContext),10120);
-//            }
-//
-//            @Override
-//            public void onSuccess(int requestCode, Object result) {
-//                if (code == requestCode && result instanceof UpgradeResult){
-//                    requestHandle((UpgradeResult) result, isManual);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(int requestCode, int state, Object result) {
-//                isRequesting = false;
-//            }
-//        });
+        if (isManual && activity instanceof XiaoeActivity){
+            mCustomDialog = ((XiaoeActivity)activity).getDialog();
+            mCustomDialog.setCancelable(false);
+            mCustomDialog.setCanceledOnTouchOutside(false);
+        }
 
-//        service.checkAppUpgrade("android",versionName, UtilsKt.getChannel(mContext),10120)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(result -> requestHandle(result, isManual),
-//                        throwable -> {
-//                            isRequesting = false;
-//                            LogUtils.e("checkUpgrade error -> " + throwable);
-//                        });
+        if (mCustomDialog != null && !mCustomDialog.isShowing()){
+            mCustomDialog.setLoadMessage(mContext.getString(R.string.loading_text));
+            mCustomDialog.showLoadDialog(true);
+        }
+
+        AppUpgradeRequest appUpgradeRequest = new AppUpgradeRequest(new IBizCallback() {
+            @Override
+            public void onResponse(IRequest iRequest, final boolean success, final Object entity) {
+                isRequesting = false;
+                ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UpgradeResult upgradeResult;
+                        if (success && entity != null) {
+                            try {
+                                upgradeResult = JSON.parseObject(entity.toString(), UpgradeResult.class);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                upgradeResult = new UpgradeResult(-1,mContext.getString(R.string.get_version_error_msg));
+                            }
+                        }else {
+                            upgradeResult = new UpgradeResult(-1,mContext.getString(R.string.get_version_error_msg));
+                        }
+                        requestHandle(activity,upgradeResult, isManual);
+                    }
+                });
+            }
+        });
+        appUpgradeRequest.addRequestParam("app_id",CommonUserInfo.getShopId());
+        appUpgradeRequest.addRequestParam("type",String.valueOf(1));
+        appUpgradeRequest.addRequestParam("version",versionName);
+        appUpgradeRequest.sendRequest();
     }
 
     private void Toast(Context context,String msg){
@@ -133,15 +152,19 @@ public class AppUpgradeHelper {
             Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
     }
 
-    private void requestHandle(@NonNull UpgradeResult result, boolean isManual) {
+    private void requestHandle(Activity activity,@NonNull UpgradeResult result, boolean isManual) {
+        if (mCustomDialog != null && mCustomDialog.isShowing())
+            mCustomDialog.dismissDialog();
         isRequesting = false;
         log("checkUpgrade -> " + result.toString());
-        if (mActivity == null)   return;
-        if (result != null && 200 == result.code && result.result != null){
-            UpgradeResult.Data data = result.result;
+        if (activity == null)   return;
+        if (result != null && 0 == result.code && result.data != null){
+            UpgradeResult.Data data = result.data;
             mData = data;
 
-//          data.update_mode = 1;
+//            data.update_mode = 1;
+//            data.download_url = "http://v.zhijianlive.com/app-guanwang-release-v1.7.0-1201-20181113-110604.apk";
+//            log("data.download_url2 = " + data.download_url);
             if (1 == data.is_update){//有更新
                 setHasUpgradeCurrentApp(true);
                 EventBus.getDefault().post(new IsHasUpgradeEvent(true));
@@ -156,7 +179,7 @@ public class AppUpgradeHelper {
 
                 isForceUpdate = 1 == data.update_mode;
                 if (0 == data.update_mode || 1 == data.update_mode || isManual)
-                    showUpgradeDialog(data.download_url,data.target_version,content.toString(),mActivity);
+                    showUpgradeDialog(data.download_url,data.version,content.toString(),activity);
             }else if (0 == data.is_update && isManual) {
                 setHasUpgradeCurrentApp(false);
                 EventBus.getDefault().post(new IsHasUpgradeEvent(false));
@@ -174,19 +197,36 @@ public class AppUpgradeHelper {
      * @param upgradeContent
      * @param activity
      */
-    private void showUpgradeDialog(String downloadUrl,String versionName,String upgradeContent, Activity activity){
+    private void showUpgradeDialog(final String downloadUrl, final String versionName, String upgradeContent, final Activity activity){
         if (TextUtils.isEmpty(downloadUrl) || activity == null || (mAlertDialog != null && mAlertDialog.isShowing()))
             return;
-        // 这里的属性可以一直设置，因为每次设置后返回的是一个builder对象
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        mAlertDialog = builder.create();
-        mAlertDialog.setCancelable(false);
-        mAlertDialog.setCanceledOnTouchOutside(false);
-        mAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        //显示对话框
-        mAlertDialog.show();
-        View view = getUpgradeDialogView(downloadUrl, versionName, upgradeContent, activity);
-        mAlertDialog.setContentView(view);
+        AlertDialog versionDialog = new AlertDialog.Builder(activity)
+                            .setTitle("")
+                            .setMessage("最新版本更新了功能，是否下载")
+                            .setPositiveButton("下载", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    startDownload(activity,downloadUrl,versionName);//下载最新的版本程序
+                                }
+                            })
+                            .setNegativeButton("不了", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create();
+                    versionDialog.show();
+//        // 这里的属性可以一直设置，因为每次设置后返回的是一个builder对象
+//        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+//        mAlertDialog = builder.create();
+//        mAlertDialog.setCancelable(false);
+//        mAlertDialog.setCanceledOnTouchOutside(false);
+//        mAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+//        //显示对话框
+//        mAlertDialog.show();
+//        View view = getUpgradeDialogView(downloadUrl, versionName, upgradeContent, activity);
+//        mAlertDialog.setContentView(view);
     }
 
     @NonNull
@@ -284,8 +324,13 @@ public class AppUpgradeHelper {
                 case DownloadManager.STATUS_SUCCESSFUL://下载成功
                     if (mProgressDialog != null && mProgressDialog.isShowing())
                         mProgressDialog.setProgress(100);
-                    canceledDialog(true);
-                    log("install-Apk-file = 下载任务已经完成！");
+                    ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            canceledDialog(true);
+                        }
+                    });
+                    Log.d(TAG,"install-Apk-file = 下载任务已经完成！");
 //                    Toast.makeText(mContext, "下载任务已经完成！", Toast.LENGTH_SHORT).show();
                     break;
 
@@ -293,16 +338,26 @@ public class AppUpgradeHelper {
                     //int progress = (int) msg.obj;
                     if (mProgressDialog != null && mProgressDialog.isShowing()) {
                         mProgressDialog.setProgress(event.progress);
-                        isDownloading = true;
+                        setDownloading(true);
                     }
                     //canceledDialog();
                     break;
 
                 case DownloadManager.STATUS_FAILED://下载失败
-                    canceledDialog(false);
+                    ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            canceledDialog(false);
+                        }
+                    });
                     break;
                 case DownloadManager.STATUS_PAUSED://下载停止
-                    canceledDialog(false);
+                    ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            canceledDialog(false);
+                        }
+                    });
                     break;
                 case DownloadManager.STATUS_PENDING://准备下载
 //                showDialog(activity);
@@ -311,57 +366,25 @@ public class AppUpgradeHelper {
         }
     }
 
-//    private void handleMessage(Message msg, Activity activity) {
-//        long id = mDownLoadRunnable != null ? mDownLoadRunnable.requestId : -1;
-//        if (-1 == id || id != getRequestId())
-//            return;
-//        switch (msg.what){
-//            case DownloadManager.STATUS_SUCCESSFUL://下载成功
-//                if (mProgressDialog != null && mProgressDialog.isShowing())
-//                    mProgressDialog.setProgress(100);
-//                canceledDialog(true);
-//                log("install-Apk-file = 下载任务已经完成！");
-////                    Toast.makeText(mContext, "下载任务已经完成！", Toast.LENGTH_SHORT).show();
-//                break;
-//
-//            case DownloadManager.STATUS_RUNNING://下载中
-//                //int progress = (int) msg.obj;
-//                if (mProgressDialog != null && mProgressDialog.isShowing())
-//                    mProgressDialog.setProgress((int) msg.obj);
-//                isDownloading = true;
-//                //canceledDialog();
-//                break;
-//
-//            case DownloadManager.STATUS_FAILED://下载失败
-//                canceledDialog(false);
-//                break;
-//            case DownloadManager.STATUS_PAUSED://下载停止
-//                canceledDialog(false);
-//                break;
-//            case DownloadManager.STATUS_PENDING://准备下载
-////                showDialog(activity);
-//                break;
-//        }
-//    }
-
     /**
      * 百分比下载进度对话框消失
      */
-    private void canceledDialog(boolean isDownloadSuccess) {
+    public void canceledDialog(boolean isDownloadSuccess) {
         isDownloading = false;
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
+        log("canceledDialog mActivity = " + mActivity);
         if (isForceUpdate){
             if (mActivity == null)  return;
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-            builder.setTitle(mActivity.getString(R.string.app_name))
+            builder.setTitle(mContext.getString(R.string.app_name))
                     .setMessage(isDownloadSuccess ? R.string.upgrade_version_downloaded : R.string.upgrade_version_download_fail)
                     .setNegativeButton(R.string.upgrade_redownload, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (mData == null || mActivity == null)  return;
-                            startDownload(mActivity,mData.download_url,mData.target_version);
+                            startDownload(mActivity,mData.download_url,mData.version);
                         }
                     });
             if (isDownloadSuccess)  builder.setPositiveButton(R.string.upgrade_install, null);
@@ -434,7 +457,8 @@ public class AppUpgradeHelper {
             Uri data;
             if (Build.VERSION.SDK_INT >= 24) {
                 installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//添加这一句表示对目标应用临时授权该Uri所代表的文件
-                data = FileProvider.getUriForFile(context.getApplicationContext(), BuildConfig.APPLICATION_ID + ".DataProvider", file);
+                data = FileProvider.getUriForFile(context.getApplicationContext(), BuildConfig.APPLICATION_ID
+                        + ".FileProvider", file);
             } else {
                 data = Uri.fromFile(file);
             }

@@ -43,7 +43,7 @@ public class InstallApkBroadcast extends BroadcastReceiver {
             Uri data;
             if (Build.VERSION.SDK_INT >= 24) {
                 installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//添加这一句表示对目标应用临时授权该Uri所代表的文件
-                data = FileProvider.getUriForFile(context.getApplicationContext(), BuildConfig.APPLICATION_ID + ".DataProvider", file);
+                data = FileProvider.getUriForFile(context.getApplicationContext(), BuildConfig.APPLICATION_ID + ".FileProvider", file);
             } else {
                 data = Uri.fromFile(file);
             }

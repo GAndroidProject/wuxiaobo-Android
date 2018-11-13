@@ -35,6 +35,7 @@ import xiaoe.com.network.requests.UpdatePhoneRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
+import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
 import xiaoe.com.shop.common.login.LoginPresenter;
 import xiaoe.com.shop.utils.StatusBarUtil;
 
@@ -79,6 +80,8 @@ public class SettingAccountActivity extends XiaoeActivity {
     String newPhone = ""; // 新手机号
     boolean isUpdatePassword = false; // 是否修改密码
 
+    boolean isHasUpgradeCurrentApp;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +105,7 @@ public class SettingAccountActivity extends XiaoeActivity {
         loginPresenter = new LoginPresenter(this, this);
         getSupportFragmentManager().beginTransaction().add(R.id.account_container, currentFragment, MAIN).commit();
         init();
+        isHasUpgradeCurrentApp = AppUpgradeHelper.getInstance().isHasUpgradeCurrentApp();
     }
 
     private void init() {
@@ -252,22 +256,26 @@ public class SettingAccountActivity extends XiaoeActivity {
                     alertDialog.show();
                     break;
                 case VERSION: // 版本更新
-                    final AlertDialog versionDialog = new AlertDialog.Builder(this)
-                            .setTitle("")
-                            .setMessage("最新版本更新了功能，是否下载")
-                            .setPositiveButton("下载", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setNegativeButton("不了", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).create();
-                    versionDialog.show();
+//                    final AlertDialog versionDialog = new AlertDialog.Builder(this)
+//                            .setTitle("")
+//                            .setMessage("最新版本更新了功能，是否下载")
+//                            .setPositiveButton("下载", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            })
+//                            .setNegativeButton("不了", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            }).create();
+//                    versionDialog.show();
+
+                    if (isHasUpgradeCurrentApp){
+                        AppUpgradeHelper.getInstance().checkUpgrade(true,this);
+                    }
                     break;
             }
             return;

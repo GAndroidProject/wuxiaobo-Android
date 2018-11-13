@@ -101,6 +101,13 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".business.upgrade.InstallApkBroadcast">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".business.super_vip.ui.SuperVipActivity" />
 
         <!-- 极光推送相关配置 start -->
@@ -147,6 +154,17 @@
                 <action android:name="cn.jpush.android.intent.PUSH_TIME" />
             </intent-filter>
         </service>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/rc_file_path" />
+        </provider>
+
+
         <!-- since 3.0.9 Required SDK 核心功能-->
         <provider
             android:name="cn.jpush.android.service.DataProvider"

@@ -44,6 +44,7 @@ import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 import xiaoe.com.shop.business.main.ui.MainActivity;
+import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
 import xiaoe.com.shop.common.pay.presenter.PayPresenter;
 import xiaoe.com.shop.interfaces.OnCancelListener;
 import xiaoe.com.shop.interfaces.OnConfirmListener;
@@ -138,6 +139,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             CommonUserInfo.setUserId(user.getUserId());
             CommonUserInfo.setShopId(user.getShopId());
         }
+        AppUpgradeHelper.getInstance().setActivity(this);
     }
     // 状态栏设置
     protected void setStatusBar(){

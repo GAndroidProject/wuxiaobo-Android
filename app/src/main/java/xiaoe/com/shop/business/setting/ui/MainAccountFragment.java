@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.SettingItemInfo;
 import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.interfaces.OnItemClickWithSettingItemInfoListener;
@@ -31,6 +32,7 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
+import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.ActivityCollector;
 
@@ -80,7 +82,8 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
             e.printStackTrace();
         }
         SettingItemInfo memory = new SettingItemInfo("消除缓存", "", cacheSize);
-        SettingItemInfo version = new SettingItemInfo("版本更新", "", "已经是最新版本");
+        SettingItemInfo version = new SettingItemInfo("版本更新", "",
+                AppUpgradeHelper.getInstance().isHasUpgradeCurrentApp() ? Global.g().getVersionName() : "已是最新版本");
         SettingItemInfo us = new SettingItemInfo("关于我们", "", "");
         itemInfoList.add(account);
         itemInfoList.add(message);

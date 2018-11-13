@@ -256,6 +256,7 @@
     <string name="common_bottom_tip">小鹅通提供技术支持</string>
 
     <!-- 版本升级 -->
+    <string name="get_version_error_msg">获取版本更新信息失败</string>
     <string name="find_a_new_version">发现新版本</string>
     <string name="upgrade_do_it_later">以后再说</string>
     <string name="upgrade_now">立即升级</string>
