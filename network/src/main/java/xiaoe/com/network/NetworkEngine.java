@@ -51,6 +51,11 @@ public class NetworkEngine {
     public final static String LOGIN_BASE_URL = "http://app-server.inside.xiaoeknow.com/api/"; // 登录接口 url
     public final static String SCHOLARSHIP_BASE_URL = "http://134.175.39.247:14585/tcs/"; // 奖学金 url
     public final static String EARNING_BASE_URL = "http://134.175.39.247:10888/"; // 赚钱 url
+    /**
+     * 用户登录及绑定注册（极光推送）：app-server.inside.xiaoeknow.com
+     */
+    public static final String BIND_JG_PUSH_URL = "http://app-server.inside.xiaoeknow.com/api/";
+
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient client;
@@ -111,6 +116,8 @@ public class NetworkEngine {
 //                build.addHeader(entry.getKey(),entry.getValue());
 //            }
 //        }
+        Log.d(TAG, "request url - " + url + "\n" + formBodyString);
+
         Request request = build.build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
@@ -137,8 +144,10 @@ public class NetworkEngine {
                     com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
                     body.close();
                     mRequest.onResponse(true, jsonObject);
-                }catch (Exception e){
+                    Log.d(TAG, "request result - " + response.code() + " - " + jsonObject.toJSONString());
+                } catch (Exception e) {
                     mRequest.onResponse(false, null);
+                    Log.d(TAG, "request result - " + response.code() + " - " + e.getMessage());
                 }
             }
         });

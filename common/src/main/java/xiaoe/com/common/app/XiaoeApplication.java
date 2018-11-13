@@ -55,6 +55,7 @@ public class XiaoeApplication extends Application {
         UMConfigure.setLogEnabled(true);
         UMConfigure.init(this, Constants.getUMAppId() ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"");
         PlatformConfig.setWeixin(Constants.getWXAppId(), Constants.getWxSecret());
+        // 初始化 SharedPreference
         SharedPreferencesUtil.getInstance(mContext, SharedPreferencesUtil.FILE_NAME);
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
         MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);

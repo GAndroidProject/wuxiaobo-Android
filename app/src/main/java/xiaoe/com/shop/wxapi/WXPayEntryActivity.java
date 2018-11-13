@@ -44,7 +44,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 	public void onResp(BaseResp resp) {
 		if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
 			Log.e(TAG, "onResp: ------");
-			SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
+//			SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
 			SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, resp.errCode);
 		}
 		finish();

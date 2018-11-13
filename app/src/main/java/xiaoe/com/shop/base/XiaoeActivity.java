@@ -119,7 +119,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
         dialog = new CustomDialog(this);
 
-        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
+//        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
 
         // 初始化数据库
         SQLiteUtil.init(this.getApplicationContext(), new LoginSQLiteCallback());

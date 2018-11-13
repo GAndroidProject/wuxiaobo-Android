@@ -25,6 +25,7 @@ import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.BindJgPushRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.IsSuperVipRequest;
 import xiaoe.com.shop.R;
@@ -32,6 +33,7 @@ import xiaoe.com.shop.adapter.main.MainFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
+import xiaoe.com.shop.business.main.presenter.MessagePushPresenter;
 import xiaoe.com.shop.business.super_vip.presenter.SuperVipPresenter;
 import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
 import xiaoe.com.shop.events.AudioPlayEvent;
@@ -73,17 +75,31 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 //        loginUserList = getLoginUserInfoList();
 //        settingPresenter = new SettingPresenter(this);
 //        settingPresenter.requestPersonData(apiToken, false);
-        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
+//        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
         intent = getIntent();
 
         superVipPresenter = new SuperVipPresenter(this);
 
         isFormalUser = intent.getBooleanExtra("isFormalUser", false);
 
-        if (!isFormalUser) { // 非正式用户，需要手动设置店铺 id 和默认登录 userId
+        // 请求绑定极光推送
+        MessagePushPresenter messagePushPresenter = new MessagePushPresenter(this);
+        if (!isFormalUser) {
+            // 非正式用户，需要手动设置店铺 id 和默认登录 userId
             CommonUserInfo.setShopId(SharedPreferencesUtil.getData("touristsShopId", "").toString());
             CommonUserInfo.setUserId("i_5bda654981f4e_avxWBhkZYk");
+
+            boolean bindJPushSuccess = (boolean) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_BIND_JPUSH_TOURIST_CODE, false);
+            if (!bindJPushSuccess) {
+                messagePushPresenter.requestBindJgPush(false);
+            }
+        } else {
+            boolean bindJPushSuccess = (boolean) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, false);
+            if (!bindJPushSuccess) {
+                messagePushPresenter.requestBindJgPush(true);
+            }
         }
+
         initView();
         initPermission();
         audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
@@ -233,9 +249,26 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取超级会员信息失败...");
                 }
+            } else if (iRequest instanceof BindJgPushRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    setBindJPushSP(true);
+                    Log.d(TAG, "onMainThreadResponse: 绑定极光推送成功...");
+                } else {
+                    setBindJPushSP(false);
+                    Log.d(TAG, "onMainThreadResponse: 绑定极光推送失败...");
+                }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail...");
+        }
+    }
+
+    private void setBindJPushSP(boolean bindSuccess) {
+        if (isFormalUser) {
+            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, bindSuccess);
+        } else {
+            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_BIND_JPUSH_TOURIST_CODE, bindSuccess);
         }
     }
 

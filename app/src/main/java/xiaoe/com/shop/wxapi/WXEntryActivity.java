@@ -82,7 +82,7 @@ public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHa
         }
         if(resp.getType() == ConstantsAPI.COMMAND_SENDAUTH){
             Log.d(TAG, "onResp: code --- " + code);
-            SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
+//            SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
             boolean hasUpdate = SharedPreferencesUtil.putData("wx_code", code);
 //            WXEntry wxEntry = WXEntry.getInstance();
 //            wxEntry.setCode(code);

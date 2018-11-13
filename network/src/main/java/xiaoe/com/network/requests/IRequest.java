@@ -111,8 +111,7 @@ public abstract class IRequest {
     }
 
     public String getWrapedFormBody() {
-        //暂时直接new对象，后期通过缓存获取
-        UserInfo userInfo = new UserInfo();
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("app_id",formBody.containsKey("app_id") ? formBody.get("app_id") : "");
         jsonObject.put("client","6");
@@ -122,7 +121,9 @@ public abstract class IRequest {
 
         String userId = "";
         String encryptData = "";
-        if(userInfo != null){
+        // 暂时直接new对象，后期通过缓存获取
+        UserInfo userInfo = new UserInfo();
+        if (userInfo != null) {
             userId = userInfo.getUserId();
             encryptData = userInfo.getEncryptData();
         }

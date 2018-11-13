@@ -79,6 +79,8 @@ public class LoginSQLiteCallback implements ISQLiteCallBack {
                     values.put(LoginUserEntity.COLUMN_NAME_SHOP_ID, loginUser.getShopId());
                 }
                 break;
+            default:
+                break;
         }
     }
 
@@ -103,6 +105,8 @@ public class LoginSQLiteCallback implements ISQLiteCallBack {
                 loginUser.setPhone(cursor.getString(cursor.getColumnIndex(LoginUserEntity.COLUMN_NAME_PHONE)));
                 loginUser.setShopId(cursor.getString(cursor.getColumnIndex(LoginUserEntity.COLUMN_NAME_SHOP_ID)));
                 return loginUser;
+            default:
+                break;
         }
         return null;
     }

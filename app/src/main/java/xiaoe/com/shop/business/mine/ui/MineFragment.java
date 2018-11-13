@@ -478,6 +478,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     touristDialog.showDialog();
                 }
                 break;
+            default:
+                break;
         }
     }
 
@@ -535,6 +537,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 } else {
                     touristDialog.showDialog();
                 }
+                break;
+            default:
                 break;
         }
     }
