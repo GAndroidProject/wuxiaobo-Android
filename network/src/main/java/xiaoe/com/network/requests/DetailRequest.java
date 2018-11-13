@@ -9,7 +9,7 @@ public class DetailRequest extends IRequest {
      */
     public DetailRequest(IBizCallback iBizCallback) {
 //        super(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.goods.detail.get/1.0.0", iBizCallback);
-        super(NetworkEngine.API_BASE_URL+"xe.goods.detail.get/1.0.0", iBizCallback);
+        super(NetworkEngine.API_THIRD_BASE_URL +"xe.goods.detail.get/1.0.0", iBizCallback);
     }
     public void sendRequest(){
         NetworkEngine.getInstance().sendRequest(this);

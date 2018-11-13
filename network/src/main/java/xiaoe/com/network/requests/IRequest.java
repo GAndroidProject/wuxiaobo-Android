@@ -111,7 +111,7 @@ public abstract class IRequest {
     }
 
     public String getWrapedFormBody() {
-
+        //暂时直接new对象，后期通过缓存获取
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("app_id",formBody.containsKey("app_id") ? formBody.get("app_id") : "");
         jsonObject.put("client","6");
@@ -119,16 +119,6 @@ public abstract class IRequest {
         jsonObject.put("build_version",buildVersion);
         jsonObject.put("client_info",clientInfo);
 
-        String userId = "";
-        String encryptData = "";
-        // 暂时直接new对象，后期通过缓存获取
-        UserInfo userInfo = new UserInfo();
-        if (userInfo != null) {
-            userId = userInfo.getUserId();
-            encryptData = userInfo.getEncryptData();
-        }
-        jsonObject.put("user_id",userId);
-        jsonObject.put("encrypt_data",encryptData);
         for(Map.Entry<String ,Object> entry : formBody.entrySet() ){
             jsonObject.put(entry.getKey(),entry.getValue());
         }
@@ -141,6 +131,8 @@ public abstract class IRequest {
         if(bizDataParams != null){
             jsonObject.put("biz_data", bizDataParams);
         }
+        //如果传了user_id，则去掉，不需要传
+        jsonObject.remove("user_id");
         jsonObject.put("access_token", CommonUserInfo.getApiToken());
         return jsonObject.toJSONString();
     }

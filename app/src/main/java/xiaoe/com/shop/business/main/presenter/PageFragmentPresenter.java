@@ -46,7 +46,7 @@ public class PageFragmentPresenter implements IBizCallback {
             Log.d(TAG, "requestMicroPageData: 游客登录吧....");
             return;
         }
-        PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(NetworkEngine.BASE_URL + "api/xe.shop.page.get/1.0.0", this);
+        PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(this);
         pageFragmentRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         pageFragmentRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
         pageFragmentRequest.addRequestParam("micro_page_id", microPageId);

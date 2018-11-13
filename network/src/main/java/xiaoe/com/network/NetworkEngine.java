@@ -26,6 +26,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import xiaoe.com.common.app.Constants;
+import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
@@ -36,14 +37,11 @@ import xiaoe.com.network.utils.ThreadPoolUtils;
 public class NetworkEngine {
     private static final String TAG = "NetworkEngine";
     //测试环境url http://demo.h5.inside.xiaoe-tech.com/openapp/login
-    private final static String TEST_URL = "http://api.inside.xiaoe-tech.com/";
+    private final static String TEST_API_THIRD_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
     //正式环境url http://api.inside.xiaoe-tech.com
-    private final static String FORMAL_URL = "https://api.xiaoe-tech.com/";
-    //    private final static String BASE_URL = url;
-//    private final static String BASE_URL = XiaoeApplication.isFormalCondition() ? FORMAL_URL : TEST_URL;
-//    private final static String BASE_URL = "http://134.175.39.17:12242/";
-    public final static String BASE_URL = "http://134.175.39.17:9380/";
-    public final static String API_BASE_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
+    private final static String FORMAL_API_THIRD_BASE_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
+//    public final static String BASE_URL = "http://134.175.39.17:9380/";
+    public final static String API_THIRD_BASE_URL = XiaoeApplication.isFormalCondition() ? FORMAL_API_THIRD_BASE_URL : TEST_API_THIRD_URL;
     public final static String CLASS_DETAIL_BASE_URL = "http://134.175.39.17:9378/api/";
     public final static String COMMENT_BASE_URL = "http://134.175.39.17:9379/api/";
     public final static String COLLECTION_BASE_URL = "http://134.175.39.17:9381/api/"; // 收藏接口 url

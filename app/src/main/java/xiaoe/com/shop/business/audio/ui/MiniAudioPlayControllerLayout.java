@@ -64,8 +64,12 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
     }
 
     public void setColumnTitle(String text){
-        if (!TextUtils.isEmpty(text))
+        if (!TextUtils.isEmpty(text)){
             columnTitle.setText(String.format("——《%s》",text));
+        }else{
+            columnTitle.setText("");
+        }
+
     }
 
     public void setPlayState(int state){

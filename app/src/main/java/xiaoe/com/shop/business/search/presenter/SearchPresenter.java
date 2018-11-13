@@ -33,7 +33,7 @@ public class SearchPresenter implements IBizCallback {
      * @param keyWord 搜索关键词
      */
     public void requestSearchResult(String keyWord) {
-        SearchRequest searchRequest = new SearchRequest(NetworkEngine.BASE_URL + cmd, this);
+        SearchRequest searchRequest = new SearchRequest(this);
         searchRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
         searchRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         searchRequest.addDataParam("keyword", keyWord);
@@ -46,7 +46,7 @@ public class SearchPresenter implements IBizCallback {
      * 指定页码、页面大小请求搜索结果
      */
     public void requestSearchResultByPage(String keyWord, int pageIndex, int pageSize) {
-        SearchRequest searchRequest = new SearchRequest(NetworkEngine.BASE_URL + cmd, this);
+        SearchRequest searchRequest = new SearchRequest( this);
         searchRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
         searchRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         searchRequest.addDataParam("keyword", keyWord);
