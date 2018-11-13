@@ -69,7 +69,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     private ComponentInfo currentComponent;
 
     // 知识商品分组形式的 recycler
-    private RecyclerView knowledgeGroupRecycler;
+    private List<RecyclerView> knowledgeGroupRecyclerList;
     private RecentUpdateListAdapter recentUpdateListAdapter;
 
     public DecorateRecyclerAdapter(Context context, List<ComponentInfo> componentList) {
@@ -110,6 +110,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group, null);
                         layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 24), 0, Dp2Px2SpUtil.dp2px(mContext, 24));
                         view.setLayoutParams(layoutParams);
+                        knowledgeGroupRecyclerList = new ArrayList<>();
                         return new KnowledgeGroupViewHolder(view);
                 }
             case DecorateEntityType.SHUFFLING_FIGURE:
@@ -246,7 +247,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                             });
                         }
                         GridLayoutManager lm = new GridLayoutManager(mContext, 2);
-                        knowledgeGroupRecycler = knowledgeGroupViewHolder.groupRecyclerView;
+                        if (!knowledgeGroupRecyclerList.contains(knowledgeGroupViewHolder.groupRecyclerView)) { // 防止重复添加
+                            knowledgeGroupRecyclerList.add(knowledgeGroupViewHolder.groupRecyclerView);
+                        }
                         knowledgeGroupViewHolder.groupRecyclerView.setLayoutManager(lm);
                         // recyclerView 取消滑动
                         knowledgeGroupViewHolder.groupRecyclerView.setNestedScrollingEnabled(false);
@@ -373,24 +376,28 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public void onKnowledgeItemClick(View view, KnowledgeCommodityItem knowledgeCommodityItem) {
+        Log.d(TAG, "onKnowledgeItemClick: ---- " + knowledgeCommodityItem.getSrcType());
+        Log.d(TAG, "onKnowledgeItemClick: ---- ======= " + knowledgeCommodityItem);
         // 知识商品分组形式
-        if (view.getParent() == knowledgeGroupRecycler) {
-            switch (knowledgeCommodityItem.getSrcType()) {
-                case DecorateEntityType.IMAGE_TEXT: // 图文 -- resourceType 为 1，resourceId 需要取
-                    JumpDetail.jumpImageText(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg());
-                    break;
-                case DecorateEntityType.AUDIO: // 音频
-                    JumpDetail.jumpAudio(mContext, knowledgeCommodityItem.getResourceId(), 0);
-                    break;
-                case DecorateEntityType.VIDEO: // 视频
-                    JumpDetail.jumpVideo(mContext, knowledgeCommodityItem.getResourceId(), "", false);
-                    break;
-                case DecorateEntityType.COLUMN: // 专栏
-                    JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), false);
-                    break;
-                case DecorateEntityType.TOPIC: // 大专栏
-                    JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), true);
-                    break;
+        for (RecyclerView itemRecycler : knowledgeGroupRecyclerList) {
+            if (view.getParent() == itemRecycler) {
+                switch (knowledgeCommodityItem.getSrcType()) {
+                    case DecorateEntityType.IMAGE_TEXT: // 图文 -- resourceType 为 1，resourceId 需要取
+                        JumpDetail.jumpImageText(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg());
+                        break;
+                    case DecorateEntityType.AUDIO: // 音频
+                        JumpDetail.jumpAudio(mContext, knowledgeCommodityItem.getResourceId(), 0);
+                        break;
+                    case DecorateEntityType.VIDEO: // 视频
+                        JumpDetail.jumpVideo(mContext, knowledgeCommodityItem.getResourceId(), "", false);
+                        break;
+                    case DecorateEntityType.COLUMN: // 专栏
+                        JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), false);
+                        break;
+                    case DecorateEntityType.TOPIC: // 大专栏
+                        JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), true);
+                        break;
+                }
             }
         }
     }

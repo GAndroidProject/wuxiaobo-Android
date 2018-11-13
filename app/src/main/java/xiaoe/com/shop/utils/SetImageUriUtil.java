@@ -24,6 +24,10 @@ public class SetImageUriUtil {
      */
     public static void setImgURI(SimpleDraweeView simpleDraweeView, String url, int width, int height) {
 
+        if (url == null) {
+            return;
+        }
+
         Uri uri = Uri.parse(url);
 
         //根据View的尺寸放缩图片

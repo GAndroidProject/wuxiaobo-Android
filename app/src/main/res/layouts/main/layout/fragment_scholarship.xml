@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xiaoe.com.shop.widget.CustomScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="none"
-    android:overScrollMode="never">
+    android:layout_height="match_parent">
 
-    <FrameLayout
+    <xiaoe.com.shop.widget.CustomScrollView
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -291,11 +291,11 @@
 
         </LinearLayout>
 
-        <xiaoe.com.shop.widget.StatusPagerView
-            android:id="@+id/scholarship_loading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    </xiaoe.com.shop.widget.CustomScrollView>
 
-    </FrameLayout>
+    <xiaoe.com.shop.widget.StatusPagerView
+        android:id="@+id/scholarship_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-</xiaoe.com.shop.widget.CustomScrollView>
+</FrameLayout>

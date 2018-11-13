@@ -120,6 +120,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
 
     TouristDialog touristDialog;
 
+    String shareUrl;
+    String realSrcId; // 因为信息流的 id 的和实际的 id 不一样，而上报需要真实 id 所以需要一个真实 id
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -267,7 +270,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             @Override
             public void onClick(View v) {
                 JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, true);
-                finish();
+                CourseImageTextActivity.this.finish();
             }
         });
     }
@@ -299,8 +302,10 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     @Override
     public void onBackPressed() {
         // TODO: 获取学习进度
-        UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-        updateLearningUtils.updateLearningProgress(resourceId, Integer.parseInt(resourceType), 10);
+        if (hasBuy) { // 买了才需要上报
+            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+            updateLearningUtils.updateLearningProgress(realSrcId, Integer.parseInt(resourceType), 10);
+        }
         super.onBackPressed();
     }
 
@@ -366,10 +371,12 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         hasBuy = data.getBoolean("available"); // false 没买，true 买了
         if (hasBuy) {
             imgUrl = data.getString("img_url") == null ? "" : data.getString("img_url");
-        } else {
-            if (imgUrl == null || imgUrl.equals("")) {
-                imgUrl = data.getString("img_url_compressed") == null ? "" : data.getString("img_url_compressed");
-            }
+        } else { // 已购的话，都用未压缩图片
+            imgUrl = resourceInfo.getString("img_url") == null ? resourceInfo.getString("img_url_compressed") : resourceInfo.getString("img_url");
+            // 未购数据格式，share_info 跟 resource_info 同级，所以在这里取到
+            JSONObject shareInfo = (JSONObject) data.get("share_info");
+            JSONObject wx = (JSONObject) shareInfo.get("wx");
+            shareUrl = wx.getString("share_url");
         }
         if (resourceInfo == null) { // 已购
             initData(data);
@@ -379,8 +386,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     }
 
     private void initData(JSONObject data) {
-
-        SetImageUriUtil.setImgURI(itBg, imgUrl, Dp2Px2SpUtil.dp2px(this, 20), Dp2Px2SpUtil.dp2px(this, 20));
+        realSrcId = data.getString("resource_id");
+        SetImageUriUtil.setImgURI(itBg, imgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 250));
         // 没有就那预览的内容
         String orgContent = data.getString("content") == null ? data.getString("preview_content") : data.getString("content");
         setOrgContent(orgContent);

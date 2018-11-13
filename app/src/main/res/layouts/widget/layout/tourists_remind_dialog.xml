@@ -25,7 +25,7 @@
             android:id="@+id/dialog_icon"
             android:layout_width="92dp"
             android:layout_height="92dp"
-            android:src="@mipmap/payment_success"
+            android:src="@mipmap/login_dialog_tip"
             tools:ignore="ContentDescription" />
 
         <TextView

@@ -40,7 +40,7 @@ public class NetworkEngine {
     private final static String TEST_API_THIRD_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
     //正式环境url http://api.inside.xiaoe-tech.com
     private final static String FORMAL_API_THIRD_BASE_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
-//    public final static String BASE_URL = "http://134.175.39.17:9380/";
+    public final static String BASE_URL = "http://134.175.39.17:9380/";
     public final static String API_THIRD_BASE_URL = XiaoeApplication.isFormalCondition() ? FORMAL_API_THIRD_BASE_URL : TEST_API_THIRD_URL;
     public final static String CLASS_DETAIL_BASE_URL = "http://134.175.39.17:9378/api/";
     public final static String COMMENT_BASE_URL = "http://134.175.39.17:9379/api/";

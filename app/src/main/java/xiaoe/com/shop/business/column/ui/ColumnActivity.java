@@ -83,6 +83,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
 
+    boolean hasBuy;
+    String realSrcId;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,8 +194,10 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     @Override
     public void onBackPressed() {
-        UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-        updateLearningUtils.updateLearningProgress(resourceId, isBigColumn ? 8 : 6, 10);
+        if (hasBuy) {
+            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+            updateLearningUtils.updateLearningProgress(resourceId, isBigColumn ? 8 : 6, 10);
+        }
         super.onBackPressed();
     }
 
@@ -284,6 +289,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void detailRequest(JSONObject data, boolean available) {
+        hasBuy = available;
         getDialog().dismissDialog();
         if(refreshData){
             if(isBigColumn){
@@ -299,6 +305,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             buyView.setVisibility(View.GONE);
             isHasBuy = true;
             collectPrice = "";
+            realSrcId = data.getString("resource_id");
         }else{
             price = data.getIntValue("price");
             buyView.setVisibility(View.VISIBLE);

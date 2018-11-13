@@ -304,7 +304,16 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
                     JSONArray goodsList = (JSONArray) data.get("goods_list");
+                    if (goodsList == null) {
+                        return;
+                    }
                     JSONObject listItem = (JSONObject) goodsList.get(0);
+                    if (listItem == null) {
+                        mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+                        mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
+                        mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+                        return;
+                    }
                     mineLearningId = listItem.getString("resource_id");
                     mineLearningType = convertInt2Str(listItem.getInteger("resource_type"));
                     JSONObject item = (JSONObject) listItem.get("info");

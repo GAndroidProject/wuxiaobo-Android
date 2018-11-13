@@ -81,6 +81,9 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
 
+    boolean hasBuy;
+    String realSrcId;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,9 +183,11 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             playControllerView.setFullScreen(false);
             setPlayScreen(VideoPlayConstant.VIDEO_LITTLE_SCREEN);
         }else{
-            // 上报学习进度
-            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-            updateLearningUtils.updateLearningProgress(mResourceId, 3, 10);
+            if (hasBuy) {
+                // 上报学习进度(买了才上报)
+                UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+                updateLearningUtils.updateLearningProgress(realSrcId, 3, 10);
+            }
             super.onBackPressed();
         }
     }
@@ -414,6 +419,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void setContent(JSONObject data, boolean available) {
+        hasBuy = available;
         String title = data.getString("title");
         videoTitle.setText(title);
         int count = data.getIntValue("view_count");
@@ -451,6 +457,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
             setPagerState(false);
             collectImgUrl = data.getString("img_url");
+            realSrcId = data.getString("resource_id");
         }else{
             if(!TextUtils.isEmpty(mLocalVideoUrl)){
                 playControllerView.setPlayUrl(mLocalVideoUrl);

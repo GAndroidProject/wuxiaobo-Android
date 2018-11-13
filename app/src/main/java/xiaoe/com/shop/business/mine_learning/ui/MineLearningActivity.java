@@ -167,7 +167,7 @@ public class MineLearningActivity extends XiaoeActivity {
         for (Object goodItem : goodsList) {
             JSONObject infoItem = (JSONObject) goodItem;
             String srcId = infoItem.getString("resource_id");
-            if (srcId.contains("flow")) {
+            if (srcId != null && srcId.contains("flow")) {
                 continue;
             }
             JSONObject goodJsonItem = (JSONObject) infoItem.get("info");
@@ -183,8 +183,8 @@ public class MineLearningActivity extends XiaoeActivity {
             String imgUrl = null;
             String priceStr = null;
             if (orgContent != null) { // 不为空则为收藏
-                title = orgContent.getString("title");
-                imgUrl = orgContent.getString("img_url");
+                title = orgContent.getString("title") == null || "".equals(orgContent.getString("title")) ? goodJsonItem.getString("title") : orgContent.getString("title");
+                imgUrl = orgContent.getString("img_url") == null || "".equals(orgContent.getString("img_url")) ? goodJsonItem.getString("img_url") : orgContent.getString("img_url");
                 priceStr = orgContent.getString("price");
             } else { // 为空为我正在学
                 title = goodJsonItem.getString("title");

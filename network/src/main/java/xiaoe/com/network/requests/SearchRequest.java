@@ -9,7 +9,7 @@ public class SearchRequest extends IRequest {
         super(cmd, entityClass, iBizCallback);
     }
 
-    public SearchRequest(IBizCallback iBizCallback) {
-        super(NetworkEngine.API_THIRD_BASE_URL + "xe.shop.search/1.0.0", iBizCallback);
+    public SearchRequest(String cmd, IBizCallback iBizCallback) {
+        super(cmd, iBizCallback);
     }
 }

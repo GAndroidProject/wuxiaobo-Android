@@ -152,8 +152,6 @@ public abstract class IRequest {
         if(bizDataParams != null){
             jsonObject.put("biz_data", bizDataParams);
         }
-        //如果传了user_id，则去掉，不需要传
-        jsonObject.remove("user_id");
         jsonObject.put("access_token", CommonUserInfo.getApiToken());
         return jsonObject.toJSONString();
     }

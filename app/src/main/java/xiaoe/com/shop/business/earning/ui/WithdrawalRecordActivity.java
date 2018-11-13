@@ -64,8 +64,8 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
         wrWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         earningPresenter = new EarningPresenter(this);
-        // flowType 1 -- 获取 2 -- 提现
-        earningPresenter.requestDetailData(2, 1, 10);
+        // flowType 1 -- 获取 0 -- 提现
+        earningPresenter.requestDetailData(0, 1, 10);
 
         initData();
         initListener();

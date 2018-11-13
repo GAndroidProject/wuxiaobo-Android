@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.LinearLayout;
@@ -17,6 +18,8 @@ import xiaoe.com.shop.business.search.presenter.RecommendRecyclerAdapter;
 import xiaoe.com.shop.business.search.presenter.SpacesItemDecoration;
 
 public class SearchContentView extends LinearLayout {
+
+    private static final String TAG = "SearchContentView";
 
     private Context mContext;
 
@@ -77,6 +80,7 @@ public class SearchContentView extends LinearLayout {
     }
 
     public void setHistoryContentAdapter(HistoryRecyclerAdapter adapter) {
+        Log.d(TAG, "setHistoryContentAdapter: history");
         AutoLineFeedLayoutManager autoLineFeedLayoutManager = new AutoLineFeedLayoutManager(mContext);
         autoLineFeedLayoutManager.setScrollEnabled(false);
         SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
@@ -90,6 +94,7 @@ public class SearchContentView extends LinearLayout {
     }
 
     public void setRecommendContentAdapter(RecommendRecyclerAdapter adapter) {
+        Log.d(TAG, "setRecommendContentAdapter: recommend");
         AutoLineFeedLayoutManager autoLineFeedLayoutManager = new AutoLineFeedLayoutManager(mContext);
         autoLineFeedLayoutManager.setScrollEnabled(false);
         SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
@@ -99,6 +104,7 @@ public class SearchContentView extends LinearLayout {
         contentRecycler.setLayoutManager(autoLineFeedLayoutManager);
         contentRecycler.addItemDecoration(spacesItemDecoration);
         contentRecycler.setAdapter(adapter);
+        contentRecycler.setNestedScrollingEnabled(false);
     }
 
     public boolean isMatchRecycler (ViewParent view) {
