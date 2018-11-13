@@ -279,5 +279,6 @@
     <string name="no_network_at_present">服务异常</string>
     <string name="click_refresh">点击刷新</string>
     <string name="NoResult">没有结果</string>
+    <string name="message_notice_text">消息通知</string>
 
 </resources>
