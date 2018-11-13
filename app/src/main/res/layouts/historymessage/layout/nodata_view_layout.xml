@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/viewNoData"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ivNoDataBg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/chat_empty_view_bg" />
+
+    <TextView
+        android:id="@+id/tvNoDataTip"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_alignStart="@id/ivNoDataBg"
+        android:layout_alignEnd="@id/ivNoDataBg"
+        android:layout_alignBottom="@id/ivNoDataBg"
+        android:gravity="center"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:text="@string/NoResult"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvNoDataTipNew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/NoResult"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:visibility="gone" />
+</RelativeLayout>

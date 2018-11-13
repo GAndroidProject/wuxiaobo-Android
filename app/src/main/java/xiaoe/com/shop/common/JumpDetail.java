@@ -27,6 +27,7 @@ import xiaoe.com.shop.business.earning.ui.ScholarshipActivity;
 import xiaoe.com.shop.business.earning.ui.WithdrawalActivity;
 import xiaoe.com.shop.business.earning.ui.WithdrawalRecordActivity;
 import xiaoe.com.shop.business.earning.ui.WithdrawalResultActivity;
+import xiaoe.com.shop.business.historymessage.ui.HistoryMessageActivity;
 import xiaoe.com.shop.business.login.ui.LoginActivity;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.mine_learning.ui.MineLearningActivity;
@@ -331,6 +332,11 @@ public class JumpDetail {
 
     public static void jumpCdKey(Context context) {
         Intent intent = new Intent(context, CdKeyActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void jumpHistoryMessage(Context context) {
+        Intent intent = new Intent(context, HistoryMessageActivity.class);
         context.startActivity(intent);
     }
 }

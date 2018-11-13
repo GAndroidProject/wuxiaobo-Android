@@ -53,6 +53,10 @@ public class NetworkEngine {
      * 用户登录及绑定注册（极光推送）：app-server.inside.xiaoeknow.com
      */
     public static final String BIND_JG_PUSH_URL = "http://app-server.inside.xiaoeknow.com/api/";
+    /**
+     * 获取 我的-历史消息列表
+     */
+    public static final String GET_HISTORY_MESSAGE_URL = "http://134.175.39.17:16688/api/";
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -135,11 +139,13 @@ public class NetworkEngine {
                     .url(url)
                     .post(formBody)
                     .tag(iRequest);
+            Log.d(TAG, "request url - " + url + "\n" + formBodyString);
         }else if (httpMethod == HttpMethod.HTTP_GET){
             build = new Request.Builder()
                     .url(iRequest.getUrlWithParams(url))
                     .tag(iRequest)
                     .get();
+            Log.d(TAG, "request url - " + iRequest.getUrlWithParams(url));
         }
         if (build == null) {
             iRequest.onResponse(false, "httpMethod error");
@@ -153,7 +159,6 @@ public class NetworkEngine {
 //                build.addHeader(entry.getKey(),entry.getValue());
 //            }
 //        }
-        Log.d(TAG, "request url - " + url + "\n" + formBodyString);
 
         Request request = build.build();
         Call call = client.newCall(request);
