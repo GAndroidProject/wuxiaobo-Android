@@ -19,11 +19,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.entitys.EarningItem;
 import xiaoe.com.common.utils.MeasureUtil;
 import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.EarningRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.IntegralRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.earning.presenter.EarningListAdapter;
@@ -74,7 +75,7 @@ public class IntegralActivity extends XiaoeActivity {
 
         integralWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
         earningPresenter = new EarningPresenter(this);
-        earningPresenter.requestIntegralData(1, 1, 10);
+        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 10);
 
         initData();
         initListener();
@@ -108,7 +109,7 @@ public class IntegralActivity extends XiaoeActivity {
         super.onMainThreadResponse(iRequest, success, entity);
         JSONObject result = (JSONObject) entity;
         if (success) {
-            if (iRequest instanceof IntegralRequest) {
+            if (iRequest instanceof EarningRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");

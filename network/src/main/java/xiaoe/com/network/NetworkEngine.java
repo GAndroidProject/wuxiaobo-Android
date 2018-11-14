@@ -48,7 +48,7 @@ public class NetworkEngine {
     public final static String PLY_BASE_URL = "http://134.175.39.247:4586/";//支付订单
     public final static String LOGIN_BASE_URL = "http://app-server.inside.xiaoeknow.com/api/"; // 登录接口 url
     public final static String SCHOLARSHIP_BASE_URL = "http://134.175.39.247:14585/tcs/"; // 奖学金 url
-    public final static String EARNING_BASE_URL = "http://134.175.39.247:10888/"; // 赚钱 url
+    public final static String EARNING_BASE_URL = "http://134.175.39.247:4586/api/"; // 赚钱 url
     /**
      * 用户登录及绑定注册（极光推送）：app-server.inside.xiaoeknow.com
      */

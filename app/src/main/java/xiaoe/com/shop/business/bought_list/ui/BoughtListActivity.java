@@ -101,7 +101,7 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
                     EventBus.getDefault().post(new TaskDetailIdEvent(taskDetailId));
                     finish();
                 } else {
-                    Log.d(TAG, "onMainThreadResponse: request fail...");
+                    Log.d(TAG, "onMainThreadResponse: 提交奖学金任务失败");
                 }
             }
         } else {

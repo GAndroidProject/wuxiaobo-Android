@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.entitys.EarningItem;
 import xiaoe.com.common.utils.MeasureUtil;
 import xiaoe.com.network.NetworkCodes;
@@ -80,8 +81,7 @@ public class ScholarshipActivity extends XiaoeActivity {
         scholarWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         earningPresenter = new EarningPresenter(this);
-        // flowType 1 -- 获取 2 -- 提现
-        earningPresenter.requestDetailData(1, 1, 10);
+        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW ,Constants.EARNING_FLOW_TYPE, 1, 10);
 
         initData();
         initListener();

@@ -1,10 +1,8 @@
 package xiaoe.com.shop.business.mine.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.GetSuperMemberSuccessEvent;
 import xiaoe.com.common.entitys.LoginUser;
@@ -35,14 +34,10 @@ import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.EarningRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.IntegralRequest;
 import xiaoe.com.network.requests.IsSuperVipRequest;
 import xiaoe.com.network.requests.MineLearningRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
-import xiaoe.com.shop.business.cdkey.ui.CdKeyActivity;
-import xiaoe.com.shop.business.coupon.ui.CouponActivity;
-import xiaoe.com.shop.business.download.ui.OffLineCacheActivity;
 import xiaoe.com.shop.business.earning.presenter.EarningPresenter;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.mine.presenter.MineEquityListAdapter;
@@ -134,8 +129,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         isScholarshipFinish = false;
         isIntegralFinish = false;
         isMineLearningFinish = false;
-        earningPresenter.requestDetailData(1, 1, 1);
-        earningPresenter.requestIntegralData(1, 1, 1);
+        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
         mineLearningPresenter.requestLearningData(1, 1);
         if (!mainActivity.isFormalUser) {
 
@@ -273,31 +268,36 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     Log.d(TAG, "onMainThreadResponse: 获取超级会员信息失败...");
                 }
             } else if (iRequest instanceof EarningRequest) {
-                int code = result.getInteger("code");
-                if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data = (JSONObject) result.get("data");
-                    int scholarship = data.getInteger("balance");
-                    balance = "￥" + String.valueOf(scholarship / 100);
-                    item_1 = new MineMoneyItemInfo();
-                    item_1.setItemTitle(balance);
-                    item_1.setItemDesc("奖学金");
-                    isScholarshipFinish = true;
-                    initPageData();
+                String assetType = (String) iRequest.getFormBody().get("asset_type");
+                if (Constants.SCHOLARSHIP_ASSET_TYPE.equals(assetType)){ // 奖学金类型
+                    int code = result.getInteger("code");
+                    if (code == NetworkCodes.CODE_SUCCEED) {
+                        JSONObject data = (JSONObject) result.get("data");
+                        int scholarship = data.getInteger("balance");
+                        balance = "￥" + String.valueOf(scholarship / 100);
+                        item_1 = new MineMoneyItemInfo();
+                        item_1.setItemTitle(balance);
+                        item_1.setItemDesc("奖学金");
+                        isScholarshipFinish = true;
+                        initPageData();
+                    } else {
+                        Log.d(TAG, "onMainThreadResponse: 请求奖学金总额失败");
+                    }
+                } else if (Constants.INTEGRAL_ASSET_TYPE.equals(assetType)) { // 积分类型
+                    int code = result.getInteger("code");
+                    if (code == NetworkCodes.CODE_SUCCEED) {
+                        JSONObject data = (JSONObject) result.get("data");
+                        int integral = data.getInteger("balance");
+                        item_2 = new MineMoneyItemInfo();
+                        item_2.setItemTitle(String.valueOf(integral));
+                        item_2.setItemDesc("积分");
+                        isIntegralFinish = true;
+                        initPageData();
+                    } else {
+                        Log.d(TAG, "onMainThreadResponse: 请求积分总额失败");
+                    }
                 } else {
-                    Log.d(TAG, "onMainThreadResponse: 请求奖学金总额失败");
-                }
-            } else if (iRequest instanceof IntegralRequest) {
-                int code = result.getInteger("code");
-                if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data = (JSONObject) result.get("data");
-                    int integral = data.getInteger("balance");
-                    item_2 = new MineMoneyItemInfo();
-                    item_2.setItemTitle(String.valueOf(integral));
-                    item_2.setItemDesc("积分");
-                    isIntegralFinish = true;
-                    initPageData();
-                } else {
-                    Log.d(TAG, "onMainThreadResponse: 请求积分总额失败");
+                    Log.d(TAG, "onMainThreadResponse: 取账号类型失败");
                 }
             } else if (iRequest instanceof MineLearningRequest) {
                 int code = result.getInteger("code");

@@ -55,6 +55,15 @@ public class Constants {
     //读写权限
     public static String[] READ_WRITE_PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static final String[] mTabNames = {"首页", "已购", "我的"};
+
+    // 奖学金和积分相关信息
+    public static final String SCHOLARSHIP_ASSET_TYPE = "profit"; // 奖学金
+    public static final String INTEGRAL_ASSET_TYPE = "credit";    // 积分
+    public static final int NEED_FLOW = 1;
+    public static final int NO_NEED_FLOW = 0;
+    public static final int WITHDRAWAL_FLOW_TYPE = 0;   // 提现流水
+    public static final int EARNING_FLOW_TYPE = 1;      // 入账记录
+
     //获取微信登录appid
     public static String getWXAppId(){
         if(XiaoeApplication.isFormalCondition()){

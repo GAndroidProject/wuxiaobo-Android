@@ -1,17 +1,13 @@
 package xiaoe.com.shop.business.earning.presenter;
 
-import java.math.BigDecimal;
-
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.EarningRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.requests.IntegralRequest;
 import xiaoe.com.network.requests.WithDrawalRequest;
 import xiaoe.com.network.utils.ThreadPoolUtils;
-import xiaoe.com.shop.utils.OSUtils;
 
 public class EarningPresenter implements IBizCallback {
 
@@ -36,41 +32,25 @@ public class EarningPresenter implements IBizCallback {
     }
 
     /**
-     * 请求奖学金详情页数据
-     * @param flowType   流水类型 1 -- 获取 2 -- 提现
-     * @param pageIndex  页面下标
-     * @param pageSize   页面大小
+     * 获取流水
+     * @param assetType 账户类型 0 -- 奖学金收益 1 -- 积分
+     * @param needFlow  是否需要返回流水 0 -- 不需要 1 -- 需要
+     * @param flowType  流水类型 0 -- 提现记录  1 -- 入账记录
+     * @param pageIndex 页面下标
+     * @param pageSize  页面大小
      */
-    public void requestDetailData(int flowType, int pageIndex, int pageSize) {
-        EarningRequest earningRequest = new EarningRequest(NetworkEngine.EARNING_BASE_URL + "get_c_balance_flow", this);
+    public void requestLaundryList(String assetType, int needFlow, int flowType, int pageIndex, int pageSize) {
+        EarningRequest earningRequest = new EarningRequest(NetworkEngine.EARNING_BASE_URL + "xe.user.asset.get/1.0.0", this);
 
         earningRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         earningRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
-        earningRequest.addRequestParam("account_type", 2);
+        earningRequest.addRequestParam("asset_type", assetType);
+        earningRequest.addRequestParam("is_flow", needFlow);
         earningRequest.addRequestParam("flow_type", flowType);
         earningRequest.addRequestParam("page_index", pageIndex);
         earningRequest.addRequestParam("page_size", pageSize);
 
-        NetworkEngine.getInstance().sendRequest(earningRequest);
-    }
-
-    /**
-     * 请求积分详情数据
-     * @param flowType  流水类型
-     * @param pageIndex 页面下标
-     * @param pageSize  页面大小
-     */
-    public void requestIntegralData(int flowType, int pageIndex, int pageSize) {
-        IntegralRequest integralRequest = new IntegralRequest(NetworkEngine.EARNING_BASE_URL + "get_credit_balance_flow", this);
-
-        integralRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        integralRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
-        integralRequest.addRequestParam("account_type", 0);
-        integralRequest.addRequestParam("flow_type", flowType);
-        integralRequest.addRequestParam("page_index", pageIndex);
-        integralRequest.addRequestParam("page_size", pageSize);
-
-        NetworkEngine.getInstance().sendRequest(integralRequest);
+        NetworkEngine.getInstance().sendRequestByGet(earningRequest);
     }
 
     /**
@@ -86,6 +66,7 @@ public class EarningPresenter implements IBizCallback {
         withDrawalRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         withDrawalRequest.addRequestParam("amount", price);
         withDrawalRequest.addRequestParam("re_user_name", realName);
+        withDrawalRequest.addRequestParam("assert_type", "profit");
         withDrawalRequest.addRequestParam("account_type", 2);
         withDrawalRequest.addRequestParam("desc", "提现");
         withDrawalRequest.addRequestParam("client_ip", ip);

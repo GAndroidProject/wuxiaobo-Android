@@ -1,18 +1,26 @@
 package xiaoe.com.shop.business.audio.ui;
 
 import android.animation.ObjectAnimator;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.drawable.ScalingUtils;
@@ -25,12 +33,16 @@ import com.umeng.socialize.UMShareAPI;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.HadSharedEvent;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
+import xiaoe.com.common.entitys.ScholarshipEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
@@ -39,12 +51,15 @@ import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.network.requests.AddCollectionRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.RemoveCollectionListRequest;
+import xiaoe.com.network.requests.ScholarshipReceiveRequest;
+import xiaoe.com.network.requests.ScholarshipSubmitRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.ViewAnim;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
 import xiaoe.com.shop.business.audio.presenter.AudioPlayUtil;
 import xiaoe.com.shop.business.audio.presenter.AudioPresenter;
+import xiaoe.com.shop.business.main.presenter.ScholarshipPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
@@ -86,7 +101,13 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
     List<LoginUser> loginUserList;
 
-    TouristDialog touristDialog;
+    private TouristDialog touristDialog;
+    private ScholarshipPresenter scholarshipPresenter;
+    private boolean hasEarnMoney;
+    private String amount;
+    Handler handler = new Handler();
+    private Runnable runnable;
+    Dialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -272,8 +293,52 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             addCollectionRequest(jsonObject);
         }else if(iRequest instanceof RemoveCollectionListRequest){
             removeCollectionRequest(jsonObject);
+        } else if (iRequest instanceof ScholarshipSubmitRequest) { // 奖学金提交回调
+            JSONObject data = (JSONObject) jsonObject.get("data");
+            String taskDetailId = data.getString("task_detail_id");
+            ScholarshipEntity.getInstance().setTaskDetailId(taskDetailId);
+            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
+        } else if (iRequest instanceof ScholarshipReceiveRequest) {
+            // 获取成功之后查询领取结果接口
+            JSONObject result = (JSONObject) jsonObject.get("data");
+            obtainReceiveStatus(result);
         }
+    }
 
+    // 处理查询结果
+    private void obtainReceiveStatus(JSONObject data) {
+        int status = data.getInteger("status");
+        JSONObject reward = (JSONObject) data.get("reward");
+        if (status == 3 && reward != null) { // 已经完成并拿到数据
+            ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_ISSUED);
+
+            // TODO: 禁止点击事件
+            int type = reward.getInteger("type");
+            int amount = reward.getInteger("amount");
+            if (type == 1) { // 拿到钱
+                hasEarnMoney = true;
+                BigDecimal priceTop = new BigDecimal(amount);
+                BigDecimal priceBottom = new BigDecimal(100);
+                this.amount = priceTop.divide(priceBottom, 2, BigDecimal.ROUND_HALF_UP).toPlainString();
+            } else if (type == 2) { // 拿到积分
+                hasEarnMoney = false;
+                this.amount = String.valueOf(amount);
+            }
+            showEarnDialog();
+        } else if (status == 2) { // 处理中
+            Toast("奖学金发放中");
+            ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_PROCESSING);
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
+                }
+            };
+            handler.postDelayed(runnable, 3000);
+        } else if (status == 1) {
+            ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_FAIL);
+            Toast.makeText(this, "领取失败，请重试", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -510,12 +575,36 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }
     }
 
+    @Subscribe
+    public void onEventMainThread(HadSharedEvent hadSharedEvent) {
+        if (hadSharedEvent != null && hadSharedEvent.hadShared) {
+            if (AudioMediaPlayer.getAudio().getHasBuy() == 1) { // // 已经分享了并且买了
+                if (scholarshipPresenter == null) {
+                    scholarshipPresenter = new ScholarshipPresenter(
+                            this,
+                            AudioMediaPlayer.getAudio().getResourceId(),
+                            "2",
+                            CommonUserInfo.isIsSuperVip());
+                }
+                scholarshipPresenter.requestTaskList(false);
+            }
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         if(detailContent != null){
             detailContent.destroy();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
         }
     }
 
@@ -600,5 +689,72 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             btnCollect.setImageResource(R.mipmap.video_collect);
         }
         contentMenuLayout.setCollectState(collect);
+    }
+
+    private void showEarnDialog() {
+        dialog = new Dialog(this, R.style.ActionSheetDialogStyle);
+        Window window = dialog.getWindow();
+        View view = getLayoutInflater().inflate(R.layout.scholarship_dialog, null);
+        ImageView earnClose = (ImageView) view.findViewById(R.id.scholarship_dialog_close);
+        LinearLayout earnWrap = (LinearLayout) view.findViewById(R.id.scholarship_content_wrap);
+        TextView earnTitle = (TextView) view.findViewById(R.id.scholarship_dialog_title);
+        TextView earnContent = (TextView) view.findViewById(R.id.scholarship_dialog_content);
+        TextView earnContentTail = (TextView) view.findViewById(R.id.scholarship_dialog_content_tail);
+        TextView earnTip = (TextView) view.findViewById(R.id.scholarship_dialog_tip);
+        TextView earnSubmit = (TextView) view.findViewById(R.id.scholarship_dialog_submit);
+
+        if (hasEarnMoney) { // 拿到钱了
+            earnTitle.setText("恭喜你，获得奖学金");
+            earnWrap.setBackground(getResources().getDrawable(R.mipmap.scholarship_popup_bg));
+            earnContent.setText(amount);
+            earnContentTail.setVisibility(View.VISIBLE);
+            earnTip.setVisibility(View.GONE);
+            earnSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    JumpDetail.jumpScholarshipActivity(AudioActivity.this);
+                    dialog.dismiss();
+                }
+            });
+        } else {
+            earnTitle.setText("差一点就瓜分到了");
+            earnContentTail.setVisibility(View.GONE);
+            earnWrap.setBackgroundColor(getResources().getColor(R.color.white));
+            if (CommonUserInfo.isIsSuperVip()) { // 超级会员
+                String content = "送你" + amount + "积分";
+                earnContent.setText(content);
+                earnTip.setVisibility(View.VISIBLE);
+            } else {
+                String content = "送你" + amount + "积分";
+                earnContent.setText(content);
+                earnContent.setTextSize(20);
+                earnContent.setTextColor(getResources().getColor(R.color.scholarship_btn_press));
+                earnTip.setVisibility(View.GONE);
+            }
+            earnSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    JumpDetail.jumpScholarshipActivity(AudioActivity.this);
+                    dialog.dismiss();
+                }
+            });
+        }
+        earnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        // 先 show 后才会有宽高
+        dialog.show();
+
+        if (window != null) {
+            window.setGravity(Gravity.CENTER);
+            WindowManager.LayoutParams layoutParams = window.getAttributes();
+            Point point = Global.g().getDisplayPixel();
+            layoutParams.width = (int) (point.x * 0.8);
+            window.setAttributes(layoutParams);
+        }
+        dialog.setContentView(view);
     }
 }

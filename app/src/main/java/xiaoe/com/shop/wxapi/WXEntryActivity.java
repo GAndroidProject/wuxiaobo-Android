@@ -38,6 +38,7 @@ public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHa
     private IWXAPI mApi;
 
     LoginPresenter loginPresenter;
+    boolean hasObtainShareCallback; // 已经拿到分享回调，用于处理分享回调两次的情况
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,8 +97,14 @@ public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHa
                 finish();
                 return;
             }
-        } else if (resp.getType() == ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX) { // 分享到微信后的回调
-            EventBus.getDefault().post(new HadSharedEvent(true));
+        } else if (resp.getType() == ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX && !hasObtainShareCallback) { // 分享到微信后的回调
+            hasObtainShareCallback = true;
+            if ("发送成功".equals(msg)) {
+                //
+                EventBus.getDefault().post(new HadSharedEvent(true));
+            } else if ("发送取消".equals(msg)) {
+                EventBus.getDefault().post(new HadSharedEvent(false));
+            }
         }
         finish();
     }
