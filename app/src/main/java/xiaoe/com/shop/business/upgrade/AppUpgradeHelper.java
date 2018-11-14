@@ -103,7 +103,7 @@ public class AppUpgradeHelper {
     /**
      * 检查更新
      */
-    public void checkUpgrade(final boolean isManual, final Activity activity){
+    public void checkUpgrade(final boolean isManual,Activity activity){
         if (isRequesting)   return;//是正在请求
         mActivity = activity;
         mContext = activity.getApplicationContext();
@@ -144,7 +144,7 @@ public class AppUpgradeHelper {
                         }else {
                             upgradeResult = new UpgradeResult(-1,mContext.getString(R.string.get_version_error_msg));
                         }
-                        requestHandle(activity,upgradeResult, isManual);
+                        requestHandle(upgradeResult, isManual);
                     }
                 });
             }
@@ -164,12 +164,12 @@ public class AppUpgradeHelper {
             Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
     }
 
-    private void requestHandle(Activity activity,@NonNull UpgradeResult result, boolean isManual) {
+    private void requestHandle(@NonNull UpgradeResult result, boolean isManual) {
         if (mCustomDialog != null && mCustomDialog.isShowing())
             mCustomDialog.dismissDialog();
         isRequesting = false;
         log("checkUpgrade -> " + result.toString());
-        if (activity == null)   return;
+        if (mActivity == null)   return;
         if (result != null && 0 == result.code && result.data != null){
             UpgradeResult.Data data = result.data;
             mData = data;
@@ -191,7 +191,7 @@ public class AppUpgradeHelper {
 
                 isForceUpdate = 1 == data.update_mode;
                 if (0 == data.update_mode || 1 == data.update_mode || isManual)
-                    showUpgradeDialog(data.download_url,data.version,content.toString(),activity);
+                    showUpgradeDialog(data.download_url,data.version,content.toString());
             }else if (0 == data.is_update && isManual) {
                 setHasUpgradeCurrentApp(false);
                 EventBus.getDefault().post(new IsHasUpgradeEvent(false));
@@ -207,27 +207,27 @@ public class AppUpgradeHelper {
      * @param downloadUrl
      * @param versionName
      * @param upgradeContent
-     * @param activity
      */
-    private void showUpgradeDialog(final String downloadUrl, final String versionName, String upgradeContent, final Activity activity){
-        if (TextUtils.isEmpty(downloadUrl) || activity == null || (mAlertDialog != null && mAlertDialog.isShowing()))
+    private void showUpgradeDialog(final String downloadUrl, final String versionName, String upgradeContent){
+        if (TextUtils.isEmpty(downloadUrl) || !isActivityRunning(mActivity,mActivity.getClass().getName())
+                || (mAlertDialog != null && mAlertDialog.isShowing()))
             return;
         // 这里的属性可以一直设置，因为每次设置后返回的是一个builder对象
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         mAlertDialog = builder.create();
         mAlertDialog.setCancelable(false);
         mAlertDialog.setCanceledOnTouchOutside(false);
         mAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         //显示对话框
         mAlertDialog.show();
-        mAlertDialog.getWindow().setLayout(Dp2Px2SpUtil.dp2px(activity,260),LinearLayout.LayoutParams.WRAP_CONTENT);
-        View view = getUpgradeDialogView(downloadUrl, versionName, upgradeContent, activity);
+        mAlertDialog.getWindow().setLayout(Dp2Px2SpUtil.dp2px(mContext,260),LinearLayout.LayoutParams.WRAP_CONTENT);
+        View view = getUpgradeDialogView(downloadUrl, versionName, upgradeContent, mActivity);
         mAlertDialog.setContentView(view);
     }
 
     @NonNull
-    private View getUpgradeDialogView(final String downloadUrl, final String versionName, String upgradeContent, final Activity activity) {
-        String content = TextUtils.isEmpty(upgradeContent) ? activity.getString(R.string.upgrade_my_content) : upgradeContent;
+    private View getUpgradeDialogView(final String downloadUrl, final String versionName, String upgradeContent,Activity activity) {
+        String content = TextUtils.isEmpty(upgradeContent) ? mContext.getString(R.string.upgrade_my_content) : upgradeContent;
         View view = activity.getLayoutInflater().inflate(R.layout.layout_upgrade,null);
 //        ((TextView)view.findViewById(R.id.tv_version_name)).setText("V" + versionName);
         ((TextView)view.findViewById(R.id.tv_upgrade_feature)).setText(Html.fromHtml(content));
@@ -248,7 +248,7 @@ public class AppUpgradeHelper {
             public void onClick(View v) {
                 if (mAlertDialog != null)
                     mAlertDialog.dismiss();
-                startDownload(activity,downloadUrl,versionName);//下载最新的版本程序
+                startDownload(downloadUrl,versionName);//下载最新的版本程序
             }
         });
         return view;
@@ -256,14 +256,13 @@ public class AppUpgradeHelper {
 
     /**
      * 开始下载
-     * @param activity
      * @param downloadUrl
      * @param versionName
      */
-    private void startDownload(Activity activity, String downloadUrl, String versionName){
+    private void startDownload(String downloadUrl, String versionName){
         if (TextUtils.isEmpty(downloadUrl) || (!downloadUrl.startsWith("http") && !downloadUrl.startsWith("https")))     return;
         appName = "xiaoe_shop" + versionName + ".apk";
-        File saveFile = activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        File saveFile = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         File file = new File(saveFile, AppUpgradeHelper.getInstance().getAppName());
         if (file != null && file.isFile()){
             log("file.delete = " + file.getAbsolutePath() + "--- is file = " + file.isFile());
@@ -273,11 +272,13 @@ public class AppUpgradeHelper {
 //            mHandler = new MyHandler(activity);
         mDownLoadRunnable = new DownLoadRunnable(mContext,downloadUrl,appName);
         new Thread(mDownLoadRunnable).start();
-        if (activity != null && isActivityRunning(activity,activity.getClass().getName()))
-            showDialog(activity);
+        if (isActivityRunning(mActivity,mActivity.getClass().getName()))
+            showDialog(mActivity);
     }
 
     private boolean isActivityRunning(Context mContext,String activityClassName){
+        log("isActivityRunning activityClassName = " + activityClassName);
+        if (mContext == null)   return false;
         ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> info = activityManager.getRunningTasks(1);
         if(info != null && info.size() > 0){
@@ -294,11 +295,9 @@ public class AppUpgradeHelper {
      * @param context
      */
     private void initProgressDialog(Context context) {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(context);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setMessage(mContext.getString(R.string.upgrade_downloading));
-        }
+        mProgressDialog = new ProgressDialog(context);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.setMessage(mContext.getString(R.string.upgrade_downloading));
     }
 
 //    class MyHandler extends Handler {
@@ -382,15 +381,15 @@ public class AppUpgradeHelper {
         }
         log("canceledDialog mActivity = " + mActivity);
         if (isForceUpdate){
-            if (mActivity == null || !isActivityRunning(mActivity,mActivity.getClass().getName()))  return;
+            if (!isActivityRunning(mActivity,mActivity.getClass().getName()))  return;
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             builder.setTitle(mContext.getString(R.string.app_name))
                     .setMessage(isDownloadSuccess ? R.string.upgrade_version_downloaded : R.string.upgrade_version_download_fail)
                     .setNegativeButton(R.string.upgrade_redownload, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (mData == null || mActivity == null)  return;
-                            startDownload(mActivity,mData.download_url,mData.version);
+                            if (mData == null)  return;
+                            startDownload(mData.download_url,mData.version);
                         }
                     });
             if (isDownloadSuccess)  builder.setPositiveButton(R.string.upgrade_install, null);
