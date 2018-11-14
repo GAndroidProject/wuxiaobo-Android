@@ -50,7 +50,7 @@ public class EarningPresenter implements IBizCallback {
         earningRequest.addRequestParam("page_index", pageIndex);
         earningRequest.addRequestParam("page_size", pageSize);
 
-        NetworkEngine.getInstance().sendRequestByGet(earningRequest);
+        NetworkEngine.getInstance().sendRequest(earningRequest);
     }
 
     /**
