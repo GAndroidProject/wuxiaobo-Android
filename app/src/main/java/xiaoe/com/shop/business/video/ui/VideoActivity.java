@@ -404,17 +404,21 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
     private void detailRequest(JSONObject jsonObject) {
         getDialog().dismissDialog();
-        JSONObject data = jsonObject.getJSONObject("data");
-        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
-            setPagerState(true);
-            return;
-        }
-        //已购或者免费
-        if(data.getBoolean("available")){
-            setContent(data, true);
-        }else{
-            //未购
-            setContent(data.getJSONObject("resource_info"), false);
+        try{
+            JSONObject data = jsonObject.getJSONObject("data");
+            if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
+                setPagerState(true);
+                return;
+            }
+            //已购或者免费
+            if(data.getBoolean("available")){
+                setContent(data, true);
+            }else{
+                //未购
+                setContent(data.getJSONObject("resource_info"), false);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
