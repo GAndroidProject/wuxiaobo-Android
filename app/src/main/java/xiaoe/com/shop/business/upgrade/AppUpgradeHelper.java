@@ -1,9 +1,11 @@
 package xiaoe.com.shop.business.upgrade;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,15 +15,21 @@ import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
+import java.util.List;
+
 import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.requests.AppUpgradeRequest;
 import xiaoe.com.network.requests.IRequest;
@@ -143,6 +151,10 @@ public class AppUpgradeHelper {
         });
         appUpgradeRequest.addRequestParam("app_id",CommonUserInfo.getShopId());
         appUpgradeRequest.addRequestParam("type",String.valueOf(1));
+        if (!TextUtils.isEmpty(versionName)){
+            if (versionName.indexOf("v") > -1)  versionName = versionName.replace("v","");
+            if (versionName.indexOf("V") > -1)  versionName = versionName.replace("V","");
+        }
         appUpgradeRequest.addRequestParam("version",versionName);
         appUpgradeRequest.sendRequest();
     }
@@ -200,64 +212,46 @@ public class AppUpgradeHelper {
     private void showUpgradeDialog(final String downloadUrl, final String versionName, String upgradeContent, final Activity activity){
         if (TextUtils.isEmpty(downloadUrl) || activity == null || (mAlertDialog != null && mAlertDialog.isShowing()))
             return;
-        AlertDialog versionDialog = new AlertDialog.Builder(activity)
-                            .setTitle("")
-                            .setMessage("最新版本更新了功能，是否下载")
-                            .setPositiveButton("下载", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    startDownload(activity,downloadUrl,versionName);//下载最新的版本程序
-                                }
-                            })
-                            .setNegativeButton("不了", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).create();
-                    versionDialog.show();
-//        // 这里的属性可以一直设置，因为每次设置后返回的是一个builder对象
-//        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-//        mAlertDialog = builder.create();
-//        mAlertDialog.setCancelable(false);
-//        mAlertDialog.setCanceledOnTouchOutside(false);
-//        mAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-//        //显示对话框
-//        mAlertDialog.show();
-//        View view = getUpgradeDialogView(downloadUrl, versionName, upgradeContent, activity);
-//        mAlertDialog.setContentView(view);
+        // 这里的属性可以一直设置，因为每次设置后返回的是一个builder对象
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        mAlertDialog = builder.create();
+        mAlertDialog.setCancelable(false);
+        mAlertDialog.setCanceledOnTouchOutside(false);
+        mAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        //显示对话框
+        mAlertDialog.show();
+        mAlertDialog.getWindow().setLayout(Dp2Px2SpUtil.dp2px(activity,260),LinearLayout.LayoutParams.WRAP_CONTENT);
+        View view = getUpgradeDialogView(downloadUrl, versionName, upgradeContent, activity);
+        mAlertDialog.setContentView(view);
     }
 
     @NonNull
     private View getUpgradeDialogView(final String downloadUrl, final String versionName, String upgradeContent, final Activity activity) {
-//        String content = TextUtils.isEmpty(upgradeContent) ? activity.getString(R.string.upgrade_my_content) : upgradeContent;
-//        View view = activity.getLayoutInflater().inflate(R.layout.layout_upgrade,null);
+        String content = TextUtils.isEmpty(upgradeContent) ? activity.getString(R.string.upgrade_my_content) : upgradeContent;
+        View view = activity.getLayoutInflater().inflate(R.layout.layout_upgrade,null);
 //        ((TextView)view.findViewById(R.id.tv_version_name)).setText("V" + versionName);
-//        ((TextView)view.findViewById(R.id.tv_upgrade_feature)).setText(Html.fromHtml(content));
-//        TextView cancel = view.findViewById(R.id.btn_cancel);
-//        cancel.setVisibility(isForceUpdate ? View.GONE : View.VISIBLE);
-//        cancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mAlertDialog != null)
-//                    mAlertDialog.dismiss();
-////                        EventReportMgr.onEvent(mContext, "monitor_updateTip_cancel", getChannel(mContext));
-//            }
-//        });
-//
-//        TextView confirm = view.findViewById(R.id.btn_confirm);
-//        confirm.setBackgroundResource(isForceUpdate ? R.drawable.btn_bottom_radio : R.drawable.btn_right_bottom_radio);
-//        confirm.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (mAlertDialog != null)
-//                    mAlertDialog.dismiss();
-//                startDownload(activity,downloadUrl,versionName);//下载最新的版本程序
-////                        EventReportMgr.onEvent(mContext, "monitor_updateTip_update", getChannel(mContext));
-//            }
-//        });
-        return null;
+        ((TextView)view.findViewById(R.id.tv_upgrade_feature)).setText(Html.fromHtml(content));
+        TextView cancel = (TextView) view.findViewById(R.id.btn_cancel);
+        cancel.setVisibility(isForceUpdate ? View.GONE : View.VISIBLE);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAlertDialog != null)
+                    mAlertDialog.dismiss();
+            }
+        });
+
+        TextView confirm = (TextView) view.findViewById(R.id.btn_confirm);
+        confirm.setBackgroundResource(isForceUpdate ? R.drawable.btn_bottom_radio : R.drawable.btn_right_bottom_radio);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAlertDialog != null)
+                    mAlertDialog.dismiss();
+                startDownload(activity,downloadUrl,versionName);//下载最新的版本程序
+            }
+        });
+        return view;
     }
 
     /**
@@ -279,8 +273,20 @@ public class AppUpgradeHelper {
 //            mHandler = new MyHandler(activity);
         mDownLoadRunnable = new DownLoadRunnable(mContext,downloadUrl,appName);
         new Thread(mDownLoadRunnable).start();
-        if (activity != null)
+        if (activity != null && isActivityRunning(activity,activity.getClass().getName()))
             showDialog(activity);
+    }
+
+    private boolean isActivityRunning(Context mContext,String activityClassName){
+        ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> info = activityManager.getRunningTasks(1);
+        if(info != null && info.size() > 0){
+            ComponentName component = info.get(0).topActivity;
+            if(activityClassName.equals(component.getClassName())){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -376,7 +382,7 @@ public class AppUpgradeHelper {
         }
         log("canceledDialog mActivity = " + mActivity);
         if (isForceUpdate){
-            if (mActivity == null)  return;
+            if (mActivity == null || !isActivityRunning(mActivity,mActivity.getClass().getName()))  return;
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             builder.setTitle(mContext.getString(R.string.app_name))
                     .setMessage(isDownloadSuccess ? R.string.upgrade_version_downloaded : R.string.upgrade_version_download_fail)

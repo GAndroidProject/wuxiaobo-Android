@@ -9,9 +9,9 @@ public class AppUpgradeRequest extends IRequest {
      * 检查更新
      */
     public AppUpgradeRequest(IBizCallback iBizCallback) {
-        super(NetworkEngine.LOGIN_BASE_URL + "msg/xe.check.version/1.0.0", iBizCallback);
+        super(NetworkEngine.LOGIN_BASE_URL + "xe.check.version/1.0.0", iBizCallback);
     }
     public void sendRequest(){
-        NetworkEngine.getInstance().sendRequestByGet(this);
+        NetworkEngine.getInstance().sendRequest(this);
     }
 }

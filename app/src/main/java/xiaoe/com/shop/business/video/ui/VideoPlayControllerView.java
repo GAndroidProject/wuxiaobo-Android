@@ -275,7 +275,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         Log.d(TAG,"state = " + state + "--- mVideoPlayer.isPlaying() = " + mVideoPlayer.isPlaying());
         btnPlay.removeCallbacks(mControlDelayDismissRunnable);
         if(!mVideoPlayer.isPlaying())  return;
-        btnPlay.postDelayed(mControlDelayDismissRunnable,1500);
+        btnPlay.postDelayed(mControlDelayDismissRunnable,2000);
     }
 
     Runnable mControlDelayDismissRunnable = new Runnable() {
