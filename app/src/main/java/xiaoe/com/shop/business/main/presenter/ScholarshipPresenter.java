@@ -48,6 +48,9 @@ public class ScholarshipPresenter implements IBizCallback {
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
         JSONObject data = (JSONObject) entity;
+        if (data == null) {
+            return;
+        }
         if (iRequest instanceof ScholarshipTaskListRequest) { // 接收任务列表的请求
             int code = data.getInteger("code");
             if (code == NetworkCodes.CODE_SUCCEED) {
@@ -73,7 +76,7 @@ public class ScholarshipPresenter implements IBizCallback {
     // 获取任务列表
     public void requestTaskList(boolean needInitData) {
         this.needInitData = needInitData;
-        ScholarshipTaskListRequest scholarshipTaskListRequest = new ScholarshipTaskListRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "get_task_list", this);
+        ScholarshipTaskListRequest scholarshipTaskListRequest = new ScholarshipTaskListRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "xe.get.task.list/1.0.0", this);
 
         scholarshipTaskListRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
 
@@ -82,7 +85,7 @@ public class ScholarshipPresenter implements IBizCallback {
 
     // 获取排行榜
     public void requestRange(String taskId) {
-        ScholarshipRequest scholarshipRequest = new ScholarshipRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "get_reward_ranking_list", this);
+        ScholarshipRequest scholarshipRequest = new ScholarshipRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "xe.get.reward.ranking.list/1.0.0", this);
 
         scholarshipRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         scholarshipRequest.addRequestParam("task_id", taskId);
@@ -92,7 +95,7 @@ public class ScholarshipPresenter implements IBizCallback {
 
     // 获取任务状态
     public void requestTaskStatues(String taskId) {
-        ScholarshipTaskStateRequest scholarshipTaskStateRequest = new ScholarshipTaskStateRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "get_task_status", this);
+        ScholarshipTaskStateRequest scholarshipTaskStateRequest = new ScholarshipTaskStateRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "xe.get.task.status/1.0.0", this);
 
         scholarshipTaskStateRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         scholarshipTaskStateRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
@@ -103,7 +106,7 @@ public class ScholarshipPresenter implements IBizCallback {
 
     // 获取已购列表，目前只需要音频
     public void requestBoughtList() {
-        ScholarshipBoughtListRequest scholarshipBoughtListRequest = new ScholarshipBoughtListRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "get_share_list", this);
+        ScholarshipBoughtListRequest scholarshipBoughtListRequest = new ScholarshipBoughtListRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "xe.get.share.list/1.0.0", this);
 
         scholarshipBoughtListRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         scholarshipBoughtListRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
@@ -113,7 +116,7 @@ public class ScholarshipPresenter implements IBizCallback {
 
     // 请求提交任务
     public void requestSubmitTask(String taskId, String resourceId, String resourceType, boolean isSuperVip) {
-        ScholarshipSubmitRequest scholarshipSubmitRequest = new ScholarshipSubmitRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "submit_task", this);
+        ScholarshipSubmitRequest scholarshipSubmitRequest = new ScholarshipSubmitRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "xe.submit.task/1.0.0", this);
 
         scholarshipSubmitRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         scholarshipSubmitRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
@@ -132,7 +135,7 @@ public class ScholarshipPresenter implements IBizCallback {
 
     // 查询领取结果
     public void queryReceiveResult(String taskId, String taskDetailId) {
-        ScholarshipReceiveRequest scholarshipReceiveRequest = new ScholarshipReceiveRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "get_task_result", this);
+        ScholarshipReceiveRequest scholarshipReceiveRequest = new ScholarshipReceiveRequest(NetworkEngine.SCHOLARSHIP_BASE_URL + "xe.get.task.result/1.0.0", this);
 
         scholarshipReceiveRequest.addRequestParam("task_id", taskId);
         scholarshipReceiveRequest.addRequestParam("task_detail_id", taskDetailId);

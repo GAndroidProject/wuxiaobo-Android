@@ -193,15 +193,13 @@ public class LoginActivity extends XiaoeActivity {
                 case REGISTER:
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
-                    // 回到首页之前清空 preTag
-                    preTag = null;
+                    isRegister = false;
                     replaceFragment(MAIN);
                     break;
                 case CODE:
                     ((LoginPageFragment) currentFragment).loginCodeContent.clearAllEditText();
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
-                    preTag = null;
                     if (isRegister) {
                         replaceFragment(REGISTER);
                     } else {
@@ -211,7 +209,6 @@ public class LoginActivity extends XiaoeActivity {
                 case PWD:
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
-                    preTag = null;
                     replaceFragment(MAIN);
                     break;
                 case FIND_PWD:
@@ -220,7 +217,6 @@ public class LoginActivity extends XiaoeActivity {
                 case SET_PWD:
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
-                    preTag = null;
                     if (isRegister) {
                         replaceFragment(REGISTER);
                     } else {
@@ -230,13 +226,11 @@ public class LoginActivity extends XiaoeActivity {
                 case BIND_WE_CHAT:
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
-                    preTag = null;
                     replaceFragment(MAIN);
                     break;
                 case BIND_PHONE:
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
-                    preTag = null;
                     replaceFragment(MAIN);
                     break;
                 default:
@@ -249,7 +243,12 @@ public class LoginActivity extends XiaoeActivity {
     protected String preTag;
     protected void replaceFragment(String tag) {
         if (currentFragment != null) {
-            preTag = currentFragment.getTag();
+            if (MAIN.equals(tag)) {
+                // 回到首页之前清空 preTag
+                preTag = null;
+            } else {
+                preTag = currentFragment.getTag();
+            }
             getSupportFragmentManager().beginTransaction().hide(currentFragment).commit();
         }
         currentFragment = getSupportFragmentManager().findFragmentByTag(tag);
@@ -361,11 +360,13 @@ public class LoginActivity extends XiaoeActivity {
                     this.smsCode = "";
                     ((LoginPageFragment) currentFragment).loginCodeContent.setErrorBg(R.drawable.cv_error_bg);
                 }
-            } else if (iRequest instanceof LoginCodeVerifyRequest) { // 微信注册，进行绑定手机，验证码确认
+            } else if (iRequest instanceof LoginCodeVerifyRequest) { // 登录验证码验证
                 int code = result.getInteger("code");
-                if (code == NetworkCodes.CODE_SUCCEED) { // 绑定手机
+                if (code == NetworkCodes.CODE_SUCCEED) {
                     Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
+                    loginPresenter.loginBySmsCode(phoneNum, smsCode);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
+                    Toast("验证码错误");
                     Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
                 }
             } else if (iRequest instanceof LoginRegisterCodeVerifyRequest) { // 注册验证码确认回调

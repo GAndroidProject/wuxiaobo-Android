@@ -79,6 +79,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         intent = getIntent();
 
         superVipPresenter = new SuperVipPresenter(this);
+        superVipPresenter.requestSuperVip();
 
         isFormalUser = intent.getBooleanExtra("isFormalUser", false);
 

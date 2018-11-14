@@ -360,7 +360,7 @@ public class LoginPageFragment extends BaseFragment {
                 switch (loginActivity.preTag) {
                     // 通过验证码登录
                     case LoginActivity.MAIN:
-                        loginActivity.loginPresenter.loginBySmsCode(phoneNum, content);
+                        loginActivity.loginPresenter.verifyCode(phoneNum, content);
                         break;
                     // 绑定手机
                     case LoginActivity.BIND_PHONE:
