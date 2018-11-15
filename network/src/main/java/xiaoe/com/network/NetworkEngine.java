@@ -33,8 +33,8 @@ import xiaoe.com.network.utils.ThreadPoolUtils;
 /**
  * Created by Administrator on 2018/9/26.
  */
-
 public class NetworkEngine {
+
     private static final String TAG = "NetworkEngine";
     //测试环境url http://demo.h5.inside.xiaoe-tech.com/openapp/login
     private final static String TEST_API_THIRD_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
@@ -52,7 +52,7 @@ public class NetworkEngine {
     /**
      * 用户登录及绑定注册（极光推送）：app-server.inside.xiaoeknow.com
      */
-//    public static final String BIND_JG_PUSH_URL = "http://app-server.inside.xiaoeknow.com/api/";
+    public static final String BIND_JG_PUSH_URL = "http://app-server.inside.xiaoeknow.com/api/";
     /**
      * 获取 我的-历史消息列表
      */
@@ -60,12 +60,20 @@ public class NetworkEngine {
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-    public enum HttpMethod{
+    public enum HttpMethod {
+        /**
+         * POST 请求方式
+         */
         HTTP_POST(1),
+        /**
+         * GET 请求方式
+         */
         HTTP_GET(2);
-        HttpMethod(int value){
+
+        HttpMethod(int value) {
             this.value = value;
         }
+
         public int value;
     }
 
@@ -91,8 +99,6 @@ public class NetworkEngine {
     }
 
     public void sendRequest(final IRequest iRequest) {
-
-
 //        CommonUserInfo userInfo = StatusKeepUtil.getUserInfo();
 //        if (userInfo == null) {
 //            if (!(iRequest instanceof LoginRequest)) {
@@ -106,7 +112,6 @@ public class NetworkEngine {
                 POST(iRequest.getCmd(), iRequest);
             }
         });
-
     }
 
     public void sendRequestByGet(final IRequest iRequest) {
@@ -186,8 +191,10 @@ public class NetworkEngine {
                     com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
                     body.close();
                     mRequest.onResponse(true, jsonObject);
+                    Log.d(TAG, "request result - " + response.code() + " - " + jsonObject.toJSONString());
                 } catch (Exception e) {
                     mRequest.onResponse(false, null);
+                    Log.d(TAG, "request result - " + response.code() + " - " + e.getMessage());
                 }
             }
         });

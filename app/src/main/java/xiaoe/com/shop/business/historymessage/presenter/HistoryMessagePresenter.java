@@ -33,8 +33,8 @@ public class HistoryMessagePresenter implements IBizCallback {
         // 店铺 ID
         getHistoryMessageRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         // 用户 ID
-        getHistoryMessageRequest.addRequestParam("user_id", "i_5be03f4a9b9b2_W08enCASgk");
-//        getHistoryMessageRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
+//        getHistoryMessageRequest.addRequestParam("user_id", "i_5be03f4a9b9b2_W08enCASgk");
+        getHistoryMessageRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         // 其他参数
         getHistoryMessageRequest.addRequestParam("buz_data", historyMessageReq.getBuz_data());
 

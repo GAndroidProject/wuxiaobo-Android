@@ -13,8 +13,8 @@ import android.widget.Toast;
  * Description:
  */
 public class ToastUtils {
-    private ToastUtils() {
 
+    private ToastUtils() {
     }
 
     public static void show(@NonNull Context context, @NonNull String msg) {

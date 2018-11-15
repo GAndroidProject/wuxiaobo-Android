@@ -109,12 +109,7 @@ public class SettingAccountActivity extends XiaoeActivity {
     }
 
     private void init() {
-        accountBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        accountTitle.setText("设置");
     }
 
     @Override

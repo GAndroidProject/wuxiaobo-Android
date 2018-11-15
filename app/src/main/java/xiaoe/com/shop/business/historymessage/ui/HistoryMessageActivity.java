@@ -34,6 +34,8 @@ import xiaoe.com.shop.adapter.historymessage.HistoryMessageAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.historymessage.presenter.HistoryMessagePresenter;
 import xiaoe.com.shop.utils.StatusBarUtil;
+import xiaoe.com.shop.utils.ToastUtils;
+import xiaoe.com.shop.widget.EmptyView;
 
 /**
  * @author flynnWang
@@ -89,11 +91,13 @@ public class HistoryMessageActivity extends XiaoeActivity {
                     } else {
                         if (listBeans != null) {
                             historyMessageAdapter.addData(listBeans);
+                            messageList.addAll(listBeans);
                         }
                         historyMessageAdapter.loadMoreComplete();
                     }
                     if (listBeans == null || listBeans.size() == 0) {
                         historyMessageAdapter.loadMoreEnd();
+                        mEmptyView.setStatus(EmptyView.STATUS_NO_DATA);
                     } else {
                         firstStart++;
                         for (HistoryMessageEntity.ListBean listBean : listBeans) {
@@ -114,14 +118,20 @@ public class HistoryMessageActivity extends XiaoeActivity {
                     }
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取历史消息失败...");
-                    Toast((String) result.get("msg"));
+                    ToastUtils.show(mContext, (String) result.get("msg"));
                     if (firstStart != 0) {
                         historyMessageAdapter.loadMoreFail();
+                    }
+                    if (messageList.size() == 0) {
+                        mEmptyView.setStatus(EmptyView.STATUS_NO_DATA);
                     }
                 }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail...");
+            if (messageList.size() == 0) {
+                mEmptyView.setStatus(EmptyView.STATUS_NO_DATA);
+            }
         }
     }
 
@@ -174,7 +184,7 @@ public class HistoryMessageActivity extends XiaoeActivity {
         historyMessageAdapter = new HistoryMessageAdapter(this);
 
         mEmptyView = new EmptyView(this);
-        mEmptyView.setNoDataTip(R.string.NoResult);
+        mEmptyView.setNoDataTip(R.string.no_data_text);
         mEmptyView.setOnClickListener(v -> loadMessages());
         historyMessageAdapter.setEmptyView(mEmptyView);
         historyMessageAdapter.setOnLoadMoreListener(() -> {
@@ -223,9 +233,6 @@ public class HistoryMessageActivity extends XiaoeActivity {
     }
 
     private void initData() {
-        if (messageList != null) {
-            historyMessageAdapter.setNewData(messageList);
-        }
         historyMessagePresenter = new HistoryMessagePresenter(this);
         loadMessages();
     }

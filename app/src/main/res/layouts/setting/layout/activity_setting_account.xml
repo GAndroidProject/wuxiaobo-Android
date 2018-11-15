@@ -1,42 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/audio_page_bg_color">
+    android:background="@color/audio_page_bg_color"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/account_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        app:layout_collapseMode="pin"
-        android:background="@color/white">
-
-        <ImageView
-            android:id="@+id/setting_account_edit_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:ignore="ContentDescription"
-            android:src="@mipmap/download_back"/>
-
-        <TextView
-            android:id="@+id/setting_account_edit_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/setting_account_title"
-            android:textSize="18sp"
-            android:textColor="@color/main_title_color"
-            android:layout_gravity="center_horizontal"/>
-
-    </android.support.v7.widget.Toolbar>
+    <include layout="@layout/layout_toolbar" />
 
     <LinearLayout
         android:id="@+id/account_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
-
+        android:orientation="vertical" />
 </LinearLayout>

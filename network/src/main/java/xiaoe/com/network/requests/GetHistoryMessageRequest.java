@@ -12,7 +12,7 @@ import xiaoe.com.network.network_interface.IBizCallback;
 public class GetHistoryMessageRequest extends IRequest {
 
     public GetHistoryMessageRequest(IBizCallback iBizCallback) {
-        super(NetworkEngine.GET_HISTORY_MESSAGE_URL + "xe.user.message.get/1.0.0", iBizCallback);
+        super(NetworkEngine.API_THIRD_BASE_URL + "xe.user.message.get/1.0.0", iBizCallback);
     }
 
     public void sendRequest() {

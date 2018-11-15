@@ -1,4 +1,4 @@
-package xiaoe.com.shop.business.historymessage.ui;
+package xiaoe.com.shop.widget;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
@@ -65,12 +65,9 @@ public class EmptyView extends FrameLayout {
         mLoadingView = rootView.findViewById(R.id.viewLoading);
         mNetworkErrorView = rootView.findViewById(R.id.viewNetworkError);
         mTvNoDataTip = (TextView) rootView.findViewById(R.id.tvNoDataTip);
-        rootView.findViewById(R.id.tvReload).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mEmptyViewDelegate != null) {
-                    mEmptyViewDelegate.onReload();
-                }
+        rootView.findViewById(R.id.tvReload).setOnClickListener(v -> {
+            if (mEmptyViewDelegate != null) {
+                mEmptyViewDelegate.onReload();
             }
         });
     }

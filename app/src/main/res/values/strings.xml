@@ -15,16 +15,16 @@
     <string name="play_has_last_sing">已经是最后一首了</string>
     <string name="speed_play_not_support">系统版本不支持倍速切换</string>
     <string name="listen_after_purchase">购买后可收听</string>
-	<string name="test_audio_url1">http://wechatapppro-1252524126.file.myqcloud.com/app04csshyE7030/audio/a7e4064f0f62f68e84b339736f6ce2d9.mp3</string>
+    <string name="test_audio_url1">http://wechatapppro-1252524126.file.myqcloud.com/app04csshyE7030/audio/a7e4064f0f62f68e84b339736f6ce2d9.mp3</string>
     <string name="test_audio_url2">http://wechatapppro-1252524126.file.myqcloud.com/app04csshyE7030/audio/cc0b8733b398370fe76fb1f7aef30a5e.mp3</string>
     <string name="test_audio_url3">http://wechatapppro-1252524126.file.myqcloud.com/app04csshyE7030/audio/a5ea89919fef8d710885029ce746cfd1.mp3</string>
     <string name="test_audio_url4">http://wechatapppro-1252524126.file.myqcloud.com/app04csshyE7030/audio/7289a5a3363f9e3e2b70bf1bb1384707.mp3</string>
     <string name="test_audio_url5">http://wechatapppro-1252524126.file.myqcloud.com/app04csshyE7030/audio/2f323ead313d1e3c681aa7559ba1c556.mp3</string>
-	<string name="str_wxb">C  O  U  R  S  E</string>
+    <string name="str_wxb">C  O  U  R  S  E</string>
 
     <string name="share_img">share_img</string>
     <string name="share_txt">share_txt</string>
-	<string name="share_title">分享</string>
+    <string name="share_title">分享</string>
     <string name="collect_title">收藏</string>
     <string name="download_title">下载</string>
     <string name="comment_title">评论</string>
@@ -72,7 +72,7 @@
     <string name="column_directory">课程大纲</string>
 
     <string name="batch_download_text">批量下载</string>
-    
+
     <string name="off_line_cache_text">离线缓存</string>
     <string name="all_select_text">全选</string>
     <string name="cancel_text">取消</string>
@@ -283,6 +283,7 @@
     <string name="NoResult">没有结果</string>
     <string name="message_notice_text">消息通知</string>
 
-    <string name="sharing_preparation">分享准备中...</string>
+    <string name="network_none_text">当前网络状况不好\n切换网络刷新试试哦</string>
+    <string name="no_data_text">当前暂时没有新的消息</string>
 
 </resources>

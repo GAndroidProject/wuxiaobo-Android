@@ -30,7 +30,9 @@ public class XiaoeApplication extends Application {
     private static final String TAG = "XiaoeApplication";
     @SuppressLint("StaticFieldLeak")
     private static Context mContext;
-    //是否正式环境
+    /**
+     * 是否正式环境
+     */
     private static boolean isFormalCondition;
     public static volatile Context applicationContext;
     public static volatile Handler applicationHandler;

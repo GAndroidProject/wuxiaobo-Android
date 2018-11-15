@@ -1,11 +1,8 @@
 package xiaoe.com.shop.business.main.presenter;
 
-import android.util.Log;
-
 import cn.jpush.android.api.JPushInterface;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.XiaoeApplication;
-import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.BindJgPushRequest;
@@ -45,6 +42,6 @@ public class MessagePushPresenter implements IBizCallback {
         // 客户端类型 - 1：Android    2：iOS
         bindJgPushRequest.addRequestParam("type", 1);
 
-        NetworkEngine.getInstance().sendRequest(bindJgPushRequest);
+        bindJgPushRequest.sendRequest();
     }
 }

@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/viewNoData"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/ivNoDataBg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:src="@drawable/chat_empty_view_bg" />
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/message_none" />
 
     <TextView
         android:id="@+id/tvNoDataTip"
         android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:layout_alignStart="@id/ivNoDataBg"
-        android:layout_alignEnd="@id/ivNoDataBg"
-        android:layout_alignBottom="@id/ivNoDataBg"
-        android:gravity="center"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp"
-        android:text="@string/NoResult"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivNoDataBg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:textColor="@color/main_title_color"
+        android:textSize="16sp"
+        tools:text="@string/NoResult" />
 
     <TextView
         android:id="@+id/tvNoDataTipNew"
