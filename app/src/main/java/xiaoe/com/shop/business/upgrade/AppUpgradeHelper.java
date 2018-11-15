@@ -242,7 +242,7 @@ public class AppUpgradeHelper {
         });
 
         TextView confirm = (TextView) view.findViewById(R.id.btn_confirm);
-        confirm.setBackgroundResource(isForceUpdate ? R.drawable.btn_bottom_radio : R.drawable.btn_right_bottom_radio);
+        confirm.setBackgroundResource(isForceUpdate ? R.drawable.btn_bottom_radio_bg : R.drawable.btn_right_bottom_radio_bg);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

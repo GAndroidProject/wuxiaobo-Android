@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import xiaoe.com.common.app.Global;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.interfaces.OnCancelListener;
 import xiaoe.com.shop.interfaces.OnConfirmListener;
@@ -100,7 +101,7 @@ public class CustomDialog {
         message.setText(text);
     }
 
-    public TextView getHintMessage(){
+    public TextView getMessage(){
         return message;
     }
 
@@ -108,12 +109,16 @@ public class CustomDialog {
         message.setTextColor(color);
     }
 
-    public void setHintTitle(String text) {
+    public void setTitle(String text) {
         title.setText(text);
     }
 
-    public void setHintTitleVisibility(int visibility){
+    public void setTitleVisibility(int visibility){
         title.setVisibility(visibility);
+    }
+
+    public void setMessageVisibility(int visibility){
+        message.setVisibility(visibility);
     }
 
     public void setHideCancelButton(boolean hide){
@@ -123,9 +128,11 @@ public class CustomDialog {
     public void showDialog(final int tag) {
         loadTypeLayout.setVisibility(View.GONE);
         hintTypeLayout.setVisibility(View.VISIBLE);
-        if (cancelListener == null || hideCancel) {
+        if (cancelListener == null && hideCancel) {
             btnCancel.setVisibility(View.GONE);
             verticalLine.setVisibility(View.GONE);
+            btnConfirm.setBackgroundResource(cancelListener == null && hideCancel ?
+                    R.drawable.btn_bottom_radio_bg : R.drawable.btn_right_bottom_radio_bg);
         }
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,14 +166,15 @@ public class CustomDialog {
         dialog.setCancelable(mCancelable);
 
         dialog.show();
-        if(dialog.getWindow() != null){
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.bg_dialog);
-        }
         Point point = Global.g().getDisplayPixel();
         dialog.getWindow().setLayout((int) (point.x * 0.8),WindowManager.LayoutParams.WRAP_CONTENT);
         ViewGroup viewGroup = (ViewGroup) rootView.getParent();
         if (viewGroup != null) {
             viewGroup.removeAllViewsInLayout();
+        }
+        if(dialog.getWindow() != null){
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.bg_dialog);
+            dialog.getWindow().setLayout(Dp2Px2SpUtil.dp2px(mContext,250),LinearLayout.LayoutParams.WRAP_CONTENT);
         }
         dialog.setContentView(rootView);
     }

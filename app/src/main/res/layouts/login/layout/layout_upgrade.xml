@@ -41,7 +41,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:background="@drawable/btn_left_bottom_radio"
+            android:background="@drawable/btn_left_bottom_radio_bg"
             android:text="@string/upgrade_do_it_later"
             android:textSize="14sp"
             android:textColor="@color/main_title_color"/>
@@ -55,7 +55,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:background="@drawable/btn_right_bottom_radio"
+            android:background="@drawable/btn_right_bottom_radio_bg"
             android:text="@string/upgrade_now"
             android:textSize="14sp"
             android:textColor="@color/high_title_color"/>

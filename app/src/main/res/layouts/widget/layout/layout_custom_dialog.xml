@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_layout_dialog">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/hint_type"
         android:layout_width="match_parent"
+        android:background="@drawable/bg_layout_dialog2"
         android:layout_height="wrap_content">
 
         <TextView
@@ -20,6 +20,8 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="@string/hint_text"
+            android:textStyle="bold"
+            android:lineSpacingExtra="4sp"
             android:textColor="@color/main_title_color"
             android:textSize="14sp" />
 
@@ -33,20 +35,20 @@
             android:layout_marginTop="25dp"
             android:layout_marginRight="15dp"
             android:gravity="center"
+            android:lineSpacingExtra="4sp"
             android:textColor="@color/secondary_title_color"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <View
             android:id="@+id/horizontal_line"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="1px"
             android:layout_below="@id/id_message"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="20dp"
             android:background="@color/line" />
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="46dp"
             android:layout_below="@id/horizontal_line"
             android:orientation="horizontal">
 
@@ -55,15 +57,15 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/click_color"
+                android:background="@drawable/btn_left_bottom_radio_bg"
                 android:gravity="center"
                 android:text="@string/cancel_title"
                 android:textColor="@color/main_title_color"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <View
                 android:id="@+id/vertical_line"
-                android:layout_width="1dp"
+                android:layout_width="1px"
                 android:layout_height="match_parent"
                 android:background="@color/line" />
 
@@ -72,11 +74,11 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/click_color"
+                android:background="@drawable/btn_right_bottom_radio_bg"
                 android:gravity="center"
                 android:text="@string/confirm_title"
                 android:textColor="@color/high_title_color"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
         </LinearLayout>
     </RelativeLayout>
     <LinearLayout
@@ -84,6 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="@drawable/bg_layout_dialog"
         android:layout_centerInParent="true"
         >
         <TextView
