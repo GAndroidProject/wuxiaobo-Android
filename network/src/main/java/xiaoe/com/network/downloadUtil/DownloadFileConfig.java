@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import xiaoe.com.common.entitys.DownloadTableInfo;
-import xiaoe.com.common.utils.ISQLiteCallBack;
-import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.db.ISQLiteCallBack;
+import xiaoe.com.common.db.SQLiteUtil;
 
 /**
  * Created by Administrator on 2018/1/3.

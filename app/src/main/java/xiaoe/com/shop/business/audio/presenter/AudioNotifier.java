@@ -5,9 +5,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,13 +86,13 @@ public class AudioNotifier {
 //        String subtitle = FileUtils.getArtistAndAlbum(music.getArtist(), music.getAlbum());
         String subtitle = "";
 //        Bitmap cover = CoverLoader.get().loadThumb(music);
-        Bitmap cover = null;
+        String imgUrl = TextUtils.isEmpty(music.getImgUrlCompressed()) ? music.getImgUrl() : music.getImgUrlCompressed();
 
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.layout_audio_notification);
-        if (cover != null) {
-            remoteViews.setImageViewBitmap(R.id.iv_icon, cover);
-        } else {
+        if (TextUtils.isEmpty(imgUrl)) {
             remoteViews.setImageViewResource(R.id.iv_icon, R.mipmap.ic_launcher);
+        } else {
+            remoteViews.setImageViewUri(R.id.iv_icon, Uri.parse(imgUrl));
         }
         remoteViews.setTextViewText(R.id.tv_title, title);
         remoteViews.setTextViewText(R.id.tv_subtitle, subtitle);
@@ -103,12 +104,7 @@ public class AudioNotifier {
         PendingIntent playPendingIntent = PendingIntent.getBroadcast(context, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setImageViewResource(R.id.iv_play_pause, getPlayIconRes(isLightNotificationTheme, isPlaying));
         remoteViews.setOnClickPendingIntent(R.id.iv_play_pause, playPendingIntent);
-//
-//        Intent nextIntent = new Intent(StatusBarReceiver.ACTION_STATUS_BAR);
-//        nextIntent.putExtra(StatusBarReceiver.EXTRA, StatusBarReceiver.EXTRA_NEXT);
-//        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(context, 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        remoteViews.setImageViewResource(R.id.iv_next, getNextIconRes(isLightNotificationTheme));
-//        remoteViews.setOnClickPendingIntent(R.id.iv_next, nextPendingIntent);
+
         return remoteViews;
     }
 

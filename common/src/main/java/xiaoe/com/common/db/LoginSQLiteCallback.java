@@ -1,4 +1,4 @@
-package xiaoe.com.shop.business.login.presenter;
+package xiaoe.com.common.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -9,7 +9,6 @@ import java.util.List;
 
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.LoginUserEntity;
-import xiaoe.com.common.utils.ISQLiteCallBack;
 
 public class LoginSQLiteCallback implements ISQLiteCallBack {
 

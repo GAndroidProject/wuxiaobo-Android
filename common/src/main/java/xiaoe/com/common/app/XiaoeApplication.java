@@ -45,50 +45,8 @@ public class XiaoeApplication extends Application {
         mContext = getApplicationContext();
         applicationContext = getApplicationContext();
         applicationHandler = new Handler(applicationContext.getMainLooper());
-        //初始化Fresco图片加载库
-        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext).setDownsampleEnabled(true).build();
-        Fresco.initialize(this,imagePipelineConfig);
-        //腾讯x5内核初始化
-        QbSdk.initX5Environment(mContext, new QbSdk.PreInitCallback() {
-            @Override
-            public void onCoreInitFinished() {
-            }
-
-            @Override
-            public void onViewInitFinished(boolean b) {
-            }
-        });
-        //↓↓↓↓↓↓↓友盟集成初始化↓↓↓↓↓↓↓
-        UMConfigure.setLogEnabled(true);
-        UMConfigure.init(this, Constants.getUMAppId() ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"");
-        PlatformConfig.setWeixin(Constants.getWXAppId(), Constants.getWxSecret());
-        // 初始化 SharedPreference
-        SharedPreferencesUtil.getInstance(mContext, SharedPreferencesUtil.FILE_NAME);
-        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
-        MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
-        //↑↑↑↑↑↑↑友盟集成初始化↑↑↑↑↑↑↑
-
-        // 设置开启日志,发布时请关闭日志
-        JPushInterface.setDebugMode(true);
-        // 初始化 JPush
-        JPushInterface.init(this);
-
-        //↓↓↓↓↓↓↓↓初始化bugly↓↓↓↓↓↓↓
-        /**
-         * 如果使用了MultiDex  请参照bugly注意事项https://bugly.qq.com/docs/user-guide/instruction-manual-android/?v=20181014122344#_2
-         *
-         * */
-        Context context = getApplicationContext();
-        // 获取当前包名
-        String packageName = context.getPackageName();
-        // 获取当前进程名
-        String processName = getProcessName(android.os.Process.myPid());
-        // 设置是否为上报进程
-        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
-        strategy.setUploadProcess(processName == null || processName.equals(packageName));
-        // 初始化Bugly
-        CrashReport.initCrashReport(context, Constants.getBuglyAppId(), !isFormalCondition, strategy);
-        //↑↑↑↑↑↑↑初始化bugly↑↑↑↑↑↑↑
+        //初始化一下库，在子线程初始化
+        init();
     }
     public static Context getmContext() {
         return mContext;
@@ -125,5 +83,54 @@ public class XiaoeApplication extends Application {
             }
         }
         return null;
+    }
+    private void init(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext).setDownsampleEnabled(true).build();
+                Fresco.initialize(mContext,imagePipelineConfig);
+                //腾讯x5内核初始化
+                QbSdk.initX5Environment(mContext, new QbSdk.PreInitCallback() {
+                    @Override
+                    public void onCoreInitFinished() {
+                    }
+
+                    @Override
+                    public void onViewInitFinished(boolean b) {
+                    }
+                });
+                //↓↓↓↓↓↓↓友盟集成初始化↓↓↓↓↓↓↓
+                UMConfigure.setLogEnabled(true);
+                UMConfigure.init(mContext, Constants.getUMAppId() ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"");
+                PlatformConfig.setWeixin(Constants.getWXAppId(), Constants.getWxSecret());
+                // 初始化 SharedPreference
+                SharedPreferencesUtil.getInstance(mContext, SharedPreferencesUtil.FILE_NAME);
+                SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+                MobclickAgent.setScenarioType(mContext, MobclickAgent.EScenarioType.E_UM_NORMAL);
+                //↑↑↑↑↑↑↑友盟集成初始化↑↑↑↑↑↑↑
+
+                // 设置开启日志,发布时请关闭日志
+                JPushInterface.setDebugMode(true);
+                // 初始化 JPush
+                JPushInterface.init(mContext);
+
+                //↓↓↓↓↓↓↓↓初始化bugly↓↓↓↓↓↓↓
+                /**
+                 * 如果使用了MultiDex  请参照bugly注意事项https://bugly.qq.com/docs/user-guide/instruction-manual-android/?v=20181014122344#_2
+                 *
+                 * */
+                Context context = getApplicationContext();
+                // 获取当前包名
+                String packageName = context.getPackageName();
+                // 获取当前进程名
+                String processName = getProcessName(android.os.Process.myPid());
+                // 设置是否为上报进程
+                CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+                strategy.setUploadProcess(processName == null || processName.equals(packageName));
+                // 初始化Bugly
+                CrashReport.initCrashReport(context, Constants.getBuglyAppId(), !isFormalCondition, strategy);
+            }
+        }).start();
     }
 }

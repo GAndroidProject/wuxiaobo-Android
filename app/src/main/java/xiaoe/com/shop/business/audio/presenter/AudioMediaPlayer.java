@@ -22,7 +22,7 @@ import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.AudioPlayTable;
 import xiaoe.com.common.utils.DateFormat;
-import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.db.SQLiteUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.events.AudioPlayEvent;
 
@@ -37,6 +37,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     private static boolean isStop = true;//是否是停止（已经释放资源），
     private static boolean prepared = false;
     public static float mPlaySpeed = 1f;//播放倍数
+    private static AudioFocusManager audioFocusManager;
 
     private static Handler mHandler = new Handler(){
         @Override
@@ -50,6 +51,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             }
         }
     };
+    private static boolean isThirdPause = false;//非主动暂停，如电话呼入
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -72,6 +75,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(mediaPlayer == null){
             mediaPlayer = new MediaPlayer();
         }
+        audioFocusManager = new AudioFocusManager(this);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //设置准备播放资源监听
         mediaPlayer.setOnPreparedListener(this);
@@ -91,6 +95,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public void onPrepared(MediaPlayer mp) {
         prepared = true;
         mediaPlayer.start();
+        audioFocusManager.requestAudioFocus();
         event.setState(AudioPlayEvent.PLAY);
         changePlayerSpeed(mPlaySpeed);
         EventBus.getDefault().post(event);
@@ -160,13 +165,16 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(mediaPlayer == null || !prepared){
             return;
         }
+        isThirdPause = false;
         if (getAudio() != null && mediaPlayer.isPlaying())
             getAudio().setPlaying(false);
         if(mediaPlayer.isPlaying()){
+            audioFocusManager.abandonAudioFocus();
             mediaPlayer.pause();
             event.setState(AudioPlayEvent.PAUSE);
             AudioNotifier.get().showPause(audio);
         } else {
+            audioFocusManager.requestAudioFocus();
             mediaPlayer.start();
             event.setState(AudioPlayEvent.PLAY);
             mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
@@ -179,6 +187,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(audio == null || mediaPlayer == null || isStop){
             return;
         }
+        audioFocusManager.abandonAudioFocus();
         if(prepared){
             mediaPlayer.stop();
         }
@@ -236,6 +245,24 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         return  -1;
     }
 
+
+    public static void thirdPause(){
+        isThirdPause = true;
+        if(mediaPlayer == null || !prepared){
+            return;
+        }
+        if(mediaPlayer.isPlaying()){
+            mediaPlayer.pause();
+            event.setState(AudioPlayEvent.PAUSE);
+            AudioNotifier.get().showPause(audio);
+        }
+        EventBus.getDefault().post(event);
+    }
+
+    public static boolean isThirdPause() {
+        return isThirdPause;
+    }
+
     public static void playAppoint(int position){
         audio.setPlay(false);
         stop();
@@ -266,17 +293,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
         event.setState(AudioPlayEvent.NEXT);
         EventBus.getDefault().post(event);
-//        nextAudio.setPlay(true);
-//        if(audio.getResourceId().equals(nextAudio.getResourceId())){
-//            if(isStop){
-//                start();
-//            }else{
-//                play();
-//            }
-//        }else{
-//            audio = nextAudio;
-//            new AudioPresenter(null).requestDetail(nextAudio.getResourceId());
-//        }
     }
 
     public static void playLast() {
@@ -295,17 +311,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
         event.setState(AudioPlayEvent.LAST);
         EventBus.getDefault().post(event);
-//        lastAudio.setPlay(true);
-//        if(audio.getResourceId().equals(lastAudio.getResourceId())){
-//            if(isStop){
-//                start();
-//            }else{
-//                play();
-//            }
-//        }else{
-//            audio = lastAudio;
-//            new AudioPresenter(null).requestDetail(lastAudio.getResourceId());
-//        }
+
     }
 
     public static boolean changePlayerSpeed(float speed) {
@@ -369,6 +375,10 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             audio.setCreateAt(DateFormat.currentTime());
             SQLiteUtil.insert(AudioPlayTable.TABLE_NAME, audio);
         }
+    }
+
+    public static MediaPlayer getMediaPlayer(){
+        return mediaPlayer;
     }
 
     public static boolean isStop() {

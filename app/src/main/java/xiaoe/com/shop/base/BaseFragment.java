@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +21,12 @@ import java.util.List;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.LoginUser;
-import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.db.SQLiteUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
-import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
+import xiaoe.com.common.db.LoginSQLiteCallback;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.interfaces.OnCancelListener;
 import xiaoe.com.shop.interfaces.OnConfirmListener;
@@ -178,7 +177,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCancel
                         if(!dialog.isShowing() && !((XiaoeActivity) getActivity()).getDialog().isShowing()){
                             dialog.setCancelable(false);
                             dialog.setHintMessage(getString(R.string.login_invalid));
-                            dialog.setConfirmText(getString(R.string.btn_go_login));
+                            dialog.setConfirmText(getString(R.string.btn_again_login));
                             dialog.setCancelListener(BaseFragment.this);
                             dialog.setConfirmListener(BaseFragment.this);
                             dialog.showDialog(DIALOG_TAG_LOADING);
@@ -270,6 +269,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCancel
         if(tag == DIALOG_TAG_LOADING){
             SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
             SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+            CommonUserInfo.getInstance().clearUserInfo();
             CommonUserInfo.setApiToken("");
             CommonUserInfo.setIsSuperVip(false);
             CommonUserInfo.setIsSuperVipAvailable(false);

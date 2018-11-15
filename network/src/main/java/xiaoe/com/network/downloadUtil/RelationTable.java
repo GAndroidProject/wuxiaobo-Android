@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.Arrays;
 import java.util.List;
 
-import xiaoe.com.common.utils.ISQLiteCallBack;
+import xiaoe.com.common.db.ISQLiteCallBack;
 
 public class RelationTable implements ISQLiteCallBack {
     //下载资源关系路径表

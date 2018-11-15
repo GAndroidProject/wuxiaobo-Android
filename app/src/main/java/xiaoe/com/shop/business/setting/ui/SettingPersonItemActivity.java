@@ -22,13 +22,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.LoginUser;
-import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.db.SQLiteUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.SettingPersonItemRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
-import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
+import xiaoe.com.common.db.LoginSQLiteCallback;
 import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
 import xiaoe.com.shop.utils.StatusBarUtil;
 

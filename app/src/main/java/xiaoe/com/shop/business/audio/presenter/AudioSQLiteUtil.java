@@ -9,7 +9,7 @@ import java.util.List;
 
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.AudioPlayTable;
-import xiaoe.com.common.utils.ISQLiteCallBack;
+import xiaoe.com.common.db.ISQLiteCallBack;
 
 public class AudioSQLiteUtil implements ISQLiteCallBack {
     private final String TAG = "AudioSQLiteUtil";

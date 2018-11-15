@@ -221,7 +221,7 @@ public class HistoryMessageActivity extends XiaoeActivity {
         for (int i = 0; i < 20; i++) {
             HistoryMessageEntity.ListBean listBean = new HistoryMessageEntity.ListBean();
             listBean.setApp_id("appiOW1KfWe9943");
-            listBean.setSend_nick_name("吴晓波频道 " + (i + 1));
+            listBean.setSend_nick_name("launch " + (i + 1));
             listBean.setCreated_at("13小时前");
             listBean.setTitle("回复了你的评论");
             listBean.setContent("百万级内容SKU，多矩阵流量渠道，帮好内容匹配精准流量，帮流量轻松入局内容付费，人人…");

@@ -8,7 +8,7 @@ import java.util.List;
 import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.AudioPlayTable;
-import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.db.SQLiteUtil;
 
 public class AudioPlayUtil {
     private static final String TAG = "AudioPlayUtil";

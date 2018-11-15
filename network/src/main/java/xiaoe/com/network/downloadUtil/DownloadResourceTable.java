@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import xiaoe.com.common.entitys.DownloadResourceTableInfo;
-import xiaoe.com.common.utils.ISQLiteCallBack;
+import xiaoe.com.common.db.ISQLiteCallBack;
 
 public class DownloadResourceTable implements ISQLiteCallBack {
     public static final String TABLE_NAME = "download_resource";

@@ -20,7 +20,7 @@ import xiaoe.com.common.entitys.DownloadTableInfo;
 import xiaoe.com.common.interfaces.OnDownloadListener;
 import xiaoe.com.common.utils.DateFormat;
 import xiaoe.com.common.utils.MD5Utils;
-import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.db.SQLiteUtil;
 import xiaoe.com.network.utils.ThreadPoolUtils;
 
 /**

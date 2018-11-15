@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import xiaoe.com.common.entitys.DownloadTableInfo;
-import xiaoe.com.common.utils.ISQLiteCallBack;
+import xiaoe.com.common.db.ISQLiteCallBack;
 
 /**
  * 一个通用的SQLite，通过简单的配置快速搭建一个数据库存储的方案；

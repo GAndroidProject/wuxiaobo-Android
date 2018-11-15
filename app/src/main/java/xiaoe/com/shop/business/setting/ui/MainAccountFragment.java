@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +20,14 @@ import butterknife.Unbinder;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.SettingItemInfo;
-import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
 import xiaoe.com.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import xiaoe.com.common.utils.CacheManagerUtil;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
-import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.db.SQLiteUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.BaseFragment;
-import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
+import xiaoe.com.common.db.LoginSQLiteCallback;
 import xiaoe.com.shop.business.setting.presenter.LinearDividerDecoration;
 import xiaoe.com.shop.business.setting.presenter.SettingRecyclerAdapter;
 import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
@@ -107,6 +105,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
             public void onClick(View v) {
                 SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
                 SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+                CommonUserInfo.getInstance().clearUserInfo();
                 ActivityCollector.finishAll();
                 CommonUserInfo.setApiToken("");
                 CommonUserInfo.setIsSuperVip(false);

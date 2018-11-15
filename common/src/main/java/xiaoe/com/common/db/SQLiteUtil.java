@@ -1,4 +1,4 @@
-package xiaoe.com.common.utils;
+package xiaoe.com.common.db;
 
 import android.content.ContentValues;
 import android.content.Context;

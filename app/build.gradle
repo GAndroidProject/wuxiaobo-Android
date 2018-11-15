@@ -80,6 +80,7 @@ android {
                             'src/main/res/layouts/earning',
                             'src/main/res/layouts/historymessage',
                             'src/main/res/layouts/web',
+                            'src/main/res/layouts/launch',
                             'src/main/res/layouts',
                             'src/main/res'
                     ]

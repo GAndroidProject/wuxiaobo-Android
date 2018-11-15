@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,7 +40,8 @@ import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.LoginUser;
-import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
+import xiaoe.com.common.db.SQLiteUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.network_interface.INetworkResponse;
@@ -49,7 +51,7 @@ import xiaoe.com.shop.anim.TranslationAnimator;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 import xiaoe.com.shop.business.column.ui.ColumnActivity;
-import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
+import xiaoe.com.common.db.LoginSQLiteCallback;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
 import xiaoe.com.shop.common.JumpDetail;
@@ -245,9 +247,13 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                     JSONObject jsonObject = (JSONObject) entity;
                     if(jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING){
                         if(!dialog.isShowing()){
+                            dialog.getTitleView().setGravity(Gravity.START);
+                            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0 );
+                            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                            dialog.setMessageVisibility(View.GONE);
                             dialog.setCancelable(false);
-                            dialog.setHintMessage(getString(R.string.login_invalid));
-                            dialog.setConfirmText(getString(R.string.btn_go_login));
+                            dialog.setTitle(getString(R.string.login_invalid));
+                            dialog.setConfirmText(getString(R.string.btn_again_login));
                             dialog.setCancelListener(XiaoeActivity.this);
                             dialog.setConfirmListener(XiaoeActivity.this);
                             dialog.showDialog(DIALOG_TAG_LOADING);
@@ -380,7 +386,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             getDialog().setHintMessage(getResources().getString(R.string.not_can_pay));
             getDialog().showDialog(-1);
         }else if(code == -2 && hint){
-//            getDialog().dismissDialog();
+            getDialog().dismissDialog();
 //            getDialog().setHintMessage(getResources().getString(R.string.pay_fail));
 //            getDialog().showDialog(-2);
             toastCustom(getResources().getString(R.string.pay_fail));
@@ -419,6 +425,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         if(tag == DIALOG_TAG_LOADING){
             SQLiteUtil.init(this,  new LoginSQLiteCallback());
             SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+            CommonUserInfo.getInstance().clearUserInfo();
             CommonUserInfo.setApiToken("");
             CommonUserInfo.setIsSuperVip(false);
             CommonUserInfo.setIsSuperVipAvailable(false);

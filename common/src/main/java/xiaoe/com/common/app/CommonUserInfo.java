@@ -1,5 +1,11 @@
 package xiaoe.com.common.app;
 
+import java.util.List;
+
+import xiaoe.com.common.db.LoginSQLiteCallback;
+import xiaoe.com.common.db.SQLiteUtil;
+import xiaoe.com.common.entitys.LoginUser;
+
 public class CommonUserInfo {
 
     private static String apiToken;
@@ -13,6 +19,36 @@ public class CommonUserInfo {
     // 超级会员是否可用
     private static boolean isSuperVipAvailable;
 
+    private static CommonUserInfo commonUserInfo = null;
+    private static LoginUser loginUser = null;
+
+    public static CommonUserInfo getInstance(){
+        if(commonUserInfo == null){
+            synchronized (CommonUserInfo.class){
+                if(commonUserInfo == null){
+                    commonUserInfo = new CommonUserInfo();
+                    SQLiteUtil.init(XiaoeApplication.getmContext(), new LoginSQLiteCallback());
+                    if(!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)){
+                        SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
+                    }
+                }
+            }
+        }
+        if(loginUser == null){
+            setUserInfo();
+        }
+        return commonUserInfo;
+    }
+
+    public void clearUserInfo(){
+        commonUserInfo = null;
+    }
+    private static void setUserInfo(){
+        List<LoginUser> list = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        if(list != null && list.size() > 0){
+            loginUser = list.get(0);
+        }
+    }
     public static void setShopId(String shopId) {
         CommonUserInfo.shopId = shopId;
     }
@@ -43,6 +79,17 @@ public class CommonUserInfo {
 
     public static String getApiToken() {
         return apiToken;
+    }
+
+    public static String getApiTokenByDB(){
+        //双层判断
+        if(loginUser == null){
+            setUserInfo();
+        }
+        if(loginUser != null){
+            return loginUser.getApi_token();
+        }
+        return null;
     }
 
     public static String getPhone() {

@@ -25,7 +25,7 @@ import xiaoe.com.common.entitys.DecorateEntityType;
 import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.common.entitys.SearchHistory;
 import xiaoe.com.common.interfaces.OnItemClickWithPosListener;
-import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.db.SQLiteUtil;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.decorate.DecorateRecyclerAdapter;
 import xiaoe.com.shop.base.BaseFragment;
@@ -171,7 +171,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         recommendData = new ArrayList<>();
         // 默认的四个关键词
         recommendData.add("我的财富计划");
-        recommendData.add("吴晓波频道");
+        recommendData.add("launch");
         recommendData.add("我的职场计划");
         recommendData.add("避免败局");
         RecommendRecyclerAdapter recommendAdapter = new RecommendRecyclerAdapter(mContext, recommendData);

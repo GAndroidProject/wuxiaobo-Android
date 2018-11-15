@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.common.app.Constants;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.DeviceInfo;
 import xiaoe.com.network.network_interface.IBizCallback;
@@ -61,13 +62,6 @@ public abstract class IRequest {
         formBody.put(key,value);
         return true;
     }
-
-//    public void addHeaderParam(String key, String value){
-//        if(header == null){
-//            header = new HashMap<String, String>();
-//        }
-//        header.put(key, value);
-//    }
 
     /**
      * 添加请求参数
@@ -134,8 +128,13 @@ public abstract class IRequest {
     public String getWrapedFormBody() {
         //暂时直接new对象，后期通过缓存获取
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("app_id",formBody.containsKey("app_id") ? formBody.get("app_id") : "");
+        if(formBody.containsKey("app_id")){
+            jsonObject.put("app_id", formBody.get("app_id"));
+        }else {
+            jsonObject.put("app_id", Constants.getAppId());
+        }
         jsonObject.put("client","6");
+//        jsonObject.put("device")
         jsonObject.put("app_version","1.0");
         jsonObject.put("build_version",buildVersion);
         jsonObject.put("client_info",clientInfo);

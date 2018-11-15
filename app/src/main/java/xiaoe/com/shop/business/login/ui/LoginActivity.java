@@ -21,14 +21,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.app.CommonUserInfo;
-import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.common.entitys.LoginUser;
-import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.common.db.SQLiteUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
 import xiaoe.com.network.NetworkCodes;
-import xiaoe.com.network.downloadUtil.DownloadFileConfig;
-import xiaoe.com.network.downloadUtil.DownloadManager;
-import xiaoe.com.network.downloadUtil.DownloadSQLiteUtil;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.LoginBindRequest;
 import xiaoe.com.network.requests.LoginCheckRegisterRequest;
@@ -41,10 +37,9 @@ import xiaoe.com.network.requests.LoginRequest;
 import xiaoe.com.network.requests.ResetPasswordRequest;
 import xiaoe.com.network.requests.SettingPseronMsgRequest;
 import xiaoe.com.network.requests.TouristsShopIdRequest;
-import xiaoe.com.network.utils.ThreadPoolUtils;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
-import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
+import xiaoe.com.common.db.LoginSQLiteCallback;
 import xiaoe.com.shop.business.setting.presenter.SettingPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.common.login.LoginPresenter;
@@ -110,23 +105,6 @@ public class LoginActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"onCreate -- before");
-        //当做启动页时，将此处线程移至启动页
-        ThreadPoolUtils.runTaskOnThread(new Runnable() {
-            @Override
-            public void run() {
-                //下载列表中，可能有正在下载状态，但是退出是还是正在下载状态，所以启动时将之前的状态置为暂停
-                if(SQLiteUtil.tabIsExist(DownloadFileConfig.TABLE_NAME)){
-                    DownloadManager.getInstance().setDownloadPause();
-                    DownloadManager.getInstance().getAllDownloadList();
-                }else{
-                    DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
-                    downloadSQLiteUtil.execSQL(DownloadFileConfig.CREATE_TABLE_SQL);
-                }
-
-            }
-        });
-
         setStatusBar();
         StatusBarUtil.setRootViewFitsSystemWindows(this, false);
 
@@ -148,7 +126,6 @@ public class LoginActivity extends XiaoeActivity {
         initData();
         initView();
         initListener();
-        Log.d(TAG,"onCreate -- after");
     }
 
     private void initData() {
@@ -521,6 +498,7 @@ public class LoginActivity extends XiaoeActivity {
         localLoginUser.setPhone(phone);
         localLoginUser.setShopId(shopId);
         SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+        CommonUserInfo.getInstance().clearUserInfo();
         SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, localLoginUser);
 
         Toast("登录成功");

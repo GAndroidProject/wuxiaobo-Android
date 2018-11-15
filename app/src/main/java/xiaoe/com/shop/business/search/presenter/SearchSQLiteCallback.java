@@ -9,7 +9,7 @@ import java.util.List;
 
 import xiaoe.com.common.entitys.SearchHistory;
 import xiaoe.com.common.entitys.SearchHistoryEntity;
-import xiaoe.com.common.utils.ISQLiteCallBack;
+import xiaoe.com.common.db.ISQLiteCallBack;
 
 public class SearchSQLiteCallback implements ISQLiteCallBack {
 
