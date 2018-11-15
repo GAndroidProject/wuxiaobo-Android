@@ -81,7 +81,11 @@ public class JgPushReceiver extends BroadcastReceiver {
                         BrowserActivity.openUrl(context, jgPushReceiverEntity.getAction_params().getWebsite_url(), "外部链接");
                         break;
                     case 6:
-                        JumpDetail.jumpColumn(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", false);
+                        if ("8".equals(jgPushReceiverEntity.getAction_params().getResource_type())) {
+                            JumpDetail.jumpColumn(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", true);
+                        } else {
+                            JumpDetail.jumpColumn(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", false);
+                        }
                         break;
                     case 7:
                         break;
