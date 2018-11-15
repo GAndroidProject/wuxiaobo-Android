@@ -1,4 +1,4 @@
-package xiaoe.com.shop.jpush;
+package xiaoe.com.shop.common.jpush;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;

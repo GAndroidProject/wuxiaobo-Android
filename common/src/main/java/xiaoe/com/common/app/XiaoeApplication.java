@@ -3,6 +3,7 @@ package xiaoe.com.common.app;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -31,6 +32,8 @@ public class XiaoeApplication extends Application {
     private static Context mContext;
     //是否正式环境
     private static boolean isFormalCondition;
+    public static volatile Context applicationContext;
+    public static volatile Handler applicationHandler;
 
     @Override
     public void onCreate() {
@@ -38,6 +41,8 @@ public class XiaoeApplication extends Application {
         Global.g().setApplication(this);
         isFormalCondition = false;
         mContext = getApplicationContext();
+        applicationContext = getApplicationContext();
+        applicationHandler = new Handler(applicationContext.getMainLooper());
         //初始化Fresco图片加载库
         ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext).setDownsampleEnabled(true).build();
         Fresco.initialize(this,imagePipelineConfig);

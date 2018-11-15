@@ -1,6 +1,5 @@
-package xiaoe.com.shop.jpush;
+package xiaoe.com.shop.common.jpush;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewGroup.LayoutParams;
@@ -8,11 +7,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import cn.jpush.android.api.JPushInterface;
+import xiaoe.com.shop.base.XiaoeActivity;
 
 /**
  * @author Administrator
  */
-public class TestActivity extends Activity {
+public class TestActivity extends XiaoeActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

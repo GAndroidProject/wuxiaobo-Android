@@ -1,9 +1,7 @@
 package xiaoe.com.shop.business.historymessage.presenter;
 
-import cn.jpush.android.api.JPushInterface;
 import xiaoe.com.common.app.CommonUserInfo;
-import xiaoe.com.common.app.XiaoeApplication;
-import xiaoe.com.network.NetworkEngine;
+import xiaoe.com.common.entitys.HistoryMessageReq;
 import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.GetHistoryMessageRequest;
@@ -38,17 +36,16 @@ public class HistoryMessagePresenter implements IBizCallback {
         });
     }
 
-    public void requestHistoryMessage(int pageSize, int messageLastTime) {
+    public void requestHistoryMessage(HistoryMessageReq historyMessageReq) {
         GetHistoryMessageRequest getHistoryMessageRequest = new GetHistoryMessageRequest(this);
 
         // 店铺 ID
         getHistoryMessageRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         // 用户 ID
-        getHistoryMessageRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
-        // 页码大小(默认20)
-        getHistoryMessageRequest.addRequestParam("page_size", 20);
-        // 最后一条消息的发送时间send_at（默认-1表示当前时间 ）
-        getHistoryMessageRequest.addRequestParam("message_last_id", -1);
+        getHistoryMessageRequest.addRequestParam("user_id", "i_5be03f4a9b9b2_W08enCASgk");
+//        getHistoryMessageRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
+        // 其他参数
+        getHistoryMessageRequest.addRequestParam("buz_data", historyMessageReq.getBuz_data());
 
         getHistoryMessageRequest.sendRequest();
     }

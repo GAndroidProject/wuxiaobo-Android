@@ -52,6 +52,7 @@ android {
             res.srcDirs =
                     [
                             'src/main/res/layouts/test',
+                            'src/main/res/layouts/common',
                             'src/main/res/layouts/pay',
                             'src/main/res/layouts/main',
                             'src/main/res/layouts/umeng',
@@ -78,6 +79,7 @@ android {
                             'src/main/res/layouts/bought_list',
                             'src/main/res/layouts/earning',
                             'src/main/res/layouts/historymessage',
+                            'src/main/res/layouts/web',
                             'src/main/res/layouts',
                             'src/main/res'
                     ]
@@ -95,6 +97,10 @@ android {
     }
     lintOptions {
         disable 'GoogleAppIndexingWarning'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -120,8 +126,10 @@ dependencies {
     //圆圈loading
     implementation 'com.pnikosis:materialish-progress:1.7'
     //分包
-//    compile 'com.android.support:multidex:1.0.3'
+    //    compile 'com.android.support:multidex:1.0.3'
     // 底部时间选择器
     implementation 'com.contrarywind:Android-PickerView:4.1.6'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.android.support:cardview-v7:25.4.0'
 }

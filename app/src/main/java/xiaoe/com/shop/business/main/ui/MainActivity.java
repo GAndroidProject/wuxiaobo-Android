@@ -19,8 +19,10 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
+import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
@@ -38,8 +40,8 @@ import xiaoe.com.shop.business.super_vip.presenter.SuperVipPresenter;
 import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
-import xiaoe.com.shop.jpush.ExampleUtil;
-import xiaoe.com.shop.jpush.LocalBroadcastManager;
+import xiaoe.com.shop.common.jpush.ExampleUtil;
+import xiaoe.com.shop.common.jpush.LocalBroadcastManager;
 import xiaoe.com.shop.widget.BottomTabBar;
 import xiaoe.com.shop.widget.ScrollViewPager;
 
@@ -100,6 +102,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                 messagePushPresenter.requestBindJgPush(true);
             }
         }
+        Log.e(TAG, "onCreate: JPush RegID " + JPushInterface.getRegistrationID(XiaoeApplication.getmContext()));
 
         initView();
         initPermission();

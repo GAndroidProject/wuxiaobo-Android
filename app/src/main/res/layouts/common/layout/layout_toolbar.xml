@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/audio_page_bg_color"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/account_toolbar"
@@ -18,6 +16,8 @@
             android:id="@+id/setting_account_edit_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onHeadLeftButtonClick"
+            android:padding="6dp"
             android:src="@mipmap/download_back"
             tools:ignore="ContentDescription" />
 
@@ -26,19 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/message_notice_text"
             android:textColor="@color/main_title_color"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            tools:text="标题" />
     </android.support.v7.widget.Toolbar>
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_all_trade"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-</LinearLayout>
+</FrameLayout>

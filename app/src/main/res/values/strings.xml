@@ -281,4 +281,6 @@
     <string name="NoResult">没有结果</string>
     <string name="message_notice_text">消息通知</string>
 
+    <string name="sharing_preparation">分享准备中...</string>
+
 </resources>

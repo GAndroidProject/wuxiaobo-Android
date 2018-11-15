@@ -16,16 +16,18 @@ public class HistoryMessageEntity {
      * unread_num : 2
      */
 
-    private String message_last_id;
-    private int unread_num;
     private List<ListBean> list;
+    private int unread_num;
+    private String message_last_id;
+    private String comment_last_id;
+    private String praise_last_id;
 
-    public String getMessage_last_id() {
-        return message_last_id;
+    public List<ListBean> getList() {
+        return list;
     }
 
-    public void setMessage_last_id(String message_last_id) {
-        this.message_last_id = message_last_id;
+    public void setList(List<ListBean> list) {
+        this.list = list;
     }
 
     public int getUnread_num() {
@@ -36,12 +38,28 @@ public class HistoryMessageEntity {
         this.unread_num = unread_num;
     }
 
-    public List<ListBean> getList() {
-        return list;
+    public String getMessage_last_id() {
+        return message_last_id;
     }
 
-    public void setList(List<ListBean> list) {
-        this.list = list;
+    public void setMessage_last_id(String message_last_id) {
+        this.message_last_id = message_last_id;
+    }
+
+    public String getComment_last_id() {
+        return comment_last_id;
+    }
+
+    public void setComment_last_id(String comment_last_id) {
+        this.comment_last_id = comment_last_id;
+    }
+
+    public String getPraise_last_id() {
+        return praise_last_id;
+    }
+
+    public void setPraise_last_id(String praise_last_id) {
+        this.praise_last_id = praise_last_id;
     }
 
     public static class ListBean {
@@ -86,6 +104,9 @@ public class HistoryMessageEntity {
         private String created_at;
         private String updated_at;
         private String wx_avatar;
+        /**
+         * 消息类型：0-系统消息，1-评论消息，2-点赞消息
+         */
         private int message_type;
         private String time_from_now;
 

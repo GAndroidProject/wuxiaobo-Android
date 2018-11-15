@@ -407,7 +407,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         switch (v.getId()) {
             case R.id.mine_title_msg: // 信息
                 if (mainActivity.isFormalUser) {
-//                    Toast.makeText(mContext, "点击信息按钮", Toast.LENGTH_SHORT).show();
                     JumpDetail.jumpHistoryMessage(mContext);
                 } else {
                     touristDialog.showDialog();
@@ -475,6 +474,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                             break;
                         case DecorateEntityType.TOPIC:
                             JumpDetail.jumpColumn(mContext, mineLearningId, "", true);
+                            break;
+                        default:
                             break;
                     }
                 } else {

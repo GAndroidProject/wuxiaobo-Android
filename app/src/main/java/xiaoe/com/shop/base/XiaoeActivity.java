@@ -1,5 +1,6 @@
 package xiaoe.com.shop.base;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,6 +82,10 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     // 用户登录信息
     LoginUser user = null;
 
+    protected InputMethodManager imm;
+
+    protected Context mContext;
+
     class XeHandler extends Handler {
 
         WeakReference<XiaoeActivity> wrf;
@@ -106,6 +112,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this;
         ActivityCollector.addActivity(this);
         popupWindow = new PopupWindow(this);
         popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -120,7 +127,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
         dialog = new CustomDialog(this);
 
-//        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
+        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         // 初始化数据库
         SQLiteUtil.init(this.getApplicationContext(), new LoginSQLiteCallback());
@@ -429,4 +436,11 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         Log.d(TAG, "onCancel: 友盟");
     }
     /* ↑↑↑↑↑↑↑ 此处往上是友盟分享回调 ↑↑↑↑↑↑↑↑*/
+
+    /**
+     * 点击左按钮(返回按钮)
+     */
+    public void onHeadLeftButtonClick(View v) {
+        finish();
+    }
 }

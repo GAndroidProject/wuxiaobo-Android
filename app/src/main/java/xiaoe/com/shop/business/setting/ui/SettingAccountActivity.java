@@ -143,6 +143,8 @@ public class SettingAccountActivity extends XiaoeActivity {
                     accountTitle.setText("设置新密码");
                     replaceFragment(PWD_PHONE_CODE);
                     break;
+                default:
+                    break;
             }
         }
     }
@@ -277,6 +279,8 @@ public class SettingAccountActivity extends XiaoeActivity {
                         AppUpgradeHelper.getInstance().checkUpgrade(true,this);
                     }
                     break;
+                default:
+                    break;
             }
             return;
         }
@@ -321,6 +325,8 @@ public class SettingAccountActivity extends XiaoeActivity {
                 case COMPLETE:
                     accountTitle.setText("修改手机号");
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_change_phone_complete);
+                default:
+                    break;
             }
             if (currentFragment != null) {
                 getSupportFragmentManager().beginTransaction().add(R.id.account_container, currentFragment, tag).commit();
@@ -353,6 +359,8 @@ public class SettingAccountActivity extends XiaoeActivity {
                     break;
                 case COMPLETE:
                     accountTitle.setText("修改手机号");
+                    break;
+                default:
                     break;
             }
             getSupportFragmentManager().beginTransaction().show(currentFragment).commit();
