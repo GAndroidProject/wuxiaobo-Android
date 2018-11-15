@@ -47,17 +47,16 @@ public class EarningPresenter implements IBizCallback {
     /**
      * 请求提现
      * @param price    提现价格
-     * @param realName 真实姓名（金额大于 20000 的时候需要）
      * @param ip       手机 ip
      */
-    public void requestWithdrawal(double price, String realName, String ip) {
+    public void requestWithdrawal(double price, String ip) {
 //        WithDrawalRequest withDrawalRequest = new WithDrawalRequest(NetworkEngine.EARNING_BASE_URL + "done_c_withdraw", this);
         WithDrawalRequest withDrawalRequest = new WithDrawalRequest(this);
 
         withDrawalRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         withDrawalRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         withDrawalRequest.addRequestParam("amount", price);
-        withDrawalRequest.addRequestParam("re_user_name", realName);
+        withDrawalRequest.addRequestParam("re_user_name", "");
         withDrawalRequest.addRequestParam("assert_type", "profit");
         withDrawalRequest.addRequestParam("account_type", 2);
         withDrawalRequest.addRequestParam("desc", "提现");

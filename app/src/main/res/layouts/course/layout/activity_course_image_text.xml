@@ -42,7 +42,6 @@
                     android:paddingTop="20dp"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:visibility="gone"
                     android:contentDescription="@string/course_image_text_back" />
 
             </FrameLayout>

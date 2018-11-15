@@ -192,7 +192,7 @@ public class PushScrollView extends ScrollView {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             PushScrollView pushScrollView = weakReference.get();
-            pushScrollView.allScroll -= 25;
+            pushScrollView.allScroll -= 60;
             if(pushScrollView.allScroll < 0){
                 pushScrollView.allScroll = 0;
             }

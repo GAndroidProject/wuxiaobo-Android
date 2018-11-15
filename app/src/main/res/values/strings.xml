@@ -242,6 +242,7 @@
     <string name="withdrawal_logo">￥</string>
     <string name="withdrawal_input_hint">请输入金额</string>
     <string name="withdrawal_error_tip">输入金额超过可提现余额</string>
+    <string name="withdrawal_less_tip">提现金额不可低于10元</string>
     <string name="withdrawal_left">奖学金余额 %1$s元</string> <!-- 第一个参数为数字 -->
     <string name="withdrawal_all">全部提现</string>
     <string name="withdrawal_to">提现到</string>
@@ -251,7 +252,7 @@
     <string name="withdrawal_success_tip">预计1&#8211;3天到账</string>
     <string name="withdrawal_bottom_tip">查看到账明细：我的&#8211;奖学金&#8211;提现记录</string>
 
-    <string name="vip_btn_money">开通会员￥1800</string>
+    <string name="vip_btn_money">开通会员￥%1$s</string>
 
     <string name="wait_text">等待</string>
 
@@ -286,4 +287,10 @@
     <string name="network_none_text">当前网络状况不好\n切换网络刷新试试哦</string>
     <string name="no_data_text">当前暂时没有新的消息</string>
 
+    <string name="withdrawal_limit_content">单次提现金额上限为2万\n你可以分批次提现</string>
+    <string name="withdrawal_limit_confirm">知道了</string>
+    <string name="withdrawal_grant_title">提现账户授权</string>
+    <string name="withdrawal_grant_content">点击下方复制链接，在微信环境中\n打开，即可授权提现至微信账户\n%1$s</string>
+    <string name="withdrawal_grant_cancel">取消</string>
+    <string name="withdrawal_grant_confirm">复制链接</string>
 </resources>

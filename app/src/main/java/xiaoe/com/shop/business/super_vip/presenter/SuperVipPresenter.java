@@ -25,7 +25,7 @@ public class SuperVipPresenter implements IBizCallback {
     public void requestSuperVip() {
         IsSuperVipRequest isSuperVipRequest = new IsSuperVipRequest(this);
 
-        isSuperVipRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
+        isSuperVipRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
         isSuperVipRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
 
         NetworkEngine.getInstance().sendRequest(isSuperVipRequest);

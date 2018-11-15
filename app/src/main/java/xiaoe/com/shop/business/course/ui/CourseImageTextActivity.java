@@ -149,18 +149,10 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
 
         if (loginList.size() == 0) {
             touristDialog = new TouristDialog(this);
-            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    touristDialog.dismissDialog();
-                }
-            });
-            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CourseImageTextActivity.this.finish();
-                    JumpDetail.jumpLogin(CourseImageTextActivity.this);
-                }
+            touristDialog.setDialogCloseClickListener(v -> touristDialog.dismissDialog());
+            touristDialog.setDialogConfirmClickListener(v -> {
+                CourseImageTextActivity.this.finish();
+                JumpDetail.jumpLogin(CourseImageTextActivity.this);
             });
         }
 

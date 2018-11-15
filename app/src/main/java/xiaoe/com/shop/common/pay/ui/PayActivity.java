@@ -228,9 +228,21 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         }
         paying = true;
         getDialog().showLoadDialog(false);
-        int paymentType = (resourceType == 8 || resourceType == 6) ? 3 : 2;
+//        int paymentType = (resourceType == 8 || resourceType == 6) ? 3 : 2;
+        int paymentType;
+        if (resourceType == 8 || resourceType == 6) {
+            paymentType = 3;
+        } else if (resourceType == 23) {
+            paymentType = 15;
+        } else {
+            paymentType = 2;
+        }
         if (productId != null) { // productId 不为空表示为超级会员的购买
-            payOrder(resourceId, productId, resourceType, paymentType, useCouponInfo.getCu_id());
+            if (useCouponInfo != null) {
+                payOrder(resourceId, productId, resourceType, paymentType, useCouponInfo.getCu_id());
+            } else {
+                payOrder(resourceId, productId, resourceType, paymentType, null);
+            }
             return;
         }
         if(useCouponInfo != null){

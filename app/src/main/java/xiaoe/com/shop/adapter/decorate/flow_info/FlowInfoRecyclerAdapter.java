@@ -105,19 +105,20 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 } else {
                     itViewHolder.flowInfoPrice.setText(bindItem.getItemPrice());
                 }
-                final String imgUrl = bindItem.getItemImg();
+//                final String imgUrl = bindItem.getItemImg();
                 itViewHolder.flowInfoWrap.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ActivityOptions options =
-                                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
-                                        Pair.create(((View) itViewHolder.flowInfoBg), mContext.getResources().getString(R.string.share_img)),
-                                        Pair.create(((View) itViewHolder.flowInfoTitle), mContext.getResources().getString(R.string.share_txt)));
-                        Intent transitionIntent = new Intent(mContext, CourseImageTextActivity.class);
-                        transitionIntent.putExtra("type", DecorateEntityType.FLOW_INFO_IMG_TEXT_STR);
-                        transitionIntent.putExtra("imgUrl", imgUrl);
-                        transitionIntent.putExtra("resourceId", bindItem.getItemId());
-                        mContext.startActivity(transitionIntent, options.toBundle());
+//                        ActivityOptions options =
+//                                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+//                                        Pair.create(((View) itViewHolder.flowInfoBg), mContext.getResources().getString(R.string.share_img)),
+//                                        Pair.create(((View) itViewHolder.flowInfoTitle), mContext.getResources().getString(R.string.share_txt)));
+//                        Intent transitionIntent = new Intent(mContext, CourseImageTextActivity.class);
+//                        transitionIntent.putExtra("type", DecorateEntityType.FLOW_INFO_IMG_TEXT_STR);
+//                        transitionIntent.putExtra("imgUrl", imgUrl);
+//                        transitionIntent.putExtra("resourceId", bindItem.getItemId());
+//                        mContext.startActivity(transitionIntent, options.toBundle());
+                        JumpDetail.jumpImageText(mContext, bindItem.getItemId(), "");
                     }
                 });
                 break;

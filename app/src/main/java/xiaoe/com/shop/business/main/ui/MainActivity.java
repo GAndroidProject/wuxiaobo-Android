@@ -61,6 +61,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     public boolean isFormalUser;
 
     SuperVipPresenter superVipPresenter;
+    public String expireAt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -324,6 +325,11 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     public void initSuperVipMsg(JSONObject data) {
         boolean isSuperVip = data.getBoolean("is_svip");
         boolean isCanBuy = data.getBoolean("is_can_buy");
+
+        String expire = data.getString("expire_at");
+        if (expire != null) {
+            expireAt = expire.split(" ")[0];
+        }
 
         CommonUserInfo.setIsSuperVip(isSuperVip);
         CommonUserInfo.setIsSuperVipAvailable(isCanBuy);

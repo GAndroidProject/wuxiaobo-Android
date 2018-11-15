@@ -270,42 +270,43 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 for (ShufflingItem item : shufflingList) {
                     imgList.add(item.getImgUrl());
                 }
-                shufflingFigureViewHolder.banner.setImages(imgList).setImageLoader(new ShufflingImageLoader()).setBannerStyle(BannerConfig.NOT_INDICATOR).start();
-                shufflingFigureViewHolder.banner.setOnBannerListener(new OnBannerListener() {
-                    @Override
-                    public void OnBannerClick(int position) {
-                        ShufflingItem shufflingItem = shufflingList.get(position);
-                        String resourceType = shufflingItem.getSrcType();
-                        String resourceId = shufflingItem.getSrcId();
-                        switch (resourceType) {
-                            case DecorateEntityType.IMAGE_TEXT:
-                                JumpDetail.jumpImageText(mContext, resourceId, "");
-                                break;
-                            case DecorateEntityType.AUDIO:
-                                JumpDetail.jumpImageText(mContext, resourceId, "");
-                                break;
-                            case DecorateEntityType.VIDEO:
-                                JumpDetail.jumpVideo(mContext, resourceId, "", false);
-                                break;
-                            case DecorateEntityType.COLUMN:
-                                JumpDetail.jumpColumn(mContext, resourceId, "", false);
-                                break;
-                            case DecorateEntityType.TOPIC:
-                                JumpDetail.jumpColumn(mContext, resourceId, "", true);
-                                break;
-                            case "message": // 消息页面 TODO: 跳转到消息页面
-                                break;
-                            case "my_purchase": // 已购
-                                JumpDetail.jumpMineLearning(mContext, "我正在学");
-                                break;
-                            case "custom": // 外部链接 TODO: 跳转到外部链接
-                                break;
-                            case "micro_page": // 微页面 TODO: 跳转到微页面
-                                break;
-                            default:
-                                Log.d(TAG, "OnBannerClick: 未知链接");
-                                break;
-                        }
+                shufflingFigureViewHolder.banner.setImages(imgList)
+                        .setImageLoader(new ShufflingImageLoader())
+                        .setBannerStyle(BannerConfig.CIRCLE_INDICATOR)
+                        .setDelayTime(1500)
+                        .start();
+                shufflingFigureViewHolder.banner.setOnBannerListener(position1 -> {
+                    ShufflingItem shufflingItem = shufflingList.get(position1);
+                    String resourceType = shufflingItem.getSrcType();
+                    String resourceId = shufflingItem.getSrcId();
+                    switch (resourceType) {
+                        case DecorateEntityType.IMAGE_TEXT:
+                            JumpDetail.jumpImageText(mContext, resourceId, "");
+                            break;
+                        case DecorateEntityType.AUDIO:
+                            JumpDetail.jumpImageText(mContext, resourceId, "");
+                            break;
+                        case DecorateEntityType.VIDEO:
+                            JumpDetail.jumpVideo(mContext, resourceId, "", false);
+                            break;
+                        case DecorateEntityType.COLUMN:
+                            JumpDetail.jumpColumn(mContext, resourceId, "", false);
+                            break;
+                        case DecorateEntityType.TOPIC:
+                            JumpDetail.jumpColumn(mContext, resourceId, "", true);
+                            break;
+                        case "message": // 消息页面 TODO: 跳转到消息页面
+                            break;
+                        case "my_purchase": // 已购
+                            JumpDetail.jumpMineLearning(mContext, "我正在学");
+                            break;
+                        case "custom": // 外部链接 TODO: 跳转到外部链接
+                            break;
+                        case "micro_page": // 微页面 TODO: 跳转到微页面
+                            break;
+                        default:
+                            Log.d(TAG, "OnBannerClick: 未知链接");
+                            break;
                     }
                 });
                 break;
@@ -376,10 +377,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public void onKnowledgeItemClick(View view, KnowledgeCommodityItem knowledgeCommodityItem) {
-        Log.d(TAG, "onKnowledgeItemClick: ---- " + knowledgeCommodityItem.getSrcType());
-        Log.d(TAG, "onKnowledgeItemClick: ---- ======= " + knowledgeCommodityItem);
         // 知识商品分组形式
         for (RecyclerView itemRecycler : knowledgeGroupRecyclerList) {
+            Log.d(TAG, "onKnowledgeItemClick: execute");
             if (view.getParent() == itemRecycler) {
                 switch (knowledgeCommodityItem.getSrcType()) {
                     case DecorateEntityType.IMAGE_TEXT: // 图文 -- resourceType 为 1，resourceId 需要取

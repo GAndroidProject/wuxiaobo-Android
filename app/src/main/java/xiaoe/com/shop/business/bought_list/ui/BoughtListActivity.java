@@ -2,6 +2,7 @@ package xiaoe.com.shop.business.bought_list.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,10 @@ import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.umeng.socialize.UMShareAPI;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,6 +44,8 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
 
     private static final String TAG = "BoughtListActivity";
 
+    @BindView(R.id.bought_list_refresh)
+    SmartRefreshLayout boughtRefresh;
     @BindView(R.id.bought_list_back)
     ImageView boughtListBack;
     @BindView(R.id.bought_list_content)
@@ -76,6 +83,18 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+        boughtRefresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                
+            }
+        });
+        boughtRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+
             }
         });
     }

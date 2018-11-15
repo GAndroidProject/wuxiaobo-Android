@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.math.BigDecimal;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -20,6 +22,7 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.super_vip.presenter.SuperVipPresenter;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.utils.SetImageUriUtil;
 
 public class SuperVipActivity extends XiaoeActivity {
 
@@ -36,6 +39,7 @@ public class SuperVipActivity extends XiaoeActivity {
 
     String productId; // 购买所需要的 produceId
     String resourceId; // 购买所需要的 资源 Id
+    String price; // 购买价格
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,21 +50,20 @@ public class SuperVipActivity extends XiaoeActivity {
         SuperVipPresenter superVipPresenter = new SuperVipPresenter(this);
         superVipPresenter.requestSuperVipBuyInfo();
         superVipBg.setImageURI("res:///" + R.mipmap.super_vip);
-        superVipSubmit.setText(getResources().getString(R.string.vip_btn_money));
+
+        initListener();
+    }
+
+    private void initListener() {
         superVipSubmit.setClickable(false);
-        superVipSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 默认超级会员的 resourceType 为 23，resourceId 为 resourceId
-                JumpDetail.jumpPay(SuperVipActivity.this, resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg, "超级会员", 180000);
+        superVipSubmit.setOnClickListener(v -> {
+            // 默认超级会员的 resourceType 为 23，resourceId 为 resourceId
+            if (price != null) {
+                double priceNum = Double.parseDouble(price) * 100;
+                JumpDetail.jumpPay(SuperVipActivity.this, resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg, "超级会员", (int) priceNum);
             }
         });
-        superVipBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        superVipBack.setOnClickListener(v -> onBackPressed());
     }
 
     @Override
@@ -74,7 +77,13 @@ public class SuperVipActivity extends XiaoeActivity {
                     JSONObject data = (JSONObject) result.get("data");
                     productId = data.getString("svip_id");
                     resourceId = data.getString("resource_id");
+                    int priceNum = data.getInteger("price");
+                    BigDecimal top = new BigDecimal(priceNum);
+                    BigDecimal bottom = new BigDecimal(100);
+                    BigDecimal res = top.divide(bottom, 2, BigDecimal.ROUND_HALF_UP);
+                    price = res.toPlainString();
                     superVipSubmit.setClickable(true);
+                    initPageData();
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 请求超级会员购买信息失败...");
                 }
@@ -82,6 +91,10 @@ public class SuperVipActivity extends XiaoeActivity {
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail...");
         }
+    }
+
+    private void initPageData() {
+        superVipSubmit.setText(String.format(getString(R.string.vip_btn_money), price));
     }
 
     @Override

@@ -101,8 +101,16 @@ public class CustomDialog {
         message.setText(text);
     }
 
+    public void setHintMessage(String text, String textSubContent) {
+        message.setText(String.format(text, textSubContent));
+    }
+
     public TextView getMessage(){
         return message;
+    }
+
+    public TextView getTitleView() {
+        return title;
     }
 
     public void setMessageTextColor(int color) {

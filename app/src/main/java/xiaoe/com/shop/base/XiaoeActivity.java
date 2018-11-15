@@ -218,7 +218,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 //                AudioMediaPlayer.setAudio(playEntity, false);
 //                AudioPresenter audioPresenter = new AudioPresenter(null);
 //                audioPresenter.requestDetail(playEntity.getResourceId());
-//                miniAudioPlayController.setAudioTitle(playEntity.getTitle());
+//                miniAudioPlayController.setAudioTitle(playEntity.getTitleView());
 //                miniAudioPlayController.setVisibility(View.GONE);
 //            }else{
 //                miniAudioPlayController.setVisibility(View.GONE);

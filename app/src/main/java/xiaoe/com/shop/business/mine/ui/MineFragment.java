@@ -152,45 +152,47 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        List<LoginUser> loginMsg = getLoginUserList();
-        if (loginMsg.size() == 1) {
-            initMineMsg();
-            initData();
-        } else {
-            // 游客登录
-            mineMsgView.setNickName("点击登录");
-            mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
-            mineVipCard.setVisibility(View.GONE);
-            mineMsgView.setBuyVipVisibility(View.GONE);
-            // 超级会员隐藏后奖学金的位置
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int left = Dp2Px2SpUtil.dp2px(mContext, 20);
-            int top = Dp2Px2SpUtil.dp2px(mContext, -36);
-            int right = Dp2Px2SpUtil.dp2px(mContext, 20);
-            layoutParams.setMargins(left, top, right ,0);
-            mineMoneyWrapView.setLayoutParams(layoutParams);
-            // 金钱容器（未登录状态）
-            List<MineMoneyItemInfo> tempList = new ArrayList<>();
-            MineMoneyItemInfo item_1_temp = new MineMoneyItemInfo();
-            item_1_temp.setItemTitle("￥0.00");
-            item_1_temp.setItemDesc("奖学金");
-            MineMoneyItemInfo item_2_temp = new MineMoneyItemInfo();
-            item_2_temp.setItemTitle("0");
-            item_2_temp.setItemDesc("积分");
-            tempList.add(item_1_temp);
-            tempList.add(item_2_temp);
-            MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, tempList);
-            moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
-            mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
-            MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
-            mineLearningWrapView.setLearningListAdapter(learningListAdapter);
-            mineLearningWrapView.setLearningContainerVisibility(View.GONE);
-            mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-        }
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            List<LoginUser> loginMsg = getLoginUserList();
+            if (loginMsg.size() == 1) {
+                initMineMsg();
+                initData();
+            } else {
+                // 游客登录
+                mineMsgView.setNickName("点击登录");
+                mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
+                mineVipCard.setVisibility(View.GONE);
+                mineMsgView.setBuyVipVisibility(View.GONE);
+                // 超级会员隐藏后奖学金的位置
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                int left = Dp2Px2SpUtil.dp2px(mContext, 20);
+                int top = Dp2Px2SpUtil.dp2px(mContext, -36);
+                int right = Dp2Px2SpUtil.dp2px(mContext, 20);
+                layoutParams.setMargins(left, top, right ,0);
+                mineMoneyWrapView.setLayoutParams(layoutParams);
+                // 金钱容器（未登录状态）
+                List<MineMoneyItemInfo> tempList = new ArrayList<>();
+                MineMoneyItemInfo item_1_temp = new MineMoneyItemInfo();
+                item_1_temp.setItemTitle("￥0.00");
+                item_1_temp.setItemDesc("奖学金");
+                MineMoneyItemInfo item_2_temp = new MineMoneyItemInfo();
+                item_2_temp.setItemTitle("0");
+                item_2_temp.setItemDesc("积分");
+                tempList.add(item_1_temp);
+                tempList.add(item_2_temp);
+                MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, tempList);
+                moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
+                mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
+                MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
+                mineLearningWrapView.setLearningListAdapter(learningListAdapter);
+                mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+                mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
+            }
 
-        initListener();
+            initListener();
+        }
     }
 
     private void initData() {
@@ -209,6 +211,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         }
         if (CommonUserInfo.isIsSuperVip()) { // 是超级会员，显示卡片
             mineVipCard.setVisibility(View.VISIBLE);
+            mineVipCard.setDeadLine(mainActivity.expireAt);
         } else {
             mineVipCard.setVisibility(View.GONE);
         }
@@ -302,9 +305,20 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             } else if (iRequest instanceof MineLearningRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data = (JSONObject) result.get("data");
+                    JSONObject data;
+                    try {
+                        data = (JSONObject) result.get("data");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        // 学习记录为空
+                        mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+                        mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
+                        mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+                        isMineLearningFinish = true;
+                        return;
+                    }
                     JSONArray goodsList = (JSONArray) data.get("goods_list");
-                    if (goodsList == null) {
+                    if (goodsList == null || goodsList.size() == 0) {
                         return;
                     }
                     JSONObject listItem = (JSONObject) goodsList.get(0);

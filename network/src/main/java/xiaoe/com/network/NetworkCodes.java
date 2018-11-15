@@ -55,4 +55,6 @@ public class NetworkCodes {
     public static final int CODE_SUPER_VIP = 3011;
 
     public static final int CODE_NOT_LOAING = 2009;//未登陆
+
+    public static final int CODE_OPEN_ID_ERROR = 4108;
 }

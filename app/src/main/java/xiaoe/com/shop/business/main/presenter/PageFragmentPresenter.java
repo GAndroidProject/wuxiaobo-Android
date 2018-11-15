@@ -40,7 +40,7 @@ public class PageFragmentPresenter implements IBizCallback {
         PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(NetworkEngine.API_THIRD_BASE_URL + "xe.shop.page.get/1.0.0", this);
         pageFragmentRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         pageFragmentRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
-        pageFragmentRequest.addRequestParam("micro_page_id", microPageId);
+        pageFragmentRequest.addDataParam("micro_page_id", microPageId);
         // 支付的信息
 //        int id = 0;
 //        if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
