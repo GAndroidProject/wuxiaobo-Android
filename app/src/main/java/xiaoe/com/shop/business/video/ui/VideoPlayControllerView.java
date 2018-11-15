@@ -226,15 +226,19 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             mTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    if (mVideoPlayer != null && mVideoPlayer.isPlaying()) {
-                        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                int currentPosition = mVideoPlayer.getCurrentPosition();
-                                if (!isTouchSeekBar)
-                                    setProgress(currentPosition);
-                            }
-                        });
+                    try {
+                        if (mVideoPlayer != null && mVideoPlayer.isPlaying()) {
+                            ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int currentPosition = mVideoPlayer.getCurrentPosition();
+                                    if (!isTouchSeekBar)
+                                        setProgress(currentPosition);
+                                }
+                            });
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
                 }
             };
