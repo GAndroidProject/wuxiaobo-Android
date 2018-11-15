@@ -61,5 +61,22 @@ public class JgPushReceiverEntity {
         public void setWebsite_url(String website_url) {
             this.website_url = website_url;
         }
+
+        @Override
+        public String toString() {
+            return "ActionParams{" +
+                    "resource_type='" + resource_type + '\'' +
+                    ", resource_id='" + resource_id + '\'' +
+                    ", website_url='" + website_url + '\'' +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "JgPushReceiverEntity{" +
+                "action=" + action +
+                ", action_params=" + action_params +
+                '}';
     }
 }

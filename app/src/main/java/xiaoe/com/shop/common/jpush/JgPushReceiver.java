@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+
+import com.alibaba.fastjson.JSON;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +16,8 @@ import java.util.Iterator;
 
 import cn.jpush.android.api.JPushInterface;
 import xiaoe.com.shop.business.main.ui.MainActivity;
+import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.common.web.BrowserActivity;
 
 import static xiaoe.com.shop.common.jpush.Logger.d;
 import static xiaoe.com.shop.common.jpush.Logger.w;
@@ -28,6 +33,7 @@ import static xiaoe.com.shop.common.jpush.Logger.w;
 public class JgPushReceiver extends BroadcastReceiver {
 
     private static final String TAG = "JIGUANG-Example";
+    private static JgPushReceiverEntity jgPushReceiverEntity;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -51,14 +57,42 @@ public class JgPushReceiver extends BroadcastReceiver {
 
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 d(TAG, "[JgPushReceiver] 用户点击打开了通知");
-
-
-                // 打开自定义的Activity
-                Intent i = new Intent(context, TestActivity.class);
-                i.putExtras(bundle);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                context.startActivity(i);
-
+                if (jgPushReceiverEntity == null) {
+                    return;
+                }
+                /*
+                 * 跳转类型：0-无跳转，1-图文，2-音频，3-视频，5-外部链接，6-专栏，7-直播
+                 */
+                switch (jgPushReceiverEntity.getAction()) {
+                    case 0:
+                        break;
+                    case 1:
+                        JumpDetail.jumpImageText(context, jgPushReceiverEntity.getAction_params().getResource_id(), "");
+                        break;
+                    case 2:
+                        JumpDetail.jumpAudio(context, jgPushReceiverEntity.getAction_params().getResource_id(), 0);
+                        break;
+                    case 3:
+                        JumpDetail.jumpVideo(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", false);
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        BrowserActivity.openUrl(context, jgPushReceiverEntity.getAction_params().getWebsite_url(), "外部链接");
+                        break;
+                    case 6:
+                        JumpDetail.jumpColumn(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", false);
+                        break;
+                    case 7:
+                        break;
+                    default:
+                        // 打开自定义的Activity
+                        Intent i = new Intent(context, TestActivity.class);
+                        i.putExtras(bundle);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        context.startActivity(i);
+                        break;
+                }
             } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
                 d(TAG, "[JgPushReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));
                 // 在这里根据 JPushInterface.EXTRA_EXTRA 的内容处理代码，比如打开新的Activity， 打开一个网页等..
@@ -102,7 +136,18 @@ public class JgPushReceiver extends BroadcastReceiver {
                         while (it.hasNext()) {
                             String myKey = it.next();
                             sb.append("\nkey:").append(key).append(", value: [").append(myKey).append(" - ").append(json.optString(myKey)).append("]");
+                            if (jgPushReceiverEntity == null) {
+                                jgPushReceiverEntity = new JgPushReceiverEntity();
+                            }
+                            if ("action".equals(myKey)) {
+                                jgPushReceiverEntity.setAction(Integer.parseInt(json.optString(myKey)));
+                            }
+                            if ("action_params".equals(myKey)) {
+                                JgPushReceiverEntity.ActionParams actionParams = JSON.parseObject(json.optString(myKey), JgPushReceiverEntity.ActionParams.class);
+                                jgPushReceiverEntity.setAction_params(actionParams);
+                            }
                         }
+//                        Log.e(TAG, "printBundle: " + jgPushReceiverEntity.toString());
                     } catch (JSONException e) {
                         Logger.e(TAG, "Get message extra JSON error!");
                     }

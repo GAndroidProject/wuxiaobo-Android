@@ -25,7 +25,9 @@
             android:id="@+id/setting_account_edit_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:textColor="@color/main_title_color"
             android:textSize="18sp"
             tools:text="标题" />
