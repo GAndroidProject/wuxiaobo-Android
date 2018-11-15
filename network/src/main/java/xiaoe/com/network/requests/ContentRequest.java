@@ -9,7 +9,7 @@ public class ContentRequest extends IRequest {
      * 获取专栏后内容
      */
     public ContentRequest(IBizCallback iBizCallback) {
-        super(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.resource.content.get/1.0.0", iBizCallback);
+        super(NetworkEngine.API_THIRD_BASE_URL+"xe.resource.content.get/1.0.0", iBizCallback);
     }
     public void sendRequest(){
         NetworkEngine.getInstance().sendRequest(this);

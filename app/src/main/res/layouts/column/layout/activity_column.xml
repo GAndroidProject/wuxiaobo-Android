@@ -221,4 +221,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         />
+    <xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout
+        android:id="@+id/mini_audio_play_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        />
 </RelativeLayout>

@@ -8,7 +8,7 @@ public class ColumnListRequst extends IRequest {
     private static final String TAG = "ColumnListRequst";
 
     public ColumnListRequst(IBizCallback iBizCallback) {
-        super(NetworkEngine.CLASS_DETAIL_BASE_URL+"xe.goods.relation.get/1.0.0", iBizCallback);
+        super(NetworkEngine.API_THIRD_BASE_URL+"xe.goods.relation.get/1.0.0", iBizCallback);
     }
 
     public void sendRequest(){

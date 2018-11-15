@@ -19,6 +19,7 @@ public class AudioPlayEntity {
     private String imgUrlCompressed;
 
     private int totalDuration = 0;//总时长
+    private String shareUrl = "";
 
     private int hasFavorite = 0;//是否收藏，0-未收藏，1-已收藏
     private int hasBuy = 0;// 是否已购买0-未购买，1-已购买
@@ -221,5 +222,13 @@ public class AudioPlayEntity {
 
     public void setAudioResourceId(String audioResourceId) {
         this.audioResourceId = audioResourceId;
+    }
+
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
     }
 }

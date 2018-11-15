@@ -8,7 +8,7 @@ import java.util.Map;
 
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
-import xiaoe.com.common.entitys.UserInfo;
+import xiaoe.com.common.entitys.DeviceInfo;
 import xiaoe.com.network.network_interface.IBizCallback;
 
 /**
@@ -19,7 +19,7 @@ public abstract class IRequest {
 
 
     private String cmd = "";
-    protected String clientInfo = Global.g().getDeviceInfo();
+    protected DeviceInfo clientInfo = Global.g().getDeviceInfo();
     protected String buildVersion = Global.g().getVersionName();
 
     private Map<String,Object> formBody = new HashMap<String,Object>();
@@ -152,36 +152,14 @@ public abstract class IRequest {
         if(bizDataParams != null){
             jsonObject.put("biz_data", bizDataParams);
         }
-        jsonObject.put("access_token", CommonUserInfo.getApiToken());
-        return jsonObject.toJSONString();
-    }
-
-    private String getWrapedFormBody2() {
-        //暂时直接new对象，后期通过缓存获取
-        UserInfo userInfo = new UserInfo();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("app_id",formBody.containsKey("app_id")?formBody.get("app_id"):"");
-        jsonObject.put("client","6");
-        jsonObject.put("app_version","1.0");
-        jsonObject.put("build_version",buildVersion);
-        jsonObject.put("client_info",clientInfo);
-
-        String userId = "";
-        String encryptData = "";
-        if(userInfo != null){
-            userId = userInfo.getUserId();
-            encryptData = userInfo.getEncryptData();
+        if("0".equals(CommonUserInfo.getUserId())){
+            //游客模式需要传一个user_id = "0"
+            jsonObject.put("user_id", "0");
+        }else{
+            jsonObject.remove("user_id");
         }
-        jsonObject.put("user_id",userId);
-        jsonObject.put("encrypt_data",encryptData);
-        JSONObject buzDataJson = new JSONObject();
-        for(Map.Entry<String ,Object> entry : formBody.entrySet() ){
-            if("app_id".equals(entry.getKey())){
-                continue;
-            }
-            buzDataJson.put(entry.getKey(),entry.getValue());
-        }
-        jsonObject.put("data",buzDataJson);
+        jsonObject.put("api_token", CommonUserInfo.getApiToken());
+        jsonObject.put("shop_id", CommonUserInfo.getShopId());
         return jsonObject.toJSONString();
     }
 

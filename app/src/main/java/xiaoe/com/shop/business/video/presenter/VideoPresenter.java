@@ -6,7 +6,6 @@ import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.ContentRequest;
 import xiaoe.com.network.requests.DetailRequest;
 import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class VideoPresenter implements IBizCallback {
     private static final String TAG = "VideoPresenter";
@@ -18,12 +17,7 @@ public class VideoPresenter implements IBizCallback {
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
-        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                iNetworkResponse.onMainThreadResponse(iRequest, success, entity);
-            }
-        });
+        iNetworkResponse.onResponse(iRequest, success, entity);
     }
 
     /**

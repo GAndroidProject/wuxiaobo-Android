@@ -40,19 +40,19 @@ public class NetworkEngine {
     private final static String TEST_API_THIRD_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
     //正式环境url http://api.inside.xiaoe-tech.com
     private final static String FORMAL_API_THIRD_BASE_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
-    public final static String BASE_URL = "http://134.175.39.17:9380/";
+//    public final static String BASE_URL = "http://134.175.39.17:9380/";
     public final static String API_THIRD_BASE_URL = XiaoeApplication.isFormalCondition() ? FORMAL_API_THIRD_BASE_URL : TEST_API_THIRD_URL;
-    public final static String CLASS_DETAIL_BASE_URL = "http://134.175.39.17:9378/api/";
-    public final static String COMMENT_BASE_URL = "http://134.175.39.17:9379/api/";
-    public final static String COLLECTION_BASE_URL = "http://134.175.39.17:9381/api/"; // 收藏接口 url
-    public final static String PLY_BASE_URL = "http://134.175.39.247:4586/";//支付订单
+//    public final static String CLASS_DETAIL_BASE_URL = "http://134.175.39.17:9378/api/";
+//    public final static String COMMENT_BASE_URL = "http://134.175.39.17:9379/api/";
+//    public final static String COLLECTION_BASE_URL = "http://134.175.39.17:9381/api/"; // 收藏接口 url
+//    public final static String PLY_BASE_URL = "http://134.175.39.247:4586/";//支付订单
     public final static String LOGIN_BASE_URL = "http://app-server.inside.xiaoeknow.com/api/"; // 登录接口 url
     public final static String SCHOLARSHIP_BASE_URL = "http://134.175.39.247:14585/api/"; // 奖学金 url
     public final static String EARNING_BASE_URL = "http://134.175.39.247:4586/api/"; // 赚钱 url
     /**
      * 用户登录及绑定注册（极光推送）：app-server.inside.xiaoeknow.com
      */
-    public static final String BIND_JG_PUSH_URL = "http://app-server.inside.xiaoeknow.com/api/";
+//    public static final String BIND_JG_PUSH_URL = "http://app-server.inside.xiaoeknow.com/api/";
     /**
      * 获取 我的-历史消息列表
      */
@@ -186,10 +186,8 @@ public class NetworkEngine {
                     com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
                     body.close();
                     mRequest.onResponse(true, jsonObject);
-                    Log.d(TAG, "request result - " + response.code() + " - " + jsonObject.toJSONString());
                 } catch (Exception e) {
                     mRequest.onResponse(false, null);
-                    Log.d(TAG, "request result - " + response.code() + " - " + e.getMessage());
                 }
             }
         });

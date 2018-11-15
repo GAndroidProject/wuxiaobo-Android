@@ -5,12 +5,12 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -39,9 +39,9 @@ import java.util.List;
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.common.entitys.HadSharedEvent;
 import xiaoe.com.common.entitys.LoginUser;
-import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
 import xiaoe.com.common.entitys.ScholarshipEntity;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
@@ -170,7 +170,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         audioBG = (SimpleDraweeView) findViewById(R.id.audio_bg);
         audioBG.setImageURI("res:///"+R.mipmap.detail_bg_wave);
         audioRing = (SimpleDraweeView) findViewById(R.id.audio_ring);
-        audioRing.setImageURI("res:///"+R.mipmap.detail_disk);
+//        audioRing.setImageURI("res:///"+R.mipmap.detail_disk);
 
         //页面关闭按钮
         btnPageClose = (RelativeLayout) findViewById(R.id.audio_page_close_btn);
@@ -432,7 +432,11 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 break;
             case R.id.btn_share:
             case R.id.btn_share_item:
-                umShare("hello");
+                AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
+                if(audioPlayEntity != null){
+                    String imgUrl = TextUtils.isEmpty(audioPlayEntity.getImgUrlCompressed()) ? audioPlayEntity.getImgUrl() :  audioPlayEntity.getImgUrlCompressed();
+                    umShare(audioPlayEntity.getTitle(), imgUrl, audioPlayEntity.getShareUrl(), "");
+                }
                 break;
             case R.id.audio_speed_play:
                 if (AudioMediaPlayer.isPlaying()) {
@@ -536,7 +540,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
     @Subscribe
     public void onEventMainThread(AudioPlayEvent event) {
-        Log.d(TAG, "onEventMainThread: ***");
         switch (event.getState()){
             case AudioPlayEvent.LOADING:
                 audioPlayController.setPlayButtonEnabled(false);
@@ -664,6 +667,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }else{
             playNum.setVisibility(View.GONE);
         }
+        if(!TextUtils.isEmpty(playEntity.getImgUrl())){
+            audioRing.setImageURI(Uri.parse(playEntity.getImgUrl()));
+        }
+
         audioPlayList.setProductsTitle(playEntity.getProductsTitle());
         setCollectState(playEntity.getHasFavorite() == 1);
         boolean isDownload = DownloadManager.getInstance().isDownload(playEntity.getAppId(), playEntity.getResourceId());

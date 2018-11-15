@@ -163,7 +163,7 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
 
     @Override
     public void onBoughtListItemClick(View view, BoughtListItem boughtListItem) {
-        umShare("http://www.baidu.com");
+        umShare(boughtListItem.getItemTitle(), boughtListItem.getItemIcon(), "", "");
         resourceId = boughtListItem.getItemResourceId();
         resourceType = boughtListItem.getItemResourceType();
     }

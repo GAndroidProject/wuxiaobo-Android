@@ -37,14 +37,7 @@ public class AudioPresenter implements IBizCallback {
         }else if(iRequest instanceof ContentRequest){
             setAudioContent(success, (JSONObject)entity);
         }else{
-            ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(success && entity != null){
-                        iNetworkResponse.onMainThreadResponse(iRequest,success, entity);
-                    }
-                }
-            });
+            iNetworkResponse.onResponse(iRequest, success, entity);
         }
 
     }
@@ -91,6 +84,10 @@ public class AudioPresenter implements IBizCallback {
         JSONObject resourceInfo = null;
         if(available){
             resourceInfo = data;
+            JSONObject shareInfo = resourceInfo.getJSONObject("share_info");
+            if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
+                playEntity.setShareUrl(shareInfo.getJSONObject("wx").getString("share_url"));
+            }
         }else{
             resourceInfo = data.getJSONObject("resource_info");
         }

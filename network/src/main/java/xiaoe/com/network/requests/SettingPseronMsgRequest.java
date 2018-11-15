@@ -1,5 +1,6 @@
 package xiaoe.com.network.requests;
 
+import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 
 public class SettingPseronMsgRequest extends IRequest {
@@ -8,7 +9,7 @@ public class SettingPseronMsgRequest extends IRequest {
         super(cmd, entityClass, iBizCallback);
     }
 
-    public SettingPseronMsgRequest(String cmd, IBizCallback iBizCallback) {
-        super(cmd, null, iBizCallback);
+    public SettingPseronMsgRequest(IBizCallback iBizCallback) {
+        super(NetworkEngine.LOGIN_BASE_URL + "get_person_message" , null, iBizCallback);
     }
 }

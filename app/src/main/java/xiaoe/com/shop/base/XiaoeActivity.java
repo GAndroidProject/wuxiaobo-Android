@@ -23,10 +23,13 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -38,15 +41,18 @@ import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.SQLiteUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
+import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.anim.TranslationAnimator;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
+import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
 import xiaoe.com.shop.business.main.ui.MainActivity;
 import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
+import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.common.pay.presenter.PayPresenter;
 import xiaoe.com.shop.interfaces.OnCancelListener;
 import xiaoe.com.shop.interfaces.OnConfirmListener;
@@ -62,6 +68,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private static final String TAG = "XiaoeActivity";
     private static final int DISMISS_POPUP_WINDOW = 1;
     private static final int DISMISS_TOAST = 2;
+    private static final int DIALOG_TAG_LOADING = 4110;//登录弹窗类型
     private PopupWindow popupWindow;
     private Toast toast;
     private TextView mToastText;
@@ -169,9 +176,11 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     @Override
     protected void onStart() {
         super.onStart();
-        if(this instanceof MainActivity && isInit){
+        if(isInit){
             isInit = false;
-            getAudioRecord();
+            if(this instanceof MainActivity || this instanceof ColumnActivity){
+                getAudioRecord();
+            }
         }
     }
 
@@ -226,18 +235,31 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
-        if(!success && entity instanceof String){
-            if(((String)entity).equals("user login time out")){
-            }
+        if(isActivityDestroy){
+            return;
         }
-        if(!isActivityDestroy){
-            Global.g().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    onMainThreadResponse(iRequest,success,entity);
+        Global.g().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (success && entity != null) {
+                    JSONObject jsonObject = (JSONObject) entity;
+                    if(jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING){
+                        if(!dialog.isShowing()){
+                            dialog.setCancelable(false);
+                            dialog.setHintMessage(getString(R.string.login_invalid));
+                            dialog.setConfirmText(getString(R.string.btn_go_login));
+                            dialog.setCancelListener(XiaoeActivity.this);
+                            dialog.setConfirmListener(XiaoeActivity.this);
+                            dialog.showDialog(DIALOG_TAG_LOADING);
+                        }
+                    }else{
+                        onMainThreadResponse(iRequest, true, entity);
+                    }
+                } else {
+                    onMainThreadResponse(iRequest, false, entity);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -394,7 +416,16 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
     @Override
     public void onClickConfirm(View view, int tag) {
+        if(tag == DIALOG_TAG_LOADING){
+            SQLiteUtil.init(this,  new LoginSQLiteCallback());
+            SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+            CommonUserInfo.setApiToken("");
+            CommonUserInfo.setIsSuperVip(false);
+            CommonUserInfo.setIsSuperVipAvailable(false);
 
+            JumpDetail.jumpLogin(this);
+            finish();
+        }
     }
     public CustomDialog getDialog(){
         return dialog;
@@ -410,9 +441,18 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
      *         UMShareAPI.get(this).onActivityResult(requestCode,resultCode,data);
      *     }
      */
-    public void umShare(String shareUrl){
+    public void umShare(String shareTitle, String imgUrl, String shareUrl, String desc){
+//        new ShareAction(this)
+//                .withText(shareUrl)
+//                .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
+//                .setCallback(this).open();
+        UMImage thumb =  new UMImage(this, imgUrl);
+        UMWeb web = new UMWeb(shareUrl);
+        web.setTitle(shareTitle);//标题
+        web.setThumb(thumb);  //缩略图
+        web.setDescription(desc);//描述
         new ShareAction(this)
-                .withText(shareUrl)
+                .withMedia(web)
                 .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
                 .setCallback(this).open();
     }

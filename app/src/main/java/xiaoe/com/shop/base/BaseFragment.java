@@ -6,12 +6,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import com.alibaba.fastjson.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -20,10 +23,15 @@ import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.SQLiteUtil;
+import xiaoe.com.network.NetworkCodes;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
+import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.interfaces.OnCancelListener;
+import xiaoe.com.shop.interfaces.OnConfirmListener;
+import xiaoe.com.shop.widget.CustomDialog;
 
 
 /**
@@ -31,17 +39,20 @@ import xiaoe.com.shop.business.login.presenter.LoginSQLiteCallback;
  * <br>des：fragment 基类
  */
 
-public class BaseFragment extends Fragment implements INetworkResponse {
+public class BaseFragment extends Fragment implements INetworkResponse, OnCancelListener, OnConfirmListener {
+    private static final String TAG = "BaseFragment";
     private static PopupWindow popupWindow;
     private TextView mToastText;
     protected boolean isFragmentDestroy = false;
-
+    private static final int DIALOG_TAG_LOADING = 5110;//登录弹窗类型
     // Fragment 懒加载字段
     private boolean isFragmentVisible;
     private boolean isReuseView;
     private boolean isFirstVisible;
     private View rootView;
+    private CustomDialog dialog;
     private Handler mHandler = new BfHandler(this);
+
 
     static class BfHandler extends Handler {
 
@@ -109,7 +120,7 @@ public class BaseFragment extends Fragment implements INetworkResponse {
             CommonUserInfo.setUserId(user.getUserId());
             CommonUserInfo.setShopId(user.getShopId());
         }
-
+        dialog = new CustomDialog(getContext());
         initVariable();
     }
 
@@ -154,19 +165,33 @@ public class BaseFragment extends Fragment implements INetworkResponse {
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
-        if(!success && entity instanceof String){
-            if(((String)entity).equals("user login time out")){
-                return;
-            }
+        if(isFragmentDestroy){
+            return;
         }
-        if(!isFragmentDestroy){
-            Global.g().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    onMainThreadResponse(iRequest,success,entity);
+
+        Global.g().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (success && entity != null) {
+                    JSONObject jsonObject = (JSONObject) entity;
+                    if(jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING){
+                        if(!dialog.isShowing() && !((XiaoeActivity) getActivity()).getDialog().isShowing()){
+                            dialog.setCancelable(false);
+                            dialog.setHintMessage(getString(R.string.login_invalid));
+                            dialog.setConfirmText(getString(R.string.btn_go_login));
+                            dialog.setCancelListener(BaseFragment.this);
+                            dialog.setConfirmListener(BaseFragment.this);
+                            dialog.showDialog(DIALOG_TAG_LOADING);
+                        }
+
+                    }else{
+                        onMainThreadResponse(iRequest, true, entity);
+                    }
+                } else {
+                    onMainThreadResponse(iRequest, false, entity);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -233,5 +258,28 @@ public class BaseFragment extends Fragment implements INetworkResponse {
         isFragmentVisible = false;
         rootView = null;
         isReuseView = true;
+    }
+
+    @Override
+    public void onClickCancel(View view, int tag) {
+
+    }
+
+    @Override
+    public void onClickConfirm(View view, int tag) {
+        if(tag == DIALOG_TAG_LOADING){
+            SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
+            SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+            CommonUserInfo.setApiToken("");
+            CommonUserInfo.setIsSuperVip(false);
+            CommonUserInfo.setIsSuperVipAvailable(false);
+
+            JumpDetail.jumpLogin(getContext());
+            getActivity().finish();
+        }
+    }
+
+    public CustomDialog getDialog(){
+        return dialog;
     }
 }

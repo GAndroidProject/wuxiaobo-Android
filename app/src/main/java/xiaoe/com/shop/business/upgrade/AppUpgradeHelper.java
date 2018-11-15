@@ -90,7 +90,8 @@ public class AppUpgradeHelper {
     public void registerEventBus(){
         isDownloading = false;
         hasUpgradeCurrentApp = false;
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
     }
 
     public void unregisterEventBus(){

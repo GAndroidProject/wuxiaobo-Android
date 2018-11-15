@@ -93,7 +93,7 @@
     <string name="all_start_clear">全部清空</string>
     <string name="delete_hint">确定清空正在下载的任务吗？</string>
     <!--删除提示 end-->
-
+    <!--登陆 start-->
     <string name="login_register_title">注册</string>
     <string name="login_main_title">登录</string>
     <string name="login_main_phone_head">+86</string>
@@ -120,7 +120,9 @@
     <string name="login_we_chat_submit">去绑定</string>
     <string name="login_bind_phone_title">绑定手机号</string>
     <string name="login_bind_phone_desc">依据《中华人民共和国网络安全法》要求，请绑定手机号完成实名认证</string>
-
+    <string name="login_invalid">登陆过期！请重新登陆</string>
+    <string name="btn_go_login">去登录</string>
+    <!--登陆 end-->
     <string name="course_more_title">知识商品</string>
     <!--优惠券 start-->
     <string name="coupon_title">优惠券</string>

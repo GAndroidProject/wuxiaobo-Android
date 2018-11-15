@@ -19,8 +19,6 @@ import android.text.TextUtils;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.UUID;
@@ -58,7 +56,7 @@ public class Global
         windowManager.getDefaultDisplay().getSize(point);
         return point;
     }
-    public String getDeviceInfo(){
+    public DeviceInfo getDeviceInfo(){
         Context context = application.getApplicationContext();
         DeviceInfo deviceInfo = new DeviceInfo();
         deviceInfo.setVersionName(getVersionName());
@@ -68,8 +66,7 @@ public class Global
         deviceInfo.setPhoneBrand(getPhoneBrand());
         deviceInfo.setPhoneModel(getPhoneModel());
 
-        Gson gson = new Gson();
-        return gson.toJson(deviceInfo);
+        return deviceInfo;
     }
     /**
      * 返回版本名字

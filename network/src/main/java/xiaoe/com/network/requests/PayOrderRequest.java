@@ -6,7 +6,6 @@ import xiaoe.com.network.network_interface.IBizCallback;
 
 public class PayOrderRequest extends IRequest {
     public PayOrderRequest(IBizCallback iBizCallback) {
-//        super(NetworkEngine.PLY_BASE_URL+"pay/get_info", iBizCallback);
         super(NetworkEngine.API_THIRD_BASE_URL +"xe.order.place/1.0.0", iBizCallback);
     }
     public void sendRequest(){

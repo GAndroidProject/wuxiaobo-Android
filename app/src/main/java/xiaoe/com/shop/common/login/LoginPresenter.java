@@ -24,7 +24,6 @@ import xiaoe.com.network.requests.LoginRequest;
 import xiaoe.com.network.requests.ResetPasswordRequest;
 import xiaoe.com.network.requests.TouristsShopIdRequest;
 import xiaoe.com.network.requests.UpdatePhoneRequest;
-import xiaoe.com.network.utils.ThreadPoolUtils;
 
 /**
  * @author zak
@@ -56,16 +55,7 @@ public class LoginPresenter implements IBizCallback {
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
-        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                if (success && entity != null) {
-                    inr.onMainThreadResponse(iRequest, true, entity);
-                } else {
-                    inr.onMainThreadResponse(iRequest, false, entity);
-                }
-            }
-        });
+        inr.onResponse(iRequest, success, entity);
     }
 
     /**

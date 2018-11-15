@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,9 +16,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.List;
 
 import xiaoe.com.common.app.CommonUserInfo;
+import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
@@ -30,9 +35,11 @@ import xiaoe.com.network.requests.RemoveCollectionListRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.column.ColumnFragmentStatePagerAdapter;
 import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
+import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 import xiaoe.com.shop.business.column.presenter.ColumnPresenter;
-import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnCustomScrollChangedListener;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
@@ -78,6 +85,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private String collectImgUrl;
     private String collectImgUrlCompressed;
     private String collectPrice = "";
+    private String shareUrl = "";
+    private String summary = "";
     private int price = 0;
 
     List<LoginUser> loginUserList;
@@ -85,6 +94,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     boolean hasBuy;
     String realSrcId;
+    private MiniAudioPlayControllerLayout miniAudioPlayControllerLayout;//悬浮音频播放器
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,6 +122,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
         isBigColumn = mIntent.getBooleanExtra("isBigColumn", false);
         resourceId = mIntent.getStringExtra("resource_id");
+        EventBus.getDefault().register(this);
         initView();
         initData();
     }
@@ -178,6 +189,10 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         btnToolBarShare.setOnClickListener(this);
         ImageView btnShare = (ImageView) findViewById(R.id.btn_share);
         btnShare.setOnClickListener(this);
+        //悬浮音频播放器
+        miniAudioPlayControllerLayout = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
+        setMiniAudioPlayController(miniAudioPlayControllerLayout);
+        setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
     }
 
     @Override
@@ -215,16 +230,20 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(entity == null || !success){
             return;
         }
-        Object dataObject = jsonObject.get("data");
-        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || dataObject == null ){
+        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED ){
             if(iRequest instanceof ColumnListRequst || iRequest instanceof DetailRequest){
                 setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
             }
             return;
         }
+        Object dataObject = jsonObject.get("data");
         if(iRequest instanceof DetailRequest){
             JSONObject data = (JSONObject) dataObject;
             detailRequest(data.getJSONObject("resource_info"), data.getBoolean("available"));
+            JSONObject shareInfo = data.getJSONObject("share_info");
+            if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
+                shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
+            }
         }else if(iRequest instanceof ColumnListRequst){
             JSONArray data = (JSONArray) dataObject;
             columnListRequest(iRequest, data);
@@ -232,6 +251,41 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             addCollectionRequest(jsonObject);
         }else if(iRequest instanceof RemoveCollectionListRequest){
             removeCollectionRequest(jsonObject);
+        }
+    }
+
+    @Subscribe
+    public void onEventMainThread(AudioPlayEvent event) {
+        AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        if(playEntity == null){
+            return;
+        }
+        switch (event.getState()){
+            case AudioPlayEvent.LOADING:
+                miniAudioPlayControllerLayout.setVisibility(View.VISIBLE);
+                miniAudioPlayControllerLayout.setAudioTitle(playEntity.getTitle());
+                miniAudioPlayControllerLayout.setColumnTitle(playEntity.getProductsTitle());
+                miniAudioPlayControllerLayout.setPlayButtonEnabled(false);
+                miniAudioPlayControllerLayout.setPlayState(AudioPlayEvent.PAUSE);
+                break;
+            case AudioPlayEvent.PLAY:
+                miniAudioPlayControllerLayout.setPlayButtonEnabled(true);
+                miniAudioPlayControllerLayout.setAudioTitle(playEntity.getTitle());
+                miniAudioPlayControllerLayout.setColumnTitle(playEntity.getProductsTitle());
+                miniAudioPlayControllerLayout.setPlayState(AudioPlayEvent.PLAY);
+                miniAudioPlayControllerLayout.setMaxProgress(AudioMediaPlayer.getDuration());
+                break;
+            case AudioPlayEvent.PAUSE:
+                miniAudioPlayControllerLayout.setPlayState(AudioPlayEvent.PAUSE);
+                break;
+            case AudioPlayEvent.STOP:
+                miniAudioPlayControllerLayout.setPlayState(AudioPlayEvent.PAUSE);
+                break;
+            case AudioPlayEvent.PROGRESS:
+                miniAudioPlayControllerLayout.setProgress(event.getProgress());
+                break;
+            default:
+                break;
         }
     }
 
@@ -289,6 +343,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void detailRequest(JSONObject data, boolean available) {
+        summary = data.getString("summary");
         hasBuy = available;
         getDialog().dismissDialog();
         if(refreshData){
@@ -380,7 +435,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 break;
             case R.id.btn_share:
             case R.id.btn_tool_bar_share:
-                umShare("hello");
+                umShare(collectTitle, TextUtils.isEmpty(collectImgUrlCompressed) ? collectImgUrl : collectImgUrlCompressed, shareUrl, summary );
                 break;
             default:
                 break;
@@ -470,5 +525,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

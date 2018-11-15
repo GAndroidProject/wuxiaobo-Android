@@ -11,7 +11,6 @@ import xiaoe.com.network.requests.CommentLikeRequest;
 import xiaoe.com.network.requests.CommentListRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.SendCommentRequest;
-import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class CommentPresenter implements IBizCallback {
     private static final String TAG = "CommentPresenter";
@@ -23,12 +22,7 @@ public class CommentPresenter implements IBizCallback {
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
-        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                iNetworkResponse.onMainThreadResponse(iRequest, success, entity);
-            }
-        });
+        iNetworkResponse.onResponse(iRequest, success, entity);
     }
 
     /**

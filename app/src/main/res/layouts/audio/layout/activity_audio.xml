@@ -121,7 +121,6 @@
                 android:gravity="center"
                 android:layout_above="@id/controller_wrap"
                 >
-                <!--android:layout_below="@id/audio_page_close_btn"-->
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/audio_bg"
                     android:layout_width="match_parent"
@@ -136,7 +135,16 @@
                     android:layout_height="190dp"
                     android:layout_centerHorizontal="true"
                     fresco:actualImageScaleType="fitCenter"
+                    fresco:placeholderImage="@mipmap/detail_disk"
+                    fresco:roundAsCircle="true"
                     android:transitionName="@string/share_img"
+                    />
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="75dp"
+                    android:background="@drawable/white_circle_shape"
                     />
                 <TextView
                     android:id="@+id/audio_title"

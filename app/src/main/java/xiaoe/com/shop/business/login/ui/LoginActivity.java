@@ -603,6 +603,7 @@ public class LoginActivity extends XiaoeActivity {
         } else { // 表中没有用户登录记录
             SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser);
         }
+        CommonUserInfo.setApiToken(apiToken);
 
         settingPresenter.requestPersonData(apiToken, false);
     }
@@ -623,17 +624,15 @@ public class LoginActivity extends XiaoeActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String code = SharedPreferencesUtil.getData("wx_code", "").toString();
-        // 获取注册所需要的信息
-        String accessToken = SharedPreferencesUtil.getData("accessToken", "").toString();
-//        Log.d(TAG, "onResume: accessToken --- " + accessToken);
-//        Log.d(TAG, "onResume: code --- " + code);
-//        Log.d(TAG, "onResume: preTag --- " + preTag);
+
         String apiToken = CommonUserInfo.getApiToken();
         if (apiToken != null && !apiToken.equals("")) { // 有用户登录信息，直接去主页
             JumpDetail.jumpMain(this, true);
             return;
         }
+        String code = SharedPreferencesUtil.getData("wx_code", "").toString();
+        // 获取注册所需要的信息
+        String accessToken = SharedPreferencesUtil.getData("accessToken", "").toString();
         if (!TextUtils.isEmpty(code)) {
             // 注册流程，拉起微信后，进行绑定操作
             if (!TextUtils.isEmpty(accessToken)) { // 表示有操作过

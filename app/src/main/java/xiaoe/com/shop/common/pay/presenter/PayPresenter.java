@@ -15,7 +15,6 @@ import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.PayOrderRequest;
 import xiaoe.com.network.requests.PaySuperVipRequest;
-import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class PayPresenter implements IBizCallback {
     private static final String TAG = "PayPresenter";
@@ -29,12 +28,7 @@ public class PayPresenter implements IBizCallback {
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
-        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                iNetworkResponse.onMainThreadResponse(iRequest, success, entity);
-            }
-        });
+        iNetworkResponse.onResponse(iRequest, success, entity);
     }
 
     /**
@@ -83,7 +77,7 @@ public class PayPresenter implements IBizCallback {
      * 购买超级会员
      */
     public void paySuperVip() {
-        PaySuperVipRequest paySuperVipRequest = new PaySuperVipRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + "xe.user.svip.pay.info.get/1.0.0", this);
+        PaySuperVipRequest paySuperVipRequest = new PaySuperVipRequest(this);
 
         paySuperVipRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         paySuperVipRequest.addRequestParam("user_id", CommonUserInfo.getUserId());

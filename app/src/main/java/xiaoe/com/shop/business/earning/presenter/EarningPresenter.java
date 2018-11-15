@@ -7,7 +7,6 @@ import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.EarningRequest;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.WithDrawalRequest;
-import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class EarningPresenter implements IBizCallback {
 
@@ -19,16 +18,7 @@ public class EarningPresenter implements IBizCallback {
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
-        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                if (success && entity != null) {
-                    inr.onMainThreadResponse(iRequest, true, entity);
-                } else {
-                    inr.onMainThreadResponse(iRequest, false, entity);
-                }
-            }
-        });
+        inr.onResponse(iRequest, success, entity);
     }
 
     /**
@@ -40,7 +30,8 @@ public class EarningPresenter implements IBizCallback {
      * @param pageSize  页面大小
      */
     public void requestLaundryList(String assetType, int needFlow, int flowType, int pageIndex, int pageSize) {
-        EarningRequest earningRequest = new EarningRequest(NetworkEngine.EARNING_BASE_URL + "xe.user.asset.get/1.0.0", this);
+//        EarningRequest earningRequest = new EarningRequest(NetworkEngine.EARNING_BASE_URL + "xe.user.asset.get/1.0.0", this);
+        EarningRequest earningRequest = new EarningRequest(this);
 
         earningRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         earningRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
@@ -60,7 +51,8 @@ public class EarningPresenter implements IBizCallback {
      * @param ip       手机 ip
      */
     public void requestWithdrawal(double price, String realName, String ip) {
-        WithDrawalRequest withDrawalRequest = new WithDrawalRequest(NetworkEngine.EARNING_BASE_URL + "done_c_withdraw", this);
+//        WithDrawalRequest withDrawalRequest = new WithDrawalRequest(NetworkEngine.EARNING_BASE_URL + "done_c_withdraw", this);
+        WithDrawalRequest withDrawalRequest = new WithDrawalRequest(this);
 
         withDrawalRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         withDrawalRequest.addRequestParam("user_id", CommonUserInfo.getUserId());

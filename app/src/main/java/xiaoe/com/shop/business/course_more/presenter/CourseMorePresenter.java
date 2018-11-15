@@ -10,16 +10,13 @@ import xiaoe.com.network.requests.IRequest;
 public class CourseMorePresenter implements IBizCallback {
 
     private INetworkResponse inr;
-    private String cmd;
 
     public CourseMorePresenter(INetworkResponse inr) {
         this.inr = inr;
-        this.cmd = "xe.goods.more.get/1.0.0"; // 默认接口
     }
 
     public CourseMorePresenter(INetworkResponse inr, String cmd) {
         this.inr = inr;
-        this.cmd = cmd;
     }
 
     @Override
@@ -28,7 +25,7 @@ public class CourseMorePresenter implements IBizCallback {
     }
 
     public void requestData(String groupId, int pageNum, int pageSize, String lastId) {
-        CommodityGroupRequest commodityGroupRequest = new CommodityGroupRequest(NetworkEngine.CLASS_DETAIL_BASE_URL + cmd, null, this);
+        CommodityGroupRequest commodityGroupRequest = new CommodityGroupRequest( null, this);
         commodityGroupRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         commodityGroupRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
         commodityGroupRequest.addRequestParam("app_version", "0.1");

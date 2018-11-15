@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import xiaoe.com.common.entitys.DownloadResourceTableInfo;
+import xiaoe.com.common.entitys.DownloadTableInfo;
+import xiaoe.com.common.interfaces.OnDownloadListener;
 import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.download.FinishDownloadListAdapter;
@@ -18,7 +20,7 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.interfaces.IonSlidingViewClickListener;
 
-public class FinishDownloadFragment extends BaseFragment implements IonSlidingViewClickListener {
+public class FinishDownloadFragment extends BaseFragment implements IonSlidingViewClickListener, OnDownloadListener {
     private static final String TAG = "FinishDownloadFragment";
     private View rootView;
     private RecyclerView finishDownloadRecyclerView;
@@ -71,5 +73,26 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
     public void onDeleteBtnCilck(View view, int position) {
         DownloadResourceTableInfo remove = finishDownloadListAdapter.removeData(position);
         DownloadManager.getInstance().removeDownloadFinish(remove);
+    }
+
+    @Override
+    public void onDownload(DownloadTableInfo downloadInfo, float progress, int status) {
+        if(status == 3){
+            //下载完成
+            DownloadResourceTableInfo downloadResourceTableInfo = new DownloadResourceTableInfo();
+            downloadResourceTableInfo.setAppId(downloadInfo.getAppId());
+            downloadResourceTableInfo.setResourceId(downloadInfo.getResourceId());
+            downloadResourceTableInfo.setTitle(downloadInfo.getTitle());
+            downloadResourceTableInfo.setImgUrl(downloadInfo.getImgUrl());
+            if(downloadInfo.getResourceType() == 2){
+                downloadResourceTableInfo.setResourceType(1);
+            }else if(downloadInfo.getResourceType() == 3){
+                downloadResourceTableInfo.setResourceType(2);
+            }
+            downloadResourceTableInfo.setDepth(0);
+            downloadResourceTableInfo.setLocalFilePath(downloadInfo.getLocalFilePath());
+            downloadResourceTableInfo.setFileUrl(downloadInfo.getFileDownloadUrl());
+            finishDownloadListAdapter.addData(downloadResourceTableInfo);
+        }
     }
 }

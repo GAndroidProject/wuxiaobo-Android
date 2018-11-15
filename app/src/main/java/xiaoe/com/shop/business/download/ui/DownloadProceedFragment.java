@@ -14,15 +14,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
 import java.util.List;
 
 import xiaoe.com.common.app.Global;
 import xiaoe.com.common.entitys.DownloadTableInfo;
 import xiaoe.com.common.interfaces.OnDownloadListener;
-import xiaoe.com.network.downloadUtil.DownloadEvent;
 import xiaoe.com.network.downloadUtil.DownloadManager;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.adapter.download.DownloadProceedChildListAdapter;
@@ -44,7 +40,6 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        EventBus.getDefault().register(this);
         rootView = inflater.inflate(R.layout.fragment_download_proceed, container, false);
         return rootView;
     }
@@ -101,37 +96,9 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
         return downloadCount == adapter.getData().size();
     }
 
-    @Subscribe
-    public void onEventMainThread(DownloadEvent event) {
-//        if(event.getStatus() == 3){
-//            //下载完成
-//            if(dialog != null && dialog.isShowing()){
-//                dialog.dismiss();
-//            }
-//            for (DownloadTableInfo item : adapter.getData()){
-//                if(item.getResourceId().equals(event.getDownloadInfo().getResourceId())){
-//                    adapter.getData().remove(item);
-//                    adapter.notifyDataSetChanged();
-//                    break;
-//                }
-//            }
-//        }
-//        int index = -1;
-//        for (DownloadTableInfo item : adapter.getData()){
-//            index++;
-//            if(item.getResourceId().equals(event.getDownloadInfo().getResourceId())){
-//                item.setProgress(event.getDownloadInfo().getProgress());
-//                adapter.notifyItemChanged(index);
-//                break;
-//            }
-//        }
-
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        EventBus.getDefault().unregister(this);
     }
 
 

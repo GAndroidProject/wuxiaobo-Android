@@ -11,7 +11,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,7 +41,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case MSG_PLAY_PROGRESS:
-                    Log.d(TAG, "onEventMainThread: ***");
                     playProgress();
                     break;
                 default:

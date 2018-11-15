@@ -22,7 +22,7 @@ public class UpdateLearningUtils implements IBizCallback {
 
     // 更新学习记录
     public void updateLearningProgress(String resourceId, int resourceType, int progress) {
-        UpdateMineLearningRequest updateMineLearningRequest = new UpdateMineLearningRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.learning.records.push/1.0.0", this);
+        UpdateMineLearningRequest updateMineLearningRequest = new UpdateMineLearningRequest(this);
 
         updateMineLearningRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
         updateMineLearningRequest.addRequestParam("user_id", CommonUserInfo.getUserId());

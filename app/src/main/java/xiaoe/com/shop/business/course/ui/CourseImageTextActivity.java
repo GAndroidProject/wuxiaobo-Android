@@ -37,7 +37,6 @@ import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.RemoveCollectionListRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
-import xiaoe.com.shop.business.audio.ui.AudioActivity;
 import xiaoe.com.shop.business.course.presenter.CourseImageTextPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.utils.CollectionUtils;
@@ -234,7 +233,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             @Override
             public void onClick(View v) {
                 if (loginList.size() == 1) {
-                    umShare("hello");
+                    umShare(collectionTitle, collectionImgUrlCompressed == null ? collectionImgUrl : collectionImgUrlCompressed, "", "");
                 } else {
                     touristDialog.showDialog();
                 }
@@ -312,6 +311,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        itOrgContent.destroy();
         if (unbinder != null) {
             unbinder.unbind();
         }

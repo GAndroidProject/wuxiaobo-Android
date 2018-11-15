@@ -7,7 +7,7 @@ import xiaoe.com.network.network_interface.IBizCallback;
 public class RemoveCollectionListRequest extends IRequest {
 
     public RemoveCollectionListRequest(IBizCallback iBizCallback) {
-        super(NetworkEngine.COLLECTION_BASE_URL+"xe.user.favorites.del/1.0.0", iBizCallback);
+        super(NetworkEngine.API_THIRD_BASE_URL+"xe.user.favorites.del/1.0.0", iBizCallback);
     }
     public void sendRequest(){
         NetworkEngine.getInstance().sendRequest(this);

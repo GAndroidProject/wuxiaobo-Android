@@ -1,5 +1,6 @@
 package xiaoe.com.network.requests;
 
+import xiaoe.com.network.NetworkEngine;
 import xiaoe.com.network.network_interface.IBizCallback;
 
 public class CourseITAfterBuyRequest extends IRequest {
@@ -8,7 +9,7 @@ public class CourseITAfterBuyRequest extends IRequest {
         super(cmd, entityClass, iBizCallback);
     }
 
-    public CourseITAfterBuyRequest(String cmd, IBizCallback iBizCallback) {
-        super(cmd, iBizCallback);
+    public CourseITAfterBuyRequest( IBizCallback iBizCallback) {
+        super(NetworkEngine.API_THIRD_BASE_URL + "xe.resource.content.get/1.0.0", iBizCallback);
     }
 }

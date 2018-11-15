@@ -22,7 +22,7 @@ public class MineLearningPresenter implements IBizCallback {
 
     // 获取正在学习列表
     public void requestLearningData(int pageIndex, int pageSize) {
-        MineLearningRequest mineLearningRequest = new MineLearningRequest(NetworkEngine.COLLECTION_BASE_URL + "xe.user.learning.records.get/1.0.0", this);
+        MineLearningRequest mineLearningRequest = new MineLearningRequest(this);
 
         mineLearningRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
         mineLearningRequest.addRequestParam("user_id", CommonUserInfo.getUserId());

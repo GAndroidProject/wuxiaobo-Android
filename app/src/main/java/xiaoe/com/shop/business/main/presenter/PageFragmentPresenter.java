@@ -8,7 +8,6 @@ import xiaoe.com.network.network_interface.IBizCallback;
 import xiaoe.com.network.network_interface.INetworkResponse;
 import xiaoe.com.network.requests.IRequest;
 import xiaoe.com.network.requests.PageFragmentRequest;
-import xiaoe.com.network.utils.ThreadPoolUtils;
 
 public class PageFragmentPresenter implements IBizCallback {
 
@@ -22,16 +21,7 @@ public class PageFragmentPresenter implements IBizCallback {
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
-        ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                if (success && entity != null) {
-                    inr.onMainThreadResponse(iRequest, true, entity);
-                } else {
-                    inr.onMainThreadResponse(iRequest, false, entity);
-                }
-            }
-        });
+        inr.onResponse(iRequest, success, entity);
     }
 
     /**
@@ -46,7 +36,8 @@ public class PageFragmentPresenter implements IBizCallback {
             Log.d(TAG, "requestMicroPageData: 游客登录吧....");
             return;
         }
-        PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(NetworkEngine.BASE_URL + "api/xe.shop.page.get/1.0.0", this);
+//        PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(NetworkEngine.BASE_URL + "api/xe.shop.page.get/1.0.0", this);
+        PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(NetworkEngine.API_THIRD_BASE_URL + "xe.shop.page.get/1.0.0", this);
         pageFragmentRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         pageFragmentRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
         pageFragmentRequest.addRequestParam("micro_page_id", microPageId);

@@ -85,11 +85,17 @@ public class FinishDownloadListAdapter extends RecyclerView.Adapter<FinishDownlo
     public List<DownloadResourceTableInfo> getDataList(){
         return mDatas;
     }
+
     public DownloadResourceTableInfo getPositionData(int position){
         if(mDatas == null || position >= mDatas.size()){
             return null;
         }
         return mDatas.get(position);
+    }
+
+    public void addData(DownloadResourceTableInfo download){
+        mDatas.add(0, download);
+        notifyDataSetChanged();
     }
 
     public DownloadResourceTableInfo removeData(int position){

@@ -89,16 +89,6 @@
         android:background="@drawable/bg_layout_dialog"
         android:gravity="center"
         >
-        <TextView
-            android:id="@+id/id_message_load"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@color/main_title_color"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="10dp"
-            android:visibility="gone"
-            />
         <com.pnikosis.materialishprogress.ProgressWheel
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -106,6 +96,16 @@
             wheel:matProg_barColor="@color/secondary_title_color"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
+            />
+        <TextView
+            android:id="@+id/id_message_load"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/main_title_color"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:visibility="gone"
             />
     </LinearLayout>
 </RelativeLayout>

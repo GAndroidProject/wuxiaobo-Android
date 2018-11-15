@@ -23,13 +23,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-
 import java.util.List;
 
 import xiaoe.com.common.app.CommonUserInfo;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
-import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.entitys.DownloadResourceTableInfo;
+import xiaoe.com.common.entitys.LoginUser;
 import xiaoe.com.common.utils.Dp2Px2SpUtil;
 import xiaoe.com.common.utils.NetworkState;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
@@ -42,7 +41,6 @@ import xiaoe.com.network.requests.RemoveCollectionListRequest;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.audio.presenter.AudioMediaPlayer;
-import xiaoe.com.shop.business.column.ui.ColumnActivity;
 import xiaoe.com.shop.business.video.presenter.VideoPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.VideoPlayEvent;
@@ -83,6 +81,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
     boolean hasBuy;
     String realSrcId;
+    private String shareUrl = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -222,7 +221,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 }
                 break;
             case R.id.btn_share:
-                umShare("hello");
+                umShare(collectTitle, TextUtils.isEmpty(collectImgUrlCompressed) ? collectImgUrl : collectImgUrlCompressed, shareUrl, "");
                 break;
             default:
                 break;
@@ -416,6 +415,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             }else{
                 //未购
                 setContent(data.getJSONObject("resource_info"), false);
+            }
+            JSONObject shareInfo = data.getJSONObject("share_info");
+            if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
+                shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -5,7 +5,7 @@ import xiaoe.com.network.network_interface.IBizCallback;
 
 public class CouponCanResourceRequest extends IRequest {
     public CouponCanResourceRequest(IBizCallback iBizCallback) {
-        super(NetworkEngine.PLY_BASE_URL+"api/xe.coupon.info/1.0.0", iBizCallback);
+        super(NetworkEngine.API_THIRD_BASE_URL+"xe.coupon.info/1.0.0", iBizCallback);
     }
 
     public void sendRequest(){
