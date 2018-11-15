@@ -36,6 +36,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     private static AudioPlayEntity audio = null;
     private static boolean isStop = true;//是否是停止（已经释放资源），
     private static boolean prepared = false;
+    public static float mPlaySpeed = 1f;//播放倍数
+
     private static Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -90,6 +92,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         prepared = true;
         mediaPlayer.start();
         event.setState(AudioPlayEvent.PLAY);
+        changePlayerSpeed(mPlaySpeed);
         EventBus.getDefault().post(event);
         mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
     }
@@ -168,6 +171,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             event.setState(AudioPlayEvent.PLAY);
             mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
             AudioNotifier.get().showPlay(audio);
+            changePlayerSpeed(mPlaySpeed);
         }
         EventBus.getDefault().post(event);
     }
@@ -308,11 +312,14 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         // this checks on API 23 and up
         if (!isPlaying())    return false;
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
-            } else {
-                mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
-                mediaPlayer.pause();
+            if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
+                } else {
+                    mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
+                    mediaPlayer.pause();
+                }
+                mPlaySpeed = speed;
             }
             return true;
         }

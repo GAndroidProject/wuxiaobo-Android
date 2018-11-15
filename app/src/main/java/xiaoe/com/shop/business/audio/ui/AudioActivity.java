@@ -183,6 +183,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         //倍速按钮
         btnSpeedPlay = (TextView) findViewById(R.id.audio_speed_play);
         btnSpeedPlay.setOnClickListener(this);
+        updateSpeedPlayButtonView(AudioMediaPlayer.mPlaySpeed);
         //音频播放控制器
         audioPlayController = (AudioPlayControllerView) findViewById(R.id.audio_play_controller);
         //悬浮播放控制器
@@ -494,6 +495,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             mSpeedMenuLayout.setVisibility(View.GONE);
         boolean isChange = AudioMediaPlayer.changePlayerSpeed(speed);
         if (!isChange)   return;
+        updateSpeedPlayButtonView(speed);
+    }
+
+    private void updateSpeedPlayButtonView(float speed) {
         String format = getString(R.string.speed_play_text);
         if (speed != 1) {
             format = "%s" + format;
