@@ -132,7 +132,17 @@ public class MineLearningActivity extends XiaoeActivity {
                 }
             } else if (iRequest instanceof MineLearningRequest) {
                 int code = result.getInteger("code");
-                JSONObject data = (JSONObject) result.get("data");
+                JSONObject data;
+                try {
+                    data = (JSONObject) result.get("data");
+                } catch (Exception e) {
+                    learningLoading.setHintStateVisibility(View.VISIBLE);
+                    learningLoading.setLoadingState(View.GONE);
+                    learningLoading.setStateImage(R.mipmap.collection_none);
+                    learningLoading.setStateText("暂无正在学的内容，快去首页逛逛吧");
+                    e.printStackTrace();
+                    return;
+                }
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     initPageData(data);
                 } else if (code == NetworkCodes.CODE_OBTAIN_LEARNING_FAIL) {
