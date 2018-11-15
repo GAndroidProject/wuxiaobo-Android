@@ -3,6 +3,7 @@ package xiaoe.com.shop.utils;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import xiaoe.com.common.app.CommonUserInfo;
@@ -26,6 +27,20 @@ public class CollectionUtils implements IBizCallback {
 
     public CollectionUtils(INetworkResponse inr) {
         this.inr = inr;
+    }
+
+    public CollectionUtils() {
+        this.inr = new INetworkResponse() {
+            @Override
+            public void onResponse(IRequest iRequest, boolean success, Object entity) {
+
+            }
+
+            @Override
+            public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
+
+            }
+        };
     }
 
     @Override
@@ -62,21 +77,6 @@ public class CollectionUtils implements IBizCallback {
         addCollectionRequest.addDataParam("content", collectionContent);
         addCollectionRequest.addDataParam("type", 1);
         NetworkEngine.getInstance().sendRequest(addCollectionRequest);
-    }
-
-    /**
-     * 请求删除收藏
-     * @param resourceId   删除收藏的资源 id
-     * @param resourceType 删除受从昂的资源类型
-     */
-    public void requestRemoveCollection1(String resourceId, String resourceType) {
-        RemoveCollectionRequest removeCollectionRequest = new RemoveCollectionRequest(this);
-        removeCollectionRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
-        removeCollectionRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
-        removeCollectionRequest.addDataParam("content_id", resourceId);
-        removeCollectionRequest.addDataParam("content_type", Integer.parseInt(resourceType));
-        removeCollectionRequest.addDataParam("type", 1);
-        NetworkEngine.getInstance().sendRequest(removeCollectionRequest);
     }
 
     /**

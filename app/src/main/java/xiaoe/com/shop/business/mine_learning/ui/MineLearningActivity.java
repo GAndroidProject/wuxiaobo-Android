@@ -175,45 +175,45 @@ public class MineLearningActivity extends XiaoeActivity {
         knowledgeList.setHideTitle(true);
         // 因为这个接口拿到的 resourceType 是 int 类型，转成字符串存起来
         for (Object goodItem : goodsList) {
-            JSONObject infoItem = (JSONObject) goodItem;
-            String srcId = infoItem.getString("resource_id");
-            if (srcId != null && srcId.contains("flow")) {
-                continue;
-            }
-            JSONObject goodJsonItem = (JSONObject) infoItem.get("info");
             KnowledgeCommodityItem item = new KnowledgeCommodityItem();
-            // id 和 type 通过 info 拿到
-            String resourceId = goodJsonItem.getString("goods_id");
-            String resourceType = convertInt2Str(goodJsonItem.getInteger("goods_type"));
-            // 专栏、会员、大专栏的简介
-            String desc = goodJsonItem.getString("org_summary");
-            // 其余数据通过收藏的数据拿到
-            JSONObject orgContent = (JSONObject) infoItem.get("org_content");
-            String title = null;
-            String imgUrl = null;
-            String priceStr = null;
-            if (orgContent != null) { // 不为空则为收藏
-                title = orgContent.getString("title") == null || "".equals(orgContent.getString("title")) ? goodJsonItem.getString("title") : orgContent.getString("title");
-                imgUrl = orgContent.getString("img_url") == null || "".equals(orgContent.getString("img_url")) ? goodJsonItem.getString("img_url") : orgContent.getString("img_url");
-                priceStr = orgContent.getString("price");
-            } else { // 为空为我正在学
-                title = goodJsonItem.getString("title");
-                imgUrl = goodJsonItem.getString("img_url");
-                priceStr = "已购";
+            JSONObject infoItem = (JSONObject) goodItem;
+            if ("我正在学".equals(pageTitle)) { // 我正在学列表
+                JSONObject learningInfo = (JSONObject) infoItem.get("info");
+                String learningId = learningInfo.getString("goods_id");
+                String learningType = convertInt2Str(learningInfo.getInteger("goods_type"));
+                String learningTitle = learningInfo.getString("title");
+                String learningImg = learningInfo.getString("img_url");
+                String learningOrg = learningInfo.getString("org_summary");
+
+                // 我正在学的数据
+                item.setItemImg(learningImg);
+                item.setItemTitle(learningTitle);
+                item.setResourceId(learningId);
+                item.setSrcType(learningType);
+                item.setItemTitleColumn(learningOrg);
+                item.setItemPrice("已购");
+                item.setCollectionList(false);
+                itemList.add(item);
+            } else if ("我的收藏".equals(pageTitle)) { // 我的收藏列表
+                JSONObject collectionInfo = (JSONObject) infoItem.get("org_content");
+                String collectionId = infoItem.getString("content_id");
+                String collectionType = convertInt2Str(infoItem.getInteger("content_type"));
+                String collectionTitle = collectionInfo.getString("title");
+                String collectionImg = collectionInfo.getString("img_url");
+                String collectionPrice = collectionInfo.getString("price");
+
+                item.setItemImg(collectionImg);
+                item.setItemTitle(collectionTitle);
+                item.setResourceId(collectionId);
+                item.setSrcType(collectionType);
+                item.setCollectionList(true);
+                if ("0".equals(collectionPrice) || "0.0".equals(collectionPrice) || "".equals(collectionPrice) || collectionPrice == null) {
+                    item.setItemPrice("已购");
+                } else {
+                    item.setItemPrice("￥" + collectionPrice);
+                }
+                itemList.add(item);
             }
-            if ("0".equals(priceStr) || "0.0".equals(priceStr) || "已购".equals(priceStr)) {
-                priceStr = "已购";
-            } else {
-                priceStr = "￥" + priceStr;
-            }
-            // 收藏没有保存描述和人数
-            item.setItemImg(imgUrl);
-            item.setItemTitle(title);
-            item.setResourceId(resourceId);
-            item.setSrcType(resourceType);
-            item.setItemTitleColumn(desc);
-            item.setItemPrice(priceStr);
-            itemList.add(item);
         }
         knowledgeList.setKnowledgeCommodityItemList(itemList);
         pageList.add(knowledgeList);

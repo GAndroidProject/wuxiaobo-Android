@@ -2,6 +2,7 @@ package xiaoe.com.shop.adapter.decorate.knowledge_commodity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,9 @@ import xiaoe.com.common.entitys.KnowledgeCommodityItem;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.course.ui.CourseImageTextActivity;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.interfaces.OnConfirmListener;
+import xiaoe.com.shop.utils.CollectionUtils;
+import xiaoe.com.shop.widget.CustomDialog;
 
 public class KnowledgeListAdapter extends BaseAdapter {
 
@@ -113,6 +117,23 @@ public class KnowledgeListAdapter extends BaseAdapter {
                 }
             }
         });
+        if (mItemList.get(position).isCollectionList()) {
+            viewHolder.itemWrap.setOnLongClickListener(v -> {
+                CustomDialog customDialog = new CustomDialog(mContext);
+                customDialog.setMessageVisibility(View.GONE);
+                customDialog.setTitle("确认删除收藏吗");
+                customDialog.setConfirmListener((view, tag) -> {
+                    CollectionUtils collectionUtils = new CollectionUtils();
+                    String type = convertItemType(mItemList.get(position).getSrcType());
+                    collectionUtils.requestRemoveCollection(mItemList.get(position).getResourceId(), type);
+                    mItemList.remove(mItemList.get(position));
+                    notifyDataSetChanged();
+                    Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+                });
+                customDialog.showDialog(0);
+                return false;
+            });
+        }
         return convertView;
     }
     public void addAllData(List<KnowledgeCommodityItem> list){
@@ -120,4 +141,21 @@ public class KnowledgeListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    // 转换微页面组件的类型（适配收藏接口）
+    private String convertItemType (String type) {
+        switch (type) {
+            case DecorateEntityType.IMAGE_TEXT:
+                return "1";
+            case DecorateEntityType.AUDIO:
+                return "2";
+            case DecorateEntityType.VIDEO:
+                return "3";
+            case DecorateEntityType.COLUMN:
+                return "6";
+            case DecorateEntityType.TOPIC:
+                return "8";
+            default:
+                return "";
+        }
+    }
 }

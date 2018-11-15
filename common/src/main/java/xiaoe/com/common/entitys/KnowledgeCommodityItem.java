@@ -18,6 +18,8 @@ public class KnowledgeCommodityItem {
     private String srcType;
     // 资源 id
     private String resourceId;
+    // 是否为收藏列表
+    private boolean isCollectionList;
 
     public KnowledgeCommodityItem() {}
 
@@ -66,7 +68,6 @@ public class KnowledgeCommodityItem {
     }
 
     public String getItemTitleColumn() {
-
         return itemTitleColumn;
     }
 
@@ -75,7 +76,6 @@ public class KnowledgeCommodityItem {
     }
 
     public String getSrcType() {
-
         return srcType;
     }
 
@@ -84,7 +84,14 @@ public class KnowledgeCommodityItem {
     }
 
     public String getResourceId() {
-
         return resourceId;
+    }
+
+    public boolean isCollectionList() {
+        return isCollectionList;
+    }
+
+    public void setCollectionList(boolean collectionList) {
+        isCollectionList = collectionList;
     }
 }
