@@ -9,9 +9,9 @@ import android.Manifest;
 public class Constants {
     //应用appid 测试环境
 //    private static final String testAppid = "appiOW1KfWe9943";
-    private static final String testAppid = "apppcHqlTPT3482";
+    private static final String testAppid = "appiOW1KfWe9943";
     //应用appid 正式环境
-    private static final String formalAppid = "appuAhZGRFx3075";
+    private static final String formalAppid = "appiOW1KfWe9943";
 
     //微信测试环境
 //    private static final String wxLoginAppIdTest = "wx3514f0d221328921";
