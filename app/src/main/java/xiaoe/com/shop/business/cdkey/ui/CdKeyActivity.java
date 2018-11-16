@@ -240,11 +240,12 @@ public class CdKeyActivity extends XiaoeActivity {
                     cdSubmit.setEnabled(s.length() > 0);
                     float alpha = s.length() >0 ? 1f : 0.6f;
                     cdSubmit.setAlpha(alpha);
-                    int maxLength = 50;
+                    int maxLength = 8;
                     if (s.length() > maxLength){
                         String content = s.toString().substring(0,maxLength);
                         cdContent.setText(content);
                         cdContent.setSelection(content.length());
+                        Toast(String.format(getString(R.string.cd_key_limit_8),maxLength));
                     }
 //                    float size = s.length() > 0 ? 32 : 20;
 //                    cdContent.setTextSize(size);
