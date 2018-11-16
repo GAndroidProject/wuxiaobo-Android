@@ -71,7 +71,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:onClick="doShowPassword"
             android:padding="6dp"
             android:src="@mipmap/icon_hide" />
     </RelativeLayout>

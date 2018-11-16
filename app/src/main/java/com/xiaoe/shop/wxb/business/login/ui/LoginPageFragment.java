@@ -429,7 +429,7 @@ public class LoginPageFragment extends BaseFragment {
         passwordContent = (EditText) viewWrap.findViewById(R.id.login_pwd_pass_word);
         ivShowPwd = (ImageView) viewWrap.findViewById(R.id.ivShowPwd);
         ivShowPwd.setOnClickListener(v -> doShowPassword());
-        setEditTextOnTouchListener(passwordContent);
+//        setEditTextOnTouchListener(passwordContent);
 
         final Button pwdSubmit = (Button) viewWrap.findViewById(R.id.login_pwd_submit);
         passwordContent.addTextChangedListener(new TextWatcher() {
@@ -503,7 +503,7 @@ public class LoginPageFragment extends BaseFragment {
         ivShowPwd = (ImageView) viewWrap.findViewById(R.id.ivShowPwd);
         final Button setPwdSubmit = (Button) viewWrap.findViewById(R.id.login_set_pwd_submit);
 
-        setEditTextOnTouchListener(passwordContent);
+//        setEditTextOnTouchListener(passwordContent);
         ivShowPwd.setOnClickListener(v -> doShowPassword());
         setPwdSubmit.setEnabled(false);
         setPwdSubmit.setAlpha(0.6f);
