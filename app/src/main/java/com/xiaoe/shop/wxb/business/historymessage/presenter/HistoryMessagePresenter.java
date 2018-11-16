@@ -1,11 +1,11 @@
 package com.xiaoe.shop.wxb.business.historymessage.presenter;
 
-import xiaoe.com.common.app.CommonUserInfo;
-import xiaoe.com.common.entitys.HistoryMessageReq;
-import xiaoe.com.network.network_interface.IBizCallback;
-import xiaoe.com.network.network_interface.INetworkResponse;
-import xiaoe.com.network.requests.GetHistoryMessageRequest;
-import xiaoe.com.network.requests.IRequest;
+import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.entitys.HistoryMessageReq;
+import com.xiaoe.network.network_interface.IBizCallback;
+import com.xiaoe.network.network_interface.INetworkResponse;
+import com.xiaoe.network.requests.GetHistoryMessageRequest;
+import com.xiaoe.network.requests.IRequest;
 
 /**
  * @author flynnWang

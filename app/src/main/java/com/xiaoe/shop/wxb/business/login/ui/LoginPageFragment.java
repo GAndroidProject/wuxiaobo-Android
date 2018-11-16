@@ -24,16 +24,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.xiaoe.common.utils.SharedPreferencesUtil;
+import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.base.BaseFragment;
+import com.xiaoe.shop.wxb.business.login.presenter.LoginTimeCount;
+import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.utils.JudgeUtil;
+import com.xiaoe.shop.wxb.widget.CodeVerifyView;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import xiaoe.com.common.utils.SharedPreferencesUtil;
-import xiaoe.com.shop.R;
-import xiaoe.com.shop.base.BaseFragment;
-import xiaoe.com.shop.business.login.presenter.LoginTimeCount;
-import xiaoe.com.shop.business.login.ui.LoginActivity;
-import xiaoe.com.shop.common.JumpDetail;
-import xiaoe.com.shop.utils.JudgeUtil;
-import xiaoe.com.shop.widget.CodeVerifyView;
 
 /**
  * @author zak

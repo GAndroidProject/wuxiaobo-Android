@@ -16,26 +16,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoe.common.app.Global;
+import com.xiaoe.common.entitys.HistoryMessageEntity;
+import com.xiaoe.common.entitys.HistoryMessageReq;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.requests.GetHistoryMessageRequest;
+import com.xiaoe.network.requests.IRequest;
+import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.adapter.historymessage.HistoryMessageAdapter;
+import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.business.historymessage.presenter.HistoryMessagePresenter;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
+import com.xiaoe.shop.wxb.widget.EmptyView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import xiaoe.com.common.app.Global;
-import xiaoe.com.common.entitys.HistoryMessageEntity;
-import xiaoe.com.common.entitys.HistoryMessageReq;
-import xiaoe.com.common.utils.Dp2Px2SpUtil;
-import xiaoe.com.network.NetworkCodes;
-import xiaoe.com.network.requests.GetHistoryMessageRequest;
-import xiaoe.com.network.requests.IRequest;
-import xiaoe.com.shop.R;
-import xiaoe.com.shop.adapter.historymessage.HistoryMessageAdapter;
-import xiaoe.com.shop.base.XiaoeActivity;
-import xiaoe.com.shop.business.historymessage.presenter.HistoryMessagePresenter;
-import xiaoe.com.shop.utils.StatusBarUtil;
-import xiaoe.com.shop.utils.ToastUtils;
-import xiaoe.com.shop.widget.EmptyView;
 
 /**
  * @author flynnWang
