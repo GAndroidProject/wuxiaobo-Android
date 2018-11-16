@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import xiaoe.com.common.app.Global;
@@ -34,7 +35,7 @@ public class DownloadManager implements DownloadListner {
     private List<DownloadTask> mDownloadTasks;//下载任务
     private List<DownloadTask> mAwaitDownloadTasks;//等待下载任务
     private HashMap<String, DownloadTableInfo> allDownloadList;//全部下载列表
-    private OnDownloadListener onDownloadListener;
+    private Map<String,OnDownloadListener> onDownloadListenerList;
     /**
      * ConcurrentHashMap可以高并发操作，线程安全，高效
      */
@@ -48,6 +49,7 @@ public class DownloadManager implements DownloadListner {
         mDownloadTasks = new ArrayList<DownloadTask>();
         mAwaitDownloadTasks = new ArrayList<DownloadTask>();
         mSaveProgresss = new ConcurrentHashMap<String, String>();
+        onDownloadListenerList = new HashMap<String, OnDownloadListener>();
 //        getInstanceDownloadEvent();
         createSaveProgressThread();
     }
@@ -578,8 +580,10 @@ public class DownloadManager implements DownloadListner {
         ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
             @Override
             public void run() {
-                if (onDownloadListener != null) {
-                    onDownloadListener.onDownload(downloadInfo, progress, status);
+                for (Map.Entry<String, OnDownloadListener> entry : onDownloadListenerList.entrySet()){
+                    if (entry.getValue() != null){
+                        entry.getValue().onDownload(downloadInfo, progress, status);
+                    }
                 }
             }
         });
@@ -696,7 +700,10 @@ public class DownloadManager implements DownloadListner {
         return allDownloadList.containsKey(resourceId);
     }
 
-    public void setOnDownloadListener(OnDownloadListener listener){
-        onDownloadListener = listener;
+    public void setOnDownloadListener(String key, OnDownloadListener listener){
+        onDownloadListenerList.put(key, listener);
+    }
+    public void removeOnDownloadListener(String key){
+        onDownloadListenerList.remove(key);
     }
 }

@@ -3,6 +3,7 @@ package xiaoe.com.shop.business.download.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ public class OffLineCacheActivity extends XiaoeActivity implements View.OnClickL
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBar();
         setContentView(R.layout.activity_off_line_cache);
         initViews();
     }
@@ -45,6 +47,9 @@ public class OffLineCacheActivity extends XiaoeActivity implements View.OnClickL
         tabViewPager = (ScrollViewPager) findViewById(R.id.tab_view_page);
         tabViewPager.setScroll(false);
         tabViewPager.setAdapter(new CacheViewPagerAdapter(getSupportFragmentManager()));
+
+        ImageView btnBack = (ImageView) findViewById(R.id.btn_back);
+        btnBack.setOnClickListener(this);
     }
 
     private void setTabSelect(int type){
@@ -68,6 +73,9 @@ public class OffLineCacheActivity extends XiaoeActivity implements View.OnClickL
             case R.id.btn_download_proceed:
                 setTabSelect(1);
                 tabViewPager.setCurrentItem(1);
+                break;
+            case R.id.btn_back:
+                finish();
                 break;
             default:
                 break;

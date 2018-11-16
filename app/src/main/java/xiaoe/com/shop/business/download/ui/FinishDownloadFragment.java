@@ -40,6 +40,8 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
     }
 
     private void initViews() {
+        DownloadManager.getInstance().setOnDownloadListener(TAG, this);
+
         finishDownloadRecyclerView = (RecyclerView) rootView.findViewById(R.id.finish_download_recycler_view);
         finishDownloadRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         finishDownloadListAdapter = new FinishDownloadListAdapter(getContext(), this);
@@ -73,6 +75,12 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
     public void onDeleteBtnCilck(View view, int position) {
         DownloadResourceTableInfo remove = finishDownloadListAdapter.removeData(position);
         DownloadManager.getInstance().removeDownloadFinish(remove);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        DownloadManager.getInstance().removeOnDownloadListener(TAG);
     }
 
     @Override

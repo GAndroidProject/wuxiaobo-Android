@@ -118,6 +118,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }
         EventBus.getDefault().register(this);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
+        setStatusBar();
         setContentView(R.layout.activity_audio);
         loginUserList = getLoginUserList();
 

@@ -36,6 +36,7 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
     private TextView btnDownload;
     private String resourceId;
     private String fromType;
+    private TextView selectCount;
 
     @Nullable
     @Override
@@ -76,6 +77,9 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
 
         btnDownload = (TextView) mRootView.findViewById(R.id.btn_download);
         btnDownload.setOnClickListener(this);
+
+        selectCount = (TextView) mRootView.findViewById(R.id.select_size);
+        selectCount.setText(String.valueOf("已选 0条"));
     }
 
     @Override
@@ -124,26 +128,37 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
     private void clickAllSelect() {
         isAllSelect = !isAllSelect;
         setAllsetectState();
+        int count = 0;
         for (ColumnDirectoryEntity item : adapter.getDate()) {
             item.setSelect(isAllSelect);
             for (ColumnSecondDirectoryEntity childItem : item.getResource_list()) {
-                if(childItem.isExpand()){
+                if(childItem.isEnable()){
                     childItem.setSelect(isAllSelect);
+                    count = isAllSelect ? count + 1 : 0;
                 }
             }
         }
         adapter.notifyDataSetChanged();
+        selectCount.setText(String.valueOf("已选 "+count+"条"));
     }
 
     @Override
     public void onSelect(int positiont) {
-        int selectCount = 0;
+        int count = 0;
+        int childCount = 0;
         for (ColumnDirectoryEntity item: adapter.getDate()) {
             if(item.isSelect()){
-                selectCount++;
+                count++;
+            }
+            for (ColumnSecondDirectoryEntity childItem : item.getResource_list()){
+                if(childItem.isSelect()){
+                    childCount++;
+                }
             }
         }
-        isAllSelect = selectCount == adapter.getDate().size();
+        isAllSelect = count == adapter.getDate().size();
         setAllsetectState();
+        selectCount.setText(String.valueOf("已选 "+childCount+"条"));
+
     }
 }

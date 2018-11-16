@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -26,7 +27,7 @@ import xiaoe.com.shop.base.BaseFragment;
 import xiaoe.com.shop.interfaces.OnDownloadListListener;
 
 public class DownloadProceedFragment extends BaseFragment implements View.OnClickListener, OnDownloadListListener, OnDownloadListener {
-    private static final String TAG = "FinishDownloadFragment";
+    private static final String TAG = "DownloadProceedFragment";
     private View rootView;
     private RecyclerView downloadProceedRecyclerView;
     private DownloadProceedChildListAdapter adapter;
@@ -36,6 +37,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     private TextView btnAllStart;
     private boolean isAllDownload = false;
     private boolean runClickAllDownload = false;
+    private RelativeLayout bottomButton;
 
     @Nullable
     @Override
@@ -52,7 +54,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     }
 
     private void initViews() {
-        DownloadManager.getInstance().setOnDownloadListener(this);
+        DownloadManager.getInstance().setOnDownloadListener(TAG, this);
 
         downloadProceedRecyclerView = (RecyclerView) rootView.findViewById(R.id.download_proceed_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -66,19 +68,22 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
 
         btnAllStart = (TextView) rootView.findViewById(R.id.btn_all_start_download);
         btnAllStart.setOnClickListener(this);
+
+        bottomButton = (RelativeLayout) rootView.findViewById(R.id.bottom_button);
     }
     private void initData() {
         List<DownloadTableInfo> list = DownloadManager.getInstance().getDownloadingList();
         if(list == null || list.size() <= 0){
-            btnAllStart.setAlpha(0.6f);
+            bottomButton.setVisibility(View.GONE);
         }else {
+            bottomButton.setVisibility(View.VISIBLE);
             adapter.addAllData(list);
             isAllDownload = isAllDownload();
         }
-        setAllbDownloadbButton(isAllDownload);
+        setAllDownloadButton(isAllDownload);
     }
 
-    private void setAllbDownloadbButton(boolean all) {
+    private void setAllDownloadButton(boolean all) {
         if(all){
             btnAllStart.setText(getString(R.string.all_stop_download));
         }else{
@@ -99,6 +104,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        DownloadManager.getInstance().removeOnDownloadListener(TAG);
     }
 
 
@@ -142,7 +148,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
         }
         runClickAllDownload = false;
         isAllDownload = !isAllDownload;
-        setAllbDownloadbButton(isAllDownload);
+        setAllDownloadButton(isAllDownload);
     }
 
     private void allDelete() {
@@ -164,7 +170,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
             //删除
             delete(download, position);
         }
-        setAllbDownloadbButton(isAllDownload());
+        setAllDownloadButton(isAllDownload());
     }
 
 
@@ -193,6 +199,9 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                 DownloadManager.getInstance().removeDownloading(download);
                 adapter.getData().remove(position);
                 adapter.notifyDataSetChanged();
+                if(adapter.getItemCount() <= 0){
+                    bottomButton.setVisibility(View.GONE);
+                }
             }
         });
         // 先 show 后才会有宽高
@@ -233,6 +242,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                 }
                 adapter.clearData();
                 dialog.dismiss();
+                bottomButton.setVisibility(View.GONE);
             }
         });
         // 先 show 后才会有宽高
@@ -261,6 +271,9 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                     adapter.notifyDataSetChanged();
                     break;
                 }
+            }
+            if(adapter.getItemCount() <= 0){
+                bottomButton.setVisibility(View.GONE);
             }
         }
         int index = -1;

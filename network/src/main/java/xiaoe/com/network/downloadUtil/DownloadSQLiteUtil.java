@@ -218,7 +218,6 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
 
 
     public void updateDownloadInfo(DownloadTableInfo downloadTableInfo){
-        Log.d(TAG, "updateDownloadInfo: state = "+downloadTableInfo.getDownloadState());
         String whereSQL = "app_id=? and resource_id=?";
         String[] whereVal = {downloadTableInfo.getAppId(), downloadTableInfo.getResourceId()};
 //        SQLiteUtil.update(TABLE_NAME, downloadTableInfo, whereSQL, whereVal);

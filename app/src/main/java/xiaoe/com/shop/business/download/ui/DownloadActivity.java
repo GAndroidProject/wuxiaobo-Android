@@ -20,6 +20,7 @@ public class DownloadActivity extends XiaoeActivity implements View.OnClickListe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBar();
         setContentView(R.layout.activity_download);
         mIntent = getIntent();
         initViews();
@@ -29,12 +30,6 @@ public class DownloadActivity extends XiaoeActivity implements View.OnClickListe
     private void initViews() {
         DownloadDirectoryFragment currentFragment = new DownloadDirectoryFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.show_select_download_fragment, currentFragment, "show_select_download_fragment").commit();
-//        if("ColumnDirectoryFragment".equals(fromType)){
-//            DownloadDirectoryFragment currentFragment = new DownloadDirectoryFragment();
-//            getSupportFragmentManager().beginTransaction().add(R.id.show_select_download_fragment, currentFragment, "show_select_download_fragment").commit();
-//        }else if("LittleColumnDirectoryFragment".equals(fromType)){
-////            getSupportFragmentManager().beginTransaction().add(R.id.show_select_download_fragment, currentFragment, "show_select_download_fragment").commit();
-//        }
 
         btnBack = (ImageView) findViewById(R.id.btn_back);
         btnBack.setOnClickListener(this);
