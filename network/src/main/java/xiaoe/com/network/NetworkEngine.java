@@ -50,7 +50,8 @@ public class NetworkEngine {
     public final static String SCHOLARSHIP_BASE_URL = "http://134.175.39.247:14585/api/"; // 奖学金 url
     public final static String EARNING_BASE_URL = "http://134.175.39.247:4586/api/"; // 赚钱 url
     /**
-     * 用户登录及绑定注册（极光推送）：app-server.inside.xiaoeknow.com
+     * 用户登录及绑定注册（极光推送）
+     * http://app-server.inside.xiaoeknow.com/api/xe.set.device.token/1.0.0
      */
     public static final String BIND_JG_PUSH_URL = "http://app-server.inside.xiaoeknow.com/api/";
     /**

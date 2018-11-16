@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import org.greenrobot.eventbus.EventBus;
@@ -38,6 +40,7 @@ import xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout;
 import xiaoe.com.shop.business.main.presenter.MessagePushPresenter;
 import xiaoe.com.shop.business.super_vip.presenter.SuperVipPresenter;
 import xiaoe.com.shop.business.upgrade.AppUpgradeHelper;
+import xiaoe.com.shop.common.jpush.entity.JgPushSaveInfo;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnBottomTabSelectListener;
 import xiaoe.com.shop.common.jpush.ExampleUtil;
@@ -87,24 +90,31 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         isFormalUser = intent.getBooleanExtra("isFormalUser", false);
 
         // 请求绑定极光推送
+        String jgPushRegId = JPushInterface.getRegistrationID(mContext);
+        Log.e(TAG, "onCreate: JPush RegID " + jgPushRegId);
+
+        String bindJPushSuccess = (String) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, "");
+        JgPushSaveInfo jgPushSaveInfo = JSON.parseObject(bindJPushSuccess, JgPushSaveInfo.class);
+        Log.e(TAG, "onCreate: " + jgPushSaveInfo);
         MessagePushPresenter messagePushPresenter = new MessagePushPresenter(this);
+        if (jgPushSaveInfo != null) {
+            if (!jgPushSaveInfo.isBindRegIdSuccess()) {
+                messagePushPresenter.requestBindJgPush(isFormalUser);
+            } else {
+                if (jgPushRegId != null && !jgPushRegId.equals(jgPushSaveInfo.getRegistrationID())) {
+                    messagePushPresenter.requestBindJgPush(isFormalUser);
+                }
+            }
+        } else {
+            messagePushPresenter.requestBindJgPush(isFormalUser);
+        }
+
         if (!isFormalUser) {
             // 非正式用户，需要手动设置店铺 id 和默认登录 userId
             CommonUserInfo.setShopId(SharedPreferencesUtil.getData("touristsShopId", "").toString());
             CommonUserInfo.setUserId("0");
 //            CommonUserInfo.setUserId("i_5bda654981f4e_avxWBhkZYk");
-
-            boolean bindJPushSuccess = (boolean) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_BIND_JPUSH_TOURIST_CODE, false);
-            if (!bindJPushSuccess) {
-                messagePushPresenter.requestBindJgPush(false);
-            }
-        } else {
-            boolean bindJPushSuccess = (boolean) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, false);
-            if (!bindJPushSuccess) {
-                messagePushPresenter.requestBindJgPush(true);
-            }
         }
-        Log.e(TAG, "onCreate: JPush RegID " + JPushInterface.getRegistrationID(XiaoeApplication.getmContext()));
 
         initView();
         initPermission();
@@ -271,11 +281,13 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     }
 
     private void setBindJPushSP(boolean bindSuccess) {
-        if (isFormalUser) {
-            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, bindSuccess);
-        } else {
-            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_BIND_JPUSH_TOURIST_CODE, bindSuccess);
-        }
+        JgPushSaveInfo jgPushSaveInfo = new JgPushSaveInfo();
+        jgPushSaveInfo.setFormalUser(isFormalUser);
+        jgPushSaveInfo.setBindRegIdSuccess(bindSuccess);
+        jgPushSaveInfo.setRegistrationID(JPushInterface.getRegistrationID(mContext));
+
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, JSON.toJSONString(jgPushSaveInfo));
+        Log.e(TAG, "setBindJPushSP: " + JSON.toJSONString(jgPushSaveInfo));
     }
 
     // for receive customer msg from jpush server

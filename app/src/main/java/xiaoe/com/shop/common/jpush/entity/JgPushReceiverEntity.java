@@ -1,4 +1,4 @@
-package xiaoe.com.shop.common.jpush;
+package xiaoe.com.shop.common.jpush.entity;
 
 /**
  * @author flynnWang
