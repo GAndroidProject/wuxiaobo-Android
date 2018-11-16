@@ -29,8 +29,8 @@
     </style>
     <!--视频频播放控制器样式-->
     <style name="video_play_seek_bar_style" parent="Base.Widget.AppCompat.SeekBar">
-        <item name="android:progressDrawable">@drawable/audio_play_seek_bar</item>
-        <item name="android:thumb">@drawable/audio_seek_bar_thum_selector</item>
+        <item name="android:progressDrawable">@drawable/video_play_seek_bar</item>
+        <item name="android:thumb">@drawable/video_seek_bar_thum_selector</item>
     </style>
 
     <!-- 底部弹框样式 -->
