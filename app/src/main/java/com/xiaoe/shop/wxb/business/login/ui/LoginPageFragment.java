@@ -10,6 +10,8 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,18 +20,20 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import com.xiaoe.common.utils.SharedPreferencesUtil;
-import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.base.BaseFragment;
-import com.xiaoe.shop.wxb.business.login.presenter.LoginTimeCount;
-import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.utils.JudgeUtil;
-import com.xiaoe.shop.wxb.widget.CodeVerifyView;
+import xiaoe.com.common.utils.SharedPreferencesUtil;
+import xiaoe.com.shop.R;
+import xiaoe.com.shop.base.BaseFragment;
+import xiaoe.com.shop.business.login.presenter.LoginTimeCount;
+import xiaoe.com.shop.business.login.ui.LoginActivity;
+import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.utils.JudgeUtil;
+import xiaoe.com.shop.widget.CodeVerifyView;
 
 /**
  * @author zak
@@ -45,6 +49,7 @@ public class LoginPageFragment extends BaseFragment {
     protected TextView phoneErrorTip;
 
     protected EditText passwordContent;
+    protected ImageView ivShowPwd;
     private TextView loginCodeDesc;
 
     private static final String TAG = "LoginPageFragment";
@@ -66,6 +71,7 @@ public class LoginPageFragment extends BaseFragment {
      * 验证码
      */
     private String smsCode;
+    private boolean mDisplayFlg;
 
     public static LoginPageFragment newInstance(int layoutId) {
         LoginPageFragment loginPageFragment = new LoginPageFragment();
@@ -421,6 +427,8 @@ public class LoginPageFragment extends BaseFragment {
         initPhoneInputListener(LoginActivity.PWD);
 
         passwordContent = (EditText) viewWrap.findViewById(R.id.login_pwd_pass_word);
+        ivShowPwd = (ImageView) viewWrap.findViewById(R.id.ivShowPwd);
+        ivShowPwd.setOnClickListener(v -> doShowPassword());
         setEditTextOnTouchListener(passwordContent);
 
         final Button pwdSubmit = (Button) viewWrap.findViewById(R.id.login_pwd_submit);
@@ -492,9 +500,11 @@ public class LoginPageFragment extends BaseFragment {
     private void initLoginSetPwdFragment() {
 
         passwordContent = (EditText) viewWrap.findViewById(R.id.login_set_pwd_content);
+        ivShowPwd = (ImageView) viewWrap.findViewById(R.id.ivShowPwd);
         final Button setPwdSubmit = (Button) viewWrap.findViewById(R.id.login_set_pwd_submit);
 
         setEditTextOnTouchListener(passwordContent);
+        ivShowPwd.setOnClickListener(v -> doShowPassword());
         setPwdSubmit.setEnabled(false);
         setPwdSubmit.setAlpha(0.6f);
         passwordContent.addTextChangedListener(new TextWatcher() {
@@ -605,6 +615,26 @@ public class LoginPageFragment extends BaseFragment {
                 return false;
             }
         });
+    }
+
+    public void doShowPassword() {
+        if (!mDisplayFlg) {
+            // display password text, for example "123456"
+            passwordContent.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            ivShowPwd.setImageResource(R.mipmap.icon_show);
+        } else {
+            // hide password, display "."
+            passwordContent.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            ivShowPwd.setImageResource(R.mipmap.icon_hide);
+        }
+
+        String etPwd = passwordContent.getText().toString();
+        if (!TextUtils.isEmpty(etPwd)) {
+            passwordContent.setSelection(etPwd.length());
+        }
+
+        mDisplayFlg = !mDisplayFlg;
+        passwordContent.postInvalidate();
     }
 
     /**

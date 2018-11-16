@@ -22,20 +22,20 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.xiaoe.common.app.Global;
-import com.xiaoe.common.entitys.HistoryMessageEntity;
-import com.xiaoe.common.entitys.HistoryMessageReq;
-import com.xiaoe.common.utils.Dp2Px2SpUtil;
-import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.requests.GetHistoryMessageRequest;
-import com.xiaoe.network.requests.IRequest;
-import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.adapter.historymessage.HistoryMessageAdapter;
-import com.xiaoe.shop.wxb.base.XiaoeActivity;
-import com.xiaoe.shop.wxb.business.historymessage.presenter.HistoryMessagePresenter;
-import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.utils.ToastUtils;
-import com.xiaoe.shop.wxb.widget.EmptyView;
+import xiaoe.com.common.app.Global;
+import xiaoe.com.common.entitys.HistoryMessageEntity;
+import xiaoe.com.common.entitys.HistoryMessageReq;
+import xiaoe.com.common.utils.Dp2Px2SpUtil;
+import xiaoe.com.network.NetworkCodes;
+import xiaoe.com.network.requests.GetHistoryMessageRequest;
+import xiaoe.com.network.requests.IRequest;
+import xiaoe.com.shop.R;
+import xiaoe.com.shop.adapter.historymessage.HistoryMessageAdapter;
+import xiaoe.com.shop.base.XiaoeActivity;
+import xiaoe.com.shop.business.historymessage.presenter.HistoryMessagePresenter;
+import xiaoe.com.shop.utils.StatusBarUtil;
+import xiaoe.com.shop.utils.ToastUtils;
+import xiaoe.com.shop.widget.EmptyView;
 
 /**
  * @author flynnWang
@@ -68,6 +68,7 @@ public class HistoryMessageActivity extends XiaoeActivity {
     private String messageLastId = "-1";
     private String commentLastId = "-1";
     private String praiseLastId = "-1";
+    private String pageSize = "10";
 
     private boolean isRequesting;
 
@@ -163,7 +164,6 @@ public class HistoryMessageActivity extends XiaoeActivity {
                 }
                 outRect.left = padding * 2;
                 outRect.right = padding * 2;
-
             }
         };
         itemDecoration.setDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -191,6 +191,8 @@ public class HistoryMessageActivity extends XiaoeActivity {
 //                        presentFragment(new MarketOrderDetailsFragment(bundle));
 //                    }
 //                }
+            HistoryMessageEntity.ListBean listBean = (HistoryMessageEntity.ListBean) adapter.getData().get(position);
+
         });
         rvAllMessage.setAdapter(historyMessageAdapter);
 
@@ -228,7 +230,7 @@ public class HistoryMessageActivity extends XiaoeActivity {
     private void loadMessages() {
         HistoryMessageReq historyMessageReq = new HistoryMessageReq();
         HistoryMessageReq.ListBean buzData = new HistoryMessageReq.ListBean();
-        buzData.setPage_size("20");
+        buzData.setPage_size(pageSize);
         buzData.setMessage_last_id(messageLastId);
         buzData.setComment_last_id(commentLastId);
         buzData.setPraise_last_id(praiseLastId);
