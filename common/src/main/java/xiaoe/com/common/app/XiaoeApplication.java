@@ -4,10 +4,17 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.scwang.smartrefresh.header.waveswipe.DropBounceInterpolator;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshInitializer;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.sdk.QbSdk;
 import com.umeng.analytics.MobclickAgent;
@@ -19,7 +26,9 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import cn.jpush.android.api.JPushInterface;
+import xiaoe.com.common.R;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
+import xiaoe.com.common.widget.CommonRefreshHeader;
 
 /**
  * @author Administrator
@@ -36,6 +45,19 @@ public class XiaoeApplication extends Application {
     private static boolean isFormalCondition;
     public static volatile Context applicationContext;
     public static volatile Handler applicationHandler;
+
+    static { // SmartRefreshLayout 全局配置，写在这里防止内存泄漏
+        //全局设置默认的 Header
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
+            @NonNull
+            @Override
+            public RefreshHeader createRefreshHeader(@NonNull Context context, @NonNull RefreshLayout layout) {
+                //开始设置全局的基本参数（这里设置的属性只跟下面的MaterialHeader绑定，其他Header不会生效，能覆盖DefaultRefreshInitializer的属性和Xml设置的属性）
+                layout.setEnableHeaderTranslationContent(false);
+                return new CommonRefreshHeader(mContext);
+            }
+        });
+    }
 
     @Override
     public void onCreate() {

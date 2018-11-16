@@ -64,4 +64,6 @@
     <color name="scholarship_content_color">#E64D4D</color>
 
     <color name="wr_success">#8BB75D</color>
+
+    <color name="refresh_content_color">#DDDDE9</color>
 </resources>

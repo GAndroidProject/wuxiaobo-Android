@@ -39,6 +39,7 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.bought_list.presenter.BoughtListAdapter;
 import xiaoe.com.shop.business.main.presenter.ScholarshipPresenter;
+import xiaoe.com.common.widget.CommonRefreshHeader;
 
 public class BoughtListActivity extends XiaoeActivity implements OnItemClickWithBoughtItemListener {
 
@@ -61,6 +62,7 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
     String resourceId;
     String resourceType;
     boolean isSuperVip;
+    BoughtListAdapter boughtListAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,13 +90,14 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
         boughtRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                
-            }
-        });
-        boughtRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-
+                if (scholarshipPresenter == null) {
+                    scholarshipPresenter = new ScholarshipPresenter(BoughtListActivity.this);
+                }
+                if (dataList.size() != 0 && boughtListAdapter!=null) { // 有数据时刷新发送请求
+                    dataList.clear();
+                    boughtListAdapter.notifyDataSetChanged();
+                    scholarshipPresenter.requestBoughtList();
+                }
             }
         });
     }
@@ -107,8 +110,14 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
             if (iRequest instanceof ScholarshipBoughtListRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONArray data = ((JSONArray) ((JSONObject) result.get("data")).get("audio"));
-                    initPageData(data);
+                    try {
+                        JSONArray data = ((JSONArray) ((JSONObject) result.get("data")).get("audio"));
+                        initPageData(data);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        boughtRefresh.finishRefresh();
+                    }
                 } else {
                     Log.d(TAG, "onMainThreadResponse: request fail...");
                 }
@@ -151,6 +160,9 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
 
     // 初始化页面数据
     private void initPageData(JSONArray data) {
+        if (dataList.size() != 0) {
+            dataList.clear();
+        }
         for (Object item : data) {
             JSONObject itemJson = (JSONObject) item;
             String resourceId = itemJson.getString("resource_id");
@@ -168,7 +180,7 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
         }
 
         // 初始化 ListView
-        BoughtListAdapter boughtListAdapter = new BoughtListAdapter(this, dataList);
+        boughtListAdapter = new BoughtListAdapter(this, dataList);
         boughtListAdapter.setOnItemClickWithBoughtItemListener(this);
         boughtListContent.setAdapter(boughtListAdapter);
         MeasureUtil.setListViewHeightBasedOnChildren(boughtListContent);

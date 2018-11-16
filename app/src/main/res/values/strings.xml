@@ -293,4 +293,7 @@
     <string name="withdrawal_grant_content">点击下方复制链接，在微信环境中\n打开，即可授权提现至微信账户\n%1$s</string>
     <string name="withdrawal_grant_cancel">取消</string>
     <string name="withdrawal_grant_confirm">复制链接</string>
+
+    <string name="refresh_logo">刷新logo</string>
+    <string name="refresh_content">加载中...</string>
 </resources>
