@@ -262,8 +262,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
         touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((Activity) mContext).finish();
-                JumpDetail.jumpLogin(mContext);
+                JumpDetail.jumpLogin(mContext, true);
             }
         });
         touristDialog.showDialog();

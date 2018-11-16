@@ -1,6 +1,7 @@
 package xiaoe.com.shop.business.login.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -85,6 +86,8 @@ public class LoginActivity extends XiaoeActivity {
     protected SettingPresenter settingPresenter;
     protected List<LoginUser> loginUserList;
     private LoginUser loginUser;
+    Intent intent;
+    private boolean isTouristClick; // 是否为游客点击
 
     protected String getPhoneNum() {
         return phoneNum;
@@ -111,6 +114,8 @@ public class LoginActivity extends XiaoeActivity {
         setContentView(R.layout.activity_login);
         unbinder = ButterKnife.bind(this);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        intent = getIntent();
+        isTouristClick = intent.getBooleanExtra("isTouristClick", false);
 
         loginTitle.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
@@ -459,7 +464,7 @@ public class LoginActivity extends XiaoeActivity {
                 } else if (code == NetworkCodes.CODE_PERSON_NOT_FOUND) {
                     Log.d(TAG, "onMainThreadResponse: 当前用户不存在");
                 }
-            } else if (iRequest instanceof TouristsShopIdRequest) {
+            } /*else if (iRequest instanceof TouristsShopIdRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     String touristsShopId = ((JSONObject) result.get("data")).getString("shop_id");
@@ -469,7 +474,7 @@ public class LoginActivity extends XiaoeActivity {
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 游客模式获取店铺 id 失败..");
                 }
-            }
+            }*/
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail");
         }
@@ -502,7 +507,11 @@ public class LoginActivity extends XiaoeActivity {
         SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, localLoginUser);
 
         Toast("登录成功");
-        JumpDetail.jumpMain(this, true);
+        if (isTouristClick) {
+            JumpDetail.jumpMain(this, true);
+        } else {
+            finish();
+        }
     }
 
     // 获取受限用户信息（此时需要去绑定微信或者手机）

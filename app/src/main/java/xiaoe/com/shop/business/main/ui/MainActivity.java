@@ -111,8 +111,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         if (!isFormalUser) {
             // 非正式用户，需要手动设置店铺 id 和默认登录 userId
-            CommonUserInfo.setShopId(SharedPreferencesUtil.getData("touristsShopId", "").toString());
-            CommonUserInfo.setUserId("0");
+//            CommonUserInfo.setShopId(SharedPreferencesUtil.getData("touristsShopId", "").toString());
+            CommonUserInfo.setUserId("u_app_anonymous");
 //            CommonUserInfo.setUserId("i_5bda654981f4e_avxWBhkZYk");
         }
 

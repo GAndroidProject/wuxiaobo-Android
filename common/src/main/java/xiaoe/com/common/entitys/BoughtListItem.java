@@ -8,6 +8,7 @@ public class BoughtListItem {
     private String itemResourceType;
     private String itemIcon;
     private String itemTitle;
+    private String itemShareLink; // 分享链接
 
     public String getItemResourceId() {
         return itemResourceId;
@@ -39,5 +40,13 @@ public class BoughtListItem {
 
     public void setItemTitle(String itemTitle) {
         this.itemTitle = itemTitle;
+    }
+
+    public String getItemShareLink() {
+        return itemShareLink;
+    }
+
+    public void setItemShareLink(String itemShareLink) {
+        this.itemShareLink = itemShareLink;
     }
 }

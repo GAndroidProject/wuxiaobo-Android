@@ -22,6 +22,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import xiaoe.com.common.utils.SharedPreferencesUtil;
@@ -309,7 +311,11 @@ public class LoginPageFragment extends BaseFragment {
             public void onClick(View v) {
                 toggleSoftKeyboard();
                 // 游客登录
-                loginActivity.loginPresenter.requestTouristsShopId();
+                // loginActivity.loginPresenter.requestTouristsShopId();
+//                String touristsShopId = ((JSONObject) result.get("data")).getString("shop_id");
+//                SharedPreferencesUtil.putData("touristsShopId", touristsShopId);
+                // 游客登录
+                JumpDetail.jumpMain(getActivity(), false);
             }
         });
     }

@@ -39,6 +39,7 @@ import xiaoe.com.shop.R;
 import xiaoe.com.shop.base.XiaoeActivity;
 import xiaoe.com.shop.business.course.presenter.CourseImageTextPresenter;
 import xiaoe.com.shop.common.JumpDetail;
+import xiaoe.com.shop.utils.ActivityCollector;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
 import xiaoe.com.shop.utils.SetImageUriUtil;
@@ -151,8 +152,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             touristDialog = new TouristDialog(this);
             touristDialog.setDialogCloseClickListener(v -> touristDialog.dismissDialog());
             touristDialog.setDialogConfirmClickListener(v -> {
-                CourseImageTextActivity.this.finish();
-                JumpDetail.jumpLogin(CourseImageTextActivity.this);
+                JumpDetail.jumpLogin(CourseImageTextActivity.this, true);
             });
         }
 
@@ -188,6 +188,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         // 显示 loading
 //        itLoading.setHintStateVisibility(View.GONE);
 //        itLoading.setLoadingState(View.VISIBLE);
+        itDescImg.setClickable(false);
     }
 
     private void initListener() {
@@ -260,8 +261,12 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         itDescImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, true);
-                CourseImageTextActivity.this.finish();
+                ActivityCollector.finishAll();
+                if (loginList.size() == 1) {
+                    JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, true, true);
+                } else {
+                    JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, false, true);
+                }
             }
         });
     }
@@ -420,6 +425,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         collectionPrice = price + "";
         // 购买前初始化完成，去掉 loading
 //      itLoading.setVisibility(View.GONE);
+        itDescImg.setClickable(true);
     }
 
     // 初始化富文本数据

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.tencent.smtt.sdk.CookieSyncManager;
 import com.tencent.smtt.sdk.WebView;
 import com.umeng.socialize.UMShareAPI;
@@ -45,8 +46,10 @@ import xiaoe.com.shop.business.video.presenter.VideoPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.VideoPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickVideoButtonListener;
+import xiaoe.com.shop.utils.ActivityCollector;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
+import xiaoe.com.shop.utils.SetImageUriUtil;
 import xiaoe.com.shop.utils.UpdateLearningUtils;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.StatusPagerView;
@@ -75,6 +78,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private String mVideoUrl;
     private String mLocalVideoUrl;
     private boolean localResource = false;
+    private SimpleDraweeView videoAdvertise;
 
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
@@ -109,8 +113,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    VideoActivity.this.finish();
-                    JumpDetail.jumpLogin(VideoActivity.this);
+                    JumpDetail.jumpLogin(VideoActivity.this, true);
                 }
             });
         }
@@ -169,6 +172,11 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         //分享按钮
         ImageView btnShare = (ImageView) findViewById(R.id.btn_share);
         btnShare.setOnClickListener(this);
+        // 广告图片
+        videoAdvertise = (SimpleDraweeView) findViewById(R.id.video_advertise_img);
+        String descImgUrl = "res:///" + R.mipmap.img_text_bg;
+        SetImageUriUtil.setImgURI(videoAdvertise, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
+        videoAdvertise.setOnClickListener(this);
     }
 
     private void initDatas() {
@@ -222,6 +230,14 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 break;
             case R.id.btn_share:
                 umShare(collectTitle, TextUtils.isEmpty(collectImgUrlCompressed) ? collectImgUrl : collectImgUrlCompressed, shareUrl, "");
+                break;
+            case R.id.video_advertise_img:
+                ActivityCollector.finishAll();
+                if (loginUserList.size() == 1) {
+                    JumpDetail.jumpMainScholarship(this, true, true);
+                } else {
+                    JumpDetail.jumpMainScholarship(this, false, true);
+                }
                 break;
             default:
                 break;

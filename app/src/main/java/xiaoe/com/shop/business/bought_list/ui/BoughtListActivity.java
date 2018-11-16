@@ -169,12 +169,14 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
             String resourceType = itemJson.getInteger("resource_type") == null ? "" : String.valueOf(itemJson.getInteger("resource_type"));
             String imgUrl = itemJson.getString("img_url");
             String title = itemJson.getString("purchase_name");
+            String shareLink = itemJson.getString("link");
 
             BoughtListItem boughtListItem = new BoughtListItem();
             boughtListItem.setItemResourceId(resourceId);
             boughtListItem.setItemResourceType(resourceType);
             boughtListItem.setItemIcon(imgUrl);
             boughtListItem.setItemTitle(title);
+            boughtListItem.setItemShareLink(shareLink);
 
             dataList.add(boughtListItem);
         }
@@ -194,7 +196,7 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
 
     @Override
     public void onBoughtListItemClick(View view, BoughtListItem boughtListItem) {
-        umShare(boughtListItem.getItemTitle(), boughtListItem.getItemIcon(), "", "");
+        umShare(boughtListItem.getItemTitle(), boughtListItem.getItemIcon(), boughtListItem.getItemShareLink(), "");
         resourceId = boughtListItem.getItemResourceId();
         resourceType = boughtListItem.getItemResourceType();
     }

@@ -253,7 +253,7 @@
     <string name="withdrawal_success_tip">预计1&#8211;3天到账</string>
     <string name="withdrawal_bottom_tip">查看到账明细：我的&#8211;奖学金&#8211;提现记录</string>
 
-    <string name="vip_btn_money">开通会员￥%1$s</string>
+    <string name="vip_btn_money">开通会员￥%1$s /年</string>
 
     <string name="wait_text">等待</string>
 

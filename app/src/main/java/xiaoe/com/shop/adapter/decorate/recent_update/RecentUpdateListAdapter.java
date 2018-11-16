@@ -275,8 +275,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((Activity) mContext).finish();
-                JumpDetail.jumpLogin(mContext);
+                JumpDetail.jumpLogin(mContext, true);
             }
         });
         touristDialog.showDialog();

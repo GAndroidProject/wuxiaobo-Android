@@ -74,8 +74,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getActivity().finish();
-                    JumpDetail.jumpLogin(getActivity());
+                    JumpDetail.jumpLogin(getActivity(), true);
                 }
             });
         }

@@ -63,8 +63,10 @@ import xiaoe.com.shop.business.main.presenter.ScholarshipPresenter;
 import xiaoe.com.shop.common.JumpDetail;
 import xiaoe.com.shop.events.AudioPlayEvent;
 import xiaoe.com.shop.interfaces.OnClickMoreMenuListener;
+import xiaoe.com.shop.utils.ActivityCollector;
 import xiaoe.com.shop.utils.CollectionUtils;
 import xiaoe.com.shop.utils.NumberFormat;
+import xiaoe.com.shop.utils.SetImageUriUtil;
 import xiaoe.com.shop.utils.UpdateLearningUtils;
 import xiaoe.com.shop.widget.CommonBuyView;
 import xiaoe.com.shop.widget.ContentMenuLayout;
@@ -98,6 +100,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private boolean hasCollect = false;//是否收藏
     private CollectionUtils collectionUtils;
     private ImageView btnAudioDownload;
+    private SimpleDraweeView audioAdvertise;
 
     List<LoginUser> loginUserList;
 
@@ -133,8 +136,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AudioActivity.this.finish();
-                    JumpDetail.jumpLogin(AudioActivity.this);
+                    JumpDetail.jumpLogin(AudioActivity.this, true);
                 }
             });
         }
@@ -231,6 +233,12 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         //下载按钮
         btnAudioDownload = (ImageView) findViewById(R.id.btn_audio_download);
         btnAudioDownload.setOnClickListener(this);
+
+        // 广告位图片
+        audioAdvertise = (SimpleDraweeView) findViewById(R.id.audio_advertise_img);
+        String descImgUrl = "res:///" + R.mipmap.img_text_bg;
+        SetImageUriUtil.setImgURI(audioAdvertise, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
+        audioAdvertise.setOnClickListener(this);
     }
     private void initDatas() {
         collectionUtils = new CollectionUtils(this);
@@ -465,6 +473,14 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             case R.id.btn_audio_download:
             case R.id.btn_download:
                 clickDownload();
+                break;
+            case R.id.audio_advertise_img:
+                ActivityCollector.finishAll();
+                if (loginUserList.size() == 1) {
+                    JumpDetail.jumpMainScholarship(this, true, true);
+                } else {
+                    JumpDetail.jumpMainScholarship(this, false, true);
+                }
                 break;
             default:
                 break;

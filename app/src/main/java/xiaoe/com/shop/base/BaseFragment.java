@@ -274,7 +274,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCancel
             CommonUserInfo.setIsSuperVip(false);
             CommonUserInfo.setIsSuperVipAvailable(false);
 
-            JumpDetail.jumpLogin(getContext());
+            JumpDetail.jumpLogin(getContext(), true);
             getActivity().finish();
         }
     }

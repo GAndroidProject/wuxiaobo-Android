@@ -24,19 +24,17 @@ public class CourseMorePresenter implements IBizCallback {
         inr.onResponse(iRequest, success, entity);
     }
 
+    // 查看更多请求
     public void requestData(String groupId, int pageNum, int pageSize, String lastId) {
         CommodityGroupRequest commodityGroupRequest = new CommodityGroupRequest( null, this);
         commodityGroupRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
-        commodityGroupRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
-        commodityGroupRequest.addRequestParam("app_version", "0.1");
-        commodityGroupRequest.addRequestParam("client", "1");
-        commodityGroupRequest.addRequestParam("is_manager", 0);
-        commodityGroupRequest.addRequestParam("agent_type", 1);
-        commodityGroupRequest.addRequestParam("agent_version", "1");
-        commodityGroupRequest.addBUZDataParam("id", groupId);
-        commodityGroupRequest.addBUZDataParam("page_num", pageNum);
-        commodityGroupRequest.addBUZDataParam("page_size", pageSize);
-        commodityGroupRequest.addBUZDataParam("last_id", lastId);
+        commodityGroupRequest.addDataParam("id", groupId);
+        commodityGroupRequest.addDataParam("page_num", pageNum);
+        commodityGroupRequest.addDataParam("page_size", pageSize);
+        commodityGroupRequest.addDataParam("client", "1");
+        commodityGroupRequest.addDataParam("agent_type", 1);
+        commodityGroupRequest.addDataParam("agent_version", "1");
+        commodityGroupRequest.addDataParam("last_id", lastId);
         NetworkEngine.getInstance().sendRequest(commodityGroupRequest);
     }
 }

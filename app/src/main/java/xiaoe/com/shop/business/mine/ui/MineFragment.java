@@ -144,8 +144,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getActivity().finish();
-                    JumpDetail.jumpLogin(getActivity());
+                    JumpDetail.jumpLogin(getActivity(), true);
                 }
             });
         }

@@ -431,7 +431,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                     // 绑定微信
                     String tip = itemList.get(2).getItemContent();
                     if (tip.equals("未绑定")) {
-                        JumpDetail.jumpLogin(getActivity());
+                        JumpDetail.jumpLogin(getActivity(), true);
                     }
                     break;
             }

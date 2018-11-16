@@ -444,8 +444,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((Activity) mContext).finish();
-                JumpDetail.jumpLogin(mContext);
+                JumpDetail.jumpLogin(mContext, true);
             }
         });
         touristDialog.showDialog();

@@ -125,8 +125,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getActivity().finish();
-                    JumpDetail.jumpLogin(getActivity());
+                    JumpDetail.jumpLogin(getActivity(), true);
                 }
             });
         }
@@ -176,7 +175,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                                 // TODO: 失败的操作
                                 break;
                             case ScholarshipEntity.SCHOLARSHIP_PROCESSING: // 处理中
-                                toastCustom("奖学金发放中");
+                                Toast.makeText(mainActivity, "奖学金发放中", Toast.LENGTH_SHORT).show();
                                 break;
                             case ScholarshipEntity.SCHOLARSHIP_ISSUED: // 领取成功
                                 showEarnDialog();
@@ -551,12 +550,12 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         } else if (status == 2) { // 处理中
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_PROCESSING);
             scholarshipDivide.setText("瓜分中...");
-            runnable = new Runnable() {
-                @Override
-                public void run() {
-                    scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
-                }
-            };
+
+            scholarshipStepOne.setVisibility(View.VISIBLE);
+            scholarshipStepTwo.setVisibility(View.VISIBLE);
+            scholarshipStepThree.setVisibility(View.VISIBLE);
+
+            runnable = () -> scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
             handler.postDelayed(runnable, 3000);
         } else if (status == 1) {
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_FAIL);

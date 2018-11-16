@@ -154,8 +154,9 @@ public class JumpDetail {
      * @param context  上下文
      * @param needChange 是否需要切换
      */
-    public static void jumpMainScholarship(Context context, boolean needChange) {
+    public static void jumpMainScholarship(Context context, boolean isFormalUser, boolean needChange) {
         Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra("isFormalUser", isFormalUser);
         intent.putExtra("needChange", needChange);
         context.startActivity(intent);
     }
@@ -166,6 +167,16 @@ public class JumpDetail {
      */
     public static void jumpLogin(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 游客跳转到登录页面
+     * @param context 上下文
+     */
+    public static void jumpLogin(Context context, boolean isTouristClick) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.putExtra("isTouristClick", isTouristClick);
         context.startActivity(intent);
     }
 
