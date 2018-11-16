@@ -7,14 +7,20 @@
     android:id="@+id/pager"
     >
 
-    <com.pnikosis.materialishprogress.ProgressWheel
+    <!--<com.pnikosis.materialishprogress.ProgressWheel-->
+        <!--android:id="@+id/loading_state"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--wheel:matProg_progressIndeterminate="true"-->
+        <!--wheel:matProg_barColor="@color/secondary_title_color"-->
+        <!--android:layout_centerInParent="true"-->
+         <!--/>-->
+
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/loading_state"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        wheel:matProg_progressIndeterminate="true"
-        wheel:matProg_barColor="@color/secondary_title_color"
-        android:layout_centerInParent="true"
-         />
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_centerInParent="true"/>
 
     <ImageView
         android:id="@+id/state_image"

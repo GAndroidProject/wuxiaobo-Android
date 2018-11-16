@@ -324,9 +324,13 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         if (success) {
             if (iRequest instanceof CheckCollectionRequest) {
                 int code = result.getInteger("code");
-                JSONObject data = (JSONObject) result.get("data");
-                if (code == NetworkCodes.CODE_SUCCEED) {
-                    initCollectionData(data);
+                try {
+                    JSONObject data = (JSONObject) result.get("data");
+                    if (code == NetworkCodes.CODE_SUCCEED) {
+                        initCollectionData(data);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             } else if (iRequest instanceof AddCollectionRequest) {
                 int code = result.getInteger("code");

@@ -40,6 +40,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private boolean hasBuy = false;
+    public boolean isPlaying = false;
 
     public RecentUpdateListAdapter(Context mContext, List<RecentUpdateListItem> itemList, boolean hasBuy) {
         this.mItemList = itemList;
@@ -116,7 +117,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             viewHolder.itemIcon.setVisibility(View.GONE);
             viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
         }
-        // TODO: 每一项的音频播放按钮
+
         viewHolder.itemIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -237,6 +238,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     }
 
     public void clickPlayAll() {
+        isPlaying = true;
         if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
             AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
             AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
@@ -250,6 +252,11 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             new AudioPresenter(null).requestDetail(playEntity.getResourceId());
         }
         notifyDataSetChanged();
+    }
+
+    public void stopPlayAll() {
+        isPlaying = false;
+        AudioMediaPlayer.stop();
     }
 
     //设置播放态

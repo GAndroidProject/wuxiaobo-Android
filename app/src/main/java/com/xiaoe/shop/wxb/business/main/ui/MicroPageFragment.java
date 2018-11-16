@@ -25,6 +25,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -426,31 +427,51 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 
     // 初始化信息流组件
     private void initFlowInfo(JSONObject data) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
         // 信息流 information_list
         JSONArray informationList = (JSONArray) data.get("information_list");
-        for (Object listItem : informationList) {
+        for (int i = 0; i < informationList.size(); i++) {
             ComponentInfo flowInfoComponent = new ComponentInfo();
             flowInfoComponent.setType(DecorateEntityType.FLOW_INFO_STR);
             flowInfoComponent.setFormUser(mainActivity.isFormalUser);
-            JSONObject flowInfoItem = (JSONObject) listItem;
+            JSONObject flowInfoItem = (JSONObject) informationList.get(i);
             // 拿到信息流 title 信息
             JSONArray dateTag = (JSONArray) flowInfoItem.get("date_tag");
-            for (int i = 0; i< dateTag.size(); i++) { // 0 -- 今日；1 -- *月*日；2 -- 星期*
-                String today = dateTag.getString(0);
-                if (!today.equals("")) { // 今日
-                    String flowInfoTitle = dateTag.getString(1) + " " + dateTag.getString(2);
-                    flowInfoComponent.setTitle(flowInfoTitle);
-                    flowInfoComponent.setDesc(today);
-                    flowInfoComponent.setJoinedDesc("我正在学");
-                    flowInfoComponent.setImgUrl("res:///" + R.mipmap.icon_taday_learning);
-                } else { // 非今日，不显示我正在学
-                    String flowInfoTitle = dateTag.getString(1);
-                    String flowInfoDesc = dateTag.getString(2);
-                    flowInfoComponent.setTitle(flowInfoTitle);
-                    flowInfoComponent.setDesc(flowInfoDesc);
-                    flowInfoComponent.setJoinedDesc("");
-                    flowInfoComponent.setImgUrl("");
+            // 0 -- 今日；1 -- *年*月*日；2 -- 星期*
+            String today = dateTag.getString(0);
+            String yearString = dateTag.getString(1);
+            String titleOne = yearString.split("年")[0]; // 标题年之前的部分
+            String titleTwo = yearString.split("年")[1]; // 标题年之后的部分
+            int yearStr = 0;
+            try {
+                yearStr = Integer.parseInt(titleOne);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (i == 0) { // 第一个要显示我正在学
+                String flowInfoTitle;
+                if (yearStr != 0 && year == yearStr) {
+                    flowInfoTitle = titleTwo + " " + dateTag.getString(2);
+                } else {
+                    flowInfoTitle = dateTag.getString(1) + " " + dateTag.getString(2);
                 }
+                flowInfoComponent.setTitle(flowInfoTitle);
+                flowInfoComponent.setDesc(today);
+                flowInfoComponent.setJoinedDesc("我正在学");
+                flowInfoComponent.setImgUrl("res:///" + R.mipmap.icon_taday_learning);
+            } else { // 非今日，不显示我正在学
+                String flowInfoTitle;
+                String flowInfoDesc = dateTag.getString(2);
+                if (yearStr != 0 && year == yearStr) {
+                    flowInfoTitle = titleTwo;
+                } else {
+                    flowInfoTitle = dateTag.getString(1);
+                }
+                flowInfoComponent.setTitle(flowInfoTitle);
+                flowInfoComponent.setDesc(flowInfoDesc);
+                flowInfoComponent.setJoinedDesc("");
+                flowInfoComponent.setImgUrl("");
             }
             // 拿到信息流的 content 信息
             List<FlowInfoItem> dataList = new ArrayList<>();
@@ -461,6 +482,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 String resourceType = flowInfo.getString("src_type");
                 if (resourceType.equals("member")) { continue; } // 会员先不支持
                 String resourceId = flowInfo.getString("src_id");
+                String tag = flowInfo.getString("tag") == null ? "" : flowInfo.getString("tag");
                 String title = flowInfo.getString("title");
                 String desc = flowInfo.getString("summary");
                 String imgUrl = flowInfo.getString("img_url");
@@ -469,6 +491,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 
                 fii.setItemType(resourceType);
                 fii.setItemId(resourceId);
+                fii.setItemTag(tag);
                 fii.setItemTitle(title);
                 fii.setItemDesc(desc);
                 fii.setItemPrice(showPrice);

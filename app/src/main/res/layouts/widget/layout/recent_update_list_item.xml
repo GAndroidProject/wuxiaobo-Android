@@ -4,9 +4,7 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/recent_update_item_wrap"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="14dp"
-    android:paddingBottom="14dp">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/recent_update_item_title"
@@ -16,7 +14,7 @@
         android:ellipsize="end"
         android:textSize="14sp"
         android:textColor="@color/recent_list_color"
-        android:layout_marginEnd="15dp"/>
+        android:layout_marginEnd="16dp"/>
     
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/recent_update_item_icon"

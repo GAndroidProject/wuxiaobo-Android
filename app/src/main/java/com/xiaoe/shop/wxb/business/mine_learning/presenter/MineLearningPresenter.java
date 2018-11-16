@@ -24,8 +24,6 @@ public class MineLearningPresenter implements IBizCallback {
     public void requestLearningData(int pageIndex, int pageSize) {
         MineLearningRequest mineLearningRequest = new MineLearningRequest(this);
 
-        mineLearningRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
-        mineLearningRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         mineLearningRequest.addDataParam("page_size", pageSize);
         mineLearningRequest.addDataParam("page", pageIndex);
 

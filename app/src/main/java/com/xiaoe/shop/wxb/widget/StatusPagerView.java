@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.widget;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -11,6 +12,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
 import com.xiaoe.shop.wxb.R;
@@ -22,7 +26,7 @@ public class StatusPagerView extends FrameLayout {
     public static final int FAIL = 10003;
     public static final int EMPTY = 10004;
     private View rootView;
-    private ProgressWheel loadingState;
+    private SimpleDraweeView loadingState;
     private TextView stateText;
     private ImageView stateImage;
 
@@ -36,8 +40,18 @@ public class StatusPagerView extends FrameLayout {
     public StatusPagerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         rootView = LayoutInflater.from(context).inflate(R.layout.layout_status_pager, this, true);
-        loadingState = (ProgressWheel) rootView.findViewById(R.id.loading_state);
+        loadingState = (SimpleDraweeView) rootView.findViewById(R.id.loading_state);
         setLoadingState(View.GONE);
+
+        Uri uri = Uri.parse("res:///" + R.drawable.page_loading);
+
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                .setUri(uri)
+                .setAutoPlayAnimations(true)
+                .build();
+
+        loadingState.setController(draweeController);
+
         stateText = (TextView) rootView.findViewById(R.id.state_text);
         stateImage = (ImageView) rootView.findViewById(R.id.state_image);
         setHintStateVisibility(View.GONE);

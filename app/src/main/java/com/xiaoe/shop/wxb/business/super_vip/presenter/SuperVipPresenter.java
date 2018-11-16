@@ -25,18 +25,12 @@ public class SuperVipPresenter implements IBizCallback {
     public void requestSuperVip() {
         IsSuperVipRequest isSuperVipRequest = new IsSuperVipRequest(this);
 
-        isSuperVipRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
-        isSuperVipRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
-
         NetworkEngine.getInstance().sendRequest(isSuperVipRequest);
     }
 
     // 请求超级会员购买信息
     public void requestSuperVipBuyInfo() {
         SuperVipBuyInfoRequest superVipBuyInfoRequest = new SuperVipBuyInfoRequest(this);
-
-        superVipBuyInfoRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        superVipBuyInfoRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
 
         NetworkEngine.getInstance().sendRequest(superVipBuyInfoRequest);
     }

@@ -32,10 +32,6 @@ public class MessagePushPresenter implements IBizCallback {
     public void requestBindJgPush(boolean isFormalUser) {
         BindJgPushRequest bindJgPushRequest = new BindJgPushRequest(this);
 
-        // 店铺 ID
-        bindJgPushRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        // 用户 ID
-        bindJgPushRequest.addRequestParam("user_id", isFormalUser ? CommonUserInfo.getUserId() : "");
         // 极光推送的 注册 ID
         bindJgPushRequest.addRequestParam("device_token", JPushInterface.getRegistrationID(XiaoeApplication.getmContext()));
         // 客户端类型 - 1：Android    2：iOS

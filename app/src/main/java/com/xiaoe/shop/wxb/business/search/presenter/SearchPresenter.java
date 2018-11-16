@@ -36,8 +36,6 @@ public class SearchPresenter implements IBizCallback {
     public void requestSearchResult(String keyWord) {
 //        SearchRequest searchRequest = new SearchRequest(NetworkEngine.BASE_URL + cmd, this);
         SearchRequest searchRequest = new SearchRequest(NetworkEngine.API_THIRD_BASE_URL + cmd, this);
-        searchRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
-        searchRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         searchRequest.addDataParam("keyword", keyWord);
         searchRequest.addDataParam("page", 1);
         searchRequest.addDataParam("page_size", 10);
@@ -50,8 +48,6 @@ public class SearchPresenter implements IBizCallback {
     public void requestSearchResultByPage(String keyWord, int pageIndex, int pageSize) {
 //        SearchRequest searchRequest = new SearchRequest(NetworkEngine.BASE_URL + cmd, this);
         SearchRequest searchRequest = new SearchRequest(NetworkEngine.API_THIRD_BASE_URL + cmd, this);
-        searchRequest.addRequestParam("shop_id", CommonUserInfo.getShopId());
-        searchRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         searchRequest.addDataParam("keyword", keyWord);
         searchRequest.addDataParam("page", pageIndex);
         searchRequest.addDataParam("page_size", pageSize);

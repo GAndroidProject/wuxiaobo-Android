@@ -64,8 +64,6 @@ public class ScholarshipPresenter implements IBizCallback {
         this.needInitData = needInitData;
         ScholarshipTaskListRequest scholarshipTaskListRequest = new ScholarshipTaskListRequest(this);
 
-        scholarshipTaskListRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-
         NetworkEngine.getInstance().sendRequest(scholarshipTaskListRequest);
     }
 
@@ -73,7 +71,6 @@ public class ScholarshipPresenter implements IBizCallback {
     public void requestRange(String taskId) {
         ScholarshipRequest scholarshipRequest = new ScholarshipRequest(this);
 
-        scholarshipRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
         scholarshipRequest.addRequestParam("task_id", taskId);
 
         NetworkEngine.getInstance().sendRequest(scholarshipRequest);
@@ -83,8 +80,6 @@ public class ScholarshipPresenter implements IBizCallback {
     public void requestTaskStatues(String taskId) {
         ScholarshipTaskStateRequest scholarshipTaskStateRequest = new ScholarshipTaskStateRequest(this);
 
-        scholarshipTaskStateRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        scholarshipTaskStateRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         scholarshipTaskStateRequest.addRequestParam("task_id", taskId);
 
         NetworkEngine.getInstance().sendRequest(scholarshipTaskStateRequest);
@@ -94,9 +89,6 @@ public class ScholarshipPresenter implements IBizCallback {
     public void requestBoughtList() {
         ScholarshipBoughtListRequest scholarshipBoughtListRequest = new ScholarshipBoughtListRequest(this);
 
-        scholarshipBoughtListRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        scholarshipBoughtListRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
-
         NetworkEngine.getInstance().sendRequest(scholarshipBoughtListRequest);
     }
 
@@ -104,8 +96,6 @@ public class ScholarshipPresenter implements IBizCallback {
     public void requestSubmitTask(String taskId, String resourceId, String resourceType, boolean isSuperVip) {
         ScholarshipSubmitRequest scholarshipSubmitRequest = new ScholarshipSubmitRequest(this);
 
-        scholarshipSubmitRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        scholarshipSubmitRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         scholarshipSubmitRequest.addRequestParam("task_id", taskId);
         scholarshipSubmitRequest.addRequestParam("resource_id", resourceId);
         scholarshipSubmitRequest.addRequestParam("resource_type", resourceType);
@@ -125,7 +115,6 @@ public class ScholarshipPresenter implements IBizCallback {
 
         scholarshipReceiveRequest.addRequestParam("task_id", taskId);
         scholarshipReceiveRequest.addRequestParam("task_detail_id", taskDetailId);
-        scholarshipReceiveRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
 
         NetworkEngine.getInstance().sendRequest(scholarshipReceiveRequest);
     }

@@ -34,17 +34,13 @@ public class ColumnPresenter implements IBizCallback {
      */
     public void requestDetail(String resourceId, String resourceType){
         DetailRequest detailRequest = new DetailRequest( this);
-        detailRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
         detailRequest.addDataParam("goods_id",resourceId);
         detailRequest.addDataParam("goods_type",Integer.parseInt(resourceType));
-        detailRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         detailRequest.sendRequest();
     }
 
     public void requestColumnList(String resourceId, String resourceType, int page, int pageSize){
         ColumnListRequst columnListRequst = new ColumnListRequst(this);
-        columnListRequst.addRequestParam("shop_id",CommonUserInfo.getShopId());
-        columnListRequst.addRequestParam("user_id",CommonUserInfo.getUserId());
         columnListRequst.addDataParam("goods_id",resourceId);
         columnListRequst.addDataParam("resource_type",resourceType);
         columnListRequst.addDataParam("page", ""+page);
@@ -114,8 +110,6 @@ public class ColumnPresenter implements IBizCallback {
      */
     public void requestColumnListByNum(String resourceId, String resourceType, int pageSize) {
         ColumnListRequst columnListRequst = new ColumnListRequst(this);
-        columnListRequst.addRequestParam("shop_id",CommonUserInfo.getShopId());
-        columnListRequst.addRequestParam("user_id",CommonUserInfo.getUserId());
         columnListRequst.addDataParam("goods_id",resourceId);
         columnListRequst.addDataParam("resource_type",resourceType);
         columnListRequst.addDataParam("page", "1");

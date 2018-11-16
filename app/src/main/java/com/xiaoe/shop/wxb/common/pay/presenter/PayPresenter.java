@@ -49,8 +49,6 @@ public class PayPresenter implements IBizCallback {
         if(!TextUtils.isEmpty(couponId)){
             payOrderRequest.addBUZDataParam("cu_id", couponId);
         }
-        payOrderRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        payOrderRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         payOrderRequest.sendRequest();
     }
 
@@ -78,9 +76,6 @@ public class PayPresenter implements IBizCallback {
      */
     public void paySuperVip() {
         PaySuperVipRequest paySuperVipRequest = new PaySuperVipRequest(this);
-
-        paySuperVipRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        paySuperVipRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
 
         NetworkEngine.getInstance().sendRequest(paySuperVipRequest);
     }

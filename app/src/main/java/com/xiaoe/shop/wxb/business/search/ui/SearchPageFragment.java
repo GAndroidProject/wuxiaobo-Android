@@ -171,7 +171,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         recommendData = new ArrayList<>();
         // 默认的四个关键词
         recommendData.add("我的财富计划");
-        recommendData.add("launch");
+        recommendData.add("吴晓波频道");
         recommendData.add("我的职场计划");
         recommendData.add("避免败局");
         RecommendRecyclerAdapter recommendAdapter = new RecommendRecyclerAdapter(mContext, recommendData);

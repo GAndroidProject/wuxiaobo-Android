@@ -6,6 +6,8 @@ public class FlowInfoItem {
     private String itemType;
     // item id（信息流的 id 跳转详情页会做转换）
     private String itemId;
+    // item 标签
+    private String itemTag;
     // item 标题
     private String itemTitle;
     // item 描述
@@ -82,7 +84,14 @@ public class FlowInfoItem {
     }
 
     public String getItemId() {
-
         return itemId;
+    }
+
+    public String getItemTag() {
+        return itemTag;
+    }
+
+    public void setItemTag(String itemTag) {
+        this.itemTag = itemTag;
     }
 }

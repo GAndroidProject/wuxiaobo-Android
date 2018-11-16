@@ -27,7 +27,6 @@ public class CourseMorePresenter implements IBizCallback {
     // 查看更多请求
     public void requestData(String groupId, int pageNum, int pageSize, String lastId) {
         CommodityGroupRequest commodityGroupRequest = new CommodityGroupRequest( null, this);
-        commodityGroupRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         commodityGroupRequest.addDataParam("id", groupId);
         commodityGroupRequest.addDataParam("page_num", pageNum);
         commodityGroupRequest.addDataParam("page_size", pageSize);

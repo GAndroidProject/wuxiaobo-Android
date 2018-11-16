@@ -144,10 +144,8 @@ public class AudioPresenter implements IBizCallback {
      */
     public void requestDetail(String resourceId){
         DetailRequest detailRequest = new DetailRequest( this);
-        detailRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
         detailRequest.addDataParam("goods_id",resourceId);
         detailRequest.addDataParam("goods_type",2);
-        detailRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         detailRequest.sendRequest();
     }
 
@@ -156,10 +154,8 @@ public class AudioPresenter implements IBizCallback {
      */
     private void requestContent(String resourceId){
         ContentRequest contentRequest = new ContentRequest( this);
-        contentRequest.addRequestParam("shop_id",CommonUserInfo.getShopId());
         contentRequest.addRequestParam("resource_id",resourceId);
         contentRequest.addRequestParam("resource_type",2);
-        contentRequest.addRequestParam("user_id",CommonUserInfo.getUserId());
         contentRequest.sendRequest();
     }
 }

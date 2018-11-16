@@ -24,6 +24,8 @@ public class FlowInfoAudioViewHolder extends BaseViewHolder {
     public SimpleDraweeView flowInfoAvatar;
     @BindView(R.id.flow_info_audio_joined_desc)
     public TextView flowInfoJoinedDesc;
+    @BindView(R.id.flow_info_audio_tag)
+    public TextView flowInfoTag;
     @BindView(R.id.flow_info_audio_title)
     public TextView flowInfoTitle;
     @BindView(R.id.flow_info_audio_desc)

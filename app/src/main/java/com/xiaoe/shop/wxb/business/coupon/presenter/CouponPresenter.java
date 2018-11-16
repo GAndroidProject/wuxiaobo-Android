@@ -29,16 +29,14 @@ public class CouponPresenter implements IBizCallback {
      */
     public void requestMineCoupon(String type) {
         MineCouponRequest couponRequest = new MineCouponRequest(this);
-        couponRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        couponRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
+
         couponRequest.addRequestParam("type", type);
         couponRequest.sendRequest();
     }
 
     public void requestResourceUseCoupon(String resourceId, int price){
         ResourceUseCouponRequest useCouponRequest = new ResourceUseCouponRequest(this);
-        useCouponRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        useCouponRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
+
         useCouponRequest.addRequestParam("price", price);
         useCouponRequest.addRequestParam("resource_id", resourceId);
         useCouponRequest.sendRequest();
@@ -46,8 +44,7 @@ public class CouponPresenter implements IBizCallback {
 
     public void requestCouponCanResource(String couponId){
         CouponCanResourceRequest canResourceRequest = new CouponCanResourceRequest(this);
-        canResourceRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        canResourceRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
+
         canResourceRequest.addRequestParam("coupon_id", couponId);
 
         canResourceRequest.sendRequest();

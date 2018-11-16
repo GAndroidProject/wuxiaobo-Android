@@ -20,6 +20,8 @@ public class FlowInfoVideoViewHolder extends BaseViewHolder {
     public FrameLayout flowInfoWrap;
     @BindView(R.id.flow_info_video_bg)
     public SimpleDraweeView flowInfoBg;
+    @BindView(R.id.flow_info_video_tag)
+    public TextView flowInfoTag;
     @BindView(R.id.flow_info_video_title)
     public TextView flowInfoTitle;
     @BindView(R.id.flow_info_video_desc)

@@ -29,10 +29,6 @@ public class HistoryMessagePresenter implements IBizCallback {
     public void requestHistoryMessage(HistoryMessageReq historyMessageReq) {
         GetHistoryMessageRequest getHistoryMessageRequest = new GetHistoryMessageRequest(this);
 
-        // 店铺 ID
-        getHistoryMessageRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        // 用户 ID
-        getHistoryMessageRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         // 其他参数
         getHistoryMessageRequest.addRequestParam("buz_data", historyMessageReq.getBuz_data());
 

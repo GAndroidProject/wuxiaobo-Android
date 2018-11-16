@@ -152,7 +152,6 @@ public class AppUpgradeHelper {
                 });
             }
         });
-        appUpgradeRequest.addRequestParam("app_id",CommonUserInfo.getShopId());
         appUpgradeRequest.addRequestParam("type",String.valueOf(1));
         if (!TextUtils.isEmpty(versionName)){
             if (versionName.indexOf("v") > -1)  versionName = versionName.replace("v","");

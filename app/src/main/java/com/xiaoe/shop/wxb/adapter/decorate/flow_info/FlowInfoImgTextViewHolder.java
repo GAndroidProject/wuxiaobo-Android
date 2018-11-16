@@ -20,6 +20,8 @@ public class FlowInfoImgTextViewHolder extends BaseViewHolder {
     public FrameLayout flowInfoWrap;
     @BindView(R.id.flow_info_img_text_bg)
     public SimpleDraweeView flowInfoBg;
+    @BindView(R.id.flow_info_img_text_tag)
+    public TextView flowInfoTag;
     @BindView(R.id.flow_info_img_text_title)
     public TextView flowInfoTitle;
     @BindView(R.id.flow_info_img_text_desc)

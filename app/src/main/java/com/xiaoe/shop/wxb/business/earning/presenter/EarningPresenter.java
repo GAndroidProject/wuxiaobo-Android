@@ -33,8 +33,6 @@ public class EarningPresenter implements IBizCallback {
 //        EarningRequest earningRequest = new EarningRequest(NetworkEngine.EARNING_BASE_URL + "xe.user.asset.get/1.0.0", this);
         EarningRequest earningRequest = new EarningRequest(this);
 
-        earningRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        earningRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         earningRequest.addRequestParam("asset_type", assetType);
         earningRequest.addRequestParam("is_flow", needFlow);
         earningRequest.addRequestParam("flow_type", flowType);
@@ -53,8 +51,6 @@ public class EarningPresenter implements IBizCallback {
 //        WithDrawalRequest withDrawalRequest = new WithDrawalRequest(NetworkEngine.EARNING_BASE_URL + "done_c_withdraw", this);
         WithDrawalRequest withDrawalRequest = new WithDrawalRequest(this);
 
-        withDrawalRequest.addRequestParam("app_id", CommonUserInfo.getShopId());
-        withDrawalRequest.addRequestParam("user_id", CommonUserInfo.getUserId());
         withDrawalRequest.addRequestParam("amount", price);
         withDrawalRequest.addRequestParam("re_user_name", "");
         withDrawalRequest.addRequestParam("assert_type", "profit");

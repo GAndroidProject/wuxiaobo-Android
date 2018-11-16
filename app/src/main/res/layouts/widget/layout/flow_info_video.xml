@@ -6,6 +6,7 @@
     android:id="@+id/flow_info_video_wrap"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,21 +24,23 @@
             fresco:roundBottomLeft="false"
             fresco:roundBottomRight="false"
             fresco:roundingBorderWidth="1dp"
-            android:transitionName="share_video_preview"
-            />
+            android:transitionName="share_video_preview"/>
 
         <TextView
-            android:id="@+id/flow_info_video_title"
+            android:id="@+id/flow_info_video_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="@color/main_title_color"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="20dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="今日精选"/>
 
         <TextView
-            android:id="@+id/flow_info_video_desc"
+            android:id="@+id/flow_info_video_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="26sp"
@@ -45,8 +48,19 @@
             android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="16dp"
-            android:maxLines="2"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/flow_info_video_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="26sp"
+            android:textColor="@color/main_title_color"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="24dp"
+            android:maxLines="1"
             android:ellipsize="end"/>
 
         <TextView
@@ -55,9 +69,10 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textColor="@color/price_color"
-            android:layout_marginTop="24dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="24dp"/>
+
     </LinearLayout>
+
 </FrameLayout>

@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.adapter.decorate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -190,7 +191,21 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                                     Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                recentUpdateListAdapter.clickPlayAll();
+                                if (!recentUpdateListAdapter.isPlaying) {
+                                    recentUpdateViewHolder.recentUpdateSubBtn.setText("暂停全部");
+                                    Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_stopall);
+                                    drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                                    recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
+                                    recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
+                                    recentUpdateListAdapter.clickPlayAll();
+                                } else {
+                                    recentUpdateViewHolder.recentUpdateSubBtn.setText("播放全部");
+                                    Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_playall);
+                                    drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                                    recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
+                                    recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
+                                    recentUpdateListAdapter.stopPlayAll();
+                                }
                             } else {
                                 showTouristDialog();
                             }

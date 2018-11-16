@@ -57,7 +57,9 @@
                     android:layout_height="match_parent"
                     android:layerType="software"
                     android:divider="@drawable/list_dotted_line"
-                    android:dividerHeight="30dp"/>
+                    android:dividerHeight="29dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="16dp"/>
             </RelativeLayout>
 
             <com.facebook.drawee.view.SimpleDraweeView
