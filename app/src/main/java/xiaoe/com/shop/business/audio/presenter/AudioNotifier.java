@@ -5,8 +5,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,10 +15,16 @@ import android.view.ViewGroup;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.common.entitys.AudioPlayEntity;
+import xiaoe.com.network.utils.ThreadPoolUtils;
 import xiaoe.com.shop.R;
 import xiaoe.com.shop.business.audio.ui.AudioActivity;
 
@@ -30,7 +36,7 @@ public class AudioNotifier {
     private static final int NOTIFICATION_ID = 0x111;
     private AudioMediaPlayer playService;
     private NotificationManager notificationManager;
-
+    private Bitmap mBitmap;
     public static AudioNotifier get() {
         return SingletonHolder.instance;
     }
@@ -51,7 +57,22 @@ public class AudioNotifier {
         if (music == null) {
             return;
         }
-        playService.startForeground(NOTIFICATION_ID, buildNotification(playService, music, true));
+        String imgUrl = TextUtils.isEmpty(music.getImgUrlCompressed()) ? music.getImgUrl() : music.getImgUrlCompressed();
+        if (TextUtils.isEmpty(imgUrl)){
+            playService.startForeground(NOTIFICATION_ID, buildNotification(playService, music, true,null));
+        }else {
+             Glide.with(XiaoeApplication.getmContext())
+                    .load(imgUrl)
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    mBitmap = resource;
+                    ThreadPoolUtils.runTaskOnUIThread(() ->
+                            playService.startForeground(NOTIFICATION_ID,buildNotification(playService, music, true,resource)));
+                }
+            });
+        }
     }
 
     public void showPause(AudioPlayEntity music) {
@@ -59,14 +80,14 @@ public class AudioNotifier {
             return;
         }
         playService.stopForeground(false);
-        notificationManager.notify(NOTIFICATION_ID, buildNotification(playService, music, false));
+        notificationManager.notify(NOTIFICATION_ID, buildNotification(playService, music, false,mBitmap));
     }
 
     public void cancelAll() {
         notificationManager.cancelAll();
     }
 
-    private Notification buildNotification(Context context, AudioPlayEntity music, boolean isPlaying) {
+    private Notification buildNotification(Context context, AudioPlayEntity music, boolean isPlaying,Bitmap bitmap) {
         Intent intent = new Intent(context, AudioActivity.class);
 //        intent.putExtra(Extras.EXTRA_NOTIFICATION, true);
         intent.setAction(Intent.ACTION_VIEW);
@@ -77,22 +98,22 @@ public class AudioNotifier {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.mipmap.ic_notification)
-                .setCustomContentView(getRemoteViews(context, music, isPlaying));
+                .setCustomContentView(getRemoteViews(context, music, isPlaying,bitmap));
         return builder.build();
     }
 
-    private RemoteViews getRemoteViews(Context context, AudioPlayEntity music, boolean isPlaying) {
+    private RemoteViews getRemoteViews(Context context, AudioPlayEntity music, boolean isPlaying,Bitmap bitmap) {
         String title = music.getTitle();
 //        String subtitle = FileUtils.getArtistAndAlbum(music.getArtist(), music.getAlbum());
         String subtitle = "";
 //        Bitmap cover = CoverLoader.get().loadThumb(music);
-        String imgUrl = TextUtils.isEmpty(music.getImgUrlCompressed()) ? music.getImgUrl() : music.getImgUrlCompressed();
 
+//        String imgUrl = TextUtils.isEmpty(music.getImgUrlCompressed()) ? music.getImgUrl() : music.getImgUrlCompressed();
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.layout_audio_notification);
-        if (TextUtils.isEmpty(imgUrl)) {
-            remoteViews.setImageViewResource(R.id.iv_icon, R.mipmap.ic_launcher);
-        } else {
-            remoteViews.setImageViewUri(R.id.iv_icon, Uri.parse(imgUrl));
+        if (bitmap == null) {
+            remoteViews.setImageViewResource(R.id.iv_icon, R.mipmap.logo);
+        } else{
+            remoteViews.setImageViewBitmap(R.id.iv_icon,bitmap);
         }
         remoteViews.setTextViewText(R.id.tv_title, title);
         remoteViews.setTextViewText(R.id.tv_subtitle, subtitle);
