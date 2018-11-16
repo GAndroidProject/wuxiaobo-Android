@@ -4,7 +4,7 @@
 
     <!-- Required -->
     <permission
-        android:name="com.xiaoe.shop.permission.JPUSH_MESSAGE"
+        android:name="com.xiaoe.shop.wxb.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.xiaoe.shop.wxb.permission.JPUSH_MESSAGE" />
@@ -177,7 +177,7 @@
         <!-- since 3.0.9 Required SDK 核心功能-->
         <provider
             android:name="cn.jpush.android.service.DataProvider"
-            android:authorities="com.xiaoe.shop.DataProvider"
+            android:authorities="com.xiaoe.shop.wxb.DataProvider"
             android:exported="false"
             android:process=":pushcore" />
 
@@ -196,7 +196,7 @@
         <!-- since 3.1.0 Required SDK 核心功能 -->
         <provider
             android:name="cn.jpush.android.service.DownloadProvider"
-            android:authorities="com.xiaoe.shop.DownloadProvider"
+            android:authorities="com.xiaoe.shop.wxb.DownloadProvider"
             android:exported="true" />
         <!-- Required SDK核心功能 -->
         <receiver
