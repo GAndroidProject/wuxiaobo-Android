@@ -68,7 +68,7 @@ public class FinishDownloadListHolder extends RecyclerView.ViewHolder implements
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIonSlidingViewClickListener.onDeleteBtnCilck(v, mPosition);
+                mIonSlidingViewClickListener.onDeleteBtnClick(v, mPosition);
             }
         });
     }
@@ -80,7 +80,7 @@ public class FinishDownloadListHolder extends RecyclerView.ViewHolder implements
                 mIonSlidingViewClickListener.onItemClick(v, mPosition);
                 break;
             case R.id.btn_delete:
-                mIonSlidingViewClickListener.onDeleteBtnCilck(v, mPosition);
+                mIonSlidingViewClickListener.onDeleteBtnClick(v, mPosition);
                 break;
             default:
                 break;

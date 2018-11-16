@@ -86,6 +86,9 @@
     <string name="please_select_download">请选择下载资源</string>
     <string name="cannot_download">购买资源后可下载</string>
 
+    <string name="not_has_content">暂无内容，快去看看吧</string>
+    <string name="not_has_download_content">你当前没有正在下载的课程哦</string>
+
     <!--删除提示 start-->
     <string name="all_start_download">全部开始</string>
     <string name="all_stop_download">全部暂停</string>

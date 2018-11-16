@@ -10,4 +10,8 @@
         android:scrollbars="vertical"
         android:orientation="vertical"
         android:overScrollMode="never"/>
+    <com.xiaoe.shop.wxb.widget.StatusPagerView
+        android:id="@+id/state_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

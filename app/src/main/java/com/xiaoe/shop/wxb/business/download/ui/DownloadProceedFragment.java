@@ -15,8 +15,6 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.List;
-
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.DownloadTableInfo;
 import com.xiaoe.common.interfaces.OnDownloadListener;
@@ -25,6 +23,9 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.download.DownloadProceedChildListAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.interfaces.OnDownloadListListener;
+import com.xiaoe.shop.wxb.widget.StatusPagerView;
+
+import java.util.List;
 
 public class DownloadProceedFragment extends BaseFragment implements View.OnClickListener, OnDownloadListListener, OnDownloadListener {
     private static final String TAG = "DownloadProceedFragment";
@@ -38,6 +39,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     private boolean isAllDownload = false;
     private boolean runClickAllDownload = false;
     private RelativeLayout bottomButton;
+    private StatusPagerView statePager;
 
     @Nullable
     @Override
@@ -68,13 +70,17 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
 
         btnAllStart = (TextView) rootView.findViewById(R.id.btn_all_start_download);
         btnAllStart.setOnClickListener(this);
-
+        //底部的按钮
         bottomButton = (RelativeLayout) rootView.findViewById(R.id.bottom_button);
+        //状态页
+        statePager = (StatusPagerView) rootView.findViewById(R.id.state_pager);
+        setStatePager(View.GONE);
     }
     private void initData() {
         List<DownloadTableInfo> list = DownloadManager.getInstance().getDownloadingList();
         if(list == null || list.size() <= 0){
             bottomButton.setVisibility(View.GONE);
+            setStatePager(View.VISIBLE);
         }else {
             bottomButton.setVisibility(View.VISIBLE);
             adapter.addAllData(list);
@@ -201,6 +207,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                 adapter.notifyDataSetChanged();
                 if(adapter.getItemCount() <= 0){
                     bottomButton.setVisibility(View.GONE);
+                    setStatePager(View.VISIBLE);
                 }
             }
         });
@@ -243,6 +250,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                 adapter.clearData();
                 dialog.dismiss();
                 bottomButton.setVisibility(View.GONE);
+                setStatePager(View.VISIBLE);
             }
         });
         // 先 show 后才会有宽高
@@ -274,6 +282,9 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
             }
             if(adapter.getItemCount() <= 0){
                 bottomButton.setVisibility(View.GONE);
+                setStatePager(View.VISIBLE);
+            }else{
+                setStatePager(View.GONE);
             }
         }
         int index = -1;
@@ -284,6 +295,18 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                 adapter.notifyItemChanged(index);
                 break;
             }
+        }
+    }
+
+    private void setStatePager(int visible){
+        if(visible == View.VISIBLE){
+            statePager.setVisibility(View.VISIBLE);
+            statePager.setLoadingState(View.GONE);
+            statePager.setHintStateVisibility(View.VISIBLE);
+            statePager.setStateText(getString(R.string.not_has_download_content));
+            statePager.setStateImage(R.mipmap.downloading);
+        }else{
+            statePager.setVisibility(View.GONE);
         }
     }
 }

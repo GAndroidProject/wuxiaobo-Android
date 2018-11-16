@@ -31,17 +31,13 @@ import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.media.UMWeb;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
+import com.xiaoe.common.db.LoginSQLiteCallback;
+import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
-import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.network_interface.INetworkResponse;
@@ -51,7 +47,6 @@ import com.xiaoe.shop.wxb.anim.TranslationAnimator;
 import com.xiaoe.shop.wxb.business.audio.ui.AudioActivity;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
 import com.xiaoe.shop.wxb.business.column.ui.ColumnActivity;
-import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.JumpDetail;
@@ -61,6 +56,10 @@ import com.xiaoe.shop.wxb.interfaces.OnConfirmListener;
 import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/7/17.

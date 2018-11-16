@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.common.entitys.DownloadTableInfo;
 import com.xiaoe.common.interfaces.OnDownloadListener;
@@ -19,12 +17,16 @@ import com.xiaoe.shop.wxb.adapter.download.FinishDownloadListAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.IonSlidingViewClickListener;
+import com.xiaoe.shop.wxb.widget.StatusPagerView;
+
+import java.util.List;
 
 public class FinishDownloadFragment extends BaseFragment implements IonSlidingViewClickListener, OnDownloadListener {
     private static final String TAG = "FinishDownloadFragment";
     private View rootView;
     private RecyclerView finishDownloadRecyclerView;
     private FinishDownloadListAdapter finishDownloadListAdapter;
+    private StatusPagerView statePager;
 
     @Nullable
     @Override
@@ -47,10 +49,13 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
         finishDownloadListAdapter = new FinishDownloadListAdapter(getContext(), this);
         finishDownloadRecyclerView.setAdapter(finishDownloadListAdapter);
         List<DownloadResourceTableInfo> list = DownloadManager.getInstance().getDownloadFinishList();
-        if(list !=null && list.size() > 0){
+        statePager = (StatusPagerView) rootView.findViewById(R.id.state_pager);
+        setStatePager(View.GONE);
+        if(list != null && list.size() > 0){
             finishDownloadListAdapter.setData(list);
+        }else{
+            setStatePager(View.VISIBLE);
         }
-
     }
 
     @Override
@@ -72,9 +77,14 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
         }
     }
     @Override
-    public void onDeleteBtnCilck(View view, int position) {
+    public void onDeleteBtnClick(View view, int position) {
         DownloadResourceTableInfo remove = finishDownloadListAdapter.removeData(position);
         DownloadManager.getInstance().removeDownloadFinish(remove);
+        if(finishDownloadListAdapter.getItemCount() <= 0){
+            setStatePager(View.VISIBLE);
+        }else{
+            setStatePager(View.GONE);
+        }
     }
 
     @Override
@@ -101,6 +111,19 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
             downloadResourceTableInfo.setLocalFilePath(downloadInfo.getLocalFilePath());
             downloadResourceTableInfo.setFileUrl(downloadInfo.getFileDownloadUrl());
             finishDownloadListAdapter.addData(downloadResourceTableInfo);
+            setStatePager(View.GONE);
+        }
+    }
+
+    private void setStatePager(int visible){
+        if(visible == View.VISIBLE){
+            statePager.setVisibility(View.VISIBLE);
+            statePager.setLoadingState(View.GONE);
+            statePager.setHintStateVisibility(View.VISIBLE);
+            statePager.setStateText(getString(R.string.not_has_content));
+            statePager.setStateImage(R.mipmap.downloading);
+        }else{
+            statePager.setVisibility(View.GONE);
         }
     }
 }

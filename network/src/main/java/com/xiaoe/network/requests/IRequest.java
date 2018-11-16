@@ -136,7 +136,7 @@ public abstract class IRequest {
 //        jsonObject.put("device")
         jsonObject.put("app_version","1.0");
         jsonObject.put("build_version",buildVersion);
-        jsonObject.put("client_info",clientInfo);
+        jsonObject.put("client_info",JSONObject.toJSONString(clientInfo));
 
         for(Map.Entry<String ,Object> entry : formBody.entrySet() ){
             jsonObject.put(entry.getKey(),entry.getValue());
@@ -154,7 +154,7 @@ public abstract class IRequest {
             //游客模式需要传一个user_id = "u_app_anonymous"
             jsonObject.put("user_id", "u_app_anonymous");
         }else{
-            jsonObject.remove("user_id");
+            jsonObject.put("user_id", CommonUserInfo.getUserId());
         }
         jsonObject.put("api_token", CommonUserInfo.getApiToken());
         jsonObject.put("shop_id", Constants.getAppId());

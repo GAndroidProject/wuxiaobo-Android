@@ -8,7 +8,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.utils.ThreadPoolUtils;
@@ -158,7 +157,7 @@ public class NetworkEngine {
             return;
         }
 
-        build.addHeader("app-id", Constants.getWXAppId());
+//        build.addHeader("app-id", Constants.getWXAppId());
 //        Map<String, String> header = iRequest.getHeader();
 //        if(header != null && header.size() > 0){
 //            for(Map.Entry<String ,String> entry : iRequest.getHeader().entrySet() ){
