@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xiaoe.com.shop.widget.PushScrollView
+<com.xiaoe.shop.wxb.widget.PushScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <xiaoe.com.shop.business.mine.ui.MineTitleView
+                <com.xiaoe.shop.wxb.business.mine.ui.MineTitleView
                     android:id="@+id/mine_title_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp" />
 
-                <xiaoe.com.shop.business.mine.ui.MineMsgView
+                <com.xiaoe.shop.wxb.business.mine.ui.MineMsgView
                     android:id="@+id/mine_msg_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
 
             </LinearLayout>
 
-            <xiaoe.com.shop.business.mine.ui.MineVipCard
+            <com.xiaoe.shop.wxb.business.mine.ui.MineVipCard
                 android:id="@+id/mine_vip_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,12 +49,12 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"/>
 
-            <xiaoe.com.shop.business.mine.ui.MineMoneyWrapView
+            <com.xiaoe.shop.wxb.business.mine.ui.MineMoneyWrapView
                 android:id="@+id/mine_money_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <xiaoe.com.shop.business.mine.ui.MineLearningWrapView
+            <com.xiaoe.shop.wxb.business.mine.ui.MineLearningWrapView
                 android:id="@+id/mine_learning_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,11 +73,11 @@
 
         </LinearLayout>
 
-        <xiaoe.com.shop.widget.StatusPagerView
+        <com.xiaoe.shop.wxb.widget.StatusPagerView
             android:id="@+id/mine_loading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
     </FrameLayout>
 
-</xiaoe.com.shop.widget.PushScrollView>
+</com.xiaoe.shop.wxb.widget.PushScrollView>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <xiaoe.com.shop.business.video.ui.VideoPlayControllerView
+    <com.xiaoe.shop.wxb.business.video.ui.VideoPlayControllerView
         android:id="@+id/video_play_controller"
         android:layout_width="match_parent"
         android:layout_height="210dp"/>
@@ -91,14 +91,14 @@
 
 
 
-    <xiaoe.com.shop.widget.CommonBuyView
+    <com.xiaoe.shop.wxb.widget.CommonBuyView
         android:id="@+id/detail_buy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_alignParentBottom="true"/>
 
-    <xiaoe.com.shop.widget.StatusPagerView
+    <com.xiaoe.shop.wxb.widget.StatusPagerView
         android:id="@+id/video_state_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

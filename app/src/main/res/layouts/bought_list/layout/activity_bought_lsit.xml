@@ -24,7 +24,7 @@
             android:padding="20dp"
             tools:ignore="ContentDescription" />
 
-        <!--<xiaoe.com.shop.widget.CustomScrollView-->
+        <!--<com.xiaoe.shop.wxb.widget.CustomScrollView-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content">-->
 
@@ -55,7 +55,7 @@
 
             </LinearLayout>
 
-        <!--</xiaoe.com.shop.widget.CustomScrollView>-->
+        <!--</com.xiaoe.shop.wxb.widget.CustomScrollView>-->
 
     </LinearLayout>
 

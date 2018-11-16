@@ -6,7 +6,7 @@
     android:id="@+id/coupon_item"
     >
 
-    <xiaoe.com.shop.widget.CouponView
+    <com.xiaoe.shop.wxb.widget.CouponView
         android:id="@+id/coupon_info"
         android:layout_width="match_parent"
         android:layout_height="96dp"/>

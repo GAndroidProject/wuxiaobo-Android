@@ -16,7 +16,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"/>
 
-    <xiaoe.com.shop.widget.CodeVerifyView
+    <com.xiaoe.shop.wxb.widget.CodeVerifyView
         android:id="@+id/phone_num_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

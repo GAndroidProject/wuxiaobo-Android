@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <xiaoe.com.shop.widget.CustomScrollView
+    <com.xiaoe.shop.wxb.widget.CustomScrollView
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -274,7 +274,7 @@
 
             </FrameLayout>
 
-            <xiaoe.com.shop.widget.ListBottomLoadMoreView
+            <com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView
                 android:id="@+id/scholarship_bottom_load_more"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -291,9 +291,9 @@
 
         </LinearLayout>
 
-    </xiaoe.com.shop.widget.CustomScrollView>
+    </com.xiaoe.shop.wxb.widget.CustomScrollView>
 
-    <xiaoe.com.shop.widget.StatusPagerView
+    <com.xiaoe.shop.wxb.widget.StatusPagerView
         android:id="@+id/scholarship_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

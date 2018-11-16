@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="xiaoe.com.shop">
+    package="com.xiaoe.shop.wxb">
 
     <!-- Required -->
     <permission
-        android:name="xiaoe.com.shop.permission.JPUSH_MESSAGE"
+        android:name="com.xiaoe.shop.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="xiaoe.com.shop.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="com.xiaoe.shop.wxb.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
@@ -30,7 +30,7 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application
-        android:name="xiaoe.com.common.app.XiaoeApplication"
+        android:name="com.xiaoe.common.app.XiaoeApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:icon="@mipmap/logo"
@@ -145,7 +145,7 @@
                 <action android:name="cn.jpush.android.ui.PushActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="xiaoe.com.shop" />
+                <category android:name="com.xiaoe.shop.wxb" />
             </intent-filter>
         </activity>
 
@@ -177,7 +177,7 @@
         <!-- since 3.0.9 Required SDK 核心功能-->
         <provider
             android:name="cn.jpush.android.service.DataProvider"
-            android:authorities="xiaoe.com.shop.DataProvider"
+            android:authorities="com.xiaoe.shop.DataProvider"
             android:exported="false"
             android:process=":pushcore" />
 
@@ -190,13 +190,13 @@
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.DaemonService" />
 
-                <category android:name="xiaoe.com.shop" />
+                <category android:name="com.xiaoe.shop.wxb" />
             </intent-filter>
         </service>
         <!-- since 3.1.0 Required SDK 核心功能 -->
         <provider
             android:name="cn.jpush.android.service.DownloadProvider"
-            android:authorities="xiaoe.com.shop.DownloadProvider"
+            android:authorities="com.xiaoe.shop.DownloadProvider"
             android:exported="true" />
         <!-- Required SDK核心功能 -->
         <receiver
@@ -205,7 +205,7 @@
             android:exported="false">
             <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" /> <!-- Required  显示通知栏 -->
-                <category android:name="xiaoe.com.shop" />
+                <category android:name="com.xiaoe.shop.wxb" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -236,7 +236,7 @@
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!-- Required  用户接收SDK通知栏信息的intent -->
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!-- Required  用户打开自定义通知栏的intent -->
                 <action android:name="cn.jpush.android.intent.CONNECTION" /> <!-- 接收网络变化 连接/断开 since 1.6.3 -->
-                <category android:name="xiaoe.com.shop" />
+                <category android:name="com.xiaoe.shop.wxb" />
             </intent-filter>
         </receiver>
 
@@ -245,7 +245,7 @@
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
 
-                <category android:name="xiaoe.com.shop" />
+                <category android:name="com.xiaoe.shop.wxb" />
             </intent-filter>
         </receiver>
         <!-- Required  . Enable it you can get statistics data with channel -->

@@ -37,13 +37,13 @@
         android:layout_below="@id/tool_bar"
         android:layout_above="@+id/comment_view"
         />
-    <xiaoe.com.shop.widget.CommentView
+    <com.xiaoe.shop.wxb.widget.CommentView
         android:id="@+id/comment_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         />
-    <xiaoe.com.shop.widget.StatusPagerView
+    <com.xiaoe.shop.wxb.widget.StatusPagerView
         android:id="@+id/status_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

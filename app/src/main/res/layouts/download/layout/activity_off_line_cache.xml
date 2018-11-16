@@ -90,7 +90,7 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <xiaoe.com.shop.widget.ScrollViewPager
+    <com.xiaoe.shop.wxb.widget.ScrollViewPager
         android:id="@+id/tab_view_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

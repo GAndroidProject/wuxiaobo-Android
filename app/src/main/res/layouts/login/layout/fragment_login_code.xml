@@ -25,7 +25,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"/>
 
-    <xiaoe.com.shop.widget.CodeVerifyView
+    <com.xiaoe.shop.wxb.widget.CodeVerifyView
         android:id="@+id/login_register_code_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

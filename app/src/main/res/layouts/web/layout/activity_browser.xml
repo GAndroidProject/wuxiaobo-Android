@@ -15,7 +15,7 @@
 
         <include layout="@layout/include_web_progress" />
 
-        <xiaoe.com.shop.common.web.BridgeWebView
+        <com.xiaoe.shop.wxb.common.web.BridgeWebView
             android:id="@+id/web_browser"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

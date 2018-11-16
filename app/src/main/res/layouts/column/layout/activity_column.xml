@@ -5,7 +5,7 @@
     android:focusableInTouchMode="true"
     android:background="@color/white"
     >
-    <xiaoe.com.shop.widget.CustomScrollView
+    <com.xiaoe.shop.wxb.widget.CustomScrollView
         android:id="@+id/column_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -126,7 +126,7 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <xiaoe.com.shop.widget.ScrollViewPager
+            <com.xiaoe.shop.wxb.widget.ScrollViewPager
                 android:id="@+id/column_view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -135,7 +135,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_below="@id/column_menu_warp"
                 />
-            <xiaoe.com.shop.widget.ListBottomLoadMoreView
+            <com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView
                 android:id="@+id/btn_bottom_load_more"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -162,7 +162,7 @@
             </FrameLayout>
         </RelativeLayout>
 
-    </xiaoe.com.shop.widget.CustomScrollView>
+    </com.xiaoe.shop.wxb.widget.CustomScrollView>
 
 
     
@@ -215,13 +215,13 @@
             />
     </RelativeLayout>
 
-    <xiaoe.com.shop.widget.CommonBuyView
+    <com.xiaoe.shop.wxb.widget.CommonBuyView
         android:id="@+id/common_buy_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         />
-    <xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout
+    <com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout
         android:id="@+id/mini_audio_play_controller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

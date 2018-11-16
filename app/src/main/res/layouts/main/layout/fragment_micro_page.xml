@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <xiaoe.com.shop.widget.CustomScrollView
+    <com.xiaoe.shop.wxb.widget.CustomScrollView
         android:id="@+id/micro_page_scroller"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,7 +46,7 @@
                 android:layout_below="@id/micro_page_content"/>
         </RelativeLayout>
 
-    </xiaoe.com.shop.widget.CustomScrollView>
+    </com.xiaoe.shop.wxb.widget.CustomScrollView>
 
     <FrameLayout
         android:id="@+id/micro_page_toolbar"
@@ -80,7 +80,7 @@
 
     </FrameLayout>
 
-    <xiaoe.com.shop.widget.StatusPagerView
+    <com.xiaoe.shop.wxb.widget.StatusPagerView
         android:id="@+id/micro_page_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

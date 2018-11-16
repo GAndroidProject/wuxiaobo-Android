@@ -52,7 +52,7 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
--keep public class xiaoe.com.shop.R$*{
+-keep public class com.xiaoe.shop.wxb.R$*{
     public static final int *;
 }
 

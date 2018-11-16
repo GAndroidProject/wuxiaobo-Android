@@ -7,13 +7,13 @@
     android:background="@color/white"
     android:id="@+id/main_activity_root_view"
     android:focusableInTouchMode="true">
-    <xiaoe.com.shop.widget.ScrollViewPager
+    <com.xiaoe.shop.wxb.widget.ScrollViewPager
         android:id="@+id/main_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_tab_bar_layout"
         />
-    <xiaoe.com.shop.business.audio.ui.MiniAudioPlayControllerLayout
+    <com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout
         android:id="@+id/mini_audio_play_controller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
         android:background="@color/line"
         android:layout_above="@+id/bottom_tab_bar_layout"
         />
-    <xiaoe.com.shop.widget.BottomTabBar
+    <com.xiaoe.shop.wxb.widget.BottomTabBar
         android:id="@+id/bottom_tab_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/audio_page_bg_color">
 
-    <xiaoe.com.shop.business.audio.ui.AudioDetailsSwitchLayout
+    <com.xiaoe.shop.wxb.business.audio.ui.AudioDetailsSwitchLayout
         android:id="@+id/pager_content_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,7 +22,7 @@
             android:id="@+id/view_hover"
             android:layout_width="match_parent"
             android:layout_height="64dp">
-            <xiaoe.com.shop.business.audio.ui.AudioHoverControllerLayout
+            <com.xiaoe.shop.wxb.business.audio.ui.AudioHoverControllerLayout
                 android:id="@+id/audio_hover_controller"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -57,7 +57,7 @@
                     android:drawablePadding="-10dp"
                     android:paddingRight="10dp"
                     />
-                <xiaoe.com.shop.business.audio.ui.AudioPlayControllerView
+                <com.xiaoe.shop.wxb.business.audio.ui.AudioPlayControllerView
                     android:id="@+id/audio_play_controller"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                         />
 
                 </LinearLayout>
-                <xiaoe.com.shop.widget.CommonBuyView
+                <com.xiaoe.shop.wxb.widget.CommonBuyView
                     android:id="@+id/common_buy_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -175,7 +175,7 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <xiaoe.com.shop.business.audio.ui.AudioDetailsLayout
+        <com.xiaoe.shop.wxb.business.audio.ui.AudioDetailsLayout
             android:id="@+id/move_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -207,29 +207,29 @@
                 </LinearLayout>
 
             </ScrollView>
-        </xiaoe.com.shop.business.audio.ui.AudioDetailsLayout>
+        </com.xiaoe.shop.wxb.business.audio.ui.AudioDetailsLayout>
 
-    </xiaoe.com.shop.business.audio.ui.AudioDetailsSwitchLayout>
+    </com.xiaoe.shop.wxb.business.audio.ui.AudioDetailsSwitchLayout>
 
 
-    <xiaoe.com.shop.widget.ContentMenuLayout
+    <com.xiaoe.shop.wxb.widget.ContentMenuLayout
         android:id="@+id/content_menu_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         />
-    <xiaoe.com.shop.widget.SpeedMenuLayout
+    <com.xiaoe.shop.wxb.widget.SpeedMenuLayout
         android:id="@+id/speed_menu_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         />
-    <xiaoe.com.shop.business.audio.ui.AudioPlayListLayout
+    <com.xiaoe.shop.wxb.business.audio.ui.AudioPlayListLayout
         android:id="@+id/audio_play_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <xiaoe.com.shop.widget.StatusPagerView
+    <com.xiaoe.shop.wxb.widget.StatusPagerView
         android:id="@+id/state_pager_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

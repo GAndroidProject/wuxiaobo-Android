@@ -42,7 +42,7 @@
             android:scrollbars="none"
             android:overScrollMode="never"/>
 
-        <xiaoe.com.shop.widget.StatusPagerView
+        <com.xiaoe.shop.wxb.widget.StatusPagerView
             android:id="@+id/learning_loading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

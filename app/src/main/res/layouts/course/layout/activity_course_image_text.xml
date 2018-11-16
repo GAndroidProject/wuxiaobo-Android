@@ -10,7 +10,7 @@
     android:background="@color/white"
     android:focusableInTouchMode="true">
 
-    <xiaoe.com.shop.widget.PushScrollView
+    <com.xiaoe.shop.wxb.widget.PushScrollView
         android:id="@+id/it_push_scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -102,9 +102,9 @@
 
         </LinearLayout>
 
-    </xiaoe.com.shop.widget.PushScrollView>
+    </com.xiaoe.shop.wxb.widget.PushScrollView>
 
-    <xiaoe.com.shop.widget.CommonTitleView
+    <com.xiaoe.shop.wxb.widget.CommonTitleView
         android:id="@+id/it_common_title_view"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -112,13 +112,13 @@
         android:background="@color/white"
         android:visibility="gone"/>
 
-    <xiaoe.com.shop.widget.CommonBuyView
+    <com.xiaoe.shop.wxb.widget.CommonBuyView
         android:id="@+id/image_text_buy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"/>
 
-    <!--<xiaoe.com.shop.widget.StatusPagerView-->
+    <!--<com.xiaoe.shop.wxb.widget.StatusPagerView-->
         <!--android:id="@+id/image_text_loading"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"/>-->

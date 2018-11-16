@@ -25,7 +25,7 @@
             android:text="@string/coupon_can_resource"
             />
     </RelativeLayout>
-    <xiaoe.com.shop.widget.CouponView
+    <com.xiaoe.shop.wxb.widget.CouponView
         android:id="@+id/coupon_view"
         android:layout_width="match_parent"
         android:layout_height="96dp"
@@ -64,7 +64,7 @@
         android:background="@color/white"
         android:layout_marginBottom="20dp"
         />
-    <xiaoe.com.shop.widget.StatusPagerView
+    <com.xiaoe.shop.wxb.widget.StatusPagerView
         android:id="@+id/state_pager_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
