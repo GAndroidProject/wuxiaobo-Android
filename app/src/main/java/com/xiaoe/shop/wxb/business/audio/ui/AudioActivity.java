@@ -29,13 +29,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.tencent.smtt.sdk.CookieSyncManager;
 import com.tencent.smtt.sdk.WebView;
 import com.umeng.socialize.UMShareAPI;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.AudioPlayEntity;
@@ -62,17 +55,22 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
+import com.xiaoe.shop.wxb.events.HideVideoPlayListEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickMoreMenuListener;
-import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
-import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.ContentMenuLayout;
 import com.xiaoe.shop.wxb.widget.SpeedMenuLayout;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class AudioActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener {
     private static final String TAG = "AudioActivity";
@@ -100,7 +98,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private boolean hasCollect = false;//是否收藏
     private CollectionUtils collectionUtils;
     private ImageView btnAudioDownload;
-    private SimpleDraweeView audioAdvertise;
 
     List<LoginUser> loginUserList;
 
@@ -136,7 +133,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    JumpDetail.jumpLogin(AudioActivity.this, true);
+                    AudioActivity.this.finish();
+                    JumpDetail.jumpLogin(AudioActivity.this);
                 }
             });
         }
@@ -233,12 +231,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         //下载按钮
         btnAudioDownload = (ImageView) findViewById(R.id.btn_audio_download);
         btnAudioDownload.setOnClickListener(this);
-
-        // 广告位图片
-        audioAdvertise = (SimpleDraweeView) findViewById(R.id.audio_advertise_img);
-        String descImgUrl = "res:///" + R.mipmap.img_text_bg;
-        SetImageUriUtil.setImgURI(audioAdvertise, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
-        audioAdvertise.setOnClickListener(this);
     }
     private void initDatas() {
         collectionUtils = new CollectionUtils(this);
@@ -474,14 +466,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             case R.id.btn_download:
                 clickDownload();
                 break;
-            case R.id.audio_advertise_img:
-                ActivityCollector.finishAll();
-                if (loginUserList.size() == 1) {
-                    JumpDetail.jumpMainScholarship(this, true, true);
-                } else {
-                    JumpDetail.jumpMainScholarship(this, false, true);
-                }
-                break;
             default:
                 break;
         }
@@ -558,6 +542,18 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private void buyResource() {
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
         JumpDetail.jumpPay(this, playEntity.getAudioResourceId(), 2, playEntity.getImgUrl(), playEntity.getTitle(), playEntity.getPrice());
+    }
+
+    @Subscribe
+    public void onEventMainThread(HideVideoPlayListEvent event){
+        if (event != null && event.isHide() && audioPlayList.getVisibility() == View.VISIBLE){
+            audioPlayList.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    findViewById(R.id.btn_play_list).performClick();
+                }
+            },50);
+        }
     }
 
     @Subscribe

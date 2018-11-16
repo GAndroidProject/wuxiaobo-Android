@@ -15,12 +15,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.util.List;
-
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.LoginUser;
@@ -49,6 +43,11 @@ import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.ScrollViewPager;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 
 public class ColumnActivity extends XiaoeActivity implements View.OnClickListener, OnCustomScrollChangedListener {
     private static final String TAG = "ColumnActivity";
@@ -114,7 +113,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    JumpDetail.jumpLogin(ColumnActivity.this, true);
+                    ColumnActivity.this.finish();
+                    JumpDetail.jumpLogin(ColumnActivity.this);
                 }
             });
         }
@@ -487,7 +487,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else if(alpha < 0){
             alpha = 0;
         }
-        barTitle.setVisibility(alpha > 150 ? View.VISIBLE : View.GONE);
+        barTitle.setVisibility(alpha > 10 ? View.VISIBLE : View.GONE);
+        barTitle.setTextColor(Color.argb((int) alpha,0,0,0));
         btnBack.setImageResource(alpha > 150 ? R.mipmap.download_back :R.mipmap.detail_white_back);
         columnToolBar.setBackgroundColor(Color.argb((int) alpha,255,255,255));
     }
