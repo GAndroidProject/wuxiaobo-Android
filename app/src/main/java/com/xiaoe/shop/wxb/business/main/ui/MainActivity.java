@@ -89,11 +89,11 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         // 请求绑定极光推送
         String jgPushRegId = JPushInterface.getRegistrationID(mContext);
-        Log.e(TAG, "onCreate: JPush RegID " + jgPushRegId);
+        Log.d(TAG, "onCreate: JPush RegID " + jgPushRegId);
 
         String bindJPushSuccess = (String) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, "");
         JgPushSaveInfo jgPushSaveInfo = JSON.parseObject(bindJPushSuccess, JgPushSaveInfo.class);
-        Log.e(TAG, "onCreate: " + jgPushSaveInfo);
+        Log.d(TAG, "onCreate: " + jgPushSaveInfo);
         MessagePushPresenter messagePushPresenter = new MessagePushPresenter(this);
         if (jgPushSaveInfo != null) {
             if (!jgPushSaveInfo.isBindRegIdSuccess()) {
@@ -104,7 +104,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                 }
             }
         } else {
-            messagePushPresenter.requestBindJgPush(isFormalUser);
+            if (jgPushRegId != null) {
+                messagePushPresenter.requestBindJgPush(isFormalUser);
+            }
         }
 
         if (!isFormalUser) {
@@ -284,7 +286,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         jgPushSaveInfo.setRegistrationID(JPushInterface.getRegistrationID(mContext));
 
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, JSON.toJSONString(jgPushSaveInfo));
-        Log.e(TAG, "setBindJPushSP: " + JSON.toJSONString(jgPushSaveInfo));
+        Log.d(TAG, "setBindJPushSP: " + JSON.toJSONString(jgPushSaveInfo));
     }
 
     // for receive customer msg from jpush server

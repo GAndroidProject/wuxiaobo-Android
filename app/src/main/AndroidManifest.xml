@@ -254,7 +254,7 @@
             android:value="developer-default" />
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="96cf06f33b5579b8b6f8c3b4" /> <!-- 值来自开发者平台取得的AppKey -->
+            android:value="5e3ca811dadd0242657df1b7" /> <!-- 值来自开发者平台取得的AppKey -->
         <!-- 极光推送相关配置 end -->
 
         <activity android:name=".business.bought_list.ui.BoughtListActivity" />
