@@ -108,46 +108,167 @@ public class HistoryMessageEntity {
          * exception_category :
          */
 
+        /**
+         * 点赞、评论、系统消息id
+         */
         private int id;
+        /**
+         * 应用Id（店铺ID）
+         */
         private String app_id;
+        /**
+         * 回复消息对应的源反馈或者源评论
+         */
         private String src_id;
+        /**
+         * 针对的类型，0-图文，1-音频，2-视频，3-社群，4-作业，5-打卡
+         */
         private int type;
+        /**
+         * 用户ID。备注：type为2时user_id储存的是人群id
+         */
         private String user_id;
+        /**
+         * 发送者用户ID
+         */
         private String send_user_id;
+        /**
+         * 发送者用户昵称
+         */
         private String send_nick_name;
+        /**
+         * 来源：0-系统管理员, 1-帖子回复， 2-系统管理员针对评论的回复，与src_id对应评论表,
+         * 3-系统管理员针对用户反馈的回复，与src_id对应用户反馈表，4-直播间回复自动推送 5-打卡的被评论消息
+         * 6-打卡的被回复消息 7-打卡的日记被点赞消息 8-打卡的被点评消息 9-打卡的奖励发放通知
+         * 10-打卡的评论被点赞 11-打卡的补打卡提醒 12-打卡的作业补打卡提醒
+         */
         private int source;
+        /**
+         * 跳转类型，0-不跳转， 1-图文，2-音频，3-视频，4-社群,5-跳转url, 6-专栏，7-直播间内，8-分答问题详情页 9-活动，21-电子书 16-打卡
+         */
         private int skip_type;
+        /**
+         * 跳转目的地
+         */
         private String skip_target;
         private String title;
         private String content;
+        /**
+         * 可点击的文字
+         */
         private String content_clickable;
+        /**
+         * 消息发送时间
+         */
         private String send_at;
+        /**
+         * 状态 0-正常 1-被撤回
+         */
         private int state;
+        /**
+         * 创建时间
+         */
         private String created_at;
+        /**
+         * 更新时间，有修改自动更新
+         */
         private String updated_at;
+        /**
+         * 用户头像
+         */
         private String wx_avatar;
+        /**
+         * 消息类型：0-系统消息，1-评论消息，2-点赞消息
+         */
         private int message_type;
+        /**
+         * 消息创建时间
+         */
         private String time_from_now;
+        /**
+         * 评论所属记录id
+         */
         private String record_id;
+        /**
+         * 对应评论id
+         */
         private String comment_id;
+        /**
+         * 本评论对应的源用户id，如果src_comment_id为0或NULL时，说明是评论帖子，此字段存储发贴人的id,
+         * 否则说明是对他人评论的回复，此字段存储源评论的用户id
+         */
         private String src_user_id;
+        /**
+         * 本评论回复的源评论内容
+         */
         private String src_content;
+        /**
+         * 点赞状态：0未点赞、1点赞
+         */
         private int praise_state;
+        /**
+         * 数据来源 0-小程序 1-公众号
+         */
         private int wx_app_type;
+        /**
+         * 微信昵称
+         */
         private String wx_nickname;
+        /**
+         * 点赞的源评论类型
+         */
         private String comment_src_type;
+        /**
+         * 点赞的源评论id
+         */
         private String comment_src_id;
+        /**
+         * 评论所属记录名称（标题），帖子的话存截取的摘要
+         */
         private String record_title;
+        /**
+         * 评论可见性（0-可见 1-隐藏 2-删除 3-屏蔽）
+         */
         private int comment_state;
+        /**
+         * 评论可见性（0-可见 1-被关联隐藏）
+         */
         private int sub_comment_state;
+        /**
+         * 本评论回复的源评论id
+         */
         private int src_comment_id;
+        /**
+         * 是否管理员回复，0-不是 1-是 （—作废—）
+         */
         private int is_admin;
+        /**
+         * 管理员名称
+         */
         private String admin_name;
+        /**
+         * 管理员回复的内容
+         */
         private String admin_content;
+        /**
+         * 管理员评论的时间
+         */
         private String admin_created_at;
+        /**
+         * 点赞数
+         */
         private int zan_num;
+        /**
+         * 是否置顶 0-不置顶 1-置顶
+         */
         private int is_top;
+        /**
+         * 是否异常评论,0-正常,1-异常
+         */
         private int is_exception;
+        /**
+         * 异常的分类
+         */
         private String exception_category;
 
         public int getId() {

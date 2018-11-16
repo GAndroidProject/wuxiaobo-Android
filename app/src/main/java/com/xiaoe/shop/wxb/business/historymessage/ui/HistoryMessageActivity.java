@@ -27,6 +27,8 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.historymessage.HistoryMessageAdapter;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.historymessage.presenter.HistoryMessagePresenter;
+import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.EmptyView;
@@ -182,17 +184,7 @@ public class HistoryMessageActivity extends XiaoeActivity {
             loadMessages();
         }, rvAllMessage);
         historyMessageAdapter.setOnItemClickListener((adapter, view, position) -> {
-//                TransOrder transOrder = (TransOrder) adapter.getData().get(position);
-//                String state = transOrder.getState();
-//                if (!TextUtils.isEmpty(state)) {
-//                    if (TransOrder.ORDER_STATE.FILLED.equals(state)) {
-//                        Bundle bundle = new Bundle();
-//                        bundle.putSerializable(MarketOrderDetailsFragment.PARAM_TRANS_ORDER, transOrder);
-//                        presentFragment(new MarketOrderDetailsFragment(bundle));
-//                    }
-//                }
-            HistoryMessageEntity.ListBean listBean = (HistoryMessageEntity.ListBean) adapter.getData().get(position);
-
+            jumpDetail((HistoryMessageEntity.ListBean) adapter.getData().get(position));
         });
         rvAllMessage.setAdapter(historyMessageAdapter);
 
@@ -205,6 +197,65 @@ public class HistoryMessageActivity extends XiaoeActivity {
             isRequesting = true;
             updateMessages();
         });
+    }
+
+    private void jumpDetail(HistoryMessageEntity.ListBean listBean) {
+        if (listBean == null) {
+            return;
+        }
+        switch (listBean.getMessage_type()) {
+            case 0:
+                skipAction(listBean);
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void skipAction(HistoryMessageEntity.ListBean listBean) {
+        if (listBean == null) {
+            return;
+        }
+        /*
+         * 跳转类型：0-不跳转，1-图文，2-音频，3-视频，4-社群，5-跳转url，6-专栏，7-直播间内，8-分答问题详情页，9-活动，16-打卡，21-电子书
+         */
+        switch (listBean.getSkip_type()) {
+            case 0:
+                break;
+            case 1:
+                JumpDetail.jumpImageText(mContext, listBean.getSkip_target(), "");
+                break;
+            case 2:
+                JumpDetail.jumpAudio(mContext, listBean.getSkip_target(), 0);
+                break;
+            case 3:
+                JumpDetail.jumpVideo(mContext, listBean.getSkip_target(), "", false);
+                break;
+            case 4:
+                break;
+            case 5:
+                BrowserActivity.openUrl(mContext, listBean.getSkip_target(), "外部链接");
+                break;
+            case 6:
+                JumpDetail.jumpColumn(mContext, listBean.getSkip_target(), "", false);
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+            case 16:
+                break;
+            case 21:
+                break;
+            default:
+                break;
+        }
     }
 
     private List<HistoryMessageEntity.ListBean> getMessageList() {

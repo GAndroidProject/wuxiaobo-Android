@@ -300,4 +300,6 @@
 
     <string name="refresh_logo">刷新logo</string>
     <string name="refresh_content">加载中...</string>
+    <string name="replay_comment_text">回复了你的评论</string>
+    <string name="zan_comment_text">赞了你的评论</string>
 </resources>

@@ -235,6 +235,12 @@ public class JumpDetail {
         context.startActivity(intent);
     }
 
+    /**
+     * 优惠券
+     *
+     * @param context
+     * @param couponInfo
+     */
     public static void jumpCouponCanRerource(Context context, CouponInfo couponInfo){
         Intent intent = new Intent(context, CouponDetailActivity.class);
         Bundle bundle = new Bundle();
@@ -329,23 +335,41 @@ public class JumpDetail {
         context.startActivity(intent);
     }
 
-    // 跳转优惠券
+    /**
+     * 跳转优惠券列表
+     *
+     * @param context
+     */
     public static void jumpCoupon(Context context) {
         Intent intent = new Intent(context, CouponActivity.class);
         context.startActivity(intent);
     }
 
-    // 跳转离线缓存
+    /**
+     * 跳转离线缓存
+     *
+     * @param context
+     */
     public static void jumpOffLine(Context context) {
         Intent intent = new Intent(context, OffLineCacheActivity.class);
         context.startActivity(intent);
     }
 
+    /**
+     * 兑换码
+     *
+     * @param context
+     */
     public static void jumpCdKey(Context context) {
         Intent intent = new Intent(context, CdKeyActivity.class);
         context.startActivity(intent);
     }
 
+    /**
+     * 历史消息列表
+     *
+     * @param context
+     */
     public static void jumpHistoryMessage(Context context) {
         Intent intent = new Intent(context, HistoryMessageActivity.class);
         context.startActivity(intent);
