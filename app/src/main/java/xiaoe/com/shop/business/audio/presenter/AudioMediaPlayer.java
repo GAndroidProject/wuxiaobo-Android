@@ -35,7 +35,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     private static AudioPlayEvent event;
     private static AudioPlayEntity audio = null;
     private static boolean isStop = true;//是否是停止（已经释放资源），
-    private static boolean prepared = false;
+    public static boolean prepared = false;
     public static float mPlaySpeed = 1f;//播放倍数
     private static AudioFocusManager audioFocusManager;
 
@@ -316,7 +316,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     public static boolean changePlayerSpeed(float speed) {
         // this checks on API 23 and up
-        if (!isPlaying())    return false;
+        if (!prepared)    return false;
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
                 if (mediaPlayer.isPlaying()) {

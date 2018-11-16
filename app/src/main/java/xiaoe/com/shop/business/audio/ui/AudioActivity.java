@@ -440,7 +440,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 }
                 break;
             case R.id.audio_speed_play:
-                if (AudioMediaPlayer.isPlaying()) {
+                if (AudioMediaPlayer.prepared) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (View.VISIBLE != mSpeedMenuLayout.getVisibility())
                             mSpeedMenuLayout.setVisibility(View.VISIBLE);
