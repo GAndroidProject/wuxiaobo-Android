@@ -120,6 +120,7 @@ public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 	public void refreshData(List<ColumnDirectoryEntity> list){
 		mDataSet.clear();
 		mDataSet.addAll(list);
+		if (list != null && !list.isEmpty())	list.get(0).setExpand(true);
 		notifyDataSetChanged();
 	}
 
