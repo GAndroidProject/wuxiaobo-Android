@@ -48,13 +48,15 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:layout_centerVertical="true"
-                android:visibility="gone"
+				android:visibility="gone"
                 android:gravity="center"
                 >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/play_all"
+					android:drawablePadding="4dp"
+					android:drawableLeft="@mipmap/class_play"
                     android:textSize="14sp"
                     />
             </LinearLayout>

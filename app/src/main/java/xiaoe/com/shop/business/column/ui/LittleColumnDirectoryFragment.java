@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -18,6 +19,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+import xiaoe.com.common.app.XiaoeApplication;
 import xiaoe.com.common.entitys.AudioPlayEntity;
 import xiaoe.com.common.entitys.ColumnDirectoryEntity;
 import xiaoe.com.common.entitys.ColumnSecondDirectoryEntity;
@@ -213,8 +215,10 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
                 playEntity.setPlay(true);
                 AudioMediaPlayer.setAudio(playEntity, true);
                 new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+                directoryAdapter.notifyDataSetChanged();
+            }else {
+                Toast.makeText(XiaoeApplication.getmContext(),"无可播放音频",Toast.LENGTH_SHORT).show();
             }
-            directoryAdapter.notifyDataSetChanged();
         } else {
             touristDialog.showDialog();
         }
