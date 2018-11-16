@@ -103,21 +103,6 @@ public class HistoryMessageActivity extends XiaoeActivity {
                         messageLastId = data.getString("message_last_id");
                         commentLastId = data.getString("comment_last_id");
                         praiseLastId = data.getString("praise_last_id");
-//                        for (HistoryMessageEntity.ListBean listBean : listBeans) {
-//                            switch (listBean.getMessage_type()) {
-//                                case 0:
-//                                    messageLastId = listBean.getSend_at();
-//                                    break;
-//                                case 1:
-//                                    commentLastId = listBean.getId() + "";
-//                                    break;
-//                                case 2:
-//                                    praiseLastId = listBean.getId() + "";
-//                                    break;
-//                                default:
-//                                    break;
-//                            }
-//                        }
                     }
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取历史消息失败...");
