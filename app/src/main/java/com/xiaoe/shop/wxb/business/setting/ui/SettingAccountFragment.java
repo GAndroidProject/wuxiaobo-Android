@@ -140,7 +140,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         String tip = settingAccountActivity.apiToken == null ? "未绑定" : "已绑定";
         SettingItemInfo bindWeChat = new SettingItemInfo("绑定微信", "", tip);
         itemList.add(changePwd);
-        itemList.add(changePhone);
+//        itemList.add(changePhone); // 需求变更（2018.11.17）
         itemList.add(bindWeChat);
         SettingRecyclerAdapter settingRecyclerAdapter = new SettingRecyclerAdapter(getActivity(), itemList);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
