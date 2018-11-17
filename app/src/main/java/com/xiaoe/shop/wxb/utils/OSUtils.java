@@ -1,5 +1,6 @@
 package com.xiaoe.shop.wxb.utils;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.List;
 
 public class OSUtils {
 
@@ -143,5 +145,27 @@ public class OSUtils {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 判断服务是否在运行
+     * @param mContext
+     * @param className　　Service.class.getName();
+     * @return
+     */
+    public static boolean isServiceRunning(Context mContext,String className){
+        boolean isRunning = false ;
+        ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> seviceList = activityManager.getRunningServices(200);
+        if (seviceList.size() <= 0){
+            return false;
+        }
+        for (int i=0 ;i < seviceList.size();i++){
+            if (seviceList.get(i).service.getClassName().toString().equals(className)){
+                isRunning = true;
+                break;
+            }
+        }
+        return  isRunning;
     }
 }

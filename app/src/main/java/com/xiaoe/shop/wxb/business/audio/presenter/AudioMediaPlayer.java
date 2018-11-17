@@ -74,9 +74,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     private void init() {
         if(mediaPlayer == null){
             mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         }
         audioFocusManager = new AudioFocusManager(this);
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //设置准备播放资源监听
         mediaPlayer.setOnPreparedListener(this);
         //设置定位播放监听

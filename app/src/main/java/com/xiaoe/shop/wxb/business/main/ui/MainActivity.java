@@ -35,6 +35,7 @@ import com.xiaoe.shop.wxb.common.jpush.LocalBroadcastManager;
 import com.xiaoe.shop.wxb.common.jpush.entity.JgPushSaveInfo;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnBottomTabSelectListener;
+import com.xiaoe.shop.wxb.utils.OSUtils;
 import com.xiaoe.shop.wxb.widget.BottomTabBar;
 import com.xiaoe.shop.wxb.widget.ScrollViewPager;
 
@@ -116,8 +117,10 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         initView();
         initPermission();
-        audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
-        startService(audioPlayServiceIntent);
+        if (!OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName())) {
+            audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
+            startService(audioPlayServiceIntent);
+        }
 
         registerMessageReceiver();  // used for receive msg
 
@@ -240,10 +243,12 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         if(!AudioMediaPlayer.isStop()){
             if(!AudioMediaPlayer.isPlaying()){
                 AudioMediaPlayer.release();
-                stopService(audioPlayServiceIntent);
+                if (OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName()))
+                    stopService(audioPlayServiceIntent);
             }
         }else{
-            stopService(audioPlayServiceIntent);
+            if (OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName()))
+                stopService(audioPlayServiceIntent);
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         AppUpgradeHelper.getInstance().unregisterEventBus();
