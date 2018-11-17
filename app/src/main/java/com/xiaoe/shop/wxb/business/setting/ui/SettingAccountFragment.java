@@ -1,8 +1,6 @@
 package com.xiaoe.shop.wxb.business.setting.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -10,26 +8,23 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.suke.widget.SwitchButton;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import com.xiaoe.common.entitys.SettingItemInfo;
 import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -41,6 +36,12 @@ import com.xiaoe.shop.wxb.business.setting.presenter.SettingTimeCount;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.widget.CodeVerifyView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class SettingAccountFragment extends BaseFragment implements OnItemClickWithSettingItemInfoListener {
 
@@ -61,6 +62,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
 
     // 软键盘
     InputMethodManager imm;
+    private boolean mDisplayFlg;
 
     public static SettingAccountFragment newInstance(int layoutId) {
         SettingAccountFragment settingAccountFragment = new SettingAccountFragment();
@@ -87,15 +89,16 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         mContext = getContext();
         imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         settingAccountActivity = (SettingAccountActivity) getActivity();
+        initView();
         return viewWrap;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (layoutId != -1) {
-            initView();
-        }
+//        if (layoutId != -1) {
+//            initView();
+//        }
     }
 
     private void initView() {
@@ -129,6 +132,8 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                 break;
             case R.layout.fragment_service:
                 initServiceFragment();
+                break;
+            default:
                 break;
         }
     }
@@ -254,58 +259,67 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         });
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private void initPwdNewFragment() {
         final EditText newPwd = (EditText) viewWrap.findViewById(R.id.pwd_new_content);
+        ImageView ivShowPwd = (ImageView) viewWrap.findViewById(R.id.ivShowPwd);
         Button newBtn = (Button) viewWrap.findViewById(R.id.pwd_new_submit);
+        newBtn.setEnabled(false);
 
-        newPwd.setOnTouchListener(new View.OnTouchListener() {
+        ivShowPwd.setOnClickListener(view -> {
+            if (!mDisplayFlg) {
+                // display password text, for example "123456"
+                newPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                ivShowPwd.setImageResource(R.mipmap.icon_show);
+            } else {
+                // hide password, display "."
+                newPwd.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                ivShowPwd.setImageResource(R.mipmap.icon_hide);
+            }
+            String etPwd = newPwd.getText().toString();
+            if (!TextUtils.isEmpty(etPwd)) {
+                newPwd.setSelection(etPwd.length());
+            }
+            mDisplayFlg = !mDisplayFlg;
+            newPwd.postInvalidate();
+        });
+
+        newPwd.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // 拿到画在尾部的 drawable
-                Drawable drawable = newPwd.getCompoundDrawables()[2];
-                // 如果没有不处理
-                if (drawable == null) {
-                    return false;
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (TextUtils.isEmpty(editable)) {
+                    return;
                 }
-                // 如果不是抬起事件，不处理
-                if (event.getAction() != MotionEvent.ACTION_UP) {
-                    return false;
+                if (6 <= editable.toString().trim().length()) {
+                    newBtn.setEnabled(true);
+                    newBtn.setAlpha(1f);
+                } else {
+                    newBtn.setEnabled(false);
+                    newBtn.setAlpha(0.6f);
                 }
-                if (event.getX() > newPwd.getWidth() - newPwd.getPaddingEnd() - drawable.getIntrinsicWidth()) {
-                    if (newPwd.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD + InputType.TYPE_CLASS_TEXT) {
-                        // 设置隐藏按钮
-                        Drawable right = getActivity().getResources().getDrawable(R.mipmap.icon_hide);
-                        right.setBounds(0, 0, right.getMinimumWidth(), drawable.getMinimumHeight());
-                        newPwd.setCompoundDrawables(null, null, right, null);
-                        newPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    } else {
-                        // 设置显示按钮
-                        Drawable right = getActivity().getResources().getDrawable(R.mipmap.icon_show);
-                        right.setBounds(0, 0, right.getMinimumWidth(), drawable.getMinimumHeight());
-                        newPwd.setCompoundDrawables(null, null, right, null);
-                        newPwd.setInputType(InputType.TYPE_CLASS_TEXT |InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    }
-                    return true;
-                }
-                return false;
             }
         });
 
-        newBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (newPwd.getText().toString().length() < 6) {
-                    Toast.makeText(getActivity(), "密码长度不能少于6", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (imm != null && imm.isActive()) {
-                    imm.hideSoftInputFromWindow(newPwd.getWindowToken(), 0);
-                }
-                String newPassword = newPwd.getText().toString();
-                settingAccountActivity.loginPresenter.resetPasswordBySms(settingAccountActivity.localPhone, settingAccountActivity.smsCode, newPassword);
-                newPwd.setText("");
+        newBtn.setOnClickListener(v -> {
+            if (newPwd.getText().toString().length() < 6) {
+                Toast.makeText(getActivity(), "密码长度不能少于6", Toast.LENGTH_SHORT).show();
+                return;
             }
+            if (imm != null && imm.isActive()) {
+                imm.hideSoftInputFromWindow(newPwd.getWindowToken(), 0);
+            }
+            String newPassword = newPwd.getText().toString();
+            settingAccountActivity.loginPresenter.resetPasswordBySms(settingAccountActivity.localPhone, settingAccountActivity.smsCode, newPassword);
+            newPwd.setText("");
         });
     }
 
@@ -443,6 +457,8 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                         JumpDetail.jumpLogin(getActivity(), true);
                     }
                     break;
+                default:
+                    break;
             }
         } else if (aboutContent == view.getParent()) { // 关于的点击事件
             switch (itemList.indexOf(itemInfo)) {
@@ -452,6 +468,8 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                 case 1:
                     // 服务协议
                     settingAccountActivity.replaceFragment(SettingAccountActivity.SERVICE);
+                    break;
+                default:
                     break;
             }
         }
@@ -473,13 +491,18 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (hidden) { // 界面隐藏的时候，做清空操作
+        if (hidden) {
+            // 界面隐藏的时候，做清空操作
             toggleSoftKeyboard();
             if (phoneCodeContent != null) {
                 phoneCodeContent.clearAllEditText();
             }
             if (settingTimeCount != null) {
                 settingTimeCount.cancel();
+            }
+        } else {
+            if (layoutId != -1) {
+                initView();
             }
         }
     }

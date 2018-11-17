@@ -326,9 +326,11 @@ public class SettingAccountActivity extends XiaoeActivity {
                 case COMPLETE:
                     accountTitle.setText("修改手机号");
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_change_phone_complete);
+                    break;
                 case SERVICE:
                     accountTitle.setText("服务协议");
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_service);
+                    break;
                 default:
                     break;
             }

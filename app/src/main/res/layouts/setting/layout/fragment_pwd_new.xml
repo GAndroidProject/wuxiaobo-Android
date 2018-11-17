@@ -14,7 +14,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginStart="20dp"/>
     
-    <EditText
+    <!--<EditText
         android:id="@+id/pwd_new_content"
         android:labelFor="@id/pwd_new_content"
         android:layout_width="match_parent"
@@ -28,7 +28,34 @@
         android:layout_marginEnd="20dp"
         android:drawableEnd="@mipmap/icon_hide"
         android:layout_marginTop="26dp"
-        android:maxLength="12"/>
+        android:maxLength="12"/>-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="20dp">
+
+        <EditText
+            android:id="@+id/pwd_new_content"
+            android:labelFor="@id/pwd_new_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_pwd_pass_word"
+            android:inputType="textPassword"
+            android:maxLength="12"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp" />
+
+        <ImageView
+            android:id="@+id/ivShowPwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:padding="6dp"
+            android:src="@mipmap/icon_hide" />
+    </RelativeLayout>
 
     <Button
         android:id="@+id/pwd_new_submit"
