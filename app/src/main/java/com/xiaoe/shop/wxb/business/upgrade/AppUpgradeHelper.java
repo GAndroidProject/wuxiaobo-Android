@@ -72,6 +72,15 @@ public class AppUpgradeHelper {
     CustomDialog mCustomDialog;
     AlertDialog mAlertDialog;
     UpgradeResult.Data mData;
+    private boolean isShouldCheckUpgrade = true;//是否需要自动检查版本更新
+
+    public boolean isShouldCheckUpgrade() {
+        return isShouldCheckUpgrade;
+    }
+
+    public void setShouldCheckUpgrade(boolean shouldCheckUpgrade) {
+        isShouldCheckUpgrade = shouldCheckUpgrade;
+    }
 
     public void setActivity(Activity activity) {
         mActivity = activity;

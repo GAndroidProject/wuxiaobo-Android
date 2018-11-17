@@ -126,7 +126,10 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         //启动应用时自动检测版本更新
         AppUpgradeHelper.getInstance().registerEventBus();
-        AppUpgradeHelper.getInstance().checkUpgrade(false,this);
+        if (AppUpgradeHelper.getInstance().isShouldCheckUpgrade()) {//只有启动应用时候才检查更新
+            AppUpgradeHelper.getInstance().checkUpgrade(false, this);
+            AppUpgradeHelper.getInstance().setShouldCheckUpgrade(false);
+        }
     }
 
     private void initView() {

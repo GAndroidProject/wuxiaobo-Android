@@ -502,16 +502,14 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private void updateSpeedPlayButtonView(float speed) {
         String format = getString(R.string.speed_play_text);
         if (speed != 1) {
-            format = "%s" + format;
+            format = "%.1f" + format;
             btnSpeedPlay.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
             btnSpeedPlay.setPadding(0,0,0,0);
         }else {
             btnSpeedPlay.setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.mipmap.icon_speed_play),null);
             btnSpeedPlay.setPadding(0,0,Dp2Px2SpUtil.dp2px(this,10),0);
         }
-        java.text.NumberFormat numberFormat = java.text.NumberFormat.getNumberInstance();
-        numberFormat.setMaximumIntegerDigits(1);
-        btnSpeedPlay.setText(String.format(format,numberFormat.format(speed)));
+        btnSpeedPlay.setText(String.format(format,speed));
     }
 
     @Override
