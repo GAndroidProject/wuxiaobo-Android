@@ -223,6 +223,7 @@ public class LoginPageFragment extends BaseFragment {
         }
         phoneNum = loginActivity.getPhoneNum();
         smsCode = loginActivity.getSmsCode();
+        loginActivity.isRegister = false;
         switch (layoutId) {
             case R.layout.fragment_login_main:
 //                initLoginMainFragment();
