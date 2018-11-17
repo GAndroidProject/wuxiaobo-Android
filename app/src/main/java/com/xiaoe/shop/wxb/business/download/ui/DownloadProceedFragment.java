@@ -292,6 +292,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
             index++;
             if(item.getResourceId().equals(downloadInfo.getResourceId())){
                 item.setProgress(downloadInfo.getProgress());
+                item.setDownloadState(downloadInfo.getDownloadState());
                 adapter.notifyItemChanged(index);
                 break;
             }

@@ -188,6 +188,9 @@ public class NetworkEngine {
 //                }
                 try {
                     String jsonString = body.string();
+                    Log.d(TAG, "onResponse: url "+mRequest.getCmd());
+                    Log.d(TAG, "onResponse: req "+mRequest.getWrapedFormBody());
+                    Log.d(TAG, "onResponse: resp "+jsonString);
                     com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
                     body.close();
                     mRequest.onResponse(true, jsonObject);

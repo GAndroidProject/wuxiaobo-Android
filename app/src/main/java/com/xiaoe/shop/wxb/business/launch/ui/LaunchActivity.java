@@ -32,6 +32,7 @@ public class LaunchActivity extends XiaoeActivity {
     };
     private int duration;
     private int MESSAGE_SUCCESS = 0;
+    private SimpleDraweeView launchGIF;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,13 +61,14 @@ public class LaunchActivity extends XiaoeActivity {
     }
 
     private void initView() {
-        SimpleDraweeView launchGIF = (SimpleDraweeView) findViewById(R.id.launch_gif);
+        launchGIF = (SimpleDraweeView) findViewById(R.id.launch_gif);
         Uri uri = Uri.parse("res:///"+R.drawable.launch);
         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                         .setUri(uri)
                         .setAutoPlayAnimations(true) // 设置加载图片完成后是否直接进行播放
                         .build();
         launchGIF.setController(draweeController);
-        mHandler.sendEmptyMessageDelayed(0, 2500);
+        mHandler.sendEmptyMessageDelayed(0, 2100);
+
     }
 }

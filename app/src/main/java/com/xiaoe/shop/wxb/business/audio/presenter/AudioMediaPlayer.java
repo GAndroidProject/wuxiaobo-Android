@@ -13,18 +13,18 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.AudioPlayEntity;
+import com.xiaoe.common.entitys.AudioPlayTable;
+import com.xiaoe.common.utils.DateFormat;
+import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.events.AudioPlayEvent;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.List;
-
-import com.xiaoe.common.app.XiaoeApplication;
-import com.xiaoe.common.entitys.AudioPlayEntity;
-import com.xiaoe.common.entitys.AudioPlayTable;
-import com.xiaoe.common.utils.DateFormat;
-import com.xiaoe.common.db.SQLiteUtil;
-import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 
 public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnCompletionListener,
@@ -52,6 +52,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
     };
     private static boolean isThirdPause = false;//非主动暂停，如电话呼入
+
 
     @Override
     public void onCreate() {
