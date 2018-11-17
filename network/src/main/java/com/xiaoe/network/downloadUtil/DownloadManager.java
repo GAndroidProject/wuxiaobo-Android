@@ -4,16 +4,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.ColumnDirectoryEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
@@ -21,8 +14,14 @@ import com.xiaoe.common.entitys.DownloadTableInfo;
 import com.xiaoe.common.interfaces.OnDownloadListener;
 import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.common.utils.MD5Utils;
-import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.network.utils.ThreadPoolUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 下载管理器，断点续传
@@ -50,6 +49,7 @@ public class DownloadManager implements DownloadListner {
         mAwaitDownloadTasks = new ArrayList<DownloadTask>();
         mSaveProgresss = new ConcurrentHashMap<String, String>();
         onDownloadListenerList = new HashMap<String, OnDownloadListener>();
+        allDownloadList = new HashMap<String, DownloadTableInfo>();
 //        getInstanceDownloadEvent();
         createSaveProgressThread();
     }
@@ -62,6 +62,7 @@ public class DownloadManager implements DownloadListner {
                 }
             }
         }
+
         return mInstance;
     }
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ColumnDirectoryEntity;
@@ -37,6 +31,12 @@ import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickListPlayListener;
 import com.xiaoe.shop.wxb.widget.DashlineItemDivider;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LittleColumnDirectoryFragment extends BaseFragment implements View.OnClickListener, OnClickListPlayListener {
     private static final String TAG = "ColumnDirectoryFragment";
@@ -146,7 +146,9 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             }
             List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
             for (ColumnSecondDirectoryEntity item : directoryAdapter.getData()){
-                if(item.getResource_type() == 2 || item.getResource_type() == 3){
+                if(item.getResource_type() == 3 && !TextUtils.isEmpty(item.getVideo_url())){
+                    newChildDataList.add(item);
+                }else if(item.getResource_type() == 2 && !TextUtils.isEmpty(item.getAudio_url())){
                     newChildDataList.add(item);
                 }
             }
