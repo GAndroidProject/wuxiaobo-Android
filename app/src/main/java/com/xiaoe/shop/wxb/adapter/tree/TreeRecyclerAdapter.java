@@ -114,13 +114,15 @@ public class TreeRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 		notifyItemRangeInserted(position, list.size());
 	}
 	public void addAll(List<ColumnDirectoryEntity> list) {
+		if (mDataSet != null && mDataSet.isEmpty() && list != null && !list.isEmpty())
+			list.get(0).setExpand(true);
 		mDataSet.addAll(list);
 		notifyDataSetChanged();
 	}
 	public void refreshData(List<ColumnDirectoryEntity> list){
+		if (list != null && !list.isEmpty())	list.get(0).setExpand(true);
 		mDataSet.clear();
 		mDataSet.addAll(list);
-		if (list != null && !list.isEmpty())	list.get(0).setExpand(true);
 		notifyDataSetChanged();
 	}
 

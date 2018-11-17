@@ -59,6 +59,12 @@ public class XiaoeApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // 获取当前包名
+        String packageName = getPackageName();
+        // 获取当前进程名
+        String processName = getProcessName(android.os.Process.myPid());
+        if (!TextUtils.isEmpty(packageName) && !packageName.equals(processName))//修复application会创建多次，初始化数据多次
+            return;
         Global.g().setApplication(this);
         isFormalCondition = false;
         mContext = getApplicationContext();

@@ -76,7 +76,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private int pageIndex = 1;
     private int pageSize = 20;
     private boolean isHasBuy = false;
-    private boolean refreshData = true;
+    private boolean refreshData = false;
     private ImageView btnCollect;
     private boolean hasCollect = false;//是否收藏
     private CollectionUtils collectionUtils;
