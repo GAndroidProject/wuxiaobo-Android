@@ -122,9 +122,7 @@ public class AppUpgradeHelper {
             mCustomDialog = ((XiaoeActivity)activity).getDialog();
             mCustomDialog.setCancelable(false);
             mCustomDialog.setCanceledOnTouchOutside(false);
-        }
 
-        if (mCustomDialog != null && !mCustomDialog.isShowing()){
             mCustomDialog.setLoadMessage(mContext.getString(R.string.loading_text));
             mCustomDialog.showLoadDialog(true);
         }

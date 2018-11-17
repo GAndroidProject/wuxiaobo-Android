@@ -276,7 +276,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     if (code == NetworkCodes.CODE_SUCCEED) {
                         JSONObject data = (JSONObject) result.get("data");
                         int scholarship = data.getInteger("balance");
-                        balance = "￥" + String.valueOf(scholarship / 100);
+                        balance = "￥" + String.format("%.2f", scholarship / 100f);
                         item_1 = new MineMoneyItemInfo();
                         item_1.setItemTitle(balance);
                         item_1.setItemDesc("奖学金");
