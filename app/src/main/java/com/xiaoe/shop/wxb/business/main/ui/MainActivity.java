@@ -82,10 +82,15 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 //        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
         intent = getIntent();
 
+        isFormalUser = intent.getBooleanExtra("isFormalUser", false);
+
+        if (!isFormalUser) {
+            // 非正式用户，需要手动设置店铺 id 和默认登录 userId
+            CommonUserInfo.setUserId("u_app_anonymous");
+        }
+
         superVipPresenter = new SuperVipPresenter(this);
         superVipPresenter.requestSuperVip();
-
-        isFormalUser = intent.getBooleanExtra("isFormalUser", false);
 
         // 请求绑定极光推送
         String jgPushRegId = JPushInterface.getRegistrationID(mContext);
@@ -107,12 +112,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             if (jgPushRegId != null) {
                 messagePushPresenter.requestBindJgPush(isFormalUser);
             }
-        }
-
-        if (!isFormalUser) {
-            // 非正式用户，需要手动设置店铺 id 和默认登录 userId
-            CommonUserInfo.setShopId(SharedPreferencesUtil.getData("touristsShopId", "").toString());
-            CommonUserInfo.setUserId("u_app_anonymous");
         }
 
         initView();

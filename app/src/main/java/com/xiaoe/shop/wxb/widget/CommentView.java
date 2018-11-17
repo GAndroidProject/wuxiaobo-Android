@@ -112,7 +112,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
     }
     public void setSrcCommentHint(String hint){
         isReply = true;
-        srcHint = hint+"：";
+        srcHint = "回复 "+hint+"：";
         stringBuilder.clear();
         stringBuilder.append(srcHint);
         stringBuilder.setSpan(colorSpan,0,srcHint.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

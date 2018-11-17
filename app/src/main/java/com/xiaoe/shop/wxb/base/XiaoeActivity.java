@@ -203,30 +203,6 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         }else{
             miniAudioPlayController.setVisibility(View.GONE);
         }
-//        SQLiteUtil.init(this, new AudioSQLiteUtil());
-//        if(SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)){
-////            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 10";
-////            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
-//            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" limit 10";
-//            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,null);
-//            if(entityList.size() > 0){
-//                AudioPlayUtil.getInstance().setSingleAudio(true);
-//                AudioPlayEntity playEntity = entityList.get(0);
-//                playEntity.setPlay(false);
-//                playEntity.setCode(-1);
-//                AudioPlayUtil.getInstance().refreshAudio(playEntity);
-//
-//                AudioMediaPlayer.setAudio(playEntity, false);
-//                AudioPresenter audioPresenter = new AudioPresenter(null);
-//                audioPresenter.requestDetail(playEntity.getResourceId());
-//                miniAudioPlayController.setAudioTitle(playEntity.getTitleView());
-//                miniAudioPlayController.setVisibility(View.GONE);
-//            }else{
-//                miniAudioPlayController.setVisibility(View.GONE);
-//            }
-//        }else{
-//            miniAudioPlayController.setVisibility(View.GONE);
-//        }
     }
 
     public void Toast(String msg){

@@ -30,7 +30,7 @@ public class AudioPlayEntity {
     private boolean isPlay = false;
     private boolean isPlaying;
     private String productsTitle;
-    private String audioResourceId;
+    private String flowId;
 
     public String getAppId() {
         return appId;
@@ -216,12 +216,12 @@ public class AudioPlayEntity {
         this.productsTitle = productsTitle;
     }
 
-    public String getAudioResourceId() {
-        return audioResourceId;
+    public String getFlowId() {
+        return flowId;
     }
 
-    public void setAudioResourceId(String audioResourceId) {
-        this.audioResourceId = audioResourceId;
+    public void setFlowId(String flowId) {
+        this.flowId = flowId;
     }
 
     public String getShareUrl() {

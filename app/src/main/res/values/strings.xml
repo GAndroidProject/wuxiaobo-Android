@@ -77,8 +77,6 @@
     <string name="all_select_text">全选</string>
     <string name="cancel_text">取消</string>
 
-    <string name="delete_text">删除</string>
-    <string name="batch_delete_text">批量删除</string>
 
     <string name="finish_download">已完成</string>
     <string name="download_proceed">下载中</string>
@@ -95,6 +93,9 @@
     <string name="all_delete">全部删除</string>
     <string name="all_start_clear">全部清空</string>
     <string name="delete_hint">确定清空正在下载的任务吗？</string>
+    <string name="delete_text">删除</string>
+    <string name="batch_delete_text">批量删除</string>
+    <string name="delete_comment_hint">确定删除该评论？</string>
     <!--删除提示 end-->
     <!--登陆 start-->
     <string name="login_register_title">注册</string>

@@ -541,7 +541,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
     private void buyResource() {
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
-        JumpDetail.jumpPay(this, playEntity.getAudioResourceId(), 2, playEntity.getImgUrl(), playEntity.getTitle(), playEntity.getPrice());
+        JumpDetail.jumpPay(this, playEntity.getResourceId(), 2, playEntity.getImgUrl(), playEntity.getTitle(), playEntity.getPrice());
     }
 
     @Subscribe
@@ -658,7 +658,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }else if(code == -2){
             setButtonEnabled(false);
         }
-        if(playEntity.getHasBuy() == 0){
+        if(playEntity.getHasBuy() == 0 && playEntity.getCode() == 0){
             commonBuyView.setVisibility(View.VISIBLE);
             commonBuyView.setBuyPrice(playEntity.getPrice());
             if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 超级会员判断

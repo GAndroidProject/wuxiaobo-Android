@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
+import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.entitys.DeviceInfo;
 import com.xiaoe.network.network_interface.IBizCallback;
 
@@ -127,13 +128,8 @@ public abstract class IRequest {
     public String getWrapedFormBody() {
         //暂时直接new对象，后期通过缓存获取
         JSONObject jsonObject = new JSONObject();
-        if(formBody.containsKey("app_id")){
-            jsonObject.put("app_id", formBody.get("app_id"));
-        }else {
-            jsonObject.put("app_id", Constants.getAppId());
-        }
+
         jsonObject.put("client","6");
-//        jsonObject.put("device")
         jsonObject.put("app_version","1.0");
         jsonObject.put("build_version",buildVersion);
         jsonObject.put("client_info",JSONObject.toJSONString(clientInfo));
@@ -150,7 +146,7 @@ public abstract class IRequest {
         if(bizDataParams != null){
             jsonObject.put("biz_data", bizDataParams);
         }
-        if("0".equals(CommonUserInfo.getUserId())){
+        if("u_app_anonymous".equals(CommonUserInfo.getUserId())){
             //游客模式需要传一个user_id = "u_app_anonymous"
             jsonObject.put("user_id", "u_app_anonymous");
         }else{
@@ -158,6 +154,9 @@ public abstract class IRequest {
         }
         jsonObject.put("api_token", CommonUserInfo.getApiToken());
         jsonObject.put("shop_id", Constants.getAppId());
+        jsonObject.put("app_id", Constants.getAppId());
+        //设备唯一标识
+        jsonObject.put("uuid", Global.g().getLocalMacAddressFromIp(XiaoeApplication.getmContext()));
         return jsonObject.toJSONString();
     }
 

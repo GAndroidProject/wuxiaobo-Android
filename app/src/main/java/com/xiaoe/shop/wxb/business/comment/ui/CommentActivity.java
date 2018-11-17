@@ -7,6 +7,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,12 +16,10 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
-import java.util.List;
-
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.CommentEntity;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.CommentLikeRequest;
 import com.xiaoe.network.requests.CommentListRequest;
@@ -34,13 +33,18 @@ import com.xiaoe.shop.wxb.business.comment.presenter.CommentPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnClickCommentListener;
 import com.xiaoe.shop.wxb.interfaces.OnClickSendCommentListener;
+import com.xiaoe.shop.wxb.interfaces.OnConfirmListener;
 import com.xiaoe.shop.wxb.widget.CommentView;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
-public class CommentActivity extends XiaoeActivity implements View.OnClickListener, OnClickSendCommentListener, OnClickCommentListener {
+import java.util.List;
+
+public class CommentActivity extends XiaoeActivity implements View.OnClickListener, OnClickSendCommentListener,
+        OnClickCommentListener {
     private static final String TAG = "CommentActivity";
+    private final int DIALOG_TAG_DELETE_COMMENT = 90001;
     private RecyclerView commentRecyclerView;
     private CommentListAdapter commentAdapter;
     private CommentView commentView;
@@ -197,14 +201,6 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
 
     private void commentLikeRequest(JSONObject data) {
         CommentEntity commentEntity = commentAdapter.getData().get(mPosition);
-        boolean praise = commentEntity.isIs_praise();
-//        int likeCount = commentEntity.getLike_num();
-//        if(praise){
-//            likeCount++;
-//        }else{
-//            likeCount--;
-//        }
-//        commentEntity.setLike_num(likeCount);
         commentAdapter.notifyItemChanged(mPosition);
     }
 
@@ -327,15 +323,28 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         }else if(type == CommentView.TYPE_DELETE){
             //删除
             if (loginUserList.size() == 1) {
-                if(commentEntity.isDelete()){
+                String userId = TextUtils.isEmpty(CommonUserInfo.getUserId()) ? "" : CommonUserInfo.getUserId();
+                if(commentEntity.isDelete() || userId.equals(commentEntity.getUser_id())){
                     return;
                 }
-                mCommentCount--;
-                commentCountView.setText("评论 "+mCommentCount+" 条");
-                commentEntity.setDelete(true);
-                commentPresenter.deleteComment(resourceId, resourceType, commentEntity.getComment_id());
-                commentAdapter.getData().remove(position);
-                commentAdapter.notifyItemRangeChanged(0, commentAdapter.getItemCount());
+                getDialog().getTitleView().setGravity(Gravity.START);
+                getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(this, 20), 0, 0, 0);
+                getDialog().setTitle(getString(R.string.delete_comment_hint));
+                getDialog().setHideCancelButton(false);
+                getDialog().setConfirmListener(new OnConfirmListener() {
+                    @Override
+                    public void onClickConfirm(View view, int tag) {
+                        if(DIALOG_TAG_DELETE_COMMENT == tag){
+                            mCommentCount--;
+                            commentCountView.setText("评论 "+mCommentCount+" 条");
+                            commentEntity.setDelete(true);
+                            commentPresenter.deleteComment(resourceId, resourceType, commentEntity.getComment_id());
+                            commentAdapter.getData().remove(position);
+                            commentAdapter.notifyItemRangeChanged(0, commentAdapter.getItemCount());
+                        }
+                    }
+                });
+                getDialog().showDialog(DIALOG_TAG_DELETE_COMMENT);
             } else {
                 touristDialog.showDialog();
             }

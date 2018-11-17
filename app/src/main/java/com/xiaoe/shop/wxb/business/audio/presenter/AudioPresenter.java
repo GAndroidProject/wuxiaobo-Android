@@ -3,12 +3,8 @@ package com.xiaoe.shop.wxb.business.audio.presenter;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.File;
-
 import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.network.NetworkCodes;
@@ -20,6 +16,10 @@ import com.xiaoe.network.requests.DetailRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.io.File;
 
 public class AudioPresenter implements IBizCallback {
     private static final String TAG = "AudioPresenter";
@@ -100,9 +100,10 @@ public class AudioPresenter implements IBizCallback {
         playEntity.setPrice(resourceInfo.getIntValue("price"));
         playEntity.setImgUrl(resourceInfo.getString("img_url"));
         playEntity.setImgUrlCompressed(resourceInfo.getString("img_url_compressed"));
+        playEntity.setFlowId(resourceId);
 
         //如果存在本地音频则播放本地是否
-        DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(CommonUserInfo.getShopId(), resourceId);
+        DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(Constants.getAppId(), resourceId);
         String localAudioPath = "";
         if(download != null){
             File file = new File(download.getLocalFilePath());
@@ -118,10 +119,8 @@ public class AudioPresenter implements IBizCallback {
             }
             playEntity.setContent(resourceInfo.getString("content"));
             playEntity.setCode(0);
-            playEntity.setAudioResourceId(resourceInfo.getString("resource_id"));
             playAudio(playEntity.isPlay());
         }else{
-            playEntity.setAudioResourceId(resourceInfo.getString("resource_id"));
             playEntity.setCode(0);
             playEntity.setContent(resourceInfo.getString("content"));
             playAudio(false);
