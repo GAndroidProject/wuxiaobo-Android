@@ -383,4 +383,36 @@ public class SettingAccountActivity extends XiaoeActivity {
 
         // TODO: 更新 recyclerView
     }
+
+    @Override
+    public void onHeadLeftButtonClick(View v) {
+        toggleSoftKeyboard();
+        if (currentFragment != null) {
+            switch (currentFragment.getTag()) {
+                case MAIN:
+                    super.onHeadLeftButtonClick(v);
+                    break;
+                case ACCOUNT:
+                case MESSAGE:
+                case ABOUT:
+//                case SUGGESTION:
+                case COMPLETE:
+                    accountTitle.setText("设置");
+                    replaceFragment(MAIN);
+                    break;
+                case CURRENT_PHONE:
+                case PWD_PHONE_CODE:
+                case PHONE_CODE:
+                    accountTitle.setText("账号设置");
+                    replaceFragment(ACCOUNT);
+                    break;
+                case PWD_NEW:
+                    accountTitle.setText("设置新密码");
+                    replaceFragment(PWD_PHONE_CODE);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 }
