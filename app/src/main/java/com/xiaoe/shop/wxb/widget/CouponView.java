@@ -125,7 +125,7 @@ public class CouponView extends FrameLayout {
             startDate.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
             endDate.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
             useConponText.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
-            useConponText.setBackgroundResource(R.color.lucency);
+            useConponText.setBackgroundResource(R.color.transparent);
             useConponText.setText(mContext.getResources().getString(R.string.out_time));
         }
     }

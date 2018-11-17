@@ -57,7 +57,7 @@
         android:layout_below="@id/coupon_can_desc"
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
-        android:divider="@color/lucency"
+        android:divider="@color/transparent"
         android:dividerHeight="16dp"
         android:overScrollMode="never"
         android:scrollbars="none"

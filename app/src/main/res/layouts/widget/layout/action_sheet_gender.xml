@@ -1,52 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/action_sheet_bg">
+    android:layout_height="wrap_content"
+    android:background="@drawable/action_sheet_bg"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/action_sheet_man"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/action_sheet_man"
-        android:textSize="16sp"
-        android:textColor="@color/main_title_color"
+        android:background="@color/white"
         android:gravity="center"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:background="@color/white"/>
+        android:text="@string/action_sheet_man"
+        android:textColor="@color/main_title_color"
+        android:textSize="16sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:background="@color/audio_page_bg_color"/>
+        android:background="@color/audio_page_bg_color" />
 
     <TextView
         android:id="@+id/action_sheet_woman"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/action_sheet_woman"
-        android:textSize="16sp"
-        android:textColor="@color/main_title_color"
+        android:background="@color/white"
         android:gravity="center"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:background="@color/white"/>
+        android:text="@string/action_sheet_woman"
+        android:textColor="@color/main_title_color"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/action_sheet_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/cancel_text"
-        android:textSize="16sp"
-        android:textColor="@color/secondary_title_color"
+        android:background="@color/audio_page_bg_color"
         android:gravity="center"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:background="@color/audio_page_bg_color"/>
-
+        android:text="@string/cancel_text"
+        android:textColor="@color/secondary_title_color"
+        android:textSize="16sp" />
 </LinearLayout>

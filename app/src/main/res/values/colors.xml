@@ -8,7 +8,7 @@
     <color name="black">#000000</color><!--黑色-->
 
     <color name="main_bg_color">#FAFAFC</color><!--主体背景颜色-->
-    <color name="lucency">#00ffffff</color><!--透明-->
+    <color name="transparent">#00ffffff</color><!--透明-->
     <color name="half_transparent">#77ffffff</color> <!--半透明-->
     <color name="line">#DBDBDB</color><!--分割线颜色-->
 

@@ -9,7 +9,7 @@
     <item android:state_enabled="true">
         <shape>
             <corners android:radius="17dp"/>
-            <solid android:color="@color/lucency"/>
+            <solid android:color="@color/transparent"/>
         </shape>
     </item>
 </selector>

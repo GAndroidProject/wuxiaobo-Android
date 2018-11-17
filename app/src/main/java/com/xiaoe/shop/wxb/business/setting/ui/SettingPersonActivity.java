@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.business.setting.ui;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -11,10 +12,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -184,6 +187,8 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
             case "2":
                 gender = "女";
                 break;
+            default:
+                break;
         }
         SettingItemInfo itemAvatar = new SettingItemInfo("头像", imgUrl, "");
         SettingItemInfo itemNickname = new SettingItemInfo("昵称", "", wxNickname);
@@ -261,6 +266,12 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
         actionSheetMan = (TextView) actionSheet.findViewById(R.id.action_sheet_man);
         actionSheetWoman = (TextView) actionSheet.findViewById(R.id.action_sheet_woman);
         actionSheetCancel = (TextView) actionSheet.findViewById(R.id.action_sheet_cancel);
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        if (windowManager != null) {
+            Display display = windowManager.getDefaultDisplay();
+            // 设置Dialog最小宽度为屏幕宽度,实现占满全屏
+            actionSheet.setMinimumWidth(display.getWidth());
+        }
         // 将布局设置给 dialog
         dialog.setContentView(actionSheet);
         // 获取当前 activity 所在的窗体
