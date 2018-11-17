@@ -118,7 +118,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         event.setState(AudioPlayEvent.STOP);
         EventBus.getDefault().post(event);
         isStop = true;
-        playNext();
+        playNext(false);
     }
 
     @Override
@@ -279,10 +279,15 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     public static void playNext() {
+        playNext(true);
+    }
+
+    public static void playNext(boolean isShowLastOneToast) {
         List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
         int indexNext = audio.getIndex() + 1;
         if(indexNext >= playList.size()){
-            Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
+            if (isShowLastOneToast)
+                Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
             return;
         }
         audio.setPlay(false);

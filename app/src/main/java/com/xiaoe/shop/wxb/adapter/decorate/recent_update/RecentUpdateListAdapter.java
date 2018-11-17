@@ -41,6 +41,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private boolean hasBuy = false;
     public boolean isPlaying = false;
+    private boolean isClickPauseAllButton = false;
 
     public RecentUpdateListAdapter(Context mContext, List<RecentUpdateListItem> itemList, boolean hasBuy) {
         this.mItemList = itemList;
@@ -76,7 +77,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             viewHolder = (RecentUpdateHolder) convertView.getTag();
         }
         viewHolder.itemTitle.setText(recentUpdateListItem.getListTitle());
-        viewHolder.itemTitle.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (recentUpdateListItem.isListIsFormUser()) {
@@ -111,6 +112,8 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                 viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
             }else{
                 viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
+                if (isClickPauseAllButton)
+                    viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
             }
         }else{
             // 没有设置播放状态的话，就隐藏这个播放按钮
@@ -137,15 +140,15 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                 }
             }
         });
-        viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                String resourceId = mItemList.get(position).getListResourceId();
-//                Intent audioIntent = new Intent(mContext, AudioActivity.class);
-//                audioIntent.putExtra("resource_id", resourceId);
-//                mContext.startActivity(audioIntent);
-            }
-        });
+//        viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                String resourceId = mItemList.get(position).getListResourceId();
+////                Intent audioIntent = new Intent(mContext, AudioActivity.class);
+////                audioIntent.putExtra("resource_id", resourceId);
+////                mContext.startActivity(audioIntent);
+//            }
+//        });
         return convertView;
     }
 
@@ -203,7 +206,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
      * @param bigColumnId
      */
     public void playPosition(String resourceId, String columnId, String bigColumnId, boolean jump){
-
+        isClickPauseAllButton = false;
         AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
 
         boolean resourceEquals = false;
@@ -238,6 +241,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     }
 
     public void clickPlayAll() {
+        isClickPauseAllButton = false;
         isPlaying = true;
         if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
             AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
@@ -255,6 +259,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     }
 
     public void stopPlayAll() {
+        isClickPauseAllButton = true;
         isPlaying = false;
         AudioMediaPlayer.stop();
     }
