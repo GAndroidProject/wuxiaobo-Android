@@ -6,7 +6,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -101,6 +103,28 @@ public class SettingPersonItemActivity extends XiaoeActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+        personEditContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().length() > 0) {
+                    personEditSubmit.setClickable(true);
+                    personEditSubmit.setAlpha(1);
+                } else {
+                    personEditSubmit.setClickable(false);
+                    personEditSubmit.setAlpha(0.8f);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
         personEditSubmit.setOnClickListener(new View.OnClickListener() {

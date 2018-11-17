@@ -113,7 +113,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ColumnActivity.this.finish();
+                    touristDialog.dismissDialog();
                     JumpDetail.jumpLogin(ColumnActivity.this);
                 }
             });

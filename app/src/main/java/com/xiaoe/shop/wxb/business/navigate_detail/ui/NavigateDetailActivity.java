@@ -168,7 +168,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
         knowledgeListComponent.setSubType(DecorateEntityType.KNOWLEDGE_LIST);
         // 导航页面的 title 不隐藏
         knowledgeListComponent.setHideTitle(false);
-        knowledgeListComponent.setTitle("栏目一");
+        knowledgeListComponent.setTitle("系列课程");
         initKnowledgeData(listItems, columnsJSONList);
         knowledgeListComponent.setKnowledgeCommodityItemList(listItems);
         pageDataList.add(knowledgeListComponent);
@@ -177,7 +177,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
         knowledgeGroupComponent.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
         knowledgeGroupComponent.setSubType(DecorateEntityType.KNOWLEDGE_GROUP);
         // 当行页面的宫格显示是单品，所以没有查看更多
-        knowledgeGroupComponent.setTitle("栏目二");
+        knowledgeGroupComponent.setTitle("单品");
         knowledgeGroupComponent.setDesc("");
         initKnowledgeData(groupItems, itemJSONList);
         knowledgeGroupComponent.setKnowledgeCommodityItemList(groupItems);

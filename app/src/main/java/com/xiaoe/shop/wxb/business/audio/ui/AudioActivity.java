@@ -133,7 +133,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AudioActivity.this.finish();
+                    touristDialog.dismissDialog();
                     JumpDetail.jumpLogin(AudioActivity.this);
                 }
             });

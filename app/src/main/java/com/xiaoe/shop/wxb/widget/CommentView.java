@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.base.BaseResult;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnClickSendCommentListener;
 
@@ -220,16 +221,19 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (!isTourists) {
-            if(v.getId() == R.id.id_edit_comment){
-                editComment.requestFocus();
-                editComment.setFocusable(true);
-                editComment.setFocusableInTouchMode(true);
-            }
-        } else {
-            showTouristDialog();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                if (!isTourists) {
+                    if(v.getId() == R.id.id_edit_comment){
+                        editComment.requestFocus();
+                        editComment.setFocusable(true);
+                        editComment.setFocusableInTouchMode(true);
+                    }
+                } else {
+                    showTouristDialog();
+                }
+                break;
         }
-
         return false;
     }
 
@@ -260,6 +264,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
         touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                touristDialog.dismissDialog();
                 JumpDetail.jumpLogin(mContext, true);
             }
         });

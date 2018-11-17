@@ -452,12 +452,16 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             if (i == 0) { // 第一个要显示我正在学
                 String flowInfoTitle;
                 if (yearStr != 0 && year == yearStr) {
-                    flowInfoTitle = titleTwo + " " + dateTag.getString(2);
+                    flowInfoTitle = titleTwo;
                 } else {
-                    flowInfoTitle = dateTag.getString(1) + " " + dateTag.getString(2);
+                    flowInfoTitle = dateTag.getString(1);
                 }
                 flowInfoComponent.setTitle(flowInfoTitle);
-                flowInfoComponent.setDesc(today);
+                if ("".equals(today)) {
+                    flowInfoComponent.setDesc(dateTag.getString(2));
+                } else {
+                    flowInfoComponent.setDesc(today);
+                }
                 flowInfoComponent.setJoinedDesc("我正在学");
                 flowInfoComponent.setImgUrl("res:///" + R.mipmap.icon_taday_learning);
             } else { // 非今日，不显示我正在学

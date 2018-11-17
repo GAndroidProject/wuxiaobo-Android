@@ -44,7 +44,9 @@
         android:paddingTop="18dp"
         android:paddingBottom="18dp"
         android:paddingStart="22dp"
-        android:paddingEnd="22dp"/>
+        android:paddingEnd="22dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"/>
 
     <Button
         android:id="@+id/person_edit_submit"
@@ -56,5 +58,7 @@
         android:background="@drawable/person_submit_bg"
         android:text="@string/setting_submit"
         android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:clickable="false"
+        android:alpha="0.8"/>
 </LinearLayout>

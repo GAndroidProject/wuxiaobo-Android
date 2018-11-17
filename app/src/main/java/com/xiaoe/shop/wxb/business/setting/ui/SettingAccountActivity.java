@@ -33,6 +33,7 @@ import com.xiaoe.network.requests.LoginPhoneCodeRequest;
 import com.xiaoe.network.requests.ResetPasswordRequest;
 import com.xiaoe.network.requests.UpdatePhoneRequest;
 import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.base.BaseResult;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
@@ -51,6 +52,7 @@ public class SettingAccountActivity extends XiaoeActivity {
     protected static final String VERSION = "version"; // 版本更新
     protected static final String ABOUT = "about"; // 关于
 //    protected static final String SUGGESTION = "suggestion"; // 建议
+    protected static final String SERVICE = "service";
 
     protected static final String CURRENT_PHONE = "current_phone"; // 更换手机号界面
     protected static final String PHONE_CODE = "phone_code"; // 更换手机获取验证码
@@ -137,6 +139,10 @@ public class SettingAccountActivity extends XiaoeActivity {
                 case PWD_NEW:
                     accountTitle.setText("设置新密码");
                     replaceFragment(PWD_PHONE_CODE);
+                    break;
+                case SERVICE:
+                    accountTitle.setText("关于我们");
+                    replaceFragment(ABOUT);
                     break;
                 default:
                     break;
@@ -320,6 +326,9 @@ public class SettingAccountActivity extends XiaoeActivity {
                 case COMPLETE:
                     accountTitle.setText("修改手机号");
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_change_phone_complete);
+                case SERVICE:
+                    accountTitle.setText("服务协议");
+                    currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_service);
                 default:
                     break;
             }
@@ -354,6 +363,9 @@ public class SettingAccountActivity extends XiaoeActivity {
                     break;
                 case COMPLETE:
                     accountTitle.setText("修改手机号");
+                    break;
+                case SERVICE:
+                    accountTitle.setText("服务协议");
                     break;
                 default:
                     break;

@@ -51,6 +51,13 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
                 viewHolder.itemGo.setVisibility(View.GONE);
                 viewHolder.itemTitle.setText(currentItem.getItemTitle());
                 viewHolder.itemIcon.setImageURI(currentItem.getItemIcon());
+            } else if (currentItem.getItemTitle().equals("联系我们")) {
+                viewHolder.itemIcon.setVisibility(View.VISIBLE);
+                viewHolder.itemContent.setVisibility(View.VISIBLE);
+                viewHolder.itemGo.setVisibility(View.GONE);
+                viewHolder.itemTitle.setText(currentItem.getItemTitle());
+                viewHolder.itemContent.setText(currentItem.getItemContent());
+                viewHolder.itemIcon.setImageURI(""); // 占位
             } else {
                 viewHolder.itemIcon.setVisibility(View.VISIBLE);
                 viewHolder.itemContent.setVisibility(View.GONE);

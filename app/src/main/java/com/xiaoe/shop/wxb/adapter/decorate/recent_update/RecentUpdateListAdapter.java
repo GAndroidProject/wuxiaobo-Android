@@ -282,6 +282,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                touristDialog.dismissDialog();
                 JumpDetail.jumpLogin(mContext, true);
             }
         });

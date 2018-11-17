@@ -36,6 +36,7 @@ import com.xiaoe.network.requests.EarningRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.IsSuperVipRequest;
 import com.xiaoe.network.requests.MineLearningRequest;
+import com.xiaoe.network.requests.SuperVipBuyInfoRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter;
@@ -144,6 +145,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    touristDialog.dismissDialog();
                     JumpDetail.jumpLogin(getActivity(), true);
                 }
             });
@@ -163,7 +165,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 mineMsgView.setNickName("点击登录");
                 mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
                 mineVipCard.setVisibility(View.GONE);
-                mineMsgView.setBuyVipVisibility(View.GONE);
+                mineMsgView.setBuyVipVisibility(View.VISIBLE);
                 // 超级会员隐藏后奖学金的位置
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 int left = Dp2Px2SpUtil.dp2px(mContext, 20);
@@ -203,7 +205,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mineVipCard.setEquityListAdapter(mineEquityListAdapter);
         mineVipCard.setDeadLine("2019/10/15");
         // 会员权益假数据 -- 结束
-        if (CommonUserInfo.isIsSuperVipAvailable()) { // 店铺是否有超级会员
+        if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 店铺是否有超级会员并且不是超级会员才显示
             mineMsgView.setBuyVipVisibility(View.VISIBLE);
         } else {
             mineMsgView.setBuyVipVisibility(View.GONE);
@@ -343,6 +345,17 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 请求我正在学失败");
                 }
+            } else if (iRequest instanceof SuperVipBuyInfoRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    String productId = data.getString("svip_id");
+                    String resourceId = data.getString("resource_id");
+                    int price = data.getInteger("price");
+                    JumpDetail.jumpPay(getActivity(), resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg, "超级会员", price);
+                } else {
+                    Log.d(TAG, "onMainThreadResponse: 超级会员购买信息请求失败");
+                }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail...");
@@ -457,7 +470,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 //                break;
             case R.id.card_renewal: // 续费
                 if (mainActivity.isFormalUser) {
-                    Toast.makeText(mContext, "点击续费按钮", Toast.LENGTH_SHORT).show();
+                    SuperVipPresenter superVipPresenter = new SuperVipPresenter(this);
+                    superVipPresenter.requestSuperVipBuyInfo();
                 } else {
                     touristDialog.showDialog();
                 }

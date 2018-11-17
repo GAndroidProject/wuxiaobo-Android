@@ -18,6 +18,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.EarningItem;
 import com.xiaoe.common.utils.MeasureUtil;
@@ -28,6 +30,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningListAdapter;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter;
+import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 // 积分页面
@@ -59,8 +62,6 @@ public class IntegralActivity extends XiaoeActivity {
 
     Unbinder unbinder;
 
-    boolean isSuperVip;
-
     EarningPresenter earningPresenter;
     List<EarningItem> dataList;
 
@@ -86,7 +87,7 @@ public class IntegralActivity extends XiaoeActivity {
         integralDesc.setVisibility(View.GONE);
         integralTip.setText("暂无积分记录，快去做任务领取积分吧");
         integralTip.setVisibility(View.VISIBLE);
-        if (isSuperVip) {
+        if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 超级会员可以买并且不是超级会员
             integralBeSuperVip.setVisibility(View.VISIBLE);
         } else {
             integralBeSuperVip.setVisibility(View.GONE);
@@ -99,6 +100,12 @@ public class IntegralActivity extends XiaoeActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+        integralBeSuperVip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JumpDetail.jumpSuperVip(IntegralActivity.this);
             }
         });
     }

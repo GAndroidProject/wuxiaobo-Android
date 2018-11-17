@@ -127,6 +127,9 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
             case R.layout.fragment_change_phone_complete:
                 initChangePhoneCompleteFragment();
                 break;
+            case R.layout.fragment_service:
+                initServiceFragment();
+                break;
         }
     }
 
@@ -203,12 +206,12 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
     private void initAboutFragment() {
         SimpleDraweeView aboutLogo = (SimpleDraweeView) viewWrap.findViewById(R.id.about_logo);
         TextView aboutDesc = (TextView) viewWrap.findViewById(R.id.about_desc);
-        aboutDesc.setText("吴晓波 版权所有");
+        aboutDesc.setText("杭州巴九灵文化创意股份有限公司 版权所有");
         aboutContent = (RecyclerView) viewWrap.findViewById(R.id.about_content);
         // 关于布局假数据
         aboutLogo.setImageURI("res:///" + R.mipmap.logo);
         itemList = new ArrayList<>();
-        SettingItemInfo connectUs = new SettingItemInfo("联系我们", "", "462436501@gmail.com");
+        SettingItemInfo connectUs = new SettingItemInfo("联系我们", "", "wxbpd@meihaoplus.shop");
         SettingItemInfo service = new SettingItemInfo("服务协议", "" ,"");
         itemList.add(connectUs);
         itemList.add(service);
@@ -405,6 +408,12 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         });
     }
 
+    // 初始化服务协议
+    private void initServiceFragment() {
+        TextView serviceContent = (TextView) viewWrap.findViewById(R.id.service_content);
+        serviceContent.setText(getActivity().getResources().getString(R.string.server_list));
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -439,11 +448,10 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
             switch (itemList.indexOf(itemInfo)) {
                 case 0:
                     // 联系我们
-                    Toast.makeText(getActivity(), "联系我们", Toast.LENGTH_SHORT).show();
                     break;
                 case 1:
                     // 服务协议
-                    Toast.makeText(getActivity(), "服务协议", Toast.LENGTH_SHORT).show();
+                    settingAccountActivity.replaceFragment(SettingAccountActivity.SERVICE);
                     break;
             }
         }

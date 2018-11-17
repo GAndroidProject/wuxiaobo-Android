@@ -152,6 +152,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             touristDialog = new TouristDialog(this);
             touristDialog.setDialogCloseClickListener(v -> touristDialog.dismissDialog());
             touristDialog.setDialogConfirmClickListener(v -> {
+                touristDialog.dismissDialog();
                 JumpDetail.jumpLogin(CourseImageTextActivity.this, true);
             });
         }

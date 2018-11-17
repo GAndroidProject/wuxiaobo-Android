@@ -86,6 +86,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    touristDialog.dismissDialog();
                     JumpDetail.jumpLogin(CommentActivity.this, true);
                 }
             });

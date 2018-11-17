@@ -46,4 +46,40 @@ public class SetImageUriUtil {
             simpleDraweeView.setImageURI("");
         }
     }
+
+    /**
+     * 设置 gif 图
+     * @param simpleDraweeView simpleDraweeView
+     * @param url              图片 url
+     * @param width            宽度
+     * @param height           高度
+     */
+    public static void setGifURI(SimpleDraweeView simpleDraweeView, String url, int width, int height) {
+
+        if (url == null) {
+            return;
+        }
+
+        Uri uri = Uri.parse(url);
+
+        //根据View的尺寸放缩图片
+        if (!"".equals(uri.toString())) {
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                    .setResizeOptions(new ResizeOptions(width, height))
+                    .build();
+
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setOldController(simpleDraweeView.getController())
+                    .setImageRequest(request)
+                    .setAutoPlayAnimations(true)
+                    .setCallerContext(uri)
+                    .build();
+
+            simpleDraweeView.setController(controller);
+        } else {
+            // 如果没有图片的话就设置为空
+            simpleDraweeView.setImageURI("");
+        }
+
+    }
 }

@@ -15,9 +15,14 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 
 public class StatusPagerView extends FrameLayout {
     private static final String TAG = "LoadingView";
@@ -43,14 +48,8 @@ public class StatusPagerView extends FrameLayout {
         loadingState = (SimpleDraweeView) rootView.findViewById(R.id.loading_state);
         setLoadingState(View.GONE);
 
-        Uri uri = Uri.parse("res:///" + R.drawable.page_loading);
-
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setUri(uri)
-                .setAutoPlayAnimations(true)
-                .build();
-
-        loadingState.setController(draweeController);
+        String url = "res:///" + R.drawable.page_loading;
+        SetImageUriUtil.setGifURI(loadingState, url, Dp2Px2SpUtil.dp2px(context, 180), Dp2Px2SpUtil.dp2px(context, 180));
 
         stateText = (TextView) rootView.findViewById(R.id.state_text);
         stateImage = (ImageView) rootView.findViewById(R.id.state_image);

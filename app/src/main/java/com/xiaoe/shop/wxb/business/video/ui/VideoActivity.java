@@ -113,6 +113,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    touristDialog.dismissDialog();
                     JumpDetail.jumpLogin(VideoActivity.this, true);
                 }
             });
