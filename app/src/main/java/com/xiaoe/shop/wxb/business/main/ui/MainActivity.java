@@ -64,7 +64,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
     SuperVipPresenter superVipPresenter;
     public String expireAt;
-    public boolean baseRequestFail = false; // 基本接口挂了
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,27 +266,22 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             if (iRequest instanceof IsSuperVipRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED || code == NetworkCodes.CODE_SUPER_VIP) { // 返回的 code 有 0 和 3011
-                    baseRequestFail = false;
                     JSONObject data = (JSONObject) result.get("data");
                     initSuperVipMsg(data);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取超级会员信息失败...");
-                    baseRequestFail = true;
                 }
             } else if (iRequest instanceof BindJgPushRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    baseRequestFail = false;
                     setBindJPushSP(true);
                     Log.d(TAG, "onMainThreadResponse: 绑定极光推送成功...");
                 } else {
-                    baseRequestFail = true;
                     setBindJPushSP(false);
                     Log.d(TAG, "onMainThreadResponse: 绑定极光推送失败...");
                 }
             }
         } else {
-            baseRequestFail = true;
             Log.d(TAG, "onMainThreadResponse: request fail...");
         }
     }
