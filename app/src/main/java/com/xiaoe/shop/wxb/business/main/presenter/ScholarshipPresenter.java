@@ -46,6 +46,7 @@ public class ScholarshipPresenter implements IBizCallback {
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
         JSONObject data = (JSONObject) entity;
         if (data == null) {
+            inr.onResponse(null, false, null);
             return;
         }
         if (iRequest instanceof ScholarshipTaskListRequest) { // 接收任务列表的请求
@@ -53,6 +54,9 @@ public class ScholarshipPresenter implements IBizCallback {
             if (code == NetworkCodes.CODE_SUCCEED) {
                 JSONArray result = (JSONArray) data.get("data");
                 getTaskId2Request(result);
+            } else {
+                // 请求失败，直接回调 false 结果给调用者
+                inr.onResponse(null, false, null);
             }
         } else {
             inr.onResponse(iRequest, success, entity);

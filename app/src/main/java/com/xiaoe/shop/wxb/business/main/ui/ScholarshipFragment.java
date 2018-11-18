@@ -138,7 +138,6 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        scholarshipLoading.setVisibility(View.VISIBLE);
         scholarshipLoading.setLoadingState(View.VISIBLE);
         initListener();
     }
@@ -309,7 +308,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                     JSONObject result = (JSONObject) data.get("data");
                     initRange(result);
                 } else if (code == NetworkCodes.CODE_REQUEST_ERROR) {
-                    Log.d(TAG, "onMainThreadResponse: 请求失败...");
+                    Log.d(TAG, "onMainThreadResponse: 获取奖学金列表失败...");
+                    scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof ScholarshipTaskStateRequest) {
                 int code = data.getInteger("code");
@@ -317,7 +317,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                     JSONObject result = (JSONObject) data.get("data");
                     initTaskState(result);
                 } else {
-                    Log.d(TAG, "onMainThreadResponse: request fail...");
+                    Log.d(TAG, "onMainThreadResponse: 获取奖学金任务状态失败...");
+                    scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof ScholarshipReceiveRequest) {
                 int code = data.getInteger("code");
@@ -326,11 +327,12 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                     JSONObject result = (JSONObject) data.get("data");
                     updatePageState(result);
                 } else {
-                    Log.d(TAG, "onMainThreadResponse: request fail...");
+                    Log.d(TAG, "onMainThreadResponse: 获取奖学金失败...");
+                    scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             }
         } else {
-            Log.d(TAG, "onMainThreadResponse: request fail, params error error maybe...");
+            scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
         }
     }
 
@@ -441,8 +443,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 scholarshipStepThree.setVisibility(View.GONE);
                 break;
         }
-        scholarshipLoading.setLoadingState(View.GONE);
-        scholarshipLoading.setVisibility(View.GONE);
+        scholarshipLoading.setLoadingFinish();
     }
 
     // 显示收益对话框

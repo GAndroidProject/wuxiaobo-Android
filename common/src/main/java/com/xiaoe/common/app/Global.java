@@ -318,6 +318,7 @@ public class Global
             mac = ne.getHardwareAddress();
             mac_s = byte2hex(mac);
         } catch (Exception e) {
+            // 获取 mac 地址失败，断网的情况下会这样 TODO 网络异常提示
             e.printStackTrace();
         }
 

@@ -30,6 +30,10 @@ public class StatusPagerView extends FrameLayout {
     public static final int FINISH = 10002;
     public static final int FAIL = 10003;
     public static final int EMPTY = 10004;
+
+    public static final String FINISH_CONTENT = "加载成功";
+    public static final String FAIL_CONTENT = "页面还没找到，刷新试试吧";
+
     private View rootView;
     private SimpleDraweeView loadingState;
     private TextView stateText;
@@ -93,24 +97,26 @@ public class StatusPagerView extends FrameLayout {
         btnGoTo.setOnClickListener(listener);
     }
 
+    // 加载完成
+    public void setLoadingFinish() {
+        setVisibility(View.GONE);
+    }
 
+    // 加载异常情况显示
     public void setPagerState(int state, String hintText, int imageResourceId){
-        if(state == FINISH){
-            setVisibility(View.GONE);
-            return;
-        }
         setVisibility(View.VISIBLE);
         if(state == LOADING){
             setLoadingState(View.VISIBLE);
             setHintStateVisibility(View.GONE);
         }else if (state == FAIL){
             setLoadingState(View.GONE);
-            setHintStateVisibility(View.GONE);
+            setHintStateVisibility(View.VISIBLE);
             setStateImage(imageResourceId);
+            stateText.setTextColor(getResources().getColor(R.color.error_hint_color));
             setStateText(hintText);
         }else if (state == EMPTY){
             setLoadingState(View.GONE);
-            setHintStateVisibility(View.GONE);
+            setHintStateVisibility(View.VISIBLE);
             setStateImage(imageResourceId);
             setStateText(hintText);
         }

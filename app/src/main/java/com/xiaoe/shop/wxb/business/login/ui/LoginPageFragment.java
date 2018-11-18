@@ -216,6 +216,9 @@ public class LoginPageFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 此方法用作 view 的显示和隐藏以及保存必要的数据，不修改 activity 的 “全局” 变量
+     */
     private void updateView() {
         if (phoneErrorTip != null) {
             phoneErrorTip.setVisibility(View.GONE);
@@ -223,14 +226,12 @@ public class LoginPageFragment extends BaseFragment {
         }
         phoneNum = loginActivity.getPhoneNum();
         smsCode = loginActivity.getSmsCode();
-        loginActivity.isRegister = false;
         switch (layoutId) {
             case R.layout.fragment_login_main:
 //                initLoginMainFragment();
                 break;
             case R.layout.fragment_login_register:
 //                initLoginRegisterFragment();
-                loginActivity.isRegister = true;
                 break;
             case R.layout.fragment_login_code:
 //                initLoginCodeFragment();
@@ -464,7 +465,6 @@ public class LoginPageFragment extends BaseFragment {
                 toggleSoftKeyboard();
                 String phoneNum = phoneContent.getText().toString();
                 String password = passwordContent.getText().toString();
-                passwordContent.setText("");
                 loginActivity.loginPresenter.loginByPassword(phoneNum, password);
             }
         });
@@ -538,14 +538,11 @@ public class LoginPageFragment extends BaseFragment {
                 String password = passwordContent.getText().toString();
                 if (password.length() >= 6) {
                     // 判断是注册流程还是修改密码流程
-                    if (loginActivity.isRegister) {
-                        // 注册流程
+                    if (loginActivity.isRegister) { // 注册流程
                         loginActivity.loginPresenter.doRegister(phoneNum, password, smsCode);
-                    } else {
-                        // 修改密码流程
+                    } else { // 修改密码流程
                         loginActivity.loginPresenter.resetPasswordBySms(phoneNum, smsCode, password);
                     }
-                    passwordContent.setText("");
                     toggleSoftKeyboard();
                 }
             }

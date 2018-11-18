@@ -99,7 +99,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         unbinder = ButterKnife.bind(this, view);
         mContext = getContext();
         mainActivity = (MainActivity) getActivity();
-        mineLoading.setVisibility(View.VISIBLE);
         mineLoading.setLoadingState(View.VISIBLE);
         view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
         return view;
@@ -270,6 +269,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     mainActivity.initSuperVipMsg(data);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取超级会员信息失败...");
+                    mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof EarningRequest) {
                 String assetType = (String) iRequest.getFormBody().get("asset_type");
@@ -299,9 +299,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                         initPageData();
                     } else {
                         Log.d(TAG, "onMainThreadResponse: 请求积分总额失败");
+                        mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                     }
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 取账号类型失败");
+                    mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof MineLearningRequest) {
                 int code = result.getInteger("code");
@@ -344,6 +346,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     initPageData();
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 请求我正在学失败");
+                    mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof SuperVipBuyInfoRequest) {
                 int code = result.getInteger("code");
@@ -355,21 +358,17 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     JumpDetail.jumpPay(getActivity(), resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg, "超级会员", price);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 超级会员购买信息请求失败");
+                    mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             }
         } else {
-            Log.d(TAG, "onMainThreadResponse: request fail...");
+            mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
         }
     }
 
     // 初始化页面数据
     private void initPageData() {
         if (isIntegralFinish && isScholarshipFinish && isMineLearningFinish) { // 奖学金和积分和我正在学都请求完后再执行
-            if (itemInfoList == null) {
-                mineLoading.setLoadingState(View.GONE);
-                mineLoading.setVisibility(View.GONE);
-                return;
-            }
             itemInfoList.add(item_1);
             itemInfoList.add(item_2);
             MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
@@ -379,11 +378,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(mContext);
             mineLearningWrapView.setLearningListAdapter(learningListAdapter);
 
-            mineLoading.setLoadingState(View.GONE);
-            mineLoading.setVisibility(View.GONE);
-        } else {
-            mineLoading.setVisibility(View.VISIBLE);
-            mineLoading.setLoadingState(View.VISIBLE);
+            mineLoading.setLoadingFinish();
         }
     }
 

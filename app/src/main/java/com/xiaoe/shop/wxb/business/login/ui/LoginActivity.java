@@ -475,7 +475,7 @@ public class LoginActivity extends XiaoeActivity {
                 }
             }*/
         } else {
-            Log.d(TAG, "onMainThreadResponse: request fail");
+            Toast("网络异常");
         }
     }
 

@@ -49,7 +49,7 @@
                     android:layout_margin="20dp"
                     android:scrollbars="none"
                     android:overScrollMode="never"
-                    android:divider="@color/transparent"
+                    android:divider="@color/self_transparent"
                     android:dividerHeight="12dp"
                     android:nestedScrollingEnabled="false" />
 
