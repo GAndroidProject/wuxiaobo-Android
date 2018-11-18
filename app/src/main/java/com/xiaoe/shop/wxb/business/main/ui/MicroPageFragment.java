@@ -3,6 +3,7 @@ package com.xiaoe.shop.wxb.business.main.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,6 +36,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.FlowInfoItem;
@@ -60,7 +63,7 @@ import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
-public class MicroPageFragment extends BaseFragment implements OnCustomScrollChangedListener, View.OnTouchListener {
+public class MicroPageFragment extends BaseFragment implements OnCustomScrollChangedListener, OnRefreshListener {
 
     private static final String TAG = "MicroPageFragment";
 
@@ -70,8 +73,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 
     @BindView(R.id.micro_page_wrap)
     FrameLayout microPageWrap;
+    @BindView(R.id.micro_page_fresh)
+    SmartRefreshLayout microPageFresh;
     @BindView(R.id.micro_page_scroller)
-//    SmartRefreshLayout microPageRefresh;
     CustomScrollView microPageScroller;
 
     @BindView(R.id.micro_page_title_bg)
@@ -94,9 +98,12 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     int toolbarHeight;
     boolean isMain = true;
     boolean hasSearch = false;
+    boolean hasDecorate = false;
 
     MainActivity mainActivity;
     private String mColumnTitle;
+    DecorateRecyclerAdapter microPageAdapter;
+    PageFragmentPresenter hp;
 
     public static MicroPageFragment newInstance(String microPageId) {
         MicroPageFragment microPageFragment = new MicroPageFragment();
@@ -124,7 +131,6 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         init();
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,7 +155,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     protected void onFragmentFirstVisible() {
         super.onFragmentFirstVisible();
         // 网络请求数据代码
-        PageFragmentPresenter hp = new PageFragmentPresenter(this);
+        hp = new PageFragmentPresenter(this);
         hp.requestMicroPageData(microPageId);
     }
 
@@ -166,9 +172,13 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
                     initPageData(data);
-                    initMainContent();
+                    if (!hasDecorate) {
+                        initMainContent();
+                    }
                     // 请求成功之后隐藏 loading
                     microPageLoading.setLoadingFinish();
+                    microPageFresh.finishRefresh();
+                    microPageAdapter.notifyDataSetChanged();
                 } else if (code == NetworkCodes.CODE_GOODS_DELETE) { // 微页面不存在
                     Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
@@ -180,6 +190,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONArray data = (JSONArray) result.get("data");
                     refreshRecentComponent(data, iRequest.getDataParams().getString("goods_id"));
+                    microPageFresh.finishRefresh();
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取最近更新组件的列表失败..");
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
@@ -189,6 +200,21 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
             Toast.makeText(getActivity(), "网络错误", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // 初始化首页内容
+    private void initMainContent () {
+        // 初始化布局管理器
+        LinearLayoutManager llm_content = new LinearLayoutManager(mContext);
+        llm_content.setOrientation(LinearLayout.VERTICAL);
+        microPageContent.setLayoutManager(llm_content);
+        SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
+        spacesItemDecoration.setMargin(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+        microPageContent.addItemDecoration(spacesItemDecoration);
+        // 初始化适配器
+        microPageAdapter = new DecorateRecyclerAdapter(mContext, microPageList);
+        microPageContent.setAdapter(microPageAdapter);
+        hasDecorate = true;
     }
 
     // 刷新最近更新组件的子列表
@@ -523,7 +549,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     public void init() {
         microPageList = new ArrayList<>();
         microPageScroller.setScrollChanged(this);
-//        microPageRefresh.setOnTouchListener(this);
+        microPageFresh.setOnRefreshListener(this);
         toolbarHeight = Dp2Px2SpUtil.dp2px(mContext,160);
 
         // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
@@ -576,21 +602,6 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 Log.d(TAG, "onSharedElementsArrived: ");
             }
         });
-    }
-
-    DecorateRecyclerAdapter microPageAdapter;
-    // 初始化首页内容
-    private void initMainContent () {
-        // 初始化布局管理器
-        LinearLayoutManager llm_content = new LinearLayoutManager(mContext);
-        llm_content.setOrientation(LinearLayout.VERTICAL);
-        microPageContent.setLayoutManager(llm_content);
-        SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
-        spacesItemDecoration.setMargin(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), 0);
-        microPageContent.addItemDecoration(spacesItemDecoration);
-        // 初始化适配器
-        microPageAdapter = new DecorateRecyclerAdapter(mContext, microPageList);
-        microPageContent.setAdapter(microPageAdapter);
     }
 
     @Override
@@ -687,46 +698,17 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         super.setUserVisibleHint(isVisibleToUser);
     }
 
-    float lastY;
-
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        // 偏移量
-        int dy = 0;
-        // 事件的坐标
-        float y = event.getY();
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                lastY = y;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                dy = (int) (lastY - y);
-                handleVerticalScroll(dy);
-                break;
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        if (hp == null) {
+            hp = new PageFragmentPresenter(this);
         }
-        return false;
-    }
-
-    private void handleVerticalScroll(int dy) {
-        if (!isMain) {
-            float alpha = (dy / (toolbarHeight * 1.0f)) * 255;
-            if(alpha > 255){
-                alpha = 255;
-            }else if(alpha < 0){
-                alpha = 0;
-            }
-            microPageToolbar.setBackgroundColor(Color.argb((int) alpha,30,89,246));
-            if (alpha == 255) {
-                microPageToolbarTitle.setVisibility(View.VISIBLE);
-                if (hasSearch) {
-                    microPageToolbarSearch.setVisibility(View.VISIBLE);
-                } else {
-                    microPageToolbarSearch.setVisibility(View.GONE);
-                }
-            } else {
-                microPageToolbarTitle.setVisibility(View.GONE);
-                microPageToolbarSearch.setVisibility(View.GONE);
-            }
+        if (microPageList.size() != 0 && microPageAdapter != null) {
+            microPageList.clear();
+            microPageAdapter.notifyDataSetChanged();
+            hp.requestMicroPageData(microPageId);
+            microPageLoading.setLoadingState(View.VISIBLE);
+            microPageLoading.setVisibility(View.VISIBLE);
         }
     }
 }

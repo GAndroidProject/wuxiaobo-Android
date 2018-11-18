@@ -7,46 +7,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.xiaoe.shop.wxb.widget.CustomScrollView
-        android:id="@+id/micro_page_scroller"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/micro_page_fresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never"
-        android:scrollbars="none"
-        android:paddingBottom="24dp"
-        android:clipToPadding="false"
-        android:clipChildren="false">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <com.xiaoe.shop.wxb.widget.CustomScrollView
+            android:id="@+id/micro_page_scroller"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:paddingBottom="24dp"
+            android:clipToPadding="false"
+            android:clipChildren="false">
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/micro_page_title_bg"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="374dp" />
+                android:layout_height="wrap_content">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/micro_page_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                android:scrollbars="none"/>
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/micro_page_title_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="374dp" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/logo_logo_xiaoetong"
-                android:contentDescription="@string/xet_logo"
-                android:layout_gravity="center"
-                android:layout_marginTop="24dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/micro_page_content"/>
-        </RelativeLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/micro_page_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"/>
 
-    </com.xiaoe.shop.wxb.widget.CustomScrollView>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/logo_logo_xiaoetong"
+                    android:contentDescription="@string/xet_logo"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="24dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/micro_page_content"/>
+            </RelativeLayout>
+
+        </com.xiaoe.shop.wxb.widget.CustomScrollView>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <FrameLayout
         android:id="@+id/micro_page_toolbar"
