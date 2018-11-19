@@ -225,8 +225,11 @@ public class LoginActivity extends XiaoeActivity {
     protected void replaceFragment(String tag) {
         if (currentFragment != null) {
             if (MAIN.equals(tag)) {
-                // 回到首页之前清空 preTag
+                // 回到首页之前清空 preTag 以及处理初始化操作
                 preTag = null;
+                isRegister = false;
+                phoneNum = "";
+                smsCode = "";
             } else {
                 preTag = currentFragment.getTag();
             }
