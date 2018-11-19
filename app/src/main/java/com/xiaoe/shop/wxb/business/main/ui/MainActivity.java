@@ -147,7 +147,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         List<String> buttonNames = new ArrayList<String>();
         buttonNames.add("今日");
         buttonNames.add("课程");
-        buttonNames.add("任务");
+        buttonNames.add("奖学金");
         buttonNames.add("我的");
         List<Integer> buttonCheckedIcons = new ArrayList<Integer>();
         buttonCheckedIcons.add(R.mipmap.today_selected);

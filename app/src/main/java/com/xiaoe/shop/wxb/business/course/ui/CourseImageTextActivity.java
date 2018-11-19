@@ -4,18 +4,25 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 import com.tencent.smtt.sdk.CookieSyncManager;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
@@ -33,6 +40,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.course.presenter.CourseImageTextPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
@@ -41,7 +49,7 @@ import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CommonTitleView;
-import com.xiaoe.shop.wxb.widget.PushScrollView;
+import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 import java.util.List;
@@ -50,7 +58,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CourseImageTextActivity extends XiaoeActivity implements PushScrollView.ScrollViewListener {
+public class CourseImageTextActivity extends XiaoeActivity implements OnCustomScrollChangedListener, OnRefreshListener {
 
     private static final String TAG = "CourseImageTextActivity";
 
@@ -59,8 +67,10 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     @BindView(R.id.it_wrap)
     FrameLayout itWrap;
 
-    @BindView(R.id.it_push_scrollview)
-    PushScrollView itPushScrollView;
+    @BindView(R.id.it_refresh)
+    SmartRefreshLayout itRefresh;
+    @BindView(R.id.it_custom_scrollview)
+    CustomScrollView itCustomScrollView;
     @BindView(R.id.it_title_bg)
     SimpleDraweeView itBg;
     @BindView(R.id.it_title_back)
@@ -193,7 +203,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     }
 
     private void initListener() {
-        itPushScrollView.setScrollViewListener(this);
+        itRefresh.setOnRefreshListener(this);
+        itCustomScrollView.setScrollChanged(this);
         itBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -354,10 +365,13 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
                     initPageData(data);
+                    itRefresh.finishRefresh();
                 } else if (code == NetworkCodes.CODE_GOODS_GROUPS_DELETE) {
                     Log.d(TAG, "onMainThreadResponse: 商品分组已被删除");
+                    itRefresh.finishRefresh();
                 } else if (code == NetworkCodes.CODE_GOODS_NOT_FIND) {
                     Log.d(TAG, "onMainThreadResponse: 商品不存在");
+                    itRefresh.finishRefresh();
                 }
             }
         } else {
@@ -458,8 +472,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     }
 
     @Override
-    public void onScrollChanged(PushScrollView scrollView, int x, int y, int oldX, int oldY) {
-        float alpha = (y / (toolbarHeight * 1.0f)) * 255;
+    public void onScrollChanged(int l, int t, int oldl, int oldt) {
+        float alpha = (t / (toolbarHeight * 1.0f)) * 255;
         if(alpha > 255){
             alpha = 255;
         }else if(alpha < 0){
@@ -469,14 +483,24 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         if (alpha == 255) {
             itToolbar.setTitleBackVisibility(View.VISIBLE);
             itToolbar.setTitleContentTextVisibility(View.VISIBLE);
+            itBack.setVisibility(View.GONE);
         } else {
             itToolbar.setTitleBackVisibility(View.GONE);
             itToolbar.setTitleContentTextVisibility(View.GONE);
+            itBack.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onLoadState(int state) {
 
+    }
+
+    @Override
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        if (courseImageTextPresenter == null) {
+            courseImageTextPresenter = new CourseImageTextPresenter(this);
+        }
+        courseImageTextPresenter.requestITDetail(resourceId, Integer.parseInt(resourceType));
     }
 }
