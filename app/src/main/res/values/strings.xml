@@ -203,7 +203,7 @@
     <!--收藏提示 start-->
     <string name="collect_succeed">收藏成功</string>
     <string name="collect_fail">收藏失败</string>
-    <string name="cancel_collect_succeed">取消收藏成功</string>
+    <string name="cancel_collect_succeed">取消收藏</string>
     <string name="cancel_collect_fail">取消收藏失败</string>
     <!--收藏提示 end-->
 

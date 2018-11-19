@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.anim.TranslationAnimator;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
@@ -66,8 +67,11 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
     public void setColumnTitle(String text){
         if (!TextUtils.isEmpty(text)){
             columnTitle.setText(String.format("——《%s》",text));
+            title.setPadding(0,0,0,0);
         }else{
             columnTitle.setText("");
+            //若没有所属专栏，把标题上下居中显示
+            title.setPadding(0,Dp2Px2SpUtil.dp2px(mContext,5),0,0);
         }
 
     }

@@ -398,7 +398,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
      */
     private void removeCollectionRequest(JSONObject jsonObject) {
         if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
-//            toastCustom(getResources().getString(R.string.cancel_collect_succeed));
+            toastCustom(getString(R.string.cancel_collect_succeed));
             setCollectState(false);
         }else{
             toastCustom(getResources().getString(R.string.cancel_collect_fail));
@@ -411,7 +411,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
      */
     private void addCollectionRequest(JSONObject jsonObject) {
         if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
-//            toastCustom(getResources().getString(R.string.collect_succeed));
+            toastCustom(getString(R.string.collect_succeed));
             setCollectState(true);
         }else{
             toastCustom(getResources().getString(R.string.collect_fail));
