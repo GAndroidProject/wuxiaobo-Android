@@ -18,12 +18,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.tencent.smtt.sdk.CookieSyncManager;
 import com.tencent.smtt.sdk.WebView;
 import com.umeng.socialize.UMShareAPI;
-
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -49,6 +43,12 @@ import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CommonTitleView;
 import com.xiaoe.shop.wxb.widget.PushScrollView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class CourseImageTextActivity extends XiaoeActivity implements PushScrollView.ScrollViewListener {
 
@@ -227,7 +227,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             @Override
             public void onClick(View v) {
                 if (loginList.size() == 1) {
-                    umShare(collectionTitle, collectionImgUrlCompressed == null ? collectionImgUrl : collectionImgUrlCompressed, "", "");
+                    umShare(collectionTitle, collectionImgUrlCompressed == null ? collectionImgUrl : collectionImgUrlCompressed, shareUrl, "");
                 } else {
                     touristDialog.showDialog();
                 }
