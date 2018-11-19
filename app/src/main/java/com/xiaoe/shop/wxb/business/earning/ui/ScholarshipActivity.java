@@ -121,6 +121,12 @@ public class ScholarshipActivity extends XiaoeActivity {
                 JumpDetail.jumpWr(ScholarshipActivity.this, allMoney);
             }
         });
+        scholarshipBeSuperVip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JumpDetail.jumpSuperVip(ScholarshipActivity.this);
+            }
+        });
     }
 
     @Override
