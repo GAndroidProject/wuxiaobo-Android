@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.business.search.presenter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,6 +13,8 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 
 public class RecommendRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>  {
+
+    private static final String TAG = "RecommendAdapter";
 
     private Context mContext;
     private List<String> recommendList;
@@ -36,6 +39,7 @@ public class RecommendRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         SearchMainContentViewHolder searchMainContentViewHolder = (SearchMainContentViewHolder) holder;
+        Log.d(TAG, "onBindViewHolder: position ---- " + position);
         String content = recommendList.get(position);
         searchMainContentViewHolder.content.setText(content);
         final int tempPos = searchMainContentViewHolder.getAdapterPosition();

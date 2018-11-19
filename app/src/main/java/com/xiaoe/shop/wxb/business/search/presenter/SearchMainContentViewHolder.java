@@ -18,6 +18,4 @@ public class SearchMainContentViewHolder extends BaseViewHolder {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
-
-    private OnItemClickWithPosListener itemClickListener;
 }

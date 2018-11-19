@@ -160,6 +160,17 @@ public class SearchActivity extends XiaoeActivity {
                             String currentTime = obtainCurrentTime();
                             SearchHistory searchHistory = new SearchHistory(content, currentTime);
                             SQLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
+
+                            // 刷新界面
+                            if (((SearchPageFragment) currentFragment).historyData != null && ((SearchPageFragment) currentFragment).historyAdapter != null) {
+                                if (((SearchPageFragment) currentFragment).historyData.size() == 5) {
+                                    ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
+                                    ((SearchPageFragment) currentFragment).historyData.remove(((SearchPageFragment) currentFragment).historyData.size() - 1);
+                                } else { // 否则直接添加
+                                    ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
+                                }
+                                ((SearchPageFragment) currentFragment).historyAdapter.notifyDataSetChanged();
+                            }
                         }
                     }
                     obtainSearchResult(content);
@@ -307,7 +318,7 @@ public class SearchActivity extends XiaoeActivity {
     }
 
     // 判断数据库是否已经存了这条数据
-    private boolean hasData(String tempContent) {
+    protected boolean hasData(String tempContent) {
         // 从 search_history 表里面找到 content = tempContent 的那条数据
         List<SearchHistory> lists = SQLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
                 "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " where " + SearchHistoryEntity.COLUMN_NAME_CONTENT + " = ?", new String[]{tempContent});

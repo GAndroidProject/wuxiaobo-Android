@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,6 +34,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.entitys.ScholarshipRangeItem;
@@ -53,13 +58,15 @@ import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
-public class ScholarshipFragment extends BaseFragment implements View.OnClickListener {
+public class ScholarshipFragment extends BaseFragment implements View.OnClickListener, OnRefreshListener {
 
     private static final String TAG = "ScholarshipFragment";
 
     private Unbinder unbinder;
     private Context mContext;
 
+    @BindView(R.id.scholarship_fresh)
+    SmartRefreshLayout scholarshipRefresh;
     @BindView(R.id.scholarship_rule)
     TextView scholarshipRule;
     @BindView(R.id.scholarship_step_one)
@@ -143,6 +150,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void initListener() {
+        scholarshipRefresh.setOnRefreshListener(this);
         scholarshipRule.setOnClickListener(this);
         scholarshipDivide.setOnClickListener(this);
         scholarshipRealRange.setOnClickListener(this);
@@ -316,8 +324,10 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject result = (JSONObject) data.get("data");
                     initTaskState(result);
+                    scholarshipRefresh.finishRefresh();
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取奖学金任务状态失败...");
+                    scholarshipRefresh.finishRefresh();
                     scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof ScholarshipReceiveRequest) {
@@ -585,6 +595,20 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 }
                 scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
             }
+        }
+    }
+
+    @Override
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        if (scholarshipPresenter == null) {
+            scholarshipPresenter = new ScholarshipPresenter(this);
+        }
+        scholarshipPresenter.requestTaskList(true);
+        if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
+            if (scholarshipPresenter == null) {
+                scholarshipPresenter = new ScholarshipPresenter(this);
+            }
+            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
         }
     }
 }

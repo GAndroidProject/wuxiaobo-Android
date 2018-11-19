@@ -36,6 +36,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.entitys.ComponentInfo;
@@ -46,6 +48,7 @@ import com.xiaoe.common.entitys.KnowledgeCommodityItem;
 import com.xiaoe.common.entitys.RecentUpdateListItem;
 import com.xiaoe.common.entitys.ShufflingItem;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.common.widget.CommonRefreshHeader;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.IRequest;
@@ -184,9 +187,11 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     microPageAdapter.notifyDataSetChanged();
                 } else if (code == NetworkCodes.CODE_GOODS_DELETE) { // 微页面不存在
                     Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
+                    microPageFresh.finishRefresh();
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 } else if (code == NetworkCodes.CODE_TINY_PAGER_NO_FIND) { // 微页面已被删除
                     Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
+                    microPageFresh.finishRefresh();
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof ColumnListRequst) {
@@ -196,6 +201,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     microPageFresh.finishRefresh();
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取最近更新组件的列表失败..");
+                    microPageFresh.finishRefresh();
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             }

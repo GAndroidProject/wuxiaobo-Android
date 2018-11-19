@@ -20,6 +20,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.EarningItem;
 import com.xiaoe.common.utils.MeasureUtil;
@@ -62,7 +64,6 @@ public class ScholarshipActivity extends XiaoeActivity {
     TextView scholarshipTip;
 
     Unbinder unbinder;
-    boolean isSuperVip;
 
     EarningPresenter earningPresenter;
 
@@ -94,7 +95,7 @@ public class ScholarshipActivity extends XiaoeActivity {
         scholarshipListTitle.setText("我的奖学金");
         scholarshipTip.setText("暂无奖学金记录，快去做任务领取奖学金吧");
         scholarshipTip.setVisibility(View.VISIBLE);
-        if (isSuperVip) { // 超级会员
+        if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 不是超级会员
             scholarshipBeSuperVip.setVisibility(View.VISIBLE);
         } else {
             scholarshipBeSuperVip.setVisibility(View.GONE);

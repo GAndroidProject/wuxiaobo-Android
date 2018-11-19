@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.LinearLayout;
@@ -83,6 +84,7 @@ public class SearchContentView extends LinearLayout {
         Log.d(TAG, "setHistoryContentAdapter: history");
         AutoLineFeedLayoutManager autoLineFeedLayoutManager = new AutoLineFeedLayoutManager(mContext);
         autoLineFeedLayoutManager.setScrollEnabled(false);
+        autoLineFeedLayoutManager.setStackFromEnd(true); // 软件盘弹出，recyclerView 随之上移
         SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
         int top = Dp2Px2SpUtil.dp2px(mContext, 16);
         int right = Dp2Px2SpUtil.dp2px(mContext, 16);
@@ -97,6 +99,7 @@ public class SearchContentView extends LinearLayout {
         Log.d(TAG, "setRecommendContentAdapter: recommend");
         AutoLineFeedLayoutManager autoLineFeedLayoutManager = new AutoLineFeedLayoutManager(mContext);
         autoLineFeedLayoutManager.setScrollEnabled(false);
+        autoLineFeedLayoutManager.setStackFromEnd(true); // 软件盘弹出，recyclerView 随之上移
         SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
         int top = Dp2Px2SpUtil.dp2px(mContext, 16);
         int right = Dp2Px2SpUtil.dp2px(mContext, 16);

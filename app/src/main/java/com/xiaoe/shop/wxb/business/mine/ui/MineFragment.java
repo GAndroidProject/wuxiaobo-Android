@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.business.mine.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.DecorateEntityType;
@@ -51,13 +56,15 @@ import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
-public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, OnItemClickWithMoneyItemListener {
+public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, OnItemClickWithMoneyItemListener, OnRefreshListener {
 
     private static final String TAG = "MineFragment";
 
     private Unbinder unbinder;
     private Context mContext;
 
+    @BindView(R.id.mine_refresh)
+    SmartRefreshLayout mineRefresh;
     @BindView(R.id.mine_title_wrap)
     LinearLayout mineWrap;
     @BindView(R.id.mine_title_view)
@@ -91,6 +98,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     TouristDialog touristDialog;
     String mineLearningId;
     String mineLearningType;
+    boolean hasDecorate;
+
+    MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter; // 金钱适配器
+    MineLearningListAdapter learningListAdapter; // 学习记录适配器
 
     @Nullable
     @Override
@@ -237,6 +248,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void initListener() {
+        mineRefresh.setOnRefreshListener(this);
         mineTitleView.setMsgClickListener(this);
         mineTitleView.setSettingListener(this);
         mineMsgView.setBuyVipClickListener(this);
@@ -279,9 +291,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                         JSONObject data = (JSONObject) result.get("data");
                         int scholarship = data.getInteger("balance");
                         balance = "￥" + String.format("%.2f", scholarship / 100f);
-                        item_1 = new MineMoneyItemInfo();
-                        item_1.setItemTitle(balance);
-                        item_1.setItemDesc("奖学金");
+                        if (item_1 == null) {
+                            item_1 = new MineMoneyItemInfo();
+                            item_1.setItemTitle(balance);
+                            item_1.setItemDesc("奖学金");
+                        } else {
+                            item_1.setItemTitle(balance);
+                        }
                         isScholarshipFinish = true;
                         initPageData();
                     } else {
@@ -292,9 +308,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     if (code == NetworkCodes.CODE_SUCCEED) {
                         JSONObject data = (JSONObject) result.get("data");
                         int integral = data.getInteger("balance");
-                        item_2 = new MineMoneyItemInfo();
-                        item_2.setItemTitle(String.valueOf(integral));
-                        item_2.setItemDesc("积分");
+                        if (item_2 == null) {
+                            item_2 = new MineMoneyItemInfo();
+                            item_2.setItemTitle(String.valueOf(integral));
+                            item_2.setItemDesc("积分");
+                        } else {
+                            item_2.setItemTitle(String.valueOf(integral));
+                        }
                         isIntegralFinish = true;
                         initPageData();
                     } else {
@@ -344,9 +364,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     }
                     isMineLearningFinish = true;
                     initPageData();
+                    mineRefresh.finishRefresh();
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 请求我正在学失败");
                     mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                    mineRefresh.finishRefresh();
                 }
             } else if (iRequest instanceof SuperVipBuyInfoRequest) {
                 int code = result.getInteger("code");
@@ -369,14 +391,23 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     // 初始化页面数据
     private void initPageData() {
         if (isIntegralFinish && isScholarshipFinish && isMineLearningFinish) { // 奖学金和积分和我正在学都请求完后再执行
+            if (itemInfoList.size() > 0) {
+                itemInfoList.clear();
+            }
             itemInfoList.add(item_1);
             itemInfoList.add(item_2);
-            MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
-            moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
-            mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
+            if (!hasDecorate) {
+                moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
+                moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
+                mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
 
-            MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(mContext);
-            mineLearningWrapView.setLearningListAdapter(learningListAdapter);
+                learningListAdapter = new MineLearningListAdapter(mContext);
+                mineLearningWrapView.setLearningListAdapter(learningListAdapter);
+                hasDecorate = true;
+            } else {
+                moneyWrapRecyclerAdapter.notifyDataSetChanged();
+                learningListAdapter.notifyDataSetChanged();
+            }
 
             mineLoading.setLoadingFinish();
         }
@@ -596,5 +627,18 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             default:
                 return null;
         }
+    }
+
+    @Override
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        if (earningPresenter == null) {
+            earningPresenter = new EarningPresenter(this);
+        }
+        if (mineLearningPresenter == null) {
+            mineLearningPresenter = new MineLearningPresenter(this);
+        }
+        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+        mineLearningPresenter.requestLearningData(1, 1);
     }
 }

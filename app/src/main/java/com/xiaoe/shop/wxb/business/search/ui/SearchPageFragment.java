@@ -60,6 +60,8 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
     List<ComponentInfo> itemComponentList;
     List<JSONObject> itemJsonList; // 单品 json 集合
     List<JSONObject> groupJsonList; // 专栏、大专栏 json 集合
+    List<SearchHistory> historyData; // 历史数据
+    HistoryRecyclerAdapter historyAdapter; // 历史数据适配器
 
     public static SearchPageFragment newInstance(int layoutId) {
         SearchPageFragment searchPageFragment = new SearchPageFragment();
@@ -158,13 +160,13 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                 }
             });
 
-            List<SearchHistory> historyData = historyList;
-            HistoryRecyclerAdapter historyAdapter = new HistoryRecyclerAdapter(mContext, historyData);
+            historyData = historyList;
+            historyAdapter = new HistoryRecyclerAdapter(mContext, historyData);
             historyAdapter.setOnItemClickWithPosListener(this);
             historyContentView.setHistoryContentAdapter(historyAdapter);
         }
 
-        recommendContentView = (SearchContentView) viewWrap.findViewById(R.id.recommend_content);;
+        recommendContentView = (SearchContentView) viewWrap.findViewById(R.id.recommend_content);
         recommendContentView.setTitleEndVisibility(View.GONE);
         recommendContentView.setTitleStartText("大家都在搜");
 
@@ -274,8 +276,11 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             commodityItem.setItemPrice(priceStr);
             contentList.add(commodityItem);
         }
-        itemComponentInfo.setKnowledgeCommodityItemList(contentList);
-        itemComponentList.add(itemComponentInfo);
+        // 有数据才显示
+        if (contentList.size() > 0) {
+            itemComponentInfo.setKnowledgeCommodityItemList(contentList);
+            itemComponentList.add(itemComponentInfo);
+        }
     }
 
     // 初始化 recyclerView
@@ -301,6 +306,20 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             ((SearchActivity) getActivity()).searchContent.setText(searchContent);
             ((SearchActivity) getActivity()).searchContent.setSelection(searchContent.length());
             ((SearchActivity) getActivity()).obtainSearchResult(((SearchActivity) getActivity()).searchContent.getText().toString());
+            if (!searchActivity.hasData(searchContent)) { // 点击推荐，查库没有后需要入库
+                String currentTime = searchActivity.obtainCurrentTime();
+                SearchHistory searchHistory = new SearchHistory(searchContent, currentTime);
+                SQLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
+
+                // 入库后集合需要改变
+                if (historyData.size() == 5) {
+                    historyData.add(0, searchHistory);
+                    historyData.remove(historyData.size() - 1); // 去掉最后一个
+                } else { // 否则直接添加
+                    historyData.add(0, searchHistory);
+                }
+                historyAdapter.notifyDataSetChanged();
+            }
         }
     }
 

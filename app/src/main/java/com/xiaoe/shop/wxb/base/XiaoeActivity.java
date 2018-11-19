@@ -406,7 +406,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             CommonUserInfo.setIsSuperVipAvailable(false);
 
             JumpDetail.jumpLogin(this);
-            finish();
+            // 登录后需要回到原来的页面，所以不做 finish 操作
+            // finish();
         }
     }
     public CustomDialog getDialog(){
