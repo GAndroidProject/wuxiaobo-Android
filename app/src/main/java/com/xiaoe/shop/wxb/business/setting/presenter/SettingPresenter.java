@@ -1,11 +1,16 @@
 package com.xiaoe.shop.wxb.business.setting.presenter;
 
+import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
+import com.xiaoe.network.requests.GetPushStateRequest;
 import com.xiaoe.network.requests.IRequest;
+import com.xiaoe.network.requests.SetPushStateRequest;
 import com.xiaoe.network.requests.SettingPersonItemRequest;
 import com.xiaoe.network.requests.SettingPseronMsgRequest;
+
+import cn.jpush.android.api.JPushInterface;
 
 public class SettingPresenter implements IBizCallback {
 
@@ -125,4 +130,27 @@ public class SettingPresenter implements IBizCallback {
 
         NetworkEngine.getInstance().sendRequest(settingPersonItemRequest);
     }
+
+    /**
+     * 获取用户设置的消息状态
+     */
+    public void getPushState() {
+        GetPushStateRequest request = new GetPushStateRequest(this);
+        request.sendRequest();
+    }
+
+    /**
+     * 设置用户设置的消息状态
+     */
+    public void setPushState(int state) {
+        SetPushStateRequest request = new SetPushStateRequest(this);
+
+        // 极光推送的 注册 ID
+        request.addRequestParam("device_token", JPushInterface.getRegistrationID(XiaoeApplication.getmContext()));
+        // 1-开启，2-关闭
+        request.addRequestParam("is_push_state", state);
+
+        request.sendRequest();
+    }
+
 }

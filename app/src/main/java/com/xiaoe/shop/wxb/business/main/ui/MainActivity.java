@@ -21,6 +21,7 @@ import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.BindJgPushRequest;
+import com.xiaoe.network.requests.GetPushStateRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.IsSuperVipRequest;
 import com.xiaoe.shop.wxb.R;
@@ -29,6 +30,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
 import com.xiaoe.shop.wxb.business.main.presenter.MessagePushPresenter;
+import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.jpush.ExampleUtil;
@@ -104,15 +106,15 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         MessagePushPresenter messagePushPresenter = new MessagePushPresenter(this);
         if (jgPushSaveInfo != null) {
             if (!jgPushSaveInfo.isBindRegIdSuccess()) {
-                messagePushPresenter.requestBindJgPush(isFormalUser);
+                messagePushPresenter.requestBindJgPush();
             } else {
                 if (jgPushRegId != null && !jgPushRegId.equals(jgPushSaveInfo.getRegistrationID())) {
-                    messagePushPresenter.requestBindJgPush(isFormalUser);
+                    messagePushPresenter.requestBindJgPush();
                 }
             }
         } else {
             if (jgPushRegId != null) {
-                messagePushPresenter.requestBindJgPush(isFormalUser);
+                messagePushPresenter.requestBindJgPush();
             }
         }
 
@@ -131,6 +133,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             AppUpgradeHelper.getInstance().checkUpgrade(false, this);
             AppUpgradeHelper.getInstance().setShouldCheckUpgrade(false);
         }
+        // 获取消息接收状态
+        new SettingPresenter(this).getPushState();
     }
 
     private void initView() {
@@ -280,6 +284,16 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                 } else {
                     setBindJPushSP(false);
                     Log.d(TAG, "onMainThreadResponse: 绑定极光推送失败...");
+                }
+            } else if (iRequest instanceof GetPushStateRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = result.getJSONObject("data");
+                    String isPushState = data.getString("is_push_state");
+                    SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_JPUSH_STATE_CODE, isPushState);
+                    Log.d(TAG, "onMainThreadResponse: state " + isPushState);
+                } else if (code == NetworkCodes.CODE_FAILED) {
+                    Log.d(TAG, "onMainThreadResponse: 获取推送消息状态失败...");
                 }
             }
         } else {

@@ -160,6 +160,8 @@ public class SettingPersonItemActivity extends XiaoeActivity {
                     case "职位":
                         settingPresenter.updateJob(apiToken, inputContent);
                         break;
+                    default:
+                        break;
                 }
             }
         });

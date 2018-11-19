@@ -29,7 +29,7 @@ public class MessagePushPresenter implements IBizCallback {
         inr.onResponse(iRequest, success, entity);
     }
 
-    public void requestBindJgPush(boolean isFormalUser) {
+    public void requestBindJgPush() {
         BindJgPushRequest bindJgPushRequest = new BindJgPushRequest(this);
 
         // 极光推送的 注册 ID

@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.suke.widget.SwitchButton;
 import com.xiaoe.common.entitys.SettingItemInfo;
 import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
@@ -36,6 +38,7 @@ import com.xiaoe.shop.wxb.business.setting.presenter.SettingTimeCount;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.widget.CodeVerifyView;
+import com.xiaoe.shop.wxb.widget.CustomSwitchButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +66,10 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
     // 软键盘
     InputMethodManager imm;
     private boolean mDisplayFlg;
+    /**
+     * 开启关闭的消息推送开关
+     */
+    private CustomSwitchButton messageSwitch;
 
     public static SettingAccountFragment newInstance(int layoutId) {
         SettingAccountFragment settingAccountFragment = new SettingAccountFragment();
@@ -162,19 +169,40 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
 
     // 推送消息布局
     private void initMessageFragment() {
-        SwitchButton messageSwitch = (SwitchButton) viewWrap.findViewById(R.id.message_switch);
-        // TODO: 获取推送消息开关状态
-//        messageSwitch.setChecked(true);
-        messageSwitch.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                if (isChecked) {
-                    Toast.makeText(getActivity(), "打开消息推送", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getActivity(), "关闭消息推送", Toast.LENGTH_SHORT).show();
-                }
+        messageSwitch = (CustomSwitchButton) viewWrap.findViewById(R.id.message_switch);
+        messageSwitch.setOnCheckedChangeListener((view, isChecked, isFromUser) -> {
+            if (!isFromUser) {
+                return;
+            }
+            if (isChecked) {
+                settingAccountActivity.settingPresenter.setPushState(1);
+            } else {
+                settingAccountActivity.settingPresenter.setPushState(2);
             }
         });
+        updateMessageFragment(true);
+    }
+
+    public void updateMessageFragment(boolean isSet) {
+        if (messageSwitch == null) {
+            return;
+        }
+        String isPushState = (String) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_JPUSH_STATE_CODE, "1");
+        if (isSet) {
+            if ("1".equals(isPushState)) {
+                messageSwitch.setChecked(true, false);
+            } else if ("2".equals(isPushState)) {
+                messageSwitch.setChecked(false, false);
+            }
+        } else {
+            if (messageSwitch.isChecked()) {
+                Toast.makeText(getActivity(), "已关闭", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "已开启", Toast.LENGTH_SHORT).show();
+            }
+            messageSwitch.setChecked(!messageSwitch.isChecked(), false);
+        }
+        Log.d(TAG, "updateMessageFragment: state " + isPushState);
     }
 
     // 建议布局（先留着）

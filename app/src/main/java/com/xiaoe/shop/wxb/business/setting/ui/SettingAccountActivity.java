@@ -25,17 +25,20 @@ import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.CacheManagerUtil;
 import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.requests.GetPushStateRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.LoginCodeVerifyRequest;
 import com.xiaoe.network.requests.LoginNewCodeVerifyRequest;
 import com.xiaoe.network.requests.LoginPhoneCodeRequest;
 import com.xiaoe.network.requests.ResetPasswordRequest;
+import com.xiaoe.network.requests.SetPushStateRequest;
 import com.xiaoe.network.requests.UpdatePhoneRequest;
 import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.base.BaseResult;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.common.db.LoginSQLiteCallback;
+import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.login.LoginPresenter;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
@@ -72,6 +75,7 @@ public class SettingAccountActivity extends XiaoeActivity {
     InputMethodManager imm;
 
     LoginPresenter loginPresenter;
+    SettingPresenter settingPresenter;
 
     String smsCode = ""; // 原来手机的验证码
     String newSmsCode = ""; // 新手机的验证码
@@ -105,6 +109,7 @@ public class SettingAccountActivity extends XiaoeActivity {
         localPhone = CommonUserInfo.getPhone();
         currentFragment = new MainAccountFragment();
         loginPresenter = new LoginPresenter(this, this);
+        settingPresenter = new SettingPresenter(this);
         getSupportFragmentManager().beginTransaction().add(R.id.account_container, currentFragment, MAIN).commit();
         init();
         isHasUpgradeCurrentApp = AppUpgradeHelper.getInstance().isHasUpgradeCurrentApp();
@@ -169,6 +174,28 @@ public class SettingAccountActivity extends XiaoeActivity {
                     replaceFragment(SettingAccountActivity.MAIN);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
                     Log.d(TAG, "onMainThreadResponse: 修改密码失败...");
+                }
+//            } else if (iRequest instanceof GetPushStateRequest) {
+//                int code = result.getInteger("code");
+//                if (code == NetworkCodes.CODE_SUCCEED) {
+//                    JSONObject data = result.getJSONObject("data");
+//                    String isPushState = data.getString("is_push_state");
+//                    SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_JPUSH_STATE_CODE, isPushState);
+//                    if (currentFragment instanceof SettingAccountFragment) {
+//                        ((SettingAccountFragment) currentFragment).updateMessageFragment(true);
+//                    }
+//                } else if (code == NetworkCodes.CODE_FAILED) {
+//                    Log.d(TAG, "onMainThreadResponse: 获取推送消息状态失败...");
+//                }
+            } else if (iRequest instanceof SetPushStateRequest) {
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    if (currentFragment instanceof SettingAccountFragment) {
+                        ((SettingAccountFragment) currentFragment).updateMessageFragment(false);
+                    }
+                } else if (code == NetworkCodes.CODE_FAILED) {
+                    Log.d(TAG, "onMainThreadResponse: 设置推送消息状态失败...");
+                    Toast("设置失败");
                 }
             }
         } else {

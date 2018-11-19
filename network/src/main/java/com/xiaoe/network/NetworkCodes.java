@@ -2,7 +2,7 @@ package com.xiaoe.network;
 
 public class NetworkCodes {
     public static final int CODE_SUCCEED = 0;
-    public static final int CODE_FAILED = 1;
+    public static final int CODE_FAILED = -1;
     public static final int CODE_UNKNOWN = 1000;// 未知错误
     public static final int CODE_DB_ERROR_CODE = 1001; // 数据库错误
     public static final int CODE_DB_NOT_FIND = 1002;// 数据库查不到

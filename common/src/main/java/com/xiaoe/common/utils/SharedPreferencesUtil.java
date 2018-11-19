@@ -23,6 +23,7 @@ public class SharedPreferencesUtil {
     public static final String FILE_NAME = "xiaoe_file";
     public static final String KEY_WX_PLAY_CODE = "wx_play_code";
     public static final String KEY_BIND_JPUSH_USER_CODE = "bindJPushRegIdSuccess";
+    public static final String KEY_JPUSH_STATE_CODE = "JPushState";
 
     private SharedPreferencesUtil(Context context, String name) {
         sp = context.getSharedPreferences(name, Context.MODE_PRIVATE);
