@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -17,15 +18,7 @@ import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tencent.smtt.sdk.CookieSyncManager;
-import com.tencent.smtt.sdk.WebView;
 import com.umeng.socialize.UMShareAPI;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.io.File;
-import java.util.List;
-
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
@@ -54,6 +47,12 @@ import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.io.File;
+import java.util.List;
 
 public class VideoActivity extends XiaoeActivity implements View.OnClickListener, OnClickVideoButtonListener {
     private static final String TAG = "VideoActivity";

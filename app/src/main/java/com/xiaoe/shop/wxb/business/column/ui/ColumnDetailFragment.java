@@ -5,13 +5,13 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 
 import com.tencent.smtt.sdk.CookieSyncManager;
-import com.tencent.smtt.sdk.WebView;
-
 import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
+import com.xiaoe.shop.wxb.common.web.BridgeWebView;
 
 public class ColumnDetailFragment extends BaseFragment {
     private static final String TAG = "ColumnDetailFragment";

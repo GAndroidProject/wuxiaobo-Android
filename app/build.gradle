@@ -3,6 +3,8 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         release {
+            //吴晓波签名文件
+//            storeFile file("../../shopwxb.jks")
             storeFile file("../../xiaoeshop.jks")
             storePassword RELEASE_STORE_PASSWORD
             keyAlias RELEASE_KEY_ALIAS
@@ -27,7 +29,7 @@ android {
         ndk {
             // 选择要添加的对应 cpu 类型的 .so 库。
             //由于使用了腾讯x5内核渲染webView，请不要添加任何64位的架构
-            abiFilters 'armeabi', "x86", 'armeabi-v7a'
+            abiFilters 'armeabi', "x86"
             // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
         }
 //        multiDexEnabled true

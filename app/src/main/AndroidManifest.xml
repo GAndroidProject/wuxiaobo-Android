@@ -83,7 +83,9 @@
         <activity
             android:name=".business.comment.ui.CommentActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity android:name=".business.navigate_detail.ui.NavigateDetailActivity" />
         <activity android:name=".business.cdkey.ui.CdKeyActivity" />
         <activity android:name=".common.pay.ui.PayActivity" />
