@@ -6,6 +6,7 @@
     android:background="@color/white"
     >
 
+
     <RelativeLayout
         android:id="@+id/tool_bar"
         android:layout_width="match_parent"
@@ -29,14 +30,20 @@
             />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/comment_recycler_view"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="never"
         android:layout_below="@id/tool_bar"
         android:layout_above="@+id/comment_view"
-        />
+        >
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/comment_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
     <com.xiaoe.shop.wxb.widget.CommentView
         android:id="@+id/comment_view"
         android:layout_width="match_parent"

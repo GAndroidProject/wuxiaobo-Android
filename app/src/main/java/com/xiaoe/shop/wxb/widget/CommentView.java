@@ -19,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.base.BaseResult;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnClickSendCommentListener;
 
@@ -112,6 +111,15 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
         editComment.setHint(text);
     }
     public void setSrcCommentHint(String hint){
+
+        editComment.setFocusable(true);
+        editComment.setFocusableInTouchMode(true);
+        editComment.requestFocus();
+        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm != null){
+            imm.showSoftInput(editComment, 0);
+        }
+
         isReply = true;
         srcHint = "回复 "+hint+"：";
         stringBuilder.clear();
@@ -119,6 +127,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
         stringBuilder.setSpan(colorSpan,0,srcHint.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         editComment.setText(stringBuilder);
         editComment.setSelection(srcHint.length());
+
     }
     @Override
     public void onClick(View v) {

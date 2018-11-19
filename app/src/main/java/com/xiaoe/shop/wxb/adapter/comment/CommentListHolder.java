@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.CommentEntity;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
@@ -82,7 +83,13 @@ public class CommentListHolder extends BaseViewHolder implements View.OnClickLis
         }
         btnReplyComment.setOnClickListener(this);
         btnLikeComment.setOnClickListener(this);
-        btnCommentDelete.setOnClickListener(this);
+        if(!TextUtils.isEmpty(CommonUserInfo.getUserId()) && commentEntity.getUser_id().equals(CommonUserInfo.getUserId())){
+            btnCommentDelete.setVisibility(View.VISIBLE);
+            btnCommentDelete.setOnClickListener(this);
+        }else{
+            btnCommentDelete.setVisibility(View.GONE);
+            btnCommentDelete.setOnClickListener(null);
+        }
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.CommentEntity;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.CommentLikeRequest;
@@ -285,6 +286,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         sendComment.setUser_avatar(CommonUserInfo.getWxAvatar());
         sendComment.setUser_id(CommonUserInfo.getUserId());
         sendComment.setUser_nickname(CommonUserInfo.getWxNickname());
+        sendComment.setComment_at(DateFormat.currentTime());
         CommentEntity tempReplyCommentEntity = null;
         if(commentView.isReply()){
             tempReplyCommentEntity = replyCommentEntity;

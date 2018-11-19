@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.common.pay.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,10 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.xiaoe.common.entitys.CouponInfo;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -28,6 +25,9 @@ import com.xiaoe.shop.wxb.business.coupon.ui.CouponFragment;
 import com.xiaoe.shop.wxb.business.coupon.ui.EmptyCouponFragment;
 import com.xiaoe.shop.wxb.interfaces.OnSelectCouponListener;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PayActivity extends XiaoeActivity implements View.OnClickListener, OnSelectCouponListener {
     private static final String TAG = "PayActivity";
@@ -107,6 +107,13 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
                 SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
             }
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        //不需要保存状态
+//        super.onSaveInstanceState(outState, outPersistentState);
+
     }
 
     @Override
