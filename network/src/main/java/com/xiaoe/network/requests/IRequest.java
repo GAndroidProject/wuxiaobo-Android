@@ -146,9 +146,9 @@ public abstract class IRequest {
         if(bizDataParams != null){
             jsonObject.put("biz_data", bizDataParams);
         }
-        if("u_app_anonymous".equals(CommonUserInfo.getUserId())){
+        if(Constants.ANONYMOUS_USER_ID.equals(CommonUserInfo.getUserId())){
             //游客模式需要传一个user_id = "u_app_anonymous"
-            jsonObject.put("user_id", "u_app_anonymous");
+            jsonObject.put("user_id", Constants.ANONYMOUS_USER_ID);
         }else{
             jsonObject.put("user_id", CommonUserInfo.getUserId());
         }

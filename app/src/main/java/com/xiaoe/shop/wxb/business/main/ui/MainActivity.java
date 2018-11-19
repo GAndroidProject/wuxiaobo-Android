@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -87,7 +88,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         if (!isFormalUser) {
             // 非正式用户，需要手动设置店铺 id 和默认登录 userId
-            CommonUserInfo.setUserId("u_app_anonymous");
+            CommonUserInfo.setUserId(Constants.ANONYMOUS_USER_ID);
         }
 
         superVipPresenter = new SuperVipPresenter(this);

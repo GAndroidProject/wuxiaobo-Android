@@ -63,6 +63,8 @@ public class Constants {
     public static final int NO_NEED_FLOW = 0;
     public static final int WITHDRAWAL_FLOW_TYPE = 0;   // 提现流水
     public static final int EARNING_FLOW_TYPE = 1;      // 入账记录
+    // 游客登录的 user_id
+    public static final String ANONYMOUS_USER_ID = "u_app_anonymous";
 
     //获取微信登录appid
     public static String getWXAppId(){
