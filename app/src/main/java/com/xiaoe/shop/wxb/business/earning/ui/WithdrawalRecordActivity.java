@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,6 +32,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter;
 import com.xiaoe.shop.wxb.business.earning.presenter.WrListAdapter;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
 // 提现记录页面
 public class WithdrawalRecordActivity extends XiaoeActivity {
@@ -50,6 +52,9 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
     @BindView(R.id.withdrawal_record_list)
     ListView wrList;
 
+    @BindView(R.id.withdrawal_loading)
+    StatusPagerView wrLoading;
+
     List<WrItem> dataList;
 
     Unbinder unbinder;
@@ -63,6 +68,8 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
 
         unbinder = ButterKnife.bind(this);
         wrWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+        wrLoading.setVisibility(View.VISIBLE);
+        wrLoading.setLoadingState(View.VISIBLE);
 
         earningPresenter = new EarningPresenter(this);
         earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW, Constants.WITHDRAWAL_FLOW_TYPE, 1, 10);
@@ -98,10 +105,12 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
                     initPageData(data);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 请求失败...");
+                    wrLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: ");
+            wrLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
         }
     }
 
@@ -127,9 +136,16 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
             dataList.add(wrItem);
         }
 
-        WrListAdapter wrListAdapter = new WrListAdapter(this, dataList);
-        wrList.setAdapter(wrListAdapter);
-        MeasureUtil.setListViewHeightBasedOnChildren(wrList);
+        if (dataList.size() > 0) {
+            WrListAdapter wrListAdapter = new WrListAdapter(this, dataList);
+            wrList.setAdapter(wrListAdapter);
+            MeasureUtil.setListViewHeightBasedOnChildren(wrList);
+        } else {
+            wrLoading.setPagerState(StatusPagerView.EMPTY, "无提现记录，快去做任务领取奖学金吧", R.mipmap.cash_none);
+            return;
+        }
+
+        wrLoading.setLoadingFinish();
     }
 
     @Override

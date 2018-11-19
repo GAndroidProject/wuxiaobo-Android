@@ -250,7 +250,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                     window.setGravity(Gravity.CENTER);
                     WindowManager.LayoutParams layoutParams = window.getAttributes();
                     Point point = Global.g().getDisplayPixel();
-                    layoutParams.width = (int) (point.x * 0.8);
+                    layoutParams.width = (int) (point.x * 0.9);
                     window.setAttributes(layoutParams);
                 }
                 dialog.setContentView(view);
