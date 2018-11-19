@@ -92,6 +92,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 
     @BindView(R.id.micro_page_loading)
     StatusPagerView microPageLoading;
+    @BindView(R.id.micro_page_logo)
+    ImageView microPageLogo;
 
     List<ComponentInfo> microPageList;
 
@@ -176,6 +178,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                         initMainContent();
                     }
                     // 请求成功之后隐藏 loading
+                    microPageLogo.setVisibility(View.VISIBLE);
                     microPageLoading.setLoadingFinish();
                     microPageFresh.finishRefresh();
                     microPageAdapter.notifyDataSetChanged();
@@ -309,6 +312,11 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 case DecorateEntityType.GRAPHIC_NAVIGATION_STR: // 图文导航
                     ComponentInfo componentInfo_navigator = new ComponentInfo();
                     componentInfo_navigator.setType(DecorateEntityType.GRAPHIC_NAVIGATION_STR);
+                    if (!hasDecorate) {
+                        componentInfo_navigator.setNeedDecorate(true);
+                    } else {
+                        componentInfo_navigator.setNeedDecorate(false);
+                    }
                     List<GraphicNavItem> graphicNavItemList = new ArrayList<>();
                     JSONArray navigatorSubList = (JSONArray) itemObj.get("list");
                     for (Object subItem : navigatorSubList) {
@@ -395,6 +403,11 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     componentInfo_know_group.setTitle("学会管理自己的财富");
                     componentInfo_know_group.setDesc("查看更多");
                     componentInfo_know_group.setGroupId(itemObj.getString("tag_id"));
+                    if (!hasDecorate) {
+                        componentInfo_know_group.setNeedDecorate(true);
+                    } else {
+                        componentInfo_know_group.setNeedDecorate(false);
+                    }
                     List<KnowledgeCommodityItem> groupItems = new ArrayList<>();
                     JSONArray knowledgeGroupSubList = (JSONArray) itemObj.get("list");
                     if (knowledgeGroupSubList == null) {
@@ -704,11 +717,10 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             hp = new PageFragmentPresenter(this);
         }
         if (microPageList.size() != 0 && microPageAdapter != null) {
+            microPageLogo.setVisibility(View.GONE);
             microPageList.clear();
             microPageAdapter.notifyDataSetChanged();
             hp.requestMicroPageData(microPageId);
-            microPageLoading.setLoadingState(View.VISIBLE);
-            microPageLoading.setVisibility(View.VISIBLE);
         }
     }
 }
