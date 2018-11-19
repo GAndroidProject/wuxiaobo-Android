@@ -115,42 +115,6 @@ public class SettingAccountActivity extends XiaoeActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        toggleSoftKeyboard();
-        if (currentFragment != null) {
-            switch (currentFragment.getTag()) {
-                case MAIN:
-                    super.onBackPressed();
-                    break;
-                case ACCOUNT:
-                case MESSAGE:
-                case ABOUT:
-//                case SUGGESTION:
-                case COMPLETE:
-                    accountTitle.setText("设置");
-                    replaceFragment(MAIN);
-                    break;
-                case CURRENT_PHONE:
-                case PWD_PHONE_CODE:
-                case PHONE_CODE:
-                    accountTitle.setText("账号设置");
-                    replaceFragment(ACCOUNT);
-                    break;
-                case PWD_NEW:
-                    accountTitle.setText("设置新密码");
-                    replaceFragment(PWD_PHONE_CODE);
-                    break;
-                case SERVICE:
-                    accountTitle.setText("关于我们");
-                    replaceFragment(ABOUT);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
         JSONObject result = (JSONObject) entity;
@@ -401,32 +365,57 @@ public class SettingAccountActivity extends XiaoeActivity {
     @Override
     public void onHeadLeftButtonClick(View v) {
         toggleSoftKeyboard();
-        if (currentFragment != null) {
-            switch (currentFragment.getTag()) {
-                case MAIN:
-                    super.onHeadLeftButtonClick(v);
-                    break;
-                case ACCOUNT:
-                case MESSAGE:
-                case ABOUT:
+        if (currentFragment == null) {
+            return;
+        }
+        String tag = currentFragment.getTag();
+        if (MAIN.equals(tag)) {
+            super.onHeadLeftButtonClick(v);
+        } else {
+            onBackAction(tag);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        toggleSoftKeyboard();
+        if (currentFragment == null) {
+            return;
+        }
+        String tag = currentFragment.getTag();
+        if (MAIN.equals(tag)) {
+            super.onBackPressed();
+        } else {
+            onBackAction(tag);
+        }
+    }
+
+    private void onBackAction(String fragmentTag) {
+        switch (fragmentTag) {
+            case ACCOUNT:
+            case MESSAGE:
+            case ABOUT:
 //                case SUGGESTION:
-                case COMPLETE:
-                    accountTitle.setText("设置");
-                    replaceFragment(MAIN);
-                    break;
-                case CURRENT_PHONE:
-                case PWD_PHONE_CODE:
-                case PHONE_CODE:
-                    accountTitle.setText("账号设置");
-                    replaceFragment(ACCOUNT);
-                    break;
-                case PWD_NEW:
-                    accountTitle.setText("设置新密码");
-                    replaceFragment(PWD_PHONE_CODE);
-                    break;
-                default:
-                    break;
-            }
+            case COMPLETE:
+                accountTitle.setText("设置");
+                replaceFragment(MAIN);
+                break;
+            case CURRENT_PHONE:
+            case PWD_PHONE_CODE:
+            case PHONE_CODE:
+                accountTitle.setText("账号设置");
+                replaceFragment(ACCOUNT);
+                break;
+            case PWD_NEW:
+                accountTitle.setText("设置新密码");
+                replaceFragment(PWD_PHONE_CODE);
+                break;
+            case SERVICE:
+                accountTitle.setText("关于我们");
+                replaceFragment(ABOUT);
+                break;
+            default:
+                break;
         }
     }
 }

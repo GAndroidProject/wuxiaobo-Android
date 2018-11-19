@@ -440,19 +440,21 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
     @Override
     public void onItemClick(View view, SettingItemInfo itemInfo) {
         // 账号设置的点击事件
+        int index = itemList.indexOf(itemInfo);
         if (accountRecycler == view.getParent()) {
-            switch (itemList.indexOf(itemInfo)) {
+            switch (index) {
                 case 0:
                     // 修改密码
                     settingAccountActivity.replaceFragment(SettingAccountActivity.PWD_PHONE_CODE);
                     break;
+//                case 1: // 需求变更（2018.11.17）
+//                    // 更换手机号
+//                    settingAccountActivity.replaceFragment(SettingAccountActivity.CURRENT_PHONE);
+//                    break;
                 case 1:
-                    // 更换手机号
-                    settingAccountActivity.replaceFragment(SettingAccountActivity.CURRENT_PHONE);
-                    break;
-                case 2:
+//                case 2: // 需求变更（2018.11.17）
                     // 绑定微信
-                    String tip = itemList.get(2).getItemContent();
+                    String tip = itemList.get(index).getItemContent();
                     if (tip.equals("未绑定")) {
                         JumpDetail.jumpLogin(getActivity(), true);
                     }
@@ -461,7 +463,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                     break;
             }
         } else if (aboutContent == view.getParent()) { // 关于的点击事件
-            switch (itemList.indexOf(itemInfo)) {
+            switch (index) {
                 case 0:
                     // 联系我们
                     break;
