@@ -178,6 +178,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                     settingAccountActivity.settingPresenter.setPushState(2);
                 }
             }
+            Log.d(TAG, "initMessageFragment: isFromUser "+ isFromUser);
         });
         updateMessageFragment(true);
     }
@@ -195,9 +196,9 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
             }
         } else {
             if (messageSwitch.isChecked()) {
-                Toast.makeText(getActivity(), "已关闭", Toast.LENGTH_SHORT).show();
-            } else {
                 Toast.makeText(getActivity(), "已开启", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "已关闭", Toast.LENGTH_SHORT).show();
             }
 //            messageSwitch.setChecked(!messageSwitch.isChecked(), false);
         }
