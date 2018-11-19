@@ -197,9 +197,12 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         } else {
             if (messageSwitch.isChecked()) {
                 Toast.makeText(getActivity(), "已开启", Toast.LENGTH_SHORT).show();
+                isPushState = "1";
             } else {
                 Toast.makeText(getActivity(), "已关闭", Toast.LENGTH_SHORT).show();
+                isPushState = "2";
             }
+            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_JPUSH_STATE_CODE, isPushState);
 //            messageSwitch.setChecked(!messageSwitch.isChecked(), false);
         }
         Log.d(TAG, "updateMessageFragment: state " + isPushState);
