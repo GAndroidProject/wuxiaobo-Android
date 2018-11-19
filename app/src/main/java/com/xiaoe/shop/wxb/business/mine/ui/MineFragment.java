@@ -391,8 +391,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     // 初始化页面数据
     private void initPageData() {
         if (isIntegralFinish && isScholarshipFinish && isMineLearningFinish) { // 奖学金和积分和我正在学都请求完后再执行
-            if (itemInfoList.size() > 0) {
+            if (itemInfoList != null && itemInfoList.size() > 0) {
                 itemInfoList.clear();
+            } else {
+                return;
             }
             itemInfoList.add(item_1);
             itemInfoList.add(item_2);
