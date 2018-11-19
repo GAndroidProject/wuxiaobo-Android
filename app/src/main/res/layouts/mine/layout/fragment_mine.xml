@@ -16,81 +16,75 @@
             android:background="@color/white"
             android:scrollbars="none">
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/mine_title_wrap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <LinearLayout
-                        android:id="@+id/mine_title_wrap"
+                    <com.xiaoe.shop.wxb.business.mine.ui.MineTitleView
+                        android:id="@+id/mine_title_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <com.xiaoe.shop.wxb.business.mine.ui.MineTitleView
-                            android:id="@+id/mine_title_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:paddingStart="20dp"
-                            android:paddingEnd="20dp" />
-
-                        <com.xiaoe.shop.wxb.business.mine.ui.MineMsgView
-                            android:id="@+id/mine_msg_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="20dp"
-                            android:paddingEnd="20dp"
-                            android:paddingTop="32dp"
-                            android:paddingBottom="68dp"/>
-
-                    </LinearLayout>
-
-                    <com.xiaoe.shop.wxb.business.mine.ui.MineVipCard
-                        android:id="@+id/mine_vip_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="-36dp"
+                        android:layout_marginTop="20dp"
                         android:paddingStart="20dp"
-                        android:paddingEnd="20dp"/>
+                        android:paddingEnd="20dp" />
 
-                    <com.xiaoe.shop.wxb.business.mine.ui.MineMoneyWrapView
-                        android:id="@+id/mine_money_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <com.xiaoe.shop.wxb.business.mine.ui.MineLearningWrapView
-                        android:id="@+id/mine_learning_view"
+                    <com.xiaoe.shop.wxb.business.mine.ui.MineMsgView
+                        android:id="@+id/mine_msg_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
                         android:paddingStart="20dp"
-                        android:paddingEnd="20dp"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/logo_logo_xiaoetong"
-                        android:contentDescription="@string/xet_logo"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="32dp"
-                        android:layout_marginBottom="32dp"/>
+                        android:paddingEnd="20dp"
+                        android:paddingTop="32dp"
+                        android:paddingBottom="68dp"/>
 
                 </LinearLayout>
 
-                <com.xiaoe.shop.wxb.widget.StatusPagerView
-                    android:id="@+id/mine_loading"
+                <com.xiaoe.shop.wxb.business.mine.ui.MineVipCard
+                    android:id="@+id/mine_vip_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-36dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"/>
 
-            </FrameLayout>
+                <com.xiaoe.shop.wxb.business.mine.ui.MineMoneyWrapView
+                    android:id="@+id/mine_money_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <com.xiaoe.shop.wxb.business.mine.ui.MineLearningWrapView
+                    android:id="@+id/mine_learning_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/logo_logo_xiaoetong"
+                    android:contentDescription="@string/xet_logo"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="32dp"/>
+
+            </LinearLayout>
 
         </com.xiaoe.shop.wxb.widget.PushScrollView>
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+    <com.xiaoe.shop.wxb.widget.StatusPagerView
+        android:id="@+id/mine_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

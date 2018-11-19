@@ -86,7 +86,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     MineLearningPresenter mineLearningPresenter;
 
     String balance;
-    String integral;
 
     MineMoneyItemInfo item_1; // 奖学金
     MineMoneyItemInfo item_2; // 积分
@@ -393,7 +392,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         if (isIntegralFinish && isScholarshipFinish && isMineLearningFinish) { // 奖学金和积分和我正在学都请求完后再执行
             if (itemInfoList != null && itemInfoList.size() > 0) {
                 itemInfoList.clear();
-            } else {
+            }
+            if (itemInfoList == null) {
+                mineLoading.setLoadingFinish();
                 return;
             }
             itemInfoList.add(item_1);

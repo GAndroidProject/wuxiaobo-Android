@@ -226,53 +226,57 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.KNOWLEDGE_COMMODITY:
                 switch (subType) {
                     case DecorateEntityType.KNOWLEDGE_LIST:
-                        KnowledgeListViewHolder knowledgeListViewHolder = (KnowledgeListViewHolder) holder;
-                        KnowledgeListAdapter knowledgeListAdapter = new KnowledgeListAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
-                        if (currentBindComponent.isHideTitle()) {
-                            knowledgeListViewHolder.knowledgeListTitle.setVisibility(View.GONE);
-                            // title 没有了需要讲 listView 的 marginTop 设置为 0
-                            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            layoutParams.setMargins(0, 0, 0, 0);
-                            knowledgeListViewHolder.knowledgeListView.setLayoutParams(layoutParams);
-                        } else {
-                            knowledgeListViewHolder.knowledgeListTitle.setText(currentBindComponent.getTitle());
+                        if (holder instanceof KnowledgeListViewHolder) {
+                            KnowledgeListViewHolder knowledgeListViewHolder = (KnowledgeListViewHolder) holder;
+                            KnowledgeListAdapter knowledgeListAdapter = new KnowledgeListAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
+                            if (currentBindComponent.isHideTitle()) {
+                                knowledgeListViewHolder.knowledgeListTitle.setVisibility(View.GONE);
+                                // title 没有了需要讲 listView 的 marginTop 设置为 0
+                                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                layoutParams.setMargins(0, 0, 0, 0);
+                                knowledgeListViewHolder.knowledgeListView.setLayoutParams(layoutParams);
+                            } else {
+                                knowledgeListViewHolder.knowledgeListTitle.setText(currentBindComponent.getTitle());
+                            }
+                            knowledgeListViewHolder.knowledgeListView.setAdapter(knowledgeListAdapter);
+                            MeasureUtil.setListViewHeightBasedOnChildren(knowledgeListViewHolder.knowledgeListView);
                         }
-                        knowledgeListViewHolder.knowledgeListView.setAdapter(knowledgeListAdapter);
-                        MeasureUtil.setListViewHeightBasedOnChildren(knowledgeListViewHolder.knowledgeListView);
                         break;
                     case DecorateEntityType.KNOWLEDGE_GROUP:
-                        KnowledgeGroupViewHolder knowledgeGroupViewHolder = (KnowledgeGroupViewHolder) holder;
-                        if (currentBindComponent.isHideTitle()) {
-                            knowledgeGroupViewHolder.groupTitle.setVisibility(View.GONE);
-                            knowledgeGroupViewHolder.groupMore.setVisibility(View.GONE);
-                        } else {
-                            knowledgeGroupViewHolder.groupTitle.setText(currentBindComponent.getTitle());
-                            knowledgeGroupViewHolder.groupMore.setText(currentBindComponent.getDesc());
-                            knowledgeGroupViewHolder.groupMore.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    // 跳转到更多课程的页面
-                                    String groupId = currentBindComponent.getGroupId();
-                                    Intent intent = new Intent(mContext, CourseMoreActivity.class);
-                                    intent.putExtra("groupId", groupId);
-                                    mContext.startActivity(intent);
-                                }
-                            });
+                        if (holder instanceof KnowledgeGroupViewHolder) {
+                            KnowledgeGroupViewHolder knowledgeGroupViewHolder = (KnowledgeGroupViewHolder) holder;
+                            if (currentBindComponent.isHideTitle()) {
+                                knowledgeGroupViewHolder.groupTitle.setVisibility(View.GONE);
+                                knowledgeGroupViewHolder.groupMore.setVisibility(View.GONE);
+                            } else {
+                                knowledgeGroupViewHolder.groupTitle.setText(currentBindComponent.getTitle());
+                                knowledgeGroupViewHolder.groupMore.setText(currentBindComponent.getDesc());
+                                knowledgeGroupViewHolder.groupMore.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        // 跳转到更多课程的页面
+                                        String groupId = currentBindComponent.getGroupId();
+                                        Intent intent = new Intent(mContext, CourseMoreActivity.class);
+                                        intent.putExtra("groupId", groupId);
+                                        mContext.startActivity(intent);
+                                    }
+                                });
+                            }
+                            GridLayoutManager lm = new GridLayoutManager(mContext, 2);
+                            if (!knowledgeGroupRecyclerList.contains(knowledgeGroupViewHolder.groupRecyclerView)) { // 防止重复添加
+                                knowledgeGroupRecyclerList.add(knowledgeGroupViewHolder.groupRecyclerView);
+                            }
+                            knowledgeGroupViewHolder.groupRecyclerView.setLayoutManager(lm);
+                            // recyclerView 取消滑动
+                            knowledgeGroupViewHolder.groupRecyclerView.setNestedScrollingEnabled(false);
+                            if (currentBindComponent.isNeedDecorate()) {
+                                knowledgeGroupViewHolder.groupRecyclerView.addItemDecoration(new KnowledgeGroupRecyclerItemDecoration(Dp2Px2SpUtil.dp2px(mContext, 16), 2));
+                                currentBindComponent.setNeedDecorate(false);
+                            }
+                            KnowledgeGroupRecyclerAdapter groupAdapter = new KnowledgeGroupRecyclerAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
+                            groupAdapter.setOnItemClickWithKnowledgeListener(this);
+                            knowledgeGroupViewHolder.groupRecyclerView.setAdapter(groupAdapter);
                         }
-                        GridLayoutManager lm = new GridLayoutManager(mContext, 2);
-                        if (!knowledgeGroupRecyclerList.contains(knowledgeGroupViewHolder.groupRecyclerView)) { // 防止重复添加
-                            knowledgeGroupRecyclerList.add(knowledgeGroupViewHolder.groupRecyclerView);
-                        }
-                        knowledgeGroupViewHolder.groupRecyclerView.setLayoutManager(lm);
-                        // recyclerView 取消滑动
-                        knowledgeGroupViewHolder.groupRecyclerView.setNestedScrollingEnabled(false);
-                        if (currentBindComponent.isNeedDecorate()) {
-                            knowledgeGroupViewHolder.groupRecyclerView.addItemDecoration(new KnowledgeGroupRecyclerItemDecoration(Dp2Px2SpUtil.dp2px(mContext, 16), 2));
-                            currentBindComponent.setNeedDecorate(false);
-                        }
-                        KnowledgeGroupRecyclerAdapter groupAdapter = new KnowledgeGroupRecyclerAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
-                        groupAdapter.setOnItemClickWithKnowledgeListener(this);
-                        knowledgeGroupViewHolder.groupRecyclerView.setAdapter(groupAdapter);
                         break;
                 }
                 break;
