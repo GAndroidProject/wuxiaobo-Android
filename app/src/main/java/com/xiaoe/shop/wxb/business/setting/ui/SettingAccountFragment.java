@@ -171,13 +171,12 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
     private void initMessageFragment() {
         messageSwitch = (CustomSwitchButton) viewWrap.findViewById(R.id.message_switch);
         messageSwitch.setOnCheckedChangeListener((view, isChecked, isFromUser) -> {
-            if (!isFromUser) {
-                return;
-            }
-            if (isChecked) {
-                settingAccountActivity.settingPresenter.setPushState(1);
-            } else {
-                settingAccountActivity.settingPresenter.setPushState(2);
+            if (isFromUser) {
+                if (isChecked) {
+                    settingAccountActivity.settingPresenter.setPushState(1);
+                } else {
+                    settingAccountActivity.settingPresenter.setPushState(2);
+                }
             }
         });
         updateMessageFragment(true);
@@ -200,7 +199,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
             } else {
                 Toast.makeText(getActivity(), "已开启", Toast.LENGTH_SHORT).show();
             }
-            messageSwitch.setChecked(!messageSwitch.isChecked(), false);
+//            messageSwitch.setChecked(!messageSwitch.isChecked(), false);
         }
         Log.d(TAG, "updateMessageFragment: state " + isPushState);
     }
