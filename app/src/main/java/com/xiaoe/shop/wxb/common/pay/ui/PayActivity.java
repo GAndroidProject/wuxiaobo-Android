@@ -2,7 +2,6 @@ package com.xiaoe.shop.wxb.common.pay.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -110,10 +109,8 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        //不需要保存状态
-//        super.onSaveInstanceState(outState, outPersistentState);
-
+    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
     }
 
     @Override
