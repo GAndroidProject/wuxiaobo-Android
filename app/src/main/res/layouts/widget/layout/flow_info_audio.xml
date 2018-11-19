@@ -66,8 +66,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:maxLines="1"
-            android:ellipsize="end"
-            android:text="最近更新"/>
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/flow_info_audio_title"

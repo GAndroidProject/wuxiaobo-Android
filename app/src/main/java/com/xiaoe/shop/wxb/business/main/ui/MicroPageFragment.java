@@ -536,7 +536,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 String resourceType = flowInfo.getString("src_type");
                 if (resourceType.equals("member")) { continue; } // 会员先不支持
                 String resourceId = flowInfo.getString("src_id");
-                String tag = flowInfo.getString("tag") == null ? "" : flowInfo.getString("tag");
+                String tag = flowInfo.getString("info_tag") == null ? "" : flowInfo.getString("info_tag");
                 String title = flowInfo.getString("title");
                 String desc = flowInfo.getString("summary");
                 String imgUrl = flowInfo.getString("img_url");
