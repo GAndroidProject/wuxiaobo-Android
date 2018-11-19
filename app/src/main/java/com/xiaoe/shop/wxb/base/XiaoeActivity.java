@@ -334,6 +334,9 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
     public void setMiniPlayerAnimHeight(int miniPlayerAnimHeight) {
         this.miniPlayerAnimHeight = miniPlayerAnimHeight;
+        if (miniAudioPlayController != null){
+            miniAudioPlayController.setMiniPlayerAnimHeight(miniPlayerAnimHeight);
+        }
     }
 
     public void setMiniAudioPlayController(MiniAudioPlayControllerLayout miniAudioPlayController) {
