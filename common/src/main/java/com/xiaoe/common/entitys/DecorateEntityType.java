@@ -37,8 +37,10 @@ public class DecorateEntityType {
     public static final String FLOW_INFO_VIDEO_STR = "video"; // 视频子类型
 
     // 知识商品
-    public static final String KNOWLEDGE_LIST = "knowledgeList"; // 列表类型
-    public static final String KNOWLEDGE_GROUP = "knowledgeGroup"; // 分组类型
+    public static final int KNOWLEDGE_LIST = 1001;
+    public static final String KNOWLEDGE_LIST_STR = "knowledgeList"; // 列表类型
+    public static final int KNOWLEDGE_GROUP = 1002;
+    public static final String KNOWLEDGE_GROUP_STR = "knowledgeGroup"; // 分组类型
 
     // 商品子类型
     public static final String IMAGE_TEXT = "image_text"; // 图文

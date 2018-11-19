@@ -238,10 +238,10 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         ComponentInfo itemComponentInfo = new ComponentInfo();
         if (itemJsonList.size() > 0 && itemJsonList.size() <= 3) { // 列表显示
             itemComponentInfo.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
-            itemComponentInfo.setSubType(DecorateEntityType.KNOWLEDGE_LIST);
+            itemComponentInfo.setSubType(DecorateEntityType.KNOWLEDGE_LIST_STR);
         } else { // 宫格显示
             itemComponentInfo.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
-            itemComponentInfo.setSubType(DecorateEntityType.KNOWLEDGE_GROUP);
+            itemComponentInfo.setSubType(DecorateEntityType.KNOWLEDGE_GROUP_STR);
         }
         itemComponentInfo.setHideTitle(false);
         if (isGroup) {

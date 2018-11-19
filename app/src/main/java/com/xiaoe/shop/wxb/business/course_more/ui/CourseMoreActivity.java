@@ -122,9 +122,9 @@ public class CourseMoreActivity extends XiaoeActivity {
         ComponentInfo componentInfo_knowledge = new ComponentInfo();
         componentInfo_knowledge.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
         if (showStyle == 0) {
-            componentInfo_knowledge.setSubType(DecorateEntityType.KNOWLEDGE_LIST);
+            componentInfo_knowledge.setSubType(DecorateEntityType.KNOWLEDGE_LIST_STR);
         } else if (showStyle == 2) {
-            componentInfo_knowledge.setSubType(DecorateEntityType.KNOWLEDGE_GROUP);
+            componentInfo_knowledge.setSubType(DecorateEntityType.KNOWLEDGE_GROUP_STR);
         }
         // 隐藏知识商品组件的 title
         componentInfo_knowledge.setTitle("");

@@ -62,10 +62,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     private Context mContext;
     // 组件实体类列表
     private List<ComponentInfo> mComponentList;
-    // 当前下标
-    private int currentPos;
-    // 当前 item
-    private ComponentInfo currentComponent;
 
     // 知识商品分组形式的 recycler
     private List<RecyclerView> knowledgeGroupRecyclerList;
@@ -81,12 +77,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         if (viewType == -1) {
             return null;
         }
-        View view = null;
+        View view;
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 30), 0, 0);
-        currentComponent = mComponentList.get(currentPos);
-        // 获取组件的显示类型
-        String subType = currentComponent.getSubType();
         switch(viewType) {
             case DecorateEntityType.FLOW_INFO:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info, null);
@@ -98,20 +90,17 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 26), 0, 0);
                 view.setLayoutParams(layoutParams);
                 return new RecentUpdateViewHolder(view);
-            case DecorateEntityType.KNOWLEDGE_COMMODITY:
-                switch (subType) {
-                    case DecorateEntityType.KNOWLEDGE_LIST:
-                        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_list, null);
-                        layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 18), 0, 0);
-                        view.setLayoutParams(layoutParams);
-                        return new KnowledgeListViewHolder(view);
-                    case DecorateEntityType.KNOWLEDGE_GROUP:
-                        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group, null);
-                        layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 24), 0, Dp2Px2SpUtil.dp2px(mContext, 24));
-                        view.setLayoutParams(layoutParams);
-                        knowledgeGroupRecyclerList = new ArrayList<>();
-                        return new KnowledgeGroupViewHolder(view);
-                }
+            case DecorateEntityType.KNOWLEDGE_LIST:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_list, null);
+                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 18), 0, 0);
+                view.setLayoutParams(layoutParams);
+                return new KnowledgeListViewHolder(view);
+            case DecorateEntityType.KNOWLEDGE_GROUP:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group, null);
+                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 24), 0, Dp2Px2SpUtil.dp2px(mContext, 24));
+                view.setLayoutParams(layoutParams);
+                knowledgeGroupRecyclerList = new ArrayList<>();
+                return new KnowledgeGroupViewHolder(view);
             case DecorateEntityType.SHUFFLING_FIGURE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shuffling_figure, null);
                 layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 20), 0, 0);
@@ -144,7 +133,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             Log.d(TAG, "onBindViewHolder: error return -1");
             return;
         }
-        String subType = currentBindComponent.getSubType();
         switch(itemType) {
             case DecorateEntityType.FLOW_INFO:
                 FlowInfoViewHolder flowInfoViewHolder = (FlowInfoViewHolder) holder;
@@ -223,63 +211,55 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 recentUpdateViewHolder.recentUpdateListView.setAdapter(recentUpdateListAdapter);
                 MeasureUtil.setListViewHeightBasedOnChildren(recentUpdateViewHolder.recentUpdateListView);
                 break;
-            case DecorateEntityType.KNOWLEDGE_COMMODITY:
-                switch (subType) {
-                    case DecorateEntityType.KNOWLEDGE_LIST:
-                        if (holder instanceof KnowledgeListViewHolder) {
-                            KnowledgeListViewHolder knowledgeListViewHolder = (KnowledgeListViewHolder) holder;
-                            KnowledgeListAdapter knowledgeListAdapter = new KnowledgeListAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
-                            if (currentBindComponent.isHideTitle()) {
-                                knowledgeListViewHolder.knowledgeListTitle.setVisibility(View.GONE);
-                                // title 没有了需要讲 listView 的 marginTop 设置为 0
-                                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                layoutParams.setMargins(0, 0, 0, 0);
-                                knowledgeListViewHolder.knowledgeListView.setLayoutParams(layoutParams);
-                            } else {
-                                knowledgeListViewHolder.knowledgeListTitle.setText(currentBindComponent.getTitle());
+                case DecorateEntityType.KNOWLEDGE_LIST:
+                    KnowledgeListViewHolder knowledgeListViewHolder = (KnowledgeListViewHolder) holder;
+                    KnowledgeListAdapter knowledgeListAdapter = new KnowledgeListAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
+                    if (currentBindComponent.isHideTitle()) {
+                        knowledgeListViewHolder.knowledgeListTitle.setVisibility(View.GONE);
+                        // title 没有了需要讲 listView 的 marginTop 设置为 0
+                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        layoutParams.setMargins(0, 0, 0, 0);
+                        knowledgeListViewHolder.knowledgeListView.setLayoutParams(layoutParams);
+                    } else {
+                        knowledgeListViewHolder.knowledgeListTitle.setText(currentBindComponent.getTitle());
+                    }
+                    knowledgeListViewHolder.knowledgeListView.setAdapter(knowledgeListAdapter);
+                    MeasureUtil.setListViewHeightBasedOnChildren(knowledgeListViewHolder.knowledgeListView);
+                    break;
+                case DecorateEntityType.KNOWLEDGE_GROUP:
+                    KnowledgeGroupViewHolder knowledgeGroupViewHolder = (KnowledgeGroupViewHolder) holder;
+                    if (currentBindComponent.isHideTitle()) {
+                        knowledgeGroupViewHolder.groupTitle.setVisibility(View.GONE);
+                        knowledgeGroupViewHolder.groupMore.setVisibility(View.GONE);
+                    } else {
+                        knowledgeGroupViewHolder.groupTitle.setText(currentBindComponent.getTitle());
+                        knowledgeGroupViewHolder.groupMore.setText(currentBindComponent.getDesc());
+                        knowledgeGroupViewHolder.groupMore.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // 跳转到更多课程的页面
+                                String groupId = currentBindComponent.getGroupId();
+                                Intent intent = new Intent(mContext, CourseMoreActivity.class);
+                                intent.putExtra("groupId", groupId);
+                                mContext.startActivity(intent);
                             }
-                            knowledgeListViewHolder.knowledgeListView.setAdapter(knowledgeListAdapter);
-                            MeasureUtil.setListViewHeightBasedOnChildren(knowledgeListViewHolder.knowledgeListView);
-                        }
-                        break;
-                    case DecorateEntityType.KNOWLEDGE_GROUP:
-                        if (holder instanceof KnowledgeGroupViewHolder) {
-                            KnowledgeGroupViewHolder knowledgeGroupViewHolder = (KnowledgeGroupViewHolder) holder;
-                            if (currentBindComponent.isHideTitle()) {
-                                knowledgeGroupViewHolder.groupTitle.setVisibility(View.GONE);
-                                knowledgeGroupViewHolder.groupMore.setVisibility(View.GONE);
-                            } else {
-                                knowledgeGroupViewHolder.groupTitle.setText(currentBindComponent.getTitle());
-                                knowledgeGroupViewHolder.groupMore.setText(currentBindComponent.getDesc());
-                                knowledgeGroupViewHolder.groupMore.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        // 跳转到更多课程的页面
-                                        String groupId = currentBindComponent.getGroupId();
-                                        Intent intent = new Intent(mContext, CourseMoreActivity.class);
-                                        intent.putExtra("groupId", groupId);
-                                        mContext.startActivity(intent);
-                                    }
-                                });
-                            }
-                            GridLayoutManager lm = new GridLayoutManager(mContext, 2);
-                            if (!knowledgeGroupRecyclerList.contains(knowledgeGroupViewHolder.groupRecyclerView)) { // 防止重复添加
-                                knowledgeGroupRecyclerList.add(knowledgeGroupViewHolder.groupRecyclerView);
-                            }
-                            knowledgeGroupViewHolder.groupRecyclerView.setLayoutManager(lm);
-                            // recyclerView 取消滑动
-                            knowledgeGroupViewHolder.groupRecyclerView.setNestedScrollingEnabled(false);
-                            if (currentBindComponent.isNeedDecorate()) {
-                                knowledgeGroupViewHolder.groupRecyclerView.addItemDecoration(new KnowledgeGroupRecyclerItemDecoration(Dp2Px2SpUtil.dp2px(mContext, 16), 2));
-                                currentBindComponent.setNeedDecorate(false);
-                            }
-                            KnowledgeGroupRecyclerAdapter groupAdapter = new KnowledgeGroupRecyclerAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
-                            groupAdapter.setOnItemClickWithKnowledgeListener(this);
-                            knowledgeGroupViewHolder.groupRecyclerView.setAdapter(groupAdapter);
-                        }
-                        break;
-                }
-                break;
+                        });
+                    }
+                    GridLayoutManager lm = new GridLayoutManager(mContext, 2);
+                    if (!knowledgeGroupRecyclerList.contains(knowledgeGroupViewHolder.groupRecyclerView)) { // 防止重复添加
+                        knowledgeGroupRecyclerList.add(knowledgeGroupViewHolder.groupRecyclerView);
+                    }
+                    knowledgeGroupViewHolder.groupRecyclerView.setLayoutManager(lm);
+                    // recyclerView 取消滑动
+                    knowledgeGroupViewHolder.groupRecyclerView.setNestedScrollingEnabled(false);
+                    if (currentBindComponent.isNeedDecorate()) {
+                        knowledgeGroupViewHolder.groupRecyclerView.addItemDecoration(new KnowledgeGroupRecyclerItemDecoration(Dp2Px2SpUtil.dp2px(mContext, 16), 2));
+                        currentBindComponent.setNeedDecorate(false);
+                    }
+                    KnowledgeGroupRecyclerAdapter groupAdapter = new KnowledgeGroupRecyclerAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
+                    groupAdapter.setOnItemClickWithKnowledgeListener(this);
+                    knowledgeGroupViewHolder.groupRecyclerView.setAdapter(groupAdapter);
+                    break;
             case DecorateEntityType.SHUFFLING_FIGURE:
                 final List<ShufflingItem> shufflingList = currentBindComponent.getShufflingList();
                 ShufflingFigureViewHolder shufflingFigureViewHolder = (ShufflingFigureViewHolder) holder;
@@ -369,16 +349,23 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        currentPos = position;
-        currentComponent = mComponentList.get(position);
+        // 当前 item
+        ComponentInfo currentComponent = mComponentList.get(position);
         String type = currentComponent.getType();
+        String subType = currentComponent.getSubType();
         switch (type) {
             case DecorateEntityType.FLOW_INFO_STR:
                 return DecorateEntityType.FLOW_INFO;
             case DecorateEntityType.RECENT_UPDATE_STR:
                 return DecorateEntityType.RECENT_UPDATE;
             case DecorateEntityType.KNOWLEDGE_COMMODITY_STR:
-                return DecorateEntityType.KNOWLEDGE_COMMODITY;
+                if (DecorateEntityType.KNOWLEDGE_LIST_STR.equals(subType)) {
+                    return DecorateEntityType.KNOWLEDGE_LIST;
+                } else if (DecorateEntityType.KNOWLEDGE_GROUP_STR.equals(subType)) {
+                    return DecorateEntityType.KNOWLEDGE_GROUP;
+                } else {
+                    return -1;
+                }
             case DecorateEntityType.SHUFFLING_FIGURE_STR:
                 return DecorateEntityType.SHUFFLING_FIGURE;
             case DecorateEntityType.BOOKCASE_STR:

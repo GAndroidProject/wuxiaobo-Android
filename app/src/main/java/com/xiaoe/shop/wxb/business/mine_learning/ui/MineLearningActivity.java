@@ -170,7 +170,7 @@ public class MineLearningActivity extends XiaoeActivity {
         ComponentInfo knowledgeList = new ComponentInfo();
         knowledgeList.setTitle("");
         knowledgeList.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
-        knowledgeList.setSubType(DecorateEntityType.KNOWLEDGE_LIST);
+        knowledgeList.setSubType(DecorateEntityType.KNOWLEDGE_LIST_STR);
         // 隐藏 title
         knowledgeList.setHideTitle(true);
         // 因为这个接口拿到的 resourceType 是 int 类型，转成字符串存起来

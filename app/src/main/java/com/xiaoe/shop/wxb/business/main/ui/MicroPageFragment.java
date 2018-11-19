@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -36,8 +35,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
-import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.entitys.ComponentInfo;
@@ -48,7 +45,6 @@ import com.xiaoe.common.entitys.KnowledgeCommodityItem;
 import com.xiaoe.common.entitys.RecentUpdateListItem;
 import com.xiaoe.common.entitys.ShufflingItem;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
-import com.xiaoe.common.widget.CommonRefreshHeader;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.IRequest;
@@ -390,7 +386,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 if (itemObj.getInteger("list_style") == 0) { // 列表形式
                     ComponentInfo componentInfo_know_list = new ComponentInfo();
                     componentInfo_know_list.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
-                    componentInfo_know_list.setSubType(DecorateEntityType.KNOWLEDGE_LIST);
+                    componentInfo_know_list.setSubType(DecorateEntityType.KNOWLEDGE_LIST_STR);
                     // 微页面列表形式的知识商品组件都隐藏 title
                     componentInfo_know_list.setHideTitle(true);
                     componentInfo_know_list.setGroupId(itemObj.getString("tag_id"));
@@ -405,7 +401,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 } else if (itemObj.getInteger("list_style") == 2) { // （小图）宫格形式
                     ComponentInfo componentInfo_know_group = new ComponentInfo();
                     componentInfo_know_group.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
-                    componentInfo_know_group.setSubType(DecorateEntityType.KNOWLEDGE_GROUP);
+                    componentInfo_know_group.setSubType(DecorateEntityType.KNOWLEDGE_GROUP_STR);
                     componentInfo_know_group.setTitle("学会管理自己的财富");
                     componentInfo_know_group.setDesc("查看更多");
                     componentInfo_know_group.setGroupId(itemObj.getString("tag_id"));
