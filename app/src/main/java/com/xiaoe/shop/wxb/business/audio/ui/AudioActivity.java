@@ -350,10 +350,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private void removeCollectionRequest(JSONObject jsonObject) {
         if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
             toastCustom(getString(R.string.cancel_collect_succeed));
-            setCollectState(false);
             AudioMediaPlayer.getAudio().setHasFavorite(0);
         }else{
             toastCustom(getResources().getString(R.string.cancel_collect_fail));
+            setCollectState(true);
         }
     }
 
@@ -364,10 +364,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private void addCollectionRequest(JSONObject jsonObject) {
         if(jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED ){
             toastCustom(getString(R.string.collect_succeed));
-            setCollectState(true);
             AudioMediaPlayer.getAudio().setHasFavorite(1);
         }else{
             toastCustom(getResources().getString(R.string.collect_fail));
+            setCollectState(false);
         }
     }
 
@@ -522,6 +522,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         hasCollect = !hasCollect;
         AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
         if(hasCollect){
+            setCollectState(true);
             //添加收藏
             JSONObject collectionContent = new JSONObject();
             collectionContent.put("title",audioPlayEntity.getTitle());
@@ -532,6 +533,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             collectionContent.put("price", price);
             collectionUtils.requestAddCollection(audioPlayEntity.getResourceId(), "2", collectionContent);
         }else {
+            setCollectState(false);
             //取消收藏
             collectionUtils.requestRemoveCollection(audioPlayEntity.getResourceId(), "2");
         }
