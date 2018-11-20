@@ -1,14 +1,18 @@
 package com.xiaoe.shop.wxb.business.launch.ui;
 
+import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.fresco.animation.drawable.AnimatedDrawable2;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.network.downloadUtil.DownloadFileConfig;
@@ -19,56 +23,88 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 
+import java.lang.reflect.Field;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * 开机闪屏（启动）页面
+ */
 public class LaunchActivity extends XiaoeActivity {
+
+    @BindView(R.id.launch_gif)
+    SimpleDraweeView launchGif;
+
     private static final String TAG = "LaunchActivity";
-
-    private Handler mHandler = new Handler(){
-
-        @Override
-        public void handleMessage(Message msg) {
-            JumpDetail.jumpLogin(LaunchActivity.this);
-            finish();
-        }
-    };
-    private int duration;
-    private int MESSAGE_SUCCESS = 0;
-    private SimpleDraweeView launchGIF;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStatusBar();
         setContentView(R.layout.activity_launch);
+        ButterKnife.bind(this);
         initView();
         initData();
     }
 
     private void initData() {
-        ThreadPoolUtils.runTaskOnThread(new Runnable() {
-            @Override
-            public void run() {
-                //下载列表中，可能有正在下载状态，但是退出是还是正在下载状态，所以启动时将之前的状态置为暂停
-                if(SQLiteUtil.tabIsExist(DownloadFileConfig.TABLE_NAME)){
-                    DownloadManager.getInstance().setDownloadPause();
-                    DownloadManager.getInstance().getAllDownloadList();
-                }else{
-                    DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
-                    downloadSQLiteUtil.execSQL(DownloadFileConfig.CREATE_TABLE_SQL);
-                }
+        ThreadPoolUtils.runTaskOnThread(() -> {
+            //下载列表中，可能有正在下载状态，但是退出是还是正在下载状态，所以启动时将之前的状态置为暂停
+            if (SQLiteUtil.tabIsExist(DownloadFileConfig.TABLE_NAME)) {
+                DownloadManager.getInstance().setDownloadPause();
+                DownloadManager.getInstance().getAllDownloadList();
+            } else {
+                DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+                downloadSQLiteUtil.execSQL(DownloadFileConfig.CREATE_TABLE_SQL);
             }
         });
-
     }
 
     private void initView() {
-        launchGIF = (SimpleDraweeView) findViewById(R.id.launch_gif);
-        Uri uri = Uri.parse("res:///"+R.drawable.launch);
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                        .setUri(uri)
-                        .setAutoPlayAnimations(true) // 设置加载图片完成后是否直接进行播放
-                        .build();
-        launchGIF.setController(draweeController);
-        mHandler.sendEmptyMessageDelayed(0, 2100);
+        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+            @Override
+            public void onFinalImageSet(String id, ImageInfo imageInfo, final Animatable animatable) {
+                Log.d(TAG, "onFinalImageSet: animatable - " + animatable);
+                if (animatable == null) {
+                    return;
+                }
+                int duration = 0;
+                try {
+                    // mTotalLoops mLoopCount
+                    Field field = AnimatedDrawable2.class.getDeclaredField("mLoopCount");
+                    field.setAccessible(true);
+                    // 设置循环次数为 1
+                    field.set(animatable, 1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                animatable.start();
+                if (animatable instanceof AnimatedDrawable2) {
+                    duration = (int) ((AnimatedDrawable2) animatable).getLoopDurationMs();
+                    Log.d(TAG, "onFinalImageSet: loopCount - " + ((AnimatedDrawable2) animatable).getLoopCount());
+                }
+                if (duration > 0) {
+                    launchGif.postDelayed(() -> {
+                        if (animatable.isRunning()) {
+                            animatable.stop();
+                            JumpDetail.jumpLogin(mContext);
+                            finish();
+                        }
+                    }, duration);
+                }
+                Log.d(TAG, "onFinalImageSet: duration " + duration);
+            }
+        };
 
+        Uri uri = Uri.parse("res:///" + R.drawable.launch);
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                .setUri(uri)
+                .setControllerListener(controllerListener)
+                // 设置加载图片完成后是否直接进行播放
+                .setAutoPlayAnimations(true)
+                .build();
+        launchGif.setController(draweeController);
     }
+
 }

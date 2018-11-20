@@ -121,6 +121,8 @@ public class CommonRefreshHeader extends LinearLayout implements RefreshHeader {
             case ReleaseToRefresh: // 释放立即刷新
                 refreshContent.setText("释放立即刷新");
                 break;
+            default:
+                break;
         }
     }
 
