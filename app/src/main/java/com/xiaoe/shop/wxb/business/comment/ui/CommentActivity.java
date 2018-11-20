@@ -195,6 +195,8 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                 }else{
                     toastCustom(getResources().getString(R.string.send_comment_fail));
                 }
+            } else if (iRequest instanceof CommentLikeRequest) {
+                updateLikeItem(commentAdapter.getData().get(mPosition));
             }
             return;
         }
@@ -211,9 +213,25 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         }
     }
 
-    private void commentLikeRequest(JSONObject data) {
-        CommentEntity commentEntity = commentAdapter.getData().get(mPosition);
+    private void updateLikeItem(CommentEntity commentEntity) {
+        if (commentEntity == null) {
+            return;
+        }
+        boolean praise = !commentEntity.isIs_praise();
+        commentEntity.setIs_praise(praise);
+        int likeCount = commentEntity.getLike_num();
+        if (praise) {
+            likeCount++;
+        } else {
+            likeCount--;
+        }
+        commentEntity.setLike_num(likeCount);
+        // 需求调整：先切换状态，再请求网络
         commentAdapter.notifyItemChanged(mPosition);
+    }
+
+    private void commentLikeRequest(JSONObject data) {
+//        commentAdapter.notifyItemChanged(mPosition);
     }
 
     private void sendCommentRequest(JSONObject data) {
@@ -328,14 +346,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
             if (loginUserList.size() == 1) {
                 mPosition = position;
                 boolean praise = !commentEntity.isIs_praise();
-                commentEntity.setIs_praise(praise);
-                int likeCount = commentEntity.getLike_num();
-                if(praise){
-                    likeCount++;
-                }else{
-                    likeCount--;
-                }
-                commentEntity.setLike_num(likeCount);
+                updateLikeItem(commentEntity);
                 commentPresenter.likeComment(resourceId, resourceType, commentEntity.getComment_id(), commentEntity.getUser_id(), commentEntity.getContent(), praise);
             } else {
                 touristDialog.showDialog();
