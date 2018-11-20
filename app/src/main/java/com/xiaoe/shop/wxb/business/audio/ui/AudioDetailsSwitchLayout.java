@@ -6,6 +6,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -193,7 +194,7 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
 
         mHoverViewWidth = mHoverView.getMeasuredWidth();
         mHoverViewHeight = mHoverView.getMeasuredHeight();
-        mHoverView.layout(Dp2Px2SpUtil.dp2px(mContext, 64), -mHoverViewHeight, (width / 2 + mHoverViewWidth /2), 0);
+//        mHoverView.layout(Dp2Px2SpUtil.dp2px(mContext, 64), -mHoverViewHeight, (width / 2 + mHoverViewWidth /2), 0);
         mHoverView.layout(0, -mHoverViewHeight, (width / 2 + mHoverViewWidth /2), 0);
     }
 
@@ -253,6 +254,7 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
         if(isShowDetail && mIsDragging){
             return true;
         }
+        Log.d(TAG, "onInterceptTouchEvent: super.onInterceptTouchEvent(ev) = " + super.onInterceptTouchEvent(ev));
         return super.onInterceptTouchEvent(ev);
     }
 
@@ -289,7 +291,7 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
                 if (pointerIndex < 0) {
                     return false;
                 }
-                final float y = ev.getY(pointerIndex);
+                final float y = ev.getY(pointerIndex) * 1.6f;//乘以2
                 //自身开始targetView的拖动，非targetView中列表
                 if (mIsDragging || !isShowDetail) {
                     float dy = y - mLastMotionY;
@@ -301,7 +303,8 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
                     } else {
                         //上拉
                         mIsScroller = true;
-                        if (mTargetCurrentOffset + dy <= mTargetEndOffset) {
+                        if (false) {//解决滑动到底部时，手势继续上拖动，会导致无法下滑
+//                       if (mTargetCurrentOffset + dy <= mTargetEndOffset) {
                             //如果偏移量减去移动距离后，偏移量小于等于0，移动targetView
                             moveTargetView(dy);
                             // 重新dispatch一次down事件，使得列表可以继续滚动

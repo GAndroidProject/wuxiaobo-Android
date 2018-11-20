@@ -172,6 +172,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             if (iRequest instanceof PageFragmentRequest) {
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
+                    if (microPageList != null)  microPageList.clear();
                     initPageData(data);
                     if (!hasDecorate) {
                         initMainContent();
@@ -719,9 +720,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             hp = new PageFragmentPresenter(this);
         }
         if (microPageList.size() != 0 && microPageAdapter != null) {
-            microPageLogo.setVisibility(View.GONE);
-            microPageList.clear();
-            microPageAdapter.notifyDataSetChanged();
+//            microPageLogo.setVisibility(View.GONE);
+//            microPageList.clear();
+//            microPageAdapter.notifyDataSetChanged();
             hp.requestMicroPageData(microPageId);
         }
     }

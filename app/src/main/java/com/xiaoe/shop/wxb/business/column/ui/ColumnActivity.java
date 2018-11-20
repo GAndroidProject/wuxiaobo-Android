@@ -37,6 +37,7 @@ import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
@@ -62,6 +63,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private ImageView btnContentDirectorTag;
     private RelativeLayout columnMenuWarp;
     private RelativeLayout columnToolBar;
+    private TextView statusBar;
     private int toolBarheight;
     private ImageView btnBack;
     private CommonBuyView buyView;
@@ -98,6 +100,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBar();
         setContentView(R.layout.activity_column);
         mIntent = getIntent();
         loginUserList = getLoginUserList();
@@ -124,6 +127,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         EventBus.getDefault().register(this);
         initView();
         initData();
+        initTitle();
+    }
+
+    // 沉浸式初始化
+    private void initTitle() {
+        StatusBarUtil.setRootViewFitsSystemWindows(this, false);
+        int statusBarHeight = StatusBarUtil.getStatusBarHeight(this);
+        statusBar.setHeight(statusBarHeight);
     }
 
     private void initData() {
@@ -136,6 +147,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         columnMenuWarp = (RelativeLayout) findViewById(R.id.column_menu_warp);
         columnToolBar = (RelativeLayout) findViewById(R.id.column_tool_bar);
         columnToolBar.setBackgroundColor(Color.argb(0,255,255,255));
+        statusBar = (TextView) findViewById(R.id.status_bar);
+        statusBar.setBackgroundColor(Color.argb(0,255,255,255));
         toolBarheight = Dp2Px2SpUtil.dp2px(this,280);
         columnScrollView = (CustomScrollView) findViewById(R.id.column_scroll_view);
         columnScrollView.setScrollChanged(this);
@@ -491,6 +504,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         barTitle.setTextColor(Color.argb((int) alpha,0,0,0));
         btnBack.setImageResource(alpha > 150 ? R.mipmap.download_back :R.mipmap.detail_white_back);
         columnToolBar.setBackgroundColor(Color.argb((int) alpha,255,255,255));
+        statusBar.setBackgroundColor(Color.argb((int) alpha,255,255,255));
     }
     @Override
     public void onLoadState(int state) {
