@@ -39,57 +39,96 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".business.launch.ui.LaunchActivity">
+        <activity
+            android:name=".business.launch.ui.LaunchActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".business.login.ui.LoginActivity">
+        <activity
+            android:name=".business.login.ui.LoginActivity"
+            android:screenOrientation="portrait">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
 
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
-        <activity android:name=".business.main.ui.MainActivity" />
-        <activity android:name=".business.course.ui.CourseImageTextActivity" />
+        <activity
+            android:name=".business.main.ui.MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.course.ui.CourseImageTextActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".business.audio.ui.AudioActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".business.video.ui.VideoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".business.column.ui.ColumnActivity" />
+        <activity
+            android:name=".business.column.ui.ColumnActivity"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".business.audio.presenter.AudioMediaPlayer" />
 
-        <activity android:name=".business.mine_learning.ui.MineLearningActivity" />
-        <activity android:name=".business.setting.ui.SettingPersonActivity" />
-        <activity android:name=".business.setting.ui.SettingPersonItemActivity" />
-        <activity android:name=".business.setting.ui.SettingAccountActivity" />
-        <activity android:name=".business.download.ui.DownloadActivity" />
-        <activity android:name=".business.download.ui.OffLineCacheActivity" />
-        <activity android:name=".business.column.ui.CacheColumnActivity" />
-        <activity android:name=".business.search.ui.SearchActivity"
+        <activity
+            android:name=".business.mine_learning.ui.MineLearningActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.setting.ui.SettingPersonActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.setting.ui.SettingPersonItemActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.setting.ui.SettingAccountActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.download.ui.DownloadActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.download.ui.OffLineCacheActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.column.ui.CacheColumnActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.search.ui.SearchActivity"
             android:windowSoftInputMode="adjustPan|stateVisible"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen" />
-        <activity android:name=".business.course_more.ui.CourseMoreActivity" />
-        <activity android:name=".business.coupon.ui.CouponActivity" />
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.course_more.ui.CourseMoreActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.coupon.ui.CouponActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".business.comment.ui.CommentActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             />
-        <activity android:name=".business.navigate_detail.ui.NavigateDetailActivity" />
-        <activity android:name=".business.cdkey.ui.CdKeyActivity" />
-        <activity android:name=".common.pay.ui.PayActivity" />
-        <activity android:name=".business.coupon.ui.CouponDetailActivity" />
+        <activity
+            android:name=".business.navigate_detail.ui.NavigateDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.cdkey.ui.CdKeyActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".common.pay.ui.PayActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.coupon.ui.CouponDetailActivity"
+            android:screenOrientation="portrait"/>
         <!-- 微信sdk start -->
         <activity
             android:name=".wxapi.WXEntryActivity"
@@ -261,13 +300,27 @@
             android:value="5e3ca811dadd0242657df1b7" /> <!-- 值来自开发者平台取得的AppKey -->
         <!-- 极光推送相关配置 end -->
 
-        <activity android:name=".business.bought_list.ui.BoughtListActivity" />
-        <activity android:name=".business.earning.ui.ScholarshipActivity" />
-        <activity android:name=".business.earning.ui.IntegralActivity" />
-        <activity android:name=".business.earning.ui.WithdrawalRecordActivity" />
-        <activity android:name=".business.earning.ui.WithdrawalActivity" />
-        <activity android:name=".business.earning.ui.WithdrawalResultActivity" />
-        <activity android:name=".business.historymessage.ui.HistoryMessageActivity" />
+        <activity
+            android:name=".business.bought_list.ui.BoughtListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.earning.ui.ScholarshipActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.earning.ui.IntegralActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.earning.ui.WithdrawalRecordActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.earning.ui.WithdrawalActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.earning.ui.WithdrawalResultActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.historymessage.ui.HistoryMessageActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".common.web.BrowserActivity" />
     </application>
 

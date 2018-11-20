@@ -210,7 +210,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     public void onBackPressed() {
         if (hasBuy) {
             UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-            updateLearningUtils.updateLearningProgress(resourceId, isBigColumn ? 8 : 6, 10);
+            updateLearningUtils.updateLearningProgress(realSrcId, isBigColumn ? 8 : 6, 10);
         }
         super.onBackPressed();
     }
