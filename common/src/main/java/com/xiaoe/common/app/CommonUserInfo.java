@@ -1,10 +1,10 @@
 package com.xiaoe.common.app;
 
-import java.util.List;
-
 import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.LoginUser;
+
+import java.util.List;
 
 public class CommonUserInfo {
 
@@ -81,7 +81,7 @@ public class CommonUserInfo {
         return apiToken;
     }
 
-    public static String getApiTokenByDB(){
+    public String getApiTokenByDB(){
         //双层判断
         if(loginUser == null){
             setUserInfo();
@@ -98,6 +98,17 @@ public class CommonUserInfo {
 
     public static String getUserId() {
         return userId;
+    }
+
+    public String getUserIdByDB(){
+        //双层判断
+        if(loginUser == null){
+            setUserInfo();
+        }
+        if(loginUser != null){
+            return loginUser.getUserId();
+        }
+        return null;
     }
 
     public static String getWxNickname() {
