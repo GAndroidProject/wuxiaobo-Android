@@ -79,7 +79,7 @@ public class LaunchActivity extends XiaoeActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                animatable.start();
+//                animatable.start();
                 if (animatable instanceof AnimatedDrawable2) {
                     duration = (int) ((AnimatedDrawable2) animatable).getLoopDurationMs();
                     Log.d(TAG, "onFinalImageSet: loopCount - " + ((AnimatedDrawable2) animatable).getLoopCount());
