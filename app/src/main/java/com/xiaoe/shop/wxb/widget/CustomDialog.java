@@ -44,6 +44,7 @@ public class CustomDialog {
     private final RelativeLayout hintTypeLayout;
     private final LinearLayout loadTypeLayout;
     private boolean hideCancel = false;
+    private int dialogTag = -1;
 
     public CustomDialog(Context context) {
         this.mContext = context;
@@ -134,6 +135,7 @@ public class CustomDialog {
     }
 
     public void showDialog(final int tag) {
+        dialogTag = tag;
         loadTypeLayout.setVisibility(View.GONE);
         hintTypeLayout.setVisibility(View.VISIBLE);
         if (cancelListener == null && hideCancel) {
@@ -233,5 +235,13 @@ public class CustomDialog {
         if (dialog != null) {
             dialog.dismiss();
         }
+    }
+
+    public int getDialogTag() {
+        return dialogTag;
+    }
+
+    public void setDialogTag(int dialogTag) {
+        this.dialogTag = dialogTag;
     }
 }

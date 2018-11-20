@@ -526,5 +526,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        UMShareAPI.get(this).release();
     }
 }

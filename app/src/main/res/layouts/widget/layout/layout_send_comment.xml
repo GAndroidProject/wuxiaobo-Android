@@ -28,7 +28,6 @@
             android:gravity="center"
             android:text="发送"
             android:textSize="12sp"
-            android:visibility="gone"
             />
         <EditText
             android:id="@+id/id_edit_comment"

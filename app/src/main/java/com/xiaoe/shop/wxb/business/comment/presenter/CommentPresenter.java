@@ -2,7 +2,6 @@ package com.xiaoe.shop.wxb.business.comment.presenter;
 
 import android.text.TextUtils;
 
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.CommentEntity;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
@@ -35,14 +34,14 @@ public class CommentPresenter implements IBizCallback {
      */
     public void requestCommentList(String recordId, int recordType, int pageSize, int lastCommentId, String label){
         CommentListRequest listRequest = new CommentListRequest(this);
-        listRequest.addRequestParam("record_id",recordId);
-        listRequest.addRequestParam("record_type",recordType);
-        listRequest.addRequestParam("page_size",pageSize);
-        listRequest.addRequestParam("last_comment_id",lastCommentId);
+        listRequest.addDataParam("record_id",recordId);
+        listRequest.addDataParam("record_type",recordType);
+        listRequest.addDataParam("page_size",pageSize);
+        listRequest.addDataParam("last_comment_id",lastCommentId);
         if (TextUtils.isEmpty(label)) {
             label = "last";
         }
-        listRequest.addRequestParam("label",label);
+        listRequest.addDataParam("label",label);
         listRequest.sendRequest();
     }
 
@@ -56,16 +55,16 @@ public class CommentPresenter implements IBizCallback {
      */
     public void sendComment(String recordId, int recordType, String recordTitle, String content, CommentEntity replyComment){
         SendCommentRequest commentRequest = new SendCommentRequest(this);
-        commentRequest.addRequestParam("record_id",recordId);
-        commentRequest.addRequestParam("record_type",recordType);
-        commentRequest.addRequestParam("record_title",recordTitle);
+        commentRequest.addDataParam("record_id",recordId);
+        commentRequest.addDataParam("record_type",recordType);
+        commentRequest.addDataParam("record_title",recordTitle);
         if(replyComment != null){
-            commentRequest.addRequestParam("src_comment_id",replyComment.getComment_id());
-            commentRequest.addRequestParam("src_content",replyComment.getContent());
-            commentRequest.addRequestParam("src_nick_name",replyComment.getUser_nickname());
-            commentRequest.addRequestParam("src_user_id",replyComment.getUser_id());
+            commentRequest.addDataParam("src_comment_id",replyComment.getComment_id());
+            commentRequest.addDataParam("src_content",replyComment.getContent());
+            commentRequest.addDataParam("src_nick_name",replyComment.getUser_nickname());
+            commentRequest.addDataParam("src_user_id",replyComment.getUser_id());
         }
-        commentRequest.addRequestParam("content",content);
+        commentRequest.addDataParam("content",content);
 
         commentRequest.sendRequest();
     }
@@ -81,19 +80,19 @@ public class CommentPresenter implements IBizCallback {
      */
     public void likeComment(String recordId, int recordType, int commentId, String srcUserId, String commentContent, boolean praised){
         CommentLikeRequest commentLikeRequest = new CommentLikeRequest(this);
-        commentLikeRequest.addRequestParam("record_id",recordId);
-        commentLikeRequest.addRequestParam("record_type",recordType);
-        commentLikeRequest.addRequestParam("comment_id",commentId);
-        commentLikeRequest.addRequestParam("src_user_id",srcUserId);
-        commentLikeRequest.addRequestParam("src_comment_content",commentContent);
-        commentLikeRequest.addRequestParam("is_praised",praised);
+        commentLikeRequest.addDataParam("record_id",recordId);
+        commentLikeRequest.addDataParam("record_type",recordType);
+        commentLikeRequest.addDataParam("comment_id",commentId);
+        commentLikeRequest.addDataParam("src_user_id",srcUserId);
+        commentLikeRequest.addDataParam("src_comment_content",commentContent);
+        commentLikeRequest.addDataParam("is_praised",praised);
         commentLikeRequest.sendRequest();
     }
     public void deleteComment(String recordId, int recordType, int commentId){
         CommentDeleteRequest commentDeleteRequest = new CommentDeleteRequest(this);
-        commentDeleteRequest.addRequestParam("comment_id",commentId);
-        commentDeleteRequest.addRequestParam("record_id",recordId);
-        commentDeleteRequest.addRequestParam("record_type",recordType);
+        commentDeleteRequest.addDataParam("comment_id",commentId);
+        commentDeleteRequest.addDataParam("record_id",recordId);
+        commentDeleteRequest.addDataParam("record_type",recordType);
 
         commentDeleteRequest.sendRequest();
     }

@@ -337,6 +337,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         super.onDestroy();
         playControllerView.release();
         EventBus.getDefault().unregister(this);
+        UMShareAPI.get(this).release();
     }
 
     @Override

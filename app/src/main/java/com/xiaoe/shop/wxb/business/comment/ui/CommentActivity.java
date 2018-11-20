@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.business.comment.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,9 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.CommentEntity;
 import com.xiaoe.common.entitys.LoginUser;
@@ -43,7 +47,7 @@ import com.xiaoe.shop.wxb.widget.TouristDialog;
 import java.util.List;
 
 public class CommentActivity extends XiaoeActivity implements View.OnClickListener, OnClickSendCommentListener,
-        OnClickCommentListener {
+        OnClickCommentListener, OnRefreshListener {
     private static final String TAG = "CommentActivity";
     private final int DIALOG_TAG_DELETE_COMMENT = 90001;
     private RecyclerView commentRecyclerView;
@@ -68,6 +72,8 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
 
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
+    private SmartRefreshLayout smartRefreshLayout;
+    private boolean refreshComment = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -151,6 +157,9 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
 
         btnBack = (ImageView) findViewById(R.id.btn_back);
         btnBack.setOnClickListener(this);
+
+        smartRefreshLayout = (SmartRefreshLayout) findViewById(R.id.smart_refresh_layout);
+        smartRefreshLayout.setOnRefreshListener(this);
     }
 
 
@@ -244,8 +253,15 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         commentCountView.setText("评论 "+count+" 条");
         JSONArray comments = dataObject.getJSONArray("comments");
         List<CommentEntity> commentList = comments.toJavaList(CommentEntity.class);
-        commentAdapter.addAll(commentList);
-        setPagerState(0);
+        if(refreshComment){
+            refreshComment = false;
+            smartRefreshLayout.finishRefresh();
+            commentAdapter.refreshData(commentList);
+        }else{
+            commentAdapter.addAll(commentList);
+            setPagerState(0);
+        }
+
     }
 
     private void setPagerState(int state){
@@ -370,5 +386,16 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
             CommentEntity commentEntity = commentAdapter.getData().get(commentAdapter.getItemCount() - 2);
             commentPresenter.requestCommentList(resourceId, resourceType, pageSize, commentEntity.getComment_id(), null);
         }
+    }
+
+    @Override
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        if(refreshComment){
+            //如果正在刷新,则不做操作
+            smartRefreshLayout.finishRefresh();
+            return;
+        }
+        refreshComment = true;
+        commentPresenter.requestCommentList(resourceId, resourceType, pageSize, -1, null);
     }
 }

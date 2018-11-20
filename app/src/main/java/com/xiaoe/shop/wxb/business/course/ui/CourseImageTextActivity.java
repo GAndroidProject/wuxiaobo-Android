@@ -8,10 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
@@ -19,11 +17,10 @@ import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 import com.tencent.smtt.sdk.CookieSyncManager;
+import com.tencent.smtt.sdk.WebView;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.LoginUser;
@@ -324,6 +321,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
         if (unbinder != null) {
             unbinder.unbind();
         }
+        UMShareAPI.get(this).release();
     }
 
     @Override

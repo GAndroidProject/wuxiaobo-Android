@@ -6,14 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.xiaoe.common.entitys.CommentEntity;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.interfaces.OnClickCommentListener;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommentListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private static final String TAG = "CommentListAdapter";
@@ -68,11 +68,16 @@ public class CommentListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         return commentList.size() + 1;
     }
     public void addAll(List<CommentEntity> list){
-        int count = commentList.size();
         commentList.addAll(list);
         notifyDataSetChanged();
-//        notifyItemRangeInserted(count,getItemCount());
     }
+
+    public void refreshData(List<CommentEntity> list){
+        commentList.clear();
+        commentList.addAll(list);
+        notifyDataSetChanged();
+    }
+
     public void addPosition(CommentEntity comment, int position){
         commentList.add(position, comment);
         notifyItemInserted(position);
@@ -89,5 +94,9 @@ public class CommentListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     public void setLoadMoreState(int loadMoreState) {
         this.loadMoreState = loadMoreState;
+    }
+
+    public int getLoadMoreState() {
+        return loadMoreState;
     }
 }

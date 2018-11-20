@@ -26,11 +26,8 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.umeng.socialize.media.UMImage;
-import com.umeng.socialize.media.UMWeb;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
@@ -56,6 +53,7 @@ import com.xiaoe.shop.wxb.interfaces.OnConfirmListener;
 import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
+import com.xiaoe.shop.wxb.widget.ShareDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -65,7 +63,8 @@ import java.util.List;
  * Created by Administrator on 2017/7/17.
  */
 
-public class XiaoeActivity extends AppCompatActivity implements INetworkResponse, OnCancelListener, OnConfirmListener, UMShareListener {
+public class XiaoeActivity extends AppCompatActivity implements INetworkResponse, OnCancelListener, OnConfirmListener,
+        UMShareListener{
     private static final String TAG = "XiaoeActivity";
     private static final int DISMISS_POPUP_WINDOW = 1;
     private static final int DISMISS_TOAST = 2;
@@ -93,6 +92,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     protected InputMethodManager imm;
 
     protected Context mContext;
+    private ShareDialog mShareDialog;
 
     class XeHandler extends Handler {
 
@@ -194,6 +194,9 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     @Override
     protected void onPause() {
         super.onPause();
+        if(dialog.getDialogTag() == ShareDialog.SHARE_DIALOG_TAG){
+            dialog.dismissDialog();
+        }
         MobclickAgent.onPause(this);
     }
 
@@ -428,19 +431,10 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
      *     }
      */
     public void umShare(String shareTitle, String imgUrl, String shareUrl, String desc){
-//        new ShareAction(this)
-//                .withText(shareUrl)
-//                .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
-//                .setCallback(this).open();
-        UMImage thumb =  new UMImage(this, imgUrl);
-        UMWeb web = new UMWeb(shareUrl);
-        web.setTitle(shareTitle);//标题
-        web.setThumb(thumb);  //缩略图
-        web.setDescription(desc);//描述
-        new ShareAction(this)
-                .withMedia(web)
-                .setDisplayList(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
-                .setCallback(this).open();
+        if(mShareDialog == null){
+            mShareDialog = new ShareDialog(this, this);
+        }
+        mShareDialog.showSharePanel(shareTitle, imgUrl, shareUrl, desc);
     }
     @Override
     public void onStart(SHARE_MEDIA share_media) {

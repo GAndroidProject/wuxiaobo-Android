@@ -619,6 +619,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if(detailContent != null){
             detailContent.destroy();
         }
+        UMShareAPI.get(this).release();
     }
 
     @Override

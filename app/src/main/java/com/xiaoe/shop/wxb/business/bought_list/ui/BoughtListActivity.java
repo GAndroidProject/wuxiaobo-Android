@@ -15,16 +15,6 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.umeng.socialize.UMShareAPI;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import com.xiaoe.common.entitys.BoughtListItem;
 import com.xiaoe.common.entitys.HadSharedEvent;
 import com.xiaoe.common.entitys.TaskDetailIdEvent;
@@ -38,6 +28,16 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.bought_list.presenter.BoughtListAdapter;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class BoughtListActivity extends XiaoeActivity implements OnItemClickWithBoughtItemListener {
 
@@ -142,6 +142,7 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
         if (unbinder != null) {
             unbinder.unbind();
         }
+        UMShareAPI.get(this).release();
     }
 
     @Subscribe
