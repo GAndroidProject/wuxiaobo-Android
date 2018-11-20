@@ -43,5 +43,6 @@ public class SettingTimeCount extends CountDownTimer {
     public void onFinish() {
         tv.setText("重新获取验证码");
         tv.setClickable(true);
+        tv.setTextColor(mContext.getResources().getColor(R.color.edit_cursor));
     }
 }

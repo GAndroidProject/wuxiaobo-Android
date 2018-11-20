@@ -436,8 +436,9 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         phoneNumDesc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                settingAccountActivity.loginPresenter.obtainPhoneCode(phoneNumTitle.getText().toString());
+                settingAccountActivity.loginPresenter.obtainPhoneCode(settingAccountActivity.localPhone);
                 settingTimeCount.start();
+//                Log.e(TAG, "onClick: " + settingAccountActivity.localPhone);
             }
         });
     }
