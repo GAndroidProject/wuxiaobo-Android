@@ -3,6 +3,7 @@ package com.xiaoe.shop.wxb.common.pay.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,13 @@ public class PayingFragment extends BaseFragment {
         useConpon = (TextView) mRootView.findViewById(R.id.use_coupon_title);
         btnSucceedPay = (TextView) mRootView.findViewById(R.id.btn_succeed_pay);
         setCanUseCouponCount(-1);
+
+        TextView itemDesc = (TextView) mRootView.findViewById(R.id.item_desc);
+        String expireTime = mIntent.getStringExtra("expireTime");
+        if(!TextUtils.isEmpty(expireTime)){
+            itemDesc.setVisibility(View.VISIBLE);
+            itemDesc.setText("有效期至："+expireTime);
+        }
     }
     private void initListener() {
         if(onClickListener == null){

@@ -15,15 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.alibaba.fastjson.JSON;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.List;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 import com.xiaoe.common.entitys.ExchangeSuccessInfo;
 import com.xiaoe.common.entitys.GetSuperMemberSuccessEvent;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -33,10 +26,20 @@ import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.cdkey.presenter.CdKeyPresenter;
+import com.xiaoe.shop.wxb.business.column.ui.ColumnActivity;
 import com.xiaoe.shop.wxb.business.coupon.ui.CouponActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
 public class CdKeyActivity extends XiaoeActivity {
 
@@ -167,8 +170,17 @@ public class CdKeyActivity extends XiaoeActivity {
                         Toast(getString(R.string.cd_key_super_member));
                         finish();
                     }else {
-                        JumpDetail.jumpColumn(CdKeyActivity.this,good.getResource_id(),
-                                null,true);
+                        if(good.getResource_type() == ColumnActivity.RESOURCE_TYPE_TOPIC){
+                            JumpDetail.jumpColumn(CdKeyActivity.this,good.getResource_id(),
+                                    null,8);
+                        }else if(good.getResource_type() == ColumnActivity.RESOURCE_TYPE_MEMBER){
+                            JumpDetail.jumpColumn(CdKeyActivity.this,good.getResource_id(),
+                                    null,5);
+                        }else {
+                            JumpDetail.jumpColumn(CdKeyActivity.this,good.getResource_id(),
+                                    null,6);
+                        }
+
                     }
                 }
 

@@ -241,7 +241,8 @@ public class HistoryMessageActivity extends XiaoeActivity {
                 BrowserActivity.openUrl(mContext, listBean.getSkip_target(), "外部链接");
                 break;
             case 6:
-                JumpDetail.jumpColumn(mContext, listBean.getSkip_target(), "", false);
+//                JumpDetail.jumpColumn(mContext, listBean.getSkip_target(), "", false);
+//                JumpDetail.jumpColumn(mContext, listBean.getSkip_target(), "", listBean.getSkip_type());
                 break;
             case 7:
                 break;

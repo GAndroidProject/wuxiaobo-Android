@@ -22,18 +22,6 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -61,6 +49,17 @@ import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class MicroPageFragment extends BaseFragment implements OnCustomScrollChangedListener, OnRefreshListener {
 
@@ -535,7 +534,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 JSONObject flowInfo = (JSONObject) item;
                 FlowInfoItem fii = new FlowInfoItem();
                 String resourceType = flowInfo.getString("src_type");
-                if (resourceType.equals("member")) { continue; } // 会员先不支持
+//                if (resourceType.equals("member")) { continue; } // 会员先不支持
                 String resourceId = flowInfo.getString("src_id");
                 String tag = flowInfo.getString("info_tag") == null ? "" : flowInfo.getString("info_tag");
                 String title = flowInfo.getString("title");

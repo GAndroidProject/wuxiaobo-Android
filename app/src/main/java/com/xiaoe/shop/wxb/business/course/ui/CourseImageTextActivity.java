@@ -255,7 +255,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
             @Override
             public void onClick(View v) {
                 if (loginList.size() == 1) {
-                    JumpDetail.jumpPay(CourseImageTextActivity.this, resourceId, 1, collectionImgUrl, collectionTitle, resPrice);
+                    JumpDetail.jumpPay(CourseImageTextActivity.this, resourceId, 1, collectionImgUrl, collectionTitle, resPrice, null);
                 } else {
                     touristDialog.showDialog();
                 }

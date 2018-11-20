@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
+import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.jpush.entity.JgPushReceiverEntity;
+import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,10 +18,6 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 import cn.jpush.android.api.JPushInterface;
-import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
-import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.common.jpush.entity.JgPushReceiverEntity;
-import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 
 import static com.xiaoe.shop.wxb.common.jpush.Logger.d;
 import static com.xiaoe.shop.wxb.common.jpush.Logger.w;
@@ -98,11 +98,13 @@ public class JgPushReceiver extends BroadcastReceiver {
                 BrowserActivity.openUrl(context, jgPushReceiverEntity.getAction_params().getWebsite_url(), "外部链接");
                 break;
             case 6:
-                if ("8".equals(jgPushReceiverEntity.getAction_params().getResource_type())) {
-                    JumpDetail.jumpColumn(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", true);
-                } else {
-                    JumpDetail.jumpColumn(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", false);
-                }
+//                if ("8".equals(jgPushReceiverEntity.getAction_params().getResource_type())) {
+//                    JumpDetail.jumpColumn(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", true);
+//                } else {
+//                    JumpDetail.jumpColumn(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", false);
+//                }
+                int resourceType = Integer.parseInt(jgPushReceiverEntity.getAction_params().getResource_type());
+                JumpDetail.jumpColumn(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", resourceType);
                 break;
             case 7:
                 break;

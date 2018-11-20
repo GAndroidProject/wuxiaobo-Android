@@ -81,12 +81,13 @@ public class JumpDetail {
      * @param context
      * @param resId
      * @param imageUrl
-     * @param isBigColumn
+     * @param resourceType
      */
-    public static void jumpColumn(Context context, String resId,String imageUrl, boolean isBigColumn){
+    public static void jumpColumn(Context context, String resId,String imageUrl, int resourceType){
         Intent intent = new Intent(context, ColumnActivity.class);
         intent.putExtra("resource_id", resId);
-        intent.putExtra("isBigColumn", isBigColumn);
+//        intent.putExtra("isBigColumn", isBigColumn);
+        intent.putExtra("resource_type", resourceType);
         if(!TextUtils.isEmpty(imageUrl)){
             intent.putExtra("column_image_url", imageUrl);
         }
@@ -184,13 +185,14 @@ public class JumpDetail {
      * 跳转到支付
      * @param context
      */
-    public static void jumpPay(Context context, String resourceId, int resourceType, String imgUrl, String title, int price){
+    public static void jumpPay(Context context, String resourceId, int resourceType, String imgUrl, String title, int price, String expireTime){
         Intent intent = new Intent(context, PayActivity.class);
         intent.putExtra("resourceId", resourceId);
         intent.putExtra("resourceType", resourceType);
         intent.putExtra("image_url", imgUrl);
         intent.putExtra("title", title);
         intent.putExtra("price", price);
+        intent.putExtra("expireTime", expireTime);
         context.startActivity(intent);
     }
 

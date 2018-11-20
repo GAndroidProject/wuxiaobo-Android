@@ -210,7 +210,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         switch (v.getId()){
             case R.id.buy_course:
                 if (loginUserList.size() == 1) {
-                    JumpDetail.jumpPay(this, mResourceId, 3, collectImgUrl, collectTitle, resPrice);
+                    JumpDetail.jumpPay(this, mResourceId, 3, collectImgUrl, collectTitle, resPrice, null);
                 } else {
                     touristDialog.showDialog();
                 }

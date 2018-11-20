@@ -541,7 +541,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
     private void buyResource() {
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
-        JumpDetail.jumpPay(this, playEntity.getResourceId(), 2, playEntity.getImgUrl(), playEntity.getTitle(), playEntity.getPrice());
+        JumpDetail.jumpPay(this, playEntity.getResourceId(), 2, playEntity.getImgUrl(), playEntity.getTitle(), playEntity.getPrice(), null);
     }
 
     @Subscribe

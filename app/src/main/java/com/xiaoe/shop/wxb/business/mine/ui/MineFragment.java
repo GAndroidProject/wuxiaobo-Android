@@ -14,17 +14,6 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -55,6 +44,16 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, OnItemClickWithMoneyItemListener, OnRefreshListener {
 
@@ -524,10 +523,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                             JumpDetail.jumpVideo(mContext, mineLearningId, "", false);
                             break;
                         case DecorateEntityType.COLUMN:
-                            JumpDetail.jumpColumn(mContext, mineLearningId, "", false);
+                            JumpDetail.jumpColumn(mContext, mineLearningId, "", 6);
                             break;
                         case DecorateEntityType.TOPIC:
-                            JumpDetail.jumpColumn(mContext, mineLearningId, "", true);
+                            JumpDetail.jumpColumn(mContext, mineLearningId, "", 8);
+                            break;
+                        case DecorateEntityType.MEMBER:
+                            JumpDetail.jumpColumn(mContext, mineLearningId, "", 5);
                             break;
                         default:
                             break;

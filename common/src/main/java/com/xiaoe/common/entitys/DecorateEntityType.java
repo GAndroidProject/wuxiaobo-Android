@@ -48,6 +48,7 @@ public class DecorateEntityType {
     public static final String VIDEO = "video"; // 视频
     public static final String COLUMN = "column"; // 专栏
     public static final String TOPIC = "topic"; // 大专栏
+    public static final String MEMBER = "member"; // 会员
 
     // 信息流中专栏和大专栏的数字
     public static final int FLOW_INFO_COLUMN = 3;

@@ -71,6 +71,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         resourceId = mIntent.getStringExtra("resourceId");
         productId = mIntent.getStringExtra("productId");
         resourceType = mIntent.getIntExtra("resourceType", 0);
+//        expireTime = mIntent.getStringExtra("expireTime");
         mCouponPresenter = new CouponPresenter(this);
 
         validCoupon = new ArrayList<CouponInfo>();
@@ -234,7 +235,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         getDialog().showLoadDialog(false);
 //        int paymentType = (resourceType == 8 || resourceType == 6) ? 3 : 2;
         int paymentType;
-        if (resourceType == 8 || resourceType == 6) {
+        if (resourceType == 8 || resourceType == 6 || resourceType == 5) {
             paymentType = 3;
         } else if (resourceType == 23) {
             paymentType = 15;

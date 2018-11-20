@@ -52,6 +52,9 @@ import java.util.List;
 
 public class ColumnActivity extends XiaoeActivity implements View.OnClickListener, OnCustomScrollChangedListener {
     private static final String TAG = "ColumnActivity";
+    public static int RESOURCE_TYPE_TOPIC = 8;//大专栏
+    public static int RESOURCE_TYPE_COLUMN = 6;//小专栏
+    public static int RESOURCE_TYPE_MEMBER = 5;//会员
     private SimpleDraweeView columnImage;
     private TextView columnTitle;
     private TextView barTitle;
@@ -74,7 +77,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private String resourceId;
     private Intent mIntent;
     private ColumnPresenter columnPresenter;
-    private boolean isBigColumn;
+//    private boolean isBigColumn;
     private int pageIndex = 1;
     private int pageSize = 20;
     private boolean isHasBuy = false;
@@ -96,6 +99,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     boolean hasBuy;
     String realSrcId;
     private MiniAudioPlayControllerLayout miniAudioPlayControllerLayout;//悬浮音频播放器
+    private int resourceType;//8-大专栏，6-小专栏，5-会员
+    private TextView memberExpireTime;
+    private String expireTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,7 +128,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             });
         }
 
-        isBigColumn = mIntent.getBooleanExtra("isBigColumn", false);
+//        isBigColumn = mIntent.getBooleanExtra("isBigColumn", false);
+        resourceType = mIntent.getIntExtra("resource_type", 0);
         resourceId = mIntent.getStringExtra("resource_id");
         EventBus.getDefault().register(this);
         initView();
@@ -139,7 +146,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     private void initData() {
         columnPresenter = new ColumnPresenter(this);
-        columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
+//        columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
+        columnPresenter.requestDetail(resourceId, resourceType+"");
         collectionUtils = new CollectionUtils(this);
     }
 
@@ -168,9 +176,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         columnTitle = (TextView) findViewById(R.id.column_title);
         barTitle = (TextView) findViewById(R.id.tv_title);
         buyCount = (TextView) findViewById(R.id.buy_num);
+
+        memberExpireTime = (TextView) findViewById(R.id.member_expire_time);
+
         columnViewPager = (ScrollViewPager) findViewById(R.id.column_view_pager);
         columnViewPager.setNeedMeasure(true);
-        columnViewPagerAdapter = new ColumnFragmentStatePagerAdapter(getSupportFragmentManager(),isBigColumn, resourceId);
+        columnViewPagerAdapter = new ColumnFragmentStatePagerAdapter(getSupportFragmentManager(),resourceType, resourceId);
         columnViewPager.setScroll(false);
         columnViewPager.setAdapter(columnViewPagerAdapter);
         columnViewPager.setOffscreenPageLimit(2);
@@ -214,7 +225,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(code == 0){
             refreshData = true;
             getDialog().showLoadDialog(false);
-            columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
+//            columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
+            columnPresenter.requestDetail(resourceId, resourceType+"");
         }
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
     }
@@ -223,7 +235,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     public void onBackPressed() {
         if (hasBuy) {
             UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-            updateLearningUtils.updateLearningProgress(realSrcId, isBigColumn ? 8 : 6, 10);
+//            updateLearningUtils.updateLearningProgress(realSrcId, isBigColumn ? 8 : 6, 10);
+            updateLearningUtils.updateLearningProgress(realSrcId, resourceType, 10);
         }
         super.onBackPressed();
     }
@@ -328,7 +341,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void columnListRequest(IRequest iRequest, JSONArray data) {
-        if(isBigColumn){
+        if(resourceType == RESOURCE_TYPE_TOPIC){
             ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
             if(refreshData){
@@ -336,6 +349,15 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 fragment.refreshData(columnPresenter.formatColumnEntity(data, resourceId));
             }else{
                 fragment.addData(columnPresenter.formatColumnEntity(data, resourceId));
+            }
+        }else if(resourceType == RESOURCE_TYPE_MEMBER){
+            MemberFragment fragment = (MemberFragment) columnViewPagerAdapter.getItem(1);
+            fragment.setHasBuy(isHasBuy);
+            if(refreshData){
+                refreshData = false;
+                fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, ""));
+            }else{
+                fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, ""));
             }
         }else{
             LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
@@ -359,9 +381,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         hasBuy = available;
         getDialog().dismissDialog();
         if(refreshData){
-            if(isBigColumn){
+            if(resourceType == RESOURCE_TYPE_TOPIC){
                 ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
                 fragment.clearData();
+            }else if(resourceType == RESOURCE_TYPE_MEMBER){
+
             }else{
                 LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
                 fragment.clearData();
@@ -404,6 +428,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else {
             buyCount.setVisibility(View.GONE);
         }
+        if(!TextUtils.isEmpty(data.getString("expire_time"))){
+            memberExpireTime.setVisibility(View.VISIBLE);
+            expireTime = data.getString("expire_time");
+            memberExpireTime.setText("有效期至："+expireTime);
+        }
         columnPresenter.requestColumnList(resourceId, "0", pageIndex, pageSize);
     }
 
@@ -432,8 +461,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 break;
             case R.id.buy_course:
                 if (loginUserList.size() == 1) {
-                    int resourceType = isBigColumn ? 8 : 6;
-                    JumpDetail.jumpPay(this,resourceId,resourceType, collectImgUrl, collectTitle, price);
+                    int resourceType = this.resourceType;
+                    JumpDetail.jumpPay(this,resourceId,resourceType, collectImgUrl, collectTitle, price, null);
                 } else {
                     touristDialog.showDialog();
                 }
@@ -464,10 +493,10 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             collectionContent.put("img_url",collectImgUrl);
             collectionContent.put("img_url_compressed",collectImgUrlCompressed);
             collectionContent.put("price",collectPrice);
-            collectionUtils.requestAddCollection(resourceId, isBigColumn ? "8" : "6", collectionContent);
+            collectionUtils.requestAddCollection(resourceId, resourceType+"", collectionContent);
         }else {
             //取消收藏
-            collectionUtils.requestRemoveCollection(resourceId, isBigColumn ? "8" : "6");
+            collectionUtils.requestRemoveCollection(resourceId, resourceType+"");
         }
     }
 

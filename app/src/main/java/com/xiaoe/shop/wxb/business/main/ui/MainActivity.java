@@ -251,12 +251,18 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         if(!AudioMediaPlayer.isStop()){
             if(!AudioMediaPlayer.isPlaying()){
                 AudioMediaPlayer.release();
-                if (OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName()))
-                    stopService(audioPlayServiceIntent);
+                if (OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName())){
+                    if(audioPlayServiceIntent!= null){
+                        stopService(audioPlayServiceIntent);
+                    }
+                }
             }
         }else{
             if (OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName()))
-                stopService(audioPlayServiceIntent);
+                if(audioPlayServiceIntent!= null){
+                    stopService(audioPlayServiceIntent);
+                }
+
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         AppUpgradeHelper.getInstance().unregisterEventBus();

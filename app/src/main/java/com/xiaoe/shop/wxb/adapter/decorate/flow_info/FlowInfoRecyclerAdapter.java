@@ -1,18 +1,12 @@
 package com.xiaoe.shop.wxb.adapter.decorate.flow_info;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
-import java.util.List;
 
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.FlowInfoItem;
@@ -20,9 +14,10 @@ import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
-import com.xiaoe.shop.wxb.business.video.ui.VideoActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
+
+import java.util.List;
 
 public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -142,7 +137,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 columnViewHolder.flowInfoWrap.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemType(), false);
+                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemType(), 6);
                     }
                 });
             case DecorateEntityType.FLOW_INFO_TOPIC: // 大专栏
@@ -162,7 +157,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 topicViewHolder.flowInfoWrap.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemType(), true);
+                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemType(), 8);
                     }
                 });
                 break;

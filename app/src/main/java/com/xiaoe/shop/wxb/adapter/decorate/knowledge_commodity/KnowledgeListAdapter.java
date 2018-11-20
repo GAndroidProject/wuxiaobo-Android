@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
 
-import java.util.List;
-
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
 import com.xiaoe.shop.wxb.R;
@@ -17,6 +15,8 @@ import com.xiaoe.shop.wxb.business.course.ui.CourseImageTextActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
+
+import java.util.List;
 
 public class KnowledgeListAdapter extends BaseAdapter {
 
@@ -107,10 +107,13 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         JumpDetail.jumpVideo(mContext, mItemList.get(position).getResourceId(), "", false);
                         break;
                     case DecorateEntityType.COLUMN:
-                        JumpDetail.jumpColumn(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), false);
+                        JumpDetail.jumpColumn(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), 6);
                         break;
                     case DecorateEntityType.TOPIC:
-                        JumpDetail.jumpColumn(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), true);
+                        JumpDetail.jumpColumn(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), 8);
+                        break;
+                    case DecorateEntityType.MEMBER:
+                        JumpDetail.jumpColumn(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), 5);
                         break;
                 }
             }

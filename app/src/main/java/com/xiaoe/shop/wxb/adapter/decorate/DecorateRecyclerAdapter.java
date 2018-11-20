@@ -15,11 +15,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.youth.banner.BannerConfig;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.GraphicNavItem;
@@ -51,6 +46,10 @@ import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
+import com.youth.banner.BannerConfig;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 店铺装修组件显示列表适配器
@@ -203,7 +202,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 recentUpdateViewHolder.recentUpdateAvatar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), currentBindComponent.getImgUrl(), false);
+                        JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), currentBindComponent.getImgUrl(), 5);
                     }
                 });
                 // 加载 ListView 的数据
@@ -287,10 +286,13 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                             JumpDetail.jumpVideo(mContext, resourceId, "", false);
                             break;
                         case DecorateEntityType.COLUMN:
-                            JumpDetail.jumpColumn(mContext, resourceId, "", false);
+                            JumpDetail.jumpColumn(mContext, resourceId, "", 6);
                             break;
                         case DecorateEntityType.TOPIC:
-                            JumpDetail.jumpColumn(mContext, resourceId, "", true);
+                            JumpDetail.jumpColumn(mContext, resourceId, "", 8);
+                            break;
+                        case DecorateEntityType.MEMBER:
+                            JumpDetail.jumpColumn(mContext, resourceId, "", 5);
                             break;
                         case "message": // 消息页面 TODO: 跳转到消息页面
                             break;
@@ -383,7 +385,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     public void onKnowledgeItemClick(View view, KnowledgeCommodityItem knowledgeCommodityItem) {
         // 知识商品分组形式
         for (RecyclerView itemRecycler : knowledgeGroupRecyclerList) {
-            Log.d(TAG, "onKnowledgeItemClick: execute");
             if (view.getParent() == itemRecycler) {
                 switch (knowledgeCommodityItem.getSrcType()) {
                     case DecorateEntityType.IMAGE_TEXT: // 图文 -- resourceType 为 1，resourceId 需要取
@@ -396,10 +397,13 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         JumpDetail.jumpVideo(mContext, knowledgeCommodityItem.getResourceId(), "", false);
                         break;
                     case DecorateEntityType.COLUMN: // 专栏
-                        JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), false);
+                        JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), 6);
                         break;
                     case DecorateEntityType.TOPIC: // 大专栏
-                        JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), true);
+                        JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), 8);
+                        break;
+                    case DecorateEntityType.MEMBER: // 会员
+                        JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), 5);
                         break;
                 }
             }
@@ -421,10 +425,13 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.VIDEO: // 视频
                 break;
             case DecorateEntityType.COLUMN: // 专栏
-                JumpDetail.jumpColumn(mContext, resourceId, "", false);
+                JumpDetail.jumpColumn(mContext, resourceId, "", 6);
                 break;
             case DecorateEntityType.TOPIC: // 大专栏
-                JumpDetail.jumpColumn(mContext, resourceId, "", true);
+                JumpDetail.jumpColumn(mContext, resourceId, "", 8);
+                break;
+            case DecorateEntityType.MEMBER: // 会员
+                JumpDetail.jumpColumn(mContext, resourceId, "", 5);
                 break;
             case DecorateEntityType.RESOURCE_TAG: // 商品分组
                 JumpDetail.jumpShopGroup(mContext, pageTitle, graphicNavItem.getNavResourceId());
