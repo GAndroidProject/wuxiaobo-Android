@@ -108,7 +108,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                 viewHolder.itemIcon.setVisibility(View.VISIBLE);
                 viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
             }
-            if(resourceEqual && AudioMediaPlayer.isPlaying()){
+            if(resourceEqual && (AudioMediaPlayer.isPlaying() || AudioMediaPlayer.getAudio().isPlaying())){
                 viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
             }else{
                 viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
@@ -213,10 +213,10 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         if(playAudio != null){
             resourceEquals = AudioPlayUtil.resourceEquals(playAudio.getResourceId(), playAudio.getColumnId(), playAudio.getBigColumnId(),
                     resourceId, columnId, bigColumnId);
-            playAudio.setPlaying(!playAudio.isPlaying());
         }
         //正在播放的资源和点击的资源相同，则播放暂停操作
         if(playAudio != null && resourceEquals){
+            playAudio.setPlaying(!playAudio.isPlaying());
             if(AudioMediaPlayer.isStop()){
                 AudioMediaPlayer.start();
             }else{
@@ -230,7 +230,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         AudioMediaPlayer.stop();
         for (AudioPlayEntity playEntity : AudioPlayUtil.getInstance().getAudioList()) {
             if(playEntity.getResourceId().equals(resourceId)){
-                playEntity.setPlaying(!playEntity.isPlaying());
+                playEntity.setPlaying(true);
                 playEntity.setPlay(true);
                 AudioMediaPlayer.setAudio(playEntity, true);
                 new AudioPresenter(null).requestDetail(playEntity.getResourceId());
