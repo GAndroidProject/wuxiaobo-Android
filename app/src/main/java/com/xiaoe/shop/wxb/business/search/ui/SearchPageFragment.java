@@ -312,11 +312,13 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                 SQLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
 
                 // 入库后集合需要改变
-                if (historyData.size() == 5) {
-                    historyData.add(0, searchHistory);
-                    historyData.remove(historyData.size() - 1); // 去掉最后一个
-                } else { // 否则直接添加
-                    historyData.add(0, searchHistory);
+                if (historyData != null) {
+                    if (historyData.size() == 5) {
+                        historyData.add(0, searchHistory);
+                        historyData.remove(historyData.size() - 1); // 去掉最后一个
+                    } else { // 否则直接添加
+                        historyData.add(0, searchHistory);
+                    }
                 }
                 historyAdapter.notifyDataSetChanged();
             }

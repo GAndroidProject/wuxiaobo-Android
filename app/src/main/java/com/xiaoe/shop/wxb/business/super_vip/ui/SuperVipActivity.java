@@ -47,7 +47,7 @@ public class SuperVipActivity extends XiaoeActivity {
 
         SuperVipPresenter superVipPresenter = new SuperVipPresenter(this);
         superVipPresenter.requestSuperVipBuyInfo();
-        superVipBg.setImageURI("res:///" + R.mipmap.super_vip);
+        superVipBg.setImageURI("res:///" + R.mipmap.super_vip_new);
 
         initListener();
     }

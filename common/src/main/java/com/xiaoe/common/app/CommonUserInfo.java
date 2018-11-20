@@ -21,6 +21,7 @@ public class CommonUserInfo {
 
     private static CommonUserInfo commonUserInfo = null;
     private static LoginUser loginUser = null;
+    private boolean hasUnreadMsg;
 
     public static CommonUserInfo getInstance(){
         if(commonUserInfo == null){
@@ -133,5 +134,13 @@ public class CommonUserInfo {
 
     public static boolean isIsSuperVipAvailable() {
         return isSuperVipAvailable;
+    }
+
+    public boolean isHasUnreadMsg() {
+        return hasUnreadMsg;
+    }
+
+    public void setHasUnreadMsg(boolean hasUnreadMsg) {
+        this.hasUnreadMsg = hasUnreadMsg;
     }
 }

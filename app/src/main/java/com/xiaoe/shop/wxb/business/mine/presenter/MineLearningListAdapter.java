@@ -13,6 +13,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.shop.wxb.R;
 
 public class MineLearningListAdapter extends BaseAdapter {
@@ -64,6 +67,11 @@ public class MineLearningListAdapter extends BaseAdapter {
         }
         viewHolder.itemIcon.setImageResource(imgList.get(position));
         viewHolder.itemTitle.setText(titleList.get(position));
+        if (titleList.get(position).equals("优惠券") && CommonUserInfo.getInstance().isHasUnreadMsg()) {
+            viewHolder.itemTip.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.itemTip.setVisibility(View.GONE);
+        }
         return convertView;
     }
 
@@ -73,6 +81,8 @@ public class MineLearningListAdapter extends BaseAdapter {
         ImageView itemIcon;
         @BindView(R.id.learning_list_item_title)
         TextView itemTitle;
+        @BindView(R.id.learning_list_item_coupon_tip)
+        TextView itemTip;
 
         LearningListItemViewHolder(View itemView) {
             ButterKnife.bind(this, itemView);

@@ -68,4 +68,6 @@
     <color name="refresh_content_color">#DDDDE9</color>
 
     <color name="error_hint_color">#ABABC0</color>
+
+    <color name="new_tip_color">#EA0404</color>
 </resources>

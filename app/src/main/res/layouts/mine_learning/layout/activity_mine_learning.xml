@@ -31,23 +31,37 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <FrameLayout
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/learning_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/learning_list"
+        <com.xiaoe.common.widget.CommonRefreshHeader
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:overScrollMode="never"/>
+            android:layout_height="wrap_content"/>
 
-        <com.xiaoe.shop.wxb.widget.StatusPagerView
-            android:id="@+id/learning_loading"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:layout_height="match_parent">
 
-    </FrameLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/learning_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"
+                android:overScrollMode="never"/>
+
+            <com.xiaoe.shop.wxb.widget.StatusPagerView
+                android:id="@+id/learning_loading"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </FrameLayout>
+
+        <com.xiaoe.common.widget.CommonRefreshFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 </LinearLayout>

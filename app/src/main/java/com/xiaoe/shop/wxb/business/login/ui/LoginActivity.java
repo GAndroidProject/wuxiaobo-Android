@@ -161,6 +161,7 @@ public class LoginActivity extends XiaoeActivity {
             public void onClick(View v) {
                 // 如果软件盘在的话，就把软键盘隐藏
                 toggleSoftKeyboard();
+                isRegister = true;
                 replaceFragment(REGISTER);
             }
         });

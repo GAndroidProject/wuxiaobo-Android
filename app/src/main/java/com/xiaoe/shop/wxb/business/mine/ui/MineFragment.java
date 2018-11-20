@@ -208,8 +208,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     private void initData() {
         // 会员权益假数据 -- 开始
         List<String> contentList = new ArrayList<>();
-        contentList.add("四大体系课程免费听");
-        contentList.add("分享赢双倍奖学金");
+        contentList.add("所有课程免费学习");
+        contentList.add("分享赢双倍积分");
         MineEquityListAdapter mineEquityListAdapter = new MineEquityListAdapter(mContext, contentList);
         mineVipCard.setEquityListAdapter(mineEquityListAdapter);
         mineVipCard.setDeadLine("2019/10/15");
@@ -358,8 +358,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     int updateCount = item.getInteger("periodical_count") == null ? 0 : item.getInteger("periodical_count");
                     if (updateCount > 0) {
                         mineLearningWrapView.setLearningUpdate("已更新至" + updateCount + "期");
-                    } else {
-                        mineLearningWrapView.setLearningUpdate("已购");
                     }
                     isMineLearningFinish = true;
                     initPageData();
@@ -569,6 +567,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case 2: // 优惠券
                 if (mainActivity.isFormalUser) {
+                    if (CommonUserInfo.getInstance().isHasUnreadMsg()) {
+                        CommonUserInfo.getInstance().setHasUnreadMsg(false);
+                        learningListAdapter.notifyDataSetChanged();
+                    }
                     JumpDetail.jumpCoupon(mContext);
                 } else {
                     touristDialog.showDialog();
