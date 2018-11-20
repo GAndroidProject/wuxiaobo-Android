@@ -62,6 +62,8 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
 
     RecyclerView accountRecycler; // 账号设置 recycler
     RecyclerView aboutContent; // 关于 recycler
+    private int accountCount;
+    private int aboutCount;
 
     // 软键盘
     InputMethodManager imm;
@@ -145,6 +147,43 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         }
     }
 
+    private void updateView() {
+        switch (layoutId) {
+            case R.layout.fragment_account:
+                initAccountFragment();
+                break;
+            case R.layout.fragment_message:
+                initMessageFragment();
+                break;
+//            case R.layout.fragment_suggestion:
+//                initSuggestionFragment();
+//                break;
+            case R.layout.fragment_about:
+                initAboutFragment();
+                break;
+            case R.layout.fragment_current_phone:
+                initCurrentPhoneFragment();
+                break;
+            case R.layout.fragment_pwd_obtain_phone_code:
+                initPwdObtainPhoneCodeFragment();
+                break;
+            case R.layout.fragment_pwd_new:
+                initPwdNewFragment();
+                break;
+            case R.layout.fragment_phone_code:
+                initPhoneCodeFragment();
+                break;
+            case R.layout.fragment_change_phone_complete:
+                initChangePhoneCompleteFragment();
+                break;
+            case R.layout.fragment_service:
+                initServiceFragment();
+                break;
+            default:
+                break;
+        }
+    }
+
     // 账号设置布局
     private void initAccountFragment() {
         // 账号设置页面假数据
@@ -163,8 +202,12 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         settingRecyclerAdapter.setOnItemClickWithSettingItemInfoListener(this);
         accountRecycler.setLayoutManager(llm);
-        accountRecycler.addItemDecoration(linearDividerDecoration);
+        if (accountCount == 0) {
+            accountRecycler.addItemDecoration(linearDividerDecoration);
+        }
         accountRecycler.setAdapter(settingRecyclerAdapter);
+
+        accountCount++;
     }
 
     // 推送消息布局
@@ -257,8 +300,12 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         settingRecyclerAdapter.setOnItemClickWithSettingItemInfoListener(this);
         aboutContent.setLayoutManager(llm);
-        aboutContent.addItemDecoration(linearDividerDecoration);
+        if (aboutCount == 0) {
+            aboutContent.addItemDecoration(linearDividerDecoration);
+        }
         aboutContent.setAdapter(settingRecyclerAdapter);
+
+        aboutCount++;
     }
 
     private void initCurrentPhoneFragment() {
@@ -535,8 +582,9 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
             }
         } else {
             if (layoutId != -1) {
-                initView();
+                updateView();
             }
         }
     }
+
 }
