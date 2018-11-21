@@ -33,6 +33,8 @@ import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.AudioPlayEntity;
+import com.xiaoe.common.entitys.AudioPlayTable;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
@@ -41,6 +43,10 @@ import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.anim.TranslationAnimator;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioSQLiteUtil;
 import com.xiaoe.shop.wxb.business.audio.ui.AudioActivity;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
 import com.xiaoe.shop.wxb.business.column.ui.ColumnActivity;
@@ -201,8 +207,37 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     }
 
     private void getAudioRecord() {
+//        if(miniAudioPlayController == null){
+//            return;
+//        }else{
+//            miniAudioPlayController.setVisibility(View.GONE);
+//        }
+
         if(miniAudioPlayController == null){
             return;
+        }
+        SQLiteUtil.init(this, new AudioSQLiteUtil());
+        if(SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)){
+//            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 10";
+//            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
+            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" limit 10";
+            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,null);
+            if(entityList.size() > 0){
+                AudioPlayUtil.getInstance().setSingleAudio(true);
+                AudioPlayEntity playEntity = entityList.get(0);
+                playEntity.setPlay(false);
+                playEntity.setCode(-1);
+                AudioPlayUtil.getInstance().refreshAudio(playEntity);
+
+                AudioMediaPlayer.setAudio(playEntity, false);
+                AudioPresenter audioPresenter = new AudioPresenter(null);
+                audioPresenter.requestDetail(playEntity.getResourceId());
+                String title = playEntity.getTitle();
+                miniAudioPlayController.setAudioTitle(title);
+                miniAudioPlayController.setVisibility(View.VISIBLE);
+            }else{
+                miniAudioPlayController.setVisibility(View.GONE);
+            }
         }else{
             miniAudioPlayController.setVisibility(View.GONE);
         }
