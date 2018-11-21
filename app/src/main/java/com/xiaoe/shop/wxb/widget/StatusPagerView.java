@@ -1,7 +1,6 @@
 package com.xiaoe.shop.wxb.widget;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -13,14 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.pnikosis.materialishprogress.ProgressWheel;
-
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
@@ -41,7 +33,7 @@ public class StatusPagerView extends FrameLayout {
     private TextView stateText;
     private ImageView stateImage;
 
-    public static final int DETAIL_NONE = R.mipmap.detail_none;
+    public static final int DETAIL_NONE = R.mipmap.error_page;
     private TextView btnGoTo;
 
     public StatusPagerView(@NonNull Context context) {
@@ -73,6 +65,13 @@ public class StatusPagerView extends FrameLayout {
 
     public void setLoadingState(int visibility){
         loadingState.setVisibility(visibility);
+    }
+
+    public void stateImageWH(int w, int h){
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) stateImage.getLayoutParams();
+        layoutParams.width = w;
+        layoutParams.height = h;
+        stateImage.setLayoutParams(layoutParams);
     }
 
     public void setHintStateVisibility(int visibility){

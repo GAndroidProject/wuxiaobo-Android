@@ -212,7 +212,8 @@
     <string name="share_friend_encircle">朋友群</string>
 
     <!--页面请求状态提示 start-->
-    <string name="request_fail">页面已被外星人带走\r\n请稍后重试</string>
+    <string name="request_fail">页面还没找到，刷新试试吧</string>
+    <string name="resource_sold_out">该课程已下架，快去别处看看吧</string>
     <!--页面请求状态提示 end-->
 
     <string name="action_sheet_man">男</string>

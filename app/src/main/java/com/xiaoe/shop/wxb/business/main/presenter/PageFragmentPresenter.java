@@ -1,8 +1,5 @@
 package com.xiaoe.shop.wxb.business.main.presenter;
 
-import android.util.Log;
-
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
@@ -32,6 +29,8 @@ public class PageFragmentPresenter implements IBizCallback {
 
         PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(NetworkEngine.API_THIRD_BASE_URL + "xe.shop.page.get/1.0.0", this);
         pageFragmentRequest.addDataParam("micro_page_id", microPageId);
+        pageFragmentRequest.setNeedCache(true);
+        pageFragmentRequest.setCacheKey(microPageId);
 
         NetworkEngine.getInstance().sendRequest(pageFragmentRequest);
     }

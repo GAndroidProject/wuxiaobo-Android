@@ -23,6 +23,8 @@ import android.text.TextUtils;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.xiaoe.common.entitys.DeviceInfo;
+
 import java.io.File;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -31,8 +33,6 @@ import java.net.SocketException;
 import java.text.DecimalFormat;
 import java.util.Enumeration;
 import java.util.UUID;
-
-import com.xiaoe.common.entitys.DeviceInfo;
 
 /**
  * Created by Administrator on 2017/5/25.
@@ -319,7 +319,7 @@ public class Global
             mac_s = byte2hex(mac);
         } catch (Exception e) {
             // 获取 mac 地址失败，断网的情况下会这样 TODO 网络异常提示
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         return mac_s;

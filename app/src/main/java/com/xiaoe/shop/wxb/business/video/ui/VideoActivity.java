@@ -21,9 +21,13 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.tencent.smtt.sdk.CookieSyncManager;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Constants;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
@@ -80,6 +84,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private String mLocalVideoUrl;
     private boolean localResource = false;
     private SimpleDraweeView videoAdvertise;
+    private boolean showCacheData = false;
 
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
@@ -87,6 +92,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     boolean hasBuy;
     String realSrcId;
     private String shareUrl = "";
+    private ImageView btnBack;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -200,11 +206,25 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         String descImgUrl = "res:///" + R.mipmap.img_text_bg;
         SetImageUriUtil.setImgURI(videoAdvertise, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
         videoAdvertise.setOnClickListener(this);
+
+        btnBack = (ImageView) findViewById(R.id.btn_back);
+        btnBack.setVisibility(View.GONE);
+        btnBack.setOnClickListener(this);
     }
 
     private void initDatas() {
         mResourceId = mIntent.getStringExtra("resourceId");
         localResource = mIntent.getBooleanExtra("local_resource", false);
+        if(!TextUtils.isEmpty(mResourceId)){
+            //先查询数据库中是否存在，如果存在则先显示
+            SQLiteUtil.init(this, new CacheDataUtil());
+            String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+mResourceId+"'";
+            List<CacheData> cacheDataList = SQLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
+            if(cacheDataList != null && cacheDataList.size() > 0){
+                detailRequest(JSONObject.parseObject(cacheDataList.get(0).getContent()));
+                showCacheData = true;
+            }
+        }
         videoPresenter.requestDetail(mResourceId);
     }
     @Override
@@ -260,6 +280,9 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 } else {
                     JumpDetail.jumpMainScholarship(this, false, true, 2);
                 }
+                break;
+            case R.id.btn_back:
+                finish();
                 break;
             default:
                 break;
@@ -399,8 +422,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             return;
         }
 
-        if(entity == null || !success){
-            setPagerState(true);
+        if(entity == null && iRequest instanceof DetailRequest && !showCacheData){
+            setPagerState(1);
             return;
         }
         JSONObject jsonObject = (JSONObject) entity;
@@ -444,8 +467,14 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         getDialog().dismissDialog();
         try{
             JSONObject data = jsonObject.getJSONObject("data");
-            if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || data == null ){
-                setPagerState(true);
+            int code = jsonObject.getIntValue("code");
+            if(code != NetworkCodes.CODE_SUCCEED || data == null ){
+                if(code == NetworkCodes.CODE_GOODS_DELETE){
+                    playControllerView.setVisibility(View.GONE);
+                    setPagerState(2);
+                }else{
+                    setPagerState(1);
+                }
                 return;
             }
             //已购或者免费
@@ -453,14 +482,20 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 setContent(data, true);
             }else{
                 //未购
-                setContent(data.getJSONObject("resource_info"), false);
+                JSONObject resourceInfo = data.getJSONObject("resource_info");
+                if(resourceInfo.getIntValue("sale_status") == 1){
+                    playControllerView.setVisibility(View.GONE);
+                    setPagerState(2);
+                }else{
+                    setContent(resourceInfo, false);
+                }
             }
             JSONObject shareInfo = data.getJSONObject("share_info");
             if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
                 shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
             }
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -492,8 +527,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         if(available){
             collectPrice = "";
             buyView.setVisibility(View.GONE);
-            String detail = data.getString("content");
-            setContentDetail(detail);
+            if(!showCacheData){
+                String detail = data.getString("content");
+                setContentDetail(detail);
+            }
             mVideoUrl = data.getString("video_mp4");
             if(TextUtils.isEmpty(mLocalVideoUrl)){
                 playControllerView.setPlayUrl(mVideoUrl);
@@ -501,7 +538,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 playControllerView.setPlayUrl(mLocalVideoUrl);
             }
 
-            setPagerState(false);
+            setPagerState(0);
             collectImgUrl = data.getString("img_url");
             realSrcId = data.getString("resource_id");
         }else{
@@ -518,9 +555,12 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             resPrice = price;
             collectPrice = ""+price;
             buyView.setBuyPrice(price);
-            String detail = data.getString("content");
-            setContentDetail(detail);
-            setPagerState(false);
+            if(!showCacheData){
+                String detail = data.getString("content");
+                setContentDetail(detail);
+            }
+
+            setPagerState(0);
         }
 
     }
@@ -532,18 +572,32 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         CookieSyncManager.getInstance().sync();
     }
 
-    private void setPagerState(boolean error) {
-        if(error){
-            videoContentDetail.setVisibility(View.GONE);
-            statusPagerView.setVisibility(View.VISIBLE);
-            statusPagerView.setLoadingState(View.GONE);
-            statusPagerView.setStateImage(StatusPagerView.DETAIL_NONE);
-            statusPagerView.setHintStateVisibility(View.VISIBLE);
-        }else{
+    /**
+     *
+     * @param code 0-正常的,1-请求失败,2-课程下架
+     */
+    private void setPagerState(int code) {
+        if(code == 0){
             videoContentDetail.setVisibility(View.VISIBLE);
             statusPagerView.setVisibility(View.GONE);
             statusPagerView.setLoadingState(View.GONE);
             statusPagerView.setHintStateVisibility(View.GONE);
+        }else if(code == 1){
+            videoContentDetail.setVisibility(View.GONE);
+            statusPagerView.setVisibility(View.VISIBLE);
+            statusPagerView.setLoadingState(View.GONE);
+            statusPagerView.setStateImage(StatusPagerView.DETAIL_NONE);
+            statusPagerView.setStateText(getString(R.string.request_fail));
+            statusPagerView.setHintStateVisibility(View.VISIBLE);
+        }else if(code == 2){
+            btnBack.setVisibility(View.VISIBLE);
+            videoContentDetail.setVisibility(View.GONE);
+            statusPagerView.setVisibility(View.VISIBLE);
+            statusPagerView.setLoadingState(View.GONE);
+            statusPagerView.stateImageWH(Dp2Px2SpUtil.dp2px(this, 200), Dp2Px2SpUtil.dp2px(this, 108));
+            statusPagerView.setStateImage(R.mipmap.course_off);
+            statusPagerView.setStateText(getString(R.string.resource_sold_out));
+            statusPagerView.setHintStateVisibility(View.VISIBLE);
         }
     }
 }

@@ -70,6 +70,8 @@ public class XiaoeApplication extends Application {
         mContext = getApplicationContext();
         applicationContext = getApplicationContext();
         applicationHandler = new Handler(applicationContext.getMainLooper());
+        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext).setDownsampleEnabled(true).build();
+        Fresco.initialize(mContext,imagePipelineConfig);
         //初始化一下库，在子线程初始化
         init();
     }
@@ -113,8 +115,6 @@ public class XiaoeApplication extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext).setDownsampleEnabled(true).build();
-                Fresco.initialize(mContext,imagePipelineConfig);
                 //腾讯x5内核初始化
                 QbSdk.initX5Environment(mContext, new QbSdk.PreInitCallback() {
                     @Override

@@ -301,7 +301,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
         int code = getWXPayCode(true);
         if(code == 0){
             getDialog().showLoadDialog(false);
-            courseImageTextPresenter.requestBeforeBuy(resourceId, resourceType);
+            courseImageTextPresenter.requestITDetail(resourceId, Integer.parseInt(resourceType));
         }
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
     }

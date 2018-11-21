@@ -142,22 +142,16 @@ public class AudioPresenter implements IBizCallback {
     }
 
     /**
-     * 获取购买前商品详情
+     * 获取商品详情
      */
     public void requestDetail(String resourceId){
         DetailRequest detailRequest = new DetailRequest( this);
         detailRequest.addDataParam("goods_id",resourceId);
         detailRequest.addDataParam("goods_type",2);
+        detailRequest.setNeedCache(true);
+        detailRequest.setCacheKey(resourceId);
         detailRequest.sendRequest();
     }
 
-    /**
-     * 获取购买后的资源内容
-     */
-    private void requestContent(String resourceId){
-        ContentRequest contentRequest = new ContentRequest( this);
-        contentRequest.addRequestParam("resource_id",resourceId);
-        contentRequest.addRequestParam("resource_type",2);
-        contentRequest.sendRequest();
-    }
+
 }

@@ -3,21 +3,17 @@ package com.xiaoe.network;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.CacheData;
+import com.xiaoe.common.utils.CacheDataUtil;
+import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -157,13 +153,6 @@ public class NetworkEngine {
             return;
         }
 
-//        build.addHeader("app-id", Constants.getWXAppId());
-//        Map<String, String> header = iRequest.getHeader();
-//        if(header != null && header.size() > 0){
-//            for(Map.Entry<String ,String> entry : iRequest.getHeader().entrySet() ){
-//                build.addHeader(entry.getKey(),entry.getValue());
-//            }
-//        }
 
         Request request = build.build();
         Call call = client.newCall(request);
@@ -189,6 +178,13 @@ public class NetworkEngine {
                 try {
                     String jsonString = body.string();
                     com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
+                    if(mRequest.isNeedCache() && !TextUtils.isEmpty(mRequest.getCacheKey()) && jsonObject.getIntValue("code") == NetworkCodes.CODE_SUCCEED){
+                        if(mRequest instanceof ColumnListRequst){
+                            saveCacheData(mRequest.getCacheKey(), null, jsonString);
+                        }else{
+                            saveCacheData(mRequest.getCacheKey(), jsonString, null);
+                        }
+                    }
                     body.close();
                     mRequest.onResponse(true, jsonObject);
                     Log.d(TAG, "request result - " + response.code() + " - " + jsonObject.toJSONString());
@@ -200,27 +196,32 @@ public class NetworkEngine {
         });
     }
 
-    private Object analyticalJSON(String strJSON, Gson gson, Class clazz) throws JSONException {
-        Object json = new JSONTokener(strJSON).nextValue();
-        //json是jsonObject对象
-        if (json instanceof JSONObject) {
-            Object objectJSON = null;
-            try {
-                objectJSON = gson.fromJson(strJSON, clazz);
-            } catch (JsonSyntaxException e) {
-                Log.d(TAG, "analyticalJSON: "+e.toString());
-                e.printStackTrace();
-            }
-            return objectJSON;
-        } //否则 json是josnArray对象(json instanceof JSONArray)
-        JsonParser parser = new JsonParser();
-        JsonArray jsonArray = parser.parse(strJSON).getAsJsonArray();
-        ArrayList<Object> arrayList = new ArrayList<Object>();
-
-        for (JsonElement jsonElement : jsonArray) {
-            Object obj = gson.fromJson(jsonElement, clazz);
-            arrayList.add(obj);
+    private void saveCacheData(String cacheKey, String data, String dataList){
+        SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
+        if(!SQLiteUtil.tabIsExist(CacheDataUtil.TABLE_NAME)){
+            SQLiteUtil.execSQL(CacheDataUtil.CREATE_TABLES_SQL);
         }
-        return arrayList;
+        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+cacheKey+"'";
+        List<CacheData> cacheDataList = SQLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
+        if(cacheDataList == null || cacheDataList.size() <= 0){
+            CacheData cacheData = new CacheData();
+            cacheData.setAppId(Constants.getAppId());
+            cacheData.setResourceId(cacheKey);
+            cacheData.setContent(data);
+            cacheData.setResourceList(dataList);
+            SQLiteUtil.insert(CacheDataUtil.TABLE_NAME, cacheData);
+        }else{
+            CacheData cacheData = cacheDataList.get(0);
+            if(!TextUtils.isEmpty(data)){
+                cacheData.setContent(data);
+            }
+            if(!TextUtils.isEmpty(dataList)){
+                cacheData.setResourceList(dataList);
+            }
+            String whereVal = "app_id=? and resource_id=?";
+            SQLiteUtil.update(CacheDataUtil.TABLE_NAME, cacheData, whereVal, new String[]{Constants.getAppId(), cacheKey});
+        }
+
     }
+
 }

@@ -1,6 +1,5 @@
 package com.xiaoe.shop.wxb.business.video.presenter;
 
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.ContentRequest;
@@ -27,6 +26,8 @@ public class VideoPresenter implements IBizCallback {
         DetailRequest detailRequest = new DetailRequest( this);
         detailRequest.addDataParam("goods_id",resourceId);
         detailRequest.addDataParam("goods_type",3);
+        detailRequest.setNeedCache(true);
+        detailRequest.setCacheKey(resourceId);
         detailRequest.sendRequest();
     }
 

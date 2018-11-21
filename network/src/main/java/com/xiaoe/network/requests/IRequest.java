@@ -33,7 +33,9 @@ public abstract class IRequest {
 
     private IBizCallback iBizCallback;
 
-//    private Map<String, String> header;
+    private boolean needCache = false;//是否需要缓存数据
+
+    private String cacheKey;
 
     IRequest(String cmd, Class entityClass, IBizCallback iBizCallback){
         this.cmd = cmd;
@@ -197,5 +199,21 @@ public abstract class IRequest {
 
     public JSONObject getBizDataParams() {
         return bizDataParams;
+    }
+
+    public boolean isNeedCache() {
+        return needCache;
+    }
+
+    public void setNeedCache(boolean needCache) {
+        this.needCache = needCache;
+    }
+
+    public String getCacheKey() {
+        return cacheKey;
+    }
+
+    public void setCacheKey(String cacheKey) {
+        this.cacheKey = cacheKey;
     }
 }

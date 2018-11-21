@@ -248,4 +248,12 @@
         android:layout_marginRight="5dp"
         android:layout_marginBottom="10dp"
         />
+
+    <com.xiaoe.shop.wxb.widget.StatusPagerView
+        android:id="@+id/state_pager_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/column_tool_bar"
+        android:visibility="gone"
+        />
 </RelativeLayout>

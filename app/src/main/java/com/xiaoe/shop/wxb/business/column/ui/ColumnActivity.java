@@ -44,6 +44,7 @@ import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.ScrollViewPager;
+import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -103,6 +104,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private int resourceType;//8-大专栏，6-小专栏，5-会员
     private TextView memberExpireTime;
     private String expireTime;
+    private StatusPagerView statusPagerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -217,6 +219,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         miniAudioPlayControllerLayout = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
         setMiniAudioPlayController(miniAudioPlayControllerLayout);
         setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
+
+        statusPagerView = (StatusPagerView) findViewById(R.id.state_pager_view);
+//        setPagerState(-1);
     }
 
     @Override
@@ -226,7 +231,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(code == 0){
             refreshData = true;
             getDialog().showLoadDialog(false);
-//            columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
             columnPresenter.requestDetail(resourceId, resourceType+"");
         }
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
@@ -573,5 +577,36 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         UMShareAPI.get(this).release();
         if (!hasCollect)
             EventBus.getDefault().post(new MyCollectListRefreshEvent(true,resourceId));
+    }
+
+    /**
+     *
+     * @param code 0-正常的,1-请求失败,2-课程下架,-1： 加载
+     */
+    private void setPagerState(int code) {
+        if(code == 0){
+            statusPagerView.setVisibility(View.GONE);
+            statusPagerView.setLoadingState(View.GONE);
+            statusPagerView.setHintStateVisibility(View.GONE);
+        }else if(code == 1){
+            statusPagerView.setVisibility(View.VISIBLE);
+            statusPagerView.setLoadingState(View.GONE);
+            statusPagerView.setStateImage(StatusPagerView.DETAIL_NONE);
+            statusPagerView.setStateText(getString(R.string.request_fail));
+            statusPagerView.setHintStateVisibility(View.VISIBLE);
+        }else if(code == 2){
+            btnBack.setVisibility(View.VISIBLE);
+            statusPagerView.setVisibility(View.VISIBLE);
+            statusPagerView.setLoadingState(View.GONE);
+            statusPagerView.stateImageWH(Dp2Px2SpUtil.dp2px(this, 200), Dp2Px2SpUtil.dp2px(this, 108));
+            statusPagerView.setStateImage(R.mipmap.course_off);
+            statusPagerView.setStateText(getString(R.string.resource_sold_out));
+            statusPagerView.setHintStateVisibility(View.VISIBLE);
+        }
+        else if(code == -1){
+            statusPagerView.setVisibility(View.VISIBLE);
+            statusPagerView.setLoadingState(View.VISIBLE);
+            statusPagerView.setHintStateVisibility(View.GONE);
+        }
     }
 }

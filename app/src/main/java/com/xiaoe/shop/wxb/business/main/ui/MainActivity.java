@@ -176,7 +176,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         miniAudioPlayController = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
         setMiniAudioPlayController(miniAudioPlayController);
-//        miniAudioPlayController.setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
         setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
     }
 

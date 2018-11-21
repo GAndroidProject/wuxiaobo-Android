@@ -104,5 +104,13 @@
         android:layout_height="match_parent"
         android:layout_below="@id/video_play_controller"
         />
+    <ImageView
+        android:id="@+id/btn_back"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:scaleType="center"
+        android:src="@mipmap/download_back"
+        android:visibility="gone"
+        />
 
 </RelativeLayout>

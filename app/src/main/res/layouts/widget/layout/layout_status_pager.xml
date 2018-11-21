@@ -25,12 +25,13 @@
 
     <ImageView
         android:id="@+id/state_image"
-        android:layout_width="140dp"
+        android:layout_width="156dp"
         android:layout_height="140dp"
         android:layout_centerInParent="true"
         android:layout_marginTop="100dp"
         android:src="@mipmap/download_tocheck"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        />
     <TextView
         android:id="@+id/state_text"
         android:layout_width="wrap_content"
@@ -38,7 +39,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/state_image"
         android:layout_marginTop="24dp"
-        android:textColor="@color/main_title_color"
+        android:textColor="@color/error_hint_color"
         android:textSize="16sp"
         />
     

@@ -25,6 +25,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.xiaoe.common.app.Constants;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.FlowInfoItem;
@@ -32,6 +35,7 @@ import com.xiaoe.common.entitys.GraphicNavItem;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
 import com.xiaoe.common.entitys.RecentUpdateListItem;
 import com.xiaoe.common.entitys.ShufflingItem;
+import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.ColumnListRequst;
@@ -42,7 +46,6 @@ import com.xiaoe.shop.wxb.adapter.decorate.DecorateRecyclerAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.PageFragmentPresenter;
-import com.xiaoe.shop.wxb.business.search.presenter.SpacesItemDecoration;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
@@ -155,6 +158,10 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     protected void onFragmentFirstVisible() {
         super.onFragmentFirstVisible();
         // 网络请求数据代码
+        if(microPageList == null){
+            microPageList = new ArrayList<>();
+        }
+        setDataByDB();
         hp = new PageFragmentPresenter(this);
         hp.requestMicroPageData(microPageId);
     }
@@ -206,7 +213,25 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             Toast.makeText(getActivity(), "网络错误", Toast.LENGTH_SHORT).show();
         }
     }
-
+    private void setDataByDB(){
+        SQLiteUtil.init(getContext(), new CacheDataUtil());
+        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+microPageId+"'";
+        List<CacheData> cacheDataList =  SQLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
+        if(cacheDataList != null && cacheDataList.size() > 0){
+            JSONObject result = JSONObject.parseObject(cacheDataList.get(0).getContent());
+            JSONObject data = (JSONObject) result.get("data");
+            if (microPageList != null)  microPageList.clear();
+            initPageData(data);
+            if (!hasDecorate) {
+                initMainContent();
+            }
+            // 请求成功之后隐藏 loading
+//            microPageLogo.setVisibility(View.VISIBLE);
+            microPageLoading.setLoadingFinish();
+            microPageFresh.finishRefresh();
+            microPageAdapter.notifyDataSetChanged();
+        }
+    }
     // 初始化首页内容
     private void initMainContent () {
         // 初始化布局管理器
@@ -563,7 +588,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 
     // 拿到请求到的数据后进行界面初始化
     public void init() {
-        microPageList = new ArrayList<>();
+        if(microPageList == null){
+            microPageList = new ArrayList<>();
+        }
         microPageScroller.setScrollChanged(this);
         microPageFresh.setOnRefreshListener(this);
         toolbarHeight = Dp2Px2SpUtil.dp2px(mContext,160);

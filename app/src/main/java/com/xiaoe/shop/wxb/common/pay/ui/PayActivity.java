@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -102,13 +103,14 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         if(paying){
             paying = false;
             int code = getWXPayCode(true);
+            Log.d(TAG, "onResume: -------- code "+code);
             if(code == 0){
-                getDialog().dismissDialog();
                 setPagerState(PAY_SUCCEED);
                 hideFragment(payingFragment);
             }else {
                 SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
             }
+            getDialog().dismissDialog();
         }
     }
 

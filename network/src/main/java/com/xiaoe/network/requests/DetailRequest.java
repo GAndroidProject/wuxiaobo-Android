@@ -4,6 +4,7 @@ import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 
 public class DetailRequest extends IRequest {
+    private static final String TAG = "DetailRequest";
     /**
      * 购买前详情接口
      */

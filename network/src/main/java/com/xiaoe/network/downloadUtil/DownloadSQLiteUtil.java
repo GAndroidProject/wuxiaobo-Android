@@ -9,13 +9,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.xiaoe.common.db.ISQLiteCallBack;
+import com.xiaoe.common.entitys.DownloadTableInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import com.xiaoe.common.entitys.DownloadTableInfo;
-import com.xiaoe.common.db.ISQLiteCallBack;
 
 /**
  * 一个通用的SQLite，通过简单的配置快速搭建一个数据库存储的方案；
@@ -24,7 +24,7 @@ import com.xiaoe.common.db.ISQLiteCallBack;
 public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
 
     private final String TAG = "SQLiteUtil";
-    private static final String DATABASE_NAME = "xiaoeshop.db";
+    private static final String DATABASE_NAME = "xiaoeshop_download.db";
     private DownloadSQLiteUtil INSTANCE;
     SQLiteDatabase mDB = null;
     /**

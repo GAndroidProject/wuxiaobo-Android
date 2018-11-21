@@ -20,11 +20,14 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.GetSuperMemberSuccessEvent;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.entitys.MineMoneyItemInfo;
 import com.xiaoe.common.interfaces.OnItemClickWithMoneyItemListener;
+import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.EarningRequest;
@@ -665,5 +668,18 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
         earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
         mineLearningPresenter.requestLearningData(1, 1);
+    }
+
+    private void setDataByDB(){
+        SQLiteUtil.init(getContext(), new CacheDataUtil());
+        //积分
+        String integralSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+Constants.INTEGRAL_ASSET_TYPE+"'";
+        List<CacheData> integralCacheDataList =  SQLiteUtil.query(CacheDataUtil.TABLE_NAME, integralSQL, null);
+        //奖学金
+        String scholarshipSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+Constants.SCHOLARSHIP_ASSET_TYPE+"'";
+        List<CacheData> scholarshipCacheDataList =  SQLiteUtil.query(CacheDataUtil.TABLE_NAME, scholarshipSQL, null);
+        //正在学习
+        String learningSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='learning'";
+        List<CacheData> learningCacheDataList =  SQLiteUtil.query(CacheDataUtil.TABLE_NAME, learningSQL, null);
     }
 }

@@ -17,13 +17,13 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.downloadUtil.DownloadFileConfig;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.downloadUtil.DownloadSQLiteUtil;
 import com.xiaoe.network.requests.IRequest;
-import com.xiaoe.network.requests.UnReadMsgRequest;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
@@ -53,6 +53,8 @@ public class LaunchActivity extends XiaoeActivity {
         ButterKnife.bind(this);
         initView();
         initData();
+        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
     }
 
     private void initData() {
@@ -63,12 +65,17 @@ public class LaunchActivity extends XiaoeActivity {
         }
         ThreadPoolUtils.runTaskOnThread(() -> {
             //下载列表中，可能有正在下载状态，但是退出是还是正在下载状态，所以启动时将之前的状态置为暂停
-            if (SQLiteUtil.tabIsExist(DownloadFileConfig.TABLE_NAME)) {
+            DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+            if (downloadSQLiteUtil.tabIsExist(DownloadFileConfig.TABLE_NAME)) {
                 DownloadManager.getInstance().setDownloadPause();
                 DownloadManager.getInstance().getAllDownloadList();
             } else {
-                DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+//                DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
                 downloadSQLiteUtil.execSQL(DownloadFileConfig.CREATE_TABLE_SQL);
+            }
+            if(!SQLiteUtil.tabIsExist(CacheDataUtil.TABLE_NAME)){
+                //如果缓存表不存在，则创建
+                SQLiteUtil.execSQL(CacheDataUtil.CREATE_TABLES_SQL);
             }
         });
     }
