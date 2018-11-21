@@ -242,7 +242,7 @@ public class HistoryMessageActivity extends XiaoeActivity {
                 break;
             case 6:
 //                JumpDetail.jumpColumn(mContext, listBean.getSkip_target(), "", false);
-//                JumpDetail.jumpColumn(mContext, listBean.getSkip_target(), "", listBean.getSkip_type());
+                JumpDetail.jumpColumn(mContext, listBean.getSkip_target(), "", listBean.getSub_skip_type());
                 break;
             case 7:
                 break;

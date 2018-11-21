@@ -74,6 +74,7 @@ public class HistoryMessageEntity {
          * send_nick_name : 消息测试
          * source : 0
          * skip_type : 0
+         * sub_skip_type: 1
          * skip_target :
          * title :
          * content : 消息测试消息测试消息测试消息测试
@@ -147,6 +148,10 @@ public class HistoryMessageEntity {
          * 跳转类型，0-不跳转， 1-图文，2-音频，3-视频，4-社群,5-跳转url, 6-专栏，7-直播间内，8-分答问题详情页 9-活动，21-电子书 16-打卡
          */
         private int skip_type;
+        /**
+         * 专栏类型，只有当 skip_type=6 时才有意义，默认0-无意义，1-普通专栏，2-大专栏，3-会员
+         */
+        private int sub_skip_type;
         /**
          * 跳转目的地
          */
@@ -341,6 +346,14 @@ public class HistoryMessageEntity {
 
         public void setSkip_type(int skip_type) {
             this.skip_type = skip_type;
+        }
+
+        public int getSub_skip_type() {
+            return sub_skip_type;
+        }
+
+        public void setSub_skip_type(int sub_skip_type) {
+            this.sub_skip_type = sub_skip_type;
         }
 
         public String getSkip_target() {
