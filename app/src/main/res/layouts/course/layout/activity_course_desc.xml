@@ -20,7 +20,6 @@
         android:id="@+id/image_text_collection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/video_collect"
         tools:ignore="ContentDescription"
         android:layout_toStartOf="@id/image_text_share"
         android:layout_below="@id/it_title_bg"/>

@@ -37,6 +37,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.course.presenter.CourseImageTextPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
@@ -48,6 +49,8 @@ import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CommonTitleView;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -322,6 +325,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
             unbinder.unbind();
         }
         UMShareAPI.get(this).release();
+        if (!isCollected)
+            EventBus.getDefault().post(new MyCollectListRefreshEvent(true,resourceId));
     }
 
     @Override

@@ -38,9 +38,13 @@ import com.xiaoe.shop.wxb.adapter.decorate.DecorateRecyclerAdapter;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.mine_learning.presenter.MineLearningPresenter;
 import com.xiaoe.shop.wxb.business.search.presenter.SpacesItemDecoration;
+import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class MineLearningActivity extends XiaoeActivity implements OnRefreshListener, OnLoadMoreListener {
 
@@ -84,10 +88,33 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
         ButterKnife.bind(this);
         Intent intent = getIntent();
         pageTitle = intent.getStringExtra("pageTitle");
+        EventBus.getDefault().register(this);
 
         initTitle();
         initPage();
         initListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEventMainThread(MyCollectListRefreshEvent event) {
+        if (event != null && event.isRefresh()){//如果从我的收藏进入详情，用户取消了收藏，回到我的收藏页面需要刷新列表数据
+            if ("我的收藏".equals(pageTitle)) {
+                if (collectionUtils == null) {
+                    collectionUtils = new CollectionUtils(this);
+                }
+                if (pageIndex != 1) {
+                    pageIndex = 1;
+                }
+                collectionUtils.requestCollectionList(pageIndex, pageSize);
+                isRefresh = true;
+            }
+        }
     }
 
     // 沉浸式初始化

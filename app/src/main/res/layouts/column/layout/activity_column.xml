@@ -44,7 +44,6 @@
                     android:id="@+id/btn_collect"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@mipmap/video_collect"
                     android:layout_toStartOf="@+id/btn_share"
                     android:layout_marginStart="20dp"
                     />

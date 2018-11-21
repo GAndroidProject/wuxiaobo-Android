@@ -103,7 +103,8 @@ public class ViewAnim {
 			Log.d(TAG, "onAnimationEnd: ");
 			// 动画结束后开始动画的那个view变为不可见并且从父控件中移除，目标的view可见（如果有的话）
 			mFromView.setVisibility(View.INVISIBLE);
-			((ViewGroup)mFromView.getParent()).removeView(mFromView);
+			if (mFromView.getParent() != null)
+				((ViewGroup)mFromView.getParent()).removeView(mFromView);
 			
 			if (mToView != null) {
 				mToView.setVisibility(View.VISIBLE);

@@ -390,7 +390,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             isSuperVip = itemJson.getBoolean("is_supermember") == null ? false : itemJson.getBoolean("is_supermember");
             int money = itemJson.getInteger("all_money");
             String range = String.valueOf(i + 1);
-            String scholarship = String.valueOf(money / 100) + "元";
+            String scholarship = String.format("%.2f%s",money / 100f,"元");
 
             scholarshipRangeItem.setItemRange(range);
             scholarshipRangeItem.setItemAvatar(wxAvatar);

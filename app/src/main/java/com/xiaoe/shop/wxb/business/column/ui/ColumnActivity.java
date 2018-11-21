@@ -34,6 +34,7 @@ import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
 import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
+import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
@@ -570,5 +571,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         UMShareAPI.get(this).release();
+        if (!hasCollect)
+            EventBus.getDefault().post(new MyCollectListRefreshEvent(true,resourceId));
     }
 }

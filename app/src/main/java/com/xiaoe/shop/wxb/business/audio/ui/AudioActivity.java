@@ -56,6 +56,7 @@ import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.HideVideoPlayListEvent;
+import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickMoreMenuListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
@@ -620,6 +621,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             detailContent.destroy();
         }
         UMShareAPI.get(this).release();
+        if (!hasCollect)
+            EventBus.getDefault().post(new MyCollectListRefreshEvent(true,AudioMediaPlayer
+                    .getAudio() == null ? "" : AudioMediaPlayer.getAudio().getResourceId()));
     }
 
     @Override
