@@ -220,7 +220,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         if(SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)){
 //            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 10";
 //            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
-            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" order by update_at desc limit 1";
+            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where current_play_state=1 order by update_at desc limit 1";
             List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,null);
             if(entityList.size() > 0){
                 AudioPlayUtil.getInstance().setSingleAudio(true);
