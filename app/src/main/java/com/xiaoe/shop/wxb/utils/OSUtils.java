@@ -1,9 +1,12 @@
 package com.xiaoe.shop.wxb.utils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -167,5 +170,17 @@ public class OSUtils {
             }
         }
         return  isRunning;
+    }
+
+    /**
+     * 收起软键盘
+     * @param context
+     * @param view
+     */
+    public static void hideKeyboard(Context context, View view) {
+        if (context != null && view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

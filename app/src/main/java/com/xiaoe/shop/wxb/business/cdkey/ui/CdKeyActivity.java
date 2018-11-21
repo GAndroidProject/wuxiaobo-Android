@@ -29,6 +29,7 @@ import com.xiaoe.shop.wxb.business.cdkey.presenter.CdKeyPresenter;
 import com.xiaoe.shop.wxb.business.column.ui.ColumnActivity;
 import com.xiaoe.shop.wxb.business.coupon.ui.CouponActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.utils.OSUtils;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 
@@ -249,6 +250,7 @@ public class CdKeyActivity extends XiaoeActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s != null) {
+                    showErrorMsg("");
                     cdSubmit.setEnabled(s.length() > 0);
                     float alpha = s.length() >0 ? 1f : 0.6f;
                     cdSubmit.setAlpha(alpha);
@@ -259,8 +261,8 @@ public class CdKeyActivity extends XiaoeActivity {
                         cdContent.setSelection(content.length());
                         Toast(String.format(getString(R.string.cd_key_limit_8),maxLength));
                     }
-//                    float size = s.length() > 0 ? 32 : 20;
-//                    cdContent.setTextSize(size);
+                    float size = s.length() > 0 ? 32 : 20;
+                    cdContent.setTextSize(size);
                 }
             }
         });
@@ -289,6 +291,7 @@ public class CdKeyActivity extends XiaoeActivity {
                 if (result == null)   return;
                 if(result.getCode() == NetworkCodes.CODE_SUCCEED){//兑换成功
                     if (cdContent != null)  cdContent.setText("");//重置输入框内容
+                    OSUtils.hideKeyboard(this,cdContent);
                     ExchangeSuccessInfo.Data data = result.data;
                     if (data != null){
                         List<ExchangeSuccessInfo.GoodsDataBean> goods = data.getGoods_data();
@@ -297,8 +300,13 @@ public class CdKeyActivity extends XiaoeActivity {
                     }
                 }else {
                     String msg = result.getMsg();
-                    if (!TextUtils.isEmpty(msg))
-                        Toast(msg);
+                    if (!TextUtils.isEmpty(msg)) {
+                        if (msg.indexOf("hint") > 0){
+                            msg = msg.substring(0,msg.indexOf("hint"));
+                        }
+                        showErrorMsg(msg);
+//                        Toast(msg);
+                    }
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -306,6 +314,12 @@ public class CdKeyActivity extends XiaoeActivity {
             }
         }else {
             Toast(getString(R.string.cd_key_fail_msg));
+        }
+    }
+
+    private void showErrorMsg(String msg) {
+        if (cdErrorMsg != null) {
+            cdErrorMsg.setText(msg);
         }
     }
 }

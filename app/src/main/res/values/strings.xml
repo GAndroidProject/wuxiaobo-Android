@@ -155,7 +155,7 @@
     <string name="cd_key_see">去查看</string>
     <string name="cd_key_error_msg">兑换码不存在，请重新输入</string>
     <string name="cd_key_fail_msg">兑换失败，请重试！</string>
-    <string name="cd_key_super_member">兑换超级会员成功</string>
+    <string name="cd_key_super_member">兑换超级会员成功!</string>
     <string name="cd_key_limit_8">兑换码限制%d位数</string>
 
     <string name="course_image_text_btn">领取奖学金</string>

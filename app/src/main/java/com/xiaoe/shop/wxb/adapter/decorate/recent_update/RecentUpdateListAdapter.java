@@ -3,6 +3,7 @@ package com.xiaoe.shop.wxb.adapter.decorate.recent_update;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -229,7 +230,8 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         }
         AudioMediaPlayer.stop();
         for (AudioPlayEntity playEntity : AudioPlayUtil.getInstance().getAudioList()) {
-            if(playEntity.getResourceId().equals(resourceId)){
+            if(playEntity != null && !TextUtils.isEmpty(playEntity.getResourceId())
+                    && playEntity.getResourceId().equals(resourceId)){
                 playEntity.setPlaying(true);
                 playEntity.setPlay(true);
                 AudioMediaPlayer.setAudio(playEntity, true);

@@ -52,13 +52,14 @@
             <EditText
                 android:id="@+id/cd_key_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:hint="@string/cd_key_hint"
                 android:paddingBottom="11dp"
                 android:inputType="number"
                 android:singleLine="true"
                 android:textColor="@color/main_title_color"
                 android:textSize="20sp"
+                android:gravity="left|center_vertical"
                 android:background="@null"
                 android:textColorHint="@color/knowledge_item_desc_color"
                 android:digits="@string/cd_key_digits"/>
@@ -71,8 +72,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@string/cd_key_error_msg"
-                android:visibility="invisible"
                 android:textColor="@color/login_error"
                 android:textSize="12sp"/>
             <Button
