@@ -29,6 +29,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.login.presenter.LoginTimeCount;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.utils.FileUtils;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.widget.CodeVerifyView;
 
@@ -190,6 +191,8 @@ public class LoginPageFragment extends BaseFragment {
                 break;
             case R.layout.fragment_login_bind_phone:
                 initLoginBindPhoneFragment();
+            case R.layout.fragment_service:
+                initLoginServiceFragment();
             default:
                 break;
         }
@@ -340,7 +343,7 @@ public class LoginPageFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 // 跳转到服务协议页面
-                Toast.makeText(getActivity(), "服务协议...", Toast.LENGTH_SHORT).show();
+                loginActivity.replaceFragment(LoginActivity.SERVICE);
             }
         });
 
@@ -762,5 +765,12 @@ public class LoginPageFragment extends BaseFragment {
             default:
                 break;
         }
+    }
+
+    // 服务协议 fragment
+    private void initLoginServiceFragment() {
+        String content = FileUtils.readAssetsTextReturnStr(getActivity(), "agreement");
+        TextView serviceContent = (TextView) viewWrap.findViewById(R.id.service_content);
+        serviceContent.setText(content);
     }
 }

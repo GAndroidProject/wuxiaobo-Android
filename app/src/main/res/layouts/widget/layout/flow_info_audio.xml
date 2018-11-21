@@ -9,14 +9,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/corners_bg_with_border"
+        android:background="@drawable/bg_shadow"
         tools:ignore="UselessParent">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/flow_info_audio_bg"
             android:layout_width="match_parent"
             android:layout_height="190dp"
-            android:layout_margin="1dp"
             android:transitionName="share_img_audio_bg"
             fresco:roundedCornerRadius="8dp"
             fresco:roundingBorderWidth="1dp"

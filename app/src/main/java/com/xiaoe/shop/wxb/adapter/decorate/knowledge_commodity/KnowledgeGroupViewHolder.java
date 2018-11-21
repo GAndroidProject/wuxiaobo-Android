@@ -12,14 +12,11 @@ import com.xiaoe.shop.wxb.base.BaseViewHolder;
 public class KnowledgeGroupViewHolder extends BaseViewHolder {
 
     @BindView(R.id.knowledge_group_title)
-    public
-    TextView groupTitle;
+    public TextView groupTitle;
     @BindView(R.id.knowledge_group_more)
-    public
-    TextView groupMore;
+    public TextView groupMore;
     @BindView(R.id.knowledge_group_recycler)
-    public
-    RecyclerView groupRecyclerView;
+    public RecyclerView groupRecyclerView;
 
     public KnowledgeGroupViewHolder(View itemView) {
         super(itemView);

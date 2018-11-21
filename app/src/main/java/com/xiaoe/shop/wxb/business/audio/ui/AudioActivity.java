@@ -600,7 +600,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     @Subscribe
     public void onEventMainThread(HadSharedEvent hadSharedEvent) {
         if (hadSharedEvent != null && hadSharedEvent.hadShared) {
-            if (AudioMediaPlayer.getAudio().getHasBuy() == 1) { // // 已经分享了并且买了
+            if (!AudioMediaPlayer.getAudio().isFree() && AudioMediaPlayer.getAudio().getHasBuy() == 1) { // 不是免费然后已经分享并且买了
                 if (scholarshipPresenter == null) {
                     scholarshipPresenter = new ScholarshipPresenter(
                             this,

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.entitys.CouponInfo;
+import com.xiaoe.common.entitys.GetSuperMemberSuccessEvent;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.IRequest;
@@ -24,6 +25,8 @@ import com.xiaoe.shop.wxb.business.coupon.ui.CouponFragment;
 import com.xiaoe.shop.wxb.business.coupon.ui.EmptyCouponFragment;
 import com.xiaoe.shop.wxb.interfaces.OnSelectCouponListener;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -358,6 +361,10 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             statusPagerView.setStateImage(R.mipmap.payment_success);
             statusPagerView.setStateText(getResources().getString(R.string.pay_succeed));
             statusPagerView.setBtnGoToText(getResources().getString(R.string.go_to_study));
+            if (productId != null) { // 购买会员，发送需要更新的事件
+                GetSuperMemberSuccessEvent getSuperMemberSuccessEvent = new GetSuperMemberSuccessEvent(true);
+                EventBus.getDefault().post(getSuperMemberSuccessEvent);
+            }
         }
     }
 

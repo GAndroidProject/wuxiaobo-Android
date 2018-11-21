@@ -38,6 +38,7 @@ import butterknife.Unbinder;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.entitys.ScholarshipRangeItem;
@@ -50,6 +51,7 @@ import com.xiaoe.network.requests.ScholarshipRequest;
 import com.xiaoe.network.requests.ScholarshipTaskStateRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
+import com.xiaoe.shop.wxb.business.earning.ui.ScholarshipActivity;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipRangeAdapter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
@@ -179,7 +181,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                         showDialogByType(GO_BUY);
                     } else { // 买了，根据领取状态进行不同操作
                         switch (ScholarshipEntity.getInstance().getIssueState()) {
-                            case ScholarshipEntity.SCHOLARSHIP_FAIL: // 领取失败
+                            case ScholarshipEntity.SCHOLARSHIP_FAIL: // 未发放
                                 // TODO: 失败的操作
                                 break;
                             case ScholarshipEntity.SCHOLARSHIP_PROCESSING: // 处理中
@@ -450,7 +452,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 break;
             case 3: // 未领取 -- 已经购买了
                 ScholarshipEntity.getInstance().setTaskState(ScholarshipEntity.TASK_NOT_RECEIVED);
-                scholarshipStepOne.setVisibility(View.GONE);
+                scholarshipStepOne.setVisibility(View.VISIBLE);
                 scholarshipStepTwo.setVisibility(View.GONE);
                 scholarshipStepThree.setVisibility(View.GONE);
                 break;
@@ -488,21 +490,31 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             earnTitle.setText("差一点就瓜分到了");
             earnContentTail.setVisibility(View.GONE);
             earnWrap.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
-            if (isSuperVip) { // 超级会员
+            if (CommonUserInfo.isIsSuperVip()) { // 超级会员
+                if (amount == null) {
+                    amount = "20";
+                }
                 String content = "送你" + amount + "积分";
                 earnContent.setText(content);
-                earnTip.setVisibility(View.VISIBLE);
+                earnTip.setVisibility(View.GONE);
             } else {
+                if (amount == null) {
+                    amount = "10";
+                }
                 String content = "送你" + amount + "积分";
                 earnContent.setText(content);
                 earnContent.setTextSize(20);
                 earnContent.setTextColor(getActivity().getResources().getColor(R.color.scholarship_btn_press));
-                earnTip.setVisibility(View.GONE);
+                earnTip.setVisibility(View.VISIBLE);
             }
             earnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    JumpDetail.jumpScholarshipActivity(getActivity());
+                    if (hasEarnMoney) {
+                        JumpDetail.jumpScholarshipActivity(getActivity());
+                    } else {
+                        JumpDetail.jumpIntegralActivity(getActivity());
+                    }
                     dialog.dismiss();
                 }
             });
@@ -544,6 +556,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
 
             scholarshipDivide.setText("明日再来");
             scholarshipDivide.setAlpha(0.8f);
+            scholarshipDivide.setClickable(false);
             scholarshipStepOne.setVisibility(View.VISIBLE);
             scholarshipStepTwo.setVisibility(View.VISIBLE);
             scholarshipStepThree.setVisibility(View.VISIBLE);

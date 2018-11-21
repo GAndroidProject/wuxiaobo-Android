@@ -19,6 +19,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
+import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.GetSuperMemberSuccessEvent;
 import com.xiaoe.common.entitys.LoginUser;
@@ -211,12 +212,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         contentList.add("分享赢双倍积分");
         MineEquityListAdapter mineEquityListAdapter = new MineEquityListAdapter(mContext, contentList);
         mineVipCard.setEquityListAdapter(mineEquityListAdapter);
-        mineVipCard.setDeadLine("2019/10/15");
         // 会员权益假数据 -- 结束
         if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 店铺是否有超级会员并且不是超级会员才显示
             mineMsgView.setBuyVipVisibility(View.VISIBLE);
         } else {
-            mineMsgView.setBuyVipVisibility(View.GONE);
+            mineMsgView.setBuyVipTag();
         }
         if (CommonUserInfo.isIsSuperVip()) { // 是超级会员，显示卡片
             mineVipCard.setVisibility(View.VISIBLE);
@@ -249,7 +249,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mineRefresh.setOnRefreshListener(this);
         mineTitleView.setMsgClickListener(this);
         mineTitleView.setSettingListener(this);
-        mineMsgView.setBuyVipClickListener(this);
+        if (!CommonUserInfo.isIsSuperVip()) { // 不是超级会员，添加点击事件
+            mineMsgView.setBuyVipClickListener(this);
+        }
         mineMsgView.setNicknameOnClickListener(this);
         mineMsgView.setAvatarClickListener(this);
         mineVipCard.setBtnRenewalClickListener(this);
@@ -277,6 +279,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 if (code == NetworkCodes.CODE_SUCCEED || code == NetworkCodes.CODE_SUPER_VIP) { // 返回的 code 有 0 和 3011
                     JSONObject data = (JSONObject) result.get("data");
                     mainActivity.initSuperVipMsg(data);
+                    if (mineVipCard != null) {
+                        mineVipCard.setDeadLine(mainActivity.expireAt);
+                    }
+                    if (mineMsgView != null) {
+                        mineMsgView.setBuyVipTag();
+                    }
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取超级会员信息失败...");
                     mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
@@ -454,6 +462,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             // 兑换到超级会员之后请求超级会员的接口
             SuperVipPresenter superVipPresenter = new SuperVipPresenter(this);
             superVipPresenter.requestSuperVip();
+        }
+    }
+
+    @Subscribe
+    public void onEventMainThread(ChangeLoginIdentityEvent changeLoginIdentityEvent) {
+        if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
+            // 成功切换身份，刷新界面
         }
     }
 

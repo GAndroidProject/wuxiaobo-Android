@@ -50,7 +50,7 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
         // 如果是专栏的话需要有两行标题，其他单品就显示一行标题和一行描述
         String srcType = mItemList.get(currentPos).getSrcType();
         if (srcType != null) { // 写的数据的时候并没有添加 srcType 先兼容，课程页用了真数据之后删掉
-            if (srcType.equals(DecorateEntityType.TOPIC) || srcType.equals(DecorateEntityType.COLUMN)) { // 专栏或者大专栏
+            if (srcType.equals(DecorateEntityType.TOPIC) || srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.MEMBER)) { // 专栏或者大专栏
                 knowledgeItemViewHolder.itemTitle.setText(mItemList.get(currentPos).getItemTitle());
                 knowledgeItemViewHolder.itemTitle.setMaxLines(1);
                 knowledgeItemViewHolder.itemTitleColumn.setVisibility(View.VISIBLE);
@@ -61,15 +61,14 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
                 knowledgeItemViewHolder.itemTitleColumn.setVisibility(View.GONE);
             }
         }
-        // 无价格，将 desc 文案设置在左边的 textView 中，右边的 textView 内容置空
-//        knowledgeItemViewHolder.itemDesc.setText("");
-//        knowledgeItemViewHolder.itemPrice.setText(currentItem.getItemDesc());
-//        knowledgeItemViewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
-//        viewHolder.itemPrice.setTextSize(12);
         if (currentItem.isHasBuy()) { // 买了
-            knowledgeItemViewHolder.itemPrice.setText("已购");
+//            knowledgeItemViewHolder.itemPrice.setText("");
+//            knowledgeItemViewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
+//            knowledgeItemViewHolder.itemDesc.setText(currentItem.getItemDesc());
+            // 无价格，将 desc 文案设置在左边的 textView 中，右边的 textView 内容置空
+            knowledgeItemViewHolder.itemDesc.setText("");
+            knowledgeItemViewHolder.itemPrice.setText(currentItem.getItemDesc());
             knowledgeItemViewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
-            knowledgeItemViewHolder.itemDesc.setText(currentItem.getItemDesc());
         } else { // 没买
             knowledgeItemViewHolder.itemPrice.setText(currentItem.getItemPrice());
             knowledgeItemViewHolder.itemDesc.setText(currentItem.getItemDesc());

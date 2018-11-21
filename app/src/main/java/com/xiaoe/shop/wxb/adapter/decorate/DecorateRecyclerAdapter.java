@@ -47,6 +47,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         }
         View view;
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        // 为了兼容 .9 图而分别设置 margin
         switch(viewType) {
             case DecorateEntityType.FLOW_INFO:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info, null);
@@ -86,23 +88,23 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return new FlowInfoViewHolder(view);
             case DecorateEntityType.RECENT_UPDATE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_update, null);
-                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 26), 0, 0);
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 26), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
                 return new RecentUpdateViewHolder(view);
             case DecorateEntityType.KNOWLEDGE_LIST:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_list, null);
-                // layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 18), 0, 0);
-                // view.setLayoutParams(layoutParams);
+                 layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+                 view.setLayoutParams(layoutParams);
                 return new KnowledgeListViewHolder(view);
             case DecorateEntityType.KNOWLEDGE_GROUP:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group, null);
-                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 24), 0, Dp2Px2SpUtil.dp2px(mContext, 24));
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24));
                 view.setLayoutParams(layoutParams);
                 knowledgeGroupRecyclerList = new ArrayList<>();
                 return new KnowledgeGroupViewHolder(view);
             case DecorateEntityType.SHUFFLING_FIGURE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shuffling_figure, null);
-                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 20), 0, 0);
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
                 return new ShufflingFigureViewHolder(view);
             case DecorateEntityType.BOOKCASE: // 书架的 case 本次不做
@@ -110,12 +112,12 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.GRAPHIC_NAVIGATION:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.graphic_navigation, null);
                 layoutParams.gravity = Gravity.CENTER;
-                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 24), 0, 0);
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
                 return new GraphicNavViewHolder(view);
             case DecorateEntityType.SEARCH:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search, null);
-                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 28), 0, 0);
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 28), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
                 return new SearchViewHolder(view);
             default:

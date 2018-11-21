@@ -90,8 +90,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 
     @BindView(R.id.micro_page_loading)
     StatusPagerView microPageLoading;
-    @BindView(R.id.micro_page_logo)
-    ImageView microPageLogo;
+    // @BindView(R.id.micro_page_logo)
+    // ImageView microPageLogo;
 
     List<ComponentInfo> microPageList;
 
@@ -177,7 +177,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                         initMainContent();
                     }
                     // 请求成功之后隐藏 loading
-                    microPageLogo.setVisibility(View.VISIBLE);
+                    // microPageLogo.setVisibility(View.VISIBLE);
                     microPageLoading.setLoadingFinish();
                     microPageFresh.finishRefresh();
                     microPageAdapter.notifyDataSetChanged();
@@ -213,9 +213,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         LinearLayoutManager llm_content = new LinearLayoutManager(mContext);
         llm_content.setOrientation(LinearLayout.VERTICAL);
         microPageContent.setLayoutManager(llm_content);
-        SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
-        spacesItemDecoration.setMargin(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), 0);
-        microPageContent.addItemDecoration(spacesItemDecoration);
+//        SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
+//        spacesItemDecoration.setMargin(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+//        microPageContent.addItemDecoration(spacesItemDecoration);
         // 初始化适配器
         microPageAdapter = new DecorateRecyclerAdapter(mContext, microPageList);
         microPageContent.setAdapter(microPageAdapter);
@@ -402,7 +402,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     ComponentInfo componentInfo_know_group = new ComponentInfo();
                     componentInfo_know_group.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
                     componentInfo_know_group.setSubType(DecorateEntityType.KNOWLEDGE_GROUP_STR);
-                    componentInfo_know_group.setTitle("学会管理自己的财富");
+                    componentInfo_know_group.setTitle(itemObj.getString("title") == null ? "学会管理自己的财富" : itemObj.getString("title"));
                     componentInfo_know_group.setDesc("查看更多");
                     componentInfo_know_group.setGroupId(itemObj.getString("tag_id"));
                     if (!hasDecorate) {
@@ -433,7 +433,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             item.setItemImg(listSubItemObj.getString("img_url"));
             String price = "￥" + listSubItemObj.getString("show_price");
             if (price.equals("￥")) { // 表示买了，所以没有价格
-                item.setItemPrice(null);
+                item.setItemPrice("");
                 item.setHasBuy(true);
             } else {
                 item.setItemPrice(price);
@@ -469,6 +469,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 return viewCount + "次播放";
             case DecorateEntityType.TOPIC: // 大专栏
             case DecorateEntityType.COLUMN: // 专栏
+            case DecorateEntityType.MEMBER: // 会员
                 return "已更新" + viewCount + "期";
             default:
                 return "";

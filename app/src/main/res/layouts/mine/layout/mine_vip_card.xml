@@ -54,18 +54,22 @@
         <!--android:layout_marginBottom="18dp"-->
         <!--android:contentDescription="@string/wxb_logo"/>-->
 
-    <Button
+    <TextView
         android:id="@+id/card_renewal"
-        android:layout_width="48dp"
-        android:layout_height="18dp"
-        android:minHeight="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="24dp"
         android:text="@string/renewal"
         android:textSize="12sp"
         android:background="@drawable/vip_renewal_bg"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"/>
 
     <TextView
         android:id="@+id/card_deadline_title"

@@ -11,14 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/corners_bg_with_border"
+        android:background="@drawable/bg_shadow"
         tools:ignore="UselessParent">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/flow_info_video_bg"
             android:layout_width="match_parent"
             android:layout_height="190dp"
-            android:layout_margin="1dp"
             android:src="@drawable/demo_top"
             fresco:roundedCornerRadius="8dp"
             fresco:roundBottomLeft="false"

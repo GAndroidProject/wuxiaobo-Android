@@ -22,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
@@ -46,6 +47,8 @@ import com.xiaoe.shop.wxb.common.login.LoginPresenter;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
+import org.greenrobot.eventbus.EventBus;
+
 public class LoginActivity extends XiaoeActivity {
 
     @BindView(R.id.login_title)
@@ -68,6 +71,7 @@ public class LoginActivity extends XiaoeActivity {
     protected static final String SET_PWD = "login_set_pwd"; // 设置密码页
     protected static final String REGISTER = "login_register"; // 注页面
     protected static final String BIND_WE_CHAT = "bind_we_chat"; // 绑定微信页
+    protected static final String SERVICE = "service"; // 服务协议
 
     private Fragment currentFragment;
     // 软键盘
@@ -215,6 +219,11 @@ public class LoginActivity extends XiaoeActivity {
                     loginRegister.setVisibility(View.VISIBLE);
                     replaceFragment(MAIN);
                     break;
+                case SERVICE:
+                    loginBack.setVisibility(View.VISIBLE);
+                    loginRegister.setVisibility(View.GONE);
+                    replaceFragment(REGISTER);
+                    break;
                 default:
                     super.onBackPressed();
             }
@@ -279,6 +288,10 @@ public class LoginActivity extends XiaoeActivity {
                     loginRegister.setVisibility(View.GONE);
                     currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_we_chat);
                     break;
+                case SERVICE: // 服务页面
+                    loginBack.setVisibility(View.VISIBLE);
+                    loginRegister.setVisibility(View.GONE);
+                    currentFragment = LoginPageFragment.newInstance(R.layout.fragment_service);
                 default:
                     break;
             }
@@ -298,6 +311,7 @@ public class LoginActivity extends XiaoeActivity {
                 case SET_PWD:
                 case BIND_WE_CHAT:
                 case BIND_PHONE:
+                case SERVICE:
                     loginBack.setVisibility(View.VISIBLE);
                     loginRegister.setVisibility(View.GONE);
                     break;
@@ -516,6 +530,9 @@ public class LoginActivity extends XiaoeActivity {
             JumpDetail.jumpMain(this, true);
         } else {
             finish();
+            ChangeLoginIdentityEvent changeLoginIdentityEvent = new ChangeLoginIdentityEvent();
+            changeLoginIdentityEvent.setChangeSuccess(true);
+            EventBus.getDefault().post(changeLoginIdentityEvent);
         }
     }
 

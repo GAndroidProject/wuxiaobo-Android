@@ -152,7 +152,11 @@ public abstract class IRequest {
         }else{
             jsonObject.put("user_id", CommonUserInfo.getUserId());
         }
-        jsonObject.put("api_token", CommonUserInfo.getApiToken());
+        if (CommonUserInfo.getApiToken() == null) { // 若未有 api_token，则去数据库中取
+            jsonObject.put("api_token", CommonUserInfo.getInstance().getApiTokenByDB());
+        } else {
+            jsonObject.put("api_token", CommonUserInfo.getApiToken());
+        }
         jsonObject.put("shop_id", Constants.getAppId());
         jsonObject.put("app_id", Constants.getAppId());
         //设备唯一标识

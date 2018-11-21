@@ -60,7 +60,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
         // 如果是专栏的话需要有两行标题，其他单品就显示一行标题和一行描述
         String srcType = mItemList.get(position).getSrcType();
         if (srcType != null) { // 写的数据的时候并没有添加 srcType 先兼容，课程页用了真数据之后删掉
-            if (srcType.equals(DecorateEntityType.TOPIC) || srcType.equals(DecorateEntityType.COLUMN)) { // 专栏或者大专栏
+            if (srcType.equals(DecorateEntityType.TOPIC) || srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.MEMBER)) { // 专栏或者大专栏
                 viewHolder.itemTitle.setText(mItemList.get(position).getItemTitle());
                 viewHolder.itemTitle.setMaxLines(1);
                 viewHolder.itemTitleColumn.setVisibility(View.VISIBLE);
@@ -72,15 +72,15 @@ public class KnowledgeListAdapter extends BaseAdapter {
             }
         }
         viewHolder.itemIcon.setImageURI(mItemList.get(position).getItemImg());
-        // 将 desc 文案设置在左边的 textView 中，右边的 textView 内容置空，这个是什么状态
-//            viewHolder.itemDesc.setText("");
-//            viewHolder.itemPrice.setText(mItemList.get(position).getItemDesc());
-//            viewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
-//            viewHolder.itemPrice.setTextSize(12);
         if (mItemList.get(position).isHasBuy()) { // 买了
-            viewHolder.itemPrice.setText("已购");
+//            viewHolder.itemPrice.setText("");
+//            viewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
+//            viewHolder.itemDesc.setText(mItemList.get(position).getItemDesc());
+            // 将 desc 文案设置在左边的 textView 中，右边的 textView 内容置空，这个是什么状态
+            viewHolder.itemDesc.setText("");
+            viewHolder.itemPrice.setText(mItemList.get(position).getItemDesc());
             viewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
-            viewHolder.itemDesc.setText(mItemList.get(position).getItemDesc());
+            viewHolder.itemPrice.setTextSize(12);
         } else { // 没买
             viewHolder.itemDesc.setText(mItemList.get(position).getItemDesc());
             viewHolder.itemPrice.setText(mItemList.get(position).getItemPrice());

@@ -17,7 +17,7 @@ public class MineVipCard extends RelativeLayout {
     private Context mContext;
 
     // 续费按钮
-    private Button card_renewal;
+    private TextView card_renewal;
     // 更多权益
 //    private TextView card_equity_more;
     // 有效期
@@ -50,7 +50,7 @@ public class MineVipCard extends RelativeLayout {
     private void init(Context context) {
         mContext = context;
         View view = View.inflate(context, R.layout.mine_vip_card, this);
-        card_renewal = (Button) view.findViewById(R.id.card_renewal);
+        card_renewal = (TextView) view.findViewById(R.id.card_renewal);
 //        card_equity_more = (TextView) view.findViewById(R.id.card_equity_more);
         card_deadline = (TextView) view.findViewById(R.id.card_deadline);
         card_equity_list = (ListView) view.findViewById(R.id.card_equity_list);

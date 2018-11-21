@@ -6,6 +6,7 @@
     <!--公共颜色  start-->
     <color name="white">#ffffff</color><!--白色-->
     <color name="black">#000000</color><!--黑色-->
+    <color name="white_with_alpha">#b2ffffff</color><!--30% 透明度-->
 
     <color name="main_bg_color">#FAFAFC</color><!--主体背景颜色-->
     <color name="self_transparent">#00ffffff</color><!--透明-->

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -35,6 +36,7 @@ public class StatusPagerView extends FrameLayout {
     public static final String FAIL_CONTENT = "页面还没找到，刷新试试吧";
 
     private View rootView;
+    private RelativeLayout loadingWrap;
     private SimpleDraweeView loadingState;
     private TextView stateText;
     private ImageView stateImage;
@@ -49,11 +51,12 @@ public class StatusPagerView extends FrameLayout {
     public StatusPagerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         rootView = LayoutInflater.from(context).inflate(R.layout.layout_status_pager, this, true);
+        loadingWrap = (RelativeLayout) rootView.findViewById(R.id.pager);
         loadingState = (SimpleDraweeView) rootView.findViewById(R.id.loading_state);
         setLoadingState(View.GONE);
 
         String url = "res:///" + R.drawable.page_loading;
-        SetImageUriUtil.setGifURI(loadingState, url, Dp2Px2SpUtil.dp2px(context, 180), Dp2Px2SpUtil.dp2px(context, 180));
+        SetImageUriUtil.setGifURI(loadingState, url, Dp2Px2SpUtil.dp2px(context, 116), Dp2Px2SpUtil.dp2px(context, 116));
 
         stateText = (TextView) rootView.findViewById(R.id.state_text);
         stateImage = (ImageView) rootView.findViewById(R.id.state_image);
@@ -99,6 +102,9 @@ public class StatusPagerView extends FrameLayout {
 
     // 加载完成
     public void setLoadingFinish() {
+        if (loadingState.getVisibility() == View.VISIBLE) {
+            loadingState.setVisibility(View.GONE);
+        }
         setVisibility(View.GONE);
     }
 

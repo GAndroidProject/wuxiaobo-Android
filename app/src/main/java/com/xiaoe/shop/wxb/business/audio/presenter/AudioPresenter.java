@@ -101,6 +101,9 @@ public class AudioPresenter implements IBizCallback {
         playEntity.setImgUrl(resourceInfo.getString("img_url"));
         playEntity.setImgUrlCompressed(resourceInfo.getString("img_url_compressed"));
         playEntity.setFlowId(resourceId);
+        // isFree -- 1 免费，0 付费
+        int isFree = resourceInfo.getInteger("is_free") == null ? 0 : resourceInfo.getInteger("is_free");
+        playEntity.setFree(isFree != 0);
 
         //如果存在本地音频则播放本地是否
         DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(Constants.getAppId(), resourceId);

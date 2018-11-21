@@ -17,6 +17,7 @@ public class AudioPlayEntity {
     private int price;
     private String imgUrl;
     private String imgUrlCompressed;
+    private boolean isFree;
 
     private int totalDuration = 0;//总时长
     private String shareUrl = "";
@@ -230,5 +231,13 @@ public class AudioPlayEntity {
 
     public void setShareUrl(String shareUrl) {
         this.shareUrl = shareUrl;
+    }
+
+    public boolean isFree() {
+        return isFree;
+    }
+
+    public void setFree(boolean free) {
+        isFree = free;
     }
 }
