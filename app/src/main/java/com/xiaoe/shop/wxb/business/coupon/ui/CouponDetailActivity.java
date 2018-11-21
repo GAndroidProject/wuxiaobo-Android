@@ -79,7 +79,7 @@ public class CouponDetailActivity extends XiaoeActivity implements View.OnClickL
                 statusPagerView.setPagerState(StatusPagerView.FAIL, getResources().getString(R.string.request_fail), R.mipmap.network_none);
                 return;
             }
-            statusPagerView.setPagerState(StatusPagerView.FINISH, "", 0);
+            statusPagerView.setLoadingFinish();
             JSONArray jsonResourceInfoList = jsonObject.getJSONObject("data").getJSONArray("resource_info");
             for (Object itemObject : jsonResourceInfoList) {
                 JSONObject itemData = (JSONObject) itemObject;

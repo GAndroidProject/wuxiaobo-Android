@@ -22,6 +22,12 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnSelectCouponListener;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
+/**
+ * @author zakli
+ * @date 2018/10/20
+ * <p>
+ * 描述：优惠券列表
+ */
 public class CouponActivity extends XiaoeActivity implements View.OnClickListener, OnSelectCouponListener {
 
     private static final String TAG = "CouponActivity";
@@ -42,7 +48,6 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coupon);
-
 
         mCouponPresenter = new CouponPresenter(this);
         initView();
