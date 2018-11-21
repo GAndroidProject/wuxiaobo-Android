@@ -422,20 +422,26 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
 
     /*↓↓↓↓↓↓↓  此处往下是友盟分享回调 ↓↓↓↓↓↓↓*/
-
     /**
      * 需要在调用的activity中实现方法
-     *     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-     *         super.onActivityResult(requestCode, resultCode, data);
-     *         UMShareAPI.get(this).onActivityResult(requestCode,resultCode,data);
-     *     }
+     * *     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+     * *         super.onActivityResult(requestCode, resultCode, data);
+     * *         UMShareAPI.get(this).onActivityResult(requestCode,resultCode,data);
+     * *     }
+     *
+     * @param shareTitle
+     * @param imgUrl
+     * @param shareUrl
+     * @param desc
      */
-    public void umShare(String shareTitle, String imgUrl, String shareUrl, String desc){
-        if(mShareDialog == null){
+    public void umShare(String shareTitle, String imgUrl, String shareUrl, String desc) {
+        Log.d(TAG, "umShare: shareTitle - " + shareTitle + "\nimgUrl - " + imgUrl + "\nshareUrl - " + shareUrl + "\ndesc - " + desc);
+        if (mShareDialog == null) {
             mShareDialog = new ShareDialog(this, this);
         }
         mShareDialog.showSharePanel(shareTitle, imgUrl, shareUrl, desc);
     }
+
     @Override
     public void onStart(SHARE_MEDIA share_media) {
         Log.d(TAG, "onStart: 友盟");
