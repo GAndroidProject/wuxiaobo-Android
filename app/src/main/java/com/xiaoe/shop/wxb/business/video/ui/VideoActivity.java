@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.business.video.ui;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -43,6 +44,7 @@ import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -89,6 +91,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initStatusBar();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setSharedElementEnterTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
             getWindow().setSharedElementReturnTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.CENTER_CROP));
@@ -123,6 +126,26 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         mIntent = getIntent();
         initViews();
         initDatas();
+    }
+
+    private void initStatusBar() {
+        //设置深色文字图标风格
+        if (!StatusBarUtil.setStatusBarDarkTheme(this, true)) {
+            // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
+            StatusBarUtil.setStatusBarColor(this, 0x55000000);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (statusPagerView != null)
+            statusPagerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    initStatusBar();
+                }
+            },200);
     }
 
 

@@ -398,9 +398,11 @@ public class LoginActivity extends XiaoeActivity {
                     }
                 } else { // 登录流程
                     if (code == NetworkCodes.CODE_HAD_REGISTER) { // 已经注册
-                        ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(true);
-                        ((LoginPageFragment) currentFragment).phoneObtainCode.setAlpha(1);
-                        ((LoginPageFragment) currentFragment).phoneObtainCode.setBackground(getResources().getDrawable(R.drawable.person_submit_bg));
+                        if (((LoginPageFragment) currentFragment).phoneObtainCode != null) {
+                            ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(true);
+                            ((LoginPageFragment) currentFragment).phoneObtainCode.setAlpha(1);
+                            ((LoginPageFragment) currentFragment).phoneObtainCode.setBackground(getResources().getDrawable(R.drawable.person_submit_bg));
+                        }
                         replaceFragment(CODE);
                         // 发送请求验证码接口
                         loginPresenter.obtainPhoneCode(phoneNum);
