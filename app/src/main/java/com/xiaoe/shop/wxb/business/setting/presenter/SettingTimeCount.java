@@ -29,20 +29,21 @@ public class SettingTimeCount extends CountDownTimer {
         super(millisInFuture, countDownInterval);
         this.container = viewWrap;
         this.mContext = context;
+        tv = (TextView) container.findViewById(R.id.phone_num_desc);
     }
 
     @Override
     public void onTick(long millisUntilFinished) {
-        tv = (TextView) container.findViewById(R.id.phone_num_desc);
-        tv.setClickable(false);
+        tv.setEnabled(false);
         int second = (int) (millisUntilFinished / 1000);
         tv.setText(String.format(mContext.getResources().getString(R.string.setting_phone_num_desc), second));
+        tv.setTextColor(mContext.getResources().getColor(R.color.secondary_title_color));
     }
 
     @Override
     public void onFinish() {
+        tv.setEnabled(true);
         tv.setText("重新获取验证码");
-        tv.setClickable(true);
         tv.setTextColor(mContext.getResources().getColor(R.color.edit_cursor));
     }
 }
