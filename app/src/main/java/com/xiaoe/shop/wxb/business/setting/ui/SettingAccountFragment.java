@@ -36,6 +36,7 @@ import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingTimeCount;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.utils.FileUtils;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.widget.CodeVerifyView;
 import com.xiaoe.shop.wxb.widget.CustomSwitchButton;
@@ -503,8 +504,9 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
 
     // 初始化服务协议
     private void initServiceFragment() {
+        String content = FileUtils.readAssetsTextReturnStr(getActivity(), "agreement");
         TextView serviceContent = (TextView) viewWrap.findViewById(R.id.service_content);
-        serviceContent.setText(getActivity().getResources().getString(R.string.server_list));
+        serviceContent.setText(content);
     }
 
     @Override
