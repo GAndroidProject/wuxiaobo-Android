@@ -54,10 +54,10 @@ public class ScholarshipRangeAdapter extends BaseAdapter {
         viewHolder.itemAvatar.setImageURI(mItemList.get(position).getItemAvatar());
         viewHolder.itemName.setText(mItemList.get(position).getItemName());
         if (mItemList.get(position).isSuperVip()) { // 是超级会员
-            Drawable right = mContext.getResources().getDrawable(R.mipmap.super_vip);
-            viewHolder.itemName.setCompoundDrawables(null, null, right, null);
+            Drawable right = mContext.getResources().getDrawable(R.mipmap.profile_diamond);
+            viewHolder.itemName.setCompoundDrawablesWithIntrinsicBounds(null, null, right, null);
         } else {
-            viewHolder.itemName.setCompoundDrawables(null, null, null, null);
+            viewHolder.itemName.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
         viewHolder.itemScholarship.setText(mItemList.get(position).getItemScholarship());
         return convertView;
