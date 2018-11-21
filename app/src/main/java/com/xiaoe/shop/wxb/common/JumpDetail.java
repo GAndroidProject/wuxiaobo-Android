@@ -151,14 +151,18 @@ public class JumpDetail {
     }
 
     /**
-     * 跳转到主页的奖学金页面
-     * @param context  上下文
-     * @param needChange 是否需要切换
+     * 跳转到主页的某一个页面
+     *
+     * @param context      上下文
+     * @param isFormalUser
+     * @param needChange   是否需要切换
+     * @param tabIndex      主页的
      */
-    public static void jumpMainScholarship(Context context, boolean isFormalUser, boolean needChange) {
+    public static void jumpMainScholarship(Context context, boolean isFormalUser, boolean needChange, int tabIndex) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra("isFormalUser", isFormalUser);
         intent.putExtra("needChange", needChange);
+        intent.putExtra("tabIndex", tabIndex);
         context.startActivity(intent);
     }
 

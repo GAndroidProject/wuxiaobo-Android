@@ -6,10 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.xiaoe.common.entitys.CouponInfo;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -21,6 +17,9 @@ import com.xiaoe.shop.wxb.business.coupon.presenter.CouponPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnSelectCouponListener;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author zakli
@@ -151,8 +150,15 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
 
     @Override
     public void onSelect(CouponInfo couponInfo, int position) {
-        if(couponInfo.getType() == 0){
-            JumpDetail.jumpCouponCanRerource(this, couponInfo);
+        switch (couponInfo.getType()) {
+            case 0:
+                JumpDetail.jumpCouponCanRerource(this, couponInfo);
+                break;
+            case 1:
+                JumpDetail.jumpMainScholarship(this, true, true, 1);
+                break;
+            default:
+                break;
         }
     }
 }

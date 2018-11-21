@@ -295,6 +295,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 }
                 dialog.setContentView(view);
                 break;
+            default:
+                break;
         }
     }
 

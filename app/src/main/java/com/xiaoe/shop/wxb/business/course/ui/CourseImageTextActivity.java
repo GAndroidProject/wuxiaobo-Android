@@ -273,11 +273,10 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
         itDescImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityCollector.finishAll();
                 if (loginList.size() == 1) {
-                    JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, true, true);
+                    JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, true, true, 2);
                 } else {
-                    JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, false, true);
+                    JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, false, true, 2);
                 }
             }
         });

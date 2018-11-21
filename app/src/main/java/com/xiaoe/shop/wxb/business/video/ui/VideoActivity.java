@@ -255,11 +255,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 umShare(collectTitle, TextUtils.isEmpty(collectImgUrlCompressed) ? collectImgUrl : collectImgUrlCompressed, shareUrl, "");
                 break;
             case R.id.video_advertise_img:
-                ActivityCollector.finishAll();
                 if (loginUserList.size() == 1) {
-                    JumpDetail.jumpMainScholarship(this, true, true);
+                    JumpDetail.jumpMainScholarship(this, true, true, 2);
                 } else {
-                    JumpDetail.jumpMainScholarship(this, false, true);
+                    JumpDetail.jumpMainScholarship(this, false, true, 2);
                 }
                 break;
             default:

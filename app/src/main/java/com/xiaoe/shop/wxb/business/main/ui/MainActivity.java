@@ -166,11 +166,13 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         mainViewPager.setAdapter(new MainFragmentStatePagerAdapter(getSupportFragmentManager()));
         mainViewPager.setOffscreenPageLimit(3);
 
-        boolean needChange = intent.getBooleanExtra("needChange", false);
-        if (needChange) {
-            // 如果需要改变，就去到奖学金页面
-            replaceFragment(2);
-        }
+//        boolean needChange = intent.getBooleanExtra("needChange", false);
+//        int tabIndex = intent.getIntExtra("tabIndex", 0);
+//        if (needChange) {
+//            // 如果需要改变，就去到奖学金页面
+//            replaceFragment(tabIndex);
+//        }
+//        Log.d(TAG, "initView: needChange " + needChange + " tabIndex " + tabIndex);
 
         miniAudioPlayController = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
         setMiniAudioPlayController(miniAudioPlayController);
@@ -188,6 +190,18 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         Log.d(TAG, "onCheckedTab: "+index);
         mainViewPager.setCurrentItem(index);
         Log.d(TAG, "onCheckedTab: I "+mainViewPager.getCurrentItem());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        boolean needChange = intent.getBooleanExtra("needChange", false);
+        int tabIndex = intent.getIntExtra("tabIndex", 0);
+        if (needChange) {
+            // 如果需要改变，就去到奖学金页面
+            replaceFragment(tabIndex);
+        }
+        Log.d(TAG, "onNewIntent: needChange " + needChange + " tabIndex " + tabIndex);
     }
 
     protected void replaceFragment(int index) {
