@@ -54,7 +54,7 @@ public class CouponView extends FrameLayout {
     public void setCouponInfo(CouponInfo couponInfo){
         setCouponPrice(couponInfo.getPrice());
         setCouponTitle(couponInfo.getTitle(), couponInfo.getType());
-        setStartDate(couponInfo.getValid_at());
+        setStartDate(String.format(mContext.getString(R.string.to_text), couponInfo.getValid_at()));
         setEndDate(couponInfo.getInvalid_at());
         setCouponType(couponInfo.getRequire_price());
         setValid(couponInfo.isValid());
@@ -64,6 +64,12 @@ public class CouponView extends FrameLayout {
     public void showSelectIcon(int visibility){
         selectIcon.setVisibility(visibility);
         useConponText.setVisibility(visibility == View.VISIBLE ? View.GONE : View.VISIBLE);
+    }
+
+    public void showRightBthOnlyText(String text) {
+        useConponText.setText(text);
+        useConponText.setTextColor(mContext.getResources().getColor(R.color.secondary_title_color));
+        useConponText.setBackgroundColor(mContext.getResources().getColor(R.color.self_transparent));
     }
 
     /**

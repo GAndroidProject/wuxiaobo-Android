@@ -59,6 +59,7 @@ public class CouponDetailActivity extends XiaoeActivity implements View.OnClickL
         Bundle bundle = intent.getBundleExtra("coupon_bundle");
         CouponInfo couponInfo = (CouponInfo) bundle.getSerializable("coupon_info");
         couponView.setCouponInfo(couponInfo);
+        couponView.showRightBthOnlyText(getString(R.string.enable_text));
         if(couponInfo != null){
             CouponPresenter couponPresenter = new CouponPresenter(this);
             couponPresenter.requestCouponCanResource(couponInfo.getId());
