@@ -210,7 +210,7 @@ public class JumpDetail {
      * @param title
      * @param price
      */
-    public static void jumpPay(Context context, String resourceId, String productId, int resourceType, String imgUrl, String title, int price) {
+    public static void jumpPay(Context context, String resourceId, String productId, int resourceType, String imgUrl, String title, int price, String expireTime) {
         Intent intent = new Intent(context, PayActivity.class);
         intent.putExtra("resourceId", resourceId);
         intent.putExtra("productId", productId);
@@ -218,6 +218,7 @@ public class JumpDetail {
         intent.putExtra("image_url", imgUrl);
         intent.putExtra("title", title);
         intent.putExtra("price", price);
+        intent.putExtra("expireTime", expireTime);
         context.startActivity(intent);
     }
 

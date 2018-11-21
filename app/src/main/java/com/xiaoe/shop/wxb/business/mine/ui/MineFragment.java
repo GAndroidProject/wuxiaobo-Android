@@ -372,8 +372,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     JSONObject data = (JSONObject) result.get("data");
                     String productId = data.getString("svip_id");
                     String resourceId = data.getString("resource_id");
+                    String expireAtStart = data.getString("expire_at_start");
+                    String expireAtEnd = data.getString("expire_at_end");
                     int price = data.getInteger("price");
-                    JumpDetail.jumpPay(getActivity(), resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg, "超级会员", price);
+                    JumpDetail.jumpPay(getActivity(), resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg,
+                            "超级会员", price, expireAtStart + "-" + expireAtEnd);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 超级会员购买信息请求失败");
                     mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);

@@ -61,7 +61,8 @@ public class PayingFragment extends BaseFragment {
         String expireTime = mIntent.getStringExtra("expireTime");
         if(!TextUtils.isEmpty(expireTime)){
             itemDesc.setVisibility(View.VISIBLE);
-            itemDesc.setText("有效期至："+expireTime);
+            itemDesc.setText(expireTime);
+//            itemDesc.setText("有效期至："+expireTime);
         }
     }
     private void initListener() {

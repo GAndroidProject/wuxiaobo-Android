@@ -38,6 +38,8 @@ public class SuperVipActivity extends XiaoeActivity {
     String productId; // 购买所需要的 produceId
     String resourceId; // 购买所需要的 资源 Id
     String price; // 购买价格
+    private String expireAtStart;
+    private String expireAtEnd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +60,8 @@ public class SuperVipActivity extends XiaoeActivity {
             // 默认超级会员的 resourceType 为 23，resourceId 为 resourceId
             if (price != null) {
                 double priceNum = Double.parseDouble(price) * 100;
-                JumpDetail.jumpPay(SuperVipActivity.this, resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg, "超级会员", (int) priceNum);
+                JumpDetail.jumpPay(SuperVipActivity.this, resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg,
+                        "超级会员", (int) priceNum, expireAtStart + "-" + expireAtEnd);
             }
         });
         superVipBack.setOnClickListener(v -> onBackPressed());
@@ -75,6 +78,8 @@ public class SuperVipActivity extends XiaoeActivity {
                     JSONObject data = (JSONObject) result.get("data");
                     productId = data.getString("svip_id");
                     resourceId = data.getString("resource_id");
+                    expireAtStart = data.getString("expire_at_start");
+                    expireAtEnd = data.getString("expire_at_end");
                     int priceNum = data.getInteger("price");
                     BigDecimal top = new BigDecimal(priceNum);
                     BigDecimal bottom = new BigDecimal(100);
