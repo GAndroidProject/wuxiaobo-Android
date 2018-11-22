@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -30,6 +31,7 @@ import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.NetworkStateResult;
 import com.xiaoe.network.requests.CollectionListRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.MineLearningRequest;
@@ -197,6 +199,12 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: 请求失败");
+            if (result != null) {
+                int code = result.getInteger("code");
+                if (NetworkStateResult.ERROR_NETWORK == code) {
+                    Toast(getString(R.string.network_error_text));
+                }
+            }
             onBackPressed();
         }
     }

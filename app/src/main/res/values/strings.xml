@@ -312,4 +312,5 @@
     <string name="new_tip">NEW</string>
     <string name="enable_text">可使用</string>
     <string name="to_text">%s至</string>
+    <string name="network_error_text">网络异常</string>
 </resources>

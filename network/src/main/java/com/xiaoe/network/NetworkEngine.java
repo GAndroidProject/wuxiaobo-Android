@@ -3,11 +3,13 @@ package com.xiaoe.network;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.utils.CacheDataUtil;
+import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.utils.ThreadPoolUtils;
@@ -102,21 +104,33 @@ public class NetworkEngine {
 //                return;
 //            }
 //        }
-        ThreadPoolUtils.runTaskOnThread(new Runnable() {
-            @Override
-            public void run() {
-                POST(iRequest.getCmd(), iRequest);
-            }
-        });
+        if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
+            ThreadPoolUtils.runTaskOnThread(new Runnable() {
+                @Override
+                public void run() {
+                    POST(iRequest.getCmd(), iRequest);
+                }
+            });
+        } else {
+            String jsonString = com.alibaba.fastjson.JSON.toJSONString(new NetworkStateResult());
+            iRequest.onResponse(false, com.alibaba.fastjson.JSONObject.parseObject(jsonString));
+            Log.d(TAG, "sendRequest: ERROR_NETWORK");
+        }
     }
 
     public void sendRequestByGet(final IRequest iRequest) {
-        ThreadPoolUtils.runTaskOnThread(new Runnable() {
-            @Override
-            public void run() {
-                GET(iRequest.getCmd(), iRequest);
-            }
-        });
+        if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
+            ThreadPoolUtils.runTaskOnThread(new Runnable() {
+                @Override
+                public void run() {
+                    GET(iRequest.getCmd(), iRequest);
+                }
+            });
+        } else {
+            String jsonString = com.alibaba.fastjson.JSON.toJSONString(new NetworkStateResult());
+            iRequest.onResponse(false, com.alibaba.fastjson.JSONObject.parseObject(jsonString));
+            Log.e(TAG, "sendRequestByGet: ERROR_NETWORK");
+        }
     }
 
     private void POST(String url, IRequest iRequest) {
@@ -152,7 +166,6 @@ public class NetworkEngine {
             iRequest.onResponse(false, "httpMethod error");
             return;
         }
-
 
         Request request = build.build();
         Call call = client.newCall(request);
@@ -221,7 +234,6 @@ public class NetworkEngine {
             String whereVal = "app_id=? and resource_id=?";
             SQLiteUtil.update(CacheDataUtil.TABLE_NAME, cacheData, whereVal, new String[]{Constants.getAppId(), cacheKey});
         }
-
     }
 
 }

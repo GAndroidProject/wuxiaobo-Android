@@ -27,6 +27,7 @@ import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.NetworkStateResult;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.LoginBindRequest;
 import com.xiaoe.network.requests.LoginCheckRegisterRequest;
@@ -495,7 +496,13 @@ public class LoginActivity extends XiaoeActivity {
                 }
             }*/
         } else {
-            Toast("网络异常");
+            Log.d(TAG, "onMainThreadResponse: request fail");
+            if (result != null) {
+                int code = result.getInteger("code");
+                if (NetworkStateResult.ERROR_NETWORK == code) {
+                    Toast(getString(R.string.network_error_text));
+                }
+            }
         }
     }
 
