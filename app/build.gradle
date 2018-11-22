@@ -34,7 +34,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0.0.002d"
+        versionName "1.0.0.003d"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 //        ndk { abiFilters "armeabi","x86"}
         ndk {
