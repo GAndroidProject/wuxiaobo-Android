@@ -211,6 +211,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 learningLoading.setPagerState(StatusPagerView.FAIL, "暂无收藏内容，快去首页逛逛吧", R.mipmap.collection_none);
             } else {
                 learningRefresh.finishLoadMoreWithNoMoreData();
+                learningRefresh.setEnableLoadMore(false);
             }
             return;
         }
@@ -324,6 +325,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
         if (!isRefresh) {
+            learningRefresh.setEnableLoadMore(true);
             if ("我正在学".equals(pageTitle)) {
                 if (mineLearningPresenter == null) {
                     mineLearningPresenter = new MineLearningPresenter(this);
