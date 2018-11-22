@@ -180,8 +180,8 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                     data = (JSONObject) result.get("data");
                 } catch (Exception e) {
                     if (pageList.size() > 0) {
-                        learningRefresh.finishLoadMore();
-                        learningRefresh.setNoMoreData(true);
+                        learningRefresh.finishLoadMoreWithNoMoreData();
+                        learningRefresh.setEnableLoadMore(false);
                     } else {
                         learningLoading.setPagerState(StatusPagerView.FAIL, "暂无正在学的内容，快去首页逛逛吧", R.mipmap.collection_none);
                     }
@@ -210,8 +210,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
             if (pageList.size() == 0) {
                 learningLoading.setPagerState(StatusPagerView.FAIL, "暂无收藏内容，快去首页逛逛吧", R.mipmap.collection_none);
             } else {
-                learningRefresh.finishLoadMore();
-                learningRefresh.setNoMoreData(true);
+                learningRefresh.finishLoadMoreWithNoMoreData();
             }
             return;
         }
