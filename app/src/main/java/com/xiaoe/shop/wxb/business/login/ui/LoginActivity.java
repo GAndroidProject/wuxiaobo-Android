@@ -497,12 +497,6 @@ public class LoginActivity extends XiaoeActivity {
             }*/
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail");
-            if (result != null) {
-                int code = result.getInteger("code");
-                if (NetworkStateResult.ERROR_NETWORK == code) {
-                    Toast(getString(R.string.network_error_text));
-                }
-            }
         }
     }
 

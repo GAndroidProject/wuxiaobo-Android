@@ -39,6 +39,7 @@ import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.NetworkStateResult;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
@@ -256,8 +257,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         Global.g().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                JSONObject jsonObject = (JSONObject) entity;
                 if (success && entity != null) {
-                    JSONObject jsonObject = (JSONObject) entity;
                     if(jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING){
                         if(!dialog.isShowing()){
                             dialog.getTitleView().setGravity(Gravity.START);
@@ -275,6 +276,12 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                         onMainThreadResponse(iRequest, true, entity);
                     }
                 } else {
+                    if (jsonObject != null) {
+                        int code = jsonObject.getInteger("code");
+                        if (NetworkStateResult.ERROR_NETWORK == code) {
+                            Toast(getString(R.string.network_error_text));
+                        }
+                    }
                     onMainThreadResponse(iRequest, false, entity);
                 }
             }

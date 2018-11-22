@@ -194,6 +194,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (intent == null) {
+            return;
+        }
         boolean needChange = intent.getBooleanExtra("needChange", false);
         int tabIndex = intent.getIntExtra("tabIndex", 0);
         if (needChange) {

@@ -157,8 +157,9 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
             if (result != null) {
                 int code = result.getInteger("code");
                 if (NetworkStateResult.ERROR_NETWORK == code) {
-                    Toast(getString(R.string.network_error_text));
-                    settingLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                    if (dataList != null && dataList.size() == 0) {
+                        settingLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                    }
                 }
             }
         }
