@@ -42,6 +42,7 @@ import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.NetworkStateResult;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.SettingPersonItemRequest;
 import com.xiaoe.network.requests.SettingPseronMsgRequest;
@@ -153,6 +154,13 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail");
+            if (result != null) {
+                int code = result.getInteger("code");
+                if (NetworkStateResult.ERROR_NETWORK == code) {
+                    Toast(getString(R.string.network_error_text));
+                    settingLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                }
+            }
         }
     }
 
