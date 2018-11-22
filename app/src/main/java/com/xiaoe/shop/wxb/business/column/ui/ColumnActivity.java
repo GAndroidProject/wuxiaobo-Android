@@ -16,8 +16,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Constants;
+import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
+import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -105,6 +110,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private TextView memberExpireTime;
     private String expireTime;
     private StatusPagerView statusPagerView;
+    private boolean showDataByDB = false;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,7 +156,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     private void initData() {
         columnPresenter = new ColumnPresenter(this);
-//        columnPresenter.requestDetail(resourceId, isBigColumn ? "8" : "6");
+        setDataByDB();
         columnPresenter.requestDetail(resourceId, resourceType+"");
         collectionUtils = new CollectionUtils(this);
     }
@@ -221,7 +228,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
 
         statusPagerView = (StatusPagerView) findViewById(R.id.state_pager_view);
-//        setPagerState(-1);
+        setPagerState(-1);
     }
 
     @Override
@@ -260,9 +267,17 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(entity == null || !success){
             return;
         }
-        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED ){
+        int code = jsonObject.getIntValue("code");
+        if(code != NetworkCodes.CODE_SUCCEED ){
             if(iRequest instanceof ColumnListRequst || iRequest instanceof DetailRequest){
                 setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
+            }
+            if(iRequest instanceof DetailRequest){
+                if(code == NetworkCodes.CODE_GOODS_DELETE){
+                    setPagerState(NetworkCodes.CODE_GOODS_DELETE);
+                }else{
+                    setPagerState(1);
+                }
             }
             return;
         }
@@ -276,7 +291,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             }
         }else if(iRequest instanceof ColumnListRequst){
             JSONArray data = (JSONArray) dataObject;
-            columnListRequest(iRequest, data);
+            columnListRequest(data);
         }else if(iRequest instanceof AddCollectionRequest){
             addCollectionRequest(jsonObject);
         }else if(iRequest instanceof RemoveCollectionListRequest){
@@ -345,11 +360,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
     }
 
-    private void columnListRequest(IRequest iRequest, JSONArray data) {
+    private void columnListRequest(JSONArray data) {
         if(resourceType == RESOURCE_TYPE_TOPIC){
             ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
-            if(refreshData){
+            if(refreshData || showDataByDB){
                 refreshData = false;
                 fragment.refreshData(columnPresenter.formatColumnEntity(data, resourceId));
             }else{
@@ -358,7 +373,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else if(resourceType == RESOURCE_TYPE_MEMBER){
             MemberFragment fragment = (MemberFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
-            if(refreshData){
+            if(refreshData || showDataByDB){
                 refreshData = false;
                 fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, ""));
             }else{
@@ -367,7 +382,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else{
             LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
-            if(refreshData){
+            if(refreshData || showDataByDB){
                 refreshData = false;
                 fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, ""));
             }else{
@@ -390,7 +405,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
                 fragment.clearData();
             }else if(resourceType == RESOURCE_TYPE_MEMBER){
-
+                MemberFragment fragment = (MemberFragment) columnViewPagerAdapter.getItem(1);
+                fragment.clearData();
             }else{
                 LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
                 fragment.clearData();
@@ -438,7 +454,32 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             expireTime = data.getString("expire_time");
             memberExpireTime.setText("有效期至："+expireTime);
         }
-        columnPresenter.requestColumnList(resourceId, "0", pageIndex, pageSize);
+
+        //是否免费0：否，1：是
+        int isFree = data.getIntValue("is_free ");
+        //0-正常, 1-隐藏, 2-删除
+        int detailState = data.getIntValue("state");
+        //0-上架,1-下架
+        int saleStatus = data.getIntValue("sale_status");
+        //是否停售 0:否，1：是
+        int isStopSell = data.getIntValue("is_stop_sell");
+        if(hasBuy){
+            if(isFree == 1){
+                if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
+                    setPagerState(2);
+                }
+            }else {
+                setPagerState(0);
+                columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
+            }
+        }else{
+            if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
+                setPagerState(2);
+            }else{
+                setPagerState(0);
+                columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
+            }
+        }
     }
 
     @Override
@@ -581,7 +622,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     /**
      *
-     * @param code 0-正常的,1-请求失败,2-课程下架,-1： 加载
+     * @param code 0-正常的,1-请求失败,2-课程下架,-1： 加载，3004：商品已删除
      */
     private void setPagerState(int code) {
         if(code == 0){
@@ -594,7 +635,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             statusPagerView.setStateImage(StatusPagerView.DETAIL_NONE);
             statusPagerView.setStateText(getString(R.string.request_fail));
             statusPagerView.setHintStateVisibility(View.VISIBLE);
-        }else if(code == 2){
+        }else if(code == 2 || code == 3004){
             btnBack.setVisibility(View.VISIBLE);
             statusPagerView.setVisibility(View.VISIBLE);
             statusPagerView.setLoadingState(View.GONE);
@@ -607,6 +648,30 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             statusPagerView.setVisibility(View.VISIBLE);
             statusPagerView.setLoadingState(View.VISIBLE);
             statusPagerView.setHintStateVisibility(View.GONE);
+        }
+    }
+
+    public void setDataByDB(){
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
+        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+resourceId+"'";
+        List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
+        if(cacheDataList != null && cacheDataList.size() > 0){
+            JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent()).getJSONObject("data");
+            detailRequest(data.getJSONObject("resource_info"), data.getBoolean("available"));
+            JSONObject shareInfo = data.getJSONObject("share_info");
+            if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
+                shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
+            }
+        }
+        String sqlList = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+resourceId+"_list'";
+        List<CacheData> cacheDataResourceList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlList, null );
+        if(cacheDataResourceList != null && cacheDataResourceList.size() > 0){
+            JSONArray data = JSONObject.parseObject(cacheDataResourceList.get(0).getResourceList()).getJSONArray("data");
+            columnListRequest( data);
+        }
+        if(cacheDataList != null && cacheDataList.size() > 0 &&
+                cacheDataResourceList != null && cacheDataResourceList.size() > 0){
+            showDataByDB = true;
         }
     }
 }

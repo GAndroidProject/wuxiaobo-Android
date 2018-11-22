@@ -1,6 +1,5 @@
 package com.xiaoe.shop.wxb.business.earning.presenter;
 
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
@@ -38,6 +37,9 @@ public class EarningPresenter implements IBizCallback {
         earningRequest.addRequestParam("flow_type", flowType);
         earningRequest.addRequestParam("page_index", pageIndex);
         earningRequest.addRequestParam("page_size", pageSize);
+
+        earningRequest.setNeedCache(true);
+        earningRequest.setCacheKey(assetType);
 
         NetworkEngine.getInstance().sendRequest(earningRequest);
     }

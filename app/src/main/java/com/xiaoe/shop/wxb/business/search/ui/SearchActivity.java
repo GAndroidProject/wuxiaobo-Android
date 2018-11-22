@@ -23,6 +23,17 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.SearchHistory;
+import com.xiaoe.common.entitys.SearchHistoryEntity;
+import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.requests.IRequest;
+import com.xiaoe.network.requests.SearchRequest;
+import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.business.search.presenter.SearchPresenter;
+import com.xiaoe.shop.wxb.business.search.presenter.SearchSQLiteCallback;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,17 +43,6 @@ import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.xiaoe.common.entitys.SearchHistory;
-import com.xiaoe.common.entitys.SearchHistoryEntity;
-import com.xiaoe.common.db.SQLiteUtil;
-import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.requests.IRequest;
-import com.xiaoe.network.requests.SearchRequest;
-import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.base.XiaoeActivity;
-import com.xiaoe.shop.wxb.business.search.presenter.SearchPresenter;
-import com.xiaoe.shop.wxb.business.search.presenter.SearchSQLiteCallback;
-import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 public class SearchActivity extends XiaoeActivity {
 
@@ -77,6 +77,7 @@ public class SearchActivity extends XiaoeActivity {
     Drawable right;
 
     Object dataList; // 搜索结果
+    private SQLiteUtil sqLiteUtil;
     protected boolean hasDecorate; // 已经渲染
     protected int pageIndex = 1; // 默认页码
     protected int pageSize = 10; // 默认每页大小
@@ -115,10 +116,10 @@ public class SearchActivity extends XiaoeActivity {
         searchPresenter = new SearchPresenter(this);
 
         // 初始化数据库
-        SQLiteUtil.init(this.getApplicationContext(), new SearchSQLiteCallback());
+        sqLiteUtil = SQLiteUtil.init(this.getApplicationContext(), new SearchSQLiteCallback());
         // 如果表不存在，就去创建
-        if(!SQLiteUtil.tabIsExist(SearchSQLiteCallback.TABLE_NAME_CONTENT)){
-            SQLiteUtil.execSQL(SearchSQLiteCallback.TABLE_SCHEMA_CONTENT);
+        if(!sqLiteUtil.tabIsExist(SearchSQLiteCallback.TABLE_NAME_CONTENT)){
+            sqLiteUtil.execSQL(SearchSQLiteCallback.TABLE_SCHEMA_CONTENT);
         }
         historyList = queryAllData();
         currentFragment = SearchPageFragment.newInstance(R.layout.fragment_search_main);
@@ -163,7 +164,7 @@ public class SearchActivity extends XiaoeActivity {
                             // 将输入的内容插入到数据库
                             String currentTime = obtainCurrentTime();
                             SearchHistory searchHistory = new SearchHistory(content, currentTime);
-                            SQLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
+                            sqLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
 
                             // 刷新界面
                             if (((SearchPageFragment) currentFragment).historyData != null && ((SearchPageFragment) currentFragment).historyAdapter != null) {
@@ -337,7 +338,7 @@ public class SearchActivity extends XiaoeActivity {
     // 判断数据库是否已经存了这条数据
     protected boolean hasData(String tempContent) {
         // 从 search_history 表里面找到 content = tempContent 的那条数据
-        List<SearchHistory> lists = SQLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
+        List<SearchHistory> lists = sqLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
                 "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " where " + SearchHistoryEntity.COLUMN_NAME_CONTENT + " = ?", new String[]{tempContent});
         // 已经有一条数据的话就不用再插入
         return lists.size() == 1;
@@ -345,7 +346,7 @@ public class SearchActivity extends XiaoeActivity {
 
     // 查询最新创建的五条数据
     protected List<SearchHistory> queryAllData() {
-        return SQLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
+        return sqLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
             "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " order by " + SearchHistoryEntity.COLUMN_NAME_CREATE + " desc limit 5", null);
     }
 

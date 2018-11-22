@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -38,7 +37,6 @@ import com.xiaoe.common.entitys.ShufflingItem;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.NetworkStateResult;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.PageFragmentRequest;
@@ -51,7 +49,6 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
@@ -221,9 +218,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         }
     }
     private void setDataByDB(){
-        SQLiteUtil.init(getContext(), new CacheDataUtil());
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(getContext(), new CacheDataUtil());
         String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+microPageId+"'";
-        List<CacheData> cacheDataList =  SQLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
+        List<CacheData> cacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
         if(cacheDataList != null && cacheDataList.size() > 0){
             JSONObject result = JSONObject.parseObject(cacheDataList.get(0).getContent());
             JSONObject data = (JSONObject) result.get("data");

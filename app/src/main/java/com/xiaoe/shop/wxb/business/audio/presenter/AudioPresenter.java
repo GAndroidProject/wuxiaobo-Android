@@ -5,8 +5,12 @@ import android.text.TextUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
+import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
+import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
+import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.network_interface.IBizCallback;
@@ -20,6 +24,7 @@ import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.List;
 
 public class AudioPresenter implements IBizCallback {
     private static final String TAG = "AudioPresenter";
@@ -125,7 +130,7 @@ public class AudioPresenter implements IBizCallback {
             playAudio(playEntity.isPlay());
         }else{
             playEntity.setCode(0);
-            playEntity.setContent(resourceInfo.getString("content"));
+            playEntity.setContent(resourceInfo.getString("preview_content"));
             playAudio(false);
         }
     }
@@ -145,6 +150,13 @@ public class AudioPresenter implements IBizCallback {
      * 获取商品详情
      */
     public void requestDetail(String resourceId){
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
+        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+resourceId+"'";
+        List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
+        if(cacheDataList != null && cacheDataList.size() > 0){
+            JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent());
+            setAudioDetail(true, data, resourceId);
+        }
         DetailRequest detailRequest = new DetailRequest( this);
         detailRequest.addDataParam("goods_id",resourceId);
         detailRequest.addDataParam("goods_type",2);
@@ -152,6 +164,5 @@ public class AudioPresenter implements IBizCallback {
         detailRequest.setCacheKey(resourceId);
         detailRequest.sendRequest();
     }
-
 
 }

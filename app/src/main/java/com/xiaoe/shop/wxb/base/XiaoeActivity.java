@@ -145,13 +145,13 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         // 初始化数据库
-        SQLiteUtil.init(this.getApplicationContext(), new LoginSQLiteCallback());
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(this.getApplicationContext(), new LoginSQLiteCallback());
         // 如果表不存在，就去创建
-        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
-            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
+        if (!sqLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
+            sqLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
         }
 
-        userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        userList = sqLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
         if (userList.size() == 1) {
             user = userList.get(0);
             CommonUserInfo.setApiToken(user.getApi_token());
@@ -217,12 +217,12 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         if(miniAudioPlayController == null){
             return;
         }
-        SQLiteUtil.init(this, new AudioSQLiteUtil());
-        if(SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)){
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(this, new AudioSQLiteUtil());
+        if(sqLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)){
 //            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 10";
 //            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
             String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where current_play_state=1 order by update_at desc limit 1";
-            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,null);
+            List<AudioPlayEntity> entityList = sqLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,null);
             if(entityList.size() > 0){
                 AudioPlayUtil.getInstance().setSingleAudio(true);
                 AudioPlayEntity playEntity = entityList.get(0);
@@ -446,8 +446,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     @Override
     public void onClickConfirm(View view, int tag) {
         if(tag == DIALOG_TAG_LOADING){
-            SQLiteUtil.init(this,  new LoginSQLiteCallback());
-            SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+            SQLiteUtil liteUtil = SQLiteUtil.init(this,  new LoginSQLiteCallback());
+            liteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
             CommonUserInfo.getInstance().clearUserInfo();
             CommonUserInfo.setApiToken("");
             CommonUserInfo.setIsSuperVip(false);

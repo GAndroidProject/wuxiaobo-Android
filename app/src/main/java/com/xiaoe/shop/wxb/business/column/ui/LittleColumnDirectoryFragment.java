@@ -51,6 +51,8 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
 
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
+    private boolean isAddList = false;
+    private List<ColumnSecondDirectoryEntity> tempList;
 
     public LittleColumnDirectoryFragment() {
         playList = new ArrayList<AudioPlayEntity>();
@@ -106,10 +108,18 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
         directoryRecyclerView.addItemDecoration(new DashlineItemDivider(padding, padding));
         directoryAdapter = new TreeChildRecyclerAdapter(getContext(), this);
         directoryRecyclerView.setAdapter(directoryAdapter);
+        if(tempList != null && !isAddList){
+            directoryAdapter.addAll(tempList);
+        }
     }
 
     public void addData(List<ColumnSecondDirectoryEntity> list){
-        directoryAdapter.addAll(list);
+        if(directoryAdapter != null){
+            isAddList = true;
+            directoryAdapter.addAll(list);
+        }else{
+            tempList = list;
+        }
         setAudioPlayList(list);
     }
     public void setData(List<ColumnSecondDirectoryEntity> list){

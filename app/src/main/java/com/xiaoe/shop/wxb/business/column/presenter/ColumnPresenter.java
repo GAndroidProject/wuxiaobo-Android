@@ -1,7 +1,5 @@
 package com.xiaoe.shop.wxb.business.column.presenter;
 
-import android.util.Log;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.entitys.ColumnDirectoryEntity;
@@ -36,7 +34,8 @@ public class ColumnPresenter implements IBizCallback {
         DetailRequest detailRequest = new DetailRequest( this);
         detailRequest.addDataParam("goods_id",resourceId);
         detailRequest.addDataParam("goods_type",Integer.parseInt(resourceType));
-        Log.d(TAG, "requestDetail: -------------");
+        detailRequest.setNeedCache(true);
+        detailRequest.setCacheKey(resourceId);
         detailRequest.sendRequest();
     }
 
@@ -46,6 +45,8 @@ public class ColumnPresenter implements IBizCallback {
         columnListRequst.addDataParam("resource_type",resourceType);
         columnListRequst.addDataParam("page", ""+page);
         columnListRequst.addDataParam("page_size", ""+pageSize);
+        columnListRequst.setNeedCache(true);
+        columnListRequst.setCacheKey(resourceId+"_list");
         columnListRequst.sendRequest();
     }
 

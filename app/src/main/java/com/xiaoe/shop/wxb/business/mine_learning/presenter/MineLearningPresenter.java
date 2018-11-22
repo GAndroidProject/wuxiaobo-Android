@@ -1,6 +1,5 @@
 package com.xiaoe.shop.wxb.business.mine_learning.presenter;
 
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
@@ -26,6 +25,9 @@ public class MineLearningPresenter implements IBizCallback {
 
         mineLearningRequest.addDataParam("page_size", pageSize);
         mineLearningRequest.addDataParam("page", pageIndex);
+
+        mineLearningRequest.setNeedCache(true);
+        mineLearningRequest.setCacheKey("learning");
 
         NetworkEngine.getInstance().sendRequest(mineLearningRequest);
     }

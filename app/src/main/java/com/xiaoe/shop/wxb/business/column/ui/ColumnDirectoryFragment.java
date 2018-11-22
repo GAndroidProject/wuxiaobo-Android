@@ -49,6 +49,8 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     List<LoginUser> loginUserList;
 
     TouristDialog touristDialog;
+    private boolean isAddList = false;
+    private List<ColumnDirectoryEntity> tempList;
 
     public ColumnDirectoryFragment() {
     }
@@ -99,6 +101,9 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
         directoryRecyclerView.setNestedScrollingEnabled(false);
         directoryAdapter = new TreeRecyclerAdapter(getContext(), this);
         directoryRecyclerView.setAdapter(directoryAdapter);
+        if(tempList != null && !isAddList){
+            directoryAdapter.addAll(tempList);
+        }
     }
 
     @Override
@@ -160,7 +165,12 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     }
 
     public void addData(List<ColumnDirectoryEntity> list){
-        directoryAdapter.addAll(list);
+        if(directoryAdapter != null){
+            isAddList = true;
+            directoryAdapter.addAll(list);
+        }else{
+            tempList = list;
+        }
     }
     public void refreshData(List<ColumnDirectoryEntity> list){
         directoryAdapter.refreshData(list);

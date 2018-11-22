@@ -15,16 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.db.LoginSQLiteCallback;
+import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.LoginUser;
-import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.NetworkStateResult;
@@ -41,7 +36,6 @@ import com.xiaoe.network.requests.ResetPasswordRequest;
 import com.xiaoe.network.requests.SettingPseronMsgRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
-import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.login.LoginPresenter;
@@ -49,6 +43,12 @@ import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class LoginActivity extends XiaoeActivity {
 
@@ -92,6 +92,7 @@ public class LoginActivity extends XiaoeActivity {
     private LoginUser loginUser;
     Intent intent;
     private boolean isTouristClick; // 是否为游客点击
+    private SQLiteUtil loginSQLiteUtil;
 
     protected String getPhoneNum() {
         return phoneNum;
@@ -114,6 +115,8 @@ public class LoginActivity extends XiaoeActivity {
         super.onCreate(savedInstanceState);
         setStatusBar();
         StatusBarUtil.setRootViewFitsSystemWindows(this, false);
+
+        loginSQLiteUtil = SQLiteUtil.init(this, new LoginSQLiteCallback());
 
         setContentView(R.layout.activity_login);
         unbinder = ButterKnife.bind(this);
@@ -509,7 +512,7 @@ public class LoginActivity extends XiaoeActivity {
         String userId = data.getString("user_id");
         String phone = data.getString("phone");
 
-        List<LoginUser> list = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        List<LoginUser> list = loginSQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
 
         LoginUser localLoginUser = list.get(0);
 
@@ -522,9 +525,9 @@ public class LoginActivity extends XiaoeActivity {
         localLoginUser.setWxAvatar(wxAvatar);
         localLoginUser.setPhone(phone);
         localLoginUser.setShopId(shopId);
-        SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+        loginSQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
         CommonUserInfo.getInstance().clearUserInfo();
-        SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, localLoginUser);
+        loginSQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, localLoginUser);
 
         Toast("登录成功");
         if (!isTouristClick) {
@@ -571,10 +574,10 @@ public class LoginActivity extends XiaoeActivity {
         if (userList.size() == 1) {
             // 已经有用户注册过，此时需要先将已注册用户的信息删掉
             String tempId = userList.get(0).getId();
-            SQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER, "id = ?", new String[]{tempId});
+            loginSQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER, "id = ?", new String[]{tempId});
         }
         // 存储用户信息
-        SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser);
+        loginSQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser);
 
         settingPresenter.requestPersonData(apiToken, false);
     }
@@ -587,7 +590,7 @@ public class LoginActivity extends XiaoeActivity {
 //        String phone = data.getString("phone");
         String apiToken = data.getString("api_token");
 
-        List<LoginUser> list = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        List<LoginUser> list = loginSQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
 
         if (list.size() > 0) {
             loginUser = list.get(0);
@@ -605,13 +608,13 @@ public class LoginActivity extends XiaoeActivity {
         if (userList.size() == 1) { // 证明有登录或者注册过的用户
             String localId = userList.get(0).getId();
             if (localId.equals(id)) { // 同一个用户
-                SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER, loginUser, "id = ?", new String[]{id}); // 更新该用户信息
+                loginSQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER, loginUser, "id = ?", new String[]{id}); // 更新该用户信息
             } else { // 不同一个用户
-                SQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER, "id = ?", new String[]{localId});
-                SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser); // 删掉原来的用户，插入新用户
+                loginSQLiteUtil.delete(LoginSQLiteCallback.TABLE_NAME_USER, "id = ?", new String[]{localId});
+                loginSQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser); // 删掉原来的用户，插入新用户
             }
         } else { // 表中没有用户登录记录
-            SQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser);
+            loginSQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, loginUser);
         }
         CommonUserInfo.setApiToken(apiToken);
 

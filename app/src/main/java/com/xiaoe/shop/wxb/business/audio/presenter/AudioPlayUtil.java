@@ -2,13 +2,13 @@ package com.xiaoe.shop.wxb.business.audio.presenter;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
-import com.xiaoe.common.db.SQLiteUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AudioPlayUtil {
     private static final String TAG = "AudioPlayUtil";
@@ -100,22 +100,22 @@ public class AudioPlayUtil {
     }
 
     private void deleteCache(){
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
         // 如果表不存在，就去创建
-        if (!SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)) {
-            SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+        if (!sqLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)) {
+            sqLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
         }else{
-            SQLiteUtil.deleteFrom(AudioPlayTable.TABLE_NAME);
+            sqLiteUtil.deleteFrom(AudioPlayTable.TABLE_NAME);
         }
 
     }
     private void addCache(){
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
         // 如果表不存在，就去创建
-        if (!SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)) {
-            SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+        if (!sqLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)) {
+            sqLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
         }else{
-            SQLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioList);
+            sqLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioList);
         }
     }
 }

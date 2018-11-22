@@ -11,28 +11,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Global;
+import com.xiaoe.common.db.LoginSQLiteCallback;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.SettingItemInfo;
+import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
+import com.xiaoe.common.utils.CacheManagerUtil;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.network.requests.IRequest;
+import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.base.BaseFragment;
+import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
+import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
+import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
+import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.utils.ActivityCollector;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import com.xiaoe.common.app.CommonUserInfo;
-import com.xiaoe.common.app.Global;
-import com.xiaoe.common.entitys.SettingItemInfo;
-import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
-import com.xiaoe.common.utils.CacheManagerUtil;
-import com.xiaoe.common.utils.Dp2Px2SpUtil;
-import com.xiaoe.common.db.SQLiteUtil;
-import com.xiaoe.network.requests.IRequest;
-import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.base.BaseFragment;
-import com.xiaoe.common.db.LoginSQLiteCallback;
-import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
-import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
-import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
-import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.utils.ActivityCollector;
 
 public class MainAccountFragment extends BaseFragment implements OnItemClickWithSettingItemInfoListener {
 
@@ -103,8 +104,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
         accountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
-                SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+                SQLiteUtil.init(getActivity(), new LoginSQLiteCallback()).deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
                 CommonUserInfo.getInstance().clearUserInfo();
                 ActivityCollector.finishAll();
                 CommonUserInfo.setApiToken("");

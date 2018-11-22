@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +24,35 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Constants;
+import com.xiaoe.common.app.Global;
+import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.CacheData;
+import com.xiaoe.common.entitys.ScholarshipEntity;
+import com.xiaoe.common.entitys.ScholarshipRangeItem;
+import com.xiaoe.common.entitys.TaskDetailIdEvent;
+import com.xiaoe.common.utils.CacheDataUtil;
+import com.xiaoe.common.utils.MeasureUtil;
+import com.xiaoe.common.utils.SharedPreferencesUtil;
+import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.requests.IRequest;
+import com.xiaoe.network.requests.ScholarshipReceiveRequest;
+import com.xiaoe.network.requests.ScholarshipRequest;
+import com.xiaoe.network.requests.ScholarshipTaskStateRequest;
+import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.base.BaseFragment;
+import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
+import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipRangeAdapter;
+import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
+import com.xiaoe.shop.wxb.widget.StatusPagerView;
+import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,31 +64,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.xiaoe.common.app.CommonUserInfo;
-import com.xiaoe.common.app.Global;
-import com.xiaoe.common.entitys.ScholarshipEntity;
-import com.xiaoe.common.entitys.ScholarshipRangeItem;
-import com.xiaoe.common.entitys.TaskDetailIdEvent;
-import com.xiaoe.common.utils.MeasureUtil;
-import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.requests.IRequest;
-import com.xiaoe.network.requests.ScholarshipReceiveRequest;
-import com.xiaoe.network.requests.ScholarshipRequest;
-import com.xiaoe.network.requests.ScholarshipTaskStateRequest;
-import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.base.BaseFragment;
-import com.xiaoe.shop.wxb.business.earning.ui.ScholarshipActivity;
-import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
-import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipRangeAdapter;
-import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
-import com.xiaoe.shop.wxb.widget.StatusPagerView;
-import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 public class ScholarshipFragment extends BaseFragment implements View.OnClickListener, OnRefreshListener {
 
@@ -113,6 +118,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     Handler handler = new Handler();
     Runnable runnable;
     String amount; // 拿到的奖学金或者积分
+    private boolean showDataByDB = false;
 
     @Nullable
     @Override
@@ -312,6 +318,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     @Override
     protected void onFragmentFirstVisible() {
         super.onFragmentFirstVisible();
+        setDataByDB();
         scholarshipPresenter = new ScholarshipPresenter(this);
         scholarshipPresenter.requestTaskList(true);
         if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
@@ -334,7 +341,9 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                     initRange(result);
                 } else if (code == NetworkCodes.CODE_REQUEST_ERROR) {
                     Log.d(TAG, "onMainThreadResponse: 获取奖学金列表失败...");
-                    scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                    if(!showDataByDB){
+                        scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                    }
                 }
             } else if (iRequest instanceof ScholarshipTaskStateRequest) {
                 int code = data.getInteger("code");
@@ -345,7 +354,9 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取奖学金任务状态失败...");
                     scholarshipRefresh.finishRefresh();
-                    scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                    if(!showDataByDB){
+                        scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                    }
                 }
             } else if (iRequest instanceof ScholarshipReceiveRequest) {
                 int code = data.getInteger("code");
@@ -359,7 +370,9 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 }
             }
         } else {
-            scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            if(!showDataByDB){
+                scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            }
         }
     }
 
@@ -638,5 +651,36 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             }
             scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
         }
+    }
+
+    private void setDataByDB(){
+        SharedPreferencesUtil.getInstance(XiaoeApplication.getmContext(), SharedPreferencesUtil.FILE_NAME);
+        String taskId = (String) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_SCHOLARSHIP_ID, "");
+        if(TextUtils.isEmpty(taskId)){
+            return;
+        }
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(getContext(), new CacheDataUtil());
+        //任务状态
+        String sqlState = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+taskId+"_state'";
+        List<CacheData> stateCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlState, null);
+        if(stateCacheData != null && stateCacheData.size() > 0){
+            JSONObject result = JSONObject.parseObject(stateCacheData.get(0).getContent()).getJSONObject("data");
+            initTaskState(result);
+            scholarshipRefresh.finishRefresh();
+        }
+        //排行榜
+        String sqlRanking = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+taskId+"_ranking'";
+        List<CacheData> rankingCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlRanking, null);
+        if(rankingCacheData != null && rankingCacheData.size() > 0){
+            JSONObject result = JSONObject.parseObject(rankingCacheData.get(0).getContent()).getJSONObject("data");
+            initRange(result);
+        }
+        if(stateCacheData != null && stateCacheData.size() > 0
+                && rankingCacheData != null && rankingCacheData.size() > 0){
+            showDataByDB = true;
+        }else{
+            showDataByDB = false;
+        }
+
     }
 }

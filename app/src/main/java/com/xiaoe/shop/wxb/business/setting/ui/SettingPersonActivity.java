@@ -26,6 +26,26 @@ import com.alibaba.fastjson.JSONObject;
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
+import com.xiaoe.common.app.Global;
+import com.xiaoe.common.db.LoginSQLiteCallback;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.entitys.SettingItemInfo;
+import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
+import com.xiaoe.common.utils.DateFormat;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.NetworkStateResult;
+import com.xiaoe.network.requests.IRequest;
+import com.xiaoe.network.requests.SettingPersonItemRequest;
+import com.xiaoe.network.requests.SettingPseronMsgRequest;
+import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
+import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
+import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,26 +54,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.xiaoe.common.app.Global;
-import com.xiaoe.common.entitys.LoginUser;
-import com.xiaoe.common.entitys.SettingItemInfo;
-import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
-import com.xiaoe.common.utils.DateFormat;
-import com.xiaoe.common.utils.Dp2Px2SpUtil;
-import com.xiaoe.common.db.SQLiteUtil;
-import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.NetworkStateResult;
-import com.xiaoe.network.requests.IRequest;
-import com.xiaoe.network.requests.SettingPersonItemRequest;
-import com.xiaoe.network.requests.SettingPseronMsgRequest;
-import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.base.XiaoeActivity;
-import com.xiaoe.common.db.LoginSQLiteCallback;
-import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
-import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
-import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
-import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
 public class SettingPersonActivity extends XiaoeActivity implements OnItemClickWithSettingItemInfoListener {
 
@@ -98,8 +98,7 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
 
         settingLoading.setLoadingState(View.VISIBLE);
 
-        SQLiteUtil.init(this, new LoginSQLiteCallback());
-        List<LoginUser> loginMsg = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        List<LoginUser> loginMsg = SQLiteUtil.init(this, new LoginSQLiteCallback()).query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
         if (loginMsg.size() == 1) {
             apiToken = loginMsg.get(0).getApi_token();
 

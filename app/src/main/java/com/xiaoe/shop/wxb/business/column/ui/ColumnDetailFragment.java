@@ -7,17 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import com.tencent.smtt.sdk.CookieSyncManager;
 import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
-import com.xiaoe.shop.wxb.common.web.BridgeWebView;
 
 public class ColumnDetailFragment extends BaseFragment {
     private static final String TAG = "ColumnDetailFragment";
     private View rootView;
     private WebView webView;
-
+    private String contentDetail = "";
+    private boolean isSetDetail = false;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -29,11 +28,17 @@ public class ColumnDetailFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         webView = (WebView) rootView.findViewById(R.id.column_detail_web_view);
+        if(!isSetDetail){
+            webView.loadDataWithBaseURL(null, NetworkState.getNewContent(contentDetail), "text/html", "UFT-8", null);
+        }
     }
 
     public void setContentDetail(String detail){
-        webView.loadDataWithBaseURL(null, NetworkState.getNewContent(detail), "text/html", "UFT-8", null);
-        CookieSyncManager.createInstance(getContext());
-        CookieSyncManager.getInstance().sync();
+        if(webView != null){
+            isSetDetail = true;
+            webView.loadDataWithBaseURL(null, NetworkState.getNewContent(detail), "text/html", "UFT-8", null);
+        }else {
+            contentDetail = detail;
+        }
     }
 }

@@ -3,14 +3,12 @@ package com.xiaoe.network.downloadUtil;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+
+import com.xiaoe.common.db.ISQLiteCallBack;
+import com.xiaoe.common.entitys.DownloadTableInfo;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.xiaoe.common.entitys.DownloadTableInfo;
-import com.xiaoe.common.db.ISQLiteCallBack;
-import com.xiaoe.common.db.SQLiteUtil;
 
 /**
  * Created by Administrator on 2018/1/3.
@@ -60,7 +58,6 @@ public class DownloadFileConfig implements ISQLiteCallBack {
             CREATE_AT+" DATETIME default '0000-00-00 00:00:00',"+
             UPDATE_AT+" DATETIME default '0000-00-00 00:00:00',"+
             "primary key ("+APP_ID +","+ ID+"))";
-//    private static DownloadSQLiteUtil downloadSQLiteUtil;
 
 
     public static DownloadFileConfig getInstance(){
@@ -68,35 +65,10 @@ public class DownloadFileConfig implements ISQLiteCallBack {
             synchronized (DownloadFileConfig.class){
                 if(downloadFileConfig == null){
                     downloadFileConfig = new DownloadFileConfig();
-//                    downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), downloadFileConfig);
-//                    if(!downloadSQLiteUtil.tabIsExist(TABLE_NAME)){
-//                        downloadSQLiteUtil.execSQL(CREATE_TABLE_SQL);
-//                        downloadSQLiteUtil.dbClose();
-//                    }
                 }
             }
         }
         return downloadFileConfig;
-    }
-
-//    public DownloadFileConfig insertDownloadInfo(DownloadTableInfo downloadTableInfo){
-//        downloadSQLiteUtil.insert(TABLE_NAME, downloadTableInfo);
-//
-//        return downloadFileConfig;
-//    }
-//    public DownloadFileConfig updateDownloadInfo(DownloadTableInfo downloadTableInfo){
-//        String whereSQL = APP_ID+"=? and "+RESOURCE_ID+"=?";
-//        String[] whereVal = {downloadTableInfo.getAppId(), downloadTableInfo.getResourceId()};
-////        SQLiteUtil.update(TABLE_NAME, downloadTableInfo, whereSQL, whereVal);
-//        downloadSQLiteUtil.update(TABLE_NAME, downloadTableInfo, whereSQL, whereVal);
-//        return downloadFileConfig;
-//    }
-
-    public List<DownloadTableInfo> getDownloadInfo(){
-        String querySQL = "select * from "+TABLE_NAME;
-        List<DownloadTableInfo> downloadTableInfos = SQLiteUtil.query(TABLE_NAME, querySQL, null);
-        Log.d(TAG, "getDownloadInfo: "+downloadTableInfos.size());
-        return downloadTableInfos;
     }
 
     @Override
@@ -207,19 +179,4 @@ public class DownloadFileConfig implements ISQLiteCallBack {
         return downloadTableInfo;
     }
 
-//    public <T> List<T> query(String tableName, @NonNull String queryStr, @Nullable String[] whereArgs) {
-//        return downloadSQLiteUtil.query(tableName, queryStr, whereArgs);
-//    }
-//
-//    public void delete(String tableName, String whereClause, String[] whereArgs){
-//        downloadSQLiteUtil.delete(tableName, whereClause, whereArgs);
-//    }
-//
-//    public void execSQL(String sql){
-//        downloadSQLiteUtil.execSQL(sql);
-//    }
-//
-//    public void dbClose(){
-//        downloadSQLiteUtil.dbClose();
-//    }
 }

@@ -52,6 +52,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
     };
     private static boolean isThirdPause = false;//非主动暂停，如电话呼入
+    private static SQLiteUtil audioSQLiteUtil;
 
 
     @Override
@@ -73,6 +74,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     private void init() {
+        audioSQLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
         if(mediaPlayer == null){
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -195,13 +197,12 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         audio.setCurrentPlayState(0);
         audio.setUpdateAt(DateFormat.currentTime());
 
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
-        boolean tableExist = SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
+        boolean tableExist = audioSQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
         if(!tableExist){
-            SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+            audioSQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
         }
         String sqlWhereClause = AudioPlayTable.getAppId()+"=? and "+AudioPlayTable.getResourceId()+"=?";
-        SQLiteUtil.update(AudioPlayTable.TABLE_NAME, audio, sqlWhereClause,
+        audioSQLiteUtil.update(AudioPlayTable.TABLE_NAME, audio, sqlWhereClause,
                 new String[]{audio.getAppId(),audio.getResourceId()});
 
         event.setState(AudioPlayEvent.STOP);
@@ -234,12 +235,11 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     public static int getCurrentPosition(){
         if(mediaPlayer != null){
-            SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
-            boolean tableExist = SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
+            boolean tableExist = audioSQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
             if(!tableExist){
-                SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+                audioSQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
             }else{
-                SQLiteUtil.query(AudioPlayTable.TABLE_NAME, "select * from "+AudioPlayTable.TABLE_NAME, null);
+                audioSQLiteUtil.query(AudioPlayTable.TABLE_NAME, "select * from "+AudioPlayTable.TABLE_NAME, null);
             }
             return mediaPlayer.getCurrentPosition();
         }
@@ -362,24 +362,23 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         start();
     }
     private static void saveAudioDB(){
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
-        boolean tableExist = SQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
+        boolean tableExist = audioSQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
         if(!tableExist){
-            SQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+            audioSQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
         }
 
         audio.setState(0);
         audio.setCurrentPlayState(1);
         audio.setUpdateAt(DateFormat.currentTime());
-        List<AudioPlayEntity> dbAudioEntitys = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,
+        List<AudioPlayEntity> dbAudioEntitys = audioSQLiteUtil.query(AudioPlayTable.TABLE_NAME,
                 "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getResourceId()+"=?", new String[]{audio.getResourceId()});
         if(dbAudioEntitys.size() > 0){
             String sqlWhereClause = AudioPlayTable.getAppId()+"=? and "+AudioPlayTable.getResourceId()+"=?";
-            SQLiteUtil.update(AudioPlayTable.TABLE_NAME, audio, sqlWhereClause,
+            audioSQLiteUtil.update(AudioPlayTable.TABLE_NAME, audio, sqlWhereClause,
                     new String[]{audio.getAppId(),audio.getResourceId()});
         }else{
             audio.setCreateAt(DateFormat.currentTime());
-            SQLiteUtil.insert(AudioPlayTable.TABLE_NAME, audio);
+            audioSQLiteUtil.insert(AudioPlayTable.TABLE_NAME, audio);
         }
     }
 

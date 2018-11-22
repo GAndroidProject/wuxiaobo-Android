@@ -18,7 +18,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.tencent.smtt.sdk.CookieSyncManager;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
@@ -44,7 +43,6 @@ import com.xiaoe.shop.wxb.business.video.presenter.VideoPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
-import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
@@ -217,9 +215,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         localResource = mIntent.getBooleanExtra("local_resource", false);
         if(!TextUtils.isEmpty(mResourceId)){
             //先查询数据库中是否存在，如果存在则先显示
-            SQLiteUtil.init(this, new CacheDataUtil());
             String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+mResourceId+"'";
-            List<CacheData> cacheDataList = SQLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
+            List<CacheData> cacheDataList = SQLiteUtil.init(this, new CacheDataUtil()).query(CacheDataUtil.TABLE_NAME, sql, null);
             if(cacheDataList != null && cacheDataList.size() > 0){
                 detailRequest(JSONObject.parseObject(cacheDataList.get(0).getContent()));
                 showCacheData = true;
@@ -538,7 +535,6 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 playControllerView.setPlayUrl(mLocalVideoUrl);
             }
 
-            setPagerState(0);
             collectImgUrl = data.getString("img_url");
             realSrcId = data.getString("resource_id");
         }else{
@@ -556,20 +552,39 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             collectPrice = ""+price;
             buyView.setBuyPrice(price);
             if(!showCacheData){
-                String detail = data.getString("content");
+                String detail = data.getString("preview_content");
                 setContentDetail(detail);
             }
 
-            setPagerState(0);
         }
-
+        //是否免费0：否，1：是
+        int isFree = data.getIntValue("is_free ");
+        //0-正常, 1-隐藏, 2-删除
+        int detailState = data.getIntValue("state");
+        //0-上架,1-下架
+        int saleStatus = data.getIntValue("sale_status");
+        //是否停售 0:否，1：是
+        int isStopSell = data.getIntValue("is_stop_sell");
+        if(hasBuy){
+            if(isFree == 1){
+                if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
+                    setPagerState(2);
+                }
+            }else {
+                setPagerState(0);
+            }
+        }else{
+            if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
+                setPagerState(2);
+            }else {
+                setPagerState(0);
+            }
+        }
     }
 
 
     private void setContentDetail(String detail){
         videoContentWebView.loadDataWithBaseURL(null, NetworkState.getNewContent(detail), "text/html", "UFT-8", null);
-        CookieSyncManager.createInstance(this);
-        CookieSyncManager.getInstance().sync();
     }
 
     /**

@@ -14,23 +14,22 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-
-import java.lang.ref.WeakReference;
-import java.util.List;
-
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
-import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
-import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnCancelListener;
 import com.xiaoe.shop.wxb.interfaces.OnConfirmListener;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
 
 
 /**
@@ -102,13 +101,13 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCancel
         super.onCreate(savedInstanceState);
 
         // 初始化数据库
-        SQLiteUtil.init(getActivity().getApplicationContext(), new LoginSQLiteCallback());
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(getActivity().getApplicationContext(), new LoginSQLiteCallback());
         // 如果表不存在，就去创建
-        if (!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
-            SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
+        if (!sqLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)) {
+            sqLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
         }
 
-        userList = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        userList = sqLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
 
         if (userList.size() == 1) {
             user = userList.get(0);
@@ -267,8 +266,8 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCancel
     @Override
     public void onClickConfirm(View view, int tag) {
         if(tag == DIALOG_TAG_LOADING){
-            SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
-            SQLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+            SQLiteUtil sqLiteUtil = SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
+            sqLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
             CommonUserInfo.getInstance().clearUserInfo();
             CommonUserInfo.setApiToken("");
             CommonUserInfo.setIsSuperVip(false);

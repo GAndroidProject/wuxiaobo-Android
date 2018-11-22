@@ -7,7 +7,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
-import com.xiaoe.common.entitys.ColumnDirectoryEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.common.entitys.DownloadTableInfo;
@@ -35,6 +34,8 @@ public class DownloadManager implements DownloadListner {
     private List<DownloadTask> mAwaitDownloadTasks;//等待下载任务
     private HashMap<String, DownloadTableInfo> allDownloadList;//全部下载列表
     private Map<String,OnDownloadListener> onDownloadListenerList;
+    private SQLiteUtil relaSQLiteUtil;
+    private SQLiteUtil resSQLiteUtil;
     /**
      * ConcurrentHashMap可以高并发操作，线程安全，高效
      */
@@ -51,6 +52,8 @@ public class DownloadManager implements DownloadListner {
         onDownloadListenerList = new HashMap<String, OnDownloadListener>();
         allDownloadList = new HashMap<String, DownloadTableInfo>();
 //        getInstanceDownloadEvent();
+        relaSQLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
+        resSQLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
         createSaveProgressThread();
     }
 
@@ -223,13 +226,11 @@ public class DownloadManager implements DownloadListner {
         if(file.exists() && file.isFile()){
             file.delete();
         }
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
         String delRelaSQL = "DELETE FROM "+RelationTable.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
-        SQLiteUtil.execSQL(delRelaSQL);
+        relaSQLiteUtil.execSQL(delRelaSQL);
 
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
         String delResSQL = "DELETE FROM "+DownloadResourceTable.TABLE_NAME+" where app_id='"+download.getAppId()+"' and resource_id='"+download.getResourceId()+"'";
-        SQLiteUtil.execSQL(delResSQL);
+        resSQLiteUtil.execSQL(delResSQL);
         if(allDownloadList != null){
             allDownloadList.remove(download.getResourceId());
         }
@@ -252,13 +253,11 @@ public class DownloadManager implements DownloadListner {
         deleteDirWihtFile(file);
 
 
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
         String delRelaSQL = "DELETE FROM "+RelationTable.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
-        SQLiteUtil.execSQL(delRelaSQL);
+        relaSQLiteUtil.execSQL(delRelaSQL);
 
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
         String delResSQL = "DELETE FROM "+DownloadResourceTable.TABLE_NAME+" where app_id='"+download.getAppId()+"' and resource_id='"+download.getResourceId()+"'";
-        SQLiteUtil.execSQL(delResSQL);
+        resSQLiteUtil.execSQL(delResSQL);
         if(allDownloadList != null){
             allDownloadList.remove(download.getResourceId());
         }
@@ -275,73 +274,7 @@ public class DownloadManager implements DownloadListner {
         }
         dir.delete();// 删除目录本身
     }
-    /**
-     * 添加下载任务
-     */
-    public void addLittleColumn(ColumnDirectoryEntity column, String appId){
-//        SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
-//        if(!SQLiteUtil.tabIsExist(DownloadResourceTable.TABLE_NAME)){
-//            SQLiteUtil.execSQL(DownloadResourceTable.CREATE_TABLE_SQL);
-//        }
-//        String querySQL ="select * from "+DownloadResourceTable.TABLE_NAME+" where resource_id=? limit 1";
-//        if(littleColumn != null){
-//            //小专栏
-//            List<DownloadResourceTableInfo> tableInfos = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, querySQL, new String[]{littleColumn.getResource_id()});
-//            //数据不存在，则插入一条数据
-//            if(tableInfos == null || tableInfos.size() <= 0){
-//                DownloadResourceTableInfo table = new DownloadResourceTableInfo();
-//                table.setAppId(littleColumn.getApp_id());
-//                table.setResourceId(littleColumn.getResource_id());
-//                table.setTitle(littleColumn.getTitle());
-//                table.setResourceType(3);
-//                table.setImgUrl(littleColumn.getImg_url());
-//                table.setDesc("");
-//                SQLiteUtil.insert(DownloadResourceTable.TABLE_NAME, table);
-//            }
-//        }
 
-        //专栏
-        if(column != null){
-            String queryResourceSQL ="select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
-            List<DownloadResourceTableInfo> dbResourceList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResourceSQL, new String[]{appId, column.getResource_id()});
-            if(dbResourceList == null || dbResourceList.size() <= 0){
-                //没有对应的资源，则插入一条数据
-                DownloadResourceTableInfo resourceInfo = new DownloadResourceTableInfo();
-                resourceInfo.setAppId(appId);
-                resourceInfo.setResourceId(column.getResource_id());
-                resourceInfo.setTitle(column.getTitle());
-                resourceInfo.setDesc("");
-                resourceInfo.setImgUrl(column.getImg_url());
-                resourceInfo.setResourceType(3);
-                resourceInfo.setDepth(1);
-                resourceInfo.setCreateAt(DateFormat.currentTime());
-                resourceInfo.setUpdateAt(DateFormat.currentTime());
-                SQLiteUtil.insert(DownloadResourceTable.TABLE_NAME, resourceInfo);
-            }
-        }
-    }
-
-    public void addBigColumn(ColumnDirectoryEntity topic, String appId){
-        //大专栏
-        if(topic != null){
-            String queryResourceSQL ="select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
-            List<DownloadResourceTableInfo> dbResourceList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResourceSQL, new String[]{appId, topic.getResource_id()});
-            if(dbResourceList == null || dbResourceList.size() <= 0){
-                //没有对应的资源，则插入一条数据
-                DownloadResourceTableInfo resourceInfo = new DownloadResourceTableInfo();
-                resourceInfo.setAppId(appId);
-                resourceInfo.setResourceId(topic.getResource_id());
-                resourceInfo.setTitle(topic.getTitle());
-                resourceInfo.setDesc("");
-                resourceInfo.setImgUrl(topic.getImg_url());
-                resourceInfo.setResourceType(4);
-                resourceInfo.setDepth(2);
-                resourceInfo.setCreateAt(DateFormat.currentTime());
-                resourceInfo.setUpdateAt(DateFormat.currentTime());
-                SQLiteUtil.insert(DownloadResourceTable.TABLE_NAME, resourceInfo);
-            }
-        }
-    }
 
     public void addDownload(String tId, String cId, ColumnSecondDirectoryEntity resource){
         String topicId = TextUtils.isEmpty(cId) ? "" : tId;
@@ -387,12 +320,11 @@ public class DownloadManager implements DownloadListner {
             allDownloadList.put(resource.getResource_id(), downloadTableInfo);
         }
         //关系表
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new RelationTable());
-        if(!SQLiteUtil.tabIsExist(RelationTable.TABLE_NAME)){
-            SQLiteUtil.execSQL(RelationTable.CREATE_TABLE_SQL);
+        if(!relaSQLiteUtil.tabIsExist(RelationTable.TABLE_NAME)){
+            relaSQLiteUtil.execSQL(RelationTable.CREATE_TABLE_SQL);
         }
         String queryRelationSQL ="select * from "+RelationTable.TABLE_NAME+" where app_id=? and id=? and resource_id=? limit 1";
-        List<RelationTableInfo> dbRelation = SQLiteUtil.query(RelationTable.TABLE_NAME, queryRelationSQL, new String[]{appId, md5Code, resourceId});
+        List<RelationTableInfo> dbRelation = relaSQLiteUtil.query(RelationTable.TABLE_NAME, queryRelationSQL, new String[]{appId, md5Code, resourceId});
         if(dbRelation == null || dbRelation.size() <= 0){
             //关系不存在，则添加插入一条关系
             RelationTableInfo relationTableInfo = new RelationTableInfo();
@@ -409,16 +341,15 @@ public class DownloadManager implements DownloadListner {
             if(jsonObject.size() > 0){
                 relationTableInfo.setPath(jsonObject.toJSONString());
             }
-            SQLiteUtil.insert(RelationTable.TABLE_NAME, relationTableInfo);
+            relaSQLiteUtil.insert(RelationTable.TABLE_NAME, relationTableInfo);
         }
 
         //资源表
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new DownloadResourceTable());
-        if(!SQLiteUtil.tabIsExist(DownloadResourceTable.TABLE_NAME)){
-            SQLiteUtil.execSQL(DownloadResourceTable.CREATE_TABLE_SQL);
+        if(!resSQLiteUtil.tabIsExist(DownloadResourceTable.TABLE_NAME)){
+            resSQLiteUtil.execSQL(DownloadResourceTable.CREATE_TABLE_SQL);
         }
         String queryResourceSQL ="select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=? limit 1";
-        List<DownloadResourceTableInfo> dbResourceList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResourceSQL, new String[]{appId, resourceId});
+        List<DownloadResourceTableInfo> dbResourceList = resSQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResourceSQL, new String[]{appId, resourceId});
         if(dbResourceList == null || dbResourceList.size() <= 0){
             //没有对应的资源，则插入一条数据
             DownloadResourceTableInfo resourceInfo = new DownloadResourceTableInfo();
@@ -435,7 +366,7 @@ public class DownloadManager implements DownloadListner {
             resourceInfo.setDepth(0);
             resourceInfo.setCreateAt(DateFormat.currentTime());
             resourceInfo.setUpdateAt(DateFormat.currentTime());
-            SQLiteUtil.insert(DownloadResourceTable.TABLE_NAME, resourceInfo);
+            resSQLiteUtil.insert(DownloadResourceTable.TABLE_NAME, resourceInfo);
         }
 
     }
@@ -662,7 +593,7 @@ public class DownloadManager implements DownloadListner {
     }
     private DownloadResourceTableInfo getSingleResource(DownloadTableInfo dbItem){
         String queryResSQL = "select * from "+DownloadResourceTable.TABLE_NAME+" where app_id=? and resource_id=?";
-        List<DownloadResourceTableInfo> singleList = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResSQL, new String[]{dbItem.getAppId(), dbItem.getResourceId()});
+        List<DownloadResourceTableInfo> singleList = resSQLiteUtil.query(DownloadResourceTable.TABLE_NAME, queryResSQL, new String[]{dbItem.getAppId(), dbItem.getResourceId()});
         DownloadResourceTableInfo single = null;
         if(singleList != null && singleList.size() > 0){
             single = singleList.get(0);

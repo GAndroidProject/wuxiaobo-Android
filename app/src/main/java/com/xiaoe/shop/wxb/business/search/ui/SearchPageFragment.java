@@ -15,12 +15,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import com.xiaoe.common.db.SQLiteUtil;
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -30,13 +25,18 @@ import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
 import com.xiaoe.common.entitys.SearchHistory;
 import com.xiaoe.common.interfaces.OnItemClickWithPosListener;
-import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.decorate.DecorateRecyclerAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.search.presenter.HistoryRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.search.presenter.RecommendRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.search.presenter.SearchSQLiteCallback;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class SearchPageFragment extends BaseFragment implements OnItemClickWithPosListener {
 
@@ -165,7 +165,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                 @Override
                 public void onClick(View v) {
                     // 删除数据库中全部数据
-                    SQLiteUtil.execSQL("delete from " + SearchSQLiteCallback.TABLE_NAME_CONTENT);
+                    SQLiteUtil.init(mContext, new SearchSQLiteCallback()).execSQL("delete from " + SearchSQLiteCallback.TABLE_NAME_CONTENT);
                     Toast.makeText(searchActivity, "删除成功", Toast.LENGTH_SHORT).show();
                     historyContentView.setVisibility(View.GONE);
                 }
@@ -349,7 +349,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             if (!searchActivity.hasData(searchContent)) { // 点击推荐，查库没有后需要入库
                 String currentTime = searchActivity.obtainCurrentTime();
                 SearchHistory searchHistory = new SearchHistory(searchContent, currentTime);
-                SQLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
+                SQLiteUtil.init(mContext, new SearchSQLiteCallback()).insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
 
                 // 入库后集合需要改变
                 if (historyData != null) {
@@ -360,7 +360,9 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                         historyData.add(0, searchHistory);
                     }
                 }
-                historyAdapter.notifyDataSetChanged();
+                if(historyAdapter != null){
+                    historyAdapter.notifyDataSetChanged();
+                }
             }
         }
     }

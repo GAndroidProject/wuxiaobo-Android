@@ -22,16 +22,20 @@ public class CommonUserInfo {
     private static CommonUserInfo commonUserInfo = null;
     private static LoginUser loginUser = null;
     private boolean hasUnreadMsg;
+    private static SQLiteUtil loginSQLiteUtil;
 
+    private CommonUserInfo(){
+        loginSQLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new LoginSQLiteCallback());
+        if(!loginSQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)){
+            loginSQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
+        }
+    }
     public static CommonUserInfo getInstance(){
         if(commonUserInfo == null){
             synchronized (CommonUserInfo.class){
                 if(commonUserInfo == null){
                     commonUserInfo = new CommonUserInfo();
-                    SQLiteUtil.init(XiaoeApplication.getmContext(), new LoginSQLiteCallback());
-                    if(!SQLiteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)){
-                        SQLiteUtil.execSQL(LoginSQLiteCallback.TABLE_SCHEMA_USER);
-                    }
+
                 }
             }
         }
@@ -45,7 +49,7 @@ public class CommonUserInfo {
         commonUserInfo = null;
     }
     private static void setUserInfo(){
-        List<LoginUser> list = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        List<LoginUser> list = loginSQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
         if(list != null && list.size() > 0){
             loginUser = list.get(0);
         }

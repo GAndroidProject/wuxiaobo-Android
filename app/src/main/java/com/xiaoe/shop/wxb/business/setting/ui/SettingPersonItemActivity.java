@@ -17,22 +17,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.xiaoe.common.app.Global;
-import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.SettingPersonItemRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
-import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SettingPersonItemActivity extends XiaoeActivity {
 
@@ -62,9 +62,8 @@ public class SettingPersonItemActivity extends XiaoeActivity {
         setContentView(R.layout.activity_setting_person_item);
         ButterKnife.bind(this);
 
-        SQLiteUtil.init(this, new LoginSQLiteCallback());
 
-        List<LoginUser> loginMsg = SQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+        List<LoginUser> loginMsg = SQLiteUtil.init(this, new LoginSQLiteCallback()).query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
         apiToken = loginMsg.get(0).getApi_token();
 
         intent = getIntent();

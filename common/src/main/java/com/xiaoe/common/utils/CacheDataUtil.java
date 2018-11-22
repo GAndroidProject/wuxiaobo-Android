@@ -50,7 +50,7 @@ public class CacheDataUtil implements ISQLiteCallBack {
         values.put("img_url", cacheData.getImgUrl());
         values.put("img_url_compress", cacheData.getImgUrlCompress());
         values.put("content", cacheData.getContent());
-        values.put("resource_list", cacheData.getAppId());
+        values.put("resource_list", cacheData.getResourceList());
     }
 
     @Override

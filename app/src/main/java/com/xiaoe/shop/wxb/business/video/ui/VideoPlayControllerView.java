@@ -15,18 +15,17 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.business.video.presenter.VideoPlayer;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class VideoPlayControllerView extends FrameLayout implements View.OnClickListener,SeekBar.OnSeekBarChangeListener, MediaPlayer.OnPreparedListener {
     private static final String TAG = "VideoPlayControllerView";
@@ -184,6 +183,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     public void pause(){
         if(mVideoPlayer != null && mVideoPlayer.isPlaying()){
             mVideoPlayer.play();
+            setPlayState(VideoPlayConstant.VIDEO_STATE_PAUSE);
         }
     }
 

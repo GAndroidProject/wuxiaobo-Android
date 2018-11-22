@@ -74,9 +74,10 @@ public class LaunchActivity extends XiaoeActivity {
 //                DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
                 downloadSQLiteUtil.execSQL(DownloadFileConfig.CREATE_TABLE_SQL);
             }
-            if(!SQLiteUtil.tabIsExist(CacheDataUtil.TABLE_NAME)){
+            SQLiteUtil sqLiteUtil = SQLiteUtil.init(this, new CacheDataUtil());
+            if(!sqLiteUtil.tabIsExist(CacheDataUtil.TABLE_NAME)){
                 //如果缓存表不存在，则创建
-                SQLiteUtil.execSQL(CacheDataUtil.CREATE_TABLES_SQL);
+                sqLiteUtil.execSQL(CacheDataUtil.CREATE_TABLES_SQL);
             }
         });
     }

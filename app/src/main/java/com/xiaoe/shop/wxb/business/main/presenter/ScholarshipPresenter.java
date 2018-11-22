@@ -2,11 +2,9 @@ package com.xiaoe.shop.wxb.business.main.presenter;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
-import java.util.HashMap;
-
-import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.entitys.ScholarshipEntity;
+import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
@@ -18,6 +16,8 @@ import com.xiaoe.network.requests.ScholarshipRequest;
 import com.xiaoe.network.requests.ScholarshipSubmitRequest;
 import com.xiaoe.network.requests.ScholarshipTaskListRequest;
 import com.xiaoe.network.requests.ScholarshipTaskStateRequest;
+
+import java.util.HashMap;
 
 public class ScholarshipPresenter implements IBizCallback {
 
@@ -76,7 +76,8 @@ public class ScholarshipPresenter implements IBizCallback {
         ScholarshipRequest scholarshipRequest = new ScholarshipRequest(this);
 
         scholarshipRequest.addRequestParam("task_id", taskId);
-
+        scholarshipRequest.setNeedCache(true);
+        scholarshipRequest.setCacheKey(taskId+"_ranking");
         NetworkEngine.getInstance().sendRequest(scholarshipRequest);
     }
 
@@ -85,6 +86,9 @@ public class ScholarshipPresenter implements IBizCallback {
         ScholarshipTaskStateRequest scholarshipTaskStateRequest = new ScholarshipTaskStateRequest(this);
 
         scholarshipTaskStateRequest.addRequestParam("task_id", taskId);
+
+        scholarshipTaskStateRequest.setNeedCache(true);
+        scholarshipTaskStateRequest.setCacheKey(taskId+"_state");
 
         NetworkEngine.getInstance().sendRequest(scholarshipTaskStateRequest);
     }
@@ -132,6 +136,8 @@ public class ScholarshipPresenter implements IBizCallback {
                 continue;
             }
             String taskId = itemJson.getString("task_id");
+            SharedPreferencesUtil.getInstance(XiaoeApplication.getmContext(), SharedPreferencesUtil.FILE_NAME);
+            SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_SCHOLARSHIP_ID, taskId);
             ScholarshipEntity.getInstance().setTaskId(taskId);
             if (needInitData) { // 需要初始化信息（奖学金去瓜分那个页面）
                 requestRange(taskId);

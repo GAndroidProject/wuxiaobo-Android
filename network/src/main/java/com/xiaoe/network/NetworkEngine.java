@@ -3,7 +3,6 @@ package com.xiaoe.network;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
@@ -57,6 +56,7 @@ public class NetworkEngine {
     public static final String GET_HISTORY_MESSAGE_URL = "http://134.175.39.17:16688/api/";
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private final SQLiteUtil cacheSQLiteUtil;
 
     public enum HttpMethod {
         /**
@@ -94,6 +94,7 @@ public class NetworkEngine {
                 .connectTimeout(8, TimeUnit.SECONDS)
                 .writeTimeout(8, TimeUnit.SECONDS)
                 .build();
+        cacheSQLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
     }
 
     public void sendRequest(final IRequest iRequest) {
@@ -210,19 +211,18 @@ public class NetworkEngine {
     }
 
     private void saveCacheData(String cacheKey, String data, String dataList){
-        SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
-        if(!SQLiteUtil.tabIsExist(CacheDataUtil.TABLE_NAME)){
-            SQLiteUtil.execSQL(CacheDataUtil.CREATE_TABLES_SQL);
+        if(!cacheSQLiteUtil.tabIsExist(CacheDataUtil.TABLE_NAME)){
+            cacheSQLiteUtil.execSQL(CacheDataUtil.CREATE_TABLES_SQL);
         }
         String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+cacheKey+"'";
-        List<CacheData> cacheDataList = SQLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
+        List<CacheData> cacheDataList = cacheSQLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
         if(cacheDataList == null || cacheDataList.size() <= 0){
             CacheData cacheData = new CacheData();
             cacheData.setAppId(Constants.getAppId());
             cacheData.setResourceId(cacheKey);
             cacheData.setContent(data);
             cacheData.setResourceList(dataList);
-            SQLiteUtil.insert(CacheDataUtil.TABLE_NAME, cacheData);
+            cacheSQLiteUtil.insert(CacheDataUtil.TABLE_NAME, cacheData);
         }else{
             CacheData cacheData = cacheDataList.get(0);
             if(!TextUtils.isEmpty(data)){
@@ -232,7 +232,7 @@ public class NetworkEngine {
                 cacheData.setResourceList(dataList);
             }
             String whereVal = "app_id=? and resource_id=?";
-            SQLiteUtil.update(CacheDataUtil.TABLE_NAME, cacheData, whereVal, new String[]{Constants.getAppId(), cacheKey});
+            cacheSQLiteUtil.update(CacheDataUtil.TABLE_NAME, cacheData, whereVal, new String[]{Constants.getAppId(), cacheKey});
         }
     }
 

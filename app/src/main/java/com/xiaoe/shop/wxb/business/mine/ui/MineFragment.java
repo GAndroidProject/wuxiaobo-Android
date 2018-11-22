@@ -104,6 +104,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 
     MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter; // 金钱适配器
     MineLearningListAdapter learningListAdapter; // 学习记录适配器
+    private boolean showDataByDB = false;
     SuperVipPresenter superVipPresenter;
 
     @Nullable
@@ -163,6 +164,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 }
             });
         }
+        //先初始化缓存中的数据
+        setDataByDB();
     }
 
     @Override
@@ -739,15 +742,88 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void setDataByDB(){
-        SQLiteUtil.init(getContext(), new CacheDataUtil());
+
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(getContext(), new CacheDataUtil());
         //积分
         String integralSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+Constants.INTEGRAL_ASSET_TYPE+"'";
-        List<CacheData> integralCacheDataList =  SQLiteUtil.query(CacheDataUtil.TABLE_NAME, integralSQL, null);
+        List<CacheData> integralCacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, integralSQL, null);
+        if(integralCacheDataList != null && integralCacheDataList.size() > 0){
+            String content = integralCacheDataList.get(0).getContent();
+            JSONObject data = (JSONObject) JSONObject.parseObject(content).get("data");
+            int integral = data.getInteger("balance");
+            if (item_2 == null) {
+                item_2 = new MineMoneyItemInfo();
+                item_2.setItemTitle(String.valueOf(integral));
+                item_2.setItemDesc("积分");
+            } else {
+                item_2.setItemTitle(String.valueOf(integral));
+            }
+            isIntegralFinish = true;
+            initPageData();
+        }
         //奖学金
         String scholarshipSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+Constants.SCHOLARSHIP_ASSET_TYPE+"'";
-        List<CacheData> scholarshipCacheDataList =  SQLiteUtil.query(CacheDataUtil.TABLE_NAME, scholarshipSQL, null);
+        List<CacheData> scholarshipCacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, scholarshipSQL, null);
+        if(scholarshipCacheDataList != null && scholarshipCacheDataList.size() > 0){
+            String content = scholarshipCacheDataList.get(0).getContent();
+            JSONObject data = (JSONObject) JSONObject.parseObject(content).get("data");
+            int scholarship = data.getInteger("balance");
+            balance = "￥" + String.format("%.2f", scholarship / 100f);
+            if (item_1 == null) {
+                item_1 = new MineMoneyItemInfo();
+                item_1.setItemTitle(balance);
+                item_1.setItemDesc("奖学金");
+            } else {
+                item_1.setItemTitle(balance);
+            }
+            isScholarshipFinish = true;
+            initPageData();
+        }
         //正在学习
         String learningSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='learning'";
-        List<CacheData> learningCacheDataList =  SQLiteUtil.query(CacheDataUtil.TABLE_NAME, learningSQL, null);
+        List<CacheData> learningCacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, learningSQL, null);
+        if(learningCacheDataList != null && learningCacheDataList.size() > 0){
+            JSONObject data;
+            try {
+                String content = learningCacheDataList.get(0).getContent();
+                data = (JSONObject) JSONObject.parseObject(content).get("data");
+            } catch (Exception e) {
+                e.printStackTrace();
+                // 学习记录为空
+                mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+                mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
+                mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+                isMineLearningFinish = true;
+                return;
+            }
+            JSONArray goodsList = (JSONArray) data.get("goods_list");
+            if (goodsList == null || goodsList.size() == 0) {
+                return;
+            }
+            JSONObject listItem = (JSONObject) goodsList.get(0);
+            if (listItem == null) {
+                mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+                mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
+                mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+                return;
+            }
+            mineLearningId = listItem.getString("resource_id");
+            mineLearningType = convertInt2Str(listItem.getInteger("resource_type"));
+            JSONObject item = (JSONObject) listItem.get("info");
+            mineLearningWrapView.setLearningIconURI(item.getString("img_url"));
+            mineLearningWrapView.setLearningTitle(item.getString("title"));
+            int updateCount = item.getInteger("periodical_count") == null ? 0 : item.getInteger("periodical_count");
+            if (updateCount > 0) {
+                mineLearningWrapView.setLearningUpdate("已更新至" + updateCount + "期");
+            }
+            isMineLearningFinish = true;
+            initPageData();
+            mineRefresh.finishRefresh();
+        }
+        if(integralCacheDataList != null && integralCacheDataList.size() > 0
+                && scholarshipCacheDataList != null && scholarshipCacheDataList.size() > 0
+                && learningCacheDataList != null && learningCacheDataList.size() > 0){
+            showDataByDB = true;
+        }
     }
 }

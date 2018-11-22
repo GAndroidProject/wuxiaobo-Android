@@ -27,7 +27,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.tencent.smtt.sdk.CookieSyncManager;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
@@ -375,8 +374,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
     private void setContentDetail(String detail){
         detailContent.loadDataWithBaseURL(null, NetworkState.getNewContent(detail), "text/html", "UFT-8", null);
-        CookieSyncManager.createInstance(this);
-        CookieSyncManager.getInstance().sync();
     }
     public void setPagerState(boolean error){
         if(error){

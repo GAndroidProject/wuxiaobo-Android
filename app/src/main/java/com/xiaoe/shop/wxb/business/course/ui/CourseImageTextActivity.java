@@ -20,10 +20,14 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.tencent.smtt.sdk.CookieSyncManager;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Constants;
+import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
@@ -39,7 +43,6 @@ import com.xiaoe.shop.wxb.business.course.presenter.CourseImageTextPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
-import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
@@ -48,6 +51,7 @@ import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CommonTitleView;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
+import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -101,8 +105,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
     @BindView(R.id.image_text_buy)
     CommonBuyView itBuy;
 
-//    @BindView(R.id.image_text_loading)
-//    StatusPagerView itLoading;
+    @BindView(R.id.image_text_loading)
+    StatusPagerView itLoading;
 
     // 图文图片的链接
     String imgUrl;
@@ -166,7 +170,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
                 JumpDetail.jumpLogin(CourseImageTextActivity.this, true);
             });
         }
-
+        setPagerState(-1);
         initTitle();
         initData();
         initViews();
@@ -192,7 +196,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
         // 发送购买前网络请求判断是否已经购买
         courseImageTextPresenter = new CourseImageTextPresenter(this);
         collectionUtils = new CollectionUtils(this);
-//        courseImageTextPresenter.requestBeforeBuy(resourceId, resourceType);
+        setDataByDB();
         courseImageTextPresenter.requestITDetail(resourceId, Integer.parseInt(resourceType));
         // 请求检查该商品是否已经被收藏
         collectionUtils.requestCheckCollection(resourceId, resourceType);
@@ -368,12 +372,16 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
                     JSONObject data = (JSONObject) result.get("data");
                     initPageData(data);
                     itRefresh.finishRefresh();
-                } else if (code == NetworkCodes.CODE_GOODS_GROUPS_DELETE) {
+                } else if (code == NetworkCodes.CODE_GOODS_GROUPS_DELETE || code == NetworkCodes.CODE_GOODS_DELETE) {
                     Log.d(TAG, "onMainThreadResponse: 商品分组已被删除");
                     itRefresh.finishRefresh();
+                    setPagerState(2);
                 } else if (code == NetworkCodes.CODE_GOODS_NOT_FIND) {
                     Log.d(TAG, "onMainThreadResponse: 商品不存在");
                     itRefresh.finishRefresh();
+                    setPagerState(1);
+                }else{
+                    setPagerState(1);
                 }
             }
         } else {
@@ -406,9 +414,6 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
     private void initData(JSONObject data) {
         realSrcId = data.getString("resource_id");
         SetImageUriUtil.setImgURI(itBg, imgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 250));
-        // 没有就那预览的内容
-        String orgContent = data.getString("content") == null ? data.getString("preview_content") : data.getString("content");
-        setOrgContent(orgContent);
         // 标题
         String title = data.getString("title");
         // 订阅量
@@ -430,10 +435,15 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
         }
         itTitle.setText(title);
         if (!hasBuy) { // 没买
+            // 没有就那预览的内容
+            String orgContent = data.getString("preview_content");
+            setOrgContent(orgContent);
             itBuy.setVisibility(View.VISIBLE);
             itBuy.setBuyBtnText("购买￥" + price);
         } else {
             itBuy.setVisibility(View.GONE);
+            String orgContent = data.getString("content");
+            setOrgContent(orgContent);
         }
 
         itToolbar.setTitleContentText(title);
@@ -447,6 +457,30 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
         // 购买前初始化完成，去掉 loading
 //      itLoading.setVisibility(View.GONE);
         itDescImg.setClickable(true);
+
+        //是否免费0：否，1：是
+        int isFree = data.getIntValue("is_free ");
+        //0-正常, 1-隐藏, 2-删除
+        int detailState = data.getIntValue("state");
+        //0-上架,1-下架
+        int saleStatus = data.getIntValue("sale_status");
+        //是否停售 0:否，1：是
+        int isStopSell = data.getIntValue("is_stop_sell");
+        if(hasBuy){
+            if(isFree == 1){
+                if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
+                    setPagerState(2);
+                }
+            }else {
+                setPagerState(0);
+            }
+        }else{
+            if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
+                setPagerState(2);
+            }else {
+                setPagerState(0);
+            }
+        }
     }
 
     // 初始化富文本数据
@@ -456,8 +490,6 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
             return;
         }
         itOrgContent.loadDataWithBaseURL(null, NetworkState.getNewContent(orgContent), "text/html", "UFT-8", null);
-        CookieSyncManager.createInstance(this);
-        CookieSyncManager.getInstance().sync();
     }
 
     // 初始化收藏信息
@@ -504,5 +536,45 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
             courseImageTextPresenter = new CourseImageTextPresenter(this);
         }
         courseImageTextPresenter.requestITDetail(resourceId, Integer.parseInt(resourceType));
+    }
+
+    private void setDataByDB(){
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
+        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+resourceId+"'";
+        List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
+        if(cacheDataList != null && cacheDataList.size() > 0){
+            JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent()).getJSONObject("data");
+            initPageData(data);
+        }
+    }
+
+    /**
+     *
+     * @param code 0-正常的,1-请求失败,2-课程下架,-1： 加载，3004：商品已删除
+     */
+    private void setPagerState(int code) {
+        if(code == 0){
+            itLoading.setVisibility(View.GONE);
+            itLoading.setLoadingState(View.GONE);
+            itLoading.setHintStateVisibility(View.GONE);
+        }else if(code == 1){
+            itLoading.setVisibility(View.VISIBLE);
+            itLoading.setLoadingState(View.GONE);
+            itLoading.setStateImage(StatusPagerView.DETAIL_NONE);
+            itLoading.setStateText(getString(R.string.request_fail));
+            itLoading.setHintStateVisibility(View.VISIBLE);
+        }else if(code == 2 || code == 3004){
+            itLoading.setVisibility(View.VISIBLE);
+            itLoading.setLoadingState(View.GONE);
+            itLoading.stateImageWH(Dp2Px2SpUtil.dp2px(this, 200), Dp2Px2SpUtil.dp2px(this, 108));
+            itLoading.setStateImage(R.mipmap.course_off);
+            itLoading.setStateText(getString(R.string.resource_sold_out));
+            itLoading.setHintStateVisibility(View.VISIBLE);
+        }
+        else if(code == -1){
+            itLoading.setVisibility(View.VISIBLE);
+            itLoading.setLoadingState(View.VISIBLE);
+            itLoading.setHintStateVisibility(View.GONE);
+        }
     }
 }

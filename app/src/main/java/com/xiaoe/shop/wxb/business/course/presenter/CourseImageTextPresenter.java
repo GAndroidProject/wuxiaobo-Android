@@ -1,6 +1,5 @@
 package com.xiaoe.shop.wxb.business.course.presenter;
 
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
@@ -48,6 +47,8 @@ public class CourseImageTextPresenter implements IBizCallback {
 
         courseITDetailRequest.addDataParam("goods_id", resourceId);
         courseITDetailRequest.addDataParam("goods_type", resourceType);
+        courseITDetailRequest.setNeedCache(true);
+        courseITDetailRequest.setCacheKey(resourceId);
 
         NetworkEngine.getInstance().sendRequest(courseITDetailRequest);
     }

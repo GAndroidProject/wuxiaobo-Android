@@ -17,17 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
+import com.xiaoe.common.db.LoginSQLiteCallback;
+import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.CacheManagerUtil;
-import com.xiaoe.common.db.SQLiteUtil;
-import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.requests.GetPushStateRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.LoginCodeVerifyRequest;
 import com.xiaoe.network.requests.LoginNewCodeVerifyRequest;
@@ -37,11 +33,13 @@ import com.xiaoe.network.requests.SetPushStateRequest;
 import com.xiaoe.network.requests.UpdatePhoneRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
-import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.login.LoginPresenter;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SettingAccountActivity extends XiaoeActivity {
 
@@ -384,7 +382,7 @@ public class SettingAccountActivity extends XiaoeActivity {
         LoginUser userInfo = getLoginUserList().get(0);
         userInfo.setPhone(newPhone);
 
-        SQLiteUtil.update(LoginSQLiteCallback.TABLE_NAME_USER, userInfo, "user_id = ?", new String[]{ userInfo.getUserId() });
+        SQLiteUtil.init(this, new LoginSQLiteCallback()).update(LoginSQLiteCallback.TABLE_NAME_USER, userInfo, "user_id = ?", new String[]{ userInfo.getUserId() });
 
         // TODO: 更新 recyclerView
     }
