@@ -38,6 +38,7 @@ import com.xiaoe.common.entitys.ShufflingItem;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.NetworkStateResult;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.PageFragmentRequest;
@@ -50,6 +51,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
@@ -172,8 +174,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             return;
         }
         super.onMainThreadResponse(iRequest, success, entity);
+        JSONObject result = (JSONObject) entity;
         if (success) { // 请求成功
-            JSONObject result = (JSONObject) entity;
             int code = result.getInteger("code");
             if (iRequest instanceof PageFragmentRequest) {
                 if (code == NetworkCodes.CODE_SUCCEED) {
@@ -210,7 +212,12 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             }
         } else {
             microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
-            Toast.makeText(getActivity(), "网络错误", Toast.LENGTH_SHORT).show();
+//            if (result != null) {
+//                int code = result.getInteger("code");
+//                if (NetworkStateResult.ERROR_NETWORK == code) {
+//                    ToastUtils.show(mContext, mContext.getString(R.string.network_error_text));
+//                }
+//            }
         }
     }
     private void setDataByDB(){
@@ -364,6 +371,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 case DecorateEntityType.FLOW_INFO_STR:
                     initFlowInfo(itemObj);
                     break;
+                default:
+                    break;
             }
         }
     }
@@ -444,6 +453,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     componentInfo_know_group.setKnowledgeCommodityItemList(groupItems);
                     microPageList.add(componentInfo_know_group);
                 }
+                break;
+            default:
                 break;
         }
     }

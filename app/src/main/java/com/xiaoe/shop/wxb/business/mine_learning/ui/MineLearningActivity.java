@@ -203,9 +203,10 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 int code = result.getInteger("code");
                 if (NetworkStateResult.ERROR_NETWORK == code) {
                     Toast(getString(R.string.network_error_text));
+                    learningLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             }
-            onBackPressed();
+//            onBackPressed();
         }
     }
 
