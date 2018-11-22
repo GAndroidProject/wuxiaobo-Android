@@ -14,6 +14,7 @@ public class NetworkStateResult {
 
     private int code = ERROR_NETWORK;
     private String msg;
+    private String networkType;
 
     public int getCode() {
         return code;
@@ -29,5 +30,13 @@ public class NetworkStateResult {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getNetworkType() {
+        return networkType;
+    }
+
+    public void setNetworkType(String networkType) {
+        this.networkType = networkType;
     }
 }
