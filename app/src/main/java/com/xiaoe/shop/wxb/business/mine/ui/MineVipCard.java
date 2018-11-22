@@ -61,6 +61,10 @@ public class MineVipCard extends RelativeLayout {
         card_renewal.setOnClickListener(listener);
     }
 
+    public void setBtnRenewalVisibility(int visibility) {
+        card_renewal.setVisibility(visibility);
+    }
+
 //    public void setMoreEquityClickListener(OnClickListener listener) {
 //        card_equity_more.setOnClickListener(listener);
 //    }

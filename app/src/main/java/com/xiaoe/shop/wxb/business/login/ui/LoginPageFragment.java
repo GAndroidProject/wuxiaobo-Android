@@ -191,8 +191,10 @@ public class LoginPageFragment extends BaseFragment {
                 break;
             case R.layout.fragment_login_bind_phone:
                 initLoginBindPhoneFragment();
+                break;
             case R.layout.fragment_service:
                 initLoginServiceFragment();
+                break;
             default:
                 break;
         }
@@ -302,6 +304,7 @@ public class LoginPageFragment extends BaseFragment {
             }
         });
 
+        // 微信登录
         mainPhoneWeChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -771,6 +774,8 @@ public class LoginPageFragment extends BaseFragment {
     private void initLoginServiceFragment() {
         String content = FileUtils.readAssetsTextReturnStr(getActivity(), "agreement");
         TextView serviceContent = (TextView) viewWrap.findViewById(R.id.service_content);
-        serviceContent.setText(content);
+        if (serviceContent != null) {
+            serviceContent.setText(content);
+        }
     }
 }

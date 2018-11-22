@@ -290,13 +290,13 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
             learningList.setLayoutManager(layoutManager);
             decorateRecyclerAdapter = new DecorateRecyclerAdapter(this, pageList);
             learningList.setAdapter(decorateRecyclerAdapter);
-            SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
-            spacesItemDecoration.setMargin(
-                    Dp2Px2SpUtil.dp2px(this, 20),
-                    Dp2Px2SpUtil.dp2px(this, 0),
-                    Dp2Px2SpUtil.dp2px(this, 20),
-                    Dp2Px2SpUtil.dp2px(this, 0));
-            learningList.addItemDecoration(spacesItemDecoration);
+//            SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
+//            spacesItemDecoration.setMargin(
+//                    Dp2Px2SpUtil.dp2px(this, 20),
+//                    Dp2Px2SpUtil.dp2px(this, 0),
+//                    Dp2Px2SpUtil.dp2px(this, 20),
+//                    Dp2Px2SpUtil.dp2px(this, 0));
+//            learningList.addItemDecoration(spacesItemDecoration);
             hasDecorate = true;
         } else {
             decorateRecyclerAdapter.notifyDataSetChanged();

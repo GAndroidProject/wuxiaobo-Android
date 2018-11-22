@@ -24,6 +24,7 @@ import com.xiaoe.network.downloadUtil.DownloadFileConfig;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.downloadUtil.DownloadSQLiteUtil;
 import com.xiaoe.network.requests.IRequest;
+import com.xiaoe.network.requests.UnReadMsgRequest;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
@@ -130,12 +131,14 @@ public class LaunchActivity extends XiaoeActivity {
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
         if (success) {
-            JSONObject result = (JSONObject) entity;
-            int code = result.getInteger("code");
-            if (code == NetworkCodes.CODE_SUCCEED) {
-                JSONObject data = (JSONObject) result.get("data");
-                boolean hasUnread = data.getBoolean("has_unread") == null ? false : data.getBoolean("has_unread");
-                CommonUserInfo.getInstance().setHasUnreadMsg(hasUnread);
+            if (iRequest instanceof UnReadMsgRequest) {
+                JSONObject result = (JSONObject) entity;
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = (JSONObject) result.get("data");
+                    boolean hasUnread = data.getBoolean("has_unread") == null ? false : data.getBoolean("has_unread");
+                    CommonUserInfo.getInstance().setHasUnreadMsg(hasUnread);
+                }
             }
         }
     }

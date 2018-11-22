@@ -66,7 +66,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MicroPageFragment extends BaseFragment implements OnCustomScrollChangedListener, OnRefreshListener {
+public class MicroPageFragment extends BaseFragment implements OnCustomScrollChangedListener, OnRefreshListener, View.OnClickListener {
 
     private static final String TAG = "MicroPageFragment";
 
@@ -604,6 +604,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         }
         microPageScroller.setScrollChanged(this);
         microPageFresh.setOnRefreshListener(this);
+        microPageLoading.setOnClickListener(this);
         toolbarHeight = Dp2Px2SpUtil.dp2px(mContext,160);
 
         // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
@@ -762,6 +763,20 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 //            microPageList.clear();
 //            microPageAdapter.notifyDataSetChanged();
             hp.requestMicroPageData(microPageId);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.micro_page_loading:
+                if (hp == null) {
+                    hp = new PageFragmentPresenter(this);
+                }
+                hp.requestMicroPageData(microPageId);
+                microPageLoading.setVisibility(View.VISIBLE);
+                microPageLoading.setLoadingState(View.VISIBLE);
+                break;
         }
     }
 }

@@ -73,7 +73,14 @@ public class SearchActivity extends XiaoeActivity {
 
     SearchPresenter searchPresenter;
 
+    // 搜索框后面的叉
+    Drawable right;
+
     Object dataList; // 搜索结果
+    protected boolean hasDecorate; // 已经渲染
+    protected int pageIndex = 1; // 默认页码
+    protected int pageSize = 10; // 默认每页大小
+    protected String searchKeyword; // 搜索内容
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,9 +94,6 @@ public class SearchActivity extends XiaoeActivity {
         initView();
         initListener();
     }
-
-    // 搜索框后面的叉
-    Drawable right;
 
     private void initView() {
         // 先默认显示我的财富计划
@@ -163,7 +167,7 @@ public class SearchActivity extends XiaoeActivity {
 
                             // 刷新界面
                             if (((SearchPageFragment) currentFragment).historyData != null && ((SearchPageFragment) currentFragment).historyAdapter != null) {
-                                if (((SearchPageFragment) currentFragment).historyData.size() == 5) {
+                                if (((SearchPageFragment) currentFragment).historyData.size() >= 5) {
                                     ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
                                     ((SearchPageFragment) currentFragment).historyData.remove(((SearchPageFragment) currentFragment).historyData.size() - 1);
                                 } else { // 否则直接添加
@@ -233,12 +237,25 @@ public class SearchActivity extends XiaoeActivity {
         if (searchPresenter == null) {
             searchPresenter = new SearchPresenter(this);
         }
-        searchPresenter.requestSearchResult(content);
+        // searchPresenter.requestSearchResult(content);
+        searchKeyword = content;
+        searchPresenter.requestSearchResultByPage(content, pageIndex, pageSize);
     }
 
     // 替换 fragment
     protected void replaceFragment(String tag) {
         if (currentFragment != null) {
+            if (MAIN.equals(tag)) {
+                if (((SearchPageFragment) currentFragment).itemJsonList != null &&
+                    ((SearchPageFragment) currentFragment).groupJsonList != null &&
+                    ((SearchPageFragment) currentFragment).decorateRecyclerAdapter != null) {
+                    ((SearchPageFragment) currentFragment).itemJsonList.clear();
+                    ((SearchPageFragment) currentFragment).groupJsonList.clear();
+                    ((SearchPageFragment) currentFragment).decorateRecyclerAdapter.notifyDataSetChanged();
+                } else {
+                    hasDecorate = false;
+                }
+            }
             getSupportFragmentManager().beginTransaction().hide(currentFragment).commit();
         }
         currentFragment = getSupportFragmentManager().findFragmentByTag(tag);

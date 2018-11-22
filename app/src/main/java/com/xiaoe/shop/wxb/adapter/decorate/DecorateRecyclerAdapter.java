@@ -93,8 +93,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return new RecentUpdateViewHolder(view);
             case DecorateEntityType.KNOWLEDGE_LIST:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_list, null);
-                 layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), 0);
-                 view.setLayoutParams(layoutParams);
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+                view.setLayoutParams(layoutParams);
                 return new KnowledgeListViewHolder(view);
             case DecorateEntityType.KNOWLEDGE_GROUP:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group, null);
@@ -387,6 +387,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     public void onKnowledgeItemClick(View view, KnowledgeCommodityItem knowledgeCommodityItem) {
         // 知识商品分组形式
         for (RecyclerView itemRecycler : knowledgeGroupRecyclerList) {
+            Log.d(TAG, "onKnowledgeItemClick: view.parent() == itemRecycler ---> " + (view.getParent() == itemRecycler));
             if (view.getParent() == itemRecycler) {
                 switch (knowledgeCommodityItem.getSrcType()) {
                     case DecorateEntityType.IMAGE_TEXT: // 图文 -- resourceType 为 1，resourceId 需要取

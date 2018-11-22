@@ -104,6 +104,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 
     MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter; // 金钱适配器
     MineLearningListAdapter learningListAdapter; // 学习记录适配器
+    SuperVipPresenter superVipPresenter;
 
     @Nullable
     @Override
@@ -265,6 +266,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mineLearningWrapView.setLearningMoreClickListener(this);
         mineLearningWrapView.setLearningListItemClickListener(this);
         mineVipCard.setCardContainerClickListener(this);
+        mineLoading.setOnClickListener(this);
     }
 
     @Override
@@ -281,97 +283,18 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED || code == NetworkCodes.CODE_SUPER_VIP) { // 返回的 code 有 0 和 3011
                     JSONObject data = (JSONObject) result.get("data");
-                    mainActivity.initSuperVipMsg(data);
-                    if (mineVipCard != null) {
-                        mineVipCard.setDeadLine(mainActivity.expireAt);
-                    }
-                    if (mineMsgView != null) {
-                        mineMsgView.setBuyVipTag();
-                    }
+                    updateVipMsg(data);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取超级会员信息失败...");
                     mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof EarningRequest) {
                 String assetType = (String) iRequest.getFormBody().get("asset_type");
-                if (Constants.SCHOLARSHIP_ASSET_TYPE.equals(assetType)){ // 奖学金类型
-                    int code = result.getInteger("code");
-                    if (code == NetworkCodes.CODE_SUCCEED) {
-                        JSONObject data = (JSONObject) result.get("data");
-                        int scholarship = data.getInteger("balance");
-                        balance = "￥" + String.format("%.2f", scholarship / 100f);
-                        if (item_1 == null) {
-                            item_1 = new MineMoneyItemInfo();
-                            item_1.setItemTitle(balance);
-                            item_1.setItemDesc("奖学金");
-                        } else {
-                            item_1.setItemTitle(balance);
-                        }
-                        isScholarshipFinish = true;
-                        initPageData();
-                    } else {
-                        Log.d(TAG, "onMainThreadResponse: 请求奖学金总额失败");
-                    }
-                } else if (Constants.INTEGRAL_ASSET_TYPE.equals(assetType)) { // 积分类型
-                    int code = result.getInteger("code");
-                    if (code == NetworkCodes.CODE_SUCCEED) {
-                        JSONObject data = (JSONObject) result.get("data");
-                        int integral = data.getInteger("balance");
-                        if (item_2 == null) {
-                            item_2 = new MineMoneyItemInfo();
-                            item_2.setItemTitle(String.valueOf(integral));
-                            item_2.setItemDesc("积分");
-                        } else {
-                            item_2.setItemTitle(String.valueOf(integral));
-                        }
-                        isIntegralFinish = true;
-                        initPageData();
-                    } else {
-                        Log.d(TAG, "onMainThreadResponse: 请求积分总额失败");
-                        mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
-                    }
-                } else {
-                    Log.d(TAG, "onMainThreadResponse: 取账号类型失败");
-                    mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
-                }
+                updateMoney(result, assetType);
             } else if (iRequest instanceof MineLearningRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data;
-                    try {
-                        data = (JSONObject) result.get("data");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        // 学习记录为空
-                        mineLearningWrapView.setLearningContainerVisibility(View.GONE);
-                        mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-                        mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
-                        isMineLearningFinish = true;
-                        return;
-                    }
-                    JSONArray goodsList = (JSONArray) data.get("goods_list");
-                    if (goodsList == null || goodsList.size() == 0) {
-                        return;
-                    }
-                    JSONObject listItem = (JSONObject) goodsList.get(0);
-                    if (listItem == null) {
-                        mineLearningWrapView.setLearningContainerVisibility(View.GONE);
-                        mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-                        mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
-                        return;
-                    }
-                    mineLearningId = listItem.getString("resource_id");
-                    mineLearningType = convertInt2Str(listItem.getInteger("resource_type"));
-                    JSONObject item = (JSONObject) listItem.get("info");
-                    mineLearningWrapView.setLearningIconURI(item.getString("img_url"));
-                    mineLearningWrapView.setLearningTitle(item.getString("title"));
-                    int updateCount = item.getInteger("periodical_count") == null ? 0 : item.getInteger("periodical_count");
-                    if (updateCount > 0) {
-                        mineLearningWrapView.setLearningUpdate("已更新至" + updateCount + "期");
-                    }
-                    isMineLearningFinish = true;
-                    initPageData();
-                    mineRefresh.finishRefresh();
+                    updateMineLearning(result);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 请求我正在学失败");
                     mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
@@ -379,21 +302,144 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 }
             } else if (iRequest instanceof SuperVipBuyInfoRequest) {
                 int code = result.getInteger("code");
-                if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data = (JSONObject) result.get("data");
-                    String productId = data.getString("svip_id");
-                    String resourceId = data.getString("resource_id");
-                    String expireAtStart = data.getString("expire_at_start");
-                    String expireAtEnd = data.getString("expire_at_end");
-                    int price = data.getInteger("price");
-                    JumpDetail.jumpPay(getActivity(), resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg,
-                            "超级会员", price, expireAtStart + "-" + expireAtEnd);
-                } else {
-                    Log.d(TAG, "onMainThreadResponse: 超级会员购买信息请求失败");
-                    mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
-                }
+                obtainVipBuyInfo(code, result);
             }
         } else {
+            mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+        }
+    }
+
+    // 更新超级会员信息
+    private void updateVipMsg(JSONObject data) {
+        mainActivity.initSuperVipMsg(data);
+        if (mineVipCard != null) {
+            if (CommonUserInfo.isIsSuperVipAvailable()) { // 可以买超级会员
+                if (CommonUserInfo.isIsSuperVip()) {
+                    mineVipCard.setDeadLine(mainActivity.expireAt);
+                    mineVipCard.setBtnRenewalVisibility(View.VISIBLE);
+                    mineVipCard.setVisibility(View.VISIBLE);
+                    initMineMsg();
+                    initData();
+                } else {
+                    mineVipCard.setVisibility(View.GONE);
+                }
+            } else { // 不可以买超级会员
+                if (CommonUserInfo.isIsSuperVip()) {
+                    mineVipCard.setDeadLine(mainActivity.expireAt);
+                    mineVipCard.setBtnRenewalVisibility(View.GONE);
+                } else {
+                    mineVipCard.setVisibility(View.GONE);
+                }
+            }
+        }
+        if (mineMsgView != null) {
+            if (CommonUserInfo.isIsSuperVipAvailable()) {
+                if (CommonUserInfo.isIsSuperVip()) { // 是超级会员，显示蓝色按钮
+                    mineMsgView.setBuyVipTag();
+                } else { // 不是超级会员，显示黄色按钮
+                    mineMsgView.setBuyVipCommon();
+                }
+            }
+        }
+        mineRefresh.finishRefresh();
+    }
+
+    // 更新奖学金和积分
+    private void updateMoney(JSONObject result, String assetType) {
+        if (Constants.SCHOLARSHIP_ASSET_TYPE.equals(assetType)){ // 奖学金类型
+            int code = result.getInteger("code");
+            if (code == NetworkCodes.CODE_SUCCEED) {
+                JSONObject data = (JSONObject) result.get("data");
+                int scholarship = data.getInteger("balance");
+                balance = "￥" + String.format("%.2f", scholarship / 100f);
+                if (item_1 == null) {
+                    item_1 = new MineMoneyItemInfo();
+                    item_1.setItemTitle(balance);
+                    item_1.setItemDesc("奖学金");
+                } else {
+                    item_1.setItemTitle(balance);
+                }
+                isScholarshipFinish = true;
+                initPageData();
+            } else {
+                Log.d(TAG, "onMainThreadResponse: 请求奖学金总额失败");
+            }
+        } else if (Constants.INTEGRAL_ASSET_TYPE.equals(assetType)) { // 积分类型
+            int code = result.getInteger("code");
+            if (code == NetworkCodes.CODE_SUCCEED) {
+                JSONObject data = (JSONObject) result.get("data");
+                int integral = data.getInteger("balance");
+                if (item_2 == null) {
+                    item_2 = new MineMoneyItemInfo();
+                    item_2.setItemTitle(String.valueOf(integral));
+                    item_2.setItemDesc("积分");
+                } else {
+                    item_2.setItemTitle(String.valueOf(integral));
+                }
+                isIntegralFinish = true;
+                initPageData();
+            } else {
+                Log.d(TAG, "onMainThreadResponse: 请求积分总额失败");
+                mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            }
+        } else {
+            Log.d(TAG, "onMainThreadResponse: 取账号类型失败");
+            mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+        }
+    }
+
+    // 更新我正在学
+    private void updateMineLearning(JSONObject result) {
+        JSONObject data;
+        try {
+            data = (JSONObject) result.get("data");
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 学习记录为空
+            mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+            mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
+            mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+            isMineLearningFinish = true;
+            return;
+        }
+        JSONArray goodsList = (JSONArray) data.get("goods_list");
+        if (goodsList == null || goodsList.size() == 0) {
+            return;
+        }
+        JSONObject listItem = (JSONObject) goodsList.get(0);
+        if (listItem == null) {
+            mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+            mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
+            mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+            return;
+        }
+        mineLearningId = listItem.getString("resource_id");
+        mineLearningType = convertInt2Str(listItem.getInteger("resource_type"));
+        JSONObject item = (JSONObject) listItem.get("info");
+        mineLearningWrapView.setLearningIconURI(item.getString("img_url"));
+        mineLearningWrapView.setLearningTitle(item.getString("title"));
+        int updateCount = item.getInteger("periodical_count") == null ? 0 : item.getInteger("periodical_count");
+        if (updateCount > 0) {
+            mineLearningWrapView.setLearningUpdate("已更新至" + updateCount + "期");
+        }
+        isMineLearningFinish = true;
+        initPageData();
+        mineRefresh.finishRefresh();
+    }
+
+    // 获取超级会员购买信息
+    private void obtainVipBuyInfo(int code, JSONObject result) {
+        if (code == NetworkCodes.CODE_SUCCEED) {
+            JSONObject data = (JSONObject) result.get("data");
+            String productId = data.getString("svip_id");
+            String resourceId = data.getString("resource_id");
+            String expireAtStart = data.getString("expire_at_start");
+            String expireAtEnd = data.getString("expire_at_end");
+            int price = data.getInteger("price");
+            JumpDetail.jumpPay(getActivity(), resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg,
+                    "超级会员", price, expireAtStart + "-" + expireAtEnd);
+        } else {
+            Log.d(TAG, "onMainThreadResponse: 超级会员购买信息请求失败");
             mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
         }
     }
@@ -463,7 +509,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     public void onEventMainThread(GetSuperMemberSuccessEvent event) {
         if (event != null && event.isRefresh){//兑换码到超级会员成功后，刷新我的页面UI
             // 兑换到超级会员之后请求超级会员的接口
-            SuperVipPresenter superVipPresenter = new SuperVipPresenter(this);
+            if (superVipPresenter == null) {
+                superVipPresenter = new SuperVipPresenter(this);
+            }
             superVipPresenter.requestSuperVip();
         }
     }
@@ -517,7 +565,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 //                break;
             case R.id.card_renewal: // 续费
                 if (mainActivity.isFormalUser) {
-                    SuperVipPresenter superVipPresenter = new SuperVipPresenter(this);
+                    if (superVipPresenter == null) {
+                        superVipPresenter = new SuperVipPresenter(this);
+                    }
                     superVipPresenter.requestSuperVipBuyInfo();
                 } else {
                     touristDialog.showDialog();
@@ -565,6 +615,20 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 } else {
                     touristDialog.showDialog();
                 }
+                break;
+            case R.id.mine_loading:
+                if (mineLearningPresenter == null) {
+                    mineLearningPresenter = new MineLearningPresenter(this);
+                }
+                if (earningPresenter == null) {
+                    earningPresenter = new EarningPresenter(this);
+                }
+                isScholarshipFinish = false;
+                isIntegralFinish = false;
+                isMineLearningFinish = false;
+                earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+                earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+                mineLearningPresenter.requestLearningData(1, 1);
                 break;
             default:
                 break;
@@ -668,6 +732,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
         earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
         mineLearningPresenter.requestLearningData(1, 1);
+        if (superVipPresenter == null) {
+            superVipPresenter = new SuperVipPresenter(this);
+        }
+        superVipPresenter.requestSuperVip();
     }
 
     private void setDataByDB(){

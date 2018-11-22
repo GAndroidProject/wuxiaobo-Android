@@ -62,6 +62,7 @@ public class SuperVipActivity extends XiaoeActivity {
                 double priceNum = Double.parseDouble(price) * 100;
                 JumpDetail.jumpPay(SuperVipActivity.this, resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg,
                         "超级会员", (int) priceNum, expireAtStart + "-" + expireAtEnd);
+                SuperVipActivity.this.finish();
             }
         });
         superVipBack.setOnClickListener(v -> onBackPressed());

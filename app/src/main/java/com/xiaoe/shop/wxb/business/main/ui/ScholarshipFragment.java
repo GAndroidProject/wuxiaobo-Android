@@ -157,6 +157,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         scholarshipDivide.setOnClickListener(this);
         scholarshipRealRange.setOnClickListener(this);
         scholarshipAllRange.setOnClickListener(this);
+        scholarshipLoading.setOnClickListener(this);
     }
 
     @Override
@@ -210,6 +211,12 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 scholarshipAllList.setVisibility(View.VISIBLE);
                 scholarshipRealRange.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_column_menu));
                 scholarshipAllRange.setBackground(getActivity().getResources().getDrawable(R.drawable.recent_update_btn_pressed));
+                break;
+            case R.id.scholarship_loading:
+                if (scholarshipPresenter == null) {
+                    scholarshipPresenter = new ScholarshipPresenter(this);
+                }
+                scholarshipPresenter.requestTaskList(true);
                 break;
         }
     }
@@ -307,6 +314,12 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         super.onFragmentFirstVisible();
         scholarshipPresenter = new ScholarshipPresenter(this);
         scholarshipPresenter.requestTaskList(true);
+        if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
+            if (scholarshipPresenter == null) {
+                scholarshipPresenter = new ScholarshipPresenter(this);
+            }
+            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
+        }
     }
 
     @Override
