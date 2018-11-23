@@ -208,8 +208,8 @@ public class HistoryMessageActivity extends XiaoeActivity {
                 skipAction(listBean);
                 break;
             case 1:
-                break;
             case 2:
+                JumpDetail.jumpComment(mContext, listBean.getRecord_id(), listBean.getType(), listBean.getRecord_title());
                 break;
             default:
                 break;
@@ -235,26 +235,20 @@ public class HistoryMessageActivity extends XiaoeActivity {
             case 3:
                 JumpDetail.jumpVideo(mContext, listBean.getSkip_target(), "", false);
                 break;
-            case 4:
-                break;
             case 5:
                 BrowserActivity.openUrl(mContext, listBean.getSkip_target(), "外部链接");
                 break;
             case 6:
-//                JumpDetail.jumpColumn(mContext, listBean.getSkip_target(), "", false);
                 JumpDetail.jumpColumn(mContext, listBean.getSkip_target(), "", listBean.getSub_skip_type());
                 break;
+            case 4:
             case 7:
-                break;
             case 8:
-                break;
             case 9:
-                break;
             case 16:
-                break;
             case 21:
-                break;
             default:
+                ToastUtils.show(mContext, R.string.Jump_not_text);
                 break;
         }
     }

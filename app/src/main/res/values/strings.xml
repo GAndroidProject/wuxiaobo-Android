@@ -313,4 +313,5 @@
     <string name="enable_text">可使用</string>
     <string name="to_text">%s至</string>
     <string name="network_error_text">网络异常</string>
+    <string name="Jump_not_text">暂不支持跳转</string>
 </resources>
