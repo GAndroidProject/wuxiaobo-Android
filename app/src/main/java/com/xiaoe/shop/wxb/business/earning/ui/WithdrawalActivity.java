@@ -35,6 +35,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.OSUtils;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
@@ -188,40 +189,47 @@ public class WithdrawalActivity extends XiaoeActivity {
 
             }
         });
-        wrNow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ("".equals(wrInput.getText().toString())) {
-                    return;
-                }
-                double price = Double.parseDouble(wrInput.getText().toString());
-                // 点击时隐藏
-                wrErrorTip.setVisibility(View.GONE);
-                if (price <= balanceNum) {
-                    if (price > 20000) { // 大于 20000 分批提现
+        wrNow.setOnClickListener(new MySingleClickListener(1000));
+    }
 
-                        getDialog().setMessageVisibility(View.GONE);
-                        getDialog().setTitle(getString(R.string.withdrawal_limit_content));
-                        getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(WithdrawalActivity.this,46),
-                                0,Dp2Px2SpUtil.dp2px(WithdrawalActivity.this,46),0);
-                        getDialog().setConfirmText(getString(R.string.knowed_text));
-                        getDialog().setConfirmTextColor(getResources().getColor(R.color.recent_list_color));
-                        getDialog().setHideCancelButton(true);
-                        getDialog().showDialog(1);
+    public class MySingleClickListener extends OnClickEvent {
 
-                    } else if (price > 0 && price < 10) { // 至少 10 块钱才能提现
-                        wrErrorTip.setText(R.string.withdrawal_less_tip);
-                        wrErrorTip.setVisibility(View.VISIBLE);
-                    } else {
-                        resultPrice = price * 100;
-                        earningPresenter.requestWithdrawal(resultPrice, OSUtils.getIP(WithdrawalActivity.this));
-                    }
-                } else {
-                    wrErrorTip.setText(R.string.withdrawal_error_tip);
-                    wrErrorTip.setVisibility(View.VISIBLE);
-                }
+        public MySingleClickListener(long delay) {
+            super(delay);
+        }
+
+        @Override
+        public void singleClick(View v) {
+            if ("".equals(wrInput.getText().toString())) {
+                return;
             }
-        });
+            double price = Double.parseDouble(wrInput.getText().toString());
+            // 点击时隐藏
+            wrErrorTip.setVisibility(View.GONE);
+            if (price <= balanceNum) {
+                if (price > 20000) { // 大于 20000 分批提现
+
+                    getDialog().setMessageVisibility(View.GONE);
+                    getDialog().setTitle(getString(R.string.withdrawal_limit_content));
+                    getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(WithdrawalActivity.this,46),
+                            0,Dp2Px2SpUtil.dp2px(WithdrawalActivity.this,46),0);
+                    getDialog().setConfirmText(getString(R.string.knowed_text));
+                    getDialog().setConfirmTextColor(getResources().getColor(R.color.recent_list_color));
+                    getDialog().setHideCancelButton(true);
+                    getDialog().showDialog(1);
+
+                } else if (price > 0 && price < 10) { // 至少 10 块钱才能提现
+                    wrErrorTip.setText(R.string.withdrawal_less_tip);
+                    wrErrorTip.setVisibility(View.VISIBLE);
+                } else {
+                    resultPrice = price * 100;
+                    earningPresenter.requestWithdrawal(resultPrice, OSUtils.getIP(WithdrawalActivity.this));
+                }
+            } else {
+                wrErrorTip.setText(R.string.withdrawal_error_tip);
+                wrErrorTip.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
