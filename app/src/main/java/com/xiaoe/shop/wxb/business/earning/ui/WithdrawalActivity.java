@@ -38,7 +38,11 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.OSUtils;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
-// 提现页面
+/**
+ * @author zak
+ * <p>
+ * 描述：提现页面
+ */
 public class WithdrawalActivity extends XiaoeActivity {
 
     private static final String TAG = "WithdrawalActivity";
@@ -200,7 +204,7 @@ public class WithdrawalActivity extends XiaoeActivity {
                         getDialog().setTitle(getString(R.string.withdrawal_limit_content));
                         getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(WithdrawalActivity.this,46),
                                 0,Dp2Px2SpUtil.dp2px(WithdrawalActivity.this,46),0);
-                        getDialog().setConfirmText("知道了");
+                        getDialog().setConfirmText(getString(R.string.knowed_text));
                         getDialog().setConfirmTextColor(getResources().getColor(R.color.recent_list_color));
                         getDialog().setHideCancelButton(true);
                         getDialog().showDialog(1);

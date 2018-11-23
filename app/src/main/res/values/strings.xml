@@ -314,4 +314,5 @@
     <string name="to_text">%s至</string>
     <string name="network_error_text">网络异常</string>
     <string name="Jump_not_text">暂不支持跳转</string>
+    <string name="knowed_text">知道了</string>
 </resources>
