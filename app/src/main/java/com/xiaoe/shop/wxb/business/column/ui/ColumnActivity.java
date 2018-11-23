@@ -397,6 +397,26 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void detailRequest(JSONObject data, boolean available) {
+        int paymentType = data.getIntValue("payment_type");
+        if(paymentType == 3 && !available){
+            //1-免费,2-单卖，3-非单卖
+            //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
+//            JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
+//            JSONObject product = productList.getJSONObject(0);
+//            int productType = product.getIntValue("product_type");
+//            String productId = product.getString("id");
+//            String productImgUrl = product.getString("img_url");
+//            //1-专栏, 2-会员, 3-大专栏
+//            if(productType == 3){
+//                JumpDetail.jumpColumn(this, productId, productImgUrl, 8);
+//            }else if(productType == 2){
+//                JumpDetail.jumpColumn(this, productId, productImgUrl, 5);
+//            }else{
+//                JumpDetail.jumpColumn(this, productId, productImgUrl, 6);
+//            }
+//            finish();
+//            return;
+        }
         summary = data.getString("summary");
         hasBuy = available;
         getDialog().dismissDialog();

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -191,7 +190,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
         View view = getActivity().getLayoutInflater().inflate(R.layout.layout_delete_dialog, null);
 
         TextView btnCancel = (TextView) view.findViewById(R.id.radius_dialog_btn_cancel);
-        final TextView btnConfirm = (TextView) view.findViewById(R.id.radius_dialog_btn_confirm);
+        TextView btnConfirm = (TextView) view.findViewById(R.id.radius_dialog_btn_confirm);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override

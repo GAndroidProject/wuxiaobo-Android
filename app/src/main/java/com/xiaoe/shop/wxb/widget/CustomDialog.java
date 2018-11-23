@@ -3,6 +3,7 @@ package com.xiaoe.shop.wxb.widget;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
@@ -61,6 +65,16 @@ public class CustomDialog {
         hintTypeLayout.setVisibility(View.GONE);
         loadTypeLayout = (LinearLayout) rootView.findViewById(R.id.load_type);
         loadTypeLayout.setVisibility(View.VISIBLE);
+
+        SimpleDraweeView simpleDraweeView = (SimpleDraweeView) rootView.findViewById(R.id.bold_gif_preloader);
+        Uri uri = Uri.parse("res:///" + R.drawable.bold_gif_preloader);
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                .setUri(uri)
+                .setOldController(simpleDraweeView.getController())
+                // 设置加载图片完成后是否直接进行播放
+                .setAutoPlayAnimations(true)
+                .build();
+        simpleDraweeView.setController(draweeController);
     }
 
     public void setCancelListener(OnCancelListener cancelListener) {
@@ -183,6 +197,7 @@ public class CustomDialog {
             viewGroup.removeAllViewsInLayout();
         }
         if(dialog.getWindow() != null){
+            dialog.getWindow().setDimAmount(0.5f);
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.bg_dialog);
             dialog.getWindow().setLayout(Dp2Px2SpUtil.dp2px(mContext,250),LinearLayout.LayoutParams.WRAP_CONTENT);
         }
@@ -213,15 +228,16 @@ public class CustomDialog {
         dialog.show();
         if(dialog.getWindow() != null){
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.bg_dialog);
+            dialog.getWindow().setDimAmount(0f);
         }
         int w = 0;
         int h = 0;
         if(showMessage){
             w = point.x * 55 / 72;
-            h = point.y * 15 / 128;
+            h = Dp2Px2SpUtil.dp2px(mContext, 100);
         }else{
-            w = point.x * 5 / 12;
-            h = point.y * 15 / 128;
+            w = Dp2Px2SpUtil.dp2px(mContext, 100);
+            h = Dp2Px2SpUtil.dp2px(mContext, 100);
         }
         dialog.getWindow().setLayout(w,h);
         ViewGroup viewGroup = (ViewGroup) rootView.getParent();

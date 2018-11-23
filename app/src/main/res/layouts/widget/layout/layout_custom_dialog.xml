@@ -89,13 +89,10 @@
         android:background="@drawable/bg_layout_dialog"
         android:gravity="center"
         >
-        <com.pnikosis.materialishprogress.ProgressWheel
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            wheel:matProg_progressIndeterminate="true"
-            wheel:matProg_barColor="@color/secondary_title_color"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/bold_gif_preloader"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             />
         <TextView
             android:id="@+id/id_message_load"

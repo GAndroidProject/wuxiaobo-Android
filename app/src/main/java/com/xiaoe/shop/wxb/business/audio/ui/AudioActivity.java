@@ -138,7 +138,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 }
             });
         }
-
+        getDialog().showLoadDialog(false);
         mIntent = getIntent();
         initViews();
         initDatas();
@@ -647,20 +647,28 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if(activityDestroy){
             return;
         }
-        getDialog().dismissDialog();
+
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
         if(playEntity == null){
+            getDialog().dismissDialog();
             setButtonEnabled(false);
             return;
         }
         int code = playEntity.getCode();
+
+        if(!playEntity.isSingleBuy() && code == 0){
+//            JumpDetail.jumpColumn(this, playEntity.getProductId(), playEntity.getProductImgUrl(), playEntity.getProductType());
+//            finish();
+            return;
+        }
         if (code == 1){
             setPagerState(true);
             return;
         }else if(code == -2){
             setButtonEnabled(false);
         }
-        if(playEntity.getHasBuy() == 0 && playEntity.getCode() == 0){
+        if(playEntity.getHasBuy() == 0){
+            //未购买
             commonBuyView.setVisibility(View.VISIBLE);
             commonBuyView.setBuyPrice(playEntity.getPrice());
             if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 超级会员判断
@@ -674,6 +682,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             setButtonEnabled(true);
         }
         if(code == 0){
+            getDialog().dismissDialog();
             setContentDetail(playEntity.getContent());
         }
         if(AudioMediaPlayer.isStop()){

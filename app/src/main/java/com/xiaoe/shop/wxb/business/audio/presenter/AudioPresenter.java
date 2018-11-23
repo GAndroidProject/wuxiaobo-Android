@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.business.audio.presenter;
 
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
@@ -93,13 +94,16 @@ public class AudioPresenter implements IBizCallback {
             if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
                 playEntity.setShareUrl(shareInfo.getJSONObject("wx").getString("share_url"));
             }
+            int hasFavorite = ((JSONObject) resourceInfo.get("favorites_info")).getInteger("is_favorite");
+            playEntity.setHasFavorite(hasFavorite);
         }else{
             resourceInfo = data.getJSONObject("resource_info");
+            int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
+            playEntity.setHasFavorite(hasFavorite);
         }
         playEntity.setCurrentPlayState(1);
         playEntity.setTitle(resourceInfo.getString("title"));
-        int hasFavorite = ((JSONObject) resourceInfo.get("favorites_info")).getInteger("is_favorite");
-        playEntity.setHasFavorite(hasFavorite);
+
         playEntity.setPlayCount(resourceInfo.getIntValue("audio_play_count"));
         playEntity.setHasBuy(available ? 1 : 0);
         playEntity.setResourceId(resourceInfo.getString("resource_id"));
@@ -130,6 +134,29 @@ public class AudioPresenter implements IBizCallback {
             playEntity.setCode(0);
             playAudio(playEntity.isPlay());
         }else{
+            if(resourceInfo.getIntValue("payment_type") == 3){
+                //1-免费,2-单卖，3-非单卖
+                //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
+                //1-免费,2-单卖，3-非单卖
+                //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
+                JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
+                JSONObject product = productList.getJSONObject(0);
+                int productType = product.getIntValue("product_type");
+                String productId = product.getString("id");
+                String productImgUrl = product.getString("img_url");
+                //1-专栏, 2-会员, 3-大专栏
+               playEntity.setSingleBuy(false);
+               playEntity.setProductId(productId);
+               playEntity.setProductImgUrl(productImgUrl);
+               if(productType == 3){
+                   playEntity.setProductType(8);
+               }else if(productType == 2){
+                   playEntity.setProductType(5);
+               }else{
+                   playEntity.setProductType(6);
+               }
+            }
+
             playEntity.setCode(0);
             playEntity.setContent(resourceInfo.getString("preview_content"));
             playAudio(false);

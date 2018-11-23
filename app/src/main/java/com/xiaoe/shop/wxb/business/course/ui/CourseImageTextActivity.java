@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -13,12 +12,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
@@ -33,7 +31,6 @@ import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.AddCollectionRequest;
-import com.xiaoe.network.requests.CheckCollectionRequest;
 import com.xiaoe.network.requests.CourseITDetailRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
@@ -42,7 +39,6 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.course.presenter.CourseImageTextPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
-import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
@@ -426,7 +422,27 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         if (resourceInfo == null) { // 已购
             initData(data);
         } else { // 未购
-            initData(resourceInfo);
+            //1-免费,2-单卖，3-非单卖
+            if(resourceInfo.getIntValue("payment_type") == 3){
+                //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
+                JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
+                JSONObject product = productList.getJSONObject(0);
+                int productType = product.getIntValue("product_type");
+                String productId = product.getString("id");
+                String productImgUrl = product.getString("img_url");
+                //1-专栏, 2-会员, 3-大专栏
+                if(productType == 3){
+                    JumpDetail.jumpColumn(this, productId, productImgUrl, 8);
+                }else if(productType == 2){
+                    JumpDetail.jumpColumn(this, productId, productImgUrl, 5);
+                }else{
+                    JumpDetail.jumpColumn(this, productId, productImgUrl, 6);
+                }
+                finish();
+                return;
+            }else{
+                initData(resourceInfo);
+            }
         }
     }
 

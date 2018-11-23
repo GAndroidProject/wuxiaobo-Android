@@ -209,7 +209,7 @@
 
     <string name="share_model">分享到</string>
     <string name="share_wechat_friend">微信好友</string>
-    <string name="share_friend_encircle">朋友群</string>
+    <string name="share_friend_encircle">朋友圈</string>
 
     <!--页面请求状态提示 start-->
     <string name="request_fail">页面还没找到，刷新试试吧</string>

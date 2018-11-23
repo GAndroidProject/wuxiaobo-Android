@@ -87,8 +87,7 @@ public class AudioPlayUtil {
         playColumnId = TextUtils.isEmpty(playColumnId) ? "" : playColumnId;
         playBigColumnId = TextUtils.isEmpty(playBigColumnId) ? "" : playBigColumnId;
 
-        boolean resourceEquals = resourceId.equals(playResourceId) && columnId.equals(playColumnId) && bigColumnId.equals(playBigColumnId);
-        return  resourceEquals;
+        return  resourceId.equals(playResourceId) && columnId.equals(playColumnId) && bigColumnId.equals(playBigColumnId);
     }
 
     public String getFromTag() {

@@ -4,12 +4,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.xiaoe.common.db.ISQLiteCallBack;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
-import com.xiaoe.common.db.ISQLiteCallBack;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class AudioSQLiteUtil implements ISQLiteCallBack {
     private final String TAG = "AudioSQLiteUtil";
@@ -27,8 +27,9 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(newVersion > oldVersion){
-            db.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+        if(newVersion > oldVersion && newVersion == 3){
+            db.execSQL(AudioPlayTable.ADD_TRY_PLAY_URL_ROW_SQL);
+            db.execSQL(AudioPlayTable.ADD_IS_TRY_ROW_SQL);
         }
     }
 
@@ -53,6 +54,8 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
         if(tableEntity.getCreateAt() != null){
             values.put(AudioPlayTable.getCreateAt(), tableEntity.getCreateAt());
         }
+        values.put("try_play_url", tableEntity.getTryPlayUrl());
+        values.put("is_try", tableEntity.getIsTry());
     }
 
     @Override
@@ -95,6 +98,17 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
 
         int updateAtIndex = cursor.getColumnIndex(AudioPlayTable.getUpdateAt());
         entity.setUpdateAt(cursor.getString(updateAtIndex));
+
+        int tryPlayUrlIndex = cursor.getColumnIndex("try_play_url");
+        if(tryPlayUrlIndex >= 0){
+            entity.setTryPlayUrl(cursor.getString(tryPlayUrlIndex));
+        }
+
+        int isTryIndex = cursor.getColumnIndex("is_try");
+        if(isTryIndex >= 0){
+            entity.setIsTry(cursor.getInt(isTryIndex));
+        }
+
         return entity;
     }
 }

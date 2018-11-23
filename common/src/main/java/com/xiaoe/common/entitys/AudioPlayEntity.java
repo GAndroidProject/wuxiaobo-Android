@@ -17,10 +17,18 @@ public class AudioPlayEntity {
     private int price;
     private String imgUrl;
     private String imgUrlCompressed;
+    private String tryPlayUrl;//试听地址
+    private int isTry;//是否是试看0：否，1：是
+
     private boolean isFree;
 
     private int totalDuration = 0;//总时长
     private String shareUrl = "";
+
+    private boolean isSingleBuy = true;//是否是单卖
+    private int productType = 0;//6-专栏，5-会员，8-大专栏
+    private String productId = "";
+    private String productImgUrl = "";
 
     private int hasFavorite = 0;//是否收藏，0-未收藏，1-已收藏
     private int hasBuy = 0;// 是否已购买0-未购买，1-已购买
@@ -239,5 +247,54 @@ public class AudioPlayEntity {
 
     public void setFree(boolean free) {
         isFree = free;
+    }
+
+
+    public String getTryPlayUrl() {
+        return tryPlayUrl;
+    }
+
+    public void setTryPlayUrl(String tryPlayUrl) {
+        this.tryPlayUrl = tryPlayUrl;
+    }
+
+    public int getIsTry() {
+        return isTry;
+    }
+
+    public void setIsTry(int isTry) {
+        this.isTry = isTry;
+    }
+
+    public int getProductType() {
+        return productType;
+    }
+
+    public void setProductType(int productType) {
+        this.productType = productType;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public boolean isSingleBuy() {
+        return isSingleBuy;
+    }
+
+    public void setSingleBuy(boolean singleBuy) {
+        isSingleBuy = singleBuy;
+    }
+
+    public String getProductImgUrl() {
+        return productImgUrl;
+    }
+
+    public void setProductImgUrl(String productImgUrl) {
+        this.productImgUrl = productImgUrl;
     }
 }
