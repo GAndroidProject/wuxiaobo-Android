@@ -17,7 +17,10 @@
         android:id="@+id/title_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="180dp"
         android:textSize="18sp"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:layout_gravity="center"/>
 
     <!-- 原来需要在 title view 中显示一个收藏按钮和一个分享按钮 -->

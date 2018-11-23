@@ -152,12 +152,12 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         List<Integer> buttonCheckedIcons = new ArrayList<Integer>();
         buttonCheckedIcons.add(R.mipmap.today_selected);
         buttonCheckedIcons.add(R.mipmap.class_selected);
-        buttonCheckedIcons.add(R.mipmap.task_selected);
+        buttonCheckedIcons.add(R.mipmap.scholarship_select);
         buttonCheckedIcons.add(R.mipmap.profile_selected);
         List<Integer> buttonIcons = new ArrayList<Integer>();
         buttonIcons.add(R.mipmap.today_default);
         buttonIcons.add(R.mipmap.class_default);
-        buttonIcons.add(R.mipmap.task_default);
+        buttonIcons.add(R.mipmap.scholarship_default);
         buttonIcons.add(R.mipmap.profile_default);
         bottomTabBar.addTabButton(4, buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
 

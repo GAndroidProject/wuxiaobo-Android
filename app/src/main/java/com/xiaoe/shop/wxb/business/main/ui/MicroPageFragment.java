@@ -770,9 +770,11 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 if (hp == null) {
                     hp = new PageFragmentPresenter(this);
                 }
-                hp.requestMicroPageData(microPageId);
-                microPageLoading.setVisibility(View.VISIBLE);
-                microPageLoading.setLoadingState(View.VISIBLE);
+                if (microPageLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面异常，点击重新请求
+                    hp.requestMicroPageData(microPageId);
+                    microPageLoading.setVisibility(View.VISIBLE);
+                    microPageLoading.setLoadingState(View.VISIBLE);
+                }
                 break;
         }
     }

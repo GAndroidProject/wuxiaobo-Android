@@ -213,19 +213,19 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void initData() {
-        // 会员权益假数据 -- 开始
-        List<String> contentList = new ArrayList<>();
-        contentList.add("所有课程免费学习");
-        contentList.add("分享赢双倍积分");
-        MineEquityListAdapter mineEquityListAdapter = new MineEquityListAdapter(mContext, contentList);
-        mineVipCard.setEquityListAdapter(mineEquityListAdapter);
-        // 会员权益假数据 -- 结束
         if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 店铺是否有超级会员并且不是超级会员才显示
             mineMsgView.setBuyVipVisibility(View.VISIBLE);
         } else {
             mineMsgView.setBuyVipTag();
         }
         if (CommonUserInfo.isIsSuperVip()) { // 是超级会员，显示卡片
+            // 会员权益假数据 -- 开始
+            List<String> contentList = new ArrayList<>();
+            contentList.add("所有课程免费学习");
+            contentList.add("分享赢双倍积分");
+            MineEquityListAdapter mineEquityListAdapter = new MineEquityListAdapter(mContext, contentList);
+            mineVipCard.setEquityListAdapter(mineEquityListAdapter);
+            // 会员权益假数据 -- 结束
             mineVipCard.setVisibility(View.VISIBLE);
             mineVipCard.setDeadLine(mainActivity.expireAt);
         } else {
@@ -233,17 +233,17 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         }
         if (mineVipCard.getVisibility() == View.VISIBLE) { // 超级会员卡片存在
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int left = Dp2Px2SpUtil.dp2px(mContext, 20);
+            int left = Dp2Px2SpUtil.dp2px(mContext, 0);
             int top = Dp2Px2SpUtil.dp2px(mContext, 16);
-            int right = Dp2Px2SpUtil.dp2px(mContext, 20);
+            int right = Dp2Px2SpUtil.dp2px(mContext, 0);
             layoutParams.setMargins(left,top,right,0);
             mineMoneyWrapView.setLayoutParams(layoutParams);
-        } else if (mineVipCard.getVisibility() == View.GONE) { // 超级会员卡片不存在
+        } else { // 超级会员卡片不存在
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int left = Dp2Px2SpUtil.dp2px(mContext, 20);
-            int top = Dp2Px2SpUtil.dp2px(mContext, -36);
-            int right = Dp2Px2SpUtil.dp2px(mContext, 20);
-            layoutParams.setMargins(left, top, right ,0);
+            int left = Dp2Px2SpUtil.dp2px(mContext, 0);
+            int top = Dp2Px2SpUtil.dp2px(mContext, 0);
+            int right = Dp2Px2SpUtil.dp2px(mContext, 0);
+            layoutParams.setMargins(left,top,right,0);
             mineMoneyWrapView.setLayoutParams(layoutParams);
         }
         // 金钱容器
@@ -626,12 +626,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 if (earningPresenter == null) {
                     earningPresenter = new EarningPresenter(this);
                 }
-                isScholarshipFinish = false;
-                isIntegralFinish = false;
-                isMineLearningFinish = false;
-                earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-                earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-                mineLearningPresenter.requestLearningData(1, 1);
+                if (mineLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面错误点击再请求
+                    isScholarshipFinish = false;
+                    isIntegralFinish = false;
+                    isMineLearningFinish = false;
+                    earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+                    earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+                    mineLearningPresenter.requestLearningData(1, 1);
+                }
                 break;
             default:
                 break;

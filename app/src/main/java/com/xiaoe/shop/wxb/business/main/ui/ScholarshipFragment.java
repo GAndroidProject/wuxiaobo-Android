@@ -222,7 +222,9 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 if (scholarshipPresenter == null) {
                     scholarshipPresenter = new ScholarshipPresenter(this);
                 }
-                scholarshipPresenter.requestTaskList(true);
+                if (scholarshipLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 网络请求错误才显示
+                    scholarshipPresenter.requestTaskList(true);
+                }
                 break;
         }
     }

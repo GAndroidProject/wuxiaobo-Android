@@ -23,6 +23,7 @@ public class StatusPagerView extends FrameLayout {
     public static final int FINISH = 10002;
     public static final int FAIL = 10003;
     public static final int EMPTY = 10004;
+    public static final int SOLD = 10005;
 
     public static final String FINISH_CONTENT = "加载成功";
     public static final String FAIL_CONTENT = "页面还没找到，刷新试试吧";
@@ -32,6 +33,7 @@ public class StatusPagerView extends FrameLayout {
     private SimpleDraweeView loadingState;
     private TextView stateText;
     private ImageView stateImage;
+    private int state;
 
     public static final int DETAIL_NONE = R.mipmap.error_page;
     private TextView btnGoTo;
@@ -101,6 +103,7 @@ public class StatusPagerView extends FrameLayout {
 
     // 加载完成
     public void setLoadingFinish() {
+        this.state = FINISH;
         if (loadingState.getVisibility() == View.VISIBLE) {
             loadingState.setVisibility(View.GONE);
         }
@@ -110,13 +113,17 @@ public class StatusPagerView extends FrameLayout {
     // 加载异常情况显示
     public void setPagerState(int state, String hintText, int imageResourceId){
         setVisibility(View.VISIBLE);
+        this.state = state;
         if(state == LOADING){
             setLoadingState(View.VISIBLE);
             setHintStateVisibility(View.GONE);
-        }else if (state == FAIL){
+        }else if (state == FAIL || state == SOLD){
             setLoadingState(View.GONE);
             setHintStateVisibility(View.VISIBLE);
             setStateImage(imageResourceId);
+            if (state == SOLD) {
+                stateImageWH(Dp2Px2SpUtil.dp2px(getContext(), 200), Dp2Px2SpUtil.dp2px(getContext(), 108));
+            }
             stateText.setTextColor(getResources().getColor(R.color.error_hint_color));
             setStateText(hintText);
         }else if (state == EMPTY){
@@ -125,5 +132,9 @@ public class StatusPagerView extends FrameLayout {
             setStateImage(imageResourceId);
             setStateText(hintText);
         }
+    }
+
+    public int getCurrentLoadingStatus() {
+        return state;
     }
 }

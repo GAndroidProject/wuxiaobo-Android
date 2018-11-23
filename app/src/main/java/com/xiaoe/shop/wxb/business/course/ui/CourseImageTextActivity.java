@@ -17,7 +17,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.umeng.socialize.UMShareAPI;
@@ -26,6 +25,7 @@ import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
+import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -50,11 +50,12 @@ import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CommonTitleView;
-import com.xiaoe.shop.wxb.widget.CustomScrollView;
+import com.xiaoe.shop.wxb.widget.PushScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CourseImageTextActivity extends XiaoeActivity implements OnCustomScrollChangedListener, OnRefreshListener {
+public class CourseImageTextActivity extends XiaoeActivity implements PushScrollView.ScrollViewListener {
 
     private static final String TAG = "CourseImageTextActivity";
 
@@ -71,10 +72,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
     @BindView(R.id.it_wrap)
     FrameLayout itWrap;
 
-    @BindView(R.id.it_refresh)
-    SmartRefreshLayout itRefresh;
-    @BindView(R.id.it_custom_scrollview)
-    CustomScrollView itCustomScrollView;
+    @BindView(R.id.it_push_scrollview)
+    PushScrollView itPushScrollView;
     @BindView(R.id.it_title_bg)
     SimpleDraweeView itBg;
     @BindView(R.id.it_title_back)
@@ -144,6 +143,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
         setContentView(R.layout.activity_course_image_text);
 
         unbinder = ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
 
         itWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
@@ -170,7 +170,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
                 JumpDetail.jumpLogin(CourseImageTextActivity.this, true);
             });
         }
-        setPagerState(-1);
+
         initTitle();
         initData();
         initViews();
@@ -201,14 +201,14 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
         // 请求检查该商品是否已经被收藏
         collectionUtils.requestCheckCollection(resourceId, resourceType);
         // 显示 loading
-//        itLoading.setHintStateVisibility(View.GONE);
-//        itLoading.setLoadingState(View.VISIBLE);
+        itLoading.setLoadingState(View.VISIBLE);
+        itLoading.setVisibility(View.VISIBLE);
         itDescImg.setClickable(false);
     }
 
     private void initListener() {
-        itRefresh.setOnRefreshListener(this);
-        itCustomScrollView.setScrollChanged(this);
+//        itPushScrollView.setScrollChanged(this);
+        itPushScrollView.setScrollViewListener(this);
         itBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -222,7 +222,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
                     if (isCollected) { // 收藏了，点击之后取消收藏
                         itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
                         collectionUtils.requestRemoveCollection(resourceId, resourceType);
-                    } else { // 没有收藏，点击之后收藏\
+                    } else { // 没有收藏，点击之后收藏
                         // 改变图标
                         itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
                         JSONObject collectionContent = new JSONObject();
@@ -284,6 +284,17 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
                 }
             }
         });
+        itLoading.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (courseImageTextPresenter == null) {
+                    courseImageTextPresenter = new CourseImageTextPresenter(CourseImageTextActivity.this);
+                }
+                if (itLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 网络错误
+                    courseImageTextPresenter.requestITDetail(resourceId, Integer.parseInt(resourceType));
+                }
+            }
+        });
     }
 
     private void initViews() {
@@ -330,6 +341,17 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
         UMShareAPI.get(this).release();
         if (!isCollected)
             EventBus.getDefault().post(new MyCollectListRefreshEvent(true,resourceId));
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEventArrived(ChangeLoginIdentityEvent changeLoginIdentityEvent) {
+        if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
+            if (courseImageTextPresenter == null) {
+                courseImageTextPresenter = new CourseImageTextPresenter(this);
+            }
+            courseImageTextPresenter.requestITDetail(resourceId, Integer.parseInt(resourceType));
+        }
     }
 
     @Override
@@ -371,14 +393,11 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
                     initPageData(data);
-                    itRefresh.finishRefresh();
                 } else if (code == NetworkCodes.CODE_GOODS_GROUPS_DELETE || code == NetworkCodes.CODE_GOODS_DELETE) {
                     Log.d(TAG, "onMainThreadResponse: 商品分组已被删除");
-                    itRefresh.finishRefresh();
                     setPagerState(2);
                 } else if (code == NetworkCodes.CODE_GOODS_NOT_FIND) {
                     Log.d(TAG, "onMainThreadResponse: 商品不存在");
-                    itRefresh.finishRefresh();
                     setPagerState(1);
                 }else{
                     setPagerState(1);
@@ -392,7 +411,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
     // 初始化页面信息
     private void initPageData(JSONObject data) {
         // 获取接口返回的资源信息 resource_info
-
+        getDialog().dismissDialog();
         JSONObject resourceInfo = (JSONObject) data.get("resource_info");
         hasBuy = data.getBoolean("available"); // false 没买，true 买了
         if (hasBuy) {
@@ -488,6 +507,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
         if ("".equals(orgContent)) {
             itOrgContent.setVisibility(View.GONE);
             return;
+        } else {
+            itOrgContent.setVisibility(View.VISIBLE);
         }
         itOrgContent.loadDataWithBaseURL(null, NetworkState.getNewContent(orgContent), "text/html", "UFT-8", null);
     }
@@ -506,8 +527,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
     }
 
     @Override
-    public void onScrollChanged(int l, int t, int oldl, int oldt) {
-        float alpha = (t / (toolbarHeight * 1.0f)) * 255;
+    public void onScrollChanged(PushScrollView scrollView, int x, int y, int oldX, int oldY) {
+        float alpha = (y / (toolbarHeight * 1.0f)) * 255;
         if(alpha > 255){
             alpha = 255;
         }else if(alpha < 0){
@@ -530,14 +551,6 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
 
     }
 
-    @Override
-    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-        if (courseImageTextPresenter == null) {
-            courseImageTextPresenter = new CourseImageTextPresenter(this);
-        }
-        courseImageTextPresenter.requestITDetail(resourceId, Integer.parseInt(resourceType));
-    }
-
     private void setDataByDB(){
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
         String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+resourceId+"'";
@@ -554,27 +567,25 @@ public class CourseImageTextActivity extends XiaoeActivity implements OnCustomSc
      */
     private void setPagerState(int code) {
         if(code == 0){
-            itLoading.setVisibility(View.GONE);
-            itLoading.setLoadingState(View.GONE);
-            itLoading.setHintStateVisibility(View.GONE);
+//            itLoading.setVisibility(View.GONE);
+//            itLoading.setLoadingState(View.GONE);
+//            itLoading.setHintStateVisibility(View.GONE);
+            itLoading.setLoadingFinish();
         }else if(code == 1){
-            itLoading.setVisibility(View.VISIBLE);
-            itLoading.setLoadingState(View.GONE);
-            itLoading.setStateImage(StatusPagerView.DETAIL_NONE);
-            itLoading.setStateText(getString(R.string.request_fail));
-            itLoading.setHintStateVisibility(View.VISIBLE);
+//            itLoading.setVisibility(View.VISIBLE);
+//            itLoading.setLoadingState(View.GONE);
+//            itLoading.setStateImage(StatusPagerView.DETAIL_NONE);
+//            itLoading.setStateText(getString(R.string.request_fail));
+//            itLoading.setHintStateVisibility(View.VISIBLE);
+            itLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), StatusPagerView.DETAIL_NONE);
         }else if(code == 2 || code == 3004){
-            itLoading.setVisibility(View.VISIBLE);
-            itLoading.setLoadingState(View.GONE);
-            itLoading.stateImageWH(Dp2Px2SpUtil.dp2px(this, 200), Dp2Px2SpUtil.dp2px(this, 108));
-            itLoading.setStateImage(R.mipmap.course_off);
-            itLoading.setStateText(getString(R.string.resource_sold_out));
-            itLoading.setHintStateVisibility(View.VISIBLE);
-        }
-        else if(code == -1){
-            itLoading.setVisibility(View.VISIBLE);
-            itLoading.setLoadingState(View.VISIBLE);
-            itLoading.setHintStateVisibility(View.GONE);
+//            itLoading.setVisibility(View.VISIBLE);
+//            itLoading.setLoadingState(View.GONE);
+//            itLoading.stateImageWH(Dp2Px2SpUtil.dp2px(this, 200), Dp2Px2SpUtil.dp2px(this, 108));
+//            itLoading.setStateImage(R.mipmap.course_off);
+//            itLoading.setStateText(getString(R.string.resource_sold_out));
+//            itLoading.setHintStateVisibility(View.VISIBLE);
+            itLoading.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sold_out), R.mipmap.course_off);
         }
     }
 }

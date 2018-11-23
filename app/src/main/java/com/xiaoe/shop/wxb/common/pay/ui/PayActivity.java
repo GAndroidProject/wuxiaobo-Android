@@ -226,11 +226,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
                 buyResource();
                 break;
             case R.id.btn_go_to:
-                if (productId == null) { // 不是购买超级会员
-                    finish();
-                } else { // 购买超级会员，回到我的页面
-                    JumpDetail.jumpMainScholarship(this, true, true, 3);
-                }
+                finish();
                 break;
             default:
                 break;

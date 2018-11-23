@@ -42,7 +42,7 @@
                         android:paddingStart="20dp"
                         android:paddingEnd="20dp"
                         android:paddingTop="32dp"
-                        android:paddingBottom="68dp"/>
+                        android:paddingBottom="28dp"/>
 
                 </LinearLayout>
 
@@ -50,14 +50,15 @@
                     android:id="@+id/mine_vip_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-36dp"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"/>
 
                 <com.xiaoe.shop.wxb.business.mine.ui.MineMoneyWrapView
                     android:id="@+id/mine_money_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"/>
 
                 <com.xiaoe.shop.wxb.business.mine.ui.MineLearningWrapView
                     android:id="@+id/mine_learning_view"
