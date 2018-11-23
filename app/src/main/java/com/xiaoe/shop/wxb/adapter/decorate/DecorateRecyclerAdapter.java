@@ -93,14 +93,16 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return new RecentUpdateViewHolder(view);
             case DecorateEntityType.KNOWLEDGE_LIST:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_list, null);
-                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
                 return new KnowledgeListViewHolder(view);
             case DecorateEntityType.KNOWLEDGE_GROUP:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group, null);
                 layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24));
                 view.setLayoutParams(layoutParams);
-                knowledgeGroupRecyclerList = new ArrayList<>();
+                if (knowledgeGroupRecyclerList == null) { // 保证 list 不会被覆盖
+                    knowledgeGroupRecyclerList = new ArrayList<>();
+                }
                 return new KnowledgeGroupViewHolder(view);
             case DecorateEntityType.SHUFFLING_FIGURE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shuffling_figure, null);
