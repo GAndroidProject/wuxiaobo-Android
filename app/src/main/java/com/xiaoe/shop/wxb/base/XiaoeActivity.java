@@ -36,6 +36,7 @@ import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.entitys.UpdateMineMsgEvent;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -61,6 +62,8 @@ import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.ShareDialog;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -452,7 +455,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             CommonUserInfo.setApiToken("");
             CommonUserInfo.setIsSuperVip(false);
             CommonUserInfo.setIsSuperVipAvailable(false);
-
+            dialog.dismissDialog();
             JumpDetail.jumpLogin(this);
             // 登录后需要回到原来的页面，所以不做 finish 操作
             // finish();

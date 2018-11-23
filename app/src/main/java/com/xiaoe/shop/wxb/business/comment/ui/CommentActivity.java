@@ -264,6 +264,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         isCommentFinished = dataObject.getBoolean("is_finished");
         if(isCommentFinished){
             commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_ALL_FINISH);
+            return; // 如果加载完成后，直接 return 掉
         }else{
             commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_NOT_LOAD);
         }

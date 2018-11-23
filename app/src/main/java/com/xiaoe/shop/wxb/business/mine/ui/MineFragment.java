@@ -26,6 +26,7 @@ import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.GetSuperMemberSuccessEvent;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.entitys.MineMoneyItemInfo;
+import com.xiaoe.common.entitys.UpdateMineMsgEvent;
 import com.xiaoe.common.interfaces.OnItemClickWithMoneyItemListener;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -213,10 +214,16 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void initData() {
-        if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 店铺是否有超级会员并且不是超级会员才显示
+        // 如果超级会员可用，显示按钮，不可用不显示
+        if (CommonUserInfo.isIsSuperVipAvailable()) {
             mineMsgView.setBuyVipVisibility(View.VISIBLE);
+            if (CommonUserInfo.isIsSuperVip()) { // 是超级会员
+                mineMsgView.setBuyVipTag();
+            } else { // 不是
+                mineMsgView.setBuyVipCommon();
+            }
         } else {
-            mineMsgView.setBuyVipTag();
+            mineMsgView.setBuyVipVisibility(View.GONE);
         }
         if (CommonUserInfo.isIsSuperVip()) { // 是超级会员，显示卡片
             // 会员权益假数据 -- 开始
@@ -325,6 +332,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     initData();
                 } else {
                     mineVipCard.setVisibility(View.GONE);
+                    mineMsgView.setBuyVipVisibility(View.VISIBLE);
+                    mineMsgView.setBuyVipCommon();
                 }
             } else { // 不可以买超级会员
                 if (CommonUserInfo.isIsSuperVip()) {
@@ -523,6 +532,15 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     public void onEventMainThread(ChangeLoginIdentityEvent changeLoginIdentityEvent) {
         if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
             // 成功切换身份，刷新界面
+        }
+    }
+
+    @Subscribe
+    public void onEventMainThread(UpdateMineMsgEvent updateMineMsgEvent) {
+        if (updateMineMsgEvent != null) {
+            if (mineMsgView != null) {
+                mineMsgView.setNickName(updateMineMsgEvent.getWxNickName());
+            }
         }
     }
 

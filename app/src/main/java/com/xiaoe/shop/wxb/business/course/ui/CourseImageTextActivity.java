@@ -199,7 +199,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         setDataByDB();
         courseImageTextPresenter.requestITDetail(resourceId, Integer.parseInt(resourceType));
         // 请求检查该商品是否已经被收藏
-        collectionUtils.requestCheckCollection(resourceId, resourceType);
+        // collectionUtils.requestCheckCollection(resourceId, resourceType);
         // 显示 loading
         itLoading.setLoadingState(View.VISIBLE);
         itLoading.setVisibility(View.VISIBLE);
@@ -362,7 +362,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         }
         JSONObject result = (JSONObject) entity;
         if (success) {
-            if (iRequest instanceof CheckCollectionRequest) {
+            /*if (iRequest instanceof CheckCollectionRequest) {
                 int code = result.getInteger("code");
                 try {
                     JSONObject data = (JSONObject) result.get("data");
@@ -372,7 +372,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (iRequest instanceof AddCollectionRequest) {
+            } else*/ if (iRequest instanceof AddCollectionRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     Toast("收藏成功");
@@ -464,7 +464,15 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             String orgContent = data.getString("content");
             setOrgContent(orgContent);
         }
-
+        int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
+        if (hasFavorite != -1) {
+            isCollected = hasFavorite == 1;
+            if (isCollected) { // 收藏了
+                itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
+            } else {
+                itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+            }
+        }
         itToolbar.setTitleContentText(title);
         // 将需要收藏的字段赋值（未购）
         collectionTitle = title;

@@ -98,7 +98,8 @@ public class AudioPresenter implements IBizCallback {
         }
         playEntity.setCurrentPlayState(1);
         playEntity.setTitle(resourceInfo.getString("title"));
-        playEntity.setHasFavorite(resourceInfo.getIntValue("has_favorite"));
+        int hasFavorite = ((JSONObject) resourceInfo.get("favorites_info")).getInteger("is_favorite");
+        playEntity.setHasFavorite(hasFavorite);
         playEntity.setPlayCount(resourceInfo.getIntValue("audio_play_count"));
         playEntity.setHasBuy(available ? 1 : 0);
         playEntity.setResourceId(resourceInfo.getString("resource_id"));

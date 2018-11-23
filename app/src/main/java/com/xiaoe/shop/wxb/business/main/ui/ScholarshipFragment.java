@@ -507,6 +507,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             earnContent.setText(amount);
             earnContentTail.setVisibility(View.VISIBLE);
             earnTip.setVisibility(View.GONE);
+            earnSubmit.setText(getString(R.string.scholarship_earn_btn));
             earnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -518,6 +519,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             earnTitle.setText("差一点就瓜分到了");
             earnContentTail.setVisibility(View.GONE);
             earnWrap.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
+            earnSubmit.setText(getString(R.string.scholarship_earn_integral));
             if (CommonUserInfo.isIsSuperVip()) { // 超级会员
                 if (amount == null) {
                     amount = "20";

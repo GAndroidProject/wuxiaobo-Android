@@ -286,13 +286,13 @@
                     android:visibility="gone" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/logo_logo_xiaoetong"
+                    android:layout_width="120dp"
+                    android:layout_height="34dp"
+                    android:src="@mipmap/logo_logo_xiaoetong_new"
                     android:contentDescription="@string/xet_logo"
                     android:layout_gravity="center"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginBottom="32dp"/>
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"/>
 
             </LinearLayout>
 

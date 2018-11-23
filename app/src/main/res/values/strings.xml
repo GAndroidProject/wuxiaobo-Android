@@ -237,6 +237,7 @@
     <string name="scholarship_user">用户</string>
     <string name="scholarship_bought_list_title">点击分享，马上瓜分奖学金</string>
     <string name="scholarship_earn_btn">查看收益</string>
+    <string name="scholarship_earn_integral">查看积分</string>
     <string name="scholarship_yuan">元</string>
     <string name="scholarship_earn_tip">超级会员翻倍（10积分×2）</string>
     <string name="scholarship_page_title">可提现</string>
@@ -315,4 +316,6 @@
     <string name="network_error_text">网络异常</string>
     <string name="Jump_not_text">暂不支持跳转</string>
     <string name="knowed_text">知道了</string>
+
+    <string name="price_decimal">%.2f</string>
 </resources>

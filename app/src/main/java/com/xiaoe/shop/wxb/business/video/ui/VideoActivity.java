@@ -510,7 +510,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         collectTitle = title;
         collectImgUrl = data.getString("img_url");
         collectImgUrlCompressed = data.getString("img_url_compressed");
-        setCollectState(data.getIntValue("has_favorite") == 1);
+        int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
+        setCollectState(hasFavorite == 1);
         if(localResource){
             //如果存在本地视频则播放本地是否
             DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(CommonUserInfo.getShopId(), mResourceId);

@@ -17,10 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.entitys.LoginUserEntity;
+import com.xiaoe.common.entitys.UpdateMineMsgEvent;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.SettingPersonItemRequest;
@@ -29,6 +32,9 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.sql.RowId;
 import java.util.List;
 
 import butterknife.BindView;
@@ -54,6 +60,7 @@ public class SettingPersonItemActivity extends XiaoeActivity {
 
     String apiToken;
     SettingPresenter settingPresenter;
+    SQLiteUtil loginSQLiteUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,6 +84,7 @@ public class SettingPersonItemActivity extends XiaoeActivity {
         }
 
         personEditToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+        loginSQLiteUtil = SQLiteUtil.init(this, new LoginSQLiteCallback());
 
         initData();
         initListener();
@@ -175,6 +183,18 @@ public class SettingPersonItemActivity extends XiaoeActivity {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     Toast("修改成功");
+                    List<LoginUser> resultList = loginSQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+                    String rowId = resultList.get(0).getRowId();
+                    String sql = "update " + LoginSQLiteCallback.TABLE_NAME_USER +
+                            " set " + LoginUserEntity.COLUMN_NAME_WX_NICKNAME +
+                            " = '" + inputContent +
+                            "' where " + LoginUserEntity.COLUMN_NAME_ROW_ID +
+                            " = '" + rowId + "'";
+                    loginSQLiteUtil.execSQL(sql);
+                    UpdateMineMsgEvent updateMineMsgEvent = new UpdateMineMsgEvent();
+                    updateMineMsgEvent.setWxNickName(inputContent);
+                    EventBus.getDefault().post(updateMineMsgEvent);
+                    // 更新数据库
                     Intent intent = new Intent();
                     intent.putExtra("content", inputContent);
                     intent.putExtra("position", position);

@@ -258,22 +258,30 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 item.setCollectionList(false);
                 itemList.add(item);
             } else if ("我的收藏".equals(pageTitle)) { // 我的收藏列表
+                JSONObject infoMsg = (JSONObject) infoItem.get("info");
                 JSONObject collectionInfo = (JSONObject) infoItem.get("org_content");
                 String collectionId = infoItem.getString("content_id");
                 String collectionType = convertInt2Str(infoItem.getInteger("content_type"));
                 String collectionTitle = collectionInfo.getString("title");
                 String collectionImg = collectionInfo.getString("img_url");
-                String collectionPrice = collectionInfo.getString("price");
+                int collectionPrice = infoMsg.getInteger("price") == null ? 0 : infoMsg.getInteger("price");
+                String priceStr = String.format(getString(R.string.price_decimal), collectionPrice / 100f);
+                int updateCount = infoMsg.getInteger("periodical_count") == null ? 0 : infoMsg.getInteger("periodical_count");
+                String updateStr = "";
+                if (updateCount > 0) {
+                    updateStr = "已更新至" + updateCount + "期";
+                }
 
                 item.setItemImg(collectionImg);
                 item.setItemTitle(collectionTitle);
                 item.setResourceId(collectionId);
                 item.setSrcType(collectionType);
                 item.setCollectionList(true);
-                if ("0".equals(collectionPrice) || "0.0".equals(collectionPrice) || "".equals(collectionPrice) || collectionPrice == null) {
-                    item.setItemPrice("已购");
+                item.setItemDesc(updateStr);
+                if (collectionPrice == 0) {
+                    item.setItemPrice("");
                 } else {
-                    item.setItemPrice("￥" + collectionPrice);
+                    item.setItemPrice("￥" + priceStr);
                 }
                 itemList.add(item);
             }
@@ -324,6 +332,8 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 return DecorateEntityType.COLUMN;
             case 8: // 大专栏
                 return DecorateEntityType.TOPIC;
+            case 5: // 会员
+                return DecorateEntityType.MEMBER;
             default:
                 return null;
         }
