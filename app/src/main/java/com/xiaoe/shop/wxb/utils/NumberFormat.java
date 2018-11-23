@@ -12,7 +12,7 @@ public class NumberFormat {
         }
         float tempCount = count / (10000 * 1.0f);
         float strCount = (float)(Math.round(tempCount*10*2))/(10*2);
-        return strCount+"W";
+        return strCount+"万";
     }
 
 }
