@@ -160,7 +160,6 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
         if(sendListener != null){
             sendListener.onSend(commentContent);
         }
-        isReply = false;
         srcHint = "";
         editComment.setText("");
     }
@@ -241,6 +240,8 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
                 } else {
                     showTouristDialog();
                 }
+                break;
+            default:
                 break;
         }
         return false;

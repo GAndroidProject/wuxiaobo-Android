@@ -40,6 +40,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnClickCommentListener;
 import com.xiaoe.shop.wxb.interfaces.OnClickSendCommentListener;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CommentView;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -175,10 +176,10 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                 getDialog().dismissDialog();
                 sending = false;
                 if(commentView.isReply()){
-                    toastCustom(getResources().getString(R.string.send_reply_comment_fail));
+                    ToastUtils.show(mContext, getString(R.string.send_reply_comment_fail));
                     commentView.setReply(false);
                 }else{
-                    toastCustom(getResources().getString(R.string.send_comment_fail));
+                    ToastUtils.show(mContext, getString(R.string.send_comment_fail));
                 }
             }
             return;
@@ -191,10 +192,10 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                 getDialog().dismissDialog();
                 sending = false;
                 if(commentView.isReply()){
-                    toastCustom(getResources().getString(R.string.send_reply_comment_fail));
+                    ToastUtils.show(mContext, getString(R.string.send_reply_comment_fail));
                     commentView.setReply(false);
                 }else{
-                    toastCustom(getResources().getString(R.string.send_comment_fail));
+                    ToastUtils.show(mContext, getString(R.string.send_comment_fail));
                 }
             } else if (iRequest instanceof CommentLikeRequest) {
                 updateLikeItem(commentAdapter.getData().get(mPosition));
@@ -246,10 +247,10 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         commentAdapter.addPosition(sendComment, 0);
         commentRecyclerView.scrollToPosition(0);
         if(commentView.isReply()){
-            toastCustom(getResources().getString(R.string.send_reply_comment_succeed));
+            ToastUtils.show(mContext, getString(R.string.send_reply_comment_succeed));
             commentView.setReply(false);
         }else{
-            toastCustom(getResources().getString(R.string.send_comment_succeed));
+            ToastUtils.show(mContext, getString(R.string.send_comment_succeed));
         }
     }
 
