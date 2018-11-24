@@ -358,17 +358,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         }
         JSONObject result = (JSONObject) entity;
         if (success) {
-            /*if (iRequest instanceof CheckCollectionRequest) {
-                int code = result.getInteger("code");
-                try {
-                    JSONObject data = (JSONObject) result.get("data");
-                    if (code == NetworkCodes.CODE_SUCCEED) {
-                        initCollectionData(data);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else*/ if (iRequest instanceof AddCollectionRequest) {
+            if (iRequest instanceof AddCollectionRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     Toast("收藏成功");
@@ -410,14 +400,23 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         getDialog().dismissDialog();
         JSONObject resourceInfo = (JSONObject) data.get("resource_info");
         hasBuy = data.getBoolean("available"); // false 没买，true 买了
-        if (hasBuy) {
+        if (hasBuy) { // 已购
             imgUrl = data.getString("img_url") == null ? "" : data.getString("img_url");
-        } else { // 已购的话，都用未压缩图片
+        } else { // 未购
             imgUrl = resourceInfo.getString("img_url") == null ? resourceInfo.getString("img_url_compressed") : resourceInfo.getString("img_url");
             // 未购数据格式，share_info 跟 resource_info 同级，所以在这里取到
             JSONObject shareInfo = (JSONObject) data.get("share_info");
             JSONObject wx = (JSONObject) shareInfo.get("wx");
             shareUrl = wx.getString("share_url");
+            int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
+            if (hasFavorite != -1) {
+                isCollected = hasFavorite == 1;
+                if (isCollected) { // 收藏了
+                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
+                } else {
+                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+                }
+            }
         }
         if (resourceInfo == null) { // 已购
             initData(data);
@@ -475,19 +474,28 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             setOrgContent(orgContent);
             itBuy.setVisibility(View.VISIBLE);
             itBuy.setBuyBtnText("购买￥" + price);
+            // 如果是超级会员但是且要购买，那就把超级会员的按钮显示出来
+            if (CommonUserInfo.isIsSuperVip()) {
+                itBuy.setVipBtnVisibility(View.VISIBLE);
+            }
         } else {
             itBuy.setVisibility(View.GONE);
             String orgContent = data.getString("content");
             setOrgContent(orgContent);
-        }
-        int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
-        if (hasFavorite != -1) {
-            isCollected = hasFavorite == 1;
-            if (isCollected) { // 收藏了
-                itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
-            } else {
-                itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+            // 获取已购的分享信息
+            shareUrl = ((JSONObject) ((JSONObject) data.get("share_info")).get("wx")).getString("share_url");
+            // 已购才从 resource_info 中取
+            int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
+            if (hasFavorite != -1) {
+                isCollected = hasFavorite == 1;
+                if (isCollected) { // 收藏了
+                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.audio_collect));
+                } else {
+                    itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
+                }
             }
+            // 超级会员的按钮显示
+
         }
         itToolbar.setTitleContentText(title);
         // 将需要收藏的字段赋值（未购）

@@ -201,6 +201,8 @@ public class WithdrawalActivity extends XiaoeActivity {
         @Override
         public void singleClick(View v) {
             if ("".equals(wrInput.getText().toString())) {
+                wrErrorTip.setText(R.string.withdrawal_less_tip);
+                wrErrorTip.setVisibility(View.VISIBLE);
                 return;
             }
             double price = Double.parseDouble(wrInput.getText().toString());

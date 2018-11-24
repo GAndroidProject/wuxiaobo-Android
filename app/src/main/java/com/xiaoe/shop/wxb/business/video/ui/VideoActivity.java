@@ -481,6 +481,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             }else{
                 //未购
                 JSONObject resourceInfo = data.getJSONObject("resource_info");
+                int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
+                setCollectState(hasFavorite == 1);
                 if(resourceInfo.getIntValue("payment_type") == 3){
                     //1-免费,2-单卖，3-非单卖
                     //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
@@ -531,8 +533,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         collectTitle = title;
         collectImgUrl = data.getString("img_url");
         collectImgUrlCompressed = data.getString("img_url_compressed");
-        int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
-        setCollectState(hasFavorite == 1);
+        if (hasBuy) { // 已购可以这么取
+            int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
+            setCollectState(hasFavorite == 1);
+        }
         if(localResource){
             //如果存在本地视频则播放本地是否
             DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(CommonUserInfo.getShopId(), mResourceId);
@@ -564,7 +568,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 playControllerView.setPlayUrl(mLocalVideoUrl);
             }
             buyView.setVisibility(View.VISIBLE);
-            if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 超级会员的判断
+            // 未购
+            if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员的判断
                 buyView.setVipBtnVisibility(View.VISIBLE);
             } else {
                 buyView.setVipBtnVisibility(View.GONE);

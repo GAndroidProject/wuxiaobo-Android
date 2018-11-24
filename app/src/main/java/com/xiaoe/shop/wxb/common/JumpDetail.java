@@ -81,7 +81,7 @@ public class JumpDetail {
      * @param context
      * @param resId
      * @param imageUrl
-     * @param resourceType
+     * @param resourceType 5 -- 会员，6 -- 专栏； 8 -- 大专栏
      */
     public static void jumpColumn(Context context, String resId,String imageUrl, int resourceType){
         Intent intent = new Intent(context, ColumnActivity.class);
