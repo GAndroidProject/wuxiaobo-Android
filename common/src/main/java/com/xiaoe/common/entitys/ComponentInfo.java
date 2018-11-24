@@ -43,6 +43,8 @@ public class ComponentInfo {
     private String columnId;
     // 是否正式用户
     private boolean isFormUser;
+    // 搜索 type -- 知识商品列表形式使用
+    private int searchType;
 
     public ComponentInfo() { }
 
@@ -179,7 +181,6 @@ public class ComponentInfo {
     }
 
     public String getColumnId() {
-
         return columnId;
     }
 
@@ -189,6 +190,14 @@ public class ComponentInfo {
 
     public void setFormUser(boolean formUser) {
         isFormUser = formUser;
+    }
+
+    public int getSearchType() {
+        return searchType;
+    }
+
+    public void setSearchType(int searchType) {
+        this.searchType = searchType;
     }
 
     @Override

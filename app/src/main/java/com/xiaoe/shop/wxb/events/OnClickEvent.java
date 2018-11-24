@@ -10,6 +10,7 @@ import android.view.View;
  */
 public abstract class OnClickEvent implements View.OnClickListener {
 
+    public static final long DEFAULT_SECOND = 1000;
     private static long lastTime;
 
     public abstract void singleClick(View v);

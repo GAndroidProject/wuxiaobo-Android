@@ -20,29 +20,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.xiaoe.shop.wxb.widget.CustomScrollView
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/withdrawal_record_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <com.xiaoe.common.widget.CommonRefreshHeader
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"/>
 
-                <ListView
-                    android:id="@+id/withdrawal_record_list"
+            <com.xiaoe.shop.wxb.widget.CustomScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:dividerHeight="32dp"
-                    android:divider="@drawable/list_dotted_line"
-                    android:layerType="software"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginTop="18dp"/>
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <ListView
+                        android:id="@+id/withdrawal_record_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:dividerHeight="32dp"
+                        android:divider="@drawable/list_dotted_line"
+                        android:layerType="software"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginTop="18dp"/>
 
-        </com.xiaoe.shop.wxb.widget.CustomScrollView>
+                </LinearLayout>
+
+            </com.xiaoe.shop.wxb.widget.CustomScrollView>
+
+            <com.xiaoe.common.widget.CommonRefreshFooter
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
         <com.xiaoe.shop.wxb.widget.StatusPagerView
             android:id="@+id/withdrawal_loading"

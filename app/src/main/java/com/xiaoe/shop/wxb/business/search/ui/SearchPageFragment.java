@@ -3,7 +3,6 @@ package com.xiaoe.shop.wxb.business.search.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +16,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.db.SQLiteUtil;
 
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
@@ -31,6 +27,7 @@ import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.search.presenter.HistoryRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.search.presenter.RecommendRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.search.presenter.SearchSQLiteCallback;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,8 +68,6 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
     LinearLayoutManager layoutManager;
     DecorateRecyclerAdapter decorateRecyclerAdapter; // 搜索结果
 
-    SmartRefreshLayout searchResultRefresh; // 搜索结果页的上拉加载
-
     public static SearchPageFragment newInstance(int layoutId) {
         SearchPageFragment searchPageFragment = new SearchPageFragment();
         Bundle bundle = new Bundle();
@@ -92,7 +87,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         this.dataList = dataList;
         if (this.searchResultRecycler != null) { // recyclerView 已经初始化过一次，重新加载数据
             decorateRecyclerAdapter.notifyDataSetChanged();
-            initDataList();
+            initNewDataList();
         }
     }
 
@@ -161,9 +156,9 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             historyContentView.setTitleStartText("历史搜索");
             historyContentView.setTitleEndText("清空历史搜索");
 
-            historyContentView.setTitleEndClickListener(new View.OnClickListener() {
+            historyContentView.setTitleEndClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
-                public void onClick(View v) {
+                public void singleClick(View v) {
                     // 删除数据库中全部数据
                     SQLiteUtil.init(mContext, new SearchSQLiteCallback()).execSQL("delete from " + SearchSQLiteCallback.TABLE_NAME_CONTENT);
                     Toast.makeText(searchActivity, "删除成功", Toast.LENGTH_SHORT).show();
@@ -200,27 +195,111 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         // 初始化组件容器
         itemComponentList = new ArrayList<>();
         searchResultRecycler = (RecyclerView) viewWrap.findViewById(R.id.result_content);
-        searchResultRefresh = (SmartRefreshLayout) viewWrap.findViewById(R.id.result_refresh);
-        searchResultRefresh.setEnableRefresh(false); // 禁止下拉刷新
-        searchResultRefresh.setEnableLoadMore(true); // 启动上拉加载
-        searchResultRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                if (searchActivity.searchKeyword != null) {
-//                    searchActivity.searchPresenter.requestSearchResultByPage(
-//                            searchActivity.searchKeyword,
-//                            searchActivity.pageIndex + 1,
-//                            searchActivity.pageSize);
-                    // TODO：上拉加载更多
-                } else {
-                    searchResultRefresh.setNoMoreData(true);
-                }
-            }
-        });
-        initDataList();
+        initNewDataList();
     }
 
-    // 初始化搜索结果数据类型，分类依据 -- 单品 / 专栏、大专栏
+    /**
+     * 初始化搜索结果
+     * 需求是根据每个课程的类型进行显示，查看更多需要跳页完成
+     */
+    private void initNewDataList() {
+        JSONArray dataJsonList = (JSONArray) dataList;
+        for (Object jsonItem : dataJsonList) {
+            JSONObject dataListItem = (JSONObject) jsonItem;
+            String label = dataListItem.getString("label");
+            int type = dataListItem.getInteger("type");
+            boolean showMore = dataListItem.getBoolean("show_more");
+            if ("".equals(label) || label == null) {
+                // 异常情况，跳过
+                continue;
+            }
+            JSONArray list = (JSONArray) dataListItem.get("list");
+            switch (label) {
+                case "图文":
+                    initTypeData(label, type, showMore, list);
+                    break;
+                case "音频":
+                    initTypeData(label, type, showMore, list);
+                    break;
+                case "视频":
+                    initTypeData(label, type, showMore, list);
+                    break;
+                case "专栏":
+                    initTypeData(label, type, showMore, list);
+                    break;
+                case "大专栏":
+                    initTypeData(label, type, showMore, list);
+                    break;
+                case "会员":
+                    initTypeData(label, type, showMore, list);
+                    break;
+            }
+        }
+        // 初始化 recyclerView
+        if (!searchActivity.hasDecorate) {
+            initRecycler();
+        }
+    }
+
+    /**
+     * 初始化对应类型的数据
+     */
+    private void initTypeData(String typeTitle, int type, boolean showMore, JSONArray list) {
+        ComponentInfo itemComponentInfo = new ComponentInfo();
+        itemComponentInfo.setHideTitle(false);
+        itemComponentInfo.setTitle(typeTitle);
+        itemComponentInfo.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
+        itemComponentInfo.setSubType(DecorateEntityType.KNOWLEDGE_LIST_STR);
+        itemComponentInfo.setSearchType(type);
+        String keyword = searchActivity.searchKeyword;
+        itemComponentInfo.setJoinedDesc(keyword); // 注意：使用 joinedDesc 字段表示搜索的关键字
+        if (showMore) { // 只是让组件知道需要显示查看全部的按钮，需要查看更多就传 !""，否则传 ""
+            itemComponentInfo.setDesc("查看全部");
+        } else {
+            itemComponentInfo.setDesc("");
+        }
+        List<KnowledgeCommodityItem> contentList = new ArrayList<>();
+        // 遍历系列课程
+        for (Object listItem : list) {
+            JSONObject item = (JSONObject) listItem;
+            KnowledgeCommodityItem commodityItem = new KnowledgeCommodityItem();
+            String resourceId = item.getString("id");
+            String resourceType = convertInt2Str(type);
+            String imgUrl = item.getString("img_url");
+            String title = item.getString("title");
+            String columnDesc = item.getString("summary");
+            float price = item.getFloat("price");
+            String priceStr;
+            if (price == 0) {
+                priceStr = "";
+            } else {
+                priceStr = "￥" + price;
+            }
+            commodityItem.setItemTitle(title);
+            commodityItem.setItemImg(imgUrl);
+            commodityItem.setItemTitleColumn(columnDesc);
+            commodityItem.setSrcType(resourceType);
+            commodityItem.setResourceId(resourceId);
+            commodityItem.setItemPrice(priceStr);
+            contentList.add(commodityItem);
+        }
+        // 有数据才显示
+        if (contentList.size() > 0) {
+            itemComponentInfo.setKnowledgeCommodityItemList(contentList);
+            if (searchActivity.hasDecorate) {
+                itemComponentInfo.setNeedDecorate(false);
+            } else {
+                itemComponentInfo.setNeedDecorate(true);
+            }
+            itemComponentList.add(itemComponentInfo);
+        }
+    }
+
+    /**
+     * 初始化搜索结果数据类型，分类依据 -- 单品 / 专栏、大专栏
+     * 备注一下，这套代码是用于筛选返回结果中的单品课程和系列课程，然后进行显示
+     * 11.23 需求变更后不再使用，但保留
+     */
     private void initDataList() {
         JSONArray dataJsonList = (JSONArray) dataList;
         for (Object jsonItem : dataJsonList) {
@@ -346,7 +425,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             ((SearchActivity) getActivity()).searchContent.setText(searchContent);
             ((SearchActivity) getActivity()).searchContent.setSelection(searchContent.length());
             ((SearchActivity) getActivity()).obtainSearchResult(((SearchActivity) getActivity()).searchContent.getText().toString());
-            if (!searchActivity.hasData(searchContent)) { // 点击推荐，查库没有后需要入库
+            if (searchActivity.hasDbData(searchContent)) { // 点击推荐，查库没有后需要入库
                 String currentTime = searchActivity.obtainCurrentTime();
                 SearchHistory searchHistory = new SearchHistory(searchContent, currentTime);
                 SQLiteUtil.init(mContext, new SearchSQLiteCallback()).insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
@@ -360,9 +439,31 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                         historyData.add(0, searchHistory);
                     }
                 }
-                if(historyAdapter != null){
-                    historyAdapter.notifyDataSetChanged();
+                if(historyAdapter == null){
+                    historyContentView = (SearchContentView) viewWrap.findViewById(R.id.history_content);
+                    historyContentView.setTitleStartText("历史搜索");
+                    historyContentView.setTitleEndText("清空历史搜索");
+
+                    historyContentView.setTitleEndClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+                        @Override
+                        public void singleClick(View v) {
+                            // 删除数据库中全部数据
+                            SQLiteUtil.init(mContext, new SearchSQLiteCallback()).execSQL("delete from " + SearchSQLiteCallback.TABLE_NAME_CONTENT);
+                            Toast.makeText(searchActivity, "删除成功", Toast.LENGTH_SHORT).show();
+                            historyContentView.setVisibility(View.GONE);
+                        }
+                    });
+
+                    historyList = new ArrayList<>();
+                    historyList.add(searchHistory);
+                    historyAdapter = new HistoryRecyclerAdapter(mContext, historyList);
+                    historyAdapter.setOnItemClickWithPosListener(this);
+                    historyContentView.setHistoryContentAdapter(historyAdapter);
+                    historyContentView.setVisibility(View.VISIBLE);
+                } else {
+                    historyList.add(searchHistory);
                 }
+                historyAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -393,6 +494,8 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                 return DecorateEntityType.AUDIO;
             case 3: // 视频
                 return DecorateEntityType.VIDEO;
+            case 5: // 会员
+                return DecorateEntityType.MEMBER;
             case 6: // 专栏
                 return DecorateEntityType.COLUMN;
             case 8: // 大专栏

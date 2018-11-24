@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.scwang.smartrefresh.layout.SmartRefreshLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/result_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:scrollbars="none"
+    android:overScrollMode="never">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:overScrollMode="never">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
 
-        <LinearLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/result_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:nestedScrollingEnabled="false" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/result_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"/>
+    </LinearLayout>
 
-        </LinearLayout>
-
-    </ScrollView>
-
-    <com.xiaoe.common.widget.CommonRefreshFooter
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-</com.scwang.smartrefresh.layout.SmartRefreshLayout>
+</ScrollView>

@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.business.earning.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.EarningItem;
@@ -49,6 +54,9 @@ public class ScholarshipActivity extends XiaoeActivity {
     @BindView(R.id.title_end)
     TextView scholarshipWithdrawal;
 
+    @BindView(R.id.scholarship_refresh)
+    SmartRefreshLayout scholarshipRefresh;
+
     @BindView(R.id.scholarship_page_content)
     TextView scholarshipMoney;
     @BindView(R.id.scholarship_page_submit)
@@ -70,6 +78,9 @@ public class ScholarshipActivity extends XiaoeActivity {
     List<EarningItem> dataList;
 
     String allMoney; // 可提现金额
+    private int pageIndex = 1; // 默认第一页
+    private int pageSize = 10; // 默认每页加载 10 条
+    EarningListAdapter earningListAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,7 +93,7 @@ public class ScholarshipActivity extends XiaoeActivity {
         scholarWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         earningPresenter = new EarningPresenter(this);
-        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW ,Constants.EARNING_FLOW_TYPE, 1, 10);
+        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW ,Constants.EARNING_FLOW_TYPE, pageIndex, pageSize);
 
         initData();
         initListener();
@@ -103,6 +114,26 @@ public class ScholarshipActivity extends XiaoeActivity {
     }
 
     private void initListener() {
+        scholarshipRefresh.setEnableRefresh(true);
+        scholarshipRefresh.setEnableLoadMore(true);
+        scholarshipRefresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                if (pageIndex != 1) {
+                    pageIndex = 1;
+                }
+                earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW ,Constants.EARNING_FLOW_TYPE, pageIndex, pageSize);
+            }
+        });
+        scholarshipRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                if (earningPresenter == null) {
+                    earningPresenter = new EarningPresenter(ScholarshipActivity.this);
+                }
+                earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW ,Constants.EARNING_FLOW_TYPE, ++pageIndex, pageSize);
+            }
+        });
         scholarshipBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,6 +186,20 @@ public class ScholarshipActivity extends XiaoeActivity {
         BigDecimal bottom = new BigDecimal(100);
         allMoney = String.valueOf(top.divide(bottom, 2, RoundingMode.HALF_UP));
         JSONArray flowList = (JSONArray) data.get("flow_list");
+        if (flowList.size() == 0  && earningListAdapter != null) {
+            scholarshipRefresh.setNoMoreData(true);
+            scholarshipRefresh.setEnableLoadMore(false);
+            scholarshipRefresh.finishLoadMore();
+            return;
+        }
+        if (pageIndex == 1 && dataList.size() != 0) { // 第一页但是有数据，表示为下拉加载
+            dataList.clear();
+            // 放开加载更多限制
+            scholarshipRefresh.setEnableLoadMore(true);
+            scholarshipRefresh.setNoMoreData(false);
+        }
+        scholarshipRefresh.finishLoadMore();
+        scholarshipRefresh.finishRefresh();
         for (Object item : flowList) {
             JSONObject jsonItem = (JSONObject) item;
             int flowType = jsonItem.getInteger("flow_type");
@@ -175,8 +220,12 @@ public class ScholarshipActivity extends XiaoeActivity {
 
         scholarshipMoney.setText(allMoney);
         if (dataList.size() > 0) {
-            EarningListAdapter earningListAdapter = new EarningListAdapter(this, dataList);
-            scholarshipList.setAdapter(earningListAdapter);
+            if (earningListAdapter == null) {
+                earningListAdapter = new EarningListAdapter(this, dataList);
+                scholarshipList.setAdapter(earningListAdapter);
+            } else {
+                earningListAdapter.notifyDataSetChanged();
+            }
             MeasureUtil.setListViewHeightBasedOnChildren(scholarshipList);
             scholarshipTip.setVisibility(View.GONE);
         } else {

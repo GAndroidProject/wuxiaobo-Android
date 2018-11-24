@@ -2,8 +2,10 @@ package com.xiaoe.shop.wxb.business.search.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoe.common.app.Global;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.SearchHistory;
 import com.xiaoe.common.entitys.SearchHistoryEntity;
@@ -33,6 +36,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.search.presenter.SearchPresenter;
 import com.xiaoe.shop.wxb.business.search.presenter.SearchSQLiteCallback;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 import java.text.SimpleDateFormat;
@@ -88,6 +92,12 @@ public class SearchActivity extends XiaoeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+
+        //状态栏颜色字体(白底黑字)修改 Android6.0+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         StatusBarUtil.setRootViewFitsSystemWindows(this, false);
 
@@ -100,16 +110,6 @@ public class SearchActivity extends XiaoeActivity {
         // 先默认显示我的财富计划
         searchContent.setHint("我的财富计划");
         searchContent.setSelection(searchContent.getText().toString().length());
-        // 设置删除按钮
-        initCloseIcon();
-    }
-
-    // 初始化关闭按钮
-    private void initCloseIcon() {
-        right = SearchActivity.this.getResources().getDrawable(R.mipmap.icon_clear);
-        Rect rect = new Rect(0, 0, right.getIntrinsicWidth(), right.getIntrinsicHeight());
-        right.setBounds(rect);
-        searchContent.setCompoundDrawables(null, null, right, null);
     }
 
     private void initData() {
@@ -129,16 +129,16 @@ public class SearchActivity extends XiaoeActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initListener() {
-        searchWrap.setOnClickListener(new View.OnClickListener() {
+        searchWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 toggleSoftKeyboard();
             }
         });
 
-        searchCancel.setOnClickListener(new View.OnClickListener() {
+        searchCancel.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (currentFragment.getTag().equals(CONTENT) || currentFragment.getTag().equals(EMPTY)) { // 点击取消时，是有搜索内容的话或者是空页面，切换为主页 fragment
                     replaceFragment(MAIN);
                 } else {
@@ -159,23 +159,22 @@ public class SearchActivity extends XiaoeActivity {
                         content = "我的财富计划";
                         searchContent.setText(content);
                         searchContent.setSelection(content.length());
-                    } else {
-                        if (!hasData(content)) { // 不为空并且没有存数据库，就存
-                            // 将输入的内容插入到数据库
-                            String currentTime = obtainCurrentTime();
-                            SearchHistory searchHistory = new SearchHistory(content, currentTime);
-                            sqLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
+                    }
+                    if (hasDbData(content)) { // 不为空并且没有存数据库，就存
+                        // 将输入的内容插入到数据库
+                        String currentTime = obtainCurrentTime();
+                        SearchHistory searchHistory = new SearchHistory(content, currentTime);
+                        sqLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
 
-                            // 刷新界面
-                            if (((SearchPageFragment) currentFragment).historyData != null && ((SearchPageFragment) currentFragment).historyAdapter != null) {
-                                if (((SearchPageFragment) currentFragment).historyData.size() >= 5) {
-                                    ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
-                                    ((SearchPageFragment) currentFragment).historyData.remove(((SearchPageFragment) currentFragment).historyData.size() - 1);
-                                } else { // 否则直接添加
-                                    ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
-                                }
-                                ((SearchPageFragment) currentFragment).historyAdapter.notifyDataSetChanged();
+                        // 刷新界面
+                        if (((SearchPageFragment) currentFragment).historyData != null && ((SearchPageFragment) currentFragment).historyAdapter != null) {
+                            if (((SearchPageFragment) currentFragment).historyData.size() >= 5) {
+                                ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
+                                ((SearchPageFragment) currentFragment).historyData.remove(((SearchPageFragment) currentFragment).historyData.size() - 1);
+                            } else { // 否则直接添加
+                                ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
                             }
+                            ((SearchPageFragment) currentFragment).historyAdapter.notifyDataSetChanged();
                         }
                     }
                     obtainSearchResult(content);
@@ -194,6 +193,9 @@ public class SearchActivity extends XiaoeActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String input = s.toString();
+                if (right == null) { // 如果关闭图片为 null 的话就进行初始化
+                    initCloseIcon();
+                }
                 if (input.length() == 0) {
                     searchContent.setCompoundDrawables(null, null, null, null);
                 } else {
@@ -230,6 +232,14 @@ public class SearchActivity extends XiaoeActivity {
                 return false;
             }
         });
+    }
+
+    // 初始化关闭按钮
+    private void initCloseIcon() {
+        right = SearchActivity.this.getResources().getDrawable(R.mipmap.icon_clear);
+        Rect rect = new Rect(0, 0, right.getIntrinsicWidth(), right.getIntrinsicHeight());
+        right.setBounds(rect);
+        searchContent.setCompoundDrawables(null, null, right, null);
     }
 
     // 根据搜索内容进行查找
@@ -336,12 +346,12 @@ public class SearchActivity extends XiaoeActivity {
     }
 
     // 判断数据库是否已经存了这条数据
-    protected boolean hasData(String tempContent) {
+    protected boolean hasDbData(String tempContent) {
         // 从 search_history 表里面找到 content = tempContent 的那条数据
         List<SearchHistory> lists = sqLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
                 "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " where " + SearchHistoryEntity.COLUMN_NAME_CONTENT + " = ?", new String[]{tempContent});
         // 已经有一条数据的话就不用再插入
-        return lists.size() == 1;
+        return lists.size() != 1;
     }
 
     // 查询最新创建的五条数据

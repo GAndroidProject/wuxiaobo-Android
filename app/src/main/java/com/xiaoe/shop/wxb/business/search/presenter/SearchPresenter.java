@@ -53,4 +53,24 @@ public class SearchPresenter implements IBizCallback {
         searchRequest.addDataParam("page_size", pageSize);
         NetworkEngine.getInstance().sendRequest(searchRequest);
     }
+
+    /**
+     * 搜索加载更多
+     * @param keyword   搜索关键词
+     * @param pageIndex 页码
+     * @param pageSize  每页大小
+     * @param requestId 请求 id，每次都不一样即可
+     * @param type      商品类型
+     */
+    public void requestSearchMore(String keyword, int pageIndex, int pageSize, String requestId, int type) {
+        SearchRequest searchRequest = new SearchRequest(NetworkEngine.API_THIRD_BASE_URL + cmd, this);
+
+        searchRequest.addDataParam("keyword", keyword);
+        searchRequest.addDataParam("page", pageIndex);
+        searchRequest.addDataParam("page_size", pageSize);
+        searchRequest.addDataParam("request_id", requestId);
+        searchRequest.addDataParam("type", type);
+
+        NetworkEngine.getInstance().sendRequest(searchRequest);
+    }
 }

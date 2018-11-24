@@ -11,6 +11,7 @@ import com.xiaoe.common.entitys.SearchHistory;
 import com.xiaoe.common.interfaces.OnItemClickWithPosListener;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 
 public class HistoryRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -40,9 +41,9 @@ public class HistoryRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
         String content = historyList.get(position).getmContent();
         searchMainContentViewHolder.content.setText(content);
         final int tempPos = searchMainContentViewHolder.getAdapterPosition();
-        searchMainContentViewHolder.content.setOnClickListener(new View.OnClickListener() {
+        searchMainContentViewHolder.content.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (onItemClickWithPosListener != null) {
                     onItemClickWithPosListener.onItemClick(v, tempPos);
                 }

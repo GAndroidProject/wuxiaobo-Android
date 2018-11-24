@@ -323,6 +323,9 @@
             android:name=".business.historymessage.ui.HistoryMessageActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".common.web.BrowserActivity" />
+        <activity
+            android:name=".business.search.ui.SearchMoreActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

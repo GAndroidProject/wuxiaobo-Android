@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
@@ -44,10 +43,10 @@ import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.business.course_more.ui.CourseMoreActivity;
 import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 import com.youth.banner.BannerConfig;
-import com.youth.banner.Transformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,9 +151,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 // recyclerView 取消滑动
                 flowInfoViewHolder.flowInfoRecycler.setNestedScrollingEnabled(false);
                 flowInfoViewHolder.flowInfoRecycler.setAdapter(flowInfoRecyclerAdapter);
-                flowInfoViewHolder.flowInfoLearnWrap.setOnClickListener(new View.OnClickListener() {
+                flowInfoViewHolder.flowInfoLearnWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                     @Override
-                    public void onClick(View v) {
+                    public void singleClick(View v) {
                         if (currentBindComponent.isFormUser()) {
                             Intent intent = new Intent(mContext, MineLearningActivity.class);
                             intent.putExtra("pageTitle", "我正在学");
@@ -174,12 +173,22 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     recentUpdateViewHolder.recentUpdateSubBtn.setVisibility(View.GONE);
                 } else {
                     recentUpdateViewHolder.recentUpdateSubBtn.setVisibility(View.VISIBLE);
-                    recentUpdateViewHolder.recentUpdateSubBtn.setOnClickListener(new View.OnClickListener() {
+                    recentUpdateViewHolder.recentUpdateSubBtn.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                         @Override
-                        public void onClick(View v) {
+                        public void singleClick(View v) {
                             if (currentBindComponent.isFormUser()) {
                                 if(!currentBindComponent.isHasBuy()){
-                                    Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
+                                    switch (currentBindComponent.getSubType()) {
+                                        case DecorateEntityType.TOPIC:
+                                            JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), "", 8);
+                                            break;
+                                        case DecorateEntityType.COLUMN:
+                                            JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), "", 6);
+                                            break;
+                                        case DecorateEntityType.MEMBER:
+                                            JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), "", 5);
+                                            break;
+                                    }
                                     return;
                                 }
                                 if (!recentUpdateListAdapter.isPlaying) {
@@ -203,9 +212,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         }
                     });
                 }
-                recentUpdateViewHolder.recentUpdateAvatar.setOnClickListener(new View.OnClickListener() {
+                recentUpdateViewHolder.recentUpdateAvatar.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                     @Override
-                    public void onClick(View v) {
+                    public void singleClick(View v) {
                         JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), currentBindComponent.getImgUrl(), 5);
                     }
                 });
@@ -225,6 +234,19 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         knowledgeListViewHolder.knowledgeListView.setLayoutParams(layoutParams);
                     } else {
                         knowledgeListViewHolder.knowledgeListTitle.setText(currentBindComponent.getTitle());
+                        if ("".equals(currentBindComponent.getDesc())) { // 为空，不显示查看全部
+                            knowledgeListViewHolder.knowledgeListMore.setVisibility(View.GONE);
+                        } else { // 显示查看更多
+                            knowledgeListViewHolder.knowledgeListMore.setVisibility(View.VISIBLE);
+                        }
+                        if (knowledgeListViewHolder.knowledgeListMore.getVisibility() == View.VISIBLE) { // 列表形式，查看全部可见
+                            knowledgeListViewHolder.knowledgeListMore.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+                                @Override
+                                public void singleClick(View v) {
+                                    JumpDetail.jumpSearchMore(mContext, currentBindComponent.getJoinedDesc(), currentBindComponent.getSearchType());
+                                }
+                            });
+                        }
                     }
                     knowledgeListViewHolder.knowledgeListView.setAdapter(knowledgeListAdapter);
                     MeasureUtil.setListViewHeightBasedOnChildren(knowledgeListViewHolder.knowledgeListView);
@@ -237,9 +259,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     } else {
                         knowledgeGroupViewHolder.groupTitle.setText(currentBindComponent.getTitle());
                         knowledgeGroupViewHolder.groupMore.setText(currentBindComponent.getDesc());
-                        knowledgeGroupViewHolder.groupMore.setOnClickListener(new View.OnClickListener() {
+                        knowledgeGroupViewHolder.groupMore.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                             @Override
-                            public void onClick(View v) {
+                            public void singleClick(View v) {
                                 // 跳转到更多课程的页面
                                 String groupId = currentBindComponent.getGroupId();
                                 Intent intent = new Intent(mContext, CourseMoreActivity.class);
@@ -336,9 +358,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 if (!currentBindComponent.isNeedDecorate()) {
                     searchViewHolder.searchWxb.setVisibility(View.GONE);
                 }
-                searchViewHolder.searchIcon.setOnClickListener(new View.OnClickListener() {
+                searchViewHolder.searchIcon.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                     @Override
-                    public void onClick(View v) {
+                    public void singleClick(View v) {
                         JumpDetail.jumpSearch(mContext);
                     }
                 });
@@ -451,15 +473,16 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     private void showTouristDialog() {
         final TouristDialog touristDialog = new TouristDialog(mContext);
-        touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+        touristDialog.setDialogCloseClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 touristDialog.dismissDialog();
             }
         });
-        touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+        touristDialog.setDialogConfirmClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 touristDialog.dismissDialog();
                 JumpDetail.jumpLogin(mContext, true);
             }

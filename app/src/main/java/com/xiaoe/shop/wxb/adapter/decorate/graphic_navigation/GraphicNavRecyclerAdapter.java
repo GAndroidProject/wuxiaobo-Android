@@ -12,6 +12,7 @@ import com.xiaoe.common.entitys.GraphicNavItem;
 import com.xiaoe.common.interfaces.OnItemClickWithNavItemListener;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 
 public class GraphicNavRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -41,9 +42,9 @@ public class GraphicNavRecyclerAdapter extends RecyclerView.Adapter<BaseViewHold
         final int innerPos = graphicNavItemViewHolder.getAdapterPosition();
         graphicNavItemViewHolder.itemIcon.setImageURI(mItemList.get(innerPos).getNavIcon());
         graphicNavItemViewHolder.itemContent.setText(mItemList.get(innerPos).getNavContent());
-        graphicNavItemViewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
+        graphicNavItemViewHolder.itemWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (onItemClickWithNavItemListener != null) {
                     onItemClickWithNavItemListener.onNavItemClick(v, mItemList.get(innerPos));
                 }

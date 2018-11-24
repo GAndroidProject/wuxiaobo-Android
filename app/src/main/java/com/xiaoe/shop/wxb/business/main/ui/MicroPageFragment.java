@@ -284,11 +284,13 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         // 更新频道组件
         for (ComponentInfo componentInfo : microPageList) {
             if (componentInfo.getType().equals(DecorateEntityType.RECENT_UPDATE_STR)) {
-                componentInfo.setSubList(itemList);
-                if (audioCount == 3) { // 3 个都是音频，就显示收听全部按钮，不想加字段，就用这个 hideTitle 来判断
-                    componentInfo.setHideTitle(false);
-                } else {
-                    componentInfo.setHideTitle(true);
+                if (columnId.equals(componentInfo.getColumnId())) { // 是同一个组件才添加数据
+                    componentInfo.setSubList(itemList);
+                    if (audioCount == 3) { // 3 个都是音频，就显示收听全部按钮，不想加字段，就用这个 hideTitle 来判断
+                        componentInfo.setHideTitle(false);
+                    } else {
+                        componentInfo.setHideTitle(true);
+                    }
                 }
             }
         }
@@ -389,11 +391,13 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     String imgUrl = jsonItem.getString("img_url");
                     int updateCount = jsonItem.getInteger("resource_count") == null ? 0 : jsonItem.getInteger("resource_count");
                     String updateCountStr = "已更新至" + updateCount + "期";
+                    String srcType = jsonItem.getString("src_type");
                     component_recent.setTitle(recentTitle);
                     component_recent.setImgUrl(imgUrl);
                     component_recent.setDesc(updateCountStr);
                     // 最近更新需要设置专栏 id
                     component_recent.setColumnId(recentId);
+                    component_recent.setSubType(srcType);
                     if(TextUtils.isEmpty(jsonItem.getString("show_price"))){
                         component_recent.setHasBuy(true);
                     }else{
@@ -694,6 +698,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 return null;
         }
     }
+
     @Subscribe
     public void onEventMainThread(AudioPlayEvent event) {
         switch (event.getState()){

@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.business.earning.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.WrItem;
 import com.xiaoe.common.utils.MeasureUtil;
@@ -49,6 +55,9 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
     @BindView(R.id.title_end)
     TextView wrEnd;
 
+    @BindView(R.id.withdrawal_record_refresh)
+    SmartRefreshLayout wrRefresh;
+
     @BindView(R.id.withdrawal_record_list)
     ListView wrList;
 
@@ -59,6 +68,9 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
 
     Unbinder unbinder;
     EarningPresenter earningPresenter;
+    private int pageIndex = 1; // 默认加载第一页
+    private int pageSize = 10; // 默认每页加载 10 条
+    WrListAdapter wrListAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,7 +84,7 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
         wrLoading.setLoadingState(View.VISIBLE);
 
         earningPresenter = new EarningPresenter(this);
-        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW, Constants.WITHDRAWAL_FLOW_TYPE, 1, 10);
+        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW, Constants.WITHDRAWAL_FLOW_TYPE, pageIndex, pageSize);
 
         initData();
         initListener();
@@ -85,10 +97,27 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
     }
 
     private void initListener() {
+        wrRefresh.setEnableRefresh(true);
+        wrRefresh.setEnableLoadMore(true);
         wrBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+        wrRefresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                if (pageIndex != 1) {
+                    pageIndex = 1;
+                }
+                earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW, Constants.WITHDRAWAL_FLOW_TYPE, pageIndex, pageSize);
+            }
+        });
+        wrRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW, Constants.WITHDRAWAL_FLOW_TYPE, ++pageIndex, pageSize);
             }
         });
     }
@@ -117,9 +146,24 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
     private void initPageData(JSONObject data) {
         int priceBottom = 100;
         JSONArray flowList = (JSONArray) data.get("flow_list");
+        if (flowList.size() == 0 && wrListAdapter != null) { // 加载更多没有数据了
+            wrRefresh.setNoMoreData(true);
+            wrRefresh.setEnableLoadMore(false);
+            wrRefresh.finishLoadMore();
+            return;
+        }
+        if (pageIndex == 1 && dataList.size() > 0) { // 有数据时下拉刷新
+            dataList.clear();
+            // 放开上拉加载限制
+            wrRefresh.setNoMoreData(false);
+            wrRefresh.setEnableLoadMore(true);
+        }
+        wrRefresh.finishRefresh();
+        wrRefresh.finishLoadMore();
         for (Object flowListItem : flowList) {
             JSONObject jsonItem = (JSONObject) flowListItem;
             int itemPriceTop = jsonItem.getInteger("price");
+            String itemTitle = jsonItem.getString("description");
             String itemDesc = jsonItem.getString("desc");
             String itemTime = jsonItem.getString("created_at").split(" ")[0];
 
@@ -128,17 +172,21 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
 
             // 提现记录假数据
             WrItem wrItem = new WrItem();
-            wrItem.setWrTitle(itemDesc);
+            wrItem.setWrTitle(itemTitle);
             wrItem.setWrMoney(top.divide(bottom, 2, RoundingMode.HALF_UP));
             wrItem.setWrTime(itemTime);
-            wrItem.setWrState("提现成功");
+            wrItem.setWrState(itemDesc);
 
             dataList.add(wrItem);
         }
 
         if (dataList.size() > 0) {
-            WrListAdapter wrListAdapter = new WrListAdapter(this, dataList);
-            wrList.setAdapter(wrListAdapter);
+            if (wrListAdapter == null) {
+                wrListAdapter = new WrListAdapter(this, dataList);
+                wrList.setAdapter(wrListAdapter);
+            } else {
+                wrListAdapter.notifyDataSetChanged();
+            }
             MeasureUtil.setListViewHeightBasedOnChildren(wrList);
         } else {
             wrLoading.setPagerState(StatusPagerView.EMPTY, "无提现记录，快去做任务领取奖学金吧", R.mipmap.cash_none);

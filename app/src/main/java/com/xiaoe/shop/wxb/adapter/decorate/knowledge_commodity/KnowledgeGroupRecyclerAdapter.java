@@ -13,6 +13,7 @@ import com.xiaoe.common.entitys.KnowledgeCommodityItem;
 import com.xiaoe.common.interfaces.OnItemClickWithKnowledgeListener;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 
 public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -74,9 +75,9 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
             knowledgeItemViewHolder.itemDesc.setText(currentItem.getItemDesc());
         }
         // 判断如果 item 是专栏的话就显示一行标题一行描述，其他单品的话就显示两行标题
-        knowledgeItemViewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
+        knowledgeItemViewHolder.itemWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 onItemClickWithKnowledgeListener.onKnowledgeItemClick(v, currentItem);
             }
         });

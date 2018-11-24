@@ -316,6 +316,7 @@
     <string name="network_error_text">网络异常</string>
     <string name="Jump_not_text">暂不支持跳转</string>
     <string name="knowed_text">知道了</string>
-
     <string name="price_decimal">%.2f</string>
+
+    <string name="list_watch_more">查看全部</string>
 </resources>

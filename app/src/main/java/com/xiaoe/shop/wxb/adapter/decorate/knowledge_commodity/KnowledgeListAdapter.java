@@ -12,8 +12,8 @@ import android.widget.Toast;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
 import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.business.course.ui.CourseImageTextActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
@@ -87,20 +87,16 @@ public class KnowledgeListAdapter extends BaseAdapter {
             viewHolder.itemDesc.setText(mItemList.get(position).getItemDesc());
             viewHolder.itemPrice.setText(mItemList.get(position).getItemPrice());
         }
-        viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
-                Intent intent = null;
+            public void singleClick(View v) {
                 if (mItemList.get(position).getSrcType() == null) {
                     Toast.makeText(mContext, "正在处理", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 switch (mItemList.get(position).getSrcType()) {
                     case DecorateEntityType.IMAGE_TEXT:
-                        intent = new Intent(mContext, CourseImageTextActivity.class);
-                        intent.putExtra("imgUrl", mItemList.get(position).getItemImg());
-                        intent.putExtra("resourceId", mItemList.get(position).getResourceId());
-                        mContext.startActivity(intent);
+                        JumpDetail.jumpImageText(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg());
                         break;
                     case DecorateEntityType.AUDIO:
                         JumpDetail.jumpAudio(mContext, mItemList.get(position).getResourceId(),0);
@@ -164,6 +160,8 @@ public class KnowledgeListAdapter extends BaseAdapter {
                 return "2";
             case DecorateEntityType.VIDEO:
                 return "3";
+            case DecorateEntityType.MEMBER:
+                return "5";
             case DecorateEntityType.COLUMN:
                 return "6";
             case DecorateEntityType.TOPIC:

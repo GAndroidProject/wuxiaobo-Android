@@ -33,6 +33,7 @@ import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
 import com.xiaoe.shop.wxb.business.navigate_detail.ui.NavigateDetailActivity;
 import com.xiaoe.shop.wxb.business.search.ui.SearchActivity;
+import com.xiaoe.shop.wxb.business.search.ui.SearchMoreActivity;
 import com.xiaoe.shop.wxb.business.setting.ui.SettingAccountActivity;
 import com.xiaoe.shop.wxb.business.setting.ui.SettingPersonActivity;
 import com.xiaoe.shop.wxb.business.super_vip.ui.SuperVipActivity;
@@ -379,6 +380,21 @@ public class JumpDetail {
      */
     public static void jumpHistoryMessage(Context context) {
         Intent intent = new Intent(context, HistoryMessageActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到搜索更多页面
+     * @param context      上下文
+     * @param keyword      搜索关键词
+     * @param resourceType 搜索资源类型
+     */
+    public static void jumpSearchMore(Context context, String keyword, int resourceType) {
+        Intent intent = new Intent(context, SearchMoreActivity.class);
+
+        intent.putExtra("keyword", keyword);
+        intent.putExtra("resourceType", resourceType);
+
         context.startActivity(intent);
     }
 }

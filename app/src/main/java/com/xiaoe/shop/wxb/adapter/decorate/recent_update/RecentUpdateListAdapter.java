@@ -28,6 +28,7 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 /**
@@ -68,19 +69,19 @@ public class RecentUpdateListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final RecentUpdateHolder viewHolder;
+        final RecentUpdateListViewHolder viewHolder;
         final RecentUpdateListItem recentUpdateListItem = mItemList.get(position);
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.recent_update_list_item, parent ,false);
-            viewHolder = new RecentUpdateHolder(convertView);
+            viewHolder = new RecentUpdateListViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (RecentUpdateHolder) convertView.getTag();
+            viewHolder = (RecentUpdateListViewHolder) convertView.getTag();
         }
         viewHolder.itemTitle.setText(recentUpdateListItem.getListTitle());
-        viewHolder.itemWrap.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (recentUpdateListItem.isListIsFormUser()) {
                     if(!hasBuy){
                         Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
@@ -122,9 +123,9 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
         }
 
-        viewHolder.itemIcon.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemIcon.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (recentUpdateListItem.isListIsFormUser()) {
                     if(!hasBuy){
                         Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
@@ -151,20 +152,6 @@ public class RecentUpdateListAdapter extends BaseAdapter {
 //            }
 //        });
         return convertView;
-    }
-
-    class RecentUpdateHolder {
-
-        @BindView(R.id.recent_update_item_wrap)
-        RelativeLayout itemWrap;
-        @BindView(R.id.recent_update_item_title)
-        TextView itemTitle;
-        @BindView(R.id.recent_update_item_icon)
-        SimpleDraweeView itemIcon;
-
-        RecentUpdateHolder(View itemView) {
-            ButterKnife.bind(this, itemView);
-        }
     }
 
     /**
@@ -280,15 +267,15 @@ public class RecentUpdateListAdapter extends BaseAdapter {
 
     private void showTouristDialog() {
         final TouristDialog touristDialog = new TouristDialog(mContext);
-        touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+        touristDialog.setDialogCloseClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 touristDialog.dismissDialog();
             }
         });
-        touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+        touristDialog.setDialogConfirmClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 touristDialog.dismissDialog();
                 JumpDetail.jumpLogin(mContext, true);
             }

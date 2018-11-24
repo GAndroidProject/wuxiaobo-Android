@@ -207,39 +207,44 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 initMineMsg();
                 initData();
             } else {
-                // 游客登录
-                mineMsgView.setNickName("点击登录");
-                mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
-                mineVipCard.setVisibility(View.GONE);
-                mineMsgView.setBuyVipVisibility(View.VISIBLE);
-                // 超级会员隐藏后奖学金的位置
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                int left = Dp2Px2SpUtil.dp2px(mContext, 20);
-                int top = Dp2Px2SpUtil.dp2px(mContext, -36);
-                int right = Dp2Px2SpUtil.dp2px(mContext, 20);
-                layoutParams.setMargins(left, top, right ,0);
-                mineMoneyWrapView.setLayoutParams(layoutParams);
-                // 金钱容器（未登录状态）
-                List<MineMoneyItemInfo> tempList = new ArrayList<>();
-                MineMoneyItemInfo item_1_temp = new MineMoneyItemInfo();
-                item_1_temp.setItemTitle("￥0.00");
-                item_1_temp.setItemDesc("奖学金");
-                MineMoneyItemInfo item_2_temp = new MineMoneyItemInfo();
-                item_2_temp.setItemTitle("0");
-                item_2_temp.setItemDesc("积分");
-                tempList.add(item_1_temp);
-                tempList.add(item_2_temp);
-                MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, tempList);
-                moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
-                mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
-                MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
-                mineLearningWrapView.setLearningListAdapter(learningListAdapter);
-                mineLearningWrapView.setLearningContainerVisibility(View.GONE);
-                mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
+                initTouristData();
             }
 
 //            initListener();
         }
+    }
+
+    private void initTouristData() {
+        // 游客登录
+        mineMsgView.setNickName("点击登录");
+        mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
+        mineVipCard.setVisibility(View.GONE);
+        mineMsgView.setBuyVipVisibility(View.VISIBLE);
+        mineMsgView.setBuyVipCommon();
+        // 超级会员隐藏后奖学金的位置
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int left = Dp2Px2SpUtil.dp2px(mContext, 20);
+        int top = Dp2Px2SpUtil.dp2px(mContext, -36);
+        int right = Dp2Px2SpUtil.dp2px(mContext, 20);
+        layoutParams.setMargins(left, top, right ,0);
+        mineMoneyWrapView.setLayoutParams(layoutParams);
+        // 金钱容器（未登录状态）
+        List<MineMoneyItemInfo> tempList = new ArrayList<>();
+        MineMoneyItemInfo item_1_temp = new MineMoneyItemInfo();
+        item_1_temp.setItemTitle("￥0.00");
+        item_1_temp.setItemDesc("奖学金");
+        MineMoneyItemInfo item_2_temp = new MineMoneyItemInfo();
+        item_2_temp.setItemTitle("0");
+        item_2_temp.setItemDesc("积分");
+        tempList.add(item_1_temp);
+        tempList.add(item_2_temp);
+        MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, tempList);
+        moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
+        mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
+        MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
+        mineLearningWrapView.setLearningListAdapter(learningListAdapter);
+        mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+        mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
     }
 
     private void initData() {
@@ -759,6 +764,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 return DecorateEntityType.AUDIO;
             case 3: // 视频
                 return DecorateEntityType.VIDEO;
+            case 5: // 会员
+                return DecorateEntityType.MEMBER;
             case 6: // 专栏
                 return DecorateEntityType.COLUMN;
             case 8: // 大专栏

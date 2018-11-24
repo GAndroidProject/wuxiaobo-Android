@@ -14,6 +14,8 @@ public class KnowledgeListViewHolder extends BaseViewHolder {
 
     @BindView(R.id.knowledge_list_title)
     public TextView knowledgeListTitle;
+    @BindView(R.id.knowledge_list_more)
+    public TextView knowledgeListMore;
     @BindView(R.id.knowledge_list_list_view)
     public ListView knowledgeListView;
 
