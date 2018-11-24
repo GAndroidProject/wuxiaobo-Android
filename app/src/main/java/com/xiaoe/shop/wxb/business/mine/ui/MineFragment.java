@@ -110,6 +110,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     private boolean showDataByDB = false;
     SuperVipPresenter superVipPresenter;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+        // 网络请求数据代码
+//        MinePresenter minePresenter = new MinePresenter(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -119,6 +127,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mainActivity = (MainActivity) getActivity();
         mineLoading.setLoadingState(View.VISIBLE);
         view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
+        initListener();
         return view;
     }
 
@@ -128,11 +137,29 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-        // 网络请求数据代码
-//        MinePresenter minePresenter = new MinePresenter(this);
+    public void onResume() {
+        super.onResume();
+        setUnreadMsg(0);
+        mainActivity.getUnreadMsg();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -211,7 +238,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
             }
 
-            initListener();
+//            initListener();
         }
     }
 
@@ -282,11 +309,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
         JSONObject result = (JSONObject) entity;
@@ -317,7 +339,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 obtainVipBuyInfo(code, result);
             }
         } else {
-            mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            mineRefresh.finishRefresh();
+            if (!showDataByDB) {
+                mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            }
         }
     }
 
@@ -505,20 +530,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
-
     @Subscribe
     public void onEventMainThread(GetSuperMemberSuccessEvent event) {
         if (event != null && event.isRefresh){//兑换码到超级会员成功后，刷新我的页面UI
@@ -648,13 +659,16 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 }
                 break;
             case R.id.mine_loading:
-                if (mineLearningPresenter == null) {
-                    mineLearningPresenter = new MineLearningPresenter(this);
-                }
-                if (earningPresenter == null) {
-                    earningPresenter = new EarningPresenter(this);
-                }
-                if (mineLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面错误点击再请求
+                if (mineLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面错误点击再请求、
+                    mineLoading.setPagerState(StatusPagerView.LOADING, "", 0);
+
+                    if (mineLearningPresenter == null) {
+                        mineLearningPresenter = new MineLearningPresenter(this);
+                    }
+                    if (earningPresenter == null) {
+                        earningPresenter = new EarningPresenter(this);
+                    }
+
                     isScholarshipFinish = false;
                     isIntegralFinish = false;
                     isMineLearningFinish = false;
@@ -771,13 +785,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         superVipPresenter.requestSuperVip();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setUnreadMsg(0);
-        mainActivity.getUnreadMsg();
-    }
-
     private void setUnreadMsg(int unreadCount) {
         int saveCount = (int) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_UNREAD_MSG_COUNT, 0);
 
@@ -872,6 +879,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 && scholarshipCacheDataList != null && scholarshipCacheDataList.size() > 0
                 && learningCacheDataList != null && learningCacheDataList.size() > 0){
             showDataByDB = true;
+        } else {
+            showDataByDB = false;
         }
     }
 }

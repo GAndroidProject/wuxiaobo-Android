@@ -208,13 +208,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 }
             }
         } else {
+            microPageFresh.finishRefresh();
             microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
-//            if (result != null) {
-//                int code = result.getInteger("code");
-//                if (NetworkStateResult.ERROR_NETWORK == code) {
-//                    ToastUtils.show(mContext, mContext.getString(R.string.network_error_text));
-//                }
-//            }
         }
     }
     private void setDataByDB(){
@@ -771,10 +766,14 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     hp = new PageFragmentPresenter(this);
                 }
                 if (microPageLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面异常，点击重新请求
+                    microPageLoading.setPagerState(StatusPagerView.LOADING, "", 0);
+
                     hp.requestMicroPageData(microPageId);
                     microPageLoading.setVisibility(View.VISIBLE);
                     microPageLoading.setLoadingState(View.VISIBLE);
                 }
+                break;
+            default:
                 break;
         }
     }

@@ -33,7 +33,7 @@ public class StatusPagerView extends FrameLayout {
     private SimpleDraweeView loadingState;
     private TextView stateText;
     private ImageView stateImage;
-    private int state;
+    private int state = LOADING;
 
     public static final int DETAIL_NONE = R.mipmap.error_page;
     private TextView btnGoTo;
@@ -57,12 +57,11 @@ public class StatusPagerView extends FrameLayout {
         setHintStateVisibility(View.GONE);
         btnGoTo = (TextView) rootView.findViewById(R.id.btn_go_to);
 
-        rootView.findViewById(R.id.pager).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+//        stateImage.setOnClickListener(view -> {
+//            if (onRefreshEvent != null) {
+//                onRefreshEvent.onReLoading(state);
+//            }
+//        });
     }
 
     public void setLoadingState(int visibility){
@@ -136,5 +135,20 @@ public class StatusPagerView extends FrameLayout {
 
     public int getCurrentLoadingStatus() {
         return state;
+    }
+
+    private OnRefreshEvent onRefreshEvent;
+
+    public void setOnRefreshEvent(OnRefreshEvent onRefreshEvent) {
+        this.onRefreshEvent = onRefreshEvent;
+    }
+
+    interface OnRefreshEvent {
+        /**
+         * 点击重新加载回调
+         *
+         * @param state
+         */
+        void onReLoading(int state);
     }
 }

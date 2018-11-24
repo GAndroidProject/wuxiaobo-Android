@@ -223,8 +223,12 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                     scholarshipPresenter = new ScholarshipPresenter(this);
                 }
                 if (scholarshipLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 网络请求错误才显示
+                    scholarshipLoading.setPagerState(StatusPagerView.LOADING, "", 0);
+
                     scholarshipPresenter.requestTaskList(true);
                 }
+                break;
+            default:
                 break;
         }
     }
@@ -372,6 +376,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 }
             }
         } else {
+            scholarshipRefresh.finishRefresh();
             if(!showDataByDB){
                 scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
             }
@@ -483,6 +488,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 scholarshipStepOne.setVisibility(View.VISIBLE);
                 scholarshipStepTwo.setVisibility(View.GONE);
                 scholarshipStepThree.setVisibility(View.GONE);
+                break;
+            default:
                 break;
         }
         scholarshipLoading.setLoadingFinish();

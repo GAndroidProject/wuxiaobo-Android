@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,11 +24,13 @@ import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.NetworkStateResult;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 
 import java.lang.ref.WeakReference;
@@ -172,8 +175,8 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
         Global.g().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                JSONObject jsonObject = (JSONObject) entity;
                 if (success && entity != null) {
-                    JSONObject jsonObject = (JSONObject) entity;
                     if(jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING){
                         if(!dialog.isShowing() && !((XiaoeActivity) getActivity()).getDialog().isShowing()){
                             dialog.setCancelable(false);
@@ -191,6 +194,12 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
                         onMainThreadResponse(iRequest, true, entity);
                     }
                 } else {
+                    if (jsonObject != null) {
+                        int code = jsonObject.getInteger("code");
+                        if (NetworkStateResult.ERROR_NETWORK == code) {
+                            ToastUtils.show(getContext(), getString(R.string.network_error_text));
+                        }
+                    }
                     onMainThreadResponse(iRequest, false, entity);
                 }
             }
