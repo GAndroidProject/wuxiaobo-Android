@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.base;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
@@ -36,7 +37,6 @@ import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
 import com.xiaoe.common.entitys.LoginUser;
-import com.xiaoe.common.entitys.UpdateMineMsgEvent;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -56,14 +56,11 @@ import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.pay.presenter.PayPresenter;
-import com.xiaoe.shop.wxb.interfaces.OnCancelListener;
-import com.xiaoe.shop.wxb.interfaces.OnConfirmListener;
+import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.ShareDialog;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -73,7 +70,7 @@ import java.util.List;
  * Created by Administrator on 2017/7/17.
  */
 
-public class XiaoeActivity extends AppCompatActivity implements INetworkResponse, OnCancelListener, OnConfirmListener,
+public class XiaoeActivity extends AppCompatActivity implements INetworkResponse, OnCustomDialogListener,
         UMShareListener{
     private static final String TAG = "XiaoeActivity";
     private static final int DISMISS_POPUP_WINDOW = 1;
@@ -269,10 +266,10 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                             dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                             dialog.setMessageVisibility(View.GONE);
                             dialog.setCancelable(false);
+                            dialog.setHideCancelButton(true);
                             dialog.setTitle(getString(R.string.login_invalid));
                             dialog.setConfirmText(getString(R.string.btn_again_login));
-                            dialog.setCancelListener(XiaoeActivity.this);
-                            dialog.setConfirmListener(XiaoeActivity.this);
+                            dialog.setOnCustomDialogListener(XiaoeActivity.this);
                             dialog.showDialog(DIALOG_TAG_LOADING);
                         }
                     }else{
@@ -461,6 +458,12 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             // finish();
         }
     }
+
+    @Override
+    public void onDialogDismiss(DialogInterface dialog, int tag) {
+
+    }
+
     public CustomDialog getDialog(){
         return dialog;
     }

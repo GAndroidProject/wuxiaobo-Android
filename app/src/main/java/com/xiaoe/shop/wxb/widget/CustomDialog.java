@@ -19,15 +19,14 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.interfaces.OnCancelListener;
-import com.xiaoe.shop.wxb.interfaces.OnConfirmListener;
+import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 
 
 /**
  * Created by Administrator on 2017/7/18.
  */
 
-public class CustomDialog {
+public class CustomDialog implements DialogInterface.OnDismissListener {
     private static final String TAG = "HintDialog";
 
     private Context mContext;
@@ -36,19 +35,19 @@ public class CustomDialog {
     private TextView btnConfirm;
     private AlertDialog dialog;
     private final TextView message;
-    private OnCancelListener cancelListener;
-    private OnConfirmListener confirmListener;
+//    private OnCancelListener cancelListener;
+//    private OnConfirmListener confirmListener;
     private final View verticalLine;
     private boolean mCancelable = true;
     //    private int mType = -1;
     private final TextView title;
     private final TextView messageLoad;
-    private DialogInterface.OnDismissListener mDismissListener;
     private boolean mCanceledOnTouchOutside = true;
     private final RelativeLayout hintTypeLayout;
     private final LinearLayout loadTypeLayout;
     private boolean hideCancel = false;
     private int dialogTag = -1;
+    private OnCustomDialogListener dialogListener;
 
     public CustomDialog(Context context) {
         this.mContext = context;
@@ -77,13 +76,10 @@ public class CustomDialog {
         simpleDraweeView.setController(draweeController);
     }
 
-    public void setCancelListener(OnCancelListener cancelListener) {
-        this.cancelListener = cancelListener;
+    public void setOnCustomDialogListener(OnCustomDialogListener listener){
+        dialogListener = listener;
     }
 
-    public void setConfirmListener(OnConfirmListener confirmListener) {
-        this.confirmListener = confirmListener;
-    }
 
     public void setCancelText(String text) {
         btnCancel.setText(text);
@@ -152,10 +148,10 @@ public class CustomDialog {
         dialogTag = tag;
         loadTypeLayout.setVisibility(View.GONE);
         hintTypeLayout.setVisibility(View.VISIBLE);
-        if (cancelListener == null && hideCancel) {
+        if (hideCancel) {
             btnCancel.setVisibility(View.GONE);
             verticalLine.setVisibility(View.GONE);
-            btnConfirm.setBackgroundResource(cancelListener == null && hideCancel ?
+            btnConfirm.setBackgroundResource(hideCancel ?
                     R.drawable.btn_bottom_radio_bg : R.drawable.btn_right_bottom_radio_bg);
         }
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -165,8 +161,8 @@ public class CustomDialog {
                     dialog.dismiss();
                     dialog = null;
                 }
-                if (cancelListener != null) {
-                    cancelListener.onClickCancel(v, tag);
+                if (dialogListener != null) {
+                    dialogListener.onClickCancel(v, tag);
                 }
             }
         });
@@ -176,16 +172,14 @@ public class CustomDialog {
             public void onClick(View v) {
                 dialog.dismiss();
                 dialog = null;
-                if (confirmListener != null) {
-                    confirmListener.onClickConfirm(v, tag);
+                if (dialogListener != null) {
+                    dialogListener.onClickConfirm(v, tag);
                 }
             }
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         dialog = builder.create();
-        if(mDismissListener != null){
-            dialog.setOnDismissListener(mDismissListener);
-        }
+        dialog.setOnDismissListener(this);
         dialog.setCanceledOnTouchOutside(mCanceledOnTouchOutside);
         dialog.setCancelable(mCancelable);
 
@@ -204,9 +198,7 @@ public class CustomDialog {
         dialog.setContentView(rootView);
     }
 
-    public void setOnDismissListener(DialogInterface.OnDismissListener dismissListener){
-        mDismissListener = dismissListener;
-    }
+    
     public void setCancelable(boolean cancelable) {
         mCancelable = cancelable;
     }
@@ -222,7 +214,8 @@ public class CustomDialog {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         dialog = builder.create();
         dialog.setCanceledOnTouchOutside(mCanceledOnTouchOutside);
-        dialog.setCancelable(false);
+        dialog.setCancelable(mCancelable);
+        dialog.setOnDismissListener(this);
 
 
         dialog.show();
@@ -259,5 +252,12 @@ public class CustomDialog {
 
     public void setDialogTag(int dialogTag) {
         this.dialogTag = dialogTag;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if(dialogListener != null){
+            dialogListener.onDialogDismiss(dialog, dialogTag);
+        }
     }
 }

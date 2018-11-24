@@ -1,11 +1,13 @@
 package com.xiaoe.shop.wxb.base;
 
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +21,13 @@ import com.xiaoe.common.app.Global;
 import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.interfaces.OnCancelListener;
-import com.xiaoe.shop.wxb.interfaces.OnConfirmListener;
+import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 
 import java.lang.ref.WeakReference;
@@ -37,7 +39,7 @@ import java.util.List;
  * <br>des：fragment 基类
  */
 
-public class BaseFragment extends Fragment implements INetworkResponse, OnCancelListener, OnConfirmListener {
+public class BaseFragment extends Fragment implements INetworkResponse, OnCustomDialogListener {
     private static final String TAG = "BaseFragment";
     private static PopupWindow popupWindow;
     private TextView mToastText;
@@ -175,13 +177,16 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCancel
                     if(jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING){
                         if(!dialog.isShowing() && !((XiaoeActivity) getActivity()).getDialog().isShowing()){
                             dialog.setCancelable(false);
-                            dialog.setHintMessage(getString(R.string.login_invalid));
+                            dialog.setHideCancelButton(true);
+                            dialog.getTitleView().setGravity(Gravity.START);
+                            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(getContext(), 22), 0, Dp2Px2SpUtil.dp2px(getContext(), 22), 0 );
+                            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                            dialog.setMessageVisibility(View.GONE);
+                            dialog.setTitle(getString(R.string.login_invalid));
                             dialog.setConfirmText(getString(R.string.btn_again_login));
-                            dialog.setCancelListener(BaseFragment.this);
-                            dialog.setConfirmListener(BaseFragment.this);
+                            dialog.setOnCustomDialogListener(BaseFragment.this);
                             dialog.showDialog(DIALOG_TAG_LOADING);
                         }
-
                     }else{
                         onMainThreadResponse(iRequest, true, entity);
                     }
@@ -272,11 +277,16 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCancel
             CommonUserInfo.setApiToken("");
             CommonUserInfo.setIsSuperVip(false);
             CommonUserInfo.setIsSuperVipAvailable(false);
-
+            getDialog().dismissDialog();
             JumpDetail.jumpLogin(getContext(), true);
             // 登录后需要回到原来的页面，所以不做 finish 操作
             // getActivity().finish();
         }
+    }
+
+    @Override
+    public void onDialogDismiss(DialogInterface dialog, int tag) {
+
     }
 
     public CustomDialog getDialog(){

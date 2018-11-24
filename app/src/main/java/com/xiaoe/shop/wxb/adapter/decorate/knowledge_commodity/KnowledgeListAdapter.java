@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.xiaoe.common.entitys.KnowledgeCommodityItem;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.business.course.ui.CourseImageTextActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 
@@ -123,13 +125,24 @@ public class KnowledgeListAdapter extends BaseAdapter {
                 CustomDialog customDialog = new CustomDialog(mContext);
                 customDialog.setMessageVisibility(View.GONE);
                 customDialog.setTitle("确认删除收藏吗");
-                customDialog.setConfirmListener((view, tag) -> {
-                    CollectionUtils collectionUtils = new CollectionUtils();
-                    String type = convertItemType(mItemList.get(position).getSrcType());
-                    collectionUtils.requestRemoveCollection(mItemList.get(position).getResourceId(), type);
-                    mItemList.remove(mItemList.get(position));
-                    notifyDataSetChanged();
-                    Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+                customDialog.setOnCustomDialogListener(new OnCustomDialogListener() {
+                    @Override
+                    public void onClickCancel(View view, int tag) {
+                    }
+
+                    @Override
+                    public void onClickConfirm(View view, int tag) {
+                        CollectionUtils collectionUtils = new CollectionUtils();
+                        String type = convertItemType(mItemList.get(position).getSrcType());
+                        collectionUtils.requestRemoveCollection(mItemList.get(position).getResourceId(), type);
+                        mItemList.remove(mItemList.get(position));
+                        notifyDataSetChanged();
+                        Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onDialogDismiss(DialogInterface dialog, int tag) {
+                    }
                 });
                 customDialog.showDialog(0);
                 return false;

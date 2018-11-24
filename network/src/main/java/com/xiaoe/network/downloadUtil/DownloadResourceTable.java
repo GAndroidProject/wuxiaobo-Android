@@ -4,11 +4,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.xiaoe.common.db.ISQLiteCallBack;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.DownloadResourceTableInfo;
+
 import java.util.Arrays;
 import java.util.List;
-
-import com.xiaoe.common.entitys.DownloadResourceTableInfo;
-import com.xiaoe.common.db.ISQLiteCallBack;
 
 public class DownloadResourceTable implements ISQLiteCallBack {
     public static final String TABLE_NAME = "download_resource";
@@ -30,7 +31,7 @@ public class DownloadResourceTable implements ISQLiteCallBack {
 
     @Override
     public int getVersion() {
-        return 0;
+        return SQLiteUtil.DATABASE_VERSION;
     }
 
     @Override

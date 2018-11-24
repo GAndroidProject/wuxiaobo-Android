@@ -4,17 +4,16 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.entitys.LoginUserEntity;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class LoginSQLiteCallback implements ISQLiteCallBack {
 
     public static final String TABLE_NAME_USER = "user_table"; // 用户表（成功绑定手机的）
 
-    private static final int DATABASE_VERSION = 1;
     private static final String TYPE_TEXT = " TEXT";
     private static final String SEP_COMMA = ",";
 
@@ -39,7 +38,7 @@ public class LoginSQLiteCallback implements ISQLiteCallBack {
 
     @Override
     public int getVersion() {
-        return DATABASE_VERSION;
+        return SQLiteUtil.DATABASE_VERSION;
     }
 
     @Override
@@ -47,7 +46,7 @@ public class LoginSQLiteCallback implements ISQLiteCallBack {
         switch (oldVersion) {
             case 0:
                 // 升级操作
-                db.execSQL(TABLE_SCHEMA_USER);
+//                db.execSQL(TABLE_SCHEMA_USER);
             case 1:
                 break;
             default:

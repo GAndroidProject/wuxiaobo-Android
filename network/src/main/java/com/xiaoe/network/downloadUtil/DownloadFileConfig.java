@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.xiaoe.common.db.ISQLiteCallBack;
+import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.DownloadTableInfo;
 
 import java.util.Arrays;
@@ -16,7 +17,6 @@ import java.util.List;
 
 public class DownloadFileConfig implements ISQLiteCallBack {
     private static final String TAG = "DownloadFileConfig";
-    public static final int DATABASE_VERSION = 1;
     public static final String TABLE_NAME = "download_file";
     public static final String APP_ID = "app_id";
     public static final String ID = "id";
@@ -78,7 +78,7 @@ public class DownloadFileConfig implements ISQLiteCallBack {
 
     @Override
     public int getVersion() {
-        return DATABASE_VERSION;
+        return SQLiteUtil.DATABASE_VERSION;
     }
 
     @Override

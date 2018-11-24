@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,10 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -36,8 +33,13 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
+import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.OSUtils;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * @author zak
@@ -263,17 +265,28 @@ public class WithdrawalActivity extends XiaoeActivity {
                         getDialog().getTitleView().setGravity(Gravity.START);
                         getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(this, 20), 0, 0, 0);
                         getDialog().setHintMessage(getString(R.string.withdrawal_grant_content), url);
-                        getDialog().setConfirmListener((view, tag) -> {
-                            try {
-                                Intent intent = new Intent(Intent.ACTION_MAIN);
-                                ComponentName componentName = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI");
-                                intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.setComponent(componentName);
-                                clipboardManager.setPrimaryClip(clipData);
-                                startActivity(intent);
-                            } catch (Exception e) {
-                                Toast("未安装微信呦");
+                        getDialog().setOnCustomDialogListener(new OnCustomDialogListener() {
+                            @Override
+                            public void onClickCancel(View view, int tag) {
+                            }
+
+                            @Override
+                            public void onClickConfirm(View view, int tag) {
+                                try {
+                                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                                    ComponentName componentName = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI");
+                                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setComponent(componentName);
+                                    clipboardManager.setPrimaryClip(clipData);
+                                    startActivity(intent);
+                                } catch (Exception e) {
+                                    Toast("未安装微信呦");
+                                }
+                            }
+
+                            @Override
+                            public void onDialogDismiss(DialogInterface dialog, int tag) {
                             }
                         });
                         getDialog().showDialog(0);

@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class SQLiteUtil extends SQLiteOpenHelper {
 
     private final String TAG = "SQLiteUtil";
+    public static final int DATABASE_VERSION = 3;
     private static final  String DATABASE_NAME = "xiaoeshop.db";
     private static SQLiteUtil INSTANCE;
     private java.util.concurrent.Semaphore semaphoreTransaction = new java.util.concurrent.Semaphore(1);

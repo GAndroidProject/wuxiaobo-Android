@@ -5,7 +5,6 @@ public class AudioPlayTable {
     /**
      *2-增加字段：try_play_url 试听播放地址。is_try 是否试听
      */
-    public static final int DATABASE_VERSION = 3;
     public static final String TABLE_NAME = "audio_play";
     private static final String TYPE_TEXT = "TEXT";
     private static final String TYPE_VARCHAR_64 = "VARCHAR(64)";

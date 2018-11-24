@@ -4,18 +4,18 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.xiaoe.common.db.ISQLiteCallBack;
+import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.SearchHistory;
 import com.xiaoe.common.entitys.SearchHistoryEntity;
-import com.xiaoe.common.db.ISQLiteCallBack;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class SearchSQLiteCallback implements ISQLiteCallBack {
 
     public static final String TABLE_NAME_CONTENT = "search_history";
 
-    private static final int DATABASE_VERSION = 1;
     private static final String TYPE_TEXT = " TEXT";
     private static final String SEP_COMMA = ",";
 
@@ -35,7 +35,7 @@ public class SearchSQLiteCallback implements ISQLiteCallBack {
 
     @Override
     public int getVersion() {
-        return DATABASE_VERSION;
+        return SQLiteUtil.DATABASE_VERSION;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class SearchSQLiteCallback implements ISQLiteCallBack {
         switch (oldVersion) {
             case 0:
                 // 升级操作
-                db.execSQL(TABLE_SCHEMA_CONTENT);
+//                db.execSQL(TABLE_SCHEMA_CONTENT);
             case 1:
                 break;
             default:

@@ -1,5 +1,6 @@
 package com.xiaoe.shop.wxb.business.comment.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,7 +39,7 @@ import com.xiaoe.shop.wxb.business.comment.presenter.CommentPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnClickCommentListener;
 import com.xiaoe.shop.wxb.interfaces.OnClickSendCommentListener;
-import com.xiaoe.shop.wxb.interfaces.OnConfirmListener;
+import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.widget.CommentView;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -363,7 +364,11 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                 getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(this, 20), 0, 0, 0);
                 getDialog().setTitle(getString(R.string.delete_comment_hint));
                 getDialog().setHideCancelButton(false);
-                getDialog().setConfirmListener(new OnConfirmListener() {
+                getDialog().setOnCustomDialogListener(new OnCustomDialogListener() {
+                    @Override
+                    public void onClickCancel(View view, int tag) {
+                    }
+
                     @Override
                     public void onClickConfirm(View view, int tag) {
                         if(DIALOG_TAG_DELETE_COMMENT == tag){
@@ -374,6 +379,10 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                             commentAdapter.getData().remove(position);
                             commentAdapter.notifyItemRangeChanged(0, commentAdapter.getItemCount());
                         }
+                    }
+
+                    @Override
+                    public void onDialogDismiss(DialogInterface dialog, int tag) {
                     }
                 });
                 getDialog().showDialog(DIALOG_TAG_DELETE_COMMENT);

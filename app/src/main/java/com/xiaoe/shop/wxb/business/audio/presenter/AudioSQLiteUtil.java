@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.xiaoe.common.db.ISQLiteCallBack;
+import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
 
@@ -22,7 +23,7 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
 
     @Override
     public int getVersion() {
-        return AudioPlayTable.DATABASE_VERSION;
+        return SQLiteUtil.DATABASE_VERSION;
     }
 
     @Override
