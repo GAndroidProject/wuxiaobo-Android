@@ -149,10 +149,18 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
     // 初始化搜索主页 fragment
     private void initSearchMainFragment() {
         historyContentView = (SearchContentView) viewWrap.findViewById(R.id.history_content);
+        recommendContentView = (SearchContentView) viewWrap.findViewById(R.id.recommend_content);
 
+        initHistoryView(historyContentView);
+        initRecommendView(recommendContentView);
+    }
+
+    // 初始化历史搜索的 view
+    private void initHistoryView(SearchContentView historyContentView) {
         if (historyList.size() == 0) { // 没有历史记录
             historyContentView.setVisibility(View.GONE);
         } else { // 有历史记录
+            historyContentView.setVisibility(View.VISIBLE);
             historyContentView.setTitleStartText("历史搜索");
             historyContentView.setTitleEndText("清空历史搜索");
 
@@ -162,6 +170,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                     // 删除数据库中全部数据
                     SQLiteUtil.init(mContext, new SearchSQLiteCallback()).execSQL("delete from " + SearchSQLiteCallback.TABLE_NAME_CONTENT);
                     Toast.makeText(searchActivity, "删除成功", Toast.LENGTH_SHORT).show();
+                    historyData.clear();
                     historyContentView.setVisibility(View.GONE);
                 }
             });
@@ -171,8 +180,10 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             historyAdapter.setOnItemClickWithPosListener(this);
             historyContentView.setHistoryContentAdapter(historyAdapter);
         }
+    }
 
-        recommendContentView = (SearchContentView) viewWrap.findViewById(R.id.recommend_content);
+    // 初始化推荐搜索的 view
+    private void initRecommendView(SearchContentView recommendContentView) {
         recommendContentView.setTitleEndVisibility(View.GONE);
         recommendContentView.setTitleStartText("大家都在搜");
 
@@ -425,43 +436,28 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             ((SearchActivity) getActivity()).searchContent.setText(searchContent);
             ((SearchActivity) getActivity()).searchContent.setSelection(searchContent.length());
             ((SearchActivity) getActivity()).obtainSearchResult(((SearchActivity) getActivity()).searchContent.getText().toString());
-            if (searchActivity.hasDbData(searchContent)) { // 点击推荐，查库没有后需要入库
+            if (!searchActivity.hasDbData(searchContent)) { // 点击推荐，查库没有后需要入库
                 String currentTime = searchActivity.obtainCurrentTime();
                 SearchHistory searchHistory = new SearchHistory(searchContent, currentTime);
                 SQLiteUtil.init(mContext, new SearchSQLiteCallback()).insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
 
-                // 入库后集合需要改变
+                // 入库后集合需要改变（已有历史搜索的记录）
                 if (historyData != null) {
+                    historyContentView.setVisibility(View.VISIBLE);
                     if (historyData.size() >= 5) {
                         historyData.add(0, searchHistory);
                         historyData.remove(historyData.size() - 1); // 去掉最后一个
                     } else { // 否则直接添加
                         historyData.add(0, searchHistory);
                     }
-                }
-                if(historyAdapter == null){
-                    historyContentView = (SearchContentView) viewWrap.findViewById(R.id.history_content);
-                    historyContentView.setTitleStartText("历史搜索");
-                    historyContentView.setTitleEndText("清空历史搜索");
-
-                    historyContentView.setTitleEndClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-                        @Override
-                        public void singleClick(View v) {
-                            // 删除数据库中全部数据
-                            SQLiteUtil.init(mContext, new SearchSQLiteCallback()).execSQL("delete from " + SearchSQLiteCallback.TABLE_NAME_CONTENT);
-                            Toast.makeText(searchActivity, "删除成功", Toast.LENGTH_SHORT).show();
-                            historyContentView.setVisibility(View.GONE);
-                        }
-                    });
-
-                    historyList = new ArrayList<>();
-                    historyList.add(searchHistory);
-                    historyAdapter = new HistoryRecyclerAdapter(mContext, historyList);
-                    historyAdapter.setOnItemClickWithPosListener(this);
-                    historyContentView.setHistoryContentAdapter(historyAdapter);
-                    historyContentView.setVisibility(View.VISIBLE);
                 } else {
-                    historyList.add(searchHistory);
+                    // 没有历史搜索记录
+                    if (historyAdapter == null) {
+                        historyList = new ArrayList<>();
+                        historyList.add(searchHistory);
+                        historyContentView = (SearchContentView) viewWrap.findViewById(R.id.history_content);
+                        initHistoryView(historyContentView);
+                    }
                 }
                 historyAdapter.notifyDataSetChanged();
             }

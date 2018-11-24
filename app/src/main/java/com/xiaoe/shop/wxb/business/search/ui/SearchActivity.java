@@ -160,7 +160,7 @@ public class SearchActivity extends XiaoeActivity {
                         searchContent.setText(content);
                         searchContent.setSelection(content.length());
                     }
-                    if (hasDbData(content)) { // 不为空并且没有存数据库，就存
+                    if (!hasDbData(content)) { // 不为空并且没有存数据库，就存
                         // 将输入的内容插入到数据库
                         String currentTime = obtainCurrentTime();
                         SearchHistory searchHistory = new SearchHistory(content, currentTime);
@@ -168,10 +168,10 @@ public class SearchActivity extends XiaoeActivity {
 
                         // 刷新界面
                         if (((SearchPageFragment) currentFragment).historyData != null && ((SearchPageFragment) currentFragment).historyAdapter != null) {
-                            if (((SearchPageFragment) currentFragment).historyData.size() >= 5) {
+                            if (((SearchPageFragment) currentFragment).historyData.size() == 5) {
                                 ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
                                 ((SearchPageFragment) currentFragment).historyData.remove(((SearchPageFragment) currentFragment).historyData.size() - 1);
-                            } else { // 否则直接添加
+                            } else if (((SearchPageFragment) currentFragment).historyData.size() < 5)  { // 否则直接添加
                                 ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
                             }
                             ((SearchPageFragment) currentFragment).historyAdapter.notifyDataSetChanged();
@@ -351,7 +351,7 @@ public class SearchActivity extends XiaoeActivity {
         List<SearchHistory> lists = sqLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
                 "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " where " + SearchHistoryEntity.COLUMN_NAME_CONTENT + " = ?", new String[]{tempContent});
         // 已经有一条数据的话就不用再插入
-        return lists.size() != 1;
+        return lists.size() == 1;
     }
 
     // 查询最新创建的五条数据
