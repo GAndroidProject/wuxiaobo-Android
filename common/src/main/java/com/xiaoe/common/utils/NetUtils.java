@@ -23,6 +23,11 @@ public class NetUtils {
     private static final int HIGH_SPEED_DOWNLOAD_BUF_SIZE = 30720;
     private static final int MAX_SPEED_DOWNLOAD_BUF_SIZE = 102400;
 
+    public static final String NETWORK_TYPE_2G = "2G";
+    public static final String NETWORK_TYPE_3G = "3G";
+    public static final String NETWORK_TYPE_4G = "4G";
+    public static final String NETWORK_TYPE_WIFI = "WIFI";
+
     private NetUtils() {
     }
 
@@ -133,7 +138,7 @@ public class NetUtils {
         if (var2 != null && var2.isAvailable()) {
             int var3 = var2.getType();
             if (var3 == 1) {
-                return "WIFI";
+                return NETWORK_TYPE_WIFI;
             } else {
                 TelephonyManager var4 = (TelephonyManager) var0.getSystemService(Context.TELEPHONY_SERVICE);
                 switch (var4.getNetworkType()) {
@@ -142,7 +147,7 @@ public class NetUtils {
                     case 4:
                     case 7:
                     case 11:
-                        return "2G";
+                        return NETWORK_TYPE_2G;
                     case 3:
                     case 5:
                     case 6:
@@ -152,9 +157,9 @@ public class NetUtils {
                     case 12:
                     case 14:
                     case 15:
-                        return "3G";
+                        return NETWORK_TYPE_3G;
                     case 13:
-                        return "4G";
+                        return NETWORK_TYPE_4G;
                     default:
                         return "unkonw network";
                 }

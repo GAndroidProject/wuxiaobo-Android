@@ -383,7 +383,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                     }
 
                     @Override
-                    public void onDialogDismiss(DialogInterface dialog, int tag) {
+                    public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
                     }
                 });
                 getDialog().showDialog(DIALOG_TAG_DELETE_COMMENT);

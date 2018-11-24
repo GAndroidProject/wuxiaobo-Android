@@ -134,7 +134,7 @@ public class AudioPresenter implements IBizCallback {
             playEntity.setCode(0);
             playAudio(playEntity.isPlay());
         }else{
-            if(resourceInfo.getIntValue("payment_type") == 3){
+            if(resourceInfo.getIntValue("is_related") == 1){
                 //1-免费,2-单卖，3-非单卖
                 //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                 //1-免费,2-单卖，3-非单卖

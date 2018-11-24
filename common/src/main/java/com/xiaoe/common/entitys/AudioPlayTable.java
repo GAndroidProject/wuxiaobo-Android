@@ -35,6 +35,8 @@ public class AudioPlayTable {
             currentPlayState+" "+TYPE_INTEGER+" default 0,"+
             state+" "+TYPE_INTEGER+" default 0,"+
             hasBuy+" "+TYPE_INTEGER+" default 0,"+
+            "try_play_url TEXT default \"\","+
+            "is_try INTEGER default 0,"+
             createAt+" "+TYPE_DATETIME+" default '0000-00-00 00:00:00',"+
             updateAt+" "+TYPE_DATETIME+" default '0000-00-00 00:00:00',"+
             "primary key ("+appId +","+ resourceId+"))";

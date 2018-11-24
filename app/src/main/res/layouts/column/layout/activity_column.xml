@@ -177,14 +177,8 @@
 
     </com.xiaoe.shop.wxb.widget.CustomScrollView>
 
-
-    <TextView
-        android:id="@+id/status_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
     <RelativeLayout
         android:id="@+id/column_tool_bar"
-        android:layout_below="@id/status_bar"
         android:layout_width="match_parent"
         android:layout_height="44dp"
         >
@@ -233,20 +227,21 @@
             />
     </RelativeLayout>
 
+    <com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout
+        android:id="@+id/mini_audio_play_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/common_buy_layout"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        />
+
     <com.xiaoe.shop.wxb.widget.CommonBuyView
         android:id="@+id/common_buy_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        />
-    <com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout
-        android:id="@+id/mini_audio_play_controller"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="10dp"
         />
 
     <com.xiaoe.shop.wxb.widget.StatusPagerView

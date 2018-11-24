@@ -233,12 +233,15 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         switch (event.getState()){
             case AudioPlayEvent.LOADING:
                 miniAudioPlayController.setVisibility(View.VISIBLE);
+                miniAudioPlayController.setIsClose(false);
                 miniAudioPlayController.setAudioTitle(playEntity.getTitle());
                 miniAudioPlayController.setColumnTitle(playEntity.getProductsTitle());
                 miniAudioPlayController.setPlayButtonEnabled(false);
                 miniAudioPlayController.setPlayState(AudioPlayEvent.PAUSE);
                 break;
             case AudioPlayEvent.PLAY:
+                miniAudioPlayController.setVisibility(View.VISIBLE);
+                miniAudioPlayController.setIsClose(false);
                 miniAudioPlayController.setPlayButtonEnabled(true);
                 miniAudioPlayController.setAudioTitle(playEntity.getTitle());
                 miniAudioPlayController.setColumnTitle(playEntity.getProductsTitle());

@@ -326,6 +326,15 @@
         <activity
             android:name=".business.search.ui.SearchMoreActivity"
             android:screenOrientation="portrait"/>
+
+        <!--网络变化广播-->
+        <receiver android:name=".common.NetBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

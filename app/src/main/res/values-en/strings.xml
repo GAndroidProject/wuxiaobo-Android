@@ -86,6 +86,11 @@
     <string name="please_select_download">请选择下载资源</string>
     <string name="cannot_download">购买资源后可下载</string>
 
+    <string name="not_wifi_net_pause_download">当前不是WIFI环境，已暂停下载</string>
+    <string name="not_wifi_net_play_hint">非wifi环境下，继续播放将产生手机流量，是否继续</string>
+    <string name="yes_text">YES</string>
+    <string name="no_text">NO</string>
+
     <string name="not_has_content">暂无内容，快去看看吧</string>
     <string name="not_has_download_content">你当前没有正在下载的课程哦</string>
 
@@ -94,7 +99,8 @@
     <string name="all_stop_download">全部暂停</string>
     <string name="all_delete">全部删除</string>
     <string name="all_start_clear">全部清空</string>
-    <string name="delete_hint">确定清空正在下载的任务吗？</string>
+    <string name="delete_all_download_hint">确定清空正在下载的任务吗？</string>
+    <string name="delete_download_hint">确定删除下载的任务吗？</string>
     <string name="delete_text">删除</string>
     <string name="batch_delete_text">批量删除</string>
     <string name="delete_comment_hint">确定删除该评论？</string>

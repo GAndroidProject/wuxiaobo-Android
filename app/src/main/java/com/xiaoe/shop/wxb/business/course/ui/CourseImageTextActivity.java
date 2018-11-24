@@ -422,7 +422,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             initData(data);
         } else { // 未购
             //1-免费,2-单卖，3-非单卖
-            if(resourceInfo.getIntValue("payment_type") == 3){
+            if(resourceInfo.getIntValue("is_related") == 1){
                 //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                 JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
                 JSONObject product = productList.getJSONObject(0);

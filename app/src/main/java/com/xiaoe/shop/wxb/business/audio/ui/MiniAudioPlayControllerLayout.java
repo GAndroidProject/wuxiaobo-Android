@@ -15,6 +15,7 @@ import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.anim.TranslationAnimator;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.widget.TasksCompletedView;
 
@@ -103,10 +104,12 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
 
     public void setIsClose(boolean close) {
         isClose = close;
+        AudioPlayUtil.getInstance().setCloseMiniPlayer(false);
     }
 
     public void close(){
         isClose = true;
+        AudioPlayUtil.getInstance().setCloseMiniPlayer(true);
         TranslationAnimator.getInstance()
                 .setAnimator(this)
                 .remove(miniPlayerAnimHeight);

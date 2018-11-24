@@ -47,7 +47,6 @@ import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
-import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -92,6 +91,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     String realSrcId;
     private String shareUrl = "";
     private ImageView btnBack;
+    private boolean mIsDownload;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -131,14 +131,6 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         mIntent = getIntent();
         initViews();
         initDatas();
-    }
-
-    private void initStatusBar() {
-        //设置深色文字图标风格
-        if (!StatusBarUtil.setStatusBarDarkTheme(this, true)) {
-            // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
-            StatusBarUtil.setStatusBarColor(this, 0x55000000);
-        }
     }
 
     @Override
@@ -209,6 +201,14 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         btnBack = (ImageView) findViewById(R.id.btn_back);
         btnBack.setVisibility(View.GONE);
         btnBack.setOnClickListener(this);
+
+        mIsDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), mResourceId);
+        if(mIsDownload){
+            playControllerView.setDownloadState(1);
+        }else{
+            playControllerView.setDownloadState(0);
+        }
+
     }
 
     private void initDatas() {
@@ -393,6 +393,9 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                     toastCustom(getString(R.string.cannot_download));
                     return;
                 }
+                if(mIsDownload){
+                    return;
+                }
                 boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), mResourceId);
                 if(!isDownload){
                     ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
@@ -404,6 +407,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                     download.setVideo_url(mVideoUrl);
                     DownloadManager.getInstance().addDownload(null, null, download);
                 }
+                playControllerView.setDownloadState(1);
                 toastCustom(getString(R.string.add_download_list));
             } else {
                 touristDialog.showDialog();
@@ -483,7 +487,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 JSONObject resourceInfo = data.getJSONObject("resource_info");
                 int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
                 setCollectState(hasFavorite == 1);
-                if(resourceInfo.getIntValue("payment_type") == 3){
+                if(resourceInfo.getIntValue("is_related ") == 1){
                     //1-免费,2-单卖，3-非单卖
                     //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                     JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");

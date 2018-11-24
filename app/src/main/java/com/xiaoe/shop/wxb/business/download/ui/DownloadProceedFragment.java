@@ -191,6 +191,8 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
 
         TextView btnCancel = (TextView) view.findViewById(R.id.radius_dialog_btn_cancel);
         TextView btnConfirm = (TextView) view.findViewById(R.id.radius_dialog_btn_confirm);
+        TextView delHintTitle = (TextView) view.findViewById(R.id.radius_dialog_title);
+        delHintTitle.setText(getString(R.string.delete_download_hint));
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,6 +294,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
             index++;
             if(item.getResourceId().equals(downloadInfo.getResourceId())){
                 item.setProgress(downloadInfo.getProgress());
+                item.setTotalSize(downloadInfo.getTotalSize());
                 item.setDownloadState(downloadInfo.getDownloadState());
                 adapter.notifyItemChanged(index);
                 break;

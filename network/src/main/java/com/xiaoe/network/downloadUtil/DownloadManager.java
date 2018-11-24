@@ -139,6 +139,24 @@ public class DownloadManager implements DownloadListner {
         //更新数据库----
     }
 
+    public void allPaushDownload(){
+        for (int i = 0; i < mAwaitDownloadTasks.size(); i++) {
+            DownloadTask task = mAwaitDownloadTasks.get(i);
+            DownloadTableInfo info = task.getDownloadInfo();
+            info.setDownloadState(2);
+            mAwaitDownloadTasks.remove(i);
+            sendDownloadEvent(info, 0, 2);
+        }
+
+        for (int i = 0; i < mDownloadTasks.size(); i++) {
+            DownloadTask task = mDownloadTasks.get(i);
+            DownloadTableInfo info = task.getDownloadInfo();
+            info.setDownloadState(2);
+            mDownloadTasks.remove(i);
+            sendDownloadEvent(info, 0, 2);
+        }
+    }
+
     /**
      * 开始下载
      *
@@ -637,5 +655,13 @@ public class DownloadManager implements DownloadListner {
     }
     public void removeOnDownloadListener(String key){
         onDownloadListenerList.remove(key);
+    }
+
+    /**
+     * 是否有下载任务
+     * @return
+     */
+    public boolean isHasDownloadTask(){
+        return mDownloadTasks.size() > 0 || mAwaitDownloadTasks.size() > 0;
     }
 }

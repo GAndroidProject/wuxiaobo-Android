@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.graphics.Point;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,12 @@ import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
  * Created by Administrator on 2017/7/18.
  */
 
-public class CustomDialog implements DialogInterface.OnDismissListener {
+public class CustomDialog implements DialogInterface.OnDismissListener, DialogInterface.OnKeyListener {
     private static final String TAG = "HintDialog";
+
+    public static final int PAGER_LOAD_TAG = 7000;//页面加载状态
+
+    public static final int NOT_WIFI_PLAY_TAG = 7010;//非WiFi 环境播放
 
     private Context mContext;
     private View rootView;
@@ -179,6 +184,7 @@ public class CustomDialog implements DialogInterface.OnDismissListener {
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         dialog = builder.create();
+        dialog.setOnKeyListener(this);
         dialog.setOnDismissListener(this);
         dialog.setCanceledOnTouchOutside(mCanceledOnTouchOutside);
         dialog.setCancelable(mCancelable);
@@ -213,6 +219,7 @@ public class CustomDialog implements DialogInterface.OnDismissListener {
         Point point = Global.g().getDisplayPixel();
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         dialog = builder.create();
+        dialog.setOnKeyListener(this);
         dialog.setCanceledOnTouchOutside(mCanceledOnTouchOutside);
         dialog.setCancelable(mCancelable);
         dialog.setOnDismissListener(this);
@@ -257,7 +264,15 @@ public class CustomDialog implements DialogInterface.OnDismissListener {
     @Override
     public void onDismiss(DialogInterface dialog) {
         if(dialogListener != null){
-            dialogListener.onDialogDismiss(dialog, dialogTag);
+            dialogListener.onDialogDismiss(dialog, dialogTag, false);
         }
+    }
+
+    @Override
+    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && (event.getAction() == KeyEvent.ACTION_UP) && dialogListener != null){
+            dialogListener.onDialogDismiss(dialog, dialogTag, true);
+        }
+        return false;
     }
 }

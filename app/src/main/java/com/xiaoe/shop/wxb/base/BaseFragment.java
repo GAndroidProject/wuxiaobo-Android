@@ -294,7 +294,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
     }
 
     @Override
-    public void onDialogDismiss(DialogInterface dialog, int tag) {
+    public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
 
     }
 

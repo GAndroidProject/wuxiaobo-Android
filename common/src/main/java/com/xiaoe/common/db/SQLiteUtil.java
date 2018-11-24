@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class SQLiteUtil extends SQLiteOpenHelper {
 
     private final String TAG = "SQLiteUtil";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     private static final  String DATABASE_NAME = "xiaoeshop.db";
     private static SQLiteUtil INSTANCE;
     private java.util.concurrent.Semaphore semaphoreTransaction = new java.util.concurrent.Semaphore(1);
@@ -94,7 +94,7 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             for (T entity : entities) {
                 INSTANCE.sqlCallBack.get(tableName).assignValuesByEntity(tableName, entity, values);
-                mDB.insert(tableName, null, values);
+                long lo = mDB.insert(tableName, null, values);
                 values.clear();
             }
             mDB.setTransactionSuccessful();

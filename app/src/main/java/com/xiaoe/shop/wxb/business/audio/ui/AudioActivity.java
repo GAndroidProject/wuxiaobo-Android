@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.business.audio.ui;
 
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -62,6 +63,7 @@ import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.ContentMenuLayout;
+import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.SpeedMenuLayout;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
@@ -108,6 +110,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     Handler handler = new Handler();
     private Runnable runnable;
     Dialog dialog;
+    private boolean mIsDownload = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -138,6 +141,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 }
             });
         }
+        getDialog().setDialogTag(CustomDialog.PAGER_LOAD_TAG);
         getDialog().showLoadDialog(false);
         mIntent = getIntent();
         initViews();
@@ -157,6 +161,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         super.onResume();
         int code = getWXPayCode(true);
         if(code == 0){
+            getDialog().setDialogTag(-1);
             getDialog().showLoadDialog(false);
             AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
             new AudioPresenter(null).requestDetail(playEntity.getResourceId());
@@ -470,6 +475,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void clickDownload() {
+        if(mIsDownload){
+            //如果已经下载了，则不做任何操作
+            return;
+        }
         if(TextUtils.isEmpty(AudioMediaPlayer.getAudio().getPlayUrl())){
             toastCustom(getString(R.string.cannot_download));
         }else{
@@ -486,6 +495,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 DownloadManager.getInstance().addDownload(null, null, download);
             }
             toastCustom(getString(R.string.add_download_list));
+            setDownloadState(true);
         }
     }
 
@@ -663,6 +673,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }
         if (code == 1){
             setPagerState(true);
+            getDialog().dismissDialog();
+            Toast(getString(R.string.network_error_text));
             return;
         }else if(code == -2){
             setButtonEnabled(false);
@@ -702,6 +714,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
         audioPlayList.setProductsTitle(playEntity.getProductsTitle());
         setCollectState(playEntity.getHasFavorite() == 1);
+        //设置下载状态
         boolean isDownload = DownloadManager.getInstance().isDownload(playEntity.getAppId(), playEntity.getResourceId());
         setDownloadState(isDownload);
     }
@@ -712,6 +725,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             btnAudioDownload.setImageResource(R.mipmap.audio_download);
         }
         contentMenuLayout.setDownloadState(download);
+        mIsDownload = download;
     }
     /**
      * 设置收藏状态
@@ -792,5 +806,12 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             window.setAttributes(layoutParams);
         }
         dialog.setContentView(view);
+    }
+
+    @Override
+    public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
+        if(tag == CustomDialog.PAGER_LOAD_TAG && backKey){
+            finish();
+        }
     }
 }

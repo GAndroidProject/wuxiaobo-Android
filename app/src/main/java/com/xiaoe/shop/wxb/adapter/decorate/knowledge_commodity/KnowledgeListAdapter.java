@@ -2,7 +2,6 @@ package com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,7 +136,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
                     }
 
                     @Override
-                    public void onDialogDismiss(DialogInterface dialog, int tag) {
+                    public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
                     }
                 });
                 customDialog.showDialog(0);

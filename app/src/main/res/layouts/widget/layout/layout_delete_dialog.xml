@@ -25,7 +25,7 @@
         android:layout_below="@id/delete_icon"
         android:textSize="14sp"
         android:textColor="@color/main_title_color"
-        android:text="@string/delete_hint"
+        android:text="@string/delete_all_download_hint"
         />
 
     <LinearLayout

@@ -286,7 +286,7 @@ public class WithdrawalActivity extends XiaoeActivity {
                             }
 
                             @Override
-                            public void onDialogDismiss(DialogInterface dialog, int tag) {
+                            public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
                             }
                         });
                         getDialog().showDialog(0);

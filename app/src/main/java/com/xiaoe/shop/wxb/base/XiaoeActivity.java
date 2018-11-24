@@ -3,8 +3,10 @@ package com.xiaoe.shop.wxb.base;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,9 +40,11 @@ import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.NetworkStateResult;
+import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
@@ -51,12 +55,14 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioSQLiteUtil;
 import com.xiaoe.shop.wxb.business.audio.ui.AudioActivity;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
-import com.xiaoe.shop.wxb.business.column.ui.ColumnActivity;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.NetBroadcastReceiver;
 import com.xiaoe.shop.wxb.common.pay.presenter.PayPresenter;
+import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
+import com.xiaoe.shop.wxb.interfaces.OnNetChangeListener;
 import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
@@ -71,7 +77,7 @@ import java.util.List;
  */
 
 public class XiaoeActivity extends AppCompatActivity implements INetworkResponse, OnCustomDialogListener,
-        UMShareListener{
+        UMShareListener, OnNetChangeListener {
     private static final String TAG = "XiaoeActivity";
     private static final int DISMISS_POPUP_WINDOW = 1;
     private static final int DISMISS_TOAST = 2;
@@ -100,6 +106,9 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
     protected Context mContext;
     private ShareDialog mShareDialog;
+    private NetBroadcastReceiver netBroadcastReceiver;
+
+
 
     class XeHandler extends Handler {
 
@@ -141,6 +150,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         isActivityDestroy = false;
 
         dialog = new CustomDialog(this);
+        dialog.setOnCustomDialogListener(XiaoeActivity.this);
 
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -162,6 +172,16 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             CommonUserInfo.setShopId(user.getShopId());
         }
         AppUpgradeHelper.getInstance().setActivity(this);
+
+
+        //实例化IntentFilter对象
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        netBroadcastReceiver = new NetBroadcastReceiver();
+        netBroadcastReceiver.setOnNetChangeListener(this);
+        //注册广播接收
+        registerReceiver(netBroadcastReceiver, filter);
+
     }
     // 状态栏设置
     protected void setStatusBar(){
@@ -170,6 +190,14 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 //         设置透明状态栏
         StatusBarUtil.setTranslucentStatus(this);
 //         设置深色文字图标风格
+        if (!StatusBarUtil.setStatusBarDarkTheme(this, true)) {
+            // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
+            StatusBarUtil.setStatusBarColor(this, 0x55000000);
+        }
+    }
+
+    protected void initStatusBar() {
+        //设置深色文字图标风格
         if (!StatusBarUtil.setStatusBarDarkTheme(this, true)) {
             // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
             StatusBarUtil.setStatusBarColor(this, 0x55000000);
@@ -186,9 +214,20 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         super.onStart();
         if(isInit){
             isInit = false;
-            if(this instanceof MainActivity || this instanceof ColumnActivity){
+            if(this instanceof MainActivity){
                 getAudioRecord();
             }
+        }
+        if(miniAudioPlayController != null && AudioMediaPlayer.getAudio() != null){
+            if(AudioPlayUtil.getInstance().isCloseMiniPlayer()){
+                miniAudioPlayController.setVisibility(View.GONE);
+            }else{
+                miniAudioPlayController.setVisibility(View.VISIBLE);
+            }
+            miniAudioPlayController.setAudioTitle(AudioMediaPlayer.getAudio().getTitle());
+            miniAudioPlayController.setColumnTitle(AudioMediaPlayer.getAudio().getProductsTitle());
+            miniAudioPlayController.setMaxProgress(AudioMediaPlayer.getDuration());
+            miniAudioPlayController.setPlayState(AudioMediaPlayer.isPlaying() ? AudioPlayEvent.PLAY : AudioPlayEvent.PAUSE);
         }
     }
 
@@ -228,13 +267,16 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                 AudioPlayEntity playEntity = entityList.get(0);
                 playEntity.setPlay(false);
                 playEntity.setCode(-1);
+
                 AudioPlayUtil.getInstance().refreshAudio(playEntity);
+                AudioPlayUtil.getInstance().setCloseMiniPlayer(false);
 
                 AudioMediaPlayer.setAudio(playEntity, false);
                 AudioPresenter audioPresenter = new AudioPresenter(null);
                 audioPresenter.requestDetail(playEntity.getResourceId());
                 String title = playEntity.getTitle();
                 miniAudioPlayController.setAudioTitle(title);
+                miniAudioPlayController.setColumnTitle(playEntity.getProductsTitle());
                 miniAudioPlayController.setVisibility(View.VISIBLE);
             }else{
                 miniAudioPlayController.setVisibility(View.GONE);
@@ -269,7 +311,6 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                             dialog.setHideCancelButton(true);
                             dialog.setTitle(getString(R.string.login_invalid));
                             dialog.setConfirmText(getString(R.string.btn_again_login));
-                            dialog.setOnCustomDialogListener(XiaoeActivity.this);
                             dialog.showDialog(DIALOG_TAG_LOADING);
                         }
                     }else{
@@ -309,7 +350,6 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-//        if (AudioMediaPlayer.isPlaying()) {
         if (miniAudioPlayController != null && !miniAudioPlayController.isClose()) {
             int action = ev.getAction();
             switch (action) {
@@ -361,6 +401,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         }
         mHandler.removeCallbacksAndMessages(null);
         mHandler = null;
+        unregisterReceiver(netBroadcastReceiver);
     }
 
     public void initPermission() {
@@ -456,12 +497,13 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             JumpDetail.jumpLogin(this);
             // 登录后需要回到原来的页面，所以不做 finish 操作
             // finish();
+        }else if(tag == CustomDialog.NOT_WIFI_PLAY_TAG){
+            AudioMediaPlayer.play();
         }
     }
 
     @Override
-    public void onDialogDismiss(DialogInterface dialog, int tag) {
-
+    public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
     }
 
     public CustomDialog getDialog(){
@@ -516,5 +558,30 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
      */
     public void onHeadLeftButtonClick(View v) {
         finish();
+    }
+
+    /**
+     *
+     * @param netType netType : 2G，3G，4G，WIFI， unkonw network，no network
+     */
+    @Override
+    public void onNetworkChangeListener(String netType) {
+        if(!NetUtils.NETWORK_TYPE_WIFI.equals(netType) && DownloadManager.getInstance().isHasDownloadTask()){
+            //如果不是wifi环境，且有下载任务则暂停下载任务
+            DownloadManager.getInstance().allPaushDownload();
+            Toast(getString(R.string.not_wifi_net_pause_download));
+        }else if(!NetUtils.NETWORK_TYPE_WIFI.equals(netType) && AudioMediaPlayer.isPlaying()){
+//            AudioMediaPlayer.play();
+//            dialog.setMessageVisibility(View.GONE);
+//            dialog.getTitleView().setGravity(Gravity.START);
+//            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0 );
+//            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+//            dialog.setCancelable(false);
+//            dialog.setHideCancelButton(true);
+//            dialog.setTitle(getString(R.string.login_invalid));
+//            dialog.setConfirmText(getString(R.string.yes_text));
+//            dialog.setCancelText(getString(R.string.no_text));
+//            dialog.showDialog(CustomDialog.NOT_WIFI_PLAY_TAG);
+        }
     }
 }

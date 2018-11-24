@@ -28,7 +28,7 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(newVersion > oldVersion && newVersion == 3){
+        if(newVersion > oldVersion && newVersion == 4){
             db.execSQL(AudioPlayTable.ADD_TRY_PLAY_URL_ROW_SQL);
             db.execSQL(AudioPlayTable.ADD_IS_TRY_ROW_SQL);
         }

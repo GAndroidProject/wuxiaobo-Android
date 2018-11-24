@@ -16,6 +16,7 @@ public class AudioPlayUtil {
     private static AudioPlayUtil audioPlayUtil = null;
     private boolean singleAudio = true; // 是否是单品音频，专栏列表中资源一个音频不属于单品，
     private String fromTag = "";
+    private boolean isCloseMiniPlayer = true;
 
     private AudioPlayUtil(){
         audioList = new ArrayList<AudioPlayEntity>();
@@ -116,5 +117,13 @@ public class AudioPlayUtil {
         }else{
             sqLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioList);
         }
+    }
+
+    public boolean isCloseMiniPlayer() {
+        return isCloseMiniPlayer;
+    }
+
+    public void setCloseMiniPlayer(boolean closeMiniPlayer) {
+        isCloseMiniPlayer = closeMiniPlayer;
     }
 }
