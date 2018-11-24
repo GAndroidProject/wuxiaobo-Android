@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,8 +91,9 @@ public class CdKeyActivity extends XiaoeActivity {
     Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mCdKeyPresenter == null)
+            if (mCdKeyPresenter == null) {
                 mCdKeyPresenter = new CdKeyPresenter(CdKeyActivity.this);
+            }
             mCdKeyPresenter.requestData(cdContent.getText().toString());
         }
     };
@@ -106,6 +108,8 @@ public class CdKeyActivity extends XiaoeActivity {
                 showProgressDialog();
                 cdSubmit.removeCallbacks(mRunnable);//防止同一时间双次点击，多次请求
                 cdSubmit.postDelayed(mRunnable,100);
+                break;
+            default:
                 break;
         }
     }
@@ -147,6 +151,8 @@ public class CdKeyActivity extends XiaoeActivity {
                     break;
                 case R.id.btn_see:
                     handleUserSeeJump();
+                    break;
+                default:
                     break;
             }
         }
@@ -252,8 +258,6 @@ public class CdKeyActivity extends XiaoeActivity {
                 if (s != null) {
                     showErrorMsg("");
                     cdSubmit.setEnabled(s.length() > 0);
-                    float alpha = s.length() >0 ? 1f : 0.6f;
-                    cdSubmit.setAlpha(alpha);
                     int maxLength = 8;
                     if (s.length() > maxLength){
                         String content = s.toString().substring(0,maxLength);
