@@ -124,6 +124,9 @@ public class HistoryMessageActivity extends XiaoeActivity {
             if (messageList.size() == 0) {
                 mEmptyView.setStatus(EmptyView.STATUS_NO_DATA);
             }
+            if (firstStart != 0) {
+                historyMessageAdapter.loadMoreFail();
+            }
         }
     }
 
