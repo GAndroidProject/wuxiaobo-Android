@@ -356,7 +356,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
             //删除
             if (loginUserList.size() == 1) {
                 String userId = TextUtils.isEmpty(CommonUserInfo.getUserId()) ? "" : CommonUserInfo.getUserId();
-                if(commentEntity.isDelete() || userId.equals(commentEntity.getUser_id())){
+                if(commentEntity.isDelete() || !userId.equals(commentEntity.getUser_id())){
                     return;
                 }
                 getDialog().getTitleView().setGravity(Gravity.START);
