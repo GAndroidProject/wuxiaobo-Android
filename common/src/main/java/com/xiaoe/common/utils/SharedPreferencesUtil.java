@@ -25,6 +25,7 @@ public class SharedPreferencesUtil {
     public static final String KEY_BIND_JPUSH_USER_CODE = "bindJPushRegIdSuccess";
     public static final String KEY_JPUSH_STATE_CODE = "JPushState";
     public static final String KEY_SCHOLARSHIP_ID = "ScholarshipId";
+    public static final String KEY_UNREAD_MSG_COUNT = "unread_msg_count";
 
     private SharedPreferencesUtil(Context context, String name) {
         sp = context.getSharedPreferences(name, Context.MODE_PRIVATE);

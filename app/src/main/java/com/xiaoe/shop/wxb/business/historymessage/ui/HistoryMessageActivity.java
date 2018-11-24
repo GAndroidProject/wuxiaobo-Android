@@ -20,6 +20,7 @@ import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.HistoryMessageEntity;
 import com.xiaoe.common.entitys.HistoryMessageReq;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.GetHistoryMessageRequest;
 import com.xiaoe.network.requests.IRequest;
@@ -197,6 +198,8 @@ public class HistoryMessageActivity extends XiaoeActivity {
             isRequesting = true;
             updateMessages();
         });
+
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_UNREAD_MSG_COUNT, 0);
     }
 
     private void jumpDetail(HistoryMessageEntity.ListBean listBean) {

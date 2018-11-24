@@ -11,7 +11,9 @@ import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.jpush.entity.JgPushReceiverEntity;
 import com.xiaoe.shop.wxb.common.web.BrowserActivity;
+import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +42,8 @@ public class JgPushReceiver extends BroadcastReceiver {
         try {
             Bundle bundle = intent.getExtras();
             d(TAG, "[JgPushReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
+
+            EventBus.getDefault().post(new OnUnreadMsgEvent(0, 1));
 
             if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
                 String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);

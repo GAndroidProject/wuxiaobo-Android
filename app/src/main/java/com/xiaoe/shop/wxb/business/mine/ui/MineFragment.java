@@ -30,6 +30,7 @@ import com.xiaoe.common.entitys.UpdateMineMsgEvent;
 import com.xiaoe.common.interfaces.OnItemClickWithMoneyItemListener;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.EarningRequest;
 import com.xiaoe.network.requests.IRequest;
@@ -46,6 +47,7 @@ import com.xiaoe.shop.wxb.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.mine_learning.presenter.MineLearningPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
@@ -544,6 +546,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         }
     }
 
+    @Subscribe
+    public void onEventMainThread(OnUnreadMsgEvent onUnreadMsgEvent) {
+        if (null == onUnreadMsgEvent) {
+            return;
+        }
+        setUnreadMsg(onUnreadMsgEvent.getUnreadCount());
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -759,6 +769,24 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             superVipPresenter = new SuperVipPresenter(this);
         }
         superVipPresenter.requestSuperVip();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUnreadMsg(0);
+        mainActivity.getUnreadMsg();
+    }
+
+    private void setUnreadMsg(int unreadCount) {
+        int saveCount = (int) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_UNREAD_MSG_COUNT, 0);
+
+        int newCount = saveCount + unreadCount;
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_UNREAD_MSG_COUNT, newCount);
+
+        mineTitleView.setUnreadMsgVisible(newCount > 0);
+
+        Log.d(TAG, "setUnreadMsg: count " + newCount);
     }
 
     private void setDataByDB(){

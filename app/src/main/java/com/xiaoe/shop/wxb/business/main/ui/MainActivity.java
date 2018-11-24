@@ -17,11 +17,13 @@ import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.AudioPlayEntity;
+import com.xiaoe.common.entitys.TaskDetailIdEvent;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.BindJgPushRequest;
 import com.xiaoe.network.requests.GetPushStateRequest;
+import com.xiaoe.network.requests.GetUnreadMessageRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.IsSuperVipRequest;
 import com.xiaoe.shop.wxb.R;
@@ -37,6 +39,7 @@ import com.xiaoe.shop.wxb.common.jpush.ExampleUtil;
 import com.xiaoe.shop.wxb.common.jpush.LocalBroadcastManager;
 import com.xiaoe.shop.wxb.common.jpush.entity.JgPushSaveInfo;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
+import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 import com.xiaoe.shop.wxb.interfaces.OnBottomTabSelectListener;
 import com.xiaoe.shop.wxb.utils.OSUtils;
 import com.xiaoe.shop.wxb.widget.BottomTabBar;
@@ -66,7 +69,12 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     public boolean isFormalUser;
 
     SuperVipPresenter superVipPresenter;
+    private SettingPresenter settingPresenter;
     public String expireAt;
+    /**
+     * 正在获取未读消息数
+     */
+    private boolean isGetUnreadMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +142,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             AppUpgradeHelper.getInstance().setShouldCheckUpgrade(false);
         }
         // 获取消息接收状态
-        new SettingPresenter(this).getPushState();
+        settingPresenter = new SettingPresenter(this);
+        settingPresenter.getPushState();
+//        getUnreadMsg();
     }
 
     private void initView() {
@@ -189,6 +199,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         Log.d(TAG, "onCheckedTab: "+index);
         mainViewPager.setCurrentItem(index);
         Log.d(TAG, "onCheckedTab: I "+mainViewPager.getCurrentItem());
+        if (3 == index) {
+            getUnreadMsg();
+        }
     }
 
     @Override
@@ -317,9 +330,21 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                 } else if (code == NetworkCodes.CODE_FAILED) {
                     Log.d(TAG, "onMainThreadResponse: 获取推送消息状态失败...");
                 }
+            } else if (iRequest instanceof GetUnreadMessageRequest) {
+                isGetUnreadMsg = false;
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    JSONObject data = result.getJSONObject("data");
+                    int messageCount = data.getInteger("message_count");
+                    EventBus.getDefault().post(new OnUnreadMsgEvent(0, messageCount));
+                    Log.d(TAG, "onMainThreadResponse: 未读消息数 " + messageCount);
+                } else if (code == NetworkCodes.CODE_FAILED) {
+                    Log.d(TAG, "onMainThreadResponse: 获取未读消息失败...");
+                }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail...");
+            isGetUnreadMsg = false;
         }
     }
 
@@ -388,5 +413,10 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         CommonUserInfo.setIsSuperVip(isSuperVip);
         CommonUserInfo.setIsSuperVipAvailable(isCanBuy);
+    }
+
+    public void getUnreadMsg() {
+        settingPresenter.requestUnreadMessage();
+        isGetUnreadMsg = true;
     }
 }

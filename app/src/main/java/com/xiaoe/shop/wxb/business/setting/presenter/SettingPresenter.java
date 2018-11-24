@@ -5,6 +5,7 @@ import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.GetPushStateRequest;
+import com.xiaoe.network.requests.GetUnreadMessageRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.SetPushStateRequest;
 import com.xiaoe.network.requests.SettingPersonItemRequest;
@@ -151,6 +152,14 @@ public class SettingPresenter implements IBizCallback {
         request.addRequestParam("is_push_state", state);
 
         request.sendRequest();
+    }
+
+    /**
+     * 获取未读消息
+     */
+    public void requestUnreadMessage() {
+        GetUnreadMessageRequest getUnreadMessageRequest = new GetUnreadMessageRequest(this);
+        getUnreadMessageRequest.sendRequest();
     }
 
 }

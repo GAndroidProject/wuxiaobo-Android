@@ -1,6 +1,5 @@
 package com.xiaoe.shop.wxb.business.historymessage.presenter;
 
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.HistoryMessageReq;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
