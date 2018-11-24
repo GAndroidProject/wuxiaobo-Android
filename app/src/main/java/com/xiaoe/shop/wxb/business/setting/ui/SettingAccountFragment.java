@@ -36,6 +36,7 @@ import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingTimeCount;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.FileUtils;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.widget.CodeVerifyView;
@@ -326,9 +327,19 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
     private void initPwdObtainPhoneCodeFragment() {
         Button nowBtn = (Button) viewWrap.findViewById(R.id.pwd_obtain_phone_code);
 
-        nowBtn.setOnClickListener(new View.OnClickListener() {
+//        nowBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // 获取验证码
+//                settingAccountActivity.loginPresenter.obtainPhoneCode(settingAccountActivity.localPhone);
+//                // 修改密码和更换手机是互斥操作
+//                settingAccountActivity.isUpdatePassword = true;
+//                settingAccountActivity.inputNewPhone = false;
+//            }
+//        });
+        nowBtn.setOnClickListener(new OnClickEvent(1000) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 // 获取验证码
                 settingAccountActivity.loginPresenter.obtainPhoneCode(settingAccountActivity.localPhone);
                 // 修改密码和更换手机是互斥操作
