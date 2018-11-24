@@ -108,6 +108,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private ShareDialog mShareDialog;
     private NetBroadcastReceiver netBroadcastReceiver;
 
+    private boolean isFrontActivity = true;
+
 
 
     class XeHandler extends Handler {
@@ -235,6 +237,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+        isFrontActivity = true;
     }
 
     @Override
@@ -243,6 +246,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         if(dialog.getDialogTag() == ShareDialog.SHARE_DIALOG_TAG){
             dialog.dismissDialog();
         }
+        isFrontActivity = false;
         MobclickAgent.onPause(this);
     }
 
@@ -481,7 +485,6 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
 
     @Override
     public void onClickCancel(View view, int tag) {
-
     }
 
     @Override
@@ -566,22 +569,23 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
      */
     @Override
     public void onNetworkChangeListener(String netType) {
+        Log.e(TAG, "onNetworkChangeListener: "+dialog.isShowing());
         if(!NetUtils.NETWORK_TYPE_WIFI.equals(netType) && DownloadManager.getInstance().isHasDownloadTask()){
             //如果不是wifi环境，且有下载任务则暂停下载任务
             DownloadManager.getInstance().allPaushDownload();
             Toast(getString(R.string.not_wifi_net_pause_download));
-        }else if(!NetUtils.NETWORK_TYPE_WIFI.equals(netType) && AudioMediaPlayer.isPlaying()){
-//            AudioMediaPlayer.play();
-//            dialog.setMessageVisibility(View.GONE);
-//            dialog.getTitleView().setGravity(Gravity.START);
-//            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0 );
-//            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-//            dialog.setCancelable(false);
-//            dialog.setHideCancelButton(true);
-//            dialog.setTitle(getString(R.string.login_invalid));
-//            dialog.setConfirmText(getString(R.string.yes_text));
-//            dialog.setCancelText(getString(R.string.no_text));
-//            dialog.showDialog(CustomDialog.NOT_WIFI_PLAY_TAG);
+        }else if(!NetUtils.NETWORK_TYPE_WIFI.equals(netType) && AudioMediaPlayer.isPlaying() && isFrontActivity){
+            AudioMediaPlayer.play();
+            dialog.setMessageVisibility(View.GONE);
+            dialog.getTitleView().setGravity(Gravity.START);
+            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0 );
+            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            dialog.setCancelable(false);
+            dialog.setHideCancelButton(false);
+            dialog.setTitle(getString(R.string.not_wifi_net_play_hint));
+            dialog.setConfirmText(getString(R.string.yes_text));
+            dialog.setCancelText(getString(R.string.no_text));
+            dialog.showDialog(CustomDialog.NOT_WIFI_PLAY_TAG);
         }
     }
 }
