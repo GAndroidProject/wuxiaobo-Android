@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--通过FrameAnimation播放的24张图片-->
+    <array name="animation_logo">
+        <item>@drawable/anim_logo_000</item>
+        <item>@drawable/anim_logo_001</item>
+        <item>@drawable/anim_logo_002</item>
+        <item>@drawable/anim_logo_003</item>
+        <item>@drawable/anim_logo_004</item>
+        <item>@drawable/anim_logo_005</item>
+        <item>@drawable/anim_logo_006</item>
+        <item>@drawable/anim_logo_007</item>
+        <item>@drawable/anim_logo_008</item>
+        <item>@drawable/anim_logo_009</item>
+        <item>@drawable/anim_logo_010</item>
+
+        <item>@drawable/anim_logo_011</item>
+        <item>@drawable/anim_logo_012</item>
+        <item>@drawable/anim_logo_013</item>
+        <item>@drawable/anim_logo_014</item>
+        <item>@drawable/anim_logo_015</item>
+        <item>@drawable/anim_logo_016</item>
+        <item>@drawable/anim_logo_017</item>
+        <item>@drawable/anim_logo_018</item>
+        <item>@drawable/anim_logo_019</item>
+        <item>@drawable/anim_logo_020</item>
+
+        <item>@drawable/anim_logo_021</item>
+        <item>@drawable/anim_logo_022</item>
+        <item>@drawable/anim_logo_023</item>
+        <item>@drawable/anim_logo_024</item>
+        <item>@drawable/anim_logo_025</item>
+        <item>@drawable/anim_logo_026</item>
+        <item>@drawable/anim_logo_027</item>
+        <item>@drawable/anim_logo_028</item>
+        <item>@drawable/anim_logo_029</item>
+        <item>@drawable/anim_logo_030</item>
+
+        <item>@drawable/anim_logo_031</item>
+        <item>@drawable/anim_logo_032</item>
+        <item>@drawable/anim_logo_033</item>
+        <item>@drawable/anim_logo_034</item>
+        <item>@drawable/anim_logo_035</item>
+        <item>@drawable/anim_logo_036</item>
+        <item>@drawable/anim_logo_037</item>
+        <item>@drawable/anim_logo_038</item>
+        <item>@drawable/anim_logo_039</item>
+        <item>@drawable/anim_logo_040</item>
+
+        <item>@drawable/anim_logo_041</item>
+        <item>@drawable/anim_logo_042</item>
+        <item>@drawable/anim_logo_043</item>
+        <item>@drawable/anim_logo_044</item>
+        <item>@drawable/anim_logo_045</item>
+        <item>@drawable/anim_logo_046</item>
+        <item>@drawable/anim_logo_047</item>
+        <item>@drawable/anim_logo_048</item>
+        <item>@drawable/anim_logo_049</item>
+        <item>@drawable/anim_logo_050</item>
+
+        <item>@drawable/anim_logo_051</item>
+        <item>@drawable/anim_logo_052</item>
+        <item>@drawable/anim_logo_053</item>
+        <item>@drawable/anim_logo_054</item>
+        <item>@drawable/anim_logo_055</item>
+        <item>@drawable/anim_logo_056</item>
+        <item>@drawable/anim_logo_057</item>
+        <item>@drawable/anim_logo_058</item>
+        <item>@drawable/anim_logo_059</item>
+        <item>@drawable/anim_logo_060</item>
+
+        <item>@drawable/anim_logo_061</item>
+        <item>@drawable/anim_logo_062</item>
+        <item>@drawable/anim_logo_063</item>
+        <item>@drawable/anim_logo_064</item>
+        <item>@drawable/anim_logo_065</item>
+        <item>@drawable/anim_logo_066</item>
+        <item>@drawable/anim_logo_067</item>
+        <item>@drawable/anim_logo_068</item>
+        <item>@drawable/anim_logo_069</item>
+        <item>@drawable/anim_logo_070</item>
+
+        <item>@drawable/anim_logo_071</item>
+        <item>@drawable/anim_logo_072</item>
+        <item>@drawable/anim_logo_073</item>
+        <item>@drawable/anim_logo_074</item>
+        <item>@drawable/anim_logo_075</item>
+        <item>@drawable/anim_logo_076</item>
+        <item>@drawable/anim_logo_077</item>
+        <item>@drawable/anim_logo_078</item>
+        <item>@drawable/anim_logo_079</item>
+        <item>@drawable/anim_logo_080</item>
+
+        <item>@drawable/anim_logo_081</item>
+        <item>@drawable/anim_logo_082</item>
+        <item>@drawable/anim_logo_083</item>
+        <item>@drawable/anim_logo_084</item>
+        <item>@drawable/anim_logo_085</item>
+        <item>@drawable/anim_logo_086</item>
+        <item>@drawable/anim_logo_087</item>
+        <item>@drawable/anim_logo_088</item>
+        <item>@drawable/anim_logo_089</item>
+        <item>@drawable/anim_logo_090</item>
+
+        <item>@drawable/anim_logo_091</item>
+        <item>@drawable/anim_logo_092</item>
+        <item>@drawable/anim_logo_093</item>
+        <item>@drawable/anim_logo_094</item>
+        <item>@drawable/anim_logo_095</item>
+        <item>@drawable/anim_logo_096</item>
+        <item>@drawable/anim_logo_097</item>
+        <item>@drawable/anim_logo_098</item>
+        <item>@drawable/anim_logo_099</item>
+        <item>@drawable/anim_logo_100</item>
+
+        <item>@drawable/anim_logo_101</item>
+        <item>@drawable/anim_logo_102</item>
+        <item>@drawable/anim_logo_103</item>
+        <item>@drawable/anim_logo_104</item>
+    </array>
+</resources>

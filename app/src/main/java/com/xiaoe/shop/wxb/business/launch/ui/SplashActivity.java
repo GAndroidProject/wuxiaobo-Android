@@ -1,19 +1,13 @@
 package com.xiaoe.shop.wxb.business.launch.ui;
 
-import android.graphics.drawable.Animatable;
-import android.net.Uri;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.controller.BaseControllerListener;
-import com.facebook.drawee.controller.ControllerListener;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.fresco.animation.drawable.AnimatedDrawable2;
-import com.facebook.imagepipeline.image.ImageInfo;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
@@ -30,8 +24,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.launch.presenter.UnReadMsgPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
-
-import java.lang.reflect.Field;
+import com.xiaoe.shop.wxb.utils.FrameAnimation;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +38,8 @@ public class SplashActivity extends XiaoeActivity {
 
     @BindView(R.id.launch_gif)
     SimpleDraweeView launchGif;
+    @BindView(R.id.iv_gif)
+    ImageView ivGif;
 
     private static final String TAG = "SplashActivity";
 
@@ -52,12 +47,82 @@ public class SplashActivity extends XiaoeActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStatusBar();
-        setContentView(R.layout.activity_launch);
+        setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         initView();
         initData();
         SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+    }
+
+    private void initView() {
+        long preTime = System.currentTimeMillis();
+
+        // 每50ms一帧，播放动画一次
+        FrameAnimation frameAnimation = new FrameAnimation(ivGif, getRes(), 10, false);
+        frameAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+                Log.d(TAG, "start");
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                Log.d(TAG, "end");
+                Log.d(TAG, "onAnimationEnd: " + (System.currentTimeMillis() - preTime));
+                JumpDetail.jumpLogin(mContext);
+                finish();
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+                Log.d(TAG, "repeat");
+            }
+        });
+
+//        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+//            @Override
+//            public void onFinalImageSet(String id, ImageInfo imageInfo, final Animatable animatable) {
+//                Log.d(TAG, "onFinalImageSet: animatable - " + animatable);
+//                if (animatable == null) {
+//                    return;
+//                }
+//                int duration = 0;
+//                try {
+//                    // mTotalLoops mLoopCount
+//                    Field field = AnimatedDrawable2.class.getDeclaredField("mLoopCount");
+//                    field.setAccessible(true);
+//                    // 设置循环次数为 1
+//                    field.set(animatable, 1);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+////                animatable.start();
+//                if (animatable instanceof AnimatedDrawable2) {
+//                    duration = (int) ((AnimatedDrawable2) animatable).getLoopDurationMs();
+//                    Log.d(TAG, "onFinalImageSet: loopCount - " + ((AnimatedDrawable2) animatable).getLoopCount());
+//                }
+//                if (duration > 0) {
+//                    launchGif.postDelayed(() -> {
+//                        if (animatable.isRunning()) {
+//                            animatable.stop();
+//                            JumpDetail.jumpLogin(mContext);
+//                            finish();
+//                        }
+//                    }, duration);
+//                }
+//                Log.d(TAG, "onFinalImageSet: duration " + duration);
+//            }
+//        };
+//
+//        Uri uri = Uri.parse("res:///" + R.drawable.launch);
+//        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+//                .setUri(uri)
+//                .setControllerListener(controllerListener)
+//                // 设置加载图片完成后是否直接进行播放
+//                .setAutoPlayAnimations(true)
+//                .build();
+//        launchGif.setController(draweeController);
     }
 
     private void initData() {
@@ -84,52 +149,6 @@ public class SplashActivity extends XiaoeActivity {
         });
     }
 
-    private void initView() {
-        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
-            @Override
-            public void onFinalImageSet(String id, ImageInfo imageInfo, final Animatable animatable) {
-                Log.d(TAG, "onFinalImageSet: animatable - " + animatable);
-                if (animatable == null) {
-                    return;
-                }
-                int duration = 0;
-                try {
-                    // mTotalLoops mLoopCount
-                    Field field = AnimatedDrawable2.class.getDeclaredField("mLoopCount");
-                    field.setAccessible(true);
-                    // 设置循环次数为 1
-                    field.set(animatable, 1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-//                animatable.start();
-                if (animatable instanceof AnimatedDrawable2) {
-                    duration = (int) ((AnimatedDrawable2) animatable).getLoopDurationMs();
-                    Log.d(TAG, "onFinalImageSet: loopCount - " + ((AnimatedDrawable2) animatable).getLoopCount());
-                }
-                if (duration > 0) {
-                    launchGif.postDelayed(() -> {
-                        if (animatable.isRunning()) {
-                            animatable.stop();
-                            JumpDetail.jumpLogin(mContext);
-                            finish();
-                        }
-                    }, duration);
-                }
-                Log.d(TAG, "onFinalImageSet: duration " + duration);
-            }
-        };
-
-        Uri uri = Uri.parse("res:///" + R.drawable.launch);
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setUri(uri)
-                .setControllerListener(controllerListener)
-                // 设置加载图片完成后是否直接进行播放
-                .setAutoPlayAnimations(true)
-                .build();
-        launchGif.setController(draweeController);
-    }
-
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
@@ -144,6 +163,20 @@ public class SplashActivity extends XiaoeActivity {
                 }
             }
         }
+    }
+
+    /**
+     * 获取需要播放的动画资源
+     */
+    private int[] getRes() {
+        TypedArray typedArray = getResources().obtainTypedArray(R.array.animation_logo);
+        int len = typedArray.length();
+        int[] resId = new int[len];
+        for (int i = 0; i < len; i++) {
+            resId[i] = typedArray.getResourceId(i, -1);
+        }
+        typedArray.recycle();
+        return resId;
     }
 
 }
