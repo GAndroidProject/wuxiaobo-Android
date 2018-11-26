@@ -48,7 +48,7 @@ public class Constants {
     //友盟集成appId  测试
     private static final String U_MENG_APP_ID_TEST = "5bdac3fbf1f556303b0000ad";
     //友盟集成appId  正式
-    private static final String U_MENG_APP_ID_FORMAL = "5bdac3fbf1f556303b0000ad";
+    private static final String U_MENG_APP_ID_FORMAL = "5bfb6135f1f55634ab000419";
     //权限常量集
     public static String[] permissions = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};

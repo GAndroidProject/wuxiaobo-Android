@@ -33,6 +33,7 @@ import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.column.ColumnFragmentStatePagerAdapter;
+import com.xiaoe.shop.wxb.anim.TranslationAnimator;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
@@ -397,7 +398,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void detailRequest(JSONObject data, boolean available) {
-        int isRelated  = data.getIntValue("is_related ");
+        int isRelated  = data.getIntValue("is_related");
         if(isRelated == 1 && !available){
             //1-免费,2-单卖，3-非单卖
             //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
@@ -638,8 +639,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         UMShareAPI.get(this).release();
-        if (!hasCollect)
-            EventBus.getDefault().post(new MyCollectListRefreshEvent(true,resourceId));
+        if (!hasCollect) {
+            EventBus.getDefault().post(new MyCollectListRefreshEvent(true, resourceId));
+        }
     }
 
     /**

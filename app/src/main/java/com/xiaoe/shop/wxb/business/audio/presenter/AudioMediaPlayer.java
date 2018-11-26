@@ -222,6 +222,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             mediaPlayer.stop();
             mediaPlayer.release();
         }
+        prepared = false;
         event.setState(AudioPlayEvent.STOP);
         EventBus.getDefault().post(event);
         isStop = true;

@@ -11,11 +11,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.AudioPlayTable;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.anim.TranslationAnimator;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioSQLiteUtil;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.widget.TasksCompletedView;
 
@@ -31,6 +35,7 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
     private TextView columnTitle;
     private boolean isClose = false;
     private int miniPlayerAnimHeight;
+    private TranslationAnimator translationAnimator;
 
     public MiniAudioPlayControllerLayout(@NonNull Context context) {
         this(context,null);
@@ -59,6 +64,7 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
         playStateIcon = (ImageView) rootView.findViewById(R.id.id_img_state);
         title = (TextView) rootView.findViewById(R.id.id_audio_title);
         columnTitle = (TextView) rootView.findViewById(R.id.id_column_title);
+        translationAnimator = new TranslationAnimator();
     }
 
     public void setAudioTitle(String text){
@@ -108,11 +114,16 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
     }
 
     public void close(){
+        if(miniPlayerAnimHeight <= 0){
+            return;
+        }
         isClose = true;
         AudioPlayUtil.getInstance().setCloseMiniPlayer(true);
-        TranslationAnimator.getInstance()
-                .setAnimator(this)
+        translationAnimator.setAnimator(this)
                 .remove(miniPlayerAnimHeight);
+        SQLiteUtil audioSQLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
+        String sql = "UPDATE "+AudioPlayTable.TABLE_NAME +" SET current_play_state = 0 where current_play_state = 1";
+        audioSQLiteUtil.execSQL(sql);
     }
 
     @Override

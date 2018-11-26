@@ -146,8 +146,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     public void setDownloadState(int state){
         if(state == 1){
             //已经下载
-            //现在没有已下载图标，有已下载图标还替换
-            btnDownload.setImageResource(R.mipmap.video_download);
+            btnDownload.setImageResource(R.mipmap.video_alreadydownload);
         }else{
             btnDownload.setImageResource(R.mipmap.video_download);
         }

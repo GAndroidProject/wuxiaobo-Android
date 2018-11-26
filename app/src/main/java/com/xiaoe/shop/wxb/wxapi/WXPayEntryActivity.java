@@ -11,7 +11,6 @@ import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
-
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 
@@ -25,19 +24,28 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.pay_result);
+//        setContentView(R.layout.pay_empty);
     	api = WXAPIFactory.createWXAPI(this, Constants.getWXAppId(),true);
-        api.handleIntent(this.getIntent(), this);
+    	try {
+			api.handleIntent(this.getIntent(), this);
+		}catch (Exception e) {
+//			e.printStackTrace();
+			Log.d(TAG, "onCreate: Exception");
+		}
+
 		Log.d(TAG, "onCreate: ");
 	}
+
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.d(TAG, "onResume: --------");
 	}
 
 	@Override
 	public void onReq(BaseReq req) {
+		Log.d(TAG, "onReq: -----------");
 	}
 
 	@Override

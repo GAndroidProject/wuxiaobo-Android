@@ -109,7 +109,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private NetBroadcastReceiver netBroadcastReceiver;
 
     private boolean isFrontActivity = true;
-
+    private TranslationAnimator translationAnimator;
 
 
     class XeHandler extends Handler {
@@ -140,6 +140,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         super.onCreate(savedInstanceState);
         mContext = this;
         ActivityCollector.addActivity(this);
+        translationAnimator = new TranslationAnimator();
         popupWindow = new PopupWindow(this);
         popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -230,6 +231,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             miniAudioPlayController.setColumnTitle(AudioMediaPlayer.getAudio().getProductsTitle());
             miniAudioPlayController.setMaxProgress(AudioMediaPlayer.getDuration());
             miniAudioPlayController.setPlayState(AudioMediaPlayer.isPlaying() ? AudioPlayEvent.PLAY : AudioPlayEvent.PAUSE);
+        }else if(miniAudioPlayController != null){
+            miniAudioPlayController.setVisibility(View.GONE);
         }
     }
 
@@ -364,12 +367,10 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                     break;
                 case MotionEvent.ACTION_MOVE:
                     if (actionDownY - ev.getY() < -5) {
-                        TranslationAnimator.getInstance()
-                                .setAnimator(miniAudioPlayController)
+                        translationAnimator.setAnimator(miniAudioPlayController)
                                 .brak(miniPlayerAnimHeight);
                     } else if(actionDownY - ev.getY() > 5) {
-                        TranslationAnimator.getInstance()
-                                .setAnimator(miniAudioPlayController)
+                        translationAnimator.setAnimator(miniAudioPlayController)
                                 .remove(miniPlayerAnimHeight);
                     }
                     break;

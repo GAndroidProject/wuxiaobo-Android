@@ -2,7 +2,6 @@ package com.xiaoe.shop.wxb.anim;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
@@ -19,28 +18,22 @@ public class TranslationAnimator {
     private boolean mRmove = false;
     private boolean mBreakFinish = true;
     private boolean mBreak = true;
-    private static TranslationAnimator ta;
+//    private TranslationAnimator ta;
     private ObjectAnimator animator;
     private View mAnimatorView;
 
-    private TranslationAnimator() {
+    public TranslationAnimator() {
     }
 
-    public static TranslationAnimator getInstance() {
-        if (ta == null) {
-            ta = new TranslationAnimator();
-        }
-        return ta;
-    }
+
     public TranslationAnimator setAnimator(View av){
         mAnimatorView = av;
-        return ta;
+        return this;
     }
     public void remove(int to){
         if(mRmove || !mBreakFinish){
             return;
         }
-        Log.d(TAG, "remove: ");
         mBreak =false;
         mRmove = true;
         mRemoveFinish = false;
@@ -61,7 +54,6 @@ public class TranslationAnimator {
         if(mBreak || !mRemoveFinish){
             return;
         }
-        Log.d(TAG, "brak: ");
         mRmove = false;
         mBreak = true;
         mBreakFinish = false;

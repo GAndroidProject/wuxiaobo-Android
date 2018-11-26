@@ -25,9 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ImageDecodeOptions;
+import com.facebook.imagepipeline.common.ImageDecodeOptionsBuilder;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
@@ -607,7 +613,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     @Subscribe
     public void onEventMainThread(HadSharedEvent hadSharedEvent) {
         if (hadSharedEvent != null && hadSharedEvent.hadShared) {
-            if (!AudioMediaPlayer.getAudio().isFree() && AudioMediaPlayer.getAudio().getHasBuy() == 1) { // 不是免费然后已经分享并且买了
+            if (CommonUserInfo.isIsSuperVip() || (!AudioMediaPlayer.getAudio().isFree() && AudioMediaPlayer.getAudio().getHasBuy() == 1)) { // 不是免费然后已经分享并且买了
                 if (scholarshipPresenter == null) {
                     scholarshipPresenter = new ScholarshipPresenter(
                             this,
@@ -708,8 +714,13 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }else{
             playNum.setVisibility(View.GONE);
         }
-        if(!TextUtils.isEmpty(playEntity.getImgUrl())){
-            audioRing.setImageURI(Uri.parse(playEntity.getImgUrl()));
+        String imageUrl = playEntity.getImgUrl();
+        if(!TextUtils.isEmpty(imageUrl)){
+            if("gif".equals(imageUrl.substring(imageUrl.lastIndexOf(".")+1)) || "GIF".equals(imageUrl.substring(imageUrl.lastIndexOf(".")+1))){
+                setRoundAsCircle(Uri.parse(playEntity.getImgUrl()));
+            }else{
+                audioRing.setImageURI(Uri.parse(playEntity.getImgUrl()));
+            }
         }
 
         audioPlayList.setProductsTitle(playEntity.getProductsTitle());
@@ -717,6 +728,25 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         //设置下载状态
         boolean isDownload = DownloadManager.getInstance().isDownload(playEntity.getAppId(), playEntity.getResourceId());
         setDownloadState(isDownload);
+    }
+
+    private void setRoundAsCircle(Uri uri){
+        audioRing.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+
+        ImageDecodeOptions imageDecodeOptions = new ImageDecodeOptionsBuilder()
+                .setForceStaticImage(true)
+                .build();
+
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+//                .setResizeOptions(new ResizeOptions(100, 100))
+                .setCacheChoice(ImageRequest.CacheChoice.SMALL)
+                .setImageDecodeOptions(imageDecodeOptions)
+                .build();
+
+        PipelineDraweeControllerBuilder builder = Fresco.getDraweeControllerBuilderSupplier().get()
+                .setOldController(audioRing.getController())
+                .setImageRequest(request);
+        audioRing.setController(builder.build());
     }
     private void setDownloadState(boolean download){
         if(download){

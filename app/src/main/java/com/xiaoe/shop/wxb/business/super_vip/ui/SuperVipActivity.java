@@ -10,12 +10,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.math.BigDecimal;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.SuperVipBuyInfoRequest;
@@ -23,6 +17,12 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+
+import java.math.BigDecimal;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class SuperVipActivity extends XiaoeActivity {
 

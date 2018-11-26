@@ -8,6 +8,7 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import com.xiaoe.common.app.Constants;
+import com.xiaoe.common.utils.MD5Utils;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
@@ -241,7 +242,7 @@ public class LoginPresenter implements IBizCallback {
 
 //        loginRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginRequest.addRequestParam("phone", phoneNum);
-        loginRequest.addRequestParam("password", password);
+        loginRequest.addRequestParam("password", MD5Utils.encrypt(password));
 
         NetworkEngine.getInstance().sendRequest(loginRequest);
     }
@@ -275,7 +276,7 @@ public class LoginPresenter implements IBizCallback {
 //        resetPasswordRequest.addHeaderParam("app-id", Constants.getWXAppId());
         resetPasswordRequest.addRequestParam("phone", phoneNum);
         resetPasswordRequest.addRequestParam("sms_code", smsCode);
-        resetPasswordRequest.addRequestParam("new_password", password);
+        resetPasswordRequest.addRequestParam("new_password", MD5Utils.encrypt(password));
 
         NetworkEngine.getInstance().sendRequest(resetPasswordRequest);
     }

@@ -135,10 +135,15 @@
                     android:layout_width="190dp"
                     android:layout_height="190dp"
                     android:layout_centerHorizontal="true"
-                    fresco:actualImageScaleType="fitCenter"
-                    fresco:placeholderImage="@mipmap/detail_disk"
                     fresco:roundAsCircle="true"
+                    fresco:actualImageScaleType="focusCrop"
+                    fresco:placeholderImage="@mipmap/detail_disk"
                     android:transitionName="@string/share_img"
+                    fresco:roundedCornerRadius="95dp"
+                    fresco:roundTopLeft="true"
+                    fresco:roundTopRight="true"
+                    fresco:roundBottomLeft="true"
+                    fresco:roundBottomRight="true"
                     />
                 <View
                     android:layout_width="40dp"

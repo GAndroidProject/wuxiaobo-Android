@@ -272,13 +272,6 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
             setPagerState(-2);
             return;
         }
-        isCommentFinished = dataObject.getBoolean("is_finished");
-        if(isCommentFinished){
-            commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_ALL_FINISH);
-            return; // 如果加载完成后，直接 return 掉
-        }else{
-            commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_NOT_LOAD);
-        }
         mCommentCount = count;
         commentCountView.setText("评论 "+count+" 条");
         JSONArray comments = dataObject.getJSONArray("comments");
@@ -290,6 +283,13 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         }else{
             commentAdapter.addAll(commentList);
             setPagerState(0);
+        }
+        isCommentFinished = dataObject.getBoolean("is_finished");
+        if(isCommentFinished){
+            commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_ALL_FINISH);
+            return; // 如果加载完成后，直接 return 掉
+        }else{
+            commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_NOT_LOAD);
         }
 
     }
@@ -373,6 +373,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                 getDialog().getTitleView().setGravity(Gravity.START);
                 getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(this, 20), 0, 0, 0);
                 getDialog().setTitle(getString(R.string.delete_comment_hint));
+                getDialog().setMessageVisibility(View.GONE);
                 getDialog().setHideCancelButton(false);
                 getDialog().setOnCustomDialogListener(new OnCustomDialogListener() {
                     @Override

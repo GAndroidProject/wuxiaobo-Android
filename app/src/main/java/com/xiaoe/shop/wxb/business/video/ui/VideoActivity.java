@@ -487,7 +487,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 JSONObject resourceInfo = data.getJSONObject("resource_info");
                 int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
                 setCollectState(hasFavorite == 1);
-                if(resourceInfo.getIntValue("is_related ") == 1){
+                if(resourceInfo.getIntValue("is_related") == 1){
                     //1-免费,2-单卖，3-非单卖
                     //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                     JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
@@ -525,6 +525,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
     private void setContent(JSONObject data, boolean available) {
         hasBuy = available;
+        mResourceId = data.getString("resource_id");
         String title = data.getString("title");
         videoTitle.setText(title);
         int count = data.getIntValue("view_count");
