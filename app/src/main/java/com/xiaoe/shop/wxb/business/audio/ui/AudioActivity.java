@@ -263,7 +263,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     public void onBackPressed() {
         setViewAnim(audioRing, 1, 0, 1, 0, 1, 0);
         setViewAnim(btnPageClose, 1, 0, 1, 0, 1, 0);
-        if (AudioMediaPlayer.getAudio().getHasBuy() == 1) {
+        if (AudioMediaPlayer.getAudio() != null && AudioMediaPlayer.getAudio().getHasBuy() == 1) {
             // 上报学习进度（买了才上报）
             UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
             updateLearningUtils.updateLearningProgress(AudioMediaPlayer.getAudio().getResourceId(), 2, 10);
