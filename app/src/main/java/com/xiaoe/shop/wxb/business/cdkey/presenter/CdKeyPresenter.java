@@ -1,6 +1,5 @@
 package com.xiaoe.shop.wxb.business.cdkey.presenter;
 
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;

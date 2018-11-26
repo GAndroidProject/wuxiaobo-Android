@@ -86,7 +86,7 @@ public class MineMsgView extends RelativeLayout {
     }
 
     public void setBuyVipCommon() {
-        title_buy_vip.setText("成为超级会员");
+        title_buy_vip.setText(mContext.getString(R.string.super_vip));
         title_buy_vip.setTextColor(mContext.getResources().getColor(R.color.main_title_color));
         title_buy_vip.setPadding(Dp2Px2SpUtil.dp2px(mContext, 32), Dp2Px2SpUtil.dp2px(mContext, 4), Dp2Px2SpUtil.dp2px(mContext, 32), Dp2Px2SpUtil.dp2px(mContext, 4));
         title_buy_vip.setBackground(mContext.getResources().getDrawable(R.drawable.super_vip_bg));

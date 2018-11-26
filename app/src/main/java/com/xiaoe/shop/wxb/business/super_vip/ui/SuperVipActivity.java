@@ -44,6 +44,7 @@ public class SuperVipActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initStatusBar();
         setContentView(R.layout.activity_super_vip);
         unbinder = ButterKnife.bind(this);
 

@@ -165,7 +165,7 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
             int itemPriceTop = jsonItem.getInteger("price");
             String itemTitle = jsonItem.getString("description");
             String itemDesc = jsonItem.getString("desc");
-            String itemTime = jsonItem.getString("created_at").split(" ")[0];
+            String itemTime = jsonItem.getString("created_at");
 
             BigDecimal top = new BigDecimal(itemPriceTop);
             BigDecimal bottom = new BigDecimal(priceBottom);

@@ -251,6 +251,7 @@ public class SearchActivity extends XiaoeActivity {
         // searchPresenter.requestSearchResult(content);
         searchKeyword = content;
         searchPresenter.requestSearchResultByPage(content, pageIndex, pageSize);
+        getDialog().showLoadDialog(false);
     }
 
     // 替换 fragment
@@ -303,6 +304,7 @@ public class SearchActivity extends XiaoeActivity {
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
+        getDialog().dismissDialog();
         if (this.dataList != null) { // 网络请求回来之后判断一下 dataList 是否为空，不为空则清空
             this.dataList = null;
         }

@@ -37,7 +37,6 @@
                     android:textColor="@color/main_title_color"
                     android:layout_toStartOf="@+id/btn_collect"
                     android:textSize="26sp"
-                    android:textStyle="bold"
                     android:maxLines="2"
                     />
                 <ImageView
@@ -198,7 +197,6 @@
             android:ellipsize="end"
             android:maxWidth="200dp"
             android:visibility="gone"
-            android:textStyle="bold"
             android:layout_centerInParent="true"
             android:textColor="@color/main_title_color"
             android:textSize="18sp"
