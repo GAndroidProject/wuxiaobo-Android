@@ -39,8 +39,8 @@ import com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity.KnowledgeListView
 import com.xiaoe.shop.wxb.adapter.decorate.recent_update.RecentUpdateListAdapter;
 import com.xiaoe.shop.wxb.adapter.decorate.recent_update.RecentUpdateViewHolder;
 import com.xiaoe.shop.wxb.adapter.decorate.search.SearchViewHolder;
+import com.xiaoe.shop.wxb.adapter.decorate.shuffling_figure.GlideImageLoader;
 import com.xiaoe.shop.wxb.adapter.decorate.shuffling_figure.ShufflingFigureViewHolder;
-import com.xiaoe.shop.wxb.adapter.decorate.shuffling_figure.ShufflingImageLoader;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.business.course_more.ui.CourseMoreActivity;
 import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
@@ -298,7 +298,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     imgList.add(item.getImgUrl());
                 }
                 shufflingFigureViewHolder.banner.setImages(imgList)
-                        .setImageLoader(new ShufflingImageLoader())
+                        .setImageLoader(new GlideImageLoader())
                         .setBannerStyle(BannerConfig.CIRCLE_INDICATOR)
                         .setDelayTime(1500)
                         .start();
