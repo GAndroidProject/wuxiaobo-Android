@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,7 +18,6 @@ import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.AudioPlayEntity;
-import com.xiaoe.common.entitys.TaskDetailIdEvent;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -173,8 +173,23 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         mainViewPager = (ScrollViewPager) findViewById(R.id.main_view_pager);
         mainViewPager.setScroll(false);
-        mainViewPager.setAdapter(new MainFragmentStatePagerAdapter(getSupportFragmentManager()));
+        MainFragmentStatePagerAdapter adapter = new MainFragmentStatePagerAdapter(getSupportFragmentManager());
+        mainViewPager.setAdapter(adapter);
         mainViewPager.setOffscreenPageLimit(3);
+        mainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+            @Override
+            public void onPageSelected(int position) {
+                if (1 == position){
+                }else {
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 
 //        boolean needChange = intent.getBooleanExtra("needChange", false);
 //        int tabIndex = intent.getIntExtra("tabIndex", 0);

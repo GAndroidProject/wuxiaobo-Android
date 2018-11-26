@@ -239,7 +239,7 @@ public class SearchActivity extends XiaoeActivity {
         right = SearchActivity.this.getResources().getDrawable(R.mipmap.icon_clear);
         Rect rect = new Rect(0, 0, right.getIntrinsicWidth(), right.getIntrinsicHeight());
         right.setBounds(rect);
-        searchContent.setCompoundDrawables(null, null, right, null);
+//        searchContent.setCompoundDrawables(null, null, right, null);
     }
 
     // 根据搜索内容进行查找
