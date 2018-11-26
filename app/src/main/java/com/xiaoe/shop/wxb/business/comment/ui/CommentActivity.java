@@ -9,6 +9,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -185,16 +186,23 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
             return;
         }
         Object dataObject = jsonObject.get("data");
-        if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED || dataObject == null ){
+        int code = jsonObject.getIntValue("code");
+        if(code != NetworkCodes.CODE_SUCCEED || dataObject == null ){
             if(iRequest instanceof CommentListRequest){
                 setPagerState(-3);
             }else if(iRequest instanceof SendCommentRequest){
                 getDialog().dismissDialog();
                 sending = false;
-                if(commentView.isReply()){
-                    ToastUtils.show(mContext, getString(R.string.send_reply_comment_fail));
+                if (commentView.isReply()) {
+                    if (NetworkCodes.CODE_COMMENT_NO_EXIST == code) {
+                        ToastUtils.show(mContext, getString(R.string.comment_deleted_text));
+                        commentAdapter.getData().remove(mPosition);
+                        commentAdapter.notifyDataSetChanged();
+                    } else {
+                        ToastUtils.show(mContext, getString(R.string.send_reply_comment_fail));
+                    }
                     commentView.setReply(false);
-                }else{
+                } else {
                     ToastUtils.show(mContext, getString(R.string.send_comment_fail));
                 }
             } else if (iRequest instanceof CommentLikeRequest) {
@@ -245,6 +253,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         int commentId = data.getIntValue("comment_id");
         sendComment.setComment_id(commentId);
         commentAdapter.addPosition(sendComment, 0);
+        commentAdapter.notifyDataSetChanged();
         commentRecyclerView.scrollToPosition(0);
         if(commentView.isReply()){
             ToastUtils.show(mContext, getString(R.string.send_reply_comment_succeed));
@@ -336,6 +345,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
 
     @Override
     public void onClickComment(CommentEntity commentEntity, int type, int position) {
+        mPosition = position;
         if(type == CommentView.TYPE_REPLY){
             //回复
             if (loginUserList.size() == 1) {
@@ -347,7 +357,6 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         }else if(type == CommentView.TYPE_LIKE){
             //点赞
             if (loginUserList.size() == 1) {
-                mPosition = position;
                 boolean praise = !commentEntity.isIs_praise();
                 updateLikeItem(commentEntity);
                 commentPresenter.likeComment(resourceId, resourceType, commentEntity.getComment_id(), commentEntity.getUser_id(), commentEntity.getContent(), praise);

@@ -326,4 +326,5 @@
     <string name="price_decimal">%.2f</string>
 
     <string name="list_watch_more">查看全部</string>
+    <string name="comment_deleted_text">回复失败：该评论已被删除</string>
 </resources>

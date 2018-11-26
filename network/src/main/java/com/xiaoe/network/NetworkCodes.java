@@ -58,4 +58,8 @@ public class NetworkCodes {
 
     public static final int CODE_OPEN_ID_ERROR = 4108;
     public static final int CODE_NO_MONEY = 4190;
+    /**
+     * 评论已被删除，不能回复
+     */
+    public static final int CODE_COMMENT_NO_EXIST = 3003;
 }
