@@ -37,14 +37,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * 开机闪屏（启动）页面
+ * @author Administrator
+ * <p>
+ * 描述：开机闪屏（启动）页面
  */
-public class LaunchActivity extends XiaoeActivity {
+public class SplashActivity extends XiaoeActivity {
 
     @BindView(R.id.launch_gif)
     SimpleDraweeView launchGif;
 
-    private static final String TAG = "LaunchActivity";
+    private static final String TAG = "SplashActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
