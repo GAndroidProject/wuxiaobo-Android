@@ -443,9 +443,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             price = data.getIntValue("price");
             buyView.setVisibility(View.VISIBLE);
             setMiniPlayerPosition(RelativeLayout.ABOVE, R.id.common_buy_layout);
-            if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 超级会员判断
+            // 未购买
+            if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员判断
                 buyView.setVipBtnVisibility(View.VISIBLE);
-
             } else {
                 buyView.setVipBtnVisibility(View.GONE);
             }

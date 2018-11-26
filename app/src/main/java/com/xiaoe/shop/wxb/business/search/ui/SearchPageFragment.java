@@ -111,16 +111,11 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         unbinder = ButterKnife.bind(this, viewWrap);
         mContext = getContext();
         searchActivity = (SearchActivity) getActivity();
-        imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        return viewWrap;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         if (layoutId != -1) {
             initView();
         }
+        imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        return viewWrap;
     }
 
     private void initView() {

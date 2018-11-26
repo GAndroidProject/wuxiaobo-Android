@@ -316,6 +316,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                             dialog.setTitle(getString(R.string.login_invalid));
                             dialog.setConfirmText(getString(R.string.btn_again_login));
                             dialog.showDialog(DIALOG_TAG_LOADING);
+                            // 往回传 null 关闭加载中
+                            onMainThreadResponse(null, false, entity);
                         }
                     }else{
                         onMainThreadResponse(iRequest, true, entity);
@@ -493,6 +495,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             SQLiteUtil liteUtil = SQLiteUtil.init(this,  new LoginSQLiteCallback());
             liteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
             CommonUserInfo.getInstance().clearUserInfo();
+            CommonUserInfo.getInstance().clearLoginUserInfo();
             CommonUserInfo.setApiToken("");
             CommonUserInfo.setIsSuperVip(false);
             CommonUserInfo.setIsSuperVipAvailable(false);

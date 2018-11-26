@@ -14,6 +14,7 @@ import com.xiaoe.common.interfaces.OnItemClickWithMoneyItemListener;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 
 public class MoneyWrapRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
@@ -58,9 +59,9 @@ public class MoneyWrapRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
         MoneyItemViewHolder viewHolder = (MoneyItemViewHolder) holder;
         viewHolder.money_item_title.setText(currentItem.getItemTitle());
         viewHolder.money_item_desc.setText(currentItem.getItemDesc());
-        viewHolder.money_item_wrap.setOnClickListener(new View.OnClickListener() {
+        viewHolder.money_item_wrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (onItemClickWithMoneyItemListener != null) {
                     onItemClickWithMoneyItemListener.onMineMoneyItemInfoClickListener(v, currentItem);
                 }

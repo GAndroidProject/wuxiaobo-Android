@@ -147,4 +147,8 @@ public class CommonUserInfo {
     public void setHasUnreadMsg(boolean hasUnreadMsg) {
         this.hasUnreadMsg = hasUnreadMsg;
     }
+
+    public void clearLoginUserInfo() {
+        loginUser = null;
+    }
 }

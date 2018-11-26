@@ -533,10 +533,10 @@ public class LoginActivity extends XiaoeActivity {
         if (!isTouristClick) {
             JumpDetail.jumpMain(this, true);
         } else {
-            finish();
             ChangeLoginIdentityEvent changeLoginIdentityEvent = new ChangeLoginIdentityEvent();
             changeLoginIdentityEvent.setChangeSuccess(true);
             EventBus.getDefault().post(changeLoginIdentityEvent);
+            finish();
         }
     }
 

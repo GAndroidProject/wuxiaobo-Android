@@ -33,6 +33,7 @@ import com.xiaoe.common.app.Global;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
+import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.entitys.ScholarshipRangeItem;
 import com.xiaoe.common.entitys.TaskDetailIdEvent;
@@ -76,6 +77,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     SmartRefreshLayout scholarshipRefresh;
     @BindView(R.id.scholarship_rule)
     TextView scholarshipRule;
+    @BindView(R.id.scholarship_total_money)
+    TextView scholarshipTotalMoney;
     @BindView(R.id.scholarship_step_one)
     ImageView scholarshipStepOne;
     @BindView(R.id.scholarship_step_two)
@@ -492,6 +495,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             default:
                 break;
         }
+        scholarshipTotalMoney.setText(ScholarshipEntity.getInstance().getTaskTotalMoney());
         scholarshipLoading.setLoadingFinish();
     }
 
@@ -576,11 +580,27 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Subscribe
-    public void obtainTaskDetailId(TaskDetailIdEvent taskDetailIdEvent) {
+    public void obtainEvent(TaskDetailIdEvent taskDetailIdEvent) {
         if (taskDetailIdEvent != null) {
             taskDetailId = taskDetailIdEvent.getTaskDetailId();
             ScholarshipEntity.getInstance().setTaskDetailId(taskDetailId);
             scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), taskDetailId);
+        }
+    }
+
+    @Subscribe
+    public void obtainEvent(ChangeLoginIdentityEvent changeLoginIdentityEvent) {
+        if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
+            if (scholarshipPresenter == null) {
+                scholarshipPresenter = new ScholarshipPresenter(this);
+            }
+            scholarshipPresenter.requestTaskList(true);
+            if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
+                if (scholarshipPresenter == null) {
+                    scholarshipPresenter = new ScholarshipPresenter(this);
+                }
+                scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
+            }
         }
     }
 

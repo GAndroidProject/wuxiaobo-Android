@@ -29,7 +29,10 @@
         android:layout_marginBottom="20dp"
         android:divider="#00000000"
         android:dividerHeight="8dp"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:scrollbars="none"
+        android:overScrollMode="never"
+        android:listSelector="@color/self_transparent"/>
 
     <!--<TextView-->
         <!--android:id="@+id/card_equity_more"-->
@@ -64,12 +67,12 @@
         android:text="@string/renewal"
         android:textSize="12sp"
         android:background="@drawable/vip_renewal_bg"
-        android:layout_centerVertical="true"
         android:gravity="center"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
         android:paddingStart="8dp"
-        android:paddingEnd="8dp"/>
+        android:paddingEnd="8dp"
+        android:layout_above="@id/card_deadline_title"/>
 
     <TextView
         android:id="@+id/card_deadline_title"
@@ -78,10 +81,10 @@
         android:text="@string/deadline_title"
         android:textColor="@color/main_title_color"
         android:textSize="12sp"
-        android:layout_below="@id/card_renewal"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="20dp"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp"
+        android:layout_above="@id/card_deadline"/>
 
     <TextView
         android:id="@+id/card_deadline"
@@ -90,6 +93,7 @@
         android:textSize="14sp"
         android:textColor="@color/main_title_color"
         android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/card_deadline_title"/>
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

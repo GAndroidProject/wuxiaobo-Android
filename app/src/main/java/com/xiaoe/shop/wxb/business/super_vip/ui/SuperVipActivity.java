@@ -1,8 +1,10 @@
 package com.xiaoe.shop.wxb.business.super_vip.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,6 +43,9 @@ public class SuperVipActivity extends XiaoeActivity {
     private String expireAtStart;
     private String expireAtEnd;
 
+    Intent intent;
+    boolean hasBuy; // 是否购买
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +53,16 @@ public class SuperVipActivity extends XiaoeActivity {
         setContentView(R.layout.activity_super_vip);
         unbinder = ButterKnife.bind(this);
 
-        SuperVipPresenter superVipPresenter = new SuperVipPresenter(this);
-        superVipPresenter.requestSuperVipBuyInfo();
+        intent = getIntent();
+        hasBuy = intent.getBooleanExtra("hasBuy", false);
+
+        if (!hasBuy) { // 没买就请求购买信息
+            SuperVipPresenter superVipPresenter = new SuperVipPresenter(this);
+            superVipPresenter.requestSuperVipBuyInfo();
+        } else { // 买了，隐藏购买按钮
+            superVipSubmit.setVisibility(View.GONE);
+        }
+
         superVipBg.setImageURI("res:///" + R.mipmap.super_vip_new);
 
         initListener();

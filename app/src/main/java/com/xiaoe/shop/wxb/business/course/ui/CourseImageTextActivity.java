@@ -298,7 +298,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             itBg.setImageURI("");
         }
         String descImgUrl = "res:///" + R.mipmap.img_text_bg;
-        SetImageUriUtil.setImgURI(itDescImg, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
+        SetImageUriUtil.setImgURI(itDescImg, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 250));
         if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) {
             itBuy.setVipBtnVisibility(View.VISIBLE);
         } else {

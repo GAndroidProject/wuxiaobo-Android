@@ -47,6 +47,7 @@ import com.xiaoe.shop.wxb.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.mine_learning.presenter.MineLearningPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -95,10 +96,13 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 
     MineMoneyItemInfo item_1; // 奖学金
     MineMoneyItemInfo item_2; // 积分
-    List<MineMoneyItemInfo> itemInfoList;
+    List<MineMoneyItemInfo> itemInfoList; // 奖学金集合
     boolean isScholarshipFinish; // 奖学金请求完成
     boolean isIntegralFinish;    // 积分请求完成
     boolean isMineLearningFinish; // 我正在学请求完成
+
+    List<String> contentList;   // 权益集合
+    MineEquityListAdapter mineEquityListAdapter; // 权益适配器
 
     TouristDialog touristDialog;
     String mineLearningId;
@@ -248,26 +252,33 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void initData() {
-        // 如果超级会员可用，显示按钮，不可用不显示
-        if (CommonUserInfo.isIsSuperVipAvailable()) {
+        if (CommonUserInfo.isIsSuperVip()) { // 是超级会员
             mineMsgView.setBuyVipVisibility(View.VISIBLE);
-            if (CommonUserInfo.isIsSuperVip()) { // 是超级会员
-                mineMsgView.setBuyVipTag();
-            } else { // 不是
-                mineMsgView.setBuyVipCommon();
-            }
+            mineMsgView.setBuyVipTag();
         } else {
-            mineMsgView.setBuyVipVisibility(View.GONE);
+            if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员可购
+                mineMsgView.setBuyVipVisibility(View.VISIBLE);
+                mineMsgView.setBuyVipCommon();
+            } else {
+                mineMsgView.setBuyVipVisibility(View.GONE);
+            }
         }
         if (CommonUserInfo.isIsSuperVip()) { // 是超级会员，显示卡片
             // 会员权益假数据 -- 开始
-            List<String> contentList = new ArrayList<>();
-            contentList.add("所有课程免费学习");
-            contentList.add("分享赢双倍积分");
-            MineEquityListAdapter mineEquityListAdapter = new MineEquityListAdapter(mContext, contentList);
-            mineVipCard.setEquityListAdapter(mineEquityListAdapter);
+            if (contentList == null) {
+                contentList = new ArrayList<>();
+                contentList.add("所有课程免费学习");
+                contentList.add("分享赢双倍积分");
+                mineEquityListAdapter = new MineEquityListAdapter(mContext, contentList);
+                mineVipCard.setEquityListAdapter(mineEquityListAdapter);
+            }
             // 会员权益假数据 -- 结束
             mineVipCard.setVisibility(View.VISIBLE);
+            if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员可购
+                mineVipCard.setBtnRenewalVisibility(View.VISIBLE);
+            } else {
+                mineVipCard.setBtnRenewalVisibility(View.GONE);
+            }
             mineVipCard.setDeadLine(mainActivity.expireAt);
         } else {
             mineVipCard.setVisibility(View.GONE);
@@ -288,7 +299,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             mineMoneyWrapView.setLayoutParams(layoutParams);
         }
         // 金钱容器
-        itemInfoList = new ArrayList<>();
+        if (itemInfoList == null) {
+            itemInfoList = new ArrayList<>();
+        }
         // 我正在学
         mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
     }
@@ -297,9 +310,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         mineRefresh.setOnRefreshListener(this);
         mineTitleView.setMsgClickListener(this);
         mineTitleView.setSettingListener(this);
-        if (!CommonUserInfo.isIsSuperVip()) { // 不是超级会员，添加点击事件
-            mineMsgView.setBuyVipClickListener(this);
-        }
+        mineMsgView.setBuyVipClickListener(this);
         mineMsgView.setNicknameOnClickListener(this);
         mineMsgView.setAvatarClickListener(this);
         mineVipCard.setBtnRenewalClickListener(this);
@@ -344,9 +355,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 obtainVipBuyInfo(code, result);
             }
         } else {
+            // iRequest 为空是登录被挤情况
             mineRefresh.finishRefresh();
-            if (!showDataByDB) {
-                mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            if (iRequest != null) {
+                if (!showDataByDB) {
+                    mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                }
             }
         }
     }
@@ -355,33 +369,15 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     private void updateVipMsg(JSONObject data) {
         mainActivity.initSuperVipMsg(data);
         if (mineVipCard != null) {
-            if (CommonUserInfo.isIsSuperVipAvailable()) { // 可以买超级会员
-                if (CommonUserInfo.isIsSuperVip()) {
-                    mineVipCard.setDeadLine(mainActivity.expireAt);
-                    mineVipCard.setBtnRenewalVisibility(View.VISIBLE);
-                    mineVipCard.setVisibility(View.VISIBLE);
-                    initMineMsg();
-                    initData();
-                } else {
-                    mineVipCard.setVisibility(View.GONE);
+            if (CommonUserInfo.isIsSuperVip()) {
+                initData();
+            } else {
+                mineVipCard.setVisibility(View.GONE);
+                if (CommonUserInfo.isIsSuperVipAvailable()) { // 可以买超级会员
                     mineMsgView.setBuyVipVisibility(View.VISIBLE);
                     mineMsgView.setBuyVipCommon();
-                }
-            } else { // 不可以买超级会员
-                if (CommonUserInfo.isIsSuperVip()) {
-                    mineVipCard.setDeadLine(mainActivity.expireAt);
-                    mineVipCard.setBtnRenewalVisibility(View.GONE);
-                } else {
-                    mineVipCard.setVisibility(View.GONE);
-                }
-            }
-        }
-        if (mineMsgView != null) {
-            if (CommonUserInfo.isIsSuperVipAvailable()) {
-                if (CommonUserInfo.isIsSuperVip()) { // 是超级会员，显示蓝色按钮
-                    mineMsgView.setBuyVipTag();
-                } else { // 不是超级会员，显示黄色按钮
-                    mineMsgView.setBuyVipCommon();
+                } else { // 不可以买超级会员
+                    mineMsgView.setBuyVipVisibility(View.GONE);
                 }
             }
         }
@@ -549,7 +545,24 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
     @Subscribe
     public void onEventMainThread(ChangeLoginIdentityEvent changeLoginIdentityEvent) {
         if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
-            // 成功切换身份，刷新界面
+            // 成功切换身份，重新请求接口，刷新界面
+            initMineMsg();
+            if (earningPresenter == null) {
+                earningPresenter = new EarningPresenter(this);
+            }
+            if (mineLearningPresenter == null) {
+                mineLearningPresenter = new MineLearningPresenter(this);
+            }
+            if (superVipPresenter == null) {
+                superVipPresenter = new SuperVipPresenter(this);
+            }
+            isScholarshipFinish = false;
+            isIntegralFinish = false;
+            isMineLearningFinish = false;
+            earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+            earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+            mineLearningPresenter.requestLearningData(1, 1);
+            superVipPresenter.requestSuperVip();
         }
     }
 
@@ -602,7 +615,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case R.id.title_buy_vip: // 超级会员
                 if (mainActivity.isFormalUser) {
-                    JumpDetail.jumpSuperVip(mContext);
+                    if (!CommonUserInfo.isIsSuperVip()) { // 不是超级会员
+                        JumpDetail.jumpSuperVip(mContext);
+                    } else { // 是超级会员
+                        JumpDetail.jumpSuperVip(mContext, true);
+                    }
                 } else {
                     touristDialog.showDialog();
                 }
@@ -658,7 +675,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case R.id.card_container: // 超级会员卡片
                 if (mainActivity.isFormalUser) {
-                    Toast.makeText(mContext, "超级会员卡片", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(mContext, "超级会员卡片", Toast.LENGTH_SHORT).show();
+                    // do nothing
                 } else {
                     touristDialog.showDialog();
                 }

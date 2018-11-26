@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
@@ -173,23 +174,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         mainViewPager = (ScrollViewPager) findViewById(R.id.main_view_pager);
         mainViewPager.setScroll(false);
-        MainFragmentStatePagerAdapter adapter = new MainFragmentStatePagerAdapter(getSupportFragmentManager());
-        mainViewPager.setAdapter(adapter);
+        mainViewPager.setAdapter(new MainFragmentStatePagerAdapter(getSupportFragmentManager()));
         mainViewPager.setOffscreenPageLimit(3);
-        mainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-            @Override
-            public void onPageSelected(int position) {
-                if (1 == position){
-                }else {
-                }
-            }
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
 
 //        boolean needChange = intent.getBooleanExtra("needChange", false);
 //        int tabIndex = intent.getIntExtra("tabIndex", 0);
@@ -214,7 +200,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         Log.d(TAG, "onCheckedTab: "+index);
         mainViewPager.setCurrentItem(index);
         Log.d(TAG, "onCheckedTab: I "+mainViewPager.getCurrentItem());
-        if (3 == index) {
+        if (3 == index && !TextUtils.isEmpty(CommonUserInfo.getInstance().getApiTokenByDB())) { // 有登录态才请求
             getUnreadMsg();
         }
     }
@@ -423,6 +409,14 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     public void initSuperVipMsg(JSONObject data) {
         boolean isSuperVip = data.getBoolean("is_svip");
         boolean isCanBuy = data.getBoolean("is_can_buy");
+        boolean hasYearBuy = false; // 是否有一年规格
+        JSONArray vipType = (JSONArray) data.get("svip_type");
+        for (int i = 0; i < vipType.size(); i++) {
+            int item = vipType.getInteger(i);
+            if (item == 5) { // 有一年规格
+                hasYearBuy = true;
+            }
+        }
 
         String expire = data.getString("expire_at");
         if (expire != null) {
@@ -430,7 +424,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         }
 
         CommonUserInfo.setIsSuperVip(isSuperVip);
-        CommonUserInfo.setIsSuperVipAvailable(isCanBuy);
+        CommonUserInfo.setIsSuperVipAvailable(isCanBuy && hasYearBuy);
     }
 
     public void getUnreadMsg() {

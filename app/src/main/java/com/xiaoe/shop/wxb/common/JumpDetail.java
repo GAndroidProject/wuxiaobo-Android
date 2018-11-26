@@ -276,6 +276,18 @@ public class JumpDetail {
     }
 
     /**
+     * 跳转到超级会员页，无需购买
+     * @param context
+     */
+    public static void jumpSuperVip(Context context, boolean hasBuy) {
+        Intent intent = new Intent(context, SuperVipActivity.class);
+
+        intent.putExtra("hasBuy", hasBuy);
+
+        context.startActivity(intent);
+    }
+
+    /**
      * 跳转到我的首页和我正在学页面
      * @param context
      */

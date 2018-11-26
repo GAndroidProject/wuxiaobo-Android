@@ -17,6 +17,7 @@ public class ScholarshipEntity {
     private int taskState; // 任务状态
     private int issueState; // 发放状态
     private String taskDetailId; // 任务详情 id，用于请求发放状态
+    private String taskTotalMoney; // 任务总金额
 
     private static ScholarshipEntity scholarshipEntity = null;
 
@@ -64,5 +65,14 @@ public class ScholarshipEntity {
 
     public String getTaskDetailId() {
         return taskDetailId;
+    }
+
+    public void setTaskTotalMoney(String taskTotalMoney) {
+        this.taskTotalMoney = taskTotalMoney;
+    }
+
+    public String getTaskTotalMoney() {
+
+        return taskTotalMoney;
     }
 }

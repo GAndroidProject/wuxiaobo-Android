@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -189,6 +188,8 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
                             dialog.setConfirmText(getString(R.string.btn_again_login));
                             dialog.setOnCustomDialogListener(BaseFragment.this);
                             dialog.showDialog(DIALOG_TAG_LOADING);
+                            // 往回传 null 关闭加载中
+                            onMainThreadResponse(null, false, entity);
                         }
                     }else{
                         onMainThreadResponse(iRequest, true, entity);
@@ -283,6 +284,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
             SQLiteUtil sqLiteUtil = SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
             sqLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
             CommonUserInfo.getInstance().clearUserInfo();
+            CommonUserInfo.getInstance().clearLoginUserInfo();
             CommonUserInfo.setApiToken("");
             CommonUserInfo.setIsSuperVip(false);
             CommonUserInfo.setIsSuperVipAvailable(false);

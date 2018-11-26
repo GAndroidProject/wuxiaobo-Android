@@ -136,9 +136,13 @@ public class ScholarshipPresenter implements IBizCallback {
                 continue;
             }
             String taskId = itemJson.getString("task_id");
+            // int taskTotalMoney = itemJson.getInteger("reward_amount");
+            int taskTotalMoney = 1000000;
+            String totalMoney = String.format("%.0f", taskTotalMoney / 100f);
             SharedPreferencesUtil.getInstance(XiaoeApplication.getmContext(), SharedPreferencesUtil.FILE_NAME);
             SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_SCHOLARSHIP_ID, taskId);
             ScholarshipEntity.getInstance().setTaskId(taskId);
+            ScholarshipEntity.getInstance().setTaskTotalMoney(totalMoney);
             if (needInitData) { // 需要初始化信息（奖学金去瓜分那个页面）
                 requestRange(taskId);
                 requestTaskStatues(taskId);

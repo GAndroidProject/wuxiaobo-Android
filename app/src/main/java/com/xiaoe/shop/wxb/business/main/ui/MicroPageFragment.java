@@ -27,6 +27,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
+import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.FlowInfoItem;
@@ -209,7 +210,10 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             }
         } else {
             microPageFresh.finishRefresh();
-            microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            if (iRequest != null) {
+                microPageFresh.finishRefresh();
+                microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            }
         }
     }
     private void setDataByDB(){
@@ -713,6 +717,16 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 break;
             default:
                 break;
+        }
+    }
+
+    @Subscribe
+    public void onEventMainThread(ChangeLoginIdentityEvent changeLoginIdentityEvent) {
+        if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
+            if (hp == null) {
+                hp = new PageFragmentPresenter(this);
+            }
+            hp.requestMicroPageData(microPageId);
         }
     }
 
