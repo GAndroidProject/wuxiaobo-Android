@@ -196,18 +196,20 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                                         case DecorateEntityType.MEMBER:
                                             JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), "", 5);
                                             break;
+                                        default:
+                                            break;
                                     }
                                     return;
                                 }
                                 if (!recentUpdateListAdapter.isPlaying) {
-                                    recentUpdateViewHolder.recentUpdateSubBtn.setText("暂停全部");
+                                    recentUpdateViewHolder.recentUpdateSubBtn.setText(R.string.stop_all);
                                     Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_stopall);
                                     drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
                                     recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
                                     recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
                                     recentUpdateListAdapter.clickPlayAll();
                                 } else {
-                                    recentUpdateViewHolder.recentUpdateSubBtn.setText("播放全部");
+                                    recentUpdateViewHolder.recentUpdateSubBtn.setText(R.string.play_all);
                                     Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_playall);
                                     drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
                                     recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
