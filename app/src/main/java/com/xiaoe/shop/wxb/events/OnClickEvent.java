@@ -38,4 +38,15 @@ public abstract class OnClickEvent implements View.OnClickListener {
         lastTime = System.currentTimeMillis();
         return flag;
     }
+
+    public static boolean onMoreAction(long delay) {
+        boolean flag = false;
+        long time = System.currentTimeMillis() - lastTime;
+        if (time < delay) {
+            flag = true;
+        }
+        lastTime = System.currentTimeMillis();
+        return flag;
+    }
+
 }

@@ -30,6 +30,7 @@ import com.xiaoe.shop.wxb.business.cdkey.presenter.CdKeyPresenter;
 import com.xiaoe.shop.wxb.business.column.ui.ColumnActivity;
 import com.xiaoe.shop.wxb.business.coupon.ui.CouponActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.OSUtils;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
@@ -263,7 +264,9 @@ public class CdKeyActivity extends XiaoeActivity {
                         String content = s.toString().substring(0,maxLength);
                         cdContent.setText(content);
                         cdContent.setSelection(content.length());
-                        Toast(String.format(getString(R.string.cd_key_limit_8),maxLength));
+                        if (!OnClickEvent.onMoreAction(OnClickEvent.DEFAULT_SECOND)) {
+                            Toast(String.format(getString(R.string.cd_key_limit_8), maxLength));
+                        }
                     }
                     float size = s.length() > 0 ? 32 : 20;
                     cdContent.setTextSize(size);
