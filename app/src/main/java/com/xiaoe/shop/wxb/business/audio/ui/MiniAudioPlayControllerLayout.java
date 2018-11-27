@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.business.audio.ui;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -11,6 +12,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ImageDecodeOptions;
+import com.facebook.imagepipeline.common.ImageDecodeOptionsBuilder;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayTable;
@@ -36,6 +45,7 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
     private boolean isClose = false;
     private int miniPlayerAnimHeight;
     private TranslationAnimator translationAnimator;
+    private SimpleDraweeView audioDisk;
 
     public MiniAudioPlayControllerLayout(@NonNull Context context) {
         this(context,null);
@@ -65,6 +75,8 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
         title = (TextView) rootView.findViewById(R.id.id_audio_title);
         columnTitle = (TextView) rootView.findViewById(R.id.id_column_title);
         translationAnimator = new TranslationAnimator();
+
+        audioDisk = (SimpleDraweeView) rootView.findViewById(R.id.id_audio_disk);
     }
 
     public void setAudioTitle(String text){
@@ -81,6 +93,33 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
             title.setPadding(0,Dp2Px2SpUtil.dp2px(mContext,5),0,0);
         }
 
+    }
+
+    public void setAudioImage(String url){
+        if("gif".equals(url.substring(url.lastIndexOf(".")+1)) || "GIF".equals(url.substring(url.lastIndexOf(".")+1))){
+            setRoundAsCircle(Uri.parse(url));
+        }else{
+            audioDisk.setImageURI(Uri.parse(url));
+        }
+    }
+
+    private void setRoundAsCircle(Uri uri){
+        audioDisk.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+
+        ImageDecodeOptions imageDecodeOptions = new ImageDecodeOptionsBuilder()
+                .setForceStaticImage(true)
+                .build();
+
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+//                .setResizeOptions(new ResizeOptions(100, 100))
+                .setCacheChoice(ImageRequest.CacheChoice.SMALL)
+                .setImageDecodeOptions(imageDecodeOptions)
+                .build();
+
+        PipelineDraweeControllerBuilder builder = Fresco.getDraweeControllerBuilderSupplier().get()
+                .setOldController(audioDisk.getController())
+                .setImageRequest(request);
+        audioDisk.setController(builder.build());
     }
 
     public void setPlayState(int state){

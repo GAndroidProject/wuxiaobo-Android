@@ -400,13 +400,26 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private void setContentDetail(String detail){
         detailContent.loadDataWithBaseURL(null, NetworkState.getNewContent(detail), "text/html", "UFT-8", null);
     }
-    public void setPagerState(boolean error){
-        if(error){
+    /**
+     *
+     * @param state 0-正常的,1-请求失败,2-课程下架,-1： 加载，3-停售， 4-待上架，3004：商品已删除
+     */
+    public void setPagerState(int state){
+        if(state == 1){
             pagerContentDetailLayout.setVisibility(View.GONE);
-            statusPagerView.setVisibility(View.VISIBLE);
-            statusPagerView.setLoadingState(View.GONE);
-            statusPagerView.setStateImage(StatusPagerView.DETAIL_NONE);
-            statusPagerView.setHintStateVisibility(View.VISIBLE);
+            statusPagerView.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), StatusPagerView.DETAIL_NONE);
+        }else if(state == 2){
+            pagerContentDetailLayout.setVisibility(View.GONE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sold_out), R.mipmap.course_off);
+        }else if(state == 3){
+            pagerContentDetailLayout.setVisibility(View.GONE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sale_stop), R.mipmap.course_off);
+        }else if(state == 4){
+            pagerContentDetailLayout.setVisibility(View.GONE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_stay_putaway), R.mipmap.course_off);
+        }else if(state == 3004){
+            pagerContentDetailLayout.setVisibility(View.GONE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_delete), R.mipmap.course_off);
         }else{
             pagerContentDetailLayout.setVisibility(View.VISIBLE);
             statusPagerView.setVisibility(View.GONE);
@@ -692,7 +705,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             return;
         }
         if (code == 1){
-            setPagerState(true);
+            setPagerState(1);
             getDialog().dismissDialog();
             Toast(getString(R.string.network_error_text));
             return;
@@ -716,6 +729,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if(code == 0){
             getDialog().dismissDialog();
             setContentDetail(playEntity.getContent());
+            setPagerState(playEntity.getResourceStateCode());
         }
         if(AudioMediaPlayer.isStop()){
             AudioMediaPlayer.setAudio(playEntity, true);
@@ -731,10 +745,11 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         String imageUrl = playEntity.getImgUrl();
         if(!TextUtils.isEmpty(imageUrl)){
             if("gif".equals(imageUrl.substring(imageUrl.lastIndexOf(".")+1)) || "GIF".equals(imageUrl.substring(imageUrl.lastIndexOf(".")+1))){
-                setRoundAsCircle(Uri.parse(playEntity.getImgUrl()));
+                setRoundAsCircle(Uri.parse(imageUrl));
             }else{
-                audioRing.setImageURI(Uri.parse(playEntity.getImgUrl()));
+                audioRing.setImageURI(Uri.parse(imageUrl));
             }
+            audioHoverPlayController.setAudioImage(imageUrl);
         }
 
         audioPlayList.setProductsTitle(playEntity.getProductsTitle());

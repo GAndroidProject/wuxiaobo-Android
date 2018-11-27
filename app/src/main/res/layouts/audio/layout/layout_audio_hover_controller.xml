@@ -1,17 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:gravity="center"
     >
-    <ImageView
-        android:id="@+id/hover_audio_disk"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:src="@mipmap/detail_disk"
-        />
+        >
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/hover_audio_disk"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            fresco:roundAsCircle="true"
+            android:layout_centerInParent="true"
+            fresco:actualImageScaleType="focusCrop"
+            fresco:placeholderImage="@mipmap/detail_disk"
+            />
+        <View
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:background="@drawable/white_circle_shape"
+            android:layout_centerInParent="true"
+            />
+    </RelativeLayout>
+
     <ImageView
         android:id="@+id/hover_audio_last"
         android:layout_width="32dp"

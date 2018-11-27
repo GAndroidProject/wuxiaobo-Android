@@ -220,6 +220,9 @@
     <!--页面请求状态提示 start-->
     <string name="request_fail">页面还没找到，刷新试试吧</string>
     <string name="resource_sold_out">该课程已停售，快去别处看看吧</string>
+    <string name="resource_sale_stop">该课程已停售，快去别处看看吧</string>
+    <string name="resource_delete">该课程已删除，快去别处看看吧</string>
+    <string name="resource_stay_putaway">该课程待上架，快去别处看看吧</string>
     <!--页面请求状态提示 end-->
 
     <string name="action_sheet_man">男</string>

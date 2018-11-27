@@ -96,7 +96,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
                 }
                 switch (mItemList.get(position).getSrcType()) {
                     case DecorateEntityType.IMAGE_TEXT:
-                        JumpDetail.jumpImageText(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg());
+                        JumpDetail.jumpImageText(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), "");
                         break;
                     case DecorateEntityType.AUDIO:
                         JumpDetail.jumpAudio(mContext, mItemList.get(position).getResourceId(),0);

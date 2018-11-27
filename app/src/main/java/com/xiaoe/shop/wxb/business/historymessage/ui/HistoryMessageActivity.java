@@ -233,7 +233,7 @@ public class HistoryMessageActivity extends XiaoeActivity {
             case 0:
                 break;
             case 1:
-                JumpDetail.jumpImageText(mContext, listBean.getSkip_target(), "");
+                JumpDetail.jumpImageText(mContext, listBean.getSkip_target(), "", "");
                 break;
             case 2:
                 JumpDetail.jumpAudio(mContext, listBean.getSkip_target(), 0);

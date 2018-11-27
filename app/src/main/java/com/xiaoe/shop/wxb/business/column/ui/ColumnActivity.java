@@ -33,7 +33,6 @@ import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.column.ColumnFragmentStatePagerAdapter;
-import com.xiaoe.shop.wxb.anim.TranslationAnimator;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
@@ -308,6 +307,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 miniAudioPlayControllerLayout.setVisibility(View.VISIBLE);
                 miniAudioPlayControllerLayout.setIsClose(false);
                 miniAudioPlayControllerLayout.setAudioTitle(playEntity.getTitle());
+                miniAudioPlayControllerLayout.setAudioImage(playEntity.getImgUrlCompressed());
                 miniAudioPlayControllerLayout.setColumnTitle(playEntity.getProductsTitle());
                 miniAudioPlayControllerLayout.setPlayButtonEnabled(false);
                 miniAudioPlayControllerLayout.setPlayState(AudioPlayEvent.PAUSE);
@@ -478,28 +478,37 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             expireTime = data.getString("expire_time");
             memberExpireTime.setText("有效期至："+expireTime);
         }
+        resourceState(data);
+    }
 
+    /**
+     * 课程状态
+     * @param data
+     */
+    private void resourceState(JSONObject data){
         //是否免费0：否，1：是
-        int isFree = data.getIntValue("is_free ");
+        int isFree = data.getIntValue("is_free");
         //0-正常, 1-隐藏, 2-删除
         int detailState = data.getIntValue("state");
         //0-上架,1-下架
         int saleStatus = data.getIntValue("sale_status");
         //是否停售 0:否，1：是
         int isStopSell = data.getIntValue("is_stop_sell");
-        if(hasBuy){
-            if(isFree == 1){
-                if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
-                    setPagerState(2);
-                }
-            }else {
-                setPagerState(0);
-                columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
-            }
+        //离待上线时间，如有则是待上架
+        String timeLeft = data.getString("time_left");
+        if(hasBuy && isFree == 0){
+            setPagerState(0);
+            columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
         }else{
-            if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
+            if(saleStatus == 1){
                 setPagerState(2);
-            }else{
+            }else if(isStopSell == 1){
+                setPagerState(3);
+            }else if(!TextUtils.isEmpty(timeLeft)){
+                setPagerState(4);
+            }else if(detailState == 2 || detailState == 1){
+                setPagerState(NetworkCodes.CODE_GOODS_DELETE);
+            }else {
                 setPagerState(0);
                 columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
             }
@@ -646,7 +655,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     /**
      *
-     * @param code 0-正常的,1-请求失败,2-课程下架,-1： 加载，3004：商品已删除
+     * @param code 0-正常的,1-请求失败,2-课程下架,-1： 加载，3-停售， 4-待上架，3004：商品已删除
      */
     private void setPagerState(int code) {
         if(code == 0){
@@ -654,19 +663,19 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             statusPagerView.setLoadingState(View.GONE);
             statusPagerView.setHintStateVisibility(View.GONE);
         }else if(code == 1){
-            statusPagerView.setVisibility(View.VISIBLE);
-            statusPagerView.setLoadingState(View.GONE);
-            statusPagerView.setStateImage(StatusPagerView.DETAIL_NONE);
-            statusPagerView.setStateText(getString(R.string.request_fail));
-            statusPagerView.setHintStateVisibility(View.VISIBLE);
-        }else if(code == 2 || code == 3004){
+            statusPagerView.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), StatusPagerView.DETAIL_NONE);
+        }else if(code == 2){
             btnBack.setVisibility(View.VISIBLE);
-            statusPagerView.setVisibility(View.VISIBLE);
-            statusPagerView.setLoadingState(View.GONE);
-            statusPagerView.stateImageWH(Dp2Px2SpUtil.dp2px(this, 200), Dp2Px2SpUtil.dp2px(this, 108));
-            statusPagerView.setStateImage(R.mipmap.course_off);
-            statusPagerView.setStateText(getString(R.string.resource_sold_out));
-            statusPagerView.setHintStateVisibility(View.VISIBLE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sold_out), R.mipmap.course_off);
+        }else if(code == 3){
+            btnBack.setVisibility(View.VISIBLE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sale_stop), R.mipmap.course_off);
+        }else if(code == 4){
+            btnBack.setVisibility(View.VISIBLE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_stay_putaway), R.mipmap.course_off);
+        }else if(code == 3004){
+            btnBack.setVisibility(View.VISIBLE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_delete), R.mipmap.course_off);
         }
         else if(code == -1){
             statusPagerView.setVisibility(View.VISIBLE);

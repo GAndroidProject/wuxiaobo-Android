@@ -627,13 +627,12 @@ public class DownloadManager implements DownloadListner {
     public HashMap<String, DownloadTableInfo> getAllDownloadList() {
         if(allDownloadList == null){
             allDownloadList = new HashMap<String, DownloadTableInfo>();
-            String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" order by create_at desc";
-//            List<DownloadTableInfo> dbDownloadingList = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
-            DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
-            List<DownloadTableInfo> dbDownloadingList = downloadSQLiteUtil.query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
-            for (DownloadTableInfo download : dbDownloadingList) {
-                allDownloadList.put(download.getResourceId(), download);
-            }
+        }
+        String querySQL = "select * from "+DownloadFileConfig.TABLE_NAME+" order by create_at desc";
+        DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
+        List<DownloadTableInfo> dbDownloadingList = downloadSQLiteUtil.query(DownloadFileConfig.TABLE_NAME, querySQL ,null);
+        for (DownloadTableInfo download : dbDownloadingList) {
+            allDownloadList.put(download.getResourceId(), download);
         }
         return allDownloadList;
     }

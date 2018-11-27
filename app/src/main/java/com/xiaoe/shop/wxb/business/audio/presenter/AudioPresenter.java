@@ -11,6 +11,7 @@ import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
+import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.downloadUtil.DownloadManager;
@@ -78,7 +79,11 @@ public class AudioPresenter implements IBizCallback {
             playEntity.setPlay(false);
         }
         if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED ){
-            playEntity.setCode(1);
+            if(jsonObject.getIntValue("code") == NetworkCodes.CODE_GOODS_DELETE){
+                playEntity.setCode(NetworkCodes.CODE_GOODS_DELETE);
+            }else{
+                playEntity.setCode(1);
+            }
             return;
         }
         JSONObject data = jsonObject.getJSONObject("data");
@@ -92,7 +97,15 @@ public class AudioPresenter implements IBizCallback {
             resourceInfo = data;
             JSONObject shareInfo = resourceInfo.getJSONObject("share_info");
             if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
-                playEntity.setShareUrl(shareInfo.getJSONObject("wx").getString("share_url"));
+                String shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
+                if(TextUtils.isEmpty(playEntity.getColumnId())){
+                    playEntity.setShareUrl(shareUrl);
+                }else{
+                    JSONObject shareJSON = Base64Util.base64ToJSON(shareUrl.substring(shareUrl.lastIndexOf("/")+1));
+                    shareJSON.put("product_id", playEntity.getColumnId());
+                    shareUrl = shareUrl.substring(0, shareUrl.lastIndexOf("/") + 1) + Base64Util.jsonToBase64(shareJSON);
+                    playEntity.setShareUrl(shareUrl);
+                }
             }
             int hasFavorite = ((JSONObject) resourceInfo.get("favorites_info")).getInteger("is_favorite");
             playEntity.setHasFavorite(hasFavorite);
@@ -124,6 +137,7 @@ public class AudioPresenter implements IBizCallback {
                 localAudioPath = download.getLocalFilePath();
             }
         }
+        resourceState(resourceInfo, available, playEntity);
         if(available){
             if(TextUtils.isEmpty(localAudioPath)){
                 playEntity.setPlayUrl(resourceInfo.getString("audio_url"));
@@ -135,9 +149,7 @@ public class AudioPresenter implements IBizCallback {
             playAudio(playEntity.isPlay());
         }else{
             if(resourceInfo.getIntValue("is_related") == 1){
-                //1-免费,2-单卖，3-非单卖
-                //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
-                //1-免费,2-单卖，3-非单卖
+                //是否仅关联售卖，0-否，1-是
                 //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                 JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
                 JSONObject product = productList.getJSONObject(0);
@@ -160,6 +172,37 @@ public class AudioPresenter implements IBizCallback {
             playEntity.setCode(0);
             playEntity.setContent(resourceInfo.getString("preview_content"));
             playAudio(false);
+        }
+    }
+    /**
+     * 课程状态
+     * @param data
+     */
+    private void resourceState(JSONObject data, boolean hasBuy, AudioPlayEntity playEntity){
+        //是否免费0：否，1：是
+        int isFree = data.getIntValue("is_free");
+        //0-正常, 1-隐藏, 2-删除
+        int detailState = data.getIntValue("state");
+        //0-上架,1-下架
+        int saleStatus = data.getIntValue("sale_status");
+        //是否停售 0:否，1：是
+        int isStopSell = data.getIntValue("is_stop_sell");
+        //离待上线时间，如有则是待上架
+        String timeLeft = data.getString("time_left");
+        if(hasBuy && isFree == 0){
+            playEntity.setResourceStateCode(0);
+        }else{
+            if(saleStatus == 1){
+                playEntity.setResourceStateCode(2);
+            }else if(isStopSell == 1){
+                playEntity.setResourceStateCode(1);
+            }if(detailState == 2 || detailState == 1){
+                playEntity.setResourceStateCode(3);
+            }else if(!TextUtils.isEmpty(timeLeft)){
+                playEntity.setResourceStateCode(4);
+            }else {
+                playEntity.setResourceStateCode(0);
+            }
         }
     }
 

@@ -87,7 +87,7 @@ public class JgPushReceiver extends BroadcastReceiver {
             case 0:
                 break;
             case 1:
-                JumpDetail.jumpImageText(context, jgPushReceiverEntity.getAction_params().getResource_id(), "");
+                JumpDetail.jumpImageText(context, jgPushReceiverEntity.getAction_params().getResource_id(), "", "");
                 break;
             case 2:
                 JumpDetail.jumpAudio(context, jgPushReceiverEntity.getAction_params().getResource_id(), 0);

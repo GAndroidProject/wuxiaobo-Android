@@ -9,9 +9,6 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
@@ -24,6 +21,9 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemClickWithKnowledgeListener {
 
@@ -103,7 +103,7 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
             if (view.getParent() == itemRecycler) {
                 switch (knowledgeCommodityItem.getSrcType()) {
                     case DecorateEntityType.IMAGE_TEXT: // 图文 -- resourceType 为 1，resourceId 需要取
-                        JumpDetail.jumpImageText(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg());
+                        JumpDetail.jumpImageText(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), "");
                         break;
                     case DecorateEntityType.AUDIO: // 音频
                         JumpDetail.jumpAudio(mContext, knowledgeCommodityItem.getResourceId(), 0);

@@ -109,12 +109,13 @@ public class JumpDetail {
         intent.putExtra("local_resource", localResoucrce);
         context.startActivity(intent);
     }
-    public static void jumpImageText(Context context, String resId, String imageUrl){
+    public static void jumpImageText(Context context, String resId, String imageUrl, String columnId){
         Intent intent = new Intent(context, CourseImageTextActivity.class);
         if(!TextUtils.isEmpty(imageUrl)){
             intent.putExtra("imgUrl", imageUrl);
         }
         intent.putExtra("resourceId", resId);
+        intent.putExtra("columnId", columnId);
         context.startActivity(intent);
     }
 

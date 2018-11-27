@@ -117,7 +117,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 //                        transitionIntent.putExtra("imgUrl", imgUrl);
 //                        transitionIntent.putExtra("resourceId", bindItem.getItemId());
 //                        mContext.startActivity(transitionIntent, options.toBundle());
-                        JumpDetail.jumpImageText(mContext, bindItem.getItemId(), "");
+                        JumpDetail.jumpImageText(mContext, bindItem.getItemId(), "", "");
                     }
                 });
                 break;

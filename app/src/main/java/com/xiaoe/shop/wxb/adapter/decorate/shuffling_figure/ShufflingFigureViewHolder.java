@@ -7,17 +7,17 @@ import android.view.View;
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.ShufflingItem;
-import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.youth.banner.Banner;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ShufflingFigureViewHolder extends BaseViewHolder {
 
@@ -56,10 +56,10 @@ public class ShufflingFigureViewHolder extends BaseViewHolder {
             String resourceId = shufflingItem.getSrcId();
             switch (resourceType) {
                 case DecorateEntityType.IMAGE_TEXT:
-                    JumpDetail.jumpImageText(mContext, resourceId, "");
+                    JumpDetail.jumpImageText(mContext, resourceId, "", "");
                     break;
                 case DecorateEntityType.AUDIO:
-                    JumpDetail.jumpImageText(mContext, resourceId, "");
+                    JumpDetail.jumpAudio(mContext, resourceId, 0);
                     break;
                 case DecorateEntityType.VIDEO:
                     JumpDetail.jumpVideo(mContext, resourceId, "", false);

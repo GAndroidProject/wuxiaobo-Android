@@ -129,6 +129,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         videoPresenter = new VideoPresenter(this);
         collectionUtils = new CollectionUtils(this);
         mIntent = getIntent();
+        mResourceId = mIntent.getStringExtra("resourceId");
         initViews();
         initDatas();
     }
@@ -163,12 +164,12 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void initViews() {
-        String videoImageUrl = mIntent.getStringExtra("videoImageUrl");
+//        String videoImageUrl = mIntent.getStringExtra("videoImageUrl");
 
         playControllerView = (VideoPlayControllerView) findViewById(R.id.video_play_controller);
         playControllerView.setPlayProgressWidgetVisibility(View.GONE);
         playControllerView.setOnClickVideoBackListener(this);
-        playControllerView.setPreviewImage(videoImageUrl);
+//        playControllerView.setPreviewImage(videoImageUrl);
 
         videoContentDetail = (ScrollView) findViewById(R.id.video_content_detail);
         videoContentDetail.setVisibility(View.GONE);
@@ -212,7 +213,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void initDatas() {
-        mResourceId = mIntent.getStringExtra("resourceId");
+        String tempResourceId = mResourceId;
         localResource = mIntent.getBooleanExtra("local_resource", false);
         if(!TextUtils.isEmpty(mResourceId)){
             //先查询数据库中是否存在，如果存在则先显示
@@ -223,7 +224,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 showCacheData = true;
             }
         }
-        videoPresenter.requestDetail(mResourceId);
+        videoPresenter.requestDetail(tempResourceId);
     }
     @Override
     public void onBackPressed() {
@@ -473,7 +474,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             if(code != NetworkCodes.CODE_SUCCEED || data == null ){
                 if(code == NetworkCodes.CODE_GOODS_DELETE){
                     playControllerView.setVisibility(View.GONE);
-                    setPagerState(2);
+                    setPagerState(NetworkCodes.CODE_GOODS_DELETE);
                 }else{
                     setPagerState(1);
                 }
@@ -552,7 +553,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 }
             }
         }
-        if(available){
+        boolean valid = resourceState(data);
+        if(available && valid){
             collectPrice = "";
             buyView.setVisibility(View.GONE);
             if(!showCacheData){
@@ -587,33 +589,52 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 String detail = data.getString("preview_content");
                 setContentDetail(detail);
             }
-
         }
+        if(TextUtils.isEmpty(data.getString("video_slice_img"))){
+            playControllerView.setPreviewImage(data.getString("img_url"));
+        }else {
+            playControllerView.setPreviewImage(data.getString("video_slice_img"));
+        }
+
+    }
+
+    /**
+     * 课程状态
+     * @param data
+     */
+    private boolean resourceState(JSONObject data){
         //是否免费0：否，1：是
-        int isFree = data.getIntValue("is_free ");
+        int isFree = data.getIntValue("is_free");
         //0-正常, 1-隐藏, 2-删除
         int detailState = data.getIntValue("state");
         //0-上架,1-下架
         int saleStatus = data.getIntValue("sale_status");
         //是否停售 0:否，1：是
         int isStopSell = data.getIntValue("is_stop_sell");
-        if(hasBuy){
-            if(isFree == 1){
-                if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
-                    setPagerState(2);
-                }
-            }else {
-                setPagerState(0);
-            }
+        //离待上线时间，如有则是待上架
+        String timeLeft = data.getString("time_left");
+        if(hasBuy && isFree == 0){
+            setPagerState(0);
+            return true;
         }else{
-            if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
+            if(saleStatus == 1){
                 setPagerState(2);
+                return false;
+            }else if(isStopSell == 1){
+                setPagerState(3);
+                return false;
+            }else if(!TextUtils.isEmpty(timeLeft)){
+                setPagerState(4);
+                return false;
+            }else if(detailState == 2 || detailState == 1){
+                setPagerState(NetworkCodes.CODE_GOODS_DELETE);
+                return false;
             }else {
                 setPagerState(0);
+                return true;
             }
         }
     }
-
 
     private void setContentDetail(String detail){
         videoContentWebView.loadDataWithBaseURL(null, NetworkState.getNewContent(detail), "text/html", "UFT-8", null);
@@ -621,7 +642,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
     /**
      *
-     * @param code 0-正常的,1-请求失败,2-课程下架
+     * @param code 0-正常的,1-请求失败,2-课程下架,3-停售，4-待上架，3004-课程删除
      */
     private void setPagerState(int code) {
         if(code == 0){
@@ -631,20 +652,23 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             statusPagerView.setHintStateVisibility(View.GONE);
         }else if(code == 1){
             videoContentDetail.setVisibility(View.GONE);
-            statusPagerView.setVisibility(View.VISIBLE);
-            statusPagerView.setLoadingState(View.GONE);
-            statusPagerView.setStateImage(StatusPagerView.DETAIL_NONE);
-            statusPagerView.setStateText(getString(R.string.request_fail));
-            statusPagerView.setHintStateVisibility(View.VISIBLE);
+            statusPagerView.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), StatusPagerView.DETAIL_NONE);
         }else if(code == 2){
             btnBack.setVisibility(View.VISIBLE);
             videoContentDetail.setVisibility(View.GONE);
-            statusPagerView.setVisibility(View.VISIBLE);
-            statusPagerView.setLoadingState(View.GONE);
-            statusPagerView.stateImageWH(Dp2Px2SpUtil.dp2px(this, 200), Dp2Px2SpUtil.dp2px(this, 108));
-            statusPagerView.setStateImage(R.mipmap.course_off);
-            statusPagerView.setStateText(getString(R.string.resource_sold_out));
-            statusPagerView.setHintStateVisibility(View.VISIBLE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sold_out), R.mipmap.course_off);
+        }else if(code == 3){
+            btnBack.setVisibility(View.VISIBLE);
+            videoContentDetail.setVisibility(View.GONE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sale_stop), R.mipmap.course_off);
+        }else if(code == 4){
+            btnBack.setVisibility(View.VISIBLE);
+            videoContentDetail.setVisibility(View.GONE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_stay_putaway), R.mipmap.course_off);
+        }else if(code == NetworkCodes.CODE_GOODS_DELETE){
+            btnBack.setVisibility(View.VISIBLE);
+            videoContentDetail.setVisibility(View.GONE);
+            statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_delete), R.mipmap.course_off);
         }
     }
 }

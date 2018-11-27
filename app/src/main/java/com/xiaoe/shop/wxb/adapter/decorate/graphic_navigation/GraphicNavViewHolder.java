@@ -6,9 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.GraphicNavItem;
@@ -16,6 +13,9 @@ import com.xiaoe.common.interfaces.OnItemClickWithNavItemListener;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class GraphicNavViewHolder extends BaseViewHolder implements OnItemClickWithNavItemListener {
 
@@ -63,7 +63,7 @@ public class GraphicNavViewHolder extends BaseViewHolder implements OnItemClickW
         String resourceType = graphicNavItem.getNavResourceType();
         switch (resourceType) {
             case DecorateEntityType.IMAGE_TEXT: // 图文
-                JumpDetail.jumpImageText(mContext, resourceId, "");
+                JumpDetail.jumpImageText(mContext, resourceId, "", "");
                 break;
             case DecorateEntityType.AUDIO: // 音频
                 JumpDetail.jumpAudio(mContext, resourceId, 0);

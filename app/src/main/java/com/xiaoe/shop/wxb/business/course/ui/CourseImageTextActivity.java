@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -25,6 +26,7 @@ import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.NetworkState;
@@ -131,6 +133,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
 
     String shareUrl;
     String realSrcId; // 因为信息流的 id 的和实际的 id 不一样，而上报需要真实 id 所以需要一个真实 id
+    private String columnId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -155,6 +158,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         Intent transitionIntent = getIntent();
         imgUrl = transitionIntent.getStringExtra("imgUrl");
         resourceId = transitionIntent.getStringExtra("resourceId");
+        columnId = transitionIntent.getStringExtra("columnId");
         resourceType = "1"; // 图文的资源类型为 1
         loginList = getLoginUserList();
 
@@ -417,6 +421,11 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             JSONObject shareInfo = (JSONObject) data.get("share_info");
             JSONObject wx = (JSONObject) shareInfo.get("wx");
             shareUrl = wx.getString("share_url");
+            if(!TextUtils.isEmpty(columnId)){
+                JSONObject shareJSON = Base64Util.base64ToJSON(shareUrl.substring(shareUrl.lastIndexOf("/")+1));
+                shareJSON.put("product_id", columnId);
+                shareUrl = shareUrl.substring(0, shareUrl.lastIndexOf("/") + 1) + Base64Util.jsonToBase64(shareJSON);
+            }
             int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
             if (hasFavorite != -1) {
                 isCollected = hasFavorite == 1;
@@ -493,6 +502,11 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             setOrgContent(orgContent);
             // 获取已购的分享信息
             shareUrl = ((JSONObject) ((JSONObject) data.get("share_info")).get("wx")).getString("share_url");
+            if(!TextUtils.isEmpty(columnId)){
+                JSONObject shareJSON = Base64Util.base64ToJSON(shareUrl.substring(shareUrl.lastIndexOf("/")+1));
+                shareJSON.put("product_id", columnId);
+                shareUrl = shareUrl.substring(0, shareUrl.lastIndexOf("/") + 1) + Base64Util.jsonToBase64(shareJSON);
+            }
             // 已购才从 resource_info 中取
             int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
             if (hasFavorite != -1) {
@@ -518,25 +532,35 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
 //      itLoading.setVisibility(View.GONE);
         itDescImg.setClickable(true);
 
+        resourceState(data);
+    }
+
+    /**
+     * 课程状态
+     * @param data
+     */
+    private void resourceState(JSONObject data){
         //是否免费0：否，1：是
-        int isFree = data.getIntValue("is_free ");
+        int isFree = data.getIntValue("is_free");
         //0-正常, 1-隐藏, 2-删除
         int detailState = data.getIntValue("state");
         //0-上架,1-下架
         int saleStatus = data.getIntValue("sale_status");
         //是否停售 0:否，1：是
         int isStopSell = data.getIntValue("is_stop_sell");
-        if(hasBuy){
-            if(isFree == 1){
-                if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
-                    setPagerState(2);
-                }
-            }else {
-                setPagerState(0);
-            }
+        //离待上线时间，如有则是待上架
+        String timeLeft = data.getString("time_left");
+        if(hasBuy && isFree == 0){
+            setPagerState(0);
         }else{
-            if(detailState != 0 || saleStatus == 1 || isStopSell == 1){
+            if(saleStatus == 1){
                 setPagerState(2);
+            }else if(isStopSell == 1){
+                setPagerState(3);
+            }else if(!TextUtils.isEmpty(timeLeft)){
+                setPagerState(4);
+            }else if(detailState == 2 || detailState == 1){
+                setPagerState(NetworkCodes.CODE_GOODS_DELETE);
             }else {
                 setPagerState(0);
             }
@@ -604,29 +628,21 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
 
     /**
      *
-     * @param code 0-正常的,1-请求失败,2-课程下架,-1： 加载，3004：商品已删除
+     * @param code 0-正常的,1-请求失败,2-课程下架,-1： 加载，3-停售，4-待上架，3004：商品已删除
      */
     private void setPagerState(int code) {
         if(code == 0){
-//            itLoading.setVisibility(View.GONE);
-//            itLoading.setLoadingState(View.GONE);
-//            itLoading.setHintStateVisibility(View.GONE);
             itLoading.setLoadingFinish();
         }else if(code == 1){
-//            itLoading.setVisibility(View.VISIBLE);
-//            itLoading.setLoadingState(View.GONE);
-//            itLoading.setStateImage(StatusPagerView.DETAIL_NONE);
-//            itLoading.setStateText(getString(R.string.request_fail));
-//            itLoading.setHintStateVisibility(View.VISIBLE);
             itLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), StatusPagerView.DETAIL_NONE);
-        }else if(code == 2 || code == 3004){
-//            itLoading.setVisibility(View.VISIBLE);
-//            itLoading.setLoadingState(View.GONE);
-//            itLoading.stateImageWH(Dp2Px2SpUtil.dp2px(this, 200), Dp2Px2SpUtil.dp2px(this, 108));
-//            itLoading.setStateImage(R.mipmap.course_off);
-//            itLoading.setStateText(getString(R.string.resource_sold_out));
-//            itLoading.setHintStateVisibility(View.VISIBLE);
+        }else if(code == 2){
             itLoading.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sold_out), R.mipmap.course_off);
+        }else if(code == 3){
+            itLoading.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sale_stop), R.mipmap.course_off);
+        }else if(code == 4){
+            itLoading.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_stay_putaway), R.mipmap.course_off);
+        }else if(code == 3004){
+            itLoading.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_delete), R.mipmap.course_off);
         }
     }
 }

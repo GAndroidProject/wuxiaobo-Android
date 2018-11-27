@@ -207,7 +207,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public int getItemCount() {
-        return mComponentList == null ? 0 : mComponentList.size();
+        return mComponentList.size();
     }
 
     @Override

@@ -51,6 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_alignParentBottom="true"
+            android:background="@drawable/black_upward_gradual_change"
             >
             <ImageView
                 android:id="@+id/id_video_progress_play"

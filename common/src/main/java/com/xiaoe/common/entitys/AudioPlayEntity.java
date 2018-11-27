@@ -20,11 +20,12 @@ public class AudioPlayEntity {
     private String tryPlayUrl;//试听地址
     private int isTry;//是否是试看0：否，1：是
 
-    private boolean isFree;
+    private boolean isFree;//是否免费
 
     private int totalDuration = 0;//总时长
     private String shareUrl = "";
 
+    private int resourceStateCode = 0;//资源状态码,0-正常，1-停售，2-下架，3-删除,4-待上架
     private boolean isSingleBuy = true;//是否是单卖
     private int productType = 0;//6-专栏，5-会员，8-大专栏
     private String productId = "";
@@ -296,5 +297,13 @@ public class AudioPlayEntity {
 
     public void setProductImgUrl(String productImgUrl) {
         this.productImgUrl = productImgUrl;
+    }
+
+    public int getResourceStateCode() {
+        return resourceStateCode;
+    }
+
+    public void setResourceStateCode(int resourceStateCode) {
+        this.resourceStateCode = resourceStateCode;
     }
 }

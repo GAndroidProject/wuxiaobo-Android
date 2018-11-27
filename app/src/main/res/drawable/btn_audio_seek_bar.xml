@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:width="14dp" android:height="14dp">
+    <item >
         <shape>
+            <size android:width="14dp"
+                android:height="14dp"/>
             <corners android:radius="@dimen/audio_seek_bar_radius_size" />
             <padding
                 android:bottom="0.5dp"
@@ -15,6 +17,8 @@
     </item>
     <item>
         <shape>
+            <size android:width="14dp"
+                android:height="14dp"/>
             <corners android:radius="@dimen/audio_seek_bar_radius_size" />
             <padding
                 android:bottom="0.5dp"
@@ -29,6 +33,8 @@
     <!-- Background -->
     <item>
         <shape>
+            <size android:width="14dp"
+                android:height="14dp"/>
             <solid android:color="#4B4D55" />
             <corners android:radius="@dimen/audio_seek_bar_radius_size" />
         </shape>

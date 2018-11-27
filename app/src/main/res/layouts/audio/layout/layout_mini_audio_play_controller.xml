@@ -50,15 +50,31 @@
             app:ringColor="@color/white"
             />
     </RelativeLayout>
-    <ImageView
-        android:id="@+id/id_audio_disk"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+    <RelativeLayout
+        android:id="@+id/wrap_disk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@id/id_audio_mini_close"
-        android:src="@mipmap/detail_disk"
-        />
+        >
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/id_audio_disk"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            fresco:roundAsCircle="true"
+            android:layout_centerInParent="true"
+            fresco:actualImageScaleType="focusCrop"
+            fresco:placeholderImage="@mipmap/detail_disk"
+            />
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/white_circle_shape"
+            android:layout_centerInParent="true"
+            />
+    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/id_audio_img_layout"
         android:layout_width="wrap_content"
@@ -66,7 +82,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_toStartOf="@id/id_btn_play_state"
-        android:layout_toEndOf="@id/id_audio_disk">
+        android:layout_toEndOf="@id/wrap_disk">
 
         <ImageView
             android:id="@+id/mini_swipe_up"

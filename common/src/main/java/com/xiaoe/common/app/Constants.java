@@ -11,7 +11,7 @@ public class Constants {
 //    private static final String testAppid = "appiOW1KfWe9943";
     private static final String testAppid = "appiOW1KfWe9943";
     //应用appid 正式环境
-    private static final String formalAppid = "appiOW1KfWe9943";
+    private static final String formalAppid = "appe0MEs6qX8480";
 
     //微信测试环境
 //    private static final String wxLoginAppIdTest = "wx3514f0d221328921";
@@ -19,7 +19,7 @@ public class Constants {
     //微信开放平台SECRET  测试
     private static final String WX_SECRET_TEST ="3232dcd861af17be187ca219d535323e";
     //微信正式环境
-    private static final String wxAppIdFormal = "wx764341f522a6c929";
+    private static final String wxAppIdFormal = "wx0205e0a559628d0b";
     //微信开放平台SECRET  正式
     private static final String WX_SECRET_FORMAL ="3232dcd861af17be187ca219d535323e";
 
@@ -35,7 +35,7 @@ public class Constants {
     //Bugly测试环境
     private static final String TEST_BUGLY_ID = "417b763f59";
     //Bugly正式环境
-    private static final String FORMAL_BUGLY_ID = "417b763f59";
+    private static final String FORMAL_BUGLY_ID = "2dcaaeb46a";
     //一小时秒数
     public static final int HOUR_SECOND = 3600;
     //一小时毫秒数

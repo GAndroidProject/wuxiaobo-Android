@@ -243,7 +243,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             String resourceId = itemData.getResource_id();
             if(resourceType == 1){
                 //图文
-                JumpDetail.jumpImageText(getContext(), resourceId, null);
+                JumpDetail.jumpImageText(getContext(), resourceId, null, itemData.getColumnId());
             }else if(resourceType == 2){
                 //音频
                 onPlayPosition(null, parentPosition, position, true);

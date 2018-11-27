@@ -262,6 +262,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                 miniAudioPlayController.setVisibility(View.VISIBLE);
                 miniAudioPlayController.setIsClose(false);
                 miniAudioPlayController.setAudioTitle(playEntity.getTitle());
+                miniAudioPlayController.setAudioImage(playEntity.getImgUrlCompressed());
                 miniAudioPlayController.setColumnTitle(playEntity.getProductsTitle());
                 miniAudioPlayController.setPlayButtonEnabled(false);
                 miniAudioPlayController.setPlayState(AudioPlayEvent.PAUSE);

@@ -1,12 +1,21 @@
 package com.xiaoe.shop.wxb.business.audio.ui;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ImageDecodeOptions;
+import com.facebook.imagepipeline.common.ImageDecodeOptionsBuilder;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.interfaces.OnClickMoreMenuListener;
@@ -14,7 +23,7 @@ import com.xiaoe.shop.wxb.interfaces.OnClickMoreMenuListener;
 public class AudioHoverControllerLayout extends FrameLayout implements View.OnClickListener {
     private static final String TAG = "AudioHoverControllerLay";
     private View rootView;
-    private ImageView audioDisk;
+    private SimpleDraweeView audioDisk;
     private ImageView btnLast;
     private ImageView btnPlay;
     private ImageView btnNext;
@@ -32,7 +41,7 @@ public class AudioHoverControllerLayout extends FrameLayout implements View.OnCl
     }
 
     private void initView() {
-        audioDisk = (ImageView) rootView.findViewById(R.id.hover_audio_disk);
+        audioDisk = (SimpleDraweeView) rootView.findViewById(R.id.hover_audio_disk);
         btnLast = (ImageView) rootView.findViewById(R.id.hover_audio_last);
         btnLast.setOnClickListener(this);
         btnPlay = (ImageView) rootView.findViewById(R.id.hover_audio_play);
@@ -43,6 +52,32 @@ public class AudioHoverControllerLayout extends FrameLayout implements View.OnCl
         btnMore.setOnClickListener(this);
     }
 
+    public void setAudioImage(String url){
+        if("gif".equals(url.substring(url.lastIndexOf(".")+1)) || "GIF".equals(url.substring(url.lastIndexOf(".")+1))){
+            setRoundAsCircle(Uri.parse(url));
+        }else{
+            audioDisk.setImageURI(Uri.parse(url));
+        }
+    }
+
+    private void setRoundAsCircle(Uri uri){
+        audioDisk.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+
+        ImageDecodeOptions imageDecodeOptions = new ImageDecodeOptionsBuilder()
+                .setForceStaticImage(true)
+                .build();
+
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+//                .setResizeOptions(new ResizeOptions(100, 100))
+                .setCacheChoice(ImageRequest.CacheChoice.SMALL)
+                .setImageDecodeOptions(imageDecodeOptions)
+                .build();
+
+        PipelineDraweeControllerBuilder builder = Fresco.getDraweeControllerBuilderSupplier().get()
+                .setOldController(audioDisk.getController())
+                .setImageRequest(request);
+        audioDisk.setController(builder.build());
+    }
 
     public void play(){
         AudioMediaPlayer.play();

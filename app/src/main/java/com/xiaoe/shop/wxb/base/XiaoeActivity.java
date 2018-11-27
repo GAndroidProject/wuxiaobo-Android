@@ -228,6 +228,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                 miniAudioPlayController.setVisibility(View.VISIBLE);
             }
             miniAudioPlayController.setAudioTitle(AudioMediaPlayer.getAudio().getTitle());
+            miniAudioPlayController.setAudioImage(AudioMediaPlayer.getAudio().getImgUrlCompressed());
             miniAudioPlayController.setColumnTitle(AudioMediaPlayer.getAudio().getProductsTitle());
             miniAudioPlayController.setMaxProgress(AudioMediaPlayer.getDuration());
             miniAudioPlayController.setPlayState(AudioMediaPlayer.isPlaying() ? AudioPlayEvent.PLAY : AudioPlayEvent.PAUSE);
@@ -283,6 +284,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                 audioPresenter.requestDetail(playEntity.getResourceId());
                 String title = playEntity.getTitle();
                 miniAudioPlayController.setAudioTitle(title);
+                miniAudioPlayController.setAudioImage(playEntity.getImgUrlCompressed());
                 miniAudioPlayController.setColumnTitle(playEntity.getProductsTitle());
                 miniAudioPlayController.setVisibility(View.VISIBLE);
             }else{

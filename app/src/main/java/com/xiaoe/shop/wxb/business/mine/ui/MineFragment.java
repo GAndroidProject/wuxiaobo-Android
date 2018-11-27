@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -19,9 +18,9 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
-import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
+import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.GetSuperMemberSuccessEvent;
 import com.xiaoe.common.entitys.LoginUser;
@@ -47,7 +46,6 @@ import com.xiaoe.shop.wxb.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.mine_learning.presenter.MineLearningPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -649,7 +647,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                     // TODO: 跳转详情页
                     switch (mineLearningType) {
                         case DecorateEntityType.IMAGE_TEXT:
-                            JumpDetail.jumpImageText(mContext, mineLearningId, "");
+                            JumpDetail.jumpImageText(mContext, mineLearningId, "", "");
                             break;
                         case DecorateEntityType.AUDIO:
                             JumpDetail.jumpAudio(mContext, mineLearningId, 1);
