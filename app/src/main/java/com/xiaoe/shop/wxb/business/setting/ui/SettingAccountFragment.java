@@ -391,10 +391,8 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                 }
                 if (6 <= editable.toString().trim().length()) {
                     newBtn.setEnabled(true);
-                    newBtn.setAlpha(1f);
                 } else {
                     newBtn.setEnabled(false);
-                    newBtn.setAlpha(0.6f);
                 }
             }
         });
@@ -468,8 +466,6 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         completeContent = (EditText) viewWrap.findViewById(R.id.login_input_num_content);
         completeError = (TextView) viewWrap.findViewById(R.id.login_error_tip);
         completeSubmit = (Button) viewWrap.findViewById(R.id.login_submit_btn);
-
-        completeSubmit.setEnabled(false);
 
         completeTitle.setVisibility(View.GONE);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
