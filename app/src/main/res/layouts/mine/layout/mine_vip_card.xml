@@ -65,6 +65,8 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="24dp"
         android:text="@string/renewal"
+        android:drawableRight="@mipmap/icon_renewal"
+        android:textColor="@color/main_title_color"
         android:textSize="12sp"
         android:background="@drawable/vip_renewal_bg"
         android:gravity="center"
@@ -93,7 +95,7 @@
         android:textSize="14sp"
         android:textColor="@color/main_title_color"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="18dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"/>
 </RelativeLayout>

@@ -36,7 +36,7 @@
     <string name="vip_item_checked">vip_item_checked</string>
     <string name="super_vip">开通超级会员</string>
     <string name="deadline_title">有效期至:</string>
-    <string name="renewal">续费 ></string>
+    <string name="renewal">续费</string>
     <string name="wxb_logo">wxb_logo</string>
     <string name="more_equity">更多权益 >></string>
     <string name="super_vip_title">超级会员权益</string>
@@ -293,7 +293,7 @@
 
     <string name="phone_not_reg_text">该手机号未注册，请先注册</string>
     <string name="phone_had_reg_text">该手机号已注册</string>
-    <string name="tourists_tip">请先登录呦</string>
+    <string name="tourists_tip">请先登录哟</string>
 
     <string name="no_network_at_present">服务异常</string>
     <string name="click_refresh">点击刷新</string>
