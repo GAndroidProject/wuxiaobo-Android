@@ -109,7 +109,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     PageFragmentPresenter hp;
 
     private float alpha;
-    public static final float maxAlpha = 80;
+    public static final float maxAlpha = 100;
 
     public float getAlpha() {
         return alpha;
@@ -756,9 +756,12 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             }
             int color = Color.argb(255,30,89,246);
             microPageToolbar.setBackgroundColor(color);
+            if (0 == alpha)
+                color = Color.TRANSPARENT;
+            int top = alpha > maxAlpha ? StatusBarUtil.getStatusBarHeight(mContext) : (int)(StatusBarUtil.getStatusBarHeight(mContext) * alpha / maxAlpha);
             if (alpha > maxAlpha) {
                 if (!microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
-                    microPageWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
+                    microPageWrap.setPadding(0, top, 0, 0);
                     StatusBarUtil.setStatusBarColor(getActivity(), color);
                 }
                 microPageToolbarTitle.setVisibility(View.VISIBLE);
@@ -769,8 +772,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 }
             } else {
                 if (!microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
-                    microPageWrap.setPadding(0, 0, 0, 0);
-                    StatusBarUtil.setStatusBarColor(getActivity(), Color.TRANSPARENT);
+                    microPageWrap.setPadding(0, top, 0, 0);
+                    StatusBarUtil.setStatusBarColor(getActivity(), color);
                 }
                 microPageToolbarTitle.setVisibility(View.GONE);
                 microPageToolbarSearch.setVisibility(View.GONE);

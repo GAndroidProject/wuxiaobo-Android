@@ -33,8 +33,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_gravity="end"
-            android:paddingStart="12dp"
-            android:paddingEnd="4dp"
+            android:paddingStart="16dp"
             android:paddingBottom="16dp"
             android:src="@mipmap/class_search"/>
     </FrameLayout>
