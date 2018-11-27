@@ -47,6 +47,7 @@ import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 import com.youth.banner.BannerConfig;
 
@@ -123,7 +124,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 String text = "C&nbsp;&nbsp;&nbsp;&nbsp;O&nbsp;&nbsp;&nbsp;&nbsp;U&nbsp;&nbsp;&nbsp;&nbsp;" +
                         "R&nbsp;&nbsp;&nbsp;&nbsp;S&nbsp;&nbsp;&nbsp;&nbsp;E";
                 ((TextView)view.findViewById(R.id.search_wxb)).setText(Html.fromHtml(text));
-                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 28), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20),
+                        Dp2Px2SpUtil.dp2px(mContext, 28) + StatusBarUtil.getStatusBarHeight(mContext),
+                        Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
                 return new SearchViewHolder(view);
             default:
@@ -358,7 +361,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.SEARCH:
                 SearchViewHolder searchViewHolder = (SearchViewHolder) holder;
                 searchViewHolder.searchTitle.setText(currentBindComponent.getTitle());
-                String searchDefault = "res:///" + R.mipmap.search_grey_search;
+                String searchDefault = "res:///" + R.mipmap.class_search;
                 SetImageUriUtil.setImgURI(searchViewHolder.searchIcon, searchDefault, Dp2Px2SpUtil.dp2px(mContext, 375), Dp2Px2SpUtil.dp2px(mContext, 250));
                 if (!currentBindComponent.isNeedDecorate()) {
                     searchViewHolder.searchWxb.setVisibility(View.GONE);

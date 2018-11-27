@@ -108,6 +108,13 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     DecorateRecyclerAdapter microPageAdapter;
     PageFragmentPresenter hp;
 
+    private float alpha;
+    public static final float maxAlpha = 80;
+
+    public float getAlpha() {
+        return alpha;
+    }
+
     public static MicroPageFragment newInstance(String microPageId) {
         MicroPageFragment microPageFragment = new MicroPageFragment();
         Bundle bundle = new Bundle();
@@ -123,7 +130,10 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         unbinder = ButterKnife.bind(this, view);
         mContext = getContext();
         mainActivity = (MainActivity) getActivity();
-        view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
+        int top = 0;
+        if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
+            top = StatusBarUtil.getStatusBarHeight(mContext);
+        view.setPadding(0, top, 0, 0);
         EventBus.getDefault().register(this);
         return view;
     }
@@ -612,9 +622,12 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             microPageTitleBg.setImageURI("res:///" + R.mipmap.class_bg);
             microPageToolbar.setVisibility(View.VISIBLE);
             // 初始化 toolbar
-            int statusBarHeight = StatusBarUtil.getStatusBarHeight(mContext);
+            int top = 0;
+            if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
+                top = StatusBarUtil.getStatusBarHeight(mContext);
+//            int statusBarHeight = StatusBarUtil.getStatusBarHeight(mContext);
             // 沉浸式初始化
-            microPageWrap.setPadding(0, statusBarHeight, 0, 0);
+            microPageWrap.setPadding(0, top, 0, 0);
             // toolbar 的内容都设置为透明
             microPageToolbar.setBackgroundColor(Color.argb(0,255,255,255));
             microPageToolbarTitle.setVisibility(View.GONE);
@@ -625,10 +638,12 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     JumpDetail.jumpSearch(mContext);
                 }
             });
+            microPageFresh.setEnableHeaderTranslationContent(false);
             isMain = false;
         } else {
             microPageTitleBg.setImageURI("");
             microPageToolbar.setVisibility(View.GONE);
+            microPageFresh.setEnableHeaderTranslationContent(true);
             isMain = true;
         }
 
@@ -733,14 +748,19 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     @Override
     public void onScrollChanged(int l, int t, int oldl, int oldt) {
         if (!isMain) {
-            float alpha = (t / (toolbarHeight * 1.0f)) * 255;
+            alpha = (t / (toolbarHeight * 1.0f)) * 255;
             if(alpha > 255){
                 alpha = 255;
             }else if(alpha < 0){
                 alpha = 0;
             }
-            microPageToolbar.setBackgroundColor(Color.argb((int) alpha,30,89,246));
-            if (alpha == 255) {
+            int color = Color.argb(255,30,89,246);
+            microPageToolbar.setBackgroundColor(color);
+            if (alpha > maxAlpha) {
+                if (!microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
+                    microPageWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
+                    StatusBarUtil.setStatusBarColor(getActivity(), color);
+                }
                 microPageToolbarTitle.setVisibility(View.VISIBLE);
                 if (hasSearch) {
                     microPageToolbarSearch.setVisibility(View.VISIBLE);
@@ -748,6 +768,10 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     microPageToolbarSearch.setVisibility(View.GONE);
                 }
             } else {
+                if (!microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
+                    microPageWrap.setPadding(0, 0, 0, 0);
+                    StatusBarUtil.setStatusBarColor(getActivity(), Color.TRANSPARENT);
+                }
                 microPageToolbarTitle.setVisibility(View.GONE);
                 microPageToolbarSearch.setVisibility(View.GONE);
             }

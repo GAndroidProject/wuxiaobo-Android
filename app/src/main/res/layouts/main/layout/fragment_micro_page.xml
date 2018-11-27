@@ -29,7 +29,7 @@
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/micro_page_title_bg"
                     android:layout_width="match_parent"
-                    android:layout_height="374dp" />
+                    android:layout_height="400dp" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/micro_page_content"
@@ -60,8 +60,7 @@
         android:id="@+id/micro_page_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/recent_update_btn_pressed"
-        android:visibility="gone">
+        android:background="@color/recent_update_btn_pressed">
 
         <TextView
             android:id="@+id/micro_page_toolbar_title"

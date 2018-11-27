@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -43,6 +44,7 @@ import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 import com.xiaoe.shop.wxb.interfaces.OnBottomTabSelectListener;
 import com.xiaoe.shop.wxb.utils.OSUtils;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.BottomTabBar;
 import com.xiaoe.shop.wxb.widget.ScrollViewPager;
 
@@ -174,8 +176,37 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         mainViewPager = (ScrollViewPager) findViewById(R.id.main_view_pager);
         mainViewPager.setScroll(false);
-        mainViewPager.setAdapter(new MainFragmentStatePagerAdapter(getSupportFragmentManager()));
+        MainFragmentStatePagerAdapter adapter = new MainFragmentStatePagerAdapter(getSupportFragmentManager());
+        mainViewPager.setAdapter(adapter);
         mainViewPager.setOffscreenPageLimit(3);
+        mainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (1 == position){
+                    if (MicroPageFragment.maxAlpha < ((MicroPageFragment)adapter.getItem(1)).getAlpha()) {
+                        int color = Color.argb(255,30,89,246);
+                        StatusBarUtil.setStatusBarColor(MainActivity.this, color);
+                    }else StatusBarUtil.setStatusBarColor(MainActivity.this, Color.TRANSPARENT);
+                    if (!StatusBarUtil.setStatusBarDarkTheme(MainActivity.this, false)) {
+                        // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
+                        StatusBarUtil.setStatusBarColor(MainActivity.this, 0x55000000);
+                    }
+                }else {
+                    StatusBarUtil.setStatusBarColor(MainActivity.this, Color.TRANSPARENT);
+                    if (!StatusBarUtil.setStatusBarDarkTheme(MainActivity.this, true)) {
+                        // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
+                        StatusBarUtil.setStatusBarColor(MainActivity.this, 0x55000000);
+                    }
+                }
+            }
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 
 //        boolean needChange = intent.getBooleanExtra("needChange", false);
 //        int tabIndex = intent.getIntExtra("tabIndex", 0);
