@@ -53,8 +53,11 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
         if (srcType != null) { // 写的数据的时候并没有添加 srcType 先兼容，课程页用了真数据之后删掉
             if (srcType.equals(DecorateEntityType.TOPIC) || srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.MEMBER)) { // 专栏或者大专栏
                 knowledgeItemViewHolder.itemTitle.setText(mItemList.get(currentPos).getItemTitle());
-                knowledgeItemViewHolder.itemTitle.setMaxLines(1);
-                knowledgeItemViewHolder.itemTitleColumn.setVisibility(View.VISIBLE);
+                //宫格排列是不需要有副标题
+//                knowledgeItemViewHolder.itemTitle.setMaxLines(1);
+//                knowledgeItemViewHolder.itemTitleColumn.setVisibility(View.VISIBLE);
+                knowledgeItemViewHolder.itemTitle.setMaxLines(2);
+                knowledgeItemViewHolder.itemTitleColumn.setVisibility(View.GONE);
                 knowledgeItemViewHolder.itemTitleColumn.setText(mItemList.get(currentPos).getItemTitleColumn());
             } else { // 其他单品
                 knowledgeItemViewHolder.itemTitle.setText(mItemList.get(currentPos).getItemTitle());

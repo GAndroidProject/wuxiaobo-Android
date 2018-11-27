@@ -9,30 +9,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="UselessParent">
-
-        <TextView
-            android:id="@+id/knowledge_group_title"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/group_top"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/main_title_color"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_alignParentStart="true"/>
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/knowledge_group_title"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="@color/main_title_color"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/knowledge_group_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/price_color"
-            android:textSize="14sp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignBottom="@id/knowledge_group_title"/>
+            <TextView
+                android:id="@+id/knowledge_group_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/price_color"
+                android:textSize="14sp"/>
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/knowledge_group_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/knowledge_group_title"/>
+            android:layout_below="@id/group_top"/>
 
     </RelativeLayout>
 

@@ -14,7 +14,7 @@
         fresco:roundingBorderWidth="1dp"
         fresco:roundBottomRight="false"
         fresco:roundTopRight="false"
-        android:padding="0.5dp"/>
+        android:padding="1dp"/>
 
     <TextView
         android:id="@+id/learning_item_title"

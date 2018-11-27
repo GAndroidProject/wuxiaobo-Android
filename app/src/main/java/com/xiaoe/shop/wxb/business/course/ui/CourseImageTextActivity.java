@@ -356,7 +356,16 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         if(activityDestroy){
             return;
         }
-        JSONObject result = (JSONObject) entity;
+        try{
+            handleData(iRequest, success, (JSONObject) entity);
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast(getString(R.string.no_network_at_present));
+        }
+    }
+
+    private void handleData(IRequest iRequest, boolean success, JSONObject entity) {
+        JSONObject result = entity;
         if (success) {
             if (iRequest instanceof AddCollectionRequest) {
                 int code = result.getInteger("code");
