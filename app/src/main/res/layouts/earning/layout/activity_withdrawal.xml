@@ -23,42 +23,45 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
+            android:layout_marginTop="25dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:background="@color/self_transparent"
-            android:paddingBottom="12dp"
-            android:layout_marginTop="34dp">
+            android:background="@color/self_transparent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/withdrawal_logo"
-                android:textSize="24sp"
-                android:textColor="@color/main_title_color"
-                android:layout_gravity="bottom"/>
-
-            <EditText
-                android:id="@+id/wr_page_money"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@null"
-                android:hint="@string/withdrawal_input_hint"
-                android:textSize="24sp"
-                android:layout_marginStart="28dp"
                 android:layout_gravity="center_vertical"
-                android:inputType="numberDecimal"
-                android:maxLength="9"/>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/withdrawal_logo"
+                    android:textSize="24sp"
+                    android:textColor="@color/main_title_color"/>
 
+                <EditText
+                    android:id="@+id/wr_page_money"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="@string/withdrawal_input_hint"
+                    android:textSize="24sp"
+                    android:layout_marginStart="20dp"
+                    android:inputType="numberDecimal"
+                    android:maxLength="9"/>
+            </LinearLayout>
             <TextView
                 android:id="@+id/wr_page_error_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/withdrawal_error_tip"
                 android:textSize="12sp"
+                android:visibility="gone"
                 android:textColor="@color/login_error"
-                android:layout_gravity="bottom|end"
-                android:visibility="gone"/>
+                android:layout_gravity="bottom|end"/>
 
         </FrameLayout>
 
@@ -68,7 +71,7 @@
             android:background="@color/audio_page_bg_color"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="5dp"/>
 
         <FrameLayout
             android:layout_width="match_parent"

@@ -56,9 +56,9 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
                 //宫格排列是不需要有副标题
 //                knowledgeItemViewHolder.itemTitle.setMaxLines(1);
 //                knowledgeItemViewHolder.itemTitleColumn.setVisibility(View.VISIBLE);
+//                knowledgeItemViewHolder.itemTitleColumn.setText(mItemList.get(currentPos).getItemTitleColumn());
                 knowledgeItemViewHolder.itemTitle.setMaxLines(2);
                 knowledgeItemViewHolder.itemTitleColumn.setVisibility(View.GONE);
-                knowledgeItemViewHolder.itemTitleColumn.setText(mItemList.get(currentPos).getItemTitleColumn());
             } else { // 其他单品
                 knowledgeItemViewHolder.itemTitle.setText(mItemList.get(currentPos).getItemTitle());
                 knowledgeItemViewHolder.itemTitle.setMaxLines(2);

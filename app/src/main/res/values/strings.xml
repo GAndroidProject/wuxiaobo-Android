@@ -259,7 +259,7 @@
     <string name="withdrawal_input_hint">请输入金额</string>
     <string name="withdrawal_error_tip">超过可提现余额</string>
     <string name="withdrawal_less_tip">满10元才可提现</string>
-    <string name="withdrawal_left">奖学金余额 %1$s元</string> <!-- 第一个参数为数字 -->
+    <string name="withdrawal_left">奖学金余额: %1$s元</string> <!-- 第一个参数为数字 -->
     <string name="withdrawal_all">全部提现</string>
     <string name="withdrawal_to">提现到</string>
     <string name="withdrawal_wx_account">微信账户</string>

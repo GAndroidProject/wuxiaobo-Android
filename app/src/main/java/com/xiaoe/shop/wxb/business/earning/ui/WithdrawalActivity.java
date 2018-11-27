@@ -162,6 +162,9 @@ public class WithdrawalActivity extends XiaoeActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 wrErrorTip.setVisibility(View.GONE);
+                float size = s.length() > 0 ? 40 : 24;
+                wrInput.setTextSize(size);
+                wrInput.getPaint().setFakeBoldText(s.length() > 0);
                 // 限制输入两位小数
                 if (s.toString().contains(".")) {
                     if (s.length() - 1 - s.toString().indexOf(".") > 2) {
@@ -261,6 +264,7 @@ public class WithdrawalActivity extends XiaoeActivity {
                         ClipData clipData = ClipData.newPlainText(null, url);
                         getDialog().setTitle(getString(R.string.withdrawal_grant_title));
                         getDialog().getTitleView().setTextSize(20);
+                        getDialog().setConfirmText(getString(R.string.withdrawal_grant_confirm));
                         getDialog().getTitleView().setTextColor(getResources().getColor(R.color.main_title_color));
                         getDialog().getTitleView().setGravity(Gravity.START);
                         getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(this, 20), 0, 0, 0);
