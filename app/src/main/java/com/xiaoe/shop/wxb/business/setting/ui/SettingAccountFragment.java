@@ -469,6 +469,8 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         completeError = (TextView) viewWrap.findViewById(R.id.login_error_tip);
         completeSubmit = (Button) viewWrap.findViewById(R.id.login_submit_btn);
 
+        completeSubmit.setEnabled(false);
+
         completeTitle.setVisibility(View.GONE);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(getActivity(), 40), 0, 0);
@@ -485,11 +487,9 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String head = s.toString();
                 if (head.length() == 11 && completeError.getVisibility() == View.GONE) {
-                    completeSubmit.setAlpha(1);
                     completeSubmit.setEnabled(true);
                 } else {
                     JudgeUtil.showErrorViewIfNeed(getActivity(), head, completeError, completeSubmit);
-                    completeSubmit.setAlpha(0.6f);
                     completeSubmit.setEnabled(false);
                     completeContent.setCursorVisible(true);
                 }

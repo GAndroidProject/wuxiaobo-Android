@@ -408,8 +408,8 @@ public class LoginActivity extends XiaoeActivity {
                         JudgeUtil.showErrorViewIfNeed(this, REGISTER_ERROR_TIP, ((LoginPageFragment) currentFragment).phoneErrorTip, ((LoginPageFragment) currentFragment).phoneObtainCode);
                     } else {
                         ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(true);
-                        ((LoginPageFragment) currentFragment).phoneObtainCode.setAlpha(1);
-                        ((LoginPageFragment) currentFragment).phoneObtainCode.setBackground(getResources().getDrawable(R.drawable.person_submit_bg));
+//                        ((LoginPageFragment) currentFragment).phoneObtainCode.setAlpha(1);
+//                        ((LoginPageFragment) currentFragment).phoneObtainCode.setBackground(getResources().getDrawable(R.drawable.person_submit_bg));
                         replaceFragment(CODE);
                         // 发送请求验证码接口
                         loginPresenter.obtainPhoneCode(phoneNum);
@@ -418,8 +418,8 @@ public class LoginActivity extends XiaoeActivity {
                     if (code == NetworkCodes.CODE_HAD_REGISTER) { // 已经注册
                         if (((LoginPageFragment) currentFragment).phoneObtainCode != null) {
                             ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(true);
-                            ((LoginPageFragment) currentFragment).phoneObtainCode.setAlpha(1);
-                            ((LoginPageFragment) currentFragment).phoneObtainCode.setBackground(getResources().getDrawable(R.drawable.person_submit_bg));
+//                            ((LoginPageFragment) currentFragment).phoneObtainCode.setAlpha(1);
+//                            ((LoginPageFragment) currentFragment).phoneObtainCode.setBackground(getResources().getDrawable(R.drawable.person_submit_bg));
                         }
                         replaceFragment(CODE);
                         // 发送请求验证码接口

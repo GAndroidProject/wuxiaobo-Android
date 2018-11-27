@@ -40,6 +40,7 @@
     <color name="btn_column_menu_valid">#1E59F6</color><!--专栏页  菜单按钮选择颜色-->
 
     <color name="btn_account_logout">#E26969</color><!-- 退出登录按钮背景颜色 -->
+    <color name="btn_account_logout_pressed">#f43f3f</color><!-- 退出登录按钮背景颜色 -->
     <color name="mini_audio_bg">#E68D8E92</color><!--专栏页  菜单按钮选择颜色-->
 
     <color name="edit_cursor">#3B86FD</color><!-- 光标颜色 -->
@@ -69,8 +70,8 @@
     <color name="error_hint_color">#ABABC0</color>
     <color name="new_tip_color">#EA0404</color>
 
-    <color name="common_btn_bg_normal_blue">#1E59F6</color>
-    <color name="common_btn_bg_pressed_blue">#1F4FCF</color>
+    <color name="common_btn_bg_normal_blue">#FF1E59F6</color>
+    <color name="common_btn_bg_pressed_blue">#FF1F4FCF</color>
     <color name="common_btn_bg_enabled_blue">#6B1F4FCF</color>
     <color name="unread_msg">#FF3C3C</color>
 

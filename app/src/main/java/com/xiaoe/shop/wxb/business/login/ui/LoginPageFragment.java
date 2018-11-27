@@ -649,7 +649,7 @@ public class LoginPageFragment extends BaseFragment {
     private void initPhoneInputListener(String tag) {
 
         phoneObtainCode.setEnabled(false);
-        phoneObtainCode.setAlpha(0.6f);
+//        phoneObtainCode.setAlpha(0.6f);
 
         phoneContent.addTextChangedListener(new TextWatcher() {
             @Override
@@ -661,11 +661,11 @@ public class LoginPageFragment extends BaseFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String head = s.toString();
                 if (head.length() == 11 && phoneErrorTip.getVisibility() == View.GONE) {
-                    phoneObtainCode.setAlpha(1);
+//                    phoneObtainCode.setAlpha(1);
                     phoneObtainCode.setEnabled(true);
                 } else {
                     JudgeUtil.showErrorViewIfNeed(getActivity(), head, phoneErrorTip, phoneObtainCode);
-                    phoneObtainCode.setAlpha(0.6f);
+//                    phoneObtainCode.setAlpha(0.6f);
                     phoneObtainCode.setEnabled(false);
                     phoneContent.setCursorVisible(true);
                 }
