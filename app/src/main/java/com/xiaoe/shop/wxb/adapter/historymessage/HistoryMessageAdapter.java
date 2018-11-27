@@ -35,18 +35,20 @@ public class HistoryMessageAdapter extends BaseQuickAdapter<HistoryMessageEntity
                 .placeholder(R.mipmap.default_avatar)
                 .error(R.mipmap.default_avatar)
                 .into(ivAvatar);
-        helper.setText(R.id.tv_username, item.getSend_nick_name())
-                .setText(R.id.tv_message_date, item.getTime_from_now())
+        helper.setText(R.id.tv_message_date, item.getTime_from_now())
                 .setText(R.id.tv_content, item.getContent());
         switch (item.getMessage_type()) {
             case 0:
+                helper.setText(R.id.tv_username, item.getSend_nick_name());
                 helper.setGone(R.id.tv_title, false);
                 break;
             case 1:
+                helper.setText(R.id.tv_username, item.getWx_nickname());
                 helper.setGone(R.id.tv_title, true);
                 helper.setText(R.id.tv_title, R.string.replay_comment_text);
                 break;
             case 2:
+                helper.setText(R.id.tv_username, item.getWx_nickname());
                 helper.setGone(R.id.tv_title, true);
                 helper.setText(R.id.tv_title, R.string.zan_comment_text);
                 break;
