@@ -183,16 +183,11 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (1 == position){
-                    if (MicroPageFragment.maxAlpha < ((MicroPageFragment)adapter.getItem(1)).getAlpha()) {
-                        int color = Color.argb(255,30,89,246);
-                        StatusBarUtil.setStatusBarColor(MainActivity.this, color);
-                    }else StatusBarUtil.setStatusBarColor(MainActivity.this, Color.TRANSPARENT);
                     if (!StatusBarUtil.setStatusBarDarkTheme(MainActivity.this, false)) {
                         // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
                         StatusBarUtil.setStatusBarColor(MainActivity.this, 0x55000000);
                     }
                 }else {
-                    StatusBarUtil.setStatusBarColor(MainActivity.this, Color.TRANSPARENT);
                     if (!StatusBarUtil.setStatusBarDarkTheme(MainActivity.this, true)) {
                         // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
                         StatusBarUtil.setStatusBarColor(MainActivity.this, 0x55000000);
