@@ -789,6 +789,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             earnContent.setText(amount);
             earnContentTail.setVisibility(View.VISIBLE);
             earnTip.setVisibility(View.GONE);
+            earnSubmit.setText(getString(R.string.scholarship_earn_btn));
             earnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -800,6 +801,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             earnTitle.setText("差一点就瓜分到了");
             earnContentTail.setVisibility(View.GONE);
             earnWrap.setBackgroundColor(getResources().getColor(R.color.white));
+            earnSubmit.setText(getString(R.string.scholarship_earn_integral));
             if (CommonUserInfo.isIsSuperVip()) { // 超级会员
                 String content = "送你" + amount + "积分";
                 earnContent.setText(content);
