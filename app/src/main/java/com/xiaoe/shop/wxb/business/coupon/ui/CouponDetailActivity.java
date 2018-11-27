@@ -1,6 +1,8 @@
 package com.xiaoe.shop.wxb.business.coupon.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -13,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.CouponInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
@@ -22,6 +25,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity.KnowledgeListAdapter;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.coupon.presenter.CouponPresenter;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CouponView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
@@ -42,6 +46,12 @@ public class CouponDetailActivity extends XiaoeActivity implements View.OnClickL
     }
 
     private void initView() {
+
+        //状态栏颜色字体(白底黑字)修改 Android6.0+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
         ImageView  btnCouponBack = (ImageView) findViewById(R.id.coupon_back);
         btnCouponBack.setOnClickListener(this);
         resourceInfoList = new ArrayList<KnowledgeCommodityItem>();
@@ -85,11 +95,7 @@ public class CouponDetailActivity extends XiaoeActivity implements View.OnClickL
             for (Object itemObject : jsonResourceInfoList) {
                 JSONObject itemData = (JSONObject) itemObject;
                 KnowledgeCommodityItem knowledgeCommodityItem = new KnowledgeCommodityItem();
-                knowledgeCommodityItem.setResourceId(itemData.getString("id"));
-                knowledgeCommodityItem.setHasBuy(false);
-                knowledgeCommodityItem.setItemImg(itemData.getString("img_url"));
-                knowledgeCommodityItem.setItemTitle(itemData.getString("title"));
-                knowledgeCommodityItem.setItemPrice("¥"+itemData.getString("price"));
+                String price = "¥" + itemData.getString("price");
                 if(itemData.getIntValue("type") == 1){
                     knowledgeCommodityItem.setSrcType(DecorateEntityType.IMAGE_TEXT);
                 }else if(itemData.getIntValue("type") == 2){
@@ -100,12 +106,22 @@ public class CouponDetailActivity extends XiaoeActivity implements View.OnClickL
                     knowledgeCommodityItem.setSrcType(DecorateEntityType.COLUMN);
                 }else if(itemData.getIntValue("type") == 8){
                     knowledgeCommodityItem.setSrcType(DecorateEntityType.TOPIC);
+                } else if (itemData.getIntValue("type") == 23) {
+                    knowledgeCommodityItem.setSrcType(DecorateEntityType.SUPER_VIP);
+                    price = price + "/年";
                 }
+
+                knowledgeCommodityItem.setResourceId(itemData.getString("id"));
+                knowledgeCommodityItem.setHasBuy(false);
+                knowledgeCommodityItem.setItemImg(itemData.getString("img_url"));
+                knowledgeCommodityItem.setItemTitle(itemData.getString("title"));
+                knowledgeCommodityItem.setItemPrice(price);
 
                 knowledgeCommodityItem.setItemTitleColumn(itemData.getString("summary"));
                 resourceInfoList.add(knowledgeCommodityItem);
             }
-            couponListAdapter.addAllData(resourceInfoList);
+//            couponListAdapter.addAllData(resourceInfoList);
+            couponListAdapter.notifyDataSetChanged();
         }else{
             statusPagerView.setPagerState(StatusPagerView.FAIL, getResources().getString(R.string.request_fail), R.mipmap.network_none);
         }

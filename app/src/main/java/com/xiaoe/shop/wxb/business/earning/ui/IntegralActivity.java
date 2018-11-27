@@ -144,7 +144,7 @@ public class IntegralActivity extends XiaoeActivity {
             EarningItem earningItem = new EarningItem();
             earningItem.setItemTitle(desc);
             earningItem.setItemContent(createdAt.split(" ")[0]);
-            earningItem.setItemMoney(String.valueOf(count));
+            earningItem.setItemMoney(String.format(getString(R.string.integral_desc), count));
 
             dataList.add(earningItem);
         }

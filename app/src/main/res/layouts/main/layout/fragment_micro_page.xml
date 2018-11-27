@@ -15,7 +15,7 @@
         <com.xiaoe.shop.wxb.widget.CustomScrollView
             android:id="@+id/micro_page_scroller"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:overScrollMode="never"
             android:scrollbars="none"
             android:paddingBottom="24dp"
@@ -99,7 +99,6 @@
     <com.xiaoe.shop.wxb.widget.StatusPagerView
         android:id="@+id/micro_page_loading"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/self_transparent"/>
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

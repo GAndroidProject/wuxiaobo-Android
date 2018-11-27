@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
 import com.xiaoe.shop.wxb.R;
@@ -111,6 +112,13 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         break;
                     case DecorateEntityType.MEMBER:
                         JumpDetail.jumpColumn(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), 5);
+                        break;
+                    case DecorateEntityType.SUPER_VIP:
+                        if (CommonUserInfo.isIsSuperVipAvailable()) {
+                            JumpDetail.jumpSuperVip(mContext);
+                        } else {
+                            Toast.makeText(mContext, "app 暂不支持非一年规格的会员购买", Toast.LENGTH_SHORT).show();
+                        }
                         break;
                 }
             }

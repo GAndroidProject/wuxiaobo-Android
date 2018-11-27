@@ -63,9 +63,11 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.HideVideoPlayListEvent;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickMoreMenuListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
+import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.ContentMenuLayout;
@@ -117,6 +119,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private Runnable runnable;
     Dialog dialog;
     private boolean mIsDownload = false;
+    private SimpleDraweeView audioAdvertiseImg;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -242,6 +245,17 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         //下载按钮
         btnAudioDownload = (ImageView) findViewById(R.id.btn_audio_download);
         btnAudioDownload.setOnClickListener(this);
+
+        // 广告位
+        audioAdvertiseImg = (SimpleDraweeView) findViewById(R.id.audio_advertise_img);
+        String imgUrl = "res:///" + R.mipmap.img_text_bg;
+        SetImageUriUtil.setImgURI(audioAdvertiseImg, imgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
+        audioAdvertiseImg.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                JumpDetail.jumpMainScholarship(AudioActivity.this, true, true, 2);
+            }
+        });
     }
     private void initDatas() {
         collectionUtils = new CollectionUtils(this);

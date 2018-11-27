@@ -36,7 +36,8 @@
             android:id="@+id/knowledge_group_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/group_top"/>
+            android:layout_below="@id/group_top"
+            android:nestedScrollingEnabled="false"/>
 
     </RelativeLayout>
 

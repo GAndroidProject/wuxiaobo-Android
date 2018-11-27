@@ -32,7 +32,8 @@
         android:dividerHeight="24dp"
         android:layerType="software"
         android:nestedScrollingEnabled="false"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:listSelector="@color/self_transparent"/>
 
     <TextView
         android:id="@+id/earning_empty_tip"

@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,12 +53,14 @@ import com.xiaoe.shop.wxb.widget.TouristDialog;
 import com.youth.banner.BannerConfig;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 店铺装修组件显示列表适配器
  */
-public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> implements OnItemClickWithKnowledgeListener, OnItemClickWithNavItemListener {
+public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private static final String TAG = "DecorateRecyclerAdapter";
 
@@ -65,9 +68,19 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     // 组件实体类列表
     private List<ComponentInfo> mComponentList;
 
+    // 信息流
+    private SparseArray<FlowInfoRecyclerAdapter> flowInfoRecyclerAdapterArr;
+    // 知识商品（列表）
+    private SparseArray<KnowledgeListAdapter> knowledgeListAdapterArr;
+    // 知识商品（宫格）
+    private SparseArray<KnowledgeGroupRecyclerAdapter> knowledgeGroupRecyclerAdapterArr;
+    // 导航组件 manager
+    private SparseArray<GraphicNavRecyclerAdapter> graphicNavRecyclerAdapterArr;
+    // 最近更新
+    private SparseArray<RecentUpdateListAdapter> recentUpdateListAdapterArr;
+
     // 知识商品分组形式的 recycler
     private List<RecyclerView> knowledgeGroupRecyclerList;
-    private RecentUpdateListAdapter recentUpdateListAdapter;
 
     public DecorateRecyclerAdapter(Context context, List<ComponentInfo> componentList) {
         this.mContext = context;
@@ -87,17 +100,26 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info, null);
                 layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 28), 0, 0);
                 view.setLayoutParams(layoutParams);
-                return new FlowInfoViewHolder(view);
+                if (flowInfoRecyclerAdapterArr == null) {
+                    flowInfoRecyclerAdapterArr = new SparseArray<>();
+                }
+                return new FlowInfoViewHolder(mContext, view);
             case DecorateEntityType.RECENT_UPDATE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_update, null);
                 layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 26), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
-                return new RecentUpdateViewHolder(view);
+                if (recentUpdateListAdapterArr == null) {
+                    recentUpdateListAdapterArr = new SparseArray<>();
+                }
+                return new RecentUpdateViewHolder(mContext, view);
             case DecorateEntityType.KNOWLEDGE_LIST:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_list, null);
                 layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
-                return new KnowledgeListViewHolder(view);
+                if (knowledgeListAdapterArr == null) {
+                    knowledgeListAdapterArr = new SparseArray<>();
+                }
+                return new KnowledgeListViewHolder(mContext, view);
             case DecorateEntityType.KNOWLEDGE_GROUP:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group, null);
                 layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24));
@@ -105,12 +127,15 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 if (knowledgeGroupRecyclerList == null) { // 保证 list 不会被覆盖
                     knowledgeGroupRecyclerList = new ArrayList<>();
                 }
-                return new KnowledgeGroupViewHolder(view);
+                if (knowledgeGroupRecyclerAdapterArr == null) {
+                    knowledgeGroupRecyclerAdapterArr = new SparseArray<>();
+                }
+                return new KnowledgeGroupViewHolder(mContext, view);
             case DecorateEntityType.SHUFFLING_FIGURE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shuffling_figure, null);
                 layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
-                return new ShufflingFigureViewHolder(view);
+                return new ShufflingFigureViewHolder(mContext, view);
             case DecorateEntityType.BOOKCASE: // 书架的 case 本次不做
                 return null;
             case DecorateEntityType.GRAPHIC_NAVIGATION:
@@ -118,17 +143,17 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 layoutParams.gravity = Gravity.CENTER;
                 layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
-                return new GraphicNavViewHolder(view);
+                if (graphicNavRecyclerAdapterArr == null) {
+                    graphicNavRecyclerAdapterArr = new SparseArray<>();
+                }
+                return new GraphicNavViewHolder(mContext, view);
             case DecorateEntityType.SEARCH:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search, null);
-                String text = "C&nbsp;&nbsp;&nbsp;&nbsp;O&nbsp;&nbsp;&nbsp;&nbsp;U&nbsp;&nbsp;&nbsp;&nbsp;" +
-                        "R&nbsp;&nbsp;&nbsp;&nbsp;S&nbsp;&nbsp;&nbsp;&nbsp;E";
-                ((TextView)view.findViewById(R.id.search_wxb)).setText(Html.fromHtml(text));
                 layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20),
                         Dp2Px2SpUtil.dp2px(mContext, 28) + StatusBarUtil.getStatusBarHeight(mContext),
                         Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
-                return new SearchViewHolder(view);
+                return new SearchViewHolder(mContext, view);
             default:
                 return null;
         }
@@ -146,234 +171,34 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         switch(itemType) {
             case DecorateEntityType.FLOW_INFO:
                 FlowInfoViewHolder flowInfoViewHolder = (FlowInfoViewHolder) holder;
-                flowInfoViewHolder.flowInfoTitle.setText(currentBindComponent.getTitle());
-                if (currentBindComponent.getImgUrl() != null) {
-                    SetImageUriUtil.setImgURI(flowInfoViewHolder.flowInfoIcon, currentBindComponent.getImgUrl(), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20));
-                }
-                flowInfoViewHolder.flowInfoDesc.setText(currentBindComponent.getDesc());
-                flowInfoViewHolder.flowInfoIconDesc.setText(currentBindComponent.getJoinedDesc());
-                LinearLayoutManager llm = new LinearLayoutManager(mContext);
-                llm.setOrientation(LinearLayout.VERTICAL);
-                flowInfoViewHolder.flowInfoRecycler.setLayoutManager(llm);
-                FlowInfoRecyclerAdapter flowInfoRecyclerAdapter = new FlowInfoRecyclerAdapter(mContext, currentBindComponent.getFlowInfoItemList());
-                // recyclerView 取消滑动
-                flowInfoViewHolder.flowInfoRecycler.setNestedScrollingEnabled(false);
-                flowInfoViewHolder.flowInfoRecycler.setAdapter(flowInfoRecyclerAdapter);
-                flowInfoViewHolder.flowInfoLearnWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-                    @Override
-                    public void singleClick(View v) {
-                        if (currentBindComponent.isFormUser()) {
-                            Intent intent = new Intent(mContext, MineLearningActivity.class);
-                            intent.putExtra("pageTitle", "我正在学");
-                            mContext.startActivity(intent);
-                        } else {
-                            showTouristDialog();
-                        }
-                    }
-                });
+                flowInfoViewHolder.initViewHolder(currentBindComponent, currentBindPos, flowInfoRecyclerAdapterArr);
                 break;
             case DecorateEntityType.RECENT_UPDATE:
                 RecentUpdateViewHolder recentUpdateViewHolder = (RecentUpdateViewHolder) holder;
-                SetImageUriUtil.setImgURI(recentUpdateViewHolder.recentUpdateAvatar, currentBindComponent.getImgUrl(), Dp2Px2SpUtil.dp2px(mContext, 72), Dp2Px2SpUtil.dp2px(mContext, 72));
-                recentUpdateViewHolder.recentUpdateSubTitle.setText(currentBindComponent.getTitle());
-                recentUpdateViewHolder.recentUpdateSubDesc.setText(currentBindComponent.getDesc());
-                if (currentBindComponent.isHideTitle()) { // 隐藏收听全部按钮
-                    recentUpdateViewHolder.recentUpdateSubBtn.setVisibility(View.GONE);
-                } else {
-                    recentUpdateViewHolder.recentUpdateSubBtn.setVisibility(View.VISIBLE);
-                    recentUpdateViewHolder.recentUpdateSubBtn.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-                        @Override
-                        public void singleClick(View v) {
-                            if (currentBindComponent.isFormUser()) {
-                                if(!currentBindComponent.isHasBuy()){
-                                    switch (currentBindComponent.getSubType()) {
-                                        case DecorateEntityType.TOPIC:
-                                            JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), "", 8);
-                                            break;
-                                        case DecorateEntityType.COLUMN:
-                                            JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), "", 6);
-                                            break;
-                                        case DecorateEntityType.MEMBER:
-                                            JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), "", 5);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    return;
-                                }
-                                if (!recentUpdateListAdapter.isPlaying) {
-                                    recentUpdateViewHolder.recentUpdateSubBtn.setText(R.string.stop_all);
-                                    Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_stopall);
-                                    drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                                    recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
-                                    recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
-                                    recentUpdateListAdapter.clickPlayAll();
-                                } else {
-                                    recentUpdateViewHolder.recentUpdateSubBtn.setText(R.string.play_all);
-                                    Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_playall);
-                                    drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                                    recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
-                                    recentUpdateViewHolder.recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
-                                    recentUpdateListAdapter.stopPlayAll();
-                                }
-                            } else {
-                                showTouristDialog();
-                            }
-                        }
-                    });
-                }
-                recentUpdateViewHolder.recentUpdateAvatar.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-                    @Override
-                    public void singleClick(View v) {
-                        JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), currentBindComponent.getImgUrl(), 5);
-                    }
-                });
-                // 加载 ListView 的数据
-                recentUpdateListAdapter = new RecentUpdateListAdapter(mContext, currentBindComponent.getSubList(), currentBindComponent.isHasBuy());
-                recentUpdateViewHolder.recentUpdateListView.setAdapter(recentUpdateListAdapter);
-                MeasureUtil.setListViewHeightBasedOnChildren(recentUpdateViewHolder.recentUpdateListView);
+                recentUpdateViewHolder.initViewHolder(currentBindComponent, currentBindPos, recentUpdateListAdapterArr);
                 break;
-                case DecorateEntityType.KNOWLEDGE_LIST:
-                    KnowledgeListViewHolder knowledgeListViewHolder = (KnowledgeListViewHolder) holder;
-                    KnowledgeListAdapter knowledgeListAdapter = new KnowledgeListAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
-                    if (currentBindComponent.isHideTitle()) {
-                        knowledgeListViewHolder.knowledgeListTitle.setVisibility(View.GONE);
-                        // title 没有了需要讲 listView 的 marginTop 设置为 0
-                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                        layoutParams.setMargins(0, 0, 0, 0);
-                        knowledgeListViewHolder.knowledgeListView.setLayoutParams(layoutParams);
-                    } else {
-                        knowledgeListViewHolder.knowledgeListTitle.setText(currentBindComponent.getTitle());
-                        if ("".equals(currentBindComponent.getDesc())) { // 为空，不显示查看全部
-                            knowledgeListViewHolder.knowledgeListMore.setVisibility(View.GONE);
-                        } else { // 显示查看更多
-                            knowledgeListViewHolder.knowledgeListMore.setVisibility(View.VISIBLE);
-                        }
-                        if (knowledgeListViewHolder.knowledgeListMore.getVisibility() == View.VISIBLE) { // 列表形式，查看全部可见
-                            knowledgeListViewHolder.knowledgeListMore.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-                                @Override
-                                public void singleClick(View v) {
-                                    JumpDetail.jumpSearchMore(mContext, currentBindComponent.getJoinedDesc(), currentBindComponent.getSearchType());
-                                }
-                            });
-                        }
-                    }
-                    knowledgeListViewHolder.knowledgeListView.setAdapter(knowledgeListAdapter);
-                    MeasureUtil.setListViewHeightBasedOnChildren(knowledgeListViewHolder.knowledgeListView);
-                    break;
-                case DecorateEntityType.KNOWLEDGE_GROUP:
-                    KnowledgeGroupViewHolder knowledgeGroupViewHolder = (KnowledgeGroupViewHolder) holder;
-                    if (currentBindComponent.isHideTitle()) {
-                        knowledgeGroupViewHolder.groupTitle.setVisibility(View.GONE);
-                        knowledgeGroupViewHolder.groupMore.setVisibility(View.GONE);
-                    } else {
-                        knowledgeGroupViewHolder.groupTitle.setText(currentBindComponent.getTitle());
-                        knowledgeGroupViewHolder.groupMore.setText(currentBindComponent.getDesc());
-                        knowledgeGroupViewHolder.groupMore.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-                            @Override
-                            public void singleClick(View v) {
-                                // 跳转到更多课程的页面
-                                String groupId = currentBindComponent.getGroupId();
-                                Intent intent = new Intent(mContext, CourseMoreActivity.class);
-                                intent.putExtra("groupId", groupId);
-                                mContext.startActivity(intent);
-                            }
-                        });
-                    }
-                    GridLayoutManager lm = new GridLayoutManager(mContext, 2);
-                    if (!knowledgeGroupRecyclerList.contains(knowledgeGroupViewHolder.groupRecyclerView)) { // 防止重复添加
-                        knowledgeGroupRecyclerList.add(knowledgeGroupViewHolder.groupRecyclerView);
-                    }
-                    knowledgeGroupViewHolder.groupRecyclerView.setLayoutManager(lm);
-                    // recyclerView 取消滑动
-                    knowledgeGroupViewHolder.groupRecyclerView.setNestedScrollingEnabled(false);
-                    if (currentBindComponent.isNeedDecorate()) {
-                        knowledgeGroupViewHolder.groupRecyclerView.addItemDecoration(new KnowledgeGroupRecyclerItemDecoration(Dp2Px2SpUtil.dp2px(mContext, 16), 2));
-                        currentBindComponent.setNeedDecorate(false);
-                    }
-                    KnowledgeGroupRecyclerAdapter groupAdapter = new KnowledgeGroupRecyclerAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
-                    groupAdapter.setOnItemClickWithKnowledgeListener(this);
-                    knowledgeGroupViewHolder.groupRecyclerView.setAdapter(groupAdapter);
-                    break;
+            case DecorateEntityType.KNOWLEDGE_LIST:
+                KnowledgeListViewHolder knowledgeListViewHolder = (KnowledgeListViewHolder) holder;
+                knowledgeListViewHolder.initViewHolder(currentBindComponent, currentBindPos, knowledgeListAdapterArr);
+                break;
+            case DecorateEntityType.KNOWLEDGE_GROUP:
+                KnowledgeGroupViewHolder knowledgeGroupViewHolder = (KnowledgeGroupViewHolder) holder;
+                knowledgeGroupViewHolder.setKnowledgeGroupRecyclerList(knowledgeGroupRecyclerList);
+                knowledgeGroupViewHolder.initViewHolder(currentBindComponent, currentBindPos, knowledgeGroupRecyclerAdapterArr);
+                break;
             case DecorateEntityType.SHUFFLING_FIGURE:
-                final List<ShufflingItem> shufflingList = currentBindComponent.getShufflingList();
                 ShufflingFigureViewHolder shufflingFigureViewHolder = (ShufflingFigureViewHolder) holder;
-                List<String> imgList = new ArrayList<>();
-                for (ShufflingItem item : shufflingList) {
-                    imgList.add(item.getImgUrl());
-                }
-                shufflingFigureViewHolder.banner.setImages(imgList)
-                        .setImageLoader(new GlideImageLoader())
-                        .setBannerStyle(BannerConfig.CIRCLE_INDICATOR)
-                        .setDelayTime(1500)
-                        .start();
-                shufflingFigureViewHolder.banner.setOnBannerListener(position1 -> {
-                    ShufflingItem shufflingItem = shufflingList.get(position1);
-                    String resourceType = shufflingItem.getSrcType();
-                    String resourceId = shufflingItem.getSrcId();
-                    switch (resourceType) {
-                        case DecorateEntityType.IMAGE_TEXT:
-                            JumpDetail.jumpImageText(mContext, resourceId, "");
-                            break;
-                        case DecorateEntityType.AUDIO:
-                            JumpDetail.jumpImageText(mContext, resourceId, "");
-                            break;
-                        case DecorateEntityType.VIDEO:
-                            JumpDetail.jumpVideo(mContext, resourceId, "", false);
-                            break;
-                        case DecorateEntityType.COLUMN:
-                            JumpDetail.jumpColumn(mContext, resourceId, "", 6);
-                            break;
-                        case DecorateEntityType.TOPIC:
-                            JumpDetail.jumpColumn(mContext, resourceId, "", 8);
-                            break;
-                        case DecorateEntityType.MEMBER:
-                            JumpDetail.jumpColumn(mContext, resourceId, "", 5);
-                            break;
-                        case "message": // 消息页面 TODO: 跳转到消息页面
-                            break;
-                        case "my_purchase": // 已购
-                            JumpDetail.jumpMineLearning(mContext, "我正在学");
-                            break;
-                        case "custom": // 外部链接 TODO: 跳转到外部链接
-                            break;
-                        case "micro_page": // 微页面 TODO: 跳转到微页面
-                            break;
-                        default:
-                            Log.d(TAG, "OnBannerClick: 未知链接");
-                            break;
-                    }
-                });
+                shufflingFigureViewHolder.initViewHolder(currentBindComponent);
                 break;
             case DecorateEntityType.BOOKCASE:
                 break;
             case DecorateEntityType.GRAPHIC_NAVIGATION:
                 GraphicNavViewHolder graphicNavViewHolder = (GraphicNavViewHolder) holder;
-                GridLayoutManager graphicNavGlm = new GridLayoutManager(mContext, currentBindComponent.getGraphicNavItemList().size());
-                GraphicNavRecyclerAdapter graphicNavRecyclerAdapter = new GraphicNavRecyclerAdapter(mContext, currentBindComponent.getGraphicNavItemList());
-                graphicNavViewHolder.graphicNavRecycler.setLayoutManager(graphicNavGlm);
-                if (currentBindComponent.isNeedDecorate()) {
-                    graphicNavViewHolder.graphicNavRecycler.addItemDecoration(new GraphicNavItemDecoration(mContext));
-                    currentBindComponent.setNeedDecorate(false);
-                }
-                graphicNavViewHolder.graphicNavRecycler.setNestedScrollingEnabled(false);
-                graphicNavRecyclerAdapter.setOnItemClickWithNavItemListener(this);
-                graphicNavViewHolder.graphicNavRecycler.setAdapter(graphicNavRecyclerAdapter);
+                graphicNavViewHolder.initViewHolder(currentBindComponent, currentBindPos, graphicNavRecyclerAdapterArr);
                 break;
-            case DecorateEntityType.SEARCH:
+            case DecorateEntityType.SEARCH: // 搜索组件不需要做重复判断
                 SearchViewHolder searchViewHolder = (SearchViewHolder) holder;
-                searchViewHolder.searchTitle.setText(currentBindComponent.getTitle());
-                String searchDefault = "res:///" + R.mipmap.class_search;
-                SetImageUriUtil.setImgURI(searchViewHolder.searchIcon, searchDefault, Dp2Px2SpUtil.dp2px(mContext, 375), Dp2Px2SpUtil.dp2px(mContext, 250));
-                if (!currentBindComponent.isNeedDecorate()) {
-                    searchViewHolder.searchWxb.setVisibility(View.GONE);
-                }
-                searchViewHolder.searchIcon.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-                    @Override
-                    public void singleClick(View v) {
-                        JumpDetail.jumpSearch(mContext);
-                    }
-                });
+                searchViewHolder.initViewHolder(currentBindComponent);
                 break;
             default:
                 break;
@@ -382,7 +207,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public int getItemCount() {
-        return mComponentList.size();
+        return mComponentList == null ? 0 : mComponentList.size();
     }
 
     @Override
@@ -416,69 +241,10 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return -1;
         }
     }
-
-    @Override
-    public void onKnowledgeItemClick(View view, KnowledgeCommodityItem knowledgeCommodityItem) {
-        // 知识商品分组形式
-        for (RecyclerView itemRecycler : knowledgeGroupRecyclerList) {
-            Log.d(TAG, "onKnowledgeItemClick: view.parent() == itemRecycler ---> " + (view.getParent() == itemRecycler));
-            if (view.getParent() == itemRecycler) {
-                switch (knowledgeCommodityItem.getSrcType()) {
-                    case DecorateEntityType.IMAGE_TEXT: // 图文 -- resourceType 为 1，resourceId 需要取
-                        JumpDetail.jumpImageText(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg());
-                        break;
-                    case DecorateEntityType.AUDIO: // 音频
-                        JumpDetail.jumpAudio(mContext, knowledgeCommodityItem.getResourceId(), 0);
-                        break;
-                    case DecorateEntityType.VIDEO: // 视频
-                        JumpDetail.jumpVideo(mContext, knowledgeCommodityItem.getResourceId(), "", false);
-                        break;
-                    case DecorateEntityType.COLUMN: // 专栏
-                        JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), 6);
-                        break;
-                    case DecorateEntityType.TOPIC: // 大专栏
-                        JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), 8);
-                        break;
-                    case DecorateEntityType.MEMBER: // 会员
-                        JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), 5);
-                        break;
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onNavItemClick(View view, GraphicNavItem graphicNavItem) {
-        String pageTitle = graphicNavItem.getNavContent();
-        String resourceId = graphicNavItem.getNavResourceId();
-        String resourceType = graphicNavItem.getNavResourceType();
-        switch (resourceType) {
-            case DecorateEntityType.IMAGE_TEXT: // 图文
-                JumpDetail.jumpImageText(mContext, resourceId, "");
-                break;
-            case DecorateEntityType.AUDIO: // 音频
-                JumpDetail.jumpAudio(mContext, resourceId, 0);
-                break;
-            case DecorateEntityType.VIDEO: // 视频
-                break;
-            case DecorateEntityType.COLUMN: // 专栏
-                JumpDetail.jumpColumn(mContext, resourceId, "", 6);
-                break;
-            case DecorateEntityType.TOPIC: // 大专栏
-                JumpDetail.jumpColumn(mContext, resourceId, "", 8);
-                break;
-            case DecorateEntityType.MEMBER: // 会员
-                JumpDetail.jumpColumn(mContext, resourceId, "", 5);
-                break;
-            case DecorateEntityType.RESOURCE_TAG: // 商品分组
-                JumpDetail.jumpShopGroup(mContext, pageTitle, graphicNavItem.getNavResourceId());
-                break;
-        }
-    }
     public void notifyDataSetChangedRecentUpdate(){
-        if(recentUpdateListAdapter != null){
-            recentUpdateListAdapter.notifyDataSetChanged();
-        }
+//        if(recentUpdateListAdapter != null){
+//            recentUpdateListAdapter.notifyDataSetChanged();
+//        }
     }
 
     private void showTouristDialog() {

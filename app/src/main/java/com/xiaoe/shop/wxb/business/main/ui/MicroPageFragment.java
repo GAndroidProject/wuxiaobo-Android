@@ -43,6 +43,7 @@ import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.PageFragmentRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.decorate.DecorateRecyclerAdapter;
+import com.xiaoe.shop.wxb.adapter.decorate.recent_update.RecentUpdateListAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.PageFragmentPresenter;
@@ -59,6 +60,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -112,6 +114,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 
     private float alpha;
     public static float maxAlpha;
+    boolean obtainDataInCache = false; // 从缓存中获取数据
 
     public float getAlpha() {
         return alpha;
@@ -176,7 +179,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         if (microPageList == null) {
             microPageList = new ArrayList<>();
         }
-        setDataByDB();
+//        setDataByDB();
         hp = new PageFragmentPresenter(this);
         hp.requestMicroPageData(microPageId);
     }
@@ -194,6 +197,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
                     if (microPageList != null) microPageList.clear();
+                    obtainDataInCache = false;
                     initPageData(data);
                     if (!hasDecorate) {
                         initMainContent();
@@ -233,6 +237,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     }
 
     private void setDataByDB() {
+        obtainDataInCache = true;
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(getContext(), new CacheDataUtil());
         String sql = "select * from " + CacheDataUtil.TABLE_NAME + " where app_id='" + Constants.getAppId() + "' and resource_id='" + microPageId + "'";
         List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
@@ -303,7 +308,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             itemList.add(recentUpdateListItem);
         }
         // 更新频道组件
-        for (ComponentInfo componentInfo : microPageList) {
+        for (int i = 0; i < microPageList.size(); i++) {
+            ComponentInfo componentInfo = microPageList.get(i);
             if (componentInfo.getType().equals(DecorateEntityType.RECENT_UPDATE_STR)) {
                 if (columnId.equals(componentInfo.getColumnId())) { // 是同一个组件才添加数据
                     componentInfo.setSubList(itemList);
@@ -312,11 +318,11 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     } else {
                         componentInfo.setHideTitle(true);
                     }
+                    // 局部刷新...
+                    microPageAdapter.notifyItemChanged(i);
                 }
             }
         }
-        // 刷新操作
-        microPageAdapter.notifyDataSetChanged();
     }
 
     // 初始化微页面数据
@@ -424,7 +430,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     } else {
                         component_recent.setHasBuy(false);
                     }
-                    if (recentId != null) {
+                    if (recentId != null && !obtainDataInCache) {
                         ColumnPresenter columnPresenter = new ColumnPresenter(this);
                         // 请求该专栏下三条数据
                         columnPresenter.requestColumnListByNum(recentId, "0", 3);
@@ -588,7 +594,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 JSONObject flowInfo = (JSONObject) item;
                 FlowInfoItem fii = new FlowInfoItem();
                 String resourceType = flowInfo.getString("src_type");
-//                if (resourceType.equals("member")) { continue; } // 会员先不支持
+                // true 表示关联售卖，否则为非关联售卖
+                boolean isRelated = flowInfo.getInteger("is_related") != null && flowInfo.getInteger("is_related") == 1;
                 String resourceId = flowInfo.getString("src_id");
                 String tag = flowInfo.getString("info_tag") == null ? "" : flowInfo.getString("info_tag");
                 String title = flowInfo.getString("title");
@@ -602,7 +609,11 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 fii.setItemTag(tag);
                 fii.setItemTitle(title);
                 fii.setItemDesc(desc);
-                fii.setItemPrice(showPrice);
+                if (isRelated) { // 关联售卖，则不显示价格
+                    hasBuy = true; // 仅仅是将价格隐藏，不是真的已购
+                } else {
+                    fii.setItemPrice(showPrice);
+                }
                 fii.setItemHasBuy(hasBuy);
                 fii.setItemImg(imgUrl);
 

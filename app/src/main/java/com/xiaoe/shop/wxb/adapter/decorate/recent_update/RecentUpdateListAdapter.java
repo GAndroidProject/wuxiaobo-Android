@@ -52,6 +52,20 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         this.hasBuy = hasBuy;
     }
 
+    // 设置集合
+    public void setItemList(List<RecentUpdateListItem> itemList) {
+        if (this.mItemList != null) { // 有值，先清空然后再赋值
+            this.mItemList.clear();
+            this.mItemList = null;
+        }
+        this.mItemList = itemList;
+        notifyDataSetChanged();
+    }
+
+    public List<RecentUpdateListItem> getItemList() {
+        return this.mItemList;
+    }
+
     @Override
     public int getCount() {
         return mItemList == null ? 0 : mItemList.size();

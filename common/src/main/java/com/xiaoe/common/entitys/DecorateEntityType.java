@@ -50,6 +50,8 @@ public class DecorateEntityType {
     public static final String TOPIC = "topic"; // 大专栏
     public static final String MEMBER = "member"; // 会员
 
+    public static final String SUPER_VIP = "super_vip"; // 超级会员
+
     // 信息流中专栏和大专栏的数字
     public static final int FLOW_INFO_COLUMN = 3;
     public static final int FLOW_INFO_TOPIC = 4;

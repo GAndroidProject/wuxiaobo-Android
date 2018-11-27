@@ -36,8 +36,6 @@
         android:id="@+id/course_more_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:scrollbars="none"
         android:overScrollMode="never"/>
 

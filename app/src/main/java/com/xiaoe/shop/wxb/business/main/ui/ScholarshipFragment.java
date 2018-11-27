@@ -537,7 +537,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 }
                 String content = "送你" + amount + "积分";
                 earnContent.setText(content);
-                earnTip.setVisibility(View.GONE);
+                earnTip.setVisibility(View.VISIBLE);
             } else {
                 if (amount == null) {
                     amount = "10";
@@ -546,7 +546,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 earnContent.setText(content);
                 earnContent.setTextSize(20);
                 earnContent.setTextColor(getActivity().getResources().getColor(R.color.scholarship_btn_press));
-                earnTip.setVisibility(View.VISIBLE);
+                earnTip.setVisibility(View.GONE);
             }
             earnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
