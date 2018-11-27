@@ -144,7 +144,7 @@
     <string name="out_time">已过期</string>
     <string name="not_can_use_coupon">无可用优惠券</string>
     <string name="no_use_coupon">不使用优惠券</string>
-    <string name="not_can_use_or_no_sue_coupon">无可用/不使用优惠券</string>
+    <string name="not_can_use_or_no_sue_coupon">无可用优惠券</string>
     <string name="coupon_can_resource">可用商品</string>
     <string name="coupon_can_resource_list">该优惠券使用于以下商品</string>
     <!--优惠券-->
