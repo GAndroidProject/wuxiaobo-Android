@@ -319,7 +319,7 @@
     <string name="new_tip">NEW</string>
     <string name="enable_text">Enable</string>
     <string name="to_text">%s to</string>
-    <string name="resource_sold_out">该课程已下架，快去别处看看吧</string>
+    <string name="resource_sold_out">该课程已停售，快去别处看看吧</string>
     <string name="network_error_text">网络异常</string>
     <string name="Jump_not_text">暂不支持跳转</string>
     <string name="knowed_text">知道了</string>
