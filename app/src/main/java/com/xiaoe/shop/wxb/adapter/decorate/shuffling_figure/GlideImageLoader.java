@@ -19,7 +19,7 @@ public class GlideImageLoader extends ImageLoader {
         imageView.setScaleType(FIT_XY);
         Glide.with(context)
                 .load(path)
-                .transform(new GlideRoundTransform(context, 2))
+                .transform(new GlideRoundTransform(context, 3))
                 .into(imageView);
     }
 }

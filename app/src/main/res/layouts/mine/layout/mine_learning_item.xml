@@ -10,11 +10,11 @@
         android:id="@+id/learning_item_icon"
         android:layout_width="160dp"
         android:layout_height="120dp"
-        fresco:roundedCornerRadius="8dp"
+        fresco:roundedCornerRadius="@dimen/corner_border_radius_size"
         fresco:roundingBorderWidth="1dp"
         fresco:roundBottomRight="false"
         fresco:roundTopRight="false"
-        android:padding="1dp"/>
+        android:padding="0.5dp"/>
 
     <TextView
         android:id="@+id/learning_item_title"
