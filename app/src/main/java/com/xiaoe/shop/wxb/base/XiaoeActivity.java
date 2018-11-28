@@ -440,8 +440,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                 }
             }
         }
-        String[] permission = (String[]) permissionList.toArray();
-        String[] hidePermission = (String[]) hidePermissionList.toArray();
+        String[] permission = permissionList.toArray(new String[permissionList.size()]);
+        String[] hidePermission = hidePermissionList.toArray(new String[hidePermissionList.size()]);
         if(permission.length > 0){
             ActivityCompat.requestPermissions(this,permission,1);
         }else if(hidePermission.length > 0){
