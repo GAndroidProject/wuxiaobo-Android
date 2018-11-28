@@ -850,7 +850,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             earnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    JumpDetail.jumpScholarshipActivity(AudioActivity.this);
+                    JumpDetail.jumpIntegralActivity(AudioActivity.this);
                     dialog.dismiss();
                 }
             });
