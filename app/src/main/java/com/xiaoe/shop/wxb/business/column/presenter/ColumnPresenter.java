@@ -96,6 +96,7 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setColumnTitle(columnTitle);
             secondDirectoryEntity.setColumnId(columnId);
             secondDirectoryEntity.setBigColumnId(bigColumnId);
+            secondDirectoryEntity.setIsTry(jsonObject.getIntValue("is_try"));
 
             boolean isDownload = DownloadManager.getInstance().isDownload(secondDirectoryEntity.getApp_id(),secondDirectoryEntity.getResource_id());
             secondDirectoryEntity.setEnable(!isDownload);

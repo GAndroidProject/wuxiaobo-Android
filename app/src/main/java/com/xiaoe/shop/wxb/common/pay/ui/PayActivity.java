@@ -392,5 +392,6 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             couponFragment.setUseCoupon(false);
             payingFragment.setUseConponPrice(-1);
         }
+        clickBack();
     }
 }

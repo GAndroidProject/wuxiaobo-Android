@@ -259,7 +259,7 @@ public class DownloadManager implements DownloadListner {
      * @param download
      */
     public void removeDownloading(DownloadTableInfo download) {
-        removeDownloadTasks(download);
+        removeDownloadTasks(download, false);
 
         String md5Code = MD5Utils.encrypt(download.getResourceId());
         String delSQL = "DELETE FROM "+DownloadFileConfig.TABLE_NAME+" where app_id='"+download.getAppId()+"' and id='"+md5Code+"'";
@@ -389,55 +389,20 @@ public class DownloadManager implements DownloadListner {
 
     }
 
-    public void addDownload(List<ColumnSecondDirectoryEntity> resourceList) {
-        String querySQL ="select * from "+DownloadFileConfig.TABLE_NAME+" where resource_id=? limit 1";
-        for (ColumnSecondDirectoryEntity resInfo : resourceList) {
-//            List<DownloadResourceTableInfo> tableInfos = SQLiteUtil.query(DownloadResourceTable.TABLE_NAME, querySQL, new String[]{resInfo.getResource_id()});
-//            List<DownloadTableInfo> tableInfos = DownloadFileConfig.getInstance().query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{resInfo.getResource_id()});
-            DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
-            List<DownloadTableInfo> tableInfos = downloadSQLiteUtil.query(DownloadFileConfig.TABLE_NAME, querySQL, new String[]{resInfo.getResource_id()});
-            //如果数据里没有，则添加
-            if(tableInfos != null && tableInfos.size() > 0){
-                //已经存在
-                continue;
-            }
-            //实际下载的内容
-            DownloadTableInfo downloadTableInfo = new DownloadTableInfo();
-            downloadTableInfo.setAppId(resInfo.getApp_id());
-            downloadTableInfo.setResourceId(resInfo.getResource_id());
-            downloadTableInfo.setColumnId(resInfo.getColumnId());
-            downloadTableInfo.setBigColumnId(resInfo.getBigColumnId());
-            downloadTableInfo.setDownloadState(0);
-            downloadTableInfo.setTitle(resInfo.getTitle());
-            downloadTableInfo.setDesc("");
-            downloadTableInfo.setResourceType(resInfo.getResource_type());
-            downloadTableInfo.setImgUrl(resInfo.getImg_url());
-            downloadTableInfo.setLocalFilePath(Global.g().getDefaultDirectory()+resInfo.getColumnId());
-            if(resInfo.getResource_type() == 2){
-                String audioUrl = resInfo.getAudio_url();
-                downloadTableInfo.setFileName(resInfo.getTitle()+audioUrl.substring(audioUrl.lastIndexOf(".")));
-                downloadTableInfo.setFileDownloadUrl(audioUrl);
-            }else if(resInfo.getResource_type() == 3){
-//                downloadTableInfo.setFileDownloadUrl(resInfo.);
-            }
-            downloadTableInfo.setCreateAt(DateFormat.currentTime());
-            downloadTableInfo.setUpdateAt(DateFormat.currentTime());
-//            DownloadFileConfig.getInstance().insertDownloadInfo(downloadTableInfo);
-            downloadSQLiteUtil.insertDownloadInfo(downloadTableInfo);
-        }
-    }
 
 
 
     /**
      * 移除下载任务
      */
-    private void removeDownloadTasks(DownloadTableInfo download) {
+    private void removeDownloadTasks(DownloadTableInfo download, boolean isFinish) {
         for (int i = 0; i < mDownloadTasks.size(); i++) {
             DownloadTask task = mDownloadTasks.get(i);
             DownloadTableInfo info = task.getDownloadInfo();
             if (compareResource(download.getAppId(), download.getResourceId(), info.getAppId(), info.getResourceId())) {
-                task.cancel();
+                if(!isFinish){
+                    task.cancel();
+                }
                 mDownloadTasks.remove(i);
                 break;
             }
@@ -446,7 +411,9 @@ public class DownloadManager implements DownloadListner {
             DownloadTask task = mAwaitDownloadTasks.get(i);
             DownloadTableInfo info = task.getDownloadInfo();
             if (compareResource(download.getAppId(), download.getResourceId(), info.getAppId(), info.getResourceId())) {
-                task.cancel();
+                if(!isFinish){
+                    task.cancel();
+                }
                 mAwaitDownloadTasks.remove(i);
                 break;
             }
@@ -458,7 +425,7 @@ public class DownloadManager implements DownloadListner {
     public void onDownloadFinished(DownloadTableInfo downloadInfo) {
         Log.d(TAG, "onDownloadFinished: ");
         sendDownloadEvent(downloadInfo, 1, 3);
-        removeDownloadTasks(downloadInfo);
+        removeDownloadTasks(downloadInfo, true);
         autoDownloadNextAwaitTask();
     }
 

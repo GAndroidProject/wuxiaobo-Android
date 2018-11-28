@@ -30,6 +30,7 @@ public class ChildViewHolder extends BaseViewHolder {
 	private final ImageView playIcon;
 	private final LinearLayout btnItemPlay;
 	private Context mContext = null;
+	private final TextView resourceTry;
 
 	public ChildViewHolder(Context context, View itemView) {
 		super(itemView);
@@ -39,6 +40,7 @@ public class ChildViewHolder extends BaseViewHolder {
 		playLength = (TextView) itemView.findViewById(R.id.item_play_length);
 		playIcon = (ImageView) itemView.findViewById(R.id.item_play_icon);
 		btnItemPlay = (LinearLayout) itemView.findViewById(R.id.btn_item_play);
+		resourceTry = (TextView) itemView.findViewById(R.id.resource_try);
 	}
 
 	public void bindView(final ColumnSecondDirectoryEntity itemData, final int parentPosition, final int position, final OnClickListPlayListener mListPlayListener) {
@@ -52,6 +54,11 @@ public class ChildViewHolder extends BaseViewHolder {
 			playLength.setText(DateFormat.longToString(itemData.getVideo_length() * 1000));
 		}else{
 			playLength.setVisibility(View.GONE);
+		}
+		if(itemData.getIsTry() == 1){
+			resourceTry.setVisibility(View.VISIBLE);
+		}else{
+			resourceTry.setVisibility(View.GONE);
 		}
 		setMediaType(type);
 		relativeLayout.setOnClickListener(new OnClickListener() {
@@ -105,10 +112,13 @@ public class ChildViewHolder extends BaseViewHolder {
 	public void setMediaType(int type){
 		if(type == 1){
 			playIcon.setImageResource(R.mipmap.image_text_pic);
+			resourceTry.setText(mContext.getString(R.string.resource_try_see));
 		}else if(type == 2){
 			playIcon.setImageResource(R.mipmap.audiolist_playall);
+			resourceTry.setText(mContext.getString(R.string.resource_try_audition));
 		}else if(type == 3){
 			playIcon.setImageResource(R.mipmap.audiolist_vedio);
+			resourceTry.setText(mContext.getString(R.string.resource_try_see));
 		}
 	}
 

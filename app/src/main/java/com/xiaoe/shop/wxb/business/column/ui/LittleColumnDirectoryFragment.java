@@ -306,7 +306,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     @Override
     public void onJumpDetail(ColumnSecondDirectoryEntity itemData, int parentPosition, int position) {
         if (loginUserList.size() == 1) {
-            if(!isHasBuy){
+            if(!isHasBuy && itemData.getIsTry() == 0){
                 toastCustom("未购买课程");
                 return;
             }

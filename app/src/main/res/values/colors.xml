@@ -75,4 +75,6 @@
     <color name="common_btn_bg_enabled_blue">#6B1F4FCF</color>
     <color name="unread_msg">#FF3C3C</color>
 
+    <color name="resource_try">#AEBCAF</color>
+
 </resources>

@@ -333,5 +333,8 @@
     <string name="list_watch_more">查看全部</string>
     <string name="comment_deleted_text">回复失败：该评论已被删除</string>
 
+    <string name="resource_try_audition">试听</string>
+    <string name="resource_try_see">试看</string>
+
     <string name="integral_desc">+%1$d积分</string>
 </resources>

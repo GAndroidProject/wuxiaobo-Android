@@ -10,6 +10,7 @@ import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.CouponInfo;
 import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
@@ -101,6 +102,20 @@ public class JumpDetail {
      * @param resId
      */
     public static void jumpVideo(Context context, String resId, String videoImageUrl, boolean localResource, String columnId){
+        XiaoeActivity xiaoeActivity = (XiaoeActivity) context;
+//        boolean isReadWrite = true;//是否有读写权限
+//        for (String permissions : Constants.READ_WRITE_PERMISSIONS){
+//            //检查是否有读写权限
+//            if(!Global.g().checkPermissions(permissions)){
+//                isReadWrite = false;
+//                break;
+//            }
+//        }
+//        if(!isReadWrite){
+//            initPermission();
+//            return;
+//        }
+
         Intent intent = new Intent(context, VideoActivity.class);
         intent.putExtra("resourceId", resId);
         if(!TextUtils.isEmpty(videoImageUrl)){

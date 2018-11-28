@@ -3,6 +3,9 @@ package com.xiaoe.network.downloadUtil;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.entitys.DownloadTableInfo;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -11,8 +14,6 @@ import java.io.RandomAccessFile;
 
 import okhttp3.Call;
 import okhttp3.Response;
-import com.xiaoe.common.app.XiaoeApplication;
-import com.xiaoe.common.entitys.DownloadTableInfo;
 
 /**
  * Created by Cheny on 2017/4/29.
@@ -253,6 +254,7 @@ public class DownloadTask{
                     mDownloadInfo.setDownloadState(3);
                     updateDownloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
                     mListner.onDownloadFinished(mDownloadInfo);
+                    mTmpFile.renameTo(new File(mDownloadInfo.getLocalFilePath(), mDownloadInfo.getFileName()));
                 }catch (IOException e){
 //                    sendEmptyMessage(MSG_NETWORK_ERROR);
 //                    currentDownloadState = MSG_NETWORK_ERROR;

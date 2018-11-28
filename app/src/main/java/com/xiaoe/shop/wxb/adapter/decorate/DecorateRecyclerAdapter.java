@@ -1,12 +1,7 @@
 package com.xiaoe.shop.wxb.adapter.decorate;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
@@ -14,49 +9,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
-import com.xiaoe.common.entitys.GraphicNavItem;
-import com.xiaoe.common.entitys.KnowledgeCommodityItem;
-import com.xiaoe.common.entitys.ShufflingItem;
-import com.xiaoe.common.interfaces.OnItemClickWithKnowledgeListener;
-import com.xiaoe.common.interfaces.OnItemClickWithNavItemListener;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
-import com.xiaoe.common.utils.MeasureUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.decorate.flow_info.FlowInfoRecyclerAdapter;
 import com.xiaoe.shop.wxb.adapter.decorate.flow_info.FlowInfoViewHolder;
-import com.xiaoe.shop.wxb.adapter.decorate.graphic_navigation.GraphicNavItemDecoration;
 import com.xiaoe.shop.wxb.adapter.decorate.graphic_navigation.GraphicNavRecyclerAdapter;
 import com.xiaoe.shop.wxb.adapter.decorate.graphic_navigation.GraphicNavViewHolder;
 import com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity.KnowledgeGroupRecyclerAdapter;
-import com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity.KnowledgeGroupRecyclerItemDecoration;
 import com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity.KnowledgeGroupViewHolder;
 import com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity.KnowledgeListAdapter;
 import com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity.KnowledgeListViewHolder;
 import com.xiaoe.shop.wxb.adapter.decorate.recent_update.RecentUpdateListAdapter;
 import com.xiaoe.shop.wxb.adapter.decorate.recent_update.RecentUpdateViewHolder;
 import com.xiaoe.shop.wxb.adapter.decorate.search.SearchViewHolder;
-import com.xiaoe.shop.wxb.adapter.decorate.shuffling_figure.GlideImageLoader;
 import com.xiaoe.shop.wxb.adapter.decorate.shuffling_figure.ShufflingFigureViewHolder;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
-import com.xiaoe.shop.wxb.business.course_more.ui.CourseMoreActivity;
-import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
-import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.events.OnClickEvent;
-import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.widget.TouristDialog;
 import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 店铺装修组件显示列表适配器
@@ -248,6 +223,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         }
     }
     public void notifyDataSetChangedRecentUpdate(){
+        if(recentUpdateListAdapterArr == null){
+            return;
+        }
         for (int i = 0; i < recentUpdateListAdapterArr.size(); i++) {
             int key = recentUpdateListAdapterArr.keyAt(i);
             RecentUpdateListAdapter recentUpdateListAdapter = recentUpdateListAdapterArr.get(key);

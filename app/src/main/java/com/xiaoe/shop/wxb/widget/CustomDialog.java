@@ -34,6 +34,8 @@ public class CustomDialog implements DialogInterface.OnDismissListener, DialogIn
 
     public static final int NOT_WIFI_PLAY_TAG = 7010;//非WiFi 环境播放
 
+    public static final int REQUEST_PERMISSIONS_TAG = 7011;
+
     private Context mContext;
     private View rootView;
     private final TextView btnCancel;

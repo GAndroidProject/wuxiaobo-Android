@@ -401,6 +401,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                     return;
                 }
                 boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), mResourceId);
+                mIsDownload = isDownload;
                 if(!isDownload){
                     ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
                     download.setApp_id(CommonUserInfo.getShopId());

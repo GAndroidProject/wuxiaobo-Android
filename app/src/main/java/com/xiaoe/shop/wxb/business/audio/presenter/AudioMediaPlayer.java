@@ -135,7 +135,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
      * 开始播放
      */
     public static void start(){
-        if(audio == null || mediaPlayer == null || TextUtils.isEmpty(audio.getPlayUrl())){
+        if(audio == null || mediaPlayer == null || TextUtils.isEmpty(audio.getPlayUrl()) && isStop){
             return;
         }
         if (0 == audio.getHasBuy()){//如果未购买时
