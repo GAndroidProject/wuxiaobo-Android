@@ -600,7 +600,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 String desc = flowInfo.getString("summary");
                 String imgUrl = flowInfo.getString("img_url");
                 String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : "￥" + flowInfo.getString("show_price");
-                boolean hasBuy = showPrice.equals("");
+                boolean hasBuy = TextUtils.isEmpty(showPrice);
 
                 fii.setItemType(resourceType);
                 fii.setItemId(resourceId);

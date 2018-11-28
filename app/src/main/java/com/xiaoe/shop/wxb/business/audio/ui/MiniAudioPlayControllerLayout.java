@@ -96,6 +96,9 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
     }
 
     public void setAudioImage(String url){
+        if(TextUtils.isEmpty(url)){
+            return;
+        }
         if("gif".equals(url.substring(url.lastIndexOf(".")+1)) || "GIF".equals(url.substring(url.lastIndexOf(".")+1))){
             setRoundAsCircle(Uri.parse(url));
         }else{
