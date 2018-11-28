@@ -58,6 +58,7 @@ public class CommentPresenter implements IBizCallback {
         commentRequest.addDataParam("record_id",recordId);
         commentRequest.addDataParam("record_type",recordType);
         commentRequest.addDataParam("record_title",recordTitle);
+        commentRequest.addDataParam("agent_type ",2);
         if(replyComment != null){
             commentRequest.addDataParam("src_comment_id",replyComment.getComment_id());
             commentRequest.addDataParam("src_content",replyComment.getContent());

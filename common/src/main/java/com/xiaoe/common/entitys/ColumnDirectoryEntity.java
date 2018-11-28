@@ -40,6 +40,8 @@ public class ColumnDirectoryEntity implements Serializable {
     private String audio_compress_url;
     private String m3u8_url;
 
+    private String bigColumnId;
+
     public List<ColumnSecondDirectoryEntity> getResource_list() {
         return resource_list;
     }
@@ -174,5 +176,13 @@ public class ColumnDirectoryEntity implements Serializable {
 
     public void setM3u8_url(String m3u8_url) {
         this.m3u8_url = m3u8_url;
+    }
+
+    public String getBigColumnId() {
+        return bigColumnId;
+    }
+
+    public void setBigColumnId(String bigColumnId) {
+        this.bigColumnId = bigColumnId;
     }
 }

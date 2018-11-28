@@ -9,7 +9,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
@@ -53,6 +55,8 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     TouristDialog touristDialog;
     private boolean isAddList = false;
     private List<ColumnSecondDirectoryEntity> tempList;
+    private ImageView allPlayIcon;
+    private TextView allPlayText;
 
     public LittleColumnDirectoryFragment() {
         playList = new ArrayList<AudioPlayEntity>();
@@ -94,8 +98,15 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
 
     private void initView() {
         directoryRecyclerView = (RecyclerView) rootView.findViewById(R.id.directory_recycler_view);
+        //全部播放按钮
         btnPlayAll = (LinearLayout) rootView.findViewById(R.id.btn_all_play);
         btnPlayAll.setOnClickListener(this);
+        //全部播放状态icon
+        allPlayIcon = (ImageView) rootView.findViewById(R.id.all_play_icon);
+        //全部播放状态
+        allPlayText = (TextView) rootView.findViewById(R.id.all_play_text);
+        setAllPlayState();
+
         LinearLayout btnBatchDownload = (LinearLayout) rootView.findViewById(R.id.btn_batch_download);
         btnBatchDownload.setOnClickListener(this);
     }
@@ -332,9 +343,20 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             case AudioPlayEvent.PAUSE:
             case AudioPlayEvent.PLAY:
             case AudioPlayEvent.STOP:
+                setAllPlayState();
                 directoryAdapter.notifyDataSetChanged();
             default:
                 break;
+        }
+    }
+
+    private void setAllPlayState(){
+        if(!TextUtils.isEmpty(resourceId) && AudioMediaPlayer.isPlaying() && resourceId.equals(AudioMediaPlayer.getAudio().getColumnId())){
+            allPlayText.setText(getString(R.string.stop_all));
+            allPlayIcon.setImageResource(R.mipmap.audiolist_playing);
+        }else{
+            allPlayText.setText(getString(R.string.play_all));
+            allPlayIcon.setImageResource(R.mipmap.audiolist_playall);
         }
     }
 

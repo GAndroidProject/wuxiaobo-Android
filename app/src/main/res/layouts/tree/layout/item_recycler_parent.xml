@@ -51,12 +51,17 @@
 				android:visibility="gone"
                 android:gravity="center"
                 >
+				<ImageView
+					android:id="@+id/play_all_icon"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:src="@mipmap/class_play"/>
                 <TextView
+					android:id="@+id/play_all_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+					android:layout_marginStart="4dp"
                     android:text="@string/play_all"
-					android:drawablePadding="4dp"
-					android:drawableLeft="@mipmap/class_play"
                     android:textSize="14sp"
                     />
             </LinearLayout>

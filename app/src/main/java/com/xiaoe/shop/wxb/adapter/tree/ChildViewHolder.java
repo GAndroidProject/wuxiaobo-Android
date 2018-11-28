@@ -45,13 +45,13 @@ public class ChildViewHolder extends BaseViewHolder {
 		text.setText(itemData.getTitle());
 		int type = itemData.getResource_type();
 		if(type == 2){
-			setMediaTypeState(View.VISIBLE);
+			playLength.setVisibility(View.VISIBLE);
 			playLength.setText(DateFormat.longToString(itemData.getAudio_length() * 1000));
 		}else if (type == 3){
-			setMediaTypeState(View.VISIBLE);
+			playLength.setVisibility(View.VISIBLE);
 			playLength.setText(DateFormat.longToString(itemData.getVideo_length() * 1000));
 		}else{
-			setMediaTypeState(View.GONE);
+			playLength.setVisibility(View.GONE);
 		}
 		setMediaType(type);
 		relativeLayout.setOnClickListener(new OnClickListener() {
@@ -101,14 +101,10 @@ public class ChildViewHolder extends BaseViewHolder {
 		}
 	}
 
-	private void setMediaTypeState(int visibility){
-		playLength.setVisibility(visibility);
-		playIcon.setVisibility(visibility);
-	}
 
 	public void setMediaType(int type){
 		if(type == 1){
-
+			playIcon.setImageResource(R.mipmap.image_text_pic);
 		}else if(type == 2){
 			playIcon.setImageResource(R.mipmap.audiolist_playall);
 		}else if(type == 3){

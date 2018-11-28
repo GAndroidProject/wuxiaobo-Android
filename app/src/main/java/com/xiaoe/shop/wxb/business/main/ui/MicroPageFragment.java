@@ -218,6 +218,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
                     microPageFresh.finishRefresh();
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                }else{
+                    microPageFresh.finishRefresh();
+                    microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof ColumnListRequst) {
                 if (code == NetworkCodes.CODE_SUCCEED) {

@@ -3,8 +3,10 @@ package com.xiaoe.shop.wxb.adapter.tree;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import com.xiaoe.common.entitys.ColumnDirectoryEntity;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.interfaces.OnClickExpandListener;
 import com.xiaoe.shop.wxb.interfaces.OnClickListPlayListener;
 import com.xiaoe.shop.wxb.widget.DashlineItemDivider;
@@ -31,6 +34,8 @@ public class ParentViewHolder extends BaseViewHolder {
 	private final LinearLayout btnExpandDown;
     private final LinearLayout btnPlayAll;
     private final RelativeLayout btnExpandTop;
+	private final ImageView playAllIcon;
+	private final TextView playAllText;
 
 	public ParentViewHolder(Context context, View itemView, int paddingLeft, int paddingRight) {
 		super(itemView);
@@ -54,6 +59,10 @@ public class ParentViewHolder extends BaseViewHolder {
         btnExpandTop = (RelativeLayout) itemView.findViewById(R.id.expand_top_btn);
 		//播放全部按钮
         btnPlayAll = (LinearLayout) itemView.findViewById(R.id.play_all_btn);
+        //播放全部icon
+		playAllIcon = (ImageView) itemView.findViewById(R.id.play_all_icon);
+		//播放全部状态文字
+		playAllText = (TextView) itemView.findViewById(R.id.play_all_text);
 	}
 
 	public void bindView(final ColumnDirectoryEntity itemData, final int position,
@@ -110,6 +119,24 @@ public class ParentViewHolder extends BaseViewHolder {
                 }
             }
         });
+
+		String bigColumnId = itemData.getBigColumnId();
+        if(!TextUtils.isEmpty(bigColumnId) && AudioMediaPlayer.isPlaying()
+				&& bigColumnId.equals(AudioMediaPlayer.getAudio().getBigColumnId())
+				&& itemData.getResource_id().equals(AudioMediaPlayer.getAudio().getColumnId())){
+			setPlayAllState(1);
+		}else {
+			setPlayAllState(0);
+		}
+	}
+	private void setPlayAllState(int state){
+		if(state == 1){
+			playAllText.setText(mContext.getString(R.string.stop_all));
+			playAllIcon.setImageResource(R.mipmap.audiolist_playing);
+		}else{
+			playAllText.setText(mContext.getString(R.string.play_all));
+			playAllIcon.setImageResource(R.mipmap.audiolist_playall);
+		}
 	}
 	private void setExpandState(int visibility){
 		btnExpandDown.setVisibility(visibility);

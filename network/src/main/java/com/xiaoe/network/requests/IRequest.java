@@ -134,7 +134,7 @@ public abstract class IRequest {
         jsonObject.put("client","6");
         jsonObject.put("app_version","1.0");
         jsonObject.put("build_version",buildVersion);
-        jsonObject.put("client_info",JSONObject.toJSONString(clientInfo));
+        jsonObject.put("client_info",clientInfo);
 
         for(Map.Entry<String ,Object> entry : formBody.entrySet() ){
             jsonObject.put(entry.getKey(),entry.getValue());

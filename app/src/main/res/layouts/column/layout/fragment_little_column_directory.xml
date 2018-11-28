@@ -48,10 +48,12 @@
             android:layout_marginStart="16dp"
             >
             <ImageView
+                android:id="@+id/all_play_icon"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@mipmap/class_play"/>
             <TextView
+                android:id="@+id/all_play_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"

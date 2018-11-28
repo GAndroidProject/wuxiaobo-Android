@@ -65,6 +65,7 @@ public class ColumnPresenter implements IBizCallback {
             directoryEntity.setImg_url(jsonObject.getString("img_url"));
             directoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
             directoryEntity.setResource_id(columnId);
+            directoryEntity.setBigColumnId(bigColumnId);
             directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
             List<ColumnSecondDirectoryEntity> childList = formatSingleResourceEntity(jsonObject.getJSONArray("resource_list"), directoryEntity.getTitle(), columnId , bigColumnId);
             directoryEntity.setResource_list(childList);
