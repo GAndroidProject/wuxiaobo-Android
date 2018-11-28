@@ -67,6 +67,10 @@ import butterknife.Unbinder;
 public class MicroPageFragment extends BaseFragment implements OnCustomScrollChangedListener, OnRefreshListener, View.OnClickListener {
 
     private static final String TAG = "MicroPageFragment";
+
+    protected static final int NETWORK_DECORATE = 2001;
+    protected static final int CACHE_DECORATE = 2002;
+
     @BindView(R.id.status_bar_blank)
     TextView mStatusBarBlank;
 
@@ -103,7 +107,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     int toolbarHeight;
     boolean isMain = true;
     boolean hasSearch = false;
-    boolean hasDecorate = false;
+    boolean networkDecorate = false; // 网络渲染
+    boolean cacheDecorate = false; // 缓存渲染
 
     MainActivity mainActivity;
     private String mColumnTitle;
@@ -177,7 +182,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         if (microPageList == null) {
             microPageList = new ArrayList<>();
         }
-//        setDataByDB();
+        setDataByDB();
         hp = new PageFragmentPresenter(this);
         hp.requestMicroPageData(microPageId);
     }
@@ -197,8 +202,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     if (microPageList != null) microPageList.clear();
                     obtainDataInCache = false;
                     initPageData(data);
-                    if (!hasDecorate) {
-                        initMainContent();
+                    if (!networkDecorate) {
+                        initMainContent(NETWORK_DECORATE);
                     }
                     // 请求成功之后隐藏 loading
                     // microPageLogo.setVisibility(View.VISIBLE);
@@ -244,8 +249,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             JSONObject data = (JSONObject) result.get("data");
             if (microPageList != null) microPageList.clear();
             initPageData(data);
-            if (!hasDecorate) {
-                initMainContent();
+            if (!cacheDecorate) {
+                initMainContent(CACHE_DECORATE);
             }
             // 请求成功之后隐藏 loading
 //            microPageLogo.setVisibility(View.VISIBLE);
@@ -255,8 +260,11 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         }
     }
 
-    // 初始化首页内容
-    private void initMainContent() {
+    /**
+     * 初始化首页内容
+     * @param decorateType 渲染方式
+     */
+    private synchronized void initMainContent(int decorateType) {
         // 初始化布局管理器
         LinearLayoutManager llm_content = new LinearLayoutManager(mContext);
         llm_content.setOrientation(LinearLayout.VERTICAL);
@@ -267,7 +275,11 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         // 初始化适配器
         microPageAdapter = new DecorateRecyclerAdapter(mContext, microPageList);
         microPageContent.setAdapter(microPageAdapter);
-        hasDecorate = true;
+        if (decorateType == NETWORK_DECORATE) {
+            networkDecorate = true;
+        } else if (decorateType == CACHE_DECORATE) {
+            cacheDecorate = true;
+        }
     }
 
     // 刷新最近更新组件的子列表
@@ -365,7 +377,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 case DecorateEntityType.GRAPHIC_NAVIGATION_STR: // 图文导航
                     ComponentInfo componentInfo_navigator = new ComponentInfo();
                     componentInfo_navigator.setType(DecorateEntityType.GRAPHIC_NAVIGATION_STR);
-                    if (!hasDecorate) {
+                    if (!networkDecorate) {
                         componentInfo_navigator.setNeedDecorate(true);
                     } else {
                         componentInfo_navigator.setNeedDecorate(false);
@@ -460,7 +472,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     componentInfo_know_group.setTitle(itemObj.getString("title") == null ? "学会管理自己的财富" : itemObj.getString("title"));
                     componentInfo_know_group.setDesc("查看更多");
                     componentInfo_know_group.setGroupId(itemObj.getString("tag_id"));
-                    if (!hasDecorate) {
+                    if (!networkDecorate) {
                         componentInfo_know_group.setNeedDecorate(true);
                     } else {
                         componentInfo_know_group.setNeedDecorate(false);
