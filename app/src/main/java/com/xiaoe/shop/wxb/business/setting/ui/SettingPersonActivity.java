@@ -27,6 +27,7 @@ import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.xiaoe.common.app.Global;
+import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.LoginUser;
@@ -34,6 +35,7 @@ import com.xiaoe.common.entitys.SettingItemInfo;
 import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.NetworkStateResult;
 import com.xiaoe.network.requests.IRequest;
@@ -305,9 +307,13 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
         actionSheetMan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                settingPresenter.updateGender(apiToken, "男");
-                dataList.get(position).setItemContent("男");
-                settingRecyclerAdapter.notifyDataSetChanged();
+                if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
+                    settingPresenter.updateGender(apiToken, "男");
+                    dataList.get(position).setItemContent("男");
+                    settingRecyclerAdapter.notifyDataSetChanged();
+                } else {
+                    Toast(getString(R.string.network_error_text));
+                }
                 dialog.dismiss();
             }
         });
@@ -315,9 +321,13 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
         actionSheetWoman.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                settingPresenter.updateGender(apiToken, "女");
-                dataList.get(position).setItemContent("女");
-                settingRecyclerAdapter.notifyDataSetChanged();
+                if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
+                    settingPresenter.updateGender(apiToken, "女");
+                    dataList.get(position).setItemContent("女");
+                    settingRecyclerAdapter.notifyDataSetChanged();
+                } else {
+                    Toast(getString(R.string.network_error_text));
+                }
                 dialog.dismiss();
             }
         });
@@ -343,13 +353,16 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
         endDate.set(year, month, day);
 
         timePickerView = new TimePickerBuilder(SettingPersonActivity.this, new OnTimeSelectListener() {
-
             @Override
             public void onTimeSelect(Date date, View v) {
-                String dateStr = DateFormat.date2String(date);
-                settingPresenter.updateBirth(apiToken, dateStr);
-                dataList.get(position).setItemContent(dateStr);
-                settingRecyclerAdapter.notifyDataSetChanged();
+                if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
+                    String dateStr = DateFormat.date2String(date);
+                    settingPresenter.updateBirth(apiToken, dateStr);
+                    dataList.get(position).setItemContent(dateStr);
+                    settingRecyclerAdapter.notifyDataSetChanged();
+                } else {
+                    Toast(getString(R.string.network_error_text));
+                }
             }
         }).setContentTextSize(20)
                 .setTitleColor(getResources().getColor(R.color.main_title_color))
