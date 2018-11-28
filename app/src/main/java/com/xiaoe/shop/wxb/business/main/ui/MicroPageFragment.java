@@ -423,7 +423,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     // 最近更新需要设置专栏 id
                     component_recent.setColumnId(recentId);
                     component_recent.setSubType(srcType);
-                    if (TextUtils.isEmpty(jsonItem.getString("show_price"))) {
+                    if (TextUtils.isEmpty(jsonItem.getString("show_price")) || "0.00".equals(jsonItem.getString("show_price"))) { // 已购或者免费
                         component_recent.setHasBuy(true);
                     } else {
                         component_recent.setHasBuy(false);
@@ -489,7 +489,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             item.setItemTitleColumn(listSubItemObj.getString("summary"));
             item.setItemImg(listSubItemObj.getString("img_url"));
             String price = "￥" + listSubItemObj.getString("show_price");
-            if (price.equals("￥")) { // 表示买了，所以没有价格
+            if ("￥".equals(price) || "￥0.00".equals(price)) { // 表示买了，所以没有价格
                 item.setItemPrice("");
                 item.setHasBuy(true);
             } else {
@@ -600,7 +600,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 String desc = flowInfo.getString("summary");
                 String imgUrl = flowInfo.getString("img_url");
                 String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : "￥" + flowInfo.getString("show_price");
-                boolean hasBuy = TextUtils.isEmpty(showPrice);
+                boolean hasBuy = TextUtils.isEmpty(showPrice) || "￥0.00".equals(showPrice);
 
                 fii.setItemType(resourceType);
                 fii.setItemId(resourceId);

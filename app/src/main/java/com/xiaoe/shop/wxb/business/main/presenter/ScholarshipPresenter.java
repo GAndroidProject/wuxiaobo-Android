@@ -136,8 +136,7 @@ public class ScholarshipPresenter implements IBizCallback {
                 continue;
             }
             String taskId = itemJson.getString("task_id");
-            // int taskTotalMoney = itemJson.getInteger("reward_amount");
-            int taskTotalMoney = 1000000;
+            int taskTotalMoney = itemJson.getInteger("reward_amount") == null ? 0 : itemJson.getInteger("reward_amount");
             String totalMoney = String.format("%.0f", taskTotalMoney / 100f);
             SharedPreferencesUtil.getInstance(XiaoeApplication.getmContext(), SharedPreferencesUtil.FILE_NAME);
             SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_SCHOLARSHIP_ID, taskId);

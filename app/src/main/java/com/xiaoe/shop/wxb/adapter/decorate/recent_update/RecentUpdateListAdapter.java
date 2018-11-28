@@ -118,14 +118,40 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                             default:
                                 break;
                         }
-                    }else{
-                        if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
-                            AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
-                            AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
-                            AudioPlayUtil.getInstance().setSingleAudio(false);
+                    } else {
+                        String itemResourceType = convertInt2Str(recentUpdateListItem.getResourceType());
+                        if (itemResourceType != null) {
+                            switch (itemResourceType) {
+                                case DecorateEntityType.AUDIO:
+                                    if (!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())) {
+                                        AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
+                                        AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
+                                        AudioPlayUtil.getInstance().setSingleAudio(false);
+                                    }
+                                    playPosition(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId(), true);
+                                    JumpDetail.jumpAudio(mContext, recentUpdateListItem.getListResourceId(), 1);
+                                    break;
+                                case DecorateEntityType.IMAGE_TEXT:
+                                    JumpDetail.jumpImageText(mContext, recentUpdateListItem.getListResourceId(), "", recentUpdateListItem.getColumnId());
+                                    break;
+                                case DecorateEntityType.VIDEO:
+                                    JumpDetail.jumpVideo(mContext, recentUpdateListItem.getListResourceId(), "", false, recentUpdateListItem.getColumnId());
+                                    break;
+                                case DecorateEntityType.COLUMN:
+                                    JumpDetail.jumpColumn(mContext, columnId, "", 6);
+                                    break;
+                                case DecorateEntityType.TOPIC:
+                                    JumpDetail.jumpColumn(mContext, columnId, "", 8);
+                                    break;
+                                case DecorateEntityType.MEMBER:
+                                    JumpDetail.jumpColumn(mContext, columnId, "", 5);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } else {
+                            Log.d(TAG, "singleClick: type 有误");
                         }
-                        playPosition(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId(), true);
-                        JumpDetail.jumpAudio(mContext, recentUpdateListItem.getListResourceId(), 1);
                     }
                 } else {
                     showTouristDialog();
@@ -325,5 +351,30 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             }
         });
         touristDialog.showDialog();
+    }
+
+    /**
+     * 资源类型转换 int - str
+     *
+     * @param resourceType 资源类型
+     * @return 资源类型的字符串形式
+     */
+    private String convertInt2Str(int resourceType) {
+        switch (resourceType) {
+            case 1: // 图文
+                return DecorateEntityType.IMAGE_TEXT;
+            case 2: // 音频
+                return DecorateEntityType.AUDIO;
+            case 3: // 视频
+                return DecorateEntityType.VIDEO;
+            case 5: // 会员
+                return DecorateEntityType.MEMBER;
+            case 6: // 专栏
+                return DecorateEntityType.COLUMN;
+            case 8: // 大专栏
+                return DecorateEntityType.TOPIC;
+            default:
+                return null;
+        }
     }
 }
