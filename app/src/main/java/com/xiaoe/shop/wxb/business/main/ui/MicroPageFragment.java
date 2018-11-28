@@ -43,7 +43,6 @@ import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.PageFragmentRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.decorate.DecorateRecyclerAdapter;
-import com.xiaoe.shop.wxb.adapter.decorate.recent_update.RecentUpdateListAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.PageFragmentPresenter;
@@ -60,7 +59,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -601,7 +599,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 String title = flowInfo.getString("title");
                 String desc = flowInfo.getString("summary");
                 String imgUrl = flowInfo.getString("img_url");
-                String showPrice = flowInfo.getString("show_price").equals("") ? "" : "￥" + flowInfo.getString("show_price");
+                String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : "￥" + flowInfo.getString("show_price");
                 boolean hasBuy = showPrice.equals("");
 
                 fii.setItemType(resourceType);
