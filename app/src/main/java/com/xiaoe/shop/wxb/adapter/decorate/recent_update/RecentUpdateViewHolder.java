@@ -111,6 +111,7 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
         // 加载 ListView 的数据
         if (recentUpdateListAdapterArr.get(currentBindPos) == null) {
             recentUpdateListAdapter = new RecentUpdateListAdapter(mContext, currentBindComponent.getSubList(), currentBindComponent.isHasBuy());
+            recentUpdateListAdapter.setColumnMsg(currentBindComponent.getColumnId(), currentBindComponent.getSubType());
             recentUpdateListAdapterArr.put(currentBindPos, recentUpdateListAdapter);
         } else {
             recentUpdateListAdapter = recentUpdateListAdapterArr.get(currentBindPos);

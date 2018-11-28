@@ -44,12 +44,19 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     private boolean hasBuy = false;
     public boolean isPlaying = false;
     private boolean isClickPauseAllButton = false;
+    private String columnId;
+    private String columnType;
 
     public RecentUpdateListAdapter(Context mContext, List<RecentUpdateListItem> itemList, boolean hasBuy) {
         this.mItemList = itemList;
         this.mContext = mContext;
         this.mInflater = LayoutInflater.from(mContext);
         this.hasBuy = hasBuy;
+    }
+
+    public void setColumnMsg(String columnId, String columnType) {
+        this.columnId = columnId;
+        this.columnType = columnType;
     }
 
     // 设置集合
@@ -98,8 +105,19 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             public void singleClick(View v) {
                 if (recentUpdateListItem.isListIsFormUser()) {
                     if(!hasBuy){
-                        Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
-                        return;
+                        switch (columnType) {
+                            case DecorateEntityType.TOPIC:
+                                JumpDetail.jumpColumn(mContext, columnId, "", 8);
+                                return;
+                            case DecorateEntityType.COLUMN:
+                                JumpDetail.jumpColumn(mContext, columnId, "", 6);
+                                return;
+                            case DecorateEntityType.MEMBER:
+                                JumpDetail.jumpColumn(mContext, columnId, "", 5);
+                                return;
+                            default:
+                                break;
+                        }
                     }else{
                         if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
                             AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
@@ -142,8 +160,19 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             public void singleClick(View v) {
                 if (recentUpdateListItem.isListIsFormUser()) {
                     if(!hasBuy){
-                        Toast.makeText(mContext, "未购买课程", Toast.LENGTH_SHORT).show();
-                        return;
+                        switch (columnType) {
+                            case DecorateEntityType.TOPIC:
+                                JumpDetail.jumpColumn(mContext, columnId, "", 8);
+                                return;
+                            case DecorateEntityType.COLUMN:
+                                JumpDetail.jumpColumn(mContext, columnId, "", 6);
+                                return;
+                            case DecorateEntityType.MEMBER:
+                                JumpDetail.jumpColumn(mContext, columnId, "", 5);
+                                return;
+                            default:
+                                break;
+                        }
                     }
                     if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
                         AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
@@ -265,6 +294,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         isClickPauseAllButton = true;
         isPlaying = false;
         AudioMediaPlayer.stop();
+        notifyDataSetChanged();
     }
 
     //设置播放态

@@ -245,6 +245,11 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 //        if(recentUpdateListAdapter != null){
 //            recentUpdateListAdapter.notifyDataSetChanged();
 //        }
+        for (int i = 0; i < recentUpdateListAdapterArr.size(); i++) {
+            int key = recentUpdateListAdapterArr.keyAt(i);
+            RecentUpdateListAdapter recentUpdateListAdapter = recentUpdateListAdapterArr.get(key);
+            recentUpdateListAdapter.notifyDataSetChanged();
+        }
     }
 
     private void showTouristDialog() {
