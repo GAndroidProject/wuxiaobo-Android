@@ -150,7 +150,8 @@
             <com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView
                 android:id="@+id/btn_bottom_load_more"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
+                android:paddingBottom="10dp"
                 android:layout_below="@id/column_view_pager"
                 android:visibility="gone"
                 />

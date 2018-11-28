@@ -28,7 +28,6 @@
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@+id/btn_collect"
                 android:textSize="26sp"
-                android:textStyle="bold"
                 android:maxLines="2"
                 android:textColor="@color/main_title_color"
                 android:layout_marginStart="20dp"
@@ -50,36 +49,36 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="20dp"
                 />
-
+            <TextView
+                android:id="@+id/play_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:layout_below="@id/video_title"
+                android:drawableStart="@drawable/circle_shape"
+                android:drawablePadding="5dp"
+                android:layout_marginStart="20dp"
+                android:textColor="@color/secondary_title_color"
+                android:textSize="14sp"
+                />
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/video_advertise_img"
-                android:layout_below="@id/video_title"
+                android:layout_below="@id/play_num"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginTop="20dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:orientation="vertical"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:background="@color/white"
                 android:layout_below="@id/video_advertise_img"
                 android:layout_above="@+id/bottom_end">
-
-                <TextView
-                    android:id="@+id/play_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center_vertical"
-                    android:drawableStart="@drawable/circle_shape"
-                    android:drawablePadding="5dp"
-                    android:textColor="@color/secondary_title_color"
-                    android:textSize="14sp"
-                    />
 
                 <WebView
                     android:id="@+id/video_web_view"
