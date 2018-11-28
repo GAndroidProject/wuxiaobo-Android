@@ -537,7 +537,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 }
                 String content = "送你" + amount + "积分";
                 earnContent.setText(content);
-                earnTip.setVisibility(View.VISIBLE);
+                earnTip.setVisibility(View.GONE);
             } else {
                 if (amount == null) {
                     amount = "10";

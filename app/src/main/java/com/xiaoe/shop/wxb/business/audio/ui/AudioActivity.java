@@ -839,7 +839,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             if (CommonUserInfo.isIsSuperVip()) { // 超级会员
                 String content = "送你" + amount + "积分";
                 earnContent.setText(content);
-                earnTip.setVisibility(View.VISIBLE);
+                earnTip.setVisibility(View.GONE);
             } else {
                 String content = "送你" + amount + "积分";
                 earnContent.setText(content);
