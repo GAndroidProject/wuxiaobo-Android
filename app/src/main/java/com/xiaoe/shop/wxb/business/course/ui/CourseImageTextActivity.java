@@ -11,6 +11,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -41,6 +42,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.course.presenter.CourseImageTextPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
@@ -209,15 +211,15 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     private void initListener() {
 //        itPushScrollView.setScrollChanged(this);
         itPushScrollView.setScrollViewListener(this);
-        itBack.setOnClickListener(new View.OnClickListener() {
+        itBack.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 onBackPressed();
             }
         });
-        itCollection.setOnClickListener(new View.OnClickListener() {
+        itCollection.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (loginList.size() == 1) {
                     if (isCollected) { // 收藏了，点击之后取消收藏
                         itCollection.setImageDrawable(getResources().getDrawable(R.mipmap.video_collect));
@@ -238,9 +240,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 }
             }
         });
-        itShare.setOnClickListener(new View.OnClickListener() {
+        itShare.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (loginList.size() == 1) {
                     umShare(collectionTitle, collectionImgUrlCompressed == null ? collectionImgUrl : collectionImgUrlCompressed, shareUrl, "");
                 } else {
@@ -248,9 +250,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 }
             }
         });
-        itBuy.setOnVipBtnClickListener(new View.OnClickListener() {
+        itBuy.setOnVipBtnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (loginList.size() == 1) {
                     JumpDetail.jumpSuperVip(CourseImageTextActivity.this);
                 } else {
@@ -258,9 +260,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 }
             }
         });
-        itBuy.setOnBuyBtnClickListener(new View.OnClickListener() {
+        itBuy.setOnBuyBtnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (loginList.size() == 1) {
                     JumpDetail.jumpPay(CourseImageTextActivity.this, resourceId, 1, collectionImgUrl, collectionTitle, resPrice, null);
                 } else {
@@ -268,15 +270,15 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 }
             }
         });
-        itToolbar.setTitleBackClickListener(new View.OnClickListener() {
+        itToolbar.setTitleBackClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 onBackPressed();
             }
         });
-        itDescImg.setOnClickListener(new View.OnClickListener() {
+        itDescImg.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (loginList.size() == 1) {
                     JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, true, true, 2);
                 } else {
@@ -284,9 +286,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 }
             }
         });
-        itLoading.setOnClickListener(new View.OnClickListener() {
+        itLoading.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (courseImageTextPresenter == null) {
                     courseImageTextPresenter = new CourseImageTextPresenter(CourseImageTextActivity.this);
                 }

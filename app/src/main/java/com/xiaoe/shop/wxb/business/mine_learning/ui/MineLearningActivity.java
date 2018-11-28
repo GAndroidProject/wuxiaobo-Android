@@ -199,6 +199,9 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: 请求失败");
+            learningRefresh.finishRefresh();
+            learningRefresh.setNoMoreData(true);
+            learningRefresh.setEnableLoadMore(false);
             if (result != null) {
                 int code = result.getInteger("code");
                 if (NetworkStateResult.ERROR_NETWORK == code) {

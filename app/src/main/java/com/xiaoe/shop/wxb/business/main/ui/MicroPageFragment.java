@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.SharedElementCallback;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bumptech.glide.Glide;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
@@ -50,10 +54,10 @@ import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.PageFragmentPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
-import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
+import com.youth.banner.Banner;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -66,7 +70,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MicroPageFragment extends BaseFragment implements OnCustomScrollChangedListener, OnRefreshListener, View.OnClickListener {
+public class MicroPageFragment extends BaseFragment implements OnRefreshListener {
 
     private static final String TAG = "MicroPageFragment";
 
@@ -84,8 +88,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     FrameLayout microPageWrap;
     @BindView(R.id.micro_page_fresh)
     SmartRefreshLayout microPageFresh;
-    @BindView(R.id.micro_page_scroller)
-    CustomScrollView microPageScroller;
+    @BindView(R.id.nested_scroller)
+    NestedScrollView nestedScrollView;
 
     @BindView(R.id.micro_page_title_bg)
     SimpleDraweeView microPageTitleBg;
@@ -122,6 +126,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     private float alpha;
     public static float maxAlpha;
     boolean obtainDataInCache = false; // 从缓存中获取数据
+    SparseArray<Banner> bannerArr;
 
     public float getAlpha() {
         return alpha;
@@ -172,11 +177,6 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     @Override
     protected void onFragmentVisibleChange(boolean isVisible) {
         super.onFragmentVisibleChange(isVisible);
-        if (isVisible) {
-            // fragment 显示的时候显示 loading
-            microPageLoading.setHintStateVisibility(View.GONE);
-            microPageLoading.setLoadingState(View.VISIBLE);
-        }
     }
 
     @Override
@@ -648,7 +648,19 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         if (microPageList == null) {
             microPageList = new ArrayList<>();
         }
-        microPageScroller.setScrollChanged(this);
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                updateToolbar(scrollY);
+                if (Math.abs(scrollY - oldScrollY) > 1) { // 滑动发生变化
+                    Fresco.getImagePipeline().pause();
+                    Glide.with(getContext()).pauseRequests();
+                } else {
+                    Fresco.getImagePipeline().resume();
+                    Glide.with(getContext()).resumeRequests();
+                }
+            }
+        });
         microPageFresh.setOnRefreshListener(this);
         microPageFresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
             @Override
@@ -659,8 +671,21 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 }
             }
         });
-        microPageLoading.setOnClickListener(this);
-        toolbarHeight = Dp2Px2SpUtil.dp2px(mContext, 160);
+        microPageLoading.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (hp == null) {
+                    hp = new PageFragmentPresenter(MicroPageFragment.this);
+                }
+                if (microPageLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面异常，点击重新请求
+                    microPageLoading.setPagerState(StatusPagerView.LOADING, "", 0);
+                    hp.requestMicroPageData(microPageId);
+                    microPageLoading.setVisibility(View.VISIBLE);
+                    microPageLoading.setLoadingState(View.VISIBLE);
+                }
+            }
+        });
+        toolbarHeight = Dp2Px2SpUtil.dp2px(mContext, 20);
 
         // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
         if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) { // 课程页设置一个顶部背景
@@ -678,9 +703,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             microPageToolbar.setBackgroundColor(Color.argb(0, 255, 255, 255));
             microPageToolbarTitle.setVisibility(View.GONE);
             microPageToolbarSearch.setVisibility(View.GONE);
-            microPageToolbarSearch.setOnClickListener(new View.OnClickListener() {
+            microPageToolbarSearch.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
-                public void onClick(View v) {
+                public void singleClick(View v) {
                     JumpDetail.jumpSearch(mContext);
                 }
             });
@@ -793,28 +818,25 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         }
     }
 
-    @Override
-    public void onScrollChanged(int l, int t, int oldl, int oldt) {
+    // 更新 toolbar
+    private void updateToolbar(int scrollY) {
         if (!isMain) {
-            alpha = (t / (toolbarHeight * 1.0f)) * 255;
+            alpha = (scrollY / (toolbarHeight * 1.0f)) * 255;
             if (alpha > 0 && microPageTitleBg2.getVisibility() == View.VISIBLE){
                 microPageTitleBg.setVisibility(View.VISIBLE);
                 microPageTitleBg2.setVisibility(View.GONE);
             }
-            if (alpha > 255) {
-                alpha = 255;
-            } else if (alpha < 0) {
-                alpha = 0;
-            }
-            int color = Color.argb(255, 30, 89, 246);
-            microPageToolbar.setBackgroundColor(color);
             if (alpha > maxAlpha) {
-                microPageToolbarTitle.setVisibility(View.VISIBLE);
-                mStatusBarBlank.setVisibility(View.VISIBLE);
-                if (hasSearch) {
-                    microPageToolbarSearch.setVisibility(View.VISIBLE);
-                } else {
-                    microPageToolbarSearch.setVisibility(View.GONE);
+                if (microPageToolbarTitle.getVisibility() != View.VISIBLE) {
+                    microPageToolbarTitle.setVisibility(View.VISIBLE);
+                    mStatusBarBlank.setVisibility(View.VISIBLE);
+                    int color = Color.argb(255, 30, 89, 246);
+                    microPageToolbar.setBackgroundColor(color);
+                    if (hasSearch) {
+                        microPageToolbarSearch.setVisibility(View.VISIBLE);
+                    } else {
+                        microPageToolbarSearch.setVisibility(View.GONE);
+                    }
                 }
             } else {
                 microPageToolbarTitle.setVisibility(View.GONE);
@@ -822,11 +844,6 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                 microPageToolbarSearch.setVisibility(View.GONE);
             }
         }
-    }
-
-    @Override
-    public void onLoadState(int state) {
-
     }
 
     @Override
@@ -847,26 +864,6 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             networkDecorate = false;
             microPageAdapter = null;
             hp.requestMicroPageData(microPageId);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.micro_page_loading:
-                if (hp == null) {
-                    hp = new PageFragmentPresenter(this);
-                }
-                if (microPageLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面异常，点击重新请求
-                    microPageLoading.setPagerState(StatusPagerView.LOADING, "", 0);
-
-                    hp.requestMicroPageData(microPageId);
-                    microPageLoading.setVisibility(View.VISIBLE);
-                    microPageLoading.setLoadingState(View.VISIBLE);
-                }
-                break;
-            default:
-                break;
         }
     }
 }

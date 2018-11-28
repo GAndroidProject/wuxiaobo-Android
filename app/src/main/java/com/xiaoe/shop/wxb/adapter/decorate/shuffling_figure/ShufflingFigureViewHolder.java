@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.adapter.decorate.shuffling_figure;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 
 import com.xiaoe.common.entitys.ComponentInfo;
@@ -23,8 +24,7 @@ public class ShufflingFigureViewHolder extends BaseViewHolder {
 
     private static final String TAG = "ShufflingFigureVh";
 
-    Context mContext;
-
+    private Context mContext;
     @BindView(R.id.shuffling_figure)
     public Banner banner;
 
@@ -39,7 +39,10 @@ public class ShufflingFigureViewHolder extends BaseViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void initViewHolder(ComponentInfo currentBindComponent) {
+    public void initViewHolder(ComponentInfo currentBindComponent, int currentBindPos, SparseArray<Banner> bannerArr) {
+        if (bannerArr.get(currentBindPos) != null) {
+            return;
+        }
         final List<ShufflingItem> shufflingList = currentBindComponent.getShufflingList();
         List<String> imgList = new ArrayList<>();
         for (ShufflingItem item : shufflingList) {
@@ -87,5 +90,6 @@ public class ShufflingFigureViewHolder extends BaseViewHolder {
                     break;
             }
         });
+        bannerArr.put(currentBindPos, banner);
     }
 }

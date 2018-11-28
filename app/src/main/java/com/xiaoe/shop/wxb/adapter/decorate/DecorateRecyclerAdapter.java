@@ -50,6 +50,7 @@ import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
+import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 
 import java.util.ArrayList;
@@ -78,6 +79,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     private SparseArray<GraphicNavRecyclerAdapter> graphicNavRecyclerAdapterArr;
     // 最近更新
     private SparseArray<RecentUpdateListAdapter> recentUpdateListAdapterArr;
+    // 轮播图
+    private SparseArray<Banner> bannerArr;
 
     // 知识商品分组形式的 recycler
     private List<RecyclerView> knowledgeGroupRecyclerList;
@@ -135,6 +138,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shuffling_figure, null);
                 layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
+                if (bannerArr == null) {
+                    bannerArr = new SparseArray<>();
+                }
                 return new ShufflingFigureViewHolder(mContext, view);
             case DecorateEntityType.BOOKCASE: // 书架的 case 本次不做
                 return null;
@@ -188,7 +194,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 break;
             case DecorateEntityType.SHUFFLING_FIGURE:
                 ShufflingFigureViewHolder shufflingFigureViewHolder = (ShufflingFigureViewHolder) holder;
-                shufflingFigureViewHolder.initViewHolder(currentBindComponent);
+                shufflingFigureViewHolder.initViewHolder(currentBindComponent, currentBindPos, bannerArr);
                 break;
             case DecorateEntityType.BOOKCASE:
                 break;

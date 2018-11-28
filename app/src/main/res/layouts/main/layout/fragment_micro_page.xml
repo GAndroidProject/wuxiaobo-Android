@@ -20,15 +20,13 @@
             android:paddingTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-        <com.xiaoe.shop.wxb.widget.CustomScrollView
-            android:id="@+id/micro_page_scroller"
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nested_scroller"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
-            android:scrollbars="none"
-            android:paddingBottom="24dp"
-            android:clipToPadding="false"
-            android:clipChildren="false">
+            android:scrollbars="none">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -45,7 +43,7 @@
                     android:layout_height="match_parent"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
-                    android:scrollbars="none"/>
+                    android:scrollbars="none" />
 
                 <!--<ImageView-->
                     <!--android:id="@+id/micro_page_logo"-->
@@ -59,8 +57,7 @@
                     <!--android:layout_centerHorizontal="true"-->
                     <!--android:layout_below="@id/micro_page_content"/>-->
             </RelativeLayout>
-
-        </com.xiaoe.shop.wxb.widget.CustomScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 

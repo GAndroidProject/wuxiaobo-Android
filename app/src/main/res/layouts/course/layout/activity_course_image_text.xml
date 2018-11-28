@@ -17,7 +17,8 @@
         android:scrollbars="none"
         android:overScrollMode="never"
         app:scrollId="@+id/it_title_bg"
-        app:maxZoom="120dp">
+        app:maxZoom="120dp"
+        android:layout_marginBottom="44dp">
 
         <LinearLayout
             android:layout_width="match_parent"
