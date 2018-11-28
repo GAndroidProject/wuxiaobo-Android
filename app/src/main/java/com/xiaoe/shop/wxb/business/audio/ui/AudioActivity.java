@@ -824,9 +824,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             earnContentTail.setVisibility(View.VISIBLE);
             earnTip.setVisibility(View.GONE);
             earnSubmit.setText(getString(R.string.scholarship_earn_btn));
-            earnSubmit.setOnClickListener(new View.OnClickListener() {
+            earnSubmit.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
-                public void onClick(View v) {
+                public void singleClick(View v) {
                     JumpDetail.jumpScholarshipActivity(AudioActivity.this);
                     dialog.dismiss();
                 }
@@ -847,17 +847,17 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 earnContent.setTextColor(getResources().getColor(R.color.scholarship_btn_press));
                 earnTip.setVisibility(View.GONE);
             }
-            earnSubmit.setOnClickListener(new View.OnClickListener() {
+            earnSubmit.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
-                public void onClick(View v) {
+                public void singleClick(View v) {
                     JumpDetail.jumpIntegralActivity(AudioActivity.this);
                     dialog.dismiss();
                 }
             });
         }
-        earnClose.setOnClickListener(new View.OnClickListener() {
+        earnClose.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 dialog.dismiss();
             }
         });

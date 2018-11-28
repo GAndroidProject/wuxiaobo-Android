@@ -111,6 +111,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
     private boolean isFrontActivity = true;
     private TranslationAnimator translationAnimator;
 
+    private boolean hasToast;
+
 
     class XeHandler extends Handler {
 
@@ -330,7 +332,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                 } else {
                     if (jsonObject != null) {
                         int code = jsonObject.getInteger("code");
-                        if (NetworkStateResult.ERROR_NETWORK == code) {
+                        if (NetworkStateResult.ERROR_NETWORK == code && !hasToast) {
+                            hasToast = true;
                             Toast(getString(R.string.network_error_text));
                         }
                     }

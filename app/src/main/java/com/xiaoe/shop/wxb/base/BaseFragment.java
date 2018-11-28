@@ -54,6 +54,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
     private View rootView;
     private CustomDialog dialog;
     private Handler mHandler = new BfHandler(this);
+    private boolean hasToast;
 
 
     static class BfHandler extends Handler {
@@ -197,7 +198,8 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
                 } else {
                     if (jsonObject != null) {
                         int code = jsonObject.getInteger("code");
-                        if (NetworkStateResult.ERROR_NETWORK == code) {
+                        if (NetworkStateResult.ERROR_NETWORK == code && !hasToast) {
+                            hasToast = true;
                             ToastUtils.show(getContext(), getString(R.string.network_error_text));
                         }
                     }

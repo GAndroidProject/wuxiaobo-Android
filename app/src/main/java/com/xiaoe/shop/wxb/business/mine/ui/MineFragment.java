@@ -46,6 +46,7 @@ import com.xiaoe.shop.wxb.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.mine_learning.presenter.MineLearningPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -61,7 +62,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MineFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener, OnItemClickWithMoneyItemListener, OnRefreshListener {
+public class MineFragment extends BaseFragment implements AdapterView.OnItemClickListener, OnItemClickWithMoneyItemListener, OnRefreshListener {
 
     private static final String TAG = "MineFragment";
 
@@ -306,20 +307,153 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
 
     private void initListener() {
         mineRefresh.setOnRefreshListener(this);
-        mineTitleView.setMsgClickListener(this);
-        mineTitleView.setSettingListener(this);
-        mineMsgView.setBuyVipClickListener(this);
-        mineMsgView.setNicknameOnClickListener(this);
-        mineMsgView.setAvatarClickListener(this);
-        mineVipCard.setBtnRenewalClickListener(this);
-//        mineVipCard.setMoreEquityClickListener(this);
+        mineTitleView.setMsgClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpHistoryMessage(mContext);
+                } else {
+                    touristDialog.showDialog();
+                }
+            }
+        });
+        mineTitleView.setSettingListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpAccount(mContext);
+                } else {
+                    touristDialog.showDialog();
+                }
+            }
+        });
+        mineMsgView.setBuyVipClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (mainActivity.isFormalUser) {
+                    if (!CommonUserInfo.isIsSuperVip()) { // 不是超级会员
+                        JumpDetail.jumpSuperVip(mContext);
+                    } else { // 是超级会员
+                        JumpDetail.jumpSuperVip(mContext, true);
+                    }
+                } else {
+                    touristDialog.showDialog();
+                }
+            }
+        });
+        mineMsgView.setNicknameOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (!mainActivity.isFormalUser) {
+                    touristDialog.showDialog();
+                }
+            }
+        });
+        mineMsgView.setAvatarClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (mainActivity.isFormalUser) {
+                    String avatar = CommonUserInfo.getWxAvatar();
+                    JumpDetail.jumpMineMsg(mContext, avatar);
+                } else {
+                    touristDialog.showDialog();
+                }
+            }
+        });
+        mineVipCard.setBtnRenewalClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (mainActivity.isFormalUser) {
+                    if (superVipPresenter == null) {
+                        superVipPresenter = new SuperVipPresenter(MineFragment.this);
+                    }
+                    superVipPresenter.requestSuperVipBuyInfo();
+                } else {
+                    touristDialog.showDialog();
+                }
+            }
+        });
+//        mineVipCard.setMoreEquityClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+//            @Override
+//            public void singleClick(View v) {
+//                Toast.makeText(mContext, "点击更多权益", Toast.LENGTH_SHORT).show();
+//            }
+//        });
         if (mineLearningWrapView.getLearningContainerVisibility() == View.VISIBLE) { // 可见就设置点击事件
-            mineLearningWrapView.setLearningContainerClickListener(this);
+            mineLearningWrapView.setLearningContainerClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+                @Override
+                public void singleClick(View v) {
+                    if (mainActivity.isFormalUser) {
+                        // TODO: 跳转详情页
+                        switch (mineLearningType) {
+                            case DecorateEntityType.IMAGE_TEXT:
+                                JumpDetail.jumpImageText(mContext, mineLearningId, "", "");
+                                break;
+                            case DecorateEntityType.AUDIO:
+                                JumpDetail.jumpAudio(mContext, mineLearningId, 1);
+                                break;
+                            case DecorateEntityType.VIDEO:
+                                JumpDetail.jumpVideo(mContext, mineLearningId, "", false, "");
+                                break;
+                            case DecorateEntityType.COLUMN:
+                                JumpDetail.jumpColumn(mContext, mineLearningId, "", 6);
+                                break;
+                            case DecorateEntityType.TOPIC:
+                                JumpDetail.jumpColumn(mContext, mineLearningId, "", 8);
+                                break;
+                            case DecorateEntityType.MEMBER:
+                                JumpDetail.jumpColumn(mContext, mineLearningId, "", 5);
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        touristDialog.showDialog();
+                    }
+                }
+            });
         }
-        mineLearningWrapView.setLearningMoreClickListener(this);
+        mineLearningWrapView.setLearningMoreClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpMineLearning(mContext, "我正在学");
+                } else {
+                    touristDialog.showDialog();
+                }
+            }
+        });
         mineLearningWrapView.setLearningListItemClickListener(this);
-        mineVipCard.setCardContainerClickListener(this);
-        mineLoading.setOnClickListener(this);
+        mineVipCard.setCardContainerClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (!mainActivity.isFormalUser) {
+                    touristDialog.showDialog();
+                }
+            }
+        });
+        mineLoading.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (mineLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面错误点击再请求、
+                    mineLoading.setPagerState(StatusPagerView.LOADING, "", 0);
+
+                    if (mineLearningPresenter == null) {
+                        mineLearningPresenter = new MineLearningPresenter(MineFragment.this);
+                    }
+                    if (earningPresenter == null) {
+                        earningPresenter = new EarningPresenter(MineFragment.this);
+                    }
+
+                    isScholarshipFinish = false;
+                    isIntegralFinish = false;
+                    isMineLearningFinish = false;
+                    earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+                    earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+                    mineLearningPresenter.requestLearningData(1, 1);
+                }
+            }
+        });
     }
 
     @Override
@@ -355,11 +489,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
         } else {
             // iRequest 为空是登录被挤情况
             mineRefresh.finishRefresh();
-            if (iRequest != null) {
-                if (!showDataByDB) {
-                    mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
-                }
-            }
+            mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
         }
     }
 
@@ -579,128 +709,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
             return;
         }
         setUnreadMsg(onUnreadMsgEvent.getUnreadCount());
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.mine_title_msg: // 信息
-                if (mainActivity.isFormalUser) {
-                    JumpDetail.jumpHistoryMessage(mContext);
-                } else {
-                    touristDialog.showDialog();
-                }
-                break;
-            case R.id.title_nickname: // 昵称
-                if (!mainActivity.isFormalUser) {
-                    touristDialog.showDialog();
-                }
-                break;
-            case R.id.mine_title_setting: // 设置
-                if (mainActivity.isFormalUser) {
-                    JumpDetail.jumpAccount(mContext);
-                } else {
-                    touristDialog.showDialog();
-                }
-                break;
-            case R.id.title_avatar: // 头像
-                if (mainActivity.isFormalUser) {
-                    String avatar = CommonUserInfo.getWxAvatar();
-                    JumpDetail.jumpMineMsg(mContext, avatar);
-                } else {
-                    touristDialog.showDialog();
-                }
-                break;
-            case R.id.title_buy_vip: // 超级会员
-                if (mainActivity.isFormalUser) {
-                    if (!CommonUserInfo.isIsSuperVip()) { // 不是超级会员
-                        JumpDetail.jumpSuperVip(mContext);
-                    } else { // 是超级会员
-                        JumpDetail.jumpSuperVip(mContext, true);
-                    }
-                } else {
-                    touristDialog.showDialog();
-                }
-                break;
-//            case R.id.card_equity_more: // 更多权益
-//                Toast.makeText(mContext, "点击更多权益", Toast.LENGTH_SHORT).show();
-//                break;
-            case R.id.card_renewal: // 续费
-                if (mainActivity.isFormalUser) {
-                    if (superVipPresenter == null) {
-                        superVipPresenter = new SuperVipPresenter(this);
-                    }
-                    superVipPresenter.requestSuperVipBuyInfo();
-                } else {
-                    touristDialog.showDialog();
-                }
-                break;
-            case R.id.learning_more: // 我正在学 -> 查看更多
-                if (mainActivity.isFormalUser) {
-                    JumpDetail.jumpMineLearning(mContext, "我正在学");
-                } else {
-                    touristDialog.showDialog();
-                }
-                break;
-            case R.id.learning_item_container: // 我正在学的详情页
-                if (mainActivity.isFormalUser) {
-                    // TODO: 跳转详情页
-                    switch (mineLearningType) {
-                        case DecorateEntityType.IMAGE_TEXT:
-                            JumpDetail.jumpImageText(mContext, mineLearningId, "", "");
-                            break;
-                        case DecorateEntityType.AUDIO:
-                            JumpDetail.jumpAudio(mContext, mineLearningId, 1);
-                            break;
-                        case DecorateEntityType.VIDEO:
-                            JumpDetail.jumpVideo(mContext, mineLearningId, "", false, "");
-                            break;
-                        case DecorateEntityType.COLUMN:
-                            JumpDetail.jumpColumn(mContext, mineLearningId, "", 6);
-                            break;
-                        case DecorateEntityType.TOPIC:
-                            JumpDetail.jumpColumn(mContext, mineLearningId, "", 8);
-                            break;
-                        case DecorateEntityType.MEMBER:
-                            JumpDetail.jumpColumn(mContext, mineLearningId, "", 5);
-                            break;
-                        default:
-                            break;
-                    }
-                } else {
-                    touristDialog.showDialog();
-                }
-                break;
-            case R.id.card_container: // 超级会员卡片
-                if (mainActivity.isFormalUser) {
-                    // Toast.makeText(mContext, "超级会员卡片", Toast.LENGTH_SHORT).show();
-                    // do nothing
-                } else {
-                    touristDialog.showDialog();
-                }
-                break;
-            case R.id.mine_loading:
-                if (mineLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面错误点击再请求、
-                    mineLoading.setPagerState(StatusPagerView.LOADING, "", 0);
-
-                    if (mineLearningPresenter == null) {
-                        mineLearningPresenter = new MineLearningPresenter(this);
-                    }
-                    if (earningPresenter == null) {
-                        earningPresenter = new EarningPresenter(this);
-                    }
-
-                    isScholarshipFinish = false;
-                    isIntegralFinish = false;
-                    isMineLearningFinish = false;
-                    earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-                    earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-                    mineLearningPresenter.requestLearningData(1, 1);
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
