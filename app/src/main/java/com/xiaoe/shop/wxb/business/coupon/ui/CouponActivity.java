@@ -34,10 +34,6 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
     private static final String TAG = "CouponActivity";
 
     protected static final String EMPTY_CONTENT = "empty_content";
-    private final int LOADING = 10001;
-    private final int FINISH = 10002;
-    private final int FAIL = 10003;
-    private final int EMPTY = 10004;
 
     private Toolbar toolbar;
     private ImageView couponBack;
@@ -52,11 +48,11 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
         setStatusBar();
         setContentView(R.layout.activity_coupon);
 
-        mCouponPresenter = new CouponPresenter(this);
         initTitle();
         initView();
         initListener();
-        setPagerState(LOADING);
+        statusPagerView.setLoadingState(View.VISIBLE);
+        mCouponPresenter = new CouponPresenter(this);
         mCouponPresenter.requestMineCoupon("all");
     }
 
@@ -81,28 +77,7 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
     private void initListener() {
         couponBack.setOnClickListener(this);
         currentFragment.setOnSelectCouponListener(this);
-    }
-
-    private void setPagerState(int state){
-        if(state == FINISH){
-            statusPagerView.setVisibility(View.GONE);
-            return;
-        }
-        statusPagerView.setVisibility(View.VISIBLE);
-        if(state == LOADING){
-            statusPagerView.setLoadingState(View.VISIBLE);
-            statusPagerView.setHintStateVisibility(View.GONE);
-        }else if (state == FAIL){
-            statusPagerView.setLoadingState(View.GONE);
-            statusPagerView.setHintStateVisibility(View.GONE);
-            statusPagerView.setStateImage(R.mipmap.network_none);
-            statusPagerView.setStateText(getResources().getString(R.string.request_fail));
-        }else if (state == EMPTY){
-            statusPagerView.setLoadingState(View.GONE);
-            statusPagerView.setHintStateVisibility(View.VISIBLE);
-            statusPagerView.setStateImage(R.mipmap.coupon_none);
-            statusPagerView.setStateText(getResources().getString(R.string.coupon_empty_desc));
-        }
+        statusPagerView.setOnClickListener(this);
     }
 
     @Override
@@ -117,13 +92,13 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
                 mineCouponRequest(jsonObject);
             }
         }else{
-            setPagerState(FAIL);
+            statusPagerView.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
         }
     }
 
     private void mineCouponRequest(JSONObject jsonObject) {
         if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED){
-            setPagerState(FAIL);
+            statusPagerView.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
             return;
         }
         JSONObject data = jsonObject.getJSONObject("data");
@@ -133,10 +108,10 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
         //可用的优惠券
         List<CouponInfo> invalidCoupon = data.getJSONArray("invalid").toJavaList(CouponInfo.class);
         if(validCoupon.size() <= 0 && invalidCoupon.size() <= 0){
-            setPagerState(EMPTY);
+            statusPagerView.setPagerState(StatusPagerView.EMPTY, getString(R.string.coupon_empty_desc), R.mipmap.cash_none);
             return;
         }
-        setPagerState(FINISH);
+        statusPagerView.setLoadingFinish();
         List<CouponInfo> couponList = new ArrayList<CouponInfo>();
         for (CouponInfo couponInfo : validCoupon) {
             couponInfo.setValid(true);
@@ -155,6 +130,12 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
         switch (v.getId()){
             case R.id.coupon_back:
                 finish();
+                break;
+            case R.id.state_pager_view:
+                if (statusPagerView.getCurrentLoadingStatus() == StatusPagerView.FAIL) {
+                    statusPagerView.setPagerState(StatusPagerView.LOADING, "", 0);
+                    mCouponPresenter.requestMineCoupon("all");
+                }
                 break;
             default:
                 break;

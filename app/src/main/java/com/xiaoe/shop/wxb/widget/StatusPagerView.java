@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -69,7 +70,7 @@ public class StatusPagerView extends FrameLayout {
     }
 
     public void stateImageWH(int w, int h){
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) stateImage.getLayoutParams();
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) stateImage.getLayoutParams();
         layoutParams.width = w;
         layoutParams.height = h;
         stateImage.setLayoutParams(layoutParams);
