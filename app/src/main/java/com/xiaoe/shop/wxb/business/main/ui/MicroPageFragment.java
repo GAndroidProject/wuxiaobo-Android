@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.business.main.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +24,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshFooter;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.constant.RefreshState;
+import com.scwang.smartrefresh.layout.listener.OnMultiPurposeListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.db.SQLiteUtil;
@@ -87,6 +93,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 
     @BindView(R.id.micro_page_title_bg)
     SimpleDraweeView microPageTitleBg;
+    @BindView(R.id.micro_page_title_bg2)
+    SimpleDraweeView microPageTitleBg2;
     @BindView(R.id.micro_page_content)
     RecyclerView microPageContent;
 
@@ -645,12 +653,69 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
         }
         microPageScroller.setScrollChanged(this);
         microPageFresh.setOnRefreshListener(this);
+        microPageFresh.setOnMultiPurposeListener(new OnMultiPurposeListener() {
+            @Override
+            public void onHeaderMoving(RefreshHeader header, boolean isDragging, float percent, int offset, int headerHeight, int maxDragHeight) {
+                if (isDragging && microPageTitleBg2.getVisibility() == View.GONE){
+                    microPageTitleBg2.setVisibility(View.VISIBLE);
+                    microPageTitleBg.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onHeaderReleased(RefreshHeader header, int headerHeight, int maxDragHeight) {
+
+            }
+
+            @Override
+            public void onHeaderStartAnimator(RefreshHeader header, int headerHeight, int maxDragHeight) {
+
+            }
+
+            @Override
+            public void onHeaderFinish(RefreshHeader header, boolean success) {
+
+            }
+
+            @Override
+            public void onFooterMoving(RefreshFooter footer, boolean isDragging, float percent, int offset, int footerHeight, int maxDragHeight) {
+
+            }
+
+            @Override
+            public void onFooterReleased(RefreshFooter footer, int footerHeight, int maxDragHeight) {
+
+            }
+
+            @Override
+            public void onFooterStartAnimator(RefreshFooter footer, int footerHeight, int maxDragHeight) {
+
+            }
+
+            @Override
+            public void onFooterFinish(RefreshFooter footer, boolean success) {
+
+            }
+
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+            }
+
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+            }
+
+            @Override
+            public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
+            }
+        });
         microPageLoading.setOnClickListener(this);
         toolbarHeight = Dp2Px2SpUtil.dp2px(mContext, 160);
 
         // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
         if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) { // 课程页设置一个顶部背景
             microPageTitleBg.setImageURI("res:///" + R.mipmap.class_bg);
+            microPageTitleBg2.setImageURI("res:///" + R.mipmap.class_bg);
             microPageToolbar.setVisibility(View.VISIBLE);
             // 初始化 toolbar
             int top = 0;
@@ -669,12 +734,13 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                     JumpDetail.jumpSearch(mContext);
                 }
             });
-            microPageFresh.setEnableHeaderTranslationContent(false);
+//            microPageFresh.setEnableHeaderTranslationContent(false);
             isMain = false;
         } else {
             microPageTitleBg.setImageURI("");
+            microPageTitleBg2.setVisibility(View.GONE);
             microPageToolbar.setVisibility(View.GONE);
-            microPageFresh.setEnableHeaderTranslationContent(true);
+//            microPageFresh.setEnableHeaderTranslationContent(true);
             isMain = true;
         }
 
@@ -781,6 +847,10 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
     public void onScrollChanged(int l, int t, int oldl, int oldt) {
         if (!isMain) {
             alpha = (t / (toolbarHeight * 1.0f)) * 255;
+            if (alpha > 0 && microPageTitleBg2.getVisibility() == View.VISIBLE){
+                microPageTitleBg.setVisibility(View.VISIBLE);
+                microPageTitleBg2.setVisibility(View.GONE);
+            }
             if (alpha > 255) {
                 alpha = 255;
             } else if (alpha < 0) {

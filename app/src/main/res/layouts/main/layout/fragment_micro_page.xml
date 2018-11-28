@@ -6,7 +6,11 @@
     android:id="@+id/micro_page_wrap"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/micro_page_title_bg2"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="400dp" />
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/micro_page_fresh"
         android:layout_width="match_parent"

@@ -11,14 +11,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="center"
+        android:gravity="center_vertical"
         tools:ignore="UseCompoundDrawables,UselessParent"
         android:paddingTop="12dp"
         android:paddingBottom="12dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/refresh_img"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_vertical"/>
 
         <TextView
@@ -27,7 +28,7 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="#DDDDE9"
-            android:layout_marginStart="6dp"/>
+            android:layout_marginStart="1dp"/>
 
     </LinearLayout>
 
