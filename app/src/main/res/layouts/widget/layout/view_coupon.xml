@@ -2,8 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="96dp"
-    android:background="@drawable/white_round_circle"
-    >
+    xmlns:autofit="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/white_round_circle">
     
     <RelativeLayout
         android:id="@+id/parent_coupon_money_wrap"
@@ -12,29 +13,44 @@
         android:gravity="center"
         android:background="@drawable/coupon_valid_bg"
         >
-        <LinearLayout
+
+        <FrameLayout
             android:id="@+id/coupon_money_wrap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            >
-            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:text="¥"
-                />
-            <TextView
-                android:id="@+id/coupon_money"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="32sp"
-                android:layout_marginStart="2dp"
-                android:text="100"
-                />
-        </LinearLayout>
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <TextView
+                    android:id="@+id/tv_symbol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="¥"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <com.xiaoe.shop.wxb.widget.autotextview.AutofitTextView
+                    android:id="@+id/coupon_money"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:layout_toEndOf="@+id/tv_symbol"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="32sp"
+                    autofit:minTextSize="10sp"
+                    autofit:sizeToFit="true"
+                    tools:text="100" />
+            </RelativeLayout>
+        </FrameLayout>
         <TextView
             android:id="@+id/coupon_type"
             android:layout_width="match_parent"

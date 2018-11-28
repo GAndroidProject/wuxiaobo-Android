@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import com.xiaoe.common.entitys.CouponInfo;
 import com.xiaoe.shop.wxb.R;
+
+import java.text.DecimalFormat;
 
 public class CouponView extends FrameLayout {
     public static final String TAG = "CouponView";
@@ -73,13 +76,23 @@ public class CouponView extends FrameLayout {
     }
 
     /**
-     *
-     * @param pirce
+     * @param price
      */
-    public void setCouponPrice(int pirce){
-        float priceF = pirce / (100f);
+    public void setCouponPrice(int price) {
+        float priceF = (float) (price * 0.01);
+        couponMoney.setText(format((double) priceF));
+//        Log.d(TAG, "setCouponPrice: price " + price + " float " + priceF);
+    }
 
-        couponMoney.setText(""+priceF);
+    /**
+     * double小数点保留规范（两位）
+     *
+     * @param d
+     * @return
+     */
+    private String format(Double d) {
+        DecimalFormat df = new DecimalFormat("#,##0.00");
+        return df.format(d);
     }
 
     /**

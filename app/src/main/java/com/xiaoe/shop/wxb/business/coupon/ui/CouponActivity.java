@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.business.coupon.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -16,6 +17,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.coupon.presenter.CouponPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnSelectCouponListener;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
     private final int FAIL = 10003;
     private final int EMPTY = 10004;
 
+    private Toolbar toolbar;
     private ImageView couponBack;
 
     private CouponPresenter mCouponPresenter;
@@ -46,13 +49,23 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBar();
         setContentView(R.layout.activity_coupon);
 
         mCouponPresenter = new CouponPresenter(this);
+        initTitle();
         initView();
         initListener();
         setPagerState(LOADING);
         mCouponPresenter.requestMineCoupon("all");
+    }
+
+    // 沉浸式初始化
+    private void initTitle() {
+        StatusBarUtil.setRootViewFitsSystemWindows(this, false);
+        int statusBarHeight = StatusBarUtil.getStatusBarHeight(this);
+        toolbar = (Toolbar) findViewById(R.id.coupon_bar);
+        toolbar.setPadding(0, statusBarHeight, 0, 0);
     }
 
     private void initView() {
