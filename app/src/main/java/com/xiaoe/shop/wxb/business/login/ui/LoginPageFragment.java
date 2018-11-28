@@ -450,10 +450,8 @@ public class LoginPageFragment extends BaseFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String password = s.toString();
                 if (password.length() >= 6 && phoneContent.getText().toString().length() == 11 && (phoneErrorTip.getVisibility() != View.VISIBLE)) {
-                    pwdSubmit.setAlpha(1);
                     pwdSubmit.setEnabled(true);
                 } else {
-                    pwdSubmit.setAlpha(0.6f);
                     pwdSubmit.setEnabled(false);
                 }
             }
@@ -464,7 +462,7 @@ public class LoginPageFragment extends BaseFragment {
             }
         });
 
-        pwdSubmit.setAlpha(0.6f);
+        pwdSubmit.setEnabled(false);
         pwdSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -513,7 +511,6 @@ public class LoginPageFragment extends BaseFragment {
 //        setEditTextOnTouchListener(passwordContent);
         ivShowPwd.setOnClickListener(v -> doShowPassword());
         setPwdSubmit.setEnabled(false);
-        setPwdSubmit.setAlpha(0.6f);
         passwordContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -525,10 +522,8 @@ public class LoginPageFragment extends BaseFragment {
                 String head = s.toString();
                 if (head.length() >= 6) {
                     setPwdSubmit.setEnabled(true);
-                    setPwdSubmit.setAlpha(1);
                 } else {
                     setPwdSubmit.setEnabled(false);
-                    setPwdSubmit.setAlpha(0.6f);
                 }
             }
 
@@ -649,8 +644,6 @@ public class LoginPageFragment extends BaseFragment {
     private void initPhoneInputListener(String tag) {
 
         phoneObtainCode.setEnabled(false);
-//        phoneObtainCode.setAlpha(0.6f);
-
         phoneContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -661,11 +654,9 @@ public class LoginPageFragment extends BaseFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String head = s.toString();
                 if (head.length() == 11 && phoneErrorTip.getVisibility() == View.GONE) {
-//                    phoneObtainCode.setAlpha(1);
                     phoneObtainCode.setEnabled(true);
                 } else {
                     JudgeUtil.showErrorViewIfNeed(getActivity(), head, phoneErrorTip, phoneObtainCode);
-//                    phoneObtainCode.setAlpha(0.6f);
                     phoneObtainCode.setEnabled(false);
                     phoneContent.setCursorVisible(true);
                 }

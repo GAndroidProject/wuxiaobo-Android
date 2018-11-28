@@ -42,6 +42,6 @@
         android:text="@string/login_we_chat_submit"
         android:textSize="16sp"
         android:textColor="@color/white"
-        android:background="@drawable/person_submit_bg"/>
+        android:background="@drawable/common_btn_bg_selector_blue"/>
 
 </LinearLayout>
