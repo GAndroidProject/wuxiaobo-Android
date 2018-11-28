@@ -29,6 +29,7 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
+import com.xiaoe.shop.wxb.utils.LoginDialogUtils;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 /**
@@ -43,7 +44,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private boolean hasBuy = false;
     public boolean isPlaying = false;
-    private boolean isClickPauseAllButton = false;
+    // private boolean isClickPauseAllButton = false;
     private String columnId;
     private String columnType;
 
@@ -71,6 +72,20 @@ public class RecentUpdateListAdapter extends BaseAdapter {
 
     public List<RecentUpdateListItem> getItemList() {
         return this.mItemList;
+    }
+
+//    public List<String> getResourceIdList() {
+//        List<String> resourceIdList = new ArrayList<>();
+//        if (mItemList != null) {
+//            for (RecentUpdateListItem item : mItemList) {
+//                resourceIdList.add(item.getListResourceId());
+//            }
+//        }
+//        return resourceIdList;
+//    }
+//
+    public String getColumnId() {
+        return columnId;
     }
 
     @Override
@@ -154,7 +169,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                         }
                     }
                 } else {
-                    showTouristDialog();
+                    LoginDialogUtils.showTouristDialog(mContext);
                 }
             }
         });
@@ -172,8 +187,9 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                 viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
             }else{
                 viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
-                if (isClickPauseAllButton)
-                    viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
+                viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
+//                if (isClickPauseAllButton)
+//                    viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
             }
         }else{
             // 没有设置播放状态的话，就隐藏这个播放按钮
@@ -207,7 +223,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                     }
                     playPosition(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId(), false);
                 } else {
-                    showTouristDialog();
+                    LoginDialogUtils.showTouristDialog(mContext);
                 }
             }
         });
@@ -263,7 +279,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
      * @param bigColumnId
      */
     public void playPosition(String resourceId, String columnId, String bigColumnId, boolean jump){
-        isClickPauseAllButton = false;
+        // isClickPauseAllButton = false;
         AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
 
         boolean resourceEquals = false;
@@ -299,27 +315,49 @@ public class RecentUpdateListAdapter extends BaseAdapter {
     }
 
     public void clickPlayAll() {
-        isClickPauseAllButton = false;
+        // isClickPauseAllButton = false;
         isPlaying = true;
+        AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
         if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
             AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
             AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
             AudioPlayUtil.getInstance().setSingleAudio(false);
         }
-        if(AudioPlayUtil.getInstance().getAudioList().size() > 0){
-            AudioMediaPlayer.stop();
-            AudioPlayEntity playEntity = AudioPlayUtil.getInstance().getAudioList().get(0);
-            playEntity.setPlay(true);
-            AudioMediaPlayer.setAudio(playEntity, true);
-            new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+
+        if (playAudio == null) { // 没有音频在播放
+            if(AudioPlayUtil.getInstance().getAudioList().size() > 0){
+                playFirstAudio(true);
+            }
+        } else { // 有音频在播放
+            if (!AudioPlayUtil.resourceEquals(playAudio.getResourceId(), playAudio.getColumnId(), playAudio.getBigColumnId(),
+                    mItemList.get(0).getListResourceId(), columnId, "")) { // 不同一个专栏
+                AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
+                playFirstAudio(true);
+            } else {
+                playFirstAudio(false);
+            }
         }
+
         notifyDataSetChanged();
     }
 
+    // 播放第一条音频
+    private void playFirstAudio(boolean needStop) {
+        if (needStop) {
+            AudioMediaPlayer.stop();
+        }
+        AudioPlayEntity playEntity = AudioPlayUtil.getInstance().getAudioList().get(0);
+        playEntity.setPlay(true);
+        AudioMediaPlayer.setAudio(playEntity, true);
+        AudioMediaPlayer.getAudio().setPlaying(true);
+        new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+    }
+
     public void stopPlayAll() {
-        isClickPauseAllButton = true;
+        // isClickPauseAllButton = true;
         isPlaying = false;
         AudioMediaPlayer.stop();
+        AudioMediaPlayer.getAudio().setPlaying(false);
         notifyDataSetChanged();
     }
 
@@ -333,24 +371,6 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                     resourceId, columnId, bigColumnId);
         }
         return resourceEquals;
-    }
-
-    private void showTouristDialog() {
-        final TouristDialog touristDialog = new TouristDialog(mContext);
-        touristDialog.setDialogCloseClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-            @Override
-            public void singleClick(View v) {
-                touristDialog.dismissDialog();
-            }
-        });
-        touristDialog.setDialogConfirmClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-            @Override
-            public void singleClick(View v) {
-                touristDialog.dismissDialog();
-                JumpDetail.jumpLogin(mContext, true);
-            }
-        });
-        touristDialog.showDialog();
     }
 
     /**

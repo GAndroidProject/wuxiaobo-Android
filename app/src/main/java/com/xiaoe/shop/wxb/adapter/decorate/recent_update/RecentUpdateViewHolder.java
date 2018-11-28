@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.adapter.decorate.recent_update;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
@@ -13,14 +14,17 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.MeasureUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
+import com.xiaoe.shop.wxb.utils.LoginDialogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 
 import java.util.Map;
@@ -59,6 +63,41 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
         SetImageUriUtil.setImgURI(recentUpdateAvatar, currentBindComponent.getImgUrl(), Dp2Px2SpUtil.dp2px(mContext, 72), Dp2Px2SpUtil.dp2px(mContext, 72));
         recentUpdateSubTitle.setText(currentBindComponent.getTitle());
         recentUpdateSubDesc.setText(currentBindComponent.getDesc());
+        // 加载 ListView 的数据
+        if (recentUpdateListAdapterArr.get(currentBindPos) == null) {
+            recentUpdateListAdapter = new RecentUpdateListAdapter(mContext, currentBindComponent.getSubList(), currentBindComponent.isHasBuy());
+            recentUpdateListAdapter.setColumnMsg(currentBindComponent.getColumnId(), currentBindComponent.getSubType());
+            recentUpdateListAdapterArr.put(currentBindPos, recentUpdateListAdapter);
+        } else {
+            recentUpdateListAdapter = recentUpdateListAdapterArr.get(currentBindPos);
+            if (recentUpdateListAdapter.getItemList() == null) { // 如果列表没值的话给他赋值
+                recentUpdateListAdapter.setItemList(currentBindComponent.getSubList());
+            }
+        }
+        // 进行刷新
+        if (AudioMediaPlayer.getAudio() != null && AudioMediaPlayer.getAudio().isPlaying()) { // 有歌在播
+            if (AudioMediaPlayer.getAudio().getColumnId().equals(currentBindComponent.getColumnId())) { // 同一个专栏
+                recentUpdateSubBtn.setText(R.string.stop_all);
+                Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_stopall);
+                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
+                recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
+            } else { // 不同专栏
+                recentUpdateSubBtn.setText(R.string.recent_update_btn_txt);
+                Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_playall);
+                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
+                recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
+            }
+        } else { // 没有歌在播
+            recentUpdateSubBtn.setText(R.string.recent_update_btn_txt);
+            Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_playall);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
+            recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
+        }
+        recentUpdateListView.setAdapter(recentUpdateListAdapter);
+        MeasureUtil.setListViewHeightBasedOnChildren(recentUpdateListView);
         if (currentBindComponent.isHideTitle()) { // 隐藏收听全部按钮
             recentUpdateSubBtn.setVisibility(View.GONE);
         } else {
@@ -81,23 +120,17 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
                             }
                             return;
                         }
-                        if (!recentUpdateListAdapter.isPlaying) {
-                            recentUpdateSubBtn.setText(R.string.stop_all);
-                            Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_stopall);
-                            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                            recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
-                            recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
-                            recentUpdateListAdapter.clickPlayAll();
-                        } else {
-                            recentUpdateSubBtn.setText(R.string.play_all);
-                            Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_playall);
-                            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                            recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
-                            recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
-                            recentUpdateListAdapter.stopPlayAll();
+                        if (recentUpdateListAdapter.getItemList() != null &&
+                                recentUpdateListAdapter.getItemList().size() > 0 &&
+                                recentUpdateListAdapter.getColumnId().equals(currentBindComponent.getColumnId())) { // 同一个组件
+                            if (!recentUpdateListAdapter.isPlaying) {
+                                recentUpdateListAdapter.clickPlayAll();
+                            } else {
+                                recentUpdateListAdapter.stopPlayAll();
+                            }
                         }
                     } else {
-                        // showTouristDialog();
+                        LoginDialogUtils.showTouristDialog(mContext);
                     }
                 }
             });
@@ -108,24 +141,5 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
                 JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), currentBindComponent.getImgUrl(), 5);
             }
         });
-        // 加载 ListView 的数据
-        if (recentUpdateListAdapterArr.get(currentBindPos) == null) {
-            recentUpdateListAdapter = new RecentUpdateListAdapter(mContext, currentBindComponent.getSubList(), currentBindComponent.isHasBuy());
-            recentUpdateListAdapter.setColumnMsg(currentBindComponent.getColumnId(), currentBindComponent.getSubType());
-            recentUpdateListAdapterArr.put(currentBindPos, recentUpdateListAdapter);
-        } else {
-            recentUpdateListAdapter = recentUpdateListAdapterArr.get(currentBindPos);
-            if (recentUpdateListAdapter.getItemList() == null) { // 如果列表没值的话给他赋值
-                recentUpdateListAdapter.setItemList(currentBindComponent.getSubList());
-            }
-        }
-        recentUpdateListView.setAdapter(recentUpdateListAdapter);
-        MeasureUtil.setListViewHeightBasedOnChildren(recentUpdateListView);
-    }
-
-    public void notifyRecentUpdateApdater() {
-        if (recentUpdateListAdapter != null) {
-            recentUpdateListAdapter.notifyDataSetChanged();
-        }
     }
 }

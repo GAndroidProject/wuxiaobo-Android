@@ -301,7 +301,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             recentUpdateListItem.setColumnTitle(mColumnTitle);
             if (resourceType.equals(DecorateEntityType.AUDIO)) { // 只有音频才需要显示播放 icon
                 recentUpdateListItem.setListPlayState(DecorateEntityType.ITEM_RECENT_PLAY);
-                audioCount++; // 视音频就加 1
+                audioCount++; // 是音频就加 1
             } else {
                 recentUpdateListItem.setListPlayState("");
             }
@@ -326,7 +326,7 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
             if (componentInfo.getType().equals(DecorateEntityType.RECENT_UPDATE_STR)) {
                 if (columnId.equals(componentInfo.getColumnId())) { // 是同一个组件才添加数据
                     componentInfo.setSubList(itemList);
-                    if (audioCount == 3) { // 3 个都是音频，就显示收听全部按钮，不想加字段，就用这个 hideTitle 来判断
+                    if (audioCount == data.size()) { // 全部都是音频，就显示收听全部按钮，不想加字段，就用这个 hideTitle 来判断
                         componentInfo.setHideTitle(false);
                     } else {
                         componentInfo.setHideTitle(true);
@@ -823,6 +823,9 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
 //            microPageLogo.setVisibility(View.GONE);
 //            microPageList.clear();
 //            microPageAdapter.notifyDataSetChanged();
+            // 刷新前，设置需要重新渲染
+            networkDecorate = false;
+            microPageAdapter = null;
             hp.requestMicroPageData(microPageId);
         }
     }

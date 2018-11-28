@@ -242,32 +242,13 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         }
     }
     public void notifyDataSetChangedRecentUpdate(){
-//        if(recentUpdateListAdapter != null){
-//            recentUpdateListAdapter.notifyDataSetChanged();
-//        }
         for (int i = 0; i < recentUpdateListAdapterArr.size(); i++) {
             int key = recentUpdateListAdapterArr.keyAt(i);
             RecentUpdateListAdapter recentUpdateListAdapter = recentUpdateListAdapterArr.get(key);
+            // list 需要刷新
             recentUpdateListAdapter.notifyDataSetChanged();
+            // title 也需要刷新
+            notifyItemChanged(key);
         }
-    }
-
-    private void showTouristDialog() {
-        final TouristDialog touristDialog = new TouristDialog(mContext);
-        touristDialog.setDialogCloseClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-
-            @Override
-            public void singleClick(View v) {
-                touristDialog.dismissDialog();
-            }
-        });
-        touristDialog.setDialogConfirmClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-            @Override
-            public void singleClick(View v) {
-                touristDialog.dismissDialog();
-                JumpDetail.jumpLogin(mContext, true);
-            }
-        });
-        touristDialog.showDialog();
     }
 }

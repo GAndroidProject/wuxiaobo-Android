@@ -20,6 +20,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
+import com.xiaoe.shop.wxb.utils.LoginDialogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 
 public class FlowInfoViewHolder extends BaseViewHolder {
@@ -81,7 +82,7 @@ public class FlowInfoViewHolder extends BaseViewHolder {
                     intent.putExtra("pageTitle", "我正在学");
                     mContext.startActivity(intent);
                 } else {
-                    // showTouristDialog();
+                    LoginDialogUtils.showTouristDialog(mContext);
                 }
             }
         });
