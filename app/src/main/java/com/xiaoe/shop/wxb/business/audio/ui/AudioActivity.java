@@ -102,7 +102,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private CommonBuyView commonBuyView;
     private StatusPagerView statusPagerView;
     private AudioDetailsSwitchLayout pagerContentDetailLayout;
-    private Intent mIntent;
     private AudioPlayListLayout audioPlayList;
     private ImageView btnCollect;
     private boolean hasCollect = false;//是否收藏
@@ -152,7 +151,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }
         getDialog().setDialogTag(CustomDialog.PAGER_LOAD_TAG);
         getDialog().showLoadDialog(false);
-        mIntent = getIntent();
         initViews();
         initDatas();
     }
@@ -235,6 +233,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         //状态页面
         statusPagerView = (StatusPagerView) findViewById(R.id.state_pager_view);
         statusPagerView.setVisibility(View.GONE);
+        statusPagerView.setOnClickListener(this);
         //收藏按钮
         btnCollect = (ImageView) findViewById(R.id.btn_collect);
         btnCollect.setOnClickListener(this);
@@ -501,6 +500,12 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             case R.id.btn_audio_download:
             case R.id.btn_download:
                 clickDownload();
+                break;
+            case R.id.state_pager_view:
+                // TODO 添加刷新逻辑
+//                if (statusPagerView.getCurrentLoadingStatus() == StatusPagerView.FAIL) {
+//                    statusPagerView.setPagerState(StatusPagerView.LOADING, "", 0);
+//                }
                 break;
             default:
                 break;
