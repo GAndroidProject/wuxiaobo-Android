@@ -16,6 +16,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.xiaoe.common.widget.CommonRefreshHeader
+            android:paddingTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
         <com.xiaoe.shop.wxb.widget.CustomScrollView
             android:id="@+id/micro_page_scroller"
             android:layout_width="match_parent"

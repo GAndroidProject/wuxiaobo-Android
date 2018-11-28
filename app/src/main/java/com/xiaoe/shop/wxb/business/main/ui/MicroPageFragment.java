@@ -336,7 +336,8 @@ public class MicroPageFragment extends BaseFragment implements OnCustomScrollCha
                         componentInfo.setHideTitle(true);
                     }
                     // 局部刷新...
-                    microPageAdapter.notifyItemChanged(i);
+                    if (microPageAdapter != null)
+                        microPageAdapter.notifyItemChanged(i);
                 }
             }
         }
