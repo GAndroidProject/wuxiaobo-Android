@@ -678,5 +678,16 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             videoContentDetail.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_delete), R.mipmap.course_off);
         }
+        if(code != 0 && localResource){
+            //如果存在本地视频则播放本地是否
+            DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(CommonUserInfo.getShopId(), mResourceId);
+            if(download != null){
+                File file = new File(download.getLocalFilePath());
+                if(file.exists()){
+                    mLocalVideoUrl = download.getLocalFilePath();
+                    playControllerView.setPlayUrl(mLocalVideoUrl);
+                }
+            }
+        }
     }
 }
