@@ -549,7 +549,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         //是否停售 0:否，1：是
         int isStopSell = data.getIntValue("is_stop_sell");
         //离待上线时间，如有则是待上架
-        String timeLeft = data.getString("time_left");
+        int timeLeft = data.getIntValue("time_left");
         if(hasBuy && isFree == 0){
             setPagerState(0);
         }else{
@@ -557,7 +557,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 setPagerState(2);
             }else if(isStopSell == 1){
                 setPagerState(3);
-            }else if(!TextUtils.isEmpty(timeLeft)){
+            }else if(timeLeft > 0){
                 setPagerState(4);
             }else if(detailState == 2 || detailState == 1){
                 setPagerState(NetworkCodes.CODE_GOODS_DELETE);

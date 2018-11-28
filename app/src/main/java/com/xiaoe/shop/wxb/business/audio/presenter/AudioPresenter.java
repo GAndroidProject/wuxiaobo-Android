@@ -188,7 +188,7 @@ public class AudioPresenter implements IBizCallback {
         //是否停售 0:否，1：是
         int isStopSell = data.getIntValue("is_stop_sell");
         //离待上线时间，如有则是待上架
-        String timeLeft = data.getString("time_left");
+        int timeLeft = data.getIntValue("time_left");
         if(hasBuy && isFree == 0){
             playEntity.setResourceStateCode(0);
         }else{
@@ -198,7 +198,7 @@ public class AudioPresenter implements IBizCallback {
                 playEntity.setResourceStateCode(1);
             }if(detailState == 2 || detailState == 1){
                 playEntity.setResourceStateCode(3);
-            }else if(!TextUtils.isEmpty(timeLeft)){
+            }else if(timeLeft > 0){
                 playEntity.setResourceStateCode(4);
             }else {
                 playEntity.setResourceStateCode(0);

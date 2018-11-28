@@ -2,6 +2,7 @@ package com.xiaoe.common.entitys;
 
 public class AudioPlayTable {
     private static final String TAG = "AudioPlayTable";
+    public static final int DATABASE_VERSION = 1;
     /**
      *2-增加字段：try_play_url 试听播放地址。is_try 是否试听
      */
@@ -35,15 +36,15 @@ public class AudioPlayTable {
             currentPlayState+" "+TYPE_INTEGER+" default 0,"+
             state+" "+TYPE_INTEGER+" default 0,"+
             hasBuy+" "+TYPE_INTEGER+" default 0,"+
-            "try_play_url TEXT default \"\","+
-            "is_try INTEGER default 0,"+
+            "try_play_url TEXT default \"\","+//试听链接
+            "is_try INTEGER default 0,"+//是否是试看0：否，1：是
             createAt+" "+TYPE_DATETIME+" default '0000-00-00 00:00:00',"+
             updateAt+" "+TYPE_DATETIME+" default '0000-00-00 00:00:00',"+
             "primary key ("+appId +","+ resourceId+"))";
 
-    public static final String ADD_TRY_PLAY_URL_ROW_SQL = "ALTER TABLE "+TABLE_NAME+" add try_play_url TEXT default \"\"";
+//    public static final String ADD_TRY_PLAY_URL_ROW_SQL = "ALTER TABLE "+TABLE_NAME+" add try_play_url TEXT default \"\"";
     //是否是试看0：否，1：是
-    public static final String ADD_IS_TRY_ROW_SQL = "ALTER TABLE "+TABLE_NAME+" add is_try INTEGER default 0";
+//    public static final String ADD_IS_TRY_ROW_SQL = "ALTER TABLE "+TABLE_NAME+" add is_try INTEGER default 0";
     public static String getAppId() {
         return appId;
     }

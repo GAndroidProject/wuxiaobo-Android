@@ -176,7 +176,7 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         for(Map.Entry<String ,ISQLiteCallBack> entry : sqlCallBack.entrySet() ){
-            entry.getValue().onUpgrade(sqLiteDatabase, oldVersion, newVersion);
+//            entry.getValue().onUpgrade(sqLiteDatabase, oldVersion, newVersion);
         }
     }
 

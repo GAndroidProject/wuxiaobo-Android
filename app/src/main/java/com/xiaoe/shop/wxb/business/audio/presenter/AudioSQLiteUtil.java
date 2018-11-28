@@ -2,7 +2,6 @@ package com.xiaoe.shop.wxb.business.audio.presenter;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.xiaoe.common.db.ISQLiteCallBack;
 import com.xiaoe.common.db.SQLiteUtil;
@@ -26,13 +25,13 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
         return SQLiteUtil.DATABASE_VERSION;
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(newVersion > oldVersion && newVersion == 4){
-            db.execSQL(AudioPlayTable.ADD_TRY_PLAY_URL_ROW_SQL);
-            db.execSQL(AudioPlayTable.ADD_IS_TRY_ROW_SQL);
-        }
-    }
+//    @Override
+//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+//        if(newVersion > oldVersion && newVersion == 4){
+//            db.execSQL(AudioPlayTable.ADD_TRY_PLAY_URL_ROW_SQL);
+//            db.execSQL(AudioPlayTable.ADD_IS_TRY_ROW_SQL);
+//        }
+//    }
 
     @Override
     public List<String> createTablesSQL() {

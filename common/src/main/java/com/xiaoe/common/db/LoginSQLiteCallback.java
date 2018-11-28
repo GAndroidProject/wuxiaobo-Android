@@ -2,7 +2,6 @@ package com.xiaoe.common.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.entitys.LoginUserEntity;
@@ -41,18 +40,18 @@ public class LoginSQLiteCallback implements ISQLiteCallBack {
         return SQLiteUtil.DATABASE_VERSION;
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        switch (oldVersion) {
-            case 0:
-                // 升级操作
-//                db.execSQL(TABLE_SCHEMA_USER);
-            case 1:
-                break;
-            default:
-                break;
-        }
-    }
+//    @Override
+//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+//        switch (oldVersion) {
+//            case 0:
+//                // 升级操作
+////                db.execSQL(TABLE_SCHEMA_USER);
+//            case 1:
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     @Override
     public List<String> createTablesSQL() {

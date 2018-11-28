@@ -2,7 +2,6 @@ package com.xiaoe.common.utils;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.xiaoe.common.db.ISQLiteCallBack;
 import com.xiaoe.common.db.SQLiteUtil;
@@ -33,10 +32,10 @@ public class CacheDataUtil implements ISQLiteCallBack {
         return SQLiteUtil.DATABASE_VERSION;
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
+//    @Override
+//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+//
+//    }
 
     @Override
     public List<String> createTablesSQL() {

@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.xiaoe.common.entitys.AudioPlayTable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class SQLiteUtil extends SQLiteOpenHelper {
 
     private final String TAG = "SQLiteUtil";
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 1;
     private static final  String DATABASE_NAME = "xiaoeshop.db";
     private static SQLiteUtil INSTANCE;
     private java.util.concurrent.Semaphore semaphoreTransaction = new java.util.concurrent.Semaphore(1);
@@ -182,8 +184,9 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        for(Map.Entry<String ,ISQLiteCallBack> entry : INSTANCE.sqlCallBack.entrySet() ){
-            entry.getValue().onUpgrade(sqLiteDatabase, oldVersion, newVersion);
+        //根据数据版本号更新做不同的操作
+        if(newVersion > oldVersion && newVersion == AudioPlayTable.DATABASE_VERSION){
+            //列如，对音频表新增字段操作
         }
     }
 

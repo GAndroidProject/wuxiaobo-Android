@@ -620,7 +620,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         //是否停售 0:否，1：是
         int isStopSell = data.getIntValue("is_stop_sell");
         //离待上线时间，如有则是待上架
-        String timeLeft = data.getString("time_left");
+        int timeLeft = data.getIntValue("time_left");
         if(hasBuy && isFree == 0){
             setPagerState(0);
             return true;
@@ -631,7 +631,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             }else if(isStopSell == 1){
                 setPagerState(3);
                 return false;
-            }else if(!TextUtils.isEmpty(timeLeft)){
+            }else if(timeLeft > 0){
                 setPagerState(4);
                 return false;
             }else if(detailState == 2 || detailState == 1){

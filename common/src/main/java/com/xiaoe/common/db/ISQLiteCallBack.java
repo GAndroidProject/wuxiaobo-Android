@@ -2,7 +2,6 @@ package com.xiaoe.common.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ public interface ISQLiteCallBack {
 
     int getVersion();
 
-    void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion);
+//    void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion);
 
     List<String> createTablesSQL();
 

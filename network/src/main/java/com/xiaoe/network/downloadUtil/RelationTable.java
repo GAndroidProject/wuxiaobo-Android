@@ -30,10 +30,10 @@ public class RelationTable implements ISQLiteCallBack {
         return SQLiteUtil.DATABASE_VERSION;
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
+//    @Override
+//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+//
+//    }
 
     @Override
     public List<String> createTablesSQL() {
