@@ -100,13 +100,14 @@ public class JumpDetail {
      * @param context
      * @param resId
      */
-    public static void jumpVideo(Context context, String resId, String videoImageUrl, boolean localResoucrce){
+    public static void jumpVideo(Context context, String resId, String videoImageUrl, boolean localResource, String columnId){
         Intent intent = new Intent(context, VideoActivity.class);
         intent.putExtra("resourceId", resId);
         if(!TextUtils.isEmpty(videoImageUrl)){
             intent.putExtra("videoImageUrl", videoImageUrl);
         }
-        intent.putExtra("local_resource", localResoucrce);
+        intent.putExtra("local_resource", localResource);
+        intent.putExtra("columnId", columnId);
         context.startActivity(intent);
     }
     public static void jumpImageText(Context context, String resId, String imageUrl, String columnId){

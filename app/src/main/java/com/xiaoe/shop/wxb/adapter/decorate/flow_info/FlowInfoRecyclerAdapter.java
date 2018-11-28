@@ -226,7 +226,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 //                        Intent videoIntent = new Intent(mContext, VideoActivity.class);
 //                        videoIntent.putExtra("videoImageUrl", videoImageUrl);
 //                        mContext.startActivity(videoIntent, options.toBundle());
-                        JumpDetail.jumpVideo(mContext, bindItem.getItemId(), bindItem.getItemImg(), false);
+                        JumpDetail.jumpVideo(mContext, bindItem.getItemId(), bindItem.getItemImg(), false, "");
                     }
                 });
                 break;

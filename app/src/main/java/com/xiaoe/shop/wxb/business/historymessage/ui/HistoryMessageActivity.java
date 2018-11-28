@@ -239,7 +239,7 @@ public class HistoryMessageActivity extends XiaoeActivity {
                 JumpDetail.jumpAudio(mContext, listBean.getSkip_target(), 0);
                 break;
             case 3:
-                JumpDetail.jumpVideo(mContext, listBean.getSkip_target(), "", false);
+                JumpDetail.jumpVideo(mContext, listBean.getSkip_target(), "", false, "");
                 break;
             case 5:
                 BrowserActivity.openUrl(mContext, listBean.getSkip_target(), "外部链接");

@@ -62,7 +62,7 @@ public class ShufflingFigureViewHolder extends BaseViewHolder {
                     JumpDetail.jumpAudio(mContext, resourceId, 0);
                     break;
                 case DecorateEntityType.VIDEO:
-                    JumpDetail.jumpVideo(mContext, resourceId, "", false);
+                    JumpDetail.jumpVideo(mContext, resourceId, "", false, "");
                     break;
                 case DecorateEntityType.COLUMN:
                     JumpDetail.jumpColumn(mContext, resourceId, "", 6);

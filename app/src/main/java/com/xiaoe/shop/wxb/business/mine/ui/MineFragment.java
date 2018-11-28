@@ -653,7 +653,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener, 
                             JumpDetail.jumpAudio(mContext, mineLearningId, 1);
                             break;
                         case DecorateEntityType.VIDEO:
-                            JumpDetail.jumpVideo(mContext, mineLearningId, "", false);
+                            JumpDetail.jumpVideo(mContext, mineLearningId, "", false, "");
                             break;
                         case DecorateEntityType.COLUMN:
                             JumpDetail.jumpColumn(mContext, mineLearningId, "", 6);

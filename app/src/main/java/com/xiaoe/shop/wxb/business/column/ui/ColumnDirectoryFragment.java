@@ -250,7 +250,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                 JumpDetail.jumpAudio(getContext(), resourceId, 1);
             }else if(resourceType == 3){
                 //视频
-                JumpDetail.jumpVideo(getContext(), resourceId, "",false);
+                JumpDetail.jumpVideo(getContext(), resourceId, "",false, itemData.getColumnId());
             }else{
                 toastCustom("未知课程");
                 return;

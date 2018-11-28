@@ -310,7 +310,7 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
                 JumpDetail.jumpAudio(getContext(), resourceId, 1);
             }else if(resourceType == 3){
                 //视频
-                JumpDetail.jumpVideo(getContext(), resourceId, "",false);
+                JumpDetail.jumpVideo(getContext(), resourceId, "",false, "");
             }else{
                 toastCustom("未知课程");
                 return;

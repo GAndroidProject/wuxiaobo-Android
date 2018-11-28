@@ -27,6 +27,7 @@ import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.NetworkState;
@@ -92,6 +93,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private String shareUrl = "";
     private ImageView btnBack;
     private boolean mIsDownload;
+    private String columnId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,6 +132,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         collectionUtils = new CollectionUtils(this);
         mIntent = getIntent();
         mResourceId = mIntent.getStringExtra("resourceId");
+        columnId = mIntent.getStringExtra("columnId");
         initViews();
         initDatas();
     }
@@ -518,6 +521,11 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             JSONObject shareInfo = data.getJSONObject("share_info");
             if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
                 shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
+            }
+            if(!TextUtils.isEmpty(columnId) && !TextUtils.isEmpty(shareUrl)){
+                JSONObject shareJSON = Base64Util.base64ToJSON(shareUrl.substring(shareUrl.lastIndexOf("/")+1));
+                shareJSON.put("product_id", columnId);
+                shareUrl = shareUrl.substring(0, shareUrl.lastIndexOf("/") + 1) + Base64Util.jsonToBase64(shareJSON);
             }
         }catch (Exception e){
 //            e.printStackTrace();

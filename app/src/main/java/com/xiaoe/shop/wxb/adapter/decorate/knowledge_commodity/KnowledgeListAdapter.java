@@ -102,7 +102,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         JumpDetail.jumpAudio(mContext, mItemList.get(position).getResourceId(),0);
                         break;
                     case DecorateEntityType.VIDEO:
-                        JumpDetail.jumpVideo(mContext, mItemList.get(position).getResourceId(), "", false);
+                        JumpDetail.jumpVideo(mContext, mItemList.get(position).getResourceId(), "", false, "");
                         break;
                     case DecorateEntityType.COLUMN:
                         JumpDetail.jumpColumn(mContext, mItemList.get(position).getResourceId(), mItemList.get(position).getItemImg(), 6);

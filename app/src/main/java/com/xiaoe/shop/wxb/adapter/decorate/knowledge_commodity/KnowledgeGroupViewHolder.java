@@ -109,7 +109,7 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
                         JumpDetail.jumpAudio(mContext, knowledgeCommodityItem.getResourceId(), 0);
                         break;
                     case DecorateEntityType.VIDEO: // 视频
-                        JumpDetail.jumpVideo(mContext, knowledgeCommodityItem.getResourceId(), "", false);
+                        JumpDetail.jumpVideo(mContext, knowledgeCommodityItem.getResourceId(), "", false, "");
                         break;
                     case DecorateEntityType.COLUMN: // 专栏
                         JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), 6);

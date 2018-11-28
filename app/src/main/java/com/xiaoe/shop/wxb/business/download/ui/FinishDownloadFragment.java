@@ -72,7 +72,7 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
                 JumpDetail.jumpAudio(getContext(), download.getResourceId(), 1);
             }else if(download.getResourceType() == 2){
                 //视频
-                JumpDetail.jumpVideo(getContext(), download.getResourceId(), null, true);
+                JumpDetail.jumpVideo(getContext(), download.getResourceId(), null, true, "");
             }
         }
     }
