@@ -70,7 +70,7 @@
         <View
             android:layout_width="8dp"
             android:layout_height="8dp"
-            android:background="@drawable/white_circle_shape"
+            android:background="@drawable/white_circle_shape_small"
             android:layout_centerInParent="true"
             />
     </RelativeLayout>

@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/coupon_title"
+            android:textStyle="bold"
             android:textColor="@color/main_title_color"
             android:textSize="18sp" />
     </android.support.v7.widget.Toolbar>
