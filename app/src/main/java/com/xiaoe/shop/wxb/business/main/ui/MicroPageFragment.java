@@ -821,7 +821,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     private void updateToolbar(int scrollY) {
         if (!isMain) {
             alpha = (scrollY / (toolbarHeight * 1.0f)) * 255;
-            if (alpha > 0 && microPageTitleBg2.getVisibility() == View.VISIBLE){
+            if (alpha >= 0 && microPageTitleBg2.getVisibility() == View.VISIBLE){
                 microPageTitleBg.setVisibility(View.VISIBLE);
                 microPageTitleBg2.setVisibility(View.GONE);
             }
