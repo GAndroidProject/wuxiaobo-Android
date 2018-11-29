@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.business.earning.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.EarningItem;
@@ -31,6 +36,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningListAdapter;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 // 积分页面
@@ -40,6 +46,9 @@ public class IntegralActivity extends XiaoeActivity {
 
     @BindView(R.id.integral_wrap)
     LinearLayout integralWrap;
+
+    @BindView(R.id.integral_refresh)
+    SmartRefreshLayout integralRefresh;
 
     @BindView(R.id.title_back)
     ImageView integralBack;
@@ -64,6 +73,10 @@ public class IntegralActivity extends XiaoeActivity {
 
     EarningPresenter earningPresenter;
     List<EarningItem> dataList;
+
+    private int pageIndex = 1; // 默认第一页
+    private int pageSize = 10; // 默认每页加载 10 条
+    EarningListAdapter earningListAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,15 +109,35 @@ public class IntegralActivity extends XiaoeActivity {
     }
 
     private void initListener() {
-        integralBack.setOnClickListener(new View.OnClickListener() {
+        integralRefresh.setEnableRefresh(true);
+        integralRefresh.setEnableLoadMore(true);
+        integralRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onClick(View v) {
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                if (pageIndex != 1) {
+                    pageIndex = 1;
+                }
+                earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NEED_FLOW ,Constants.EARNING_FLOW_TYPE, pageIndex, pageSize);
+            }
+        });
+        integralRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                if (earningPresenter == null) {
+                    earningPresenter = new EarningPresenter(IntegralActivity.this);
+                }
+                earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NEED_FLOW ,Constants.EARNING_FLOW_TYPE, ++pageIndex, pageSize);
+            }
+        });
+        integralBack.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
                 onBackPressed();
             }
         });
-        integralBeSuperVip.setOnClickListener(new View.OnClickListener() {
+        integralBeSuperVip.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 JumpDetail.jumpSuperVip(IntegralActivity.this);
             }
         });
@@ -133,6 +166,20 @@ public class IntegralActivity extends XiaoeActivity {
     private void initPageData(JSONObject data) {
         int integral = data.getInteger("balance");
         JSONArray flowList = (JSONArray) data.get("flow_list");
+        if (flowList.size() == 0  && earningListAdapter != null) {
+            integralRefresh.setNoMoreData(true);
+            integralRefresh.setEnableLoadMore(false);
+            integralRefresh.finishLoadMore();
+            return;
+        }
+        if (pageIndex == 1 && dataList.size() != 0) { // 第一页但是有数据，表示为下拉加载
+            dataList.clear();
+            // 放开加载更多限制
+            integralRefresh.setEnableLoadMore(true);
+            integralRefresh.setNoMoreData(false);
+        }
+        integralRefresh.finishLoadMore();
+        integralRefresh.finishRefresh();
         for (Object item : flowList) {
             JSONObject jsonItem = (JSONObject) item;
             int flowInfo = jsonItem.getInteger("flow_type");
@@ -150,8 +197,12 @@ public class IntegralActivity extends XiaoeActivity {
         }
         integralContent.setText(String.valueOf(integral));
         if (dataList.size() > 0) {
-            EarningListAdapter earningListAdapter = new EarningListAdapter(this, dataList);
-            integralList.setAdapter(earningListAdapter);
+            if (earningListAdapter == null) {
+                earningListAdapter = new EarningListAdapter(this, dataList);
+                integralList.setAdapter(earningListAdapter);
+            } else {
+                earningListAdapter.notifyDataSetChanged();
+            }
             MeasureUtil.setListViewHeightBasedOnChildren(integralList);
             integralTip.setVisibility(View.GONE);
         } else {
