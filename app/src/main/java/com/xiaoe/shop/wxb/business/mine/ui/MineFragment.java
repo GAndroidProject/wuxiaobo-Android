@@ -112,7 +112,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     MineLearningListAdapter learningListAdapter; // 学习记录适配器
     private boolean showDataByDB = false;
     SuperVipPresenter superVipPresenter;
-    final String[] vipTips = {"全场免费听","亲友一起听","活动优先抢"};
+    final String[] vipTips = {"全场免费学","亲友一起听","活动优先抢"};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
