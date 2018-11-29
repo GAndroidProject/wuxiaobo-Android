@@ -433,12 +433,18 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     mColumnTitle = recentTitle;
                     // 频道组件对应的专栏 id
                     String recentId = jsonItem.getString("src_id");
-                    String imgUrl = jsonItem.getString("img_url");
                     int updateCount = jsonItem.getInteger("resource_count") == null ? 0 : jsonItem.getInteger("resource_count");
                     String updateCountStr = "已更新至" + updateCount + "期";
                     String srcType = jsonItem.getString("src_type");
                     component_recent.setTitle(recentTitle);
+                    String imgUrl = jsonItem.getString("img_url");
+                    if ("appe0MEs6qX8480".equals(Constants.getAppId())) { // 吴晓波 app，头像换成他的头像
+//                        imgUrl = "res:///" + ;
+                    } else {
+
+                    }
                     component_recent.setImgUrl(imgUrl);
+
                     component_recent.setDesc(updateCountStr);
                     // 最近更新需要设置专栏 id
                     component_recent.setColumnId(recentId);

@@ -23,16 +23,19 @@ import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
+import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.requests.BindJgPushRequest;
 import com.xiaoe.network.requests.GetPushStateRequest;
 import com.xiaoe.network.requests.GetUnreadMessageRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.IsSuperVipRequest;
+import com.xiaoe.network.requests.CouponHandleRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.main.MainFragmentStatePagerAdapter;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
+import com.xiaoe.shop.wxb.business.launch.presenter.CouponHandlePresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.MessagePushPresenter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
@@ -78,6 +81,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
      * 正在获取未读消息数
      */
     private boolean isGetUnreadMsg;
+    CouponHandlePresenter couponHandlePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +152,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         settingPresenter = new SettingPresenter(this);
         settingPresenter.getPushState();
 //        getUnreadMsg();
+        couponHandlePresenter = new CouponHandlePresenter(this);
+        couponHandlePresenter.requestSendCoupon();
     }
 
     private void initView() {
@@ -371,6 +377,25 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                     Log.d(TAG, "onMainThreadResponse: 未读消息数 " + messageCount);
                 } else if (code == NetworkCodes.CODE_FAILED) {
                     Log.d(TAG, "onMainThreadResponse: 获取未读消息失败...");
+                }
+            } else if (iRequest instanceof CouponHandleRequest) {
+                int code = result.getInteger("code");
+                if ((NetworkEngine.API_THIRD_BASE_URL + "xe.user.coupon.grant/1.0.0").equals(iRequest.getCmd())) {
+                    if (code == NetworkCodes.CODE_SUCCEED) {
+                        couponHandlePresenter.requestUnReadCouponMsg();
+                    } else if (code == NetworkCodes.CODE_NO_COUPON) {
+                        Log.d(TAG, "onMainThreadResponse: 店铺无优惠券功能");
+                    } else if (code == NetworkCodes.CODE_USER_NO_COUPON) {
+                        Log.d(TAG, "onMainThreadResponse: 用户无待领优惠券");
+                    } else {
+                        Log.d(TAG, "onMainThreadResponse: 发放优惠券未知错误");
+                    }
+                } else if ((NetworkEngine.API_THIRD_BASE_URL + "xe.user.coupon.unread/1.0.0").equals(iRequest.getCmd())) {
+                    if (code == NetworkCodes.CODE_SUCCEED) {
+                        JSONObject data = (JSONObject) result.get("data");
+                        boolean hasUnread = data.getBoolean("has_unread") == null ? false : data.getBoolean("has_unread");
+                        CommonUserInfo.getInstance().setHasUnreadMsg(hasUnread);
+                    }
                 }
             }
         } else {

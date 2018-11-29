@@ -17,6 +17,7 @@
 
     <color name="tree_item_border">#DBE2EA</color><!--边框颜色-->
     <color name="main_title_color">#333333</color><!--主要标题颜色-->
+    <color name="main_title_color_8">#CC333333</color>
     <color name="secondary_title_color">#999999</color><!--次级标题颜色-->
     <color name="high_title_color">#1E59F6</color><!--高亮标题颜色-->
     <color name="secondary_button_text_color">#CBCED4</color><!--次级按钮颜色，未选中态-->

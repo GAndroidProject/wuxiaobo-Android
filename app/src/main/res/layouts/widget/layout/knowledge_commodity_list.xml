@@ -13,6 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxWidth="180dp"
+            android:textStyle="bold"
             android:textSize="20sp"
             android:textColor="@color/main_title_color"
             android:maxLines="1"

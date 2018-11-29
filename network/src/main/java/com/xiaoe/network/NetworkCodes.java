@@ -62,4 +62,7 @@ public class NetworkCodes {
      * 评论已被删除，不能回复
      */
     public static final int CODE_COMMENT_NO_EXIST = 3003;
+
+    public static final int CODE_NO_COUPON = 4422;
+    public static final int CODE_USER_NO_COUPON = 4423;
 }

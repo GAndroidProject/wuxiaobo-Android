@@ -6,23 +6,17 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
-import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.downloadUtil.DownloadFileConfig;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.downloadUtil.DownloadSQLiteUtil;
-import com.xiaoe.network.requests.IRequest;
-import com.xiaoe.network.requests.UnReadMsgRequest;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
-import com.xiaoe.shop.wxb.business.launch.presenter.UnReadMsgPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.FrameAnimation;
 
@@ -126,11 +120,6 @@ public class SplashActivity extends XiaoeActivity {
     }
 
     private void initData() {
-        String apiToken = CommonUserInfo.getApiToken();
-        if (apiToken != null) {
-            UnReadMsgPresenter unReadMsgPresenter = new UnReadMsgPresenter(this);
-            unReadMsgPresenter.requestUnReadCouponMsg();
-        }
         ThreadPoolUtils.runTaskOnThread(() -> {
             //下载列表中，可能有正在下载状态，但是退出是还是正在下载状态，所以启动时将之前的状态置为暂停
             DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
@@ -147,22 +136,6 @@ public class SplashActivity extends XiaoeActivity {
                 sqLiteUtil.execSQL(CacheDataUtil.CREATE_TABLES_SQL);
             }
         });
-    }
-
-    @Override
-    public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
-        super.onMainThreadResponse(iRequest, success, entity);
-        if (success) {
-            if (iRequest instanceof UnReadMsgRequest) {
-                JSONObject result = (JSONObject) entity;
-                int code = result.getInteger("code");
-                if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data = (JSONObject) result.get("data");
-                    boolean hasUnread = data.getBoolean("has_unread") == null ? false : data.getBoolean("has_unread");
-                    CommonUserInfo.getInstance().setHasUnreadMsg(hasUnread);
-                }
-            }
-        }
     }
 
     /**
