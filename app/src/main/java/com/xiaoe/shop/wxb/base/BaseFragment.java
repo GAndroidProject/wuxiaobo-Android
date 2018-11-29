@@ -293,7 +293,8 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
             CommonUserInfo.setIsSuperVip(false);
             CommonUserInfo.setIsSuperVipAvailable(false);
             getDialog().dismissDialog();
-            JumpDetail.jumpLogin(getContext(), true);
+            // 点击重新登录，登录完之后要回到原来的页面
+            JumpDetail.jumpLogin(getContext());
             // 登录后需要回到原来的页面，所以不做 finish 操作
             // getActivity().finish();
         }

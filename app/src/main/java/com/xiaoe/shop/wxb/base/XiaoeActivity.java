@@ -553,7 +553,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             CommonUserInfo.setIsSuperVip(false);
             CommonUserInfo.setIsSuperVipAvailable(false);
             dialog.dismissDialog();
-            JumpDetail.jumpLogin(this, true);
+            // 点击重新登录，登录完之后要回到原来的页面
+            JumpDetail.jumpLogin(this);
             // 登录后需要回到原来的页面，所以不做 finish 操作
             // finish();
         }else if(tag == CustomDialog.NOT_WIFI_PLAY_TAG){
