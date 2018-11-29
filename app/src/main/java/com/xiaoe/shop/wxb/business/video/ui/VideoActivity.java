@@ -223,7 +223,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+mResourceId+"'";
             List<CacheData> cacheDataList = SQLiteUtil.init(this, new CacheDataUtil()).query(CacheDataUtil.TABLE_NAME, sql, null);
             if(cacheDataList != null && cacheDataList.size() > 0){
-                detailRequest(JSONObject.parseObject(cacheDataList.get(0).getContent()));
+                detailRequest(JSONObject.parseObject(cacheDataList.get(0).getContent()), true);
                 showCacheData = true;
             }
         }
@@ -435,7 +435,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }
         JSONObject jsonObject = (JSONObject) entity;
         if(iRequest instanceof DetailRequest){
-            detailRequest(jsonObject);
+            detailRequest(jsonObject, false);
         }else if(iRequest instanceof AddCollectionRequest){
             addCollectionRequest(jsonObject);
         }else if(iRequest instanceof RemoveCollectionListRequest){
@@ -470,7 +470,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }
     }
 
-    private void detailRequest(JSONObject jsonObject) {
+    private void detailRequest(JSONObject jsonObject, boolean cache) {
         getDialog().dismissDialog();
         try{
             JSONObject data = jsonObject.getJSONObject("data");
@@ -486,7 +486,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             }
             //已购或者免费
             if(data.getBoolean("available")){
-                setContent(data, true);
+                setContent(data, true, cache);
             }else{
                 //未购
                 JSONObject resourceInfo = data.getJSONObject("resource_info");
@@ -515,7 +515,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                         playControllerView.setVisibility(View.GONE);
                         setPagerState(2);
                     }else{
-                        setContent(resourceInfo, false);
+                        setContent(resourceInfo, false, cache);
                     }
                 }
             }
@@ -533,7 +533,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }
     }
 
-    private void setContent(JSONObject data, boolean available) {
+    private void setContent(JSONObject data, boolean available, boolean cache) {
         hasBuy = available;
         mResourceId = data.getString("resource_id");
         String title = data.getString("title");
@@ -583,10 +583,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             if(!TextUtils.isEmpty(mLocalVideoUrl)){
                 playControllerView.setPlayUrl(mLocalVideoUrl);
             }
-            buyView.setVisibility(View.VISIBLE);
+            buyView.setVisibility(cache ? View.GONE : View.VISIBLE);
             // 未购
             if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员的判断
-                buyView.setVipBtnVisibility(View.VISIBLE);
+                buyView.setVipBtnVisibility(cache ? View.GONE : View.VISIBLE);
             } else {
                 buyView.setVipBtnVisibility(View.GONE);
             }
@@ -626,7 +626,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             setPagerState(0);
             return true;
         }else{
-            if(saleStatus == 1){
+            if(saleStatus == 1 || detailState == 1){
                 setPagerState(2);
                 return false;
             }else if(isStopSell == 1){
@@ -635,7 +635,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             }else if(timeLeft > 0){
                 setPagerState(4);
                 return false;
-            }else if(detailState == 2 || detailState == 1){
+            }else if(detailState == 2){
                 setPagerState(NetworkCodes.CODE_GOODS_DELETE);
                 return false;
             }else {

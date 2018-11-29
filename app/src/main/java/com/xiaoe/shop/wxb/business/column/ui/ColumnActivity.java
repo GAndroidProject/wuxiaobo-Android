@@ -281,7 +281,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         Object dataObject = jsonObject.get("data");
         if(iRequest instanceof DetailRequest){
             JSONObject data = (JSONObject) dataObject;
-            detailRequest(data.getJSONObject("resource_info"), data.getBoolean("available"));
+            detailRequest(data.getJSONObject("resource_info"), data.getJSONObject("product_info"), data.getBoolean("available"), false);
             JSONObject shareInfo = data.getJSONObject("share_info");
             if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
                 shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
@@ -397,26 +397,26 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
     }
 
-    private void detailRequest(JSONObject data, boolean available) {
+    private void detailRequest(JSONObject data, JSONObject productInfo, boolean available, boolean cache) {
         int isRelated  = data.getIntValue("is_related");
-        if(isRelated == 1 && !available){
-            //1-免费,2-单卖，3-非单卖
+        if(isRelated == 1 && !available && productInfo != null){
+            //是否只关联售卖 0-不是, 1-仅关联
             //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
-//            JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
-//            JSONObject product = productList.getJSONObject(0);
-//            int productType = product.getIntValue("product_type");
-//            String productId = product.getString("id");
-//            String productImgUrl = product.getString("img_url");
-//            //1-专栏, 2-会员, 3-大专栏
-//            if(productType == 3){
-//                JumpDetail.jumpColumn(this, productId, productImgUrl, 8);
-//            }else if(productType == 2){
-//                JumpDetail.jumpColumn(this, productId, productImgUrl, 5);
-//            }else{
-//                JumpDetail.jumpColumn(this, productId, productImgUrl, 6);
-//            }
-//            finish();
-//            return;
+            JSONArray productList = productInfo.getJSONArray("product_list");
+            JSONObject product = productList.getJSONObject(0);
+            int productType = product.getIntValue("product_type");
+            String productId = product.getString("id");
+            String productImgUrl = product.getString("img_url");
+            //1-专栏, 2-会员, 3-大专栏
+            if(productType == 3){
+                JumpDetail.jumpColumn(this, productId, productImgUrl, 8);
+            }else if(productType == 2){
+                JumpDetail.jumpColumn(this, productId, productImgUrl, 5);
+            }else{
+                JumpDetail.jumpColumn(this, productId, productImgUrl, 6);
+            }
+            finish();
+            return;
         }
         summary = data.getString("summary");
         hasBuy = available;
@@ -442,11 +442,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             realSrcId = data.getString("resource_id");
         }else{
             price = data.getIntValue("price");
-            buyView.setVisibility(View.VISIBLE);
+            buyView.setVisibility(cache ? View.GONE : View.VISIBLE);
             setMiniPlayerPosition(RelativeLayout.ABOVE, R.id.common_buy_layout);
             // 未购买
             if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员判断
-                buyView.setVipBtnVisibility(View.VISIBLE);
+                buyView.setVipBtnVisibility(cache ? View.GONE : View.VISIBLE);
             } else {
                 buyView.setVipBtnVisibility(View.GONE);
             }
@@ -500,13 +500,13 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             setPagerState(0);
             columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
         }else{
-            if(saleStatus == 1){
+            if(saleStatus == 1 || detailState == 1){
                 setPagerState(2);
             }else if(isStopSell == 1){
                 setPagerState(3);
             }else if(timeLeft > 0){
                 setPagerState(4);
-            }else if(detailState == 2 || detailState == 1){
+            }else if(detailState == 2){
                 setPagerState(NetworkCodes.CODE_GOODS_DELETE);
             }else {
                 setPagerState(0);
@@ -690,7 +690,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
         if(cacheDataList != null && cacheDataList.size() > 0){
             JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent()).getJSONObject("data");
-            detailRequest(data.getJSONObject("resource_info"), data.getBoolean("available"));
+            detailRequest(data.getJSONObject("resource_info"), data.getJSONObject("product_info"), data.getBoolean("available"), true);
             JSONObject shareInfo = data.getJSONObject("share_info");
             if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
                 shareUrl = shareInfo.getJSONObject("wx").getString("share_url");

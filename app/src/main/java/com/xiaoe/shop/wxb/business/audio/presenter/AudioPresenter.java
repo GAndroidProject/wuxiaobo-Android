@@ -40,7 +40,7 @@ public class AudioPresenter implements IBizCallback {
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
         if (entity == null)   return;//修复报空指针
         if(iRequest instanceof DetailRequest){
-            setAudioDetail(success, (JSONObject) entity, (String) iRequest.getDataParams().get("goods_id"));
+            setAudioDetail(success, (JSONObject) entity, (String) iRequest.getDataParams().get("goods_id"), false);
         }else if(iRequest instanceof ContentRequest){
             setAudioContent(success, (JSONObject)entity);
         }else{
@@ -68,7 +68,7 @@ public class AudioPresenter implements IBizCallback {
         playAudio(playEntity.isPlay());
     }
 
-    private void setAudioDetail(boolean success, JSONObject jsonObject, String resourceId) {
+    private void setAudioDetail(boolean success, JSONObject jsonObject, String resourceId, boolean cache) {
 
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
         if(playEntity == null){
@@ -78,6 +78,7 @@ public class AudioPresenter implements IBizCallback {
             playEntity.setIndex(0);
             playEntity.setPlay(false);
         }
+        playEntity.setCache(cache);
         if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED ){
             if(jsonObject.getIntValue("code") == NetworkCodes.CODE_GOODS_DELETE){
                 playEntity.setCode(NetworkCodes.CODE_GOODS_DELETE);
@@ -87,10 +88,10 @@ public class AudioPresenter implements IBizCallback {
             return;
         }
         JSONObject data = jsonObject.getJSONObject("data");
-        if(!resourceId.equals(playEntity.getResourceId())){
-            //当前播放的音频与请求到的音频数据不是同一资源，则放弃结果
-            return;
-        }
+//        if(!resourceId.equals(playEntity.getResourceId())){
+//            //当前播放的音频与请求到的音频数据不是同一资源，则放弃结果
+//            return;
+//        }
         boolean available = data.getBoolean("available");
         JSONObject resourceInfo = null;
         if(available){
@@ -192,14 +193,14 @@ public class AudioPresenter implements IBizCallback {
         if(hasBuy && isFree == 0){
             playEntity.setResourceStateCode(0);
         }else{
-            if(saleStatus == 1){
+            if(saleStatus == 1 || detailState == 1){
                 playEntity.setResourceStateCode(2);
             }else if(isStopSell == 1){
-                playEntity.setResourceStateCode(1);
-            }if(detailState == 2 || detailState == 1){
                 playEntity.setResourceStateCode(3);
             }else if(timeLeft > 0){
                 playEntity.setResourceStateCode(4);
+            }else if(detailState == 2 ){
+                playEntity.setResourceStateCode(NetworkCodes.CODE_GOODS_DELETE);
             }else {
                 playEntity.setResourceStateCode(0);
             }
@@ -226,7 +227,7 @@ public class AudioPresenter implements IBizCallback {
         List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
         if(cacheDataList != null && cacheDataList.size() > 0){
             JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent());
-            setAudioDetail(true, data, resourceId);
+            setAudioDetail(true, data, resourceId, true);
         }
         DetailRequest detailRequest = new DetailRequest( this);
         detailRequest.addDataParam("goods_id",resourceId);

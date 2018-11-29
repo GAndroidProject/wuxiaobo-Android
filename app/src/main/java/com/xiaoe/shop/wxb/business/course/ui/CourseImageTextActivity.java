@@ -11,7 +11,6 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -393,10 +392,10 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
-                    initPageData(data);
+                    initPageData(data, false);
                 } else if (code == NetworkCodes.CODE_GOODS_GROUPS_DELETE || code == NetworkCodes.CODE_GOODS_DELETE) {
                     Log.d(TAG, "onMainThreadResponse: 商品分组已被删除");
-                    setPagerState(2);
+                    setPagerState(NetworkCodes.CODE_GOODS_DELETE);
                 } else if (code == NetworkCodes.CODE_GOODS_NOT_FIND) {
                     Log.d(TAG, "onMainThreadResponse: 商品不存在");
                     setPagerState(1);
@@ -410,7 +409,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     }
 
     // 初始化页面信息
-    private void initPageData(JSONObject data) {
+    private void initPageData(JSONObject data, boolean cache) {
         // 获取接口返回的资源信息 resource_info
         getDialog().dismissDialog();
         JSONObject resourceInfo = (JSONObject) data.get("resource_info");
@@ -439,7 +438,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             }
         }
         if (resourceInfo == null) { // 已购
-            initData(data);
+            initData(data, cache);
         } else { // 未购
             //1-免费,2-单卖，3-非单卖
             if(resourceInfo.getIntValue("is_related") == 1){
@@ -460,12 +459,12 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 finish();
                 return;
             }else{
-                initData(resourceInfo);
+                initData(resourceInfo, cache);
             }
         }
     }
 
-    private void initData(JSONObject data) {
+    private void initData(JSONObject data, boolean cache) {
         realSrcId = data.getString("resource_id");
         SetImageUriUtil.setImgURI(itBg, imgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 250));
         // 标题
@@ -492,11 +491,11 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             // 没有就那预览的内容
             String orgContent = data.getString("preview_content");
             setOrgContent(orgContent);
-            itBuy.setVisibility(View.VISIBLE);
+            itBuy.setVisibility(cache ? View.GONE : View.VISIBLE);
             itBuy.setBuyBtnText("购买￥" + price);
             // 如果是超级会员但是且要购买，那就把超级会员的按钮显示出来
             if (CommonUserInfo.isIsSuperVip()) {
-                itBuy.setVipBtnVisibility(View.VISIBLE);
+                itBuy.setVipBtnVisibility(cache ? View.GONE : View.VISIBLE);
             }
         } else {
             itBuy.setVisibility(View.GONE);
@@ -555,13 +554,13 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         if(hasBuy && isFree == 0){
             setPagerState(0);
         }else{
-            if(saleStatus == 1){
+            if(saleStatus == 1 || detailState == 1){
                 setPagerState(2);
             }else if(isStopSell == 1){
                 setPagerState(3);
             }else if(timeLeft > 0){
                 setPagerState(4);
-            }else if(detailState == 2 || detailState == 1){
+            }else if(detailState == 2 ){
                 setPagerState(NetworkCodes.CODE_GOODS_DELETE);
             }else {
                 setPagerState(0);
@@ -624,7 +623,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
         if(cacheDataList != null && cacheDataList.size() > 0){
             JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent()).getJSONObject("data");
-            initPageData(data);
+            initPageData(data, true);
         }
     }
 

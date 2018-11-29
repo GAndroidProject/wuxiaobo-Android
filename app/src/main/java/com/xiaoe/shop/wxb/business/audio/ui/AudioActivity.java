@@ -403,27 +403,33 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
      *
      * @param state 0-正常的,1-请求失败,2-课程下架,-1： 加载，3-停售， 4-待上架，3004：商品已删除
      */
-    public void setPagerState(int state){
+    public boolean setPagerState(int state){
         if(state == 1){
             pagerContentDetailLayout.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), StatusPagerView.DETAIL_NONE);
+            return false;
         }else if(state == 2){
             pagerContentDetailLayout.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sold_out), R.mipmap.course_off);
+            return false;
         }else if(state == 3){
             pagerContentDetailLayout.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sale_stop), R.mipmap.course_off);
+            return false;
         }else if(state == 4){
             pagerContentDetailLayout.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_stay_putaway), R.mipmap.course_off);
+            return false;
         }else if(state == 3004){
             pagerContentDetailLayout.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_delete), R.mipmap.course_off);
+            return false;
         }else{
             pagerContentDetailLayout.setVisibility(View.VISIBLE);
             statusPagerView.setVisibility(View.GONE);
             statusPagerView.setLoadingState(View.GONE);
             statusPagerView.setHintStateVisibility(View.GONE);
+            return true;
         }
     }
 
@@ -719,10 +725,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }
         if(playEntity.getHasBuy() == 0 && code == 0){
             //未购买
-            commonBuyView.setVisibility(View.VISIBLE);
+            commonBuyView.setVisibility(playEntity.isCache() ? View.GONE : View.VISIBLE);
             commonBuyView.setBuyPrice(playEntity.getPrice());
             if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员判断
-                commonBuyView.setVipBtnVisibility(View.VISIBLE);
+                commonBuyView.setVipBtnVisibility(playEntity.isCache() ? View.GONE : View.VISIBLE);
             } else {
                 commonBuyView.setVipBtnVisibility(View.GONE);
             }
@@ -734,7 +740,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if(code == 0){
             getDialog().dismissDialog();
             setContentDetail(playEntity.getContent());
-            setPagerState(playEntity.getResourceStateCode());
+            if(!setPagerState(playEntity.getResourceStateCode())){
+                return;
+            }
         }
         if(AudioMediaPlayer.isStop()){
             AudioMediaPlayer.setAudio(playEntity, true);

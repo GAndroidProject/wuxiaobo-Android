@@ -42,7 +42,6 @@
         <activity
             android:name=".business.launch.ui.SplashActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

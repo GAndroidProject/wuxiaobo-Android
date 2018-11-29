@@ -52,10 +52,12 @@ public class JumpDetail {
     public static void jumpAudio(Context context, String resId, int hasBuy){
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
         String resourceId = "";
+        String flowId = "";
         if(playEntity != null){
             resourceId = playEntity.getResourceId();
+            flowId = playEntity.getFlowId();
         }
-        if(!resourceId.equals(resId)){
+        if(!(resourceId.equals(resId) || flowId.equals(resId))){
             AudioMediaPlayer.stop();
 
             playEntity = new AudioPlayEntity();

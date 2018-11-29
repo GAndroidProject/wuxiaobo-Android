@@ -25,7 +25,7 @@ public class AudioPlayEntity {
     private int totalDuration = 0;//总时长
     private String shareUrl = "";
 
-    private int resourceStateCode = 0;//资源状态码,0-正常，1-停售，2-下架，3-删除,4-待上架
+    private int resourceStateCode = 0;//资源状态码,0-正常，3-停售，2-下架，3004-删除,4-待上架
     private boolean isSingleBuy = true;//是否是单卖
     private int productType = 0;//6-专栏，5-会员，8-大专栏
     private String productId = "";
@@ -41,6 +41,7 @@ public class AudioPlayEntity {
     private boolean isPlaying;
     private String productsTitle;
     private String flowId;
+    private boolean cache = false;
 
     public String getAppId() {
         return appId;
@@ -305,5 +306,13 @@ public class AudioPlayEntity {
 
     public void setResourceStateCode(int resourceStateCode) {
         this.resourceStateCode = resourceStateCode;
+    }
+
+    public boolean isCache() {
+        return cache;
+    }
+
+    public void setCache(boolean cache) {
+        this.cache = cache;
     }
 }
