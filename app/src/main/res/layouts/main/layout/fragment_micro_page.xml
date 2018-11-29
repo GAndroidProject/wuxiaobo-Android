@@ -21,8 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/nested_scroller"
+        <com.xiaoe.shop.wxb.widget.CustomScrollView
+            android:id="@+id/micro_scroller"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
@@ -57,7 +57,7 @@
                     <!--android:layout_centerHorizontal="true"-->
                     <!--android:layout_below="@id/micro_page_content"/>-->
             </RelativeLayout>
-        </android.support.v4.widget.NestedScrollView>
+        </com.xiaoe.shop.wxb.widget.CustomScrollView>
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 

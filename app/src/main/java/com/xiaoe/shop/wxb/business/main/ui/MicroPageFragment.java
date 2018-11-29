@@ -53,7 +53,9 @@ import com.xiaoe.shop.wxb.business.main.presenter.PageFragmentPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
+import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.youth.banner.Banner;
 
@@ -68,7 +70,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MicroPageFragment extends BaseFragment implements OnRefreshListener {
+public class MicroPageFragment extends BaseFragment implements OnRefreshListener, OnCustomScrollChangedListener {
 
     private static final String TAG = "MicroPageFragment";
 
@@ -86,8 +88,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     FrameLayout microPageWrap;
     @BindView(R.id.micro_page_fresh)
     SmartRefreshLayout microPageFresh;
-    @BindView(R.id.nested_scroller)
-    NestedScrollView nestedScrollView;
+    @BindView(R.id.micro_scroller)
+    CustomScrollView microScrollView;
 
     @BindView(R.id.micro_page_title_bg)
     SimpleDraweeView microPageTitleBg;
@@ -655,12 +657,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         if (microPageList == null) {
             microPageList = new ArrayList<>();
         }
-        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                updateToolbar(scrollY);
-            }
-        });
+        microScrollView.setScrollChanged(this);
         microPageFresh.setOnRefreshListener(this);
         if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
             microPageFresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
@@ -867,5 +864,15 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             microPageAdapter = null;
             hp.requestMicroPageData(microPageId);
         }
+    }
+
+    @Override
+    public void onScrollChanged(int l, int t, int oldl, int oldt) {
+        updateToolbar(t);
+    }
+
+    @Override
+    public void onLoadState(int state) {
+
     }
 }
