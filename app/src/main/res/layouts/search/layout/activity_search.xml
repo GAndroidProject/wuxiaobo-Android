@@ -43,9 +43,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/cancel_text"
                 android:textSize="16sp"
+                android:padding="7dp"
                 android:textColor="@color/recent_list_color"
                 android:layout_gravity="end|center"
-                android:layout_marginEnd="20dp"/>
+                android:layout_marginEnd="13dp"/>
 
         </android.support.v7.widget.Toolbar>
 
