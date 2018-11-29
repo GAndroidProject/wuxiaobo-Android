@@ -35,7 +35,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             />
-        <TextView
+        <com.xiaoe.shop.wxb.widget.autotextview.AutofitTextView
             android:id="@+id/item_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

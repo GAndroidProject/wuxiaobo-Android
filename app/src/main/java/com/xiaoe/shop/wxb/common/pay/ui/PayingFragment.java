@@ -14,6 +14,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
+import com.xiaoe.shop.wxb.widget.autotextview.AutofitTextView;
 
 public class PayingFragment extends BaseFragment {
     private static final String TAG = "PayingFragment";
@@ -57,7 +58,7 @@ public class PayingFragment extends BaseFragment {
         btnSucceedPay = (TextView) mRootView.findViewById(R.id.btn_succeed_pay);
         setCanUseCouponCount(-1);
 
-        TextView itemDesc = (TextView) mRootView.findViewById(R.id.item_desc);
+        AutofitTextView itemDesc = (AutofitTextView) mRootView.findViewById(R.id.item_desc);
         String expireTime = mIntent.getStringExtra("expireTime");
         if(!TextUtils.isEmpty(expireTime)){
             itemDesc.setVisibility(View.VISIBLE);

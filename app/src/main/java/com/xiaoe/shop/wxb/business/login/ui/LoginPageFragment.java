@@ -29,6 +29,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.login.presenter.LoginTimeCount;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.FileUtils;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.widget.CodeVerifyView;
@@ -294,20 +295,21 @@ public class LoginPageFragment extends BaseFragment {
         TextView mainPhoneTourist = (TextView) viewWrap.findViewById(R.id.login_main_tourist);
 
         // 账号密码登录
-        mainPhonePwd.setOnClickListener(new View.OnClickListener() {
+        mainPhonePwd.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 toggleSoftKeyboard();
                 phoneContent.setText("");
                 phoneErrorTip.setVisibility(View.GONE);
+                loginActivity.isPwdLogin = true;
                 loginActivity.replaceFragment(LoginActivity.PWD);
             }
         });
 
         // 微信登录
-        mainPhoneWeChat.setOnClickListener(new View.OnClickListener() {
+        mainPhoneWeChat.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 toggleSoftKeyboard();
                 phoneContent.setText("");
                 phoneErrorTip.setVisibility(View.GONE);
@@ -316,9 +318,9 @@ public class LoginPageFragment extends BaseFragment {
             }
         });
 
-        mainPhoneTourist.setOnClickListener(new View.OnClickListener() {
+        mainPhoneTourist.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 toggleSoftKeyboard();
                 // 游客登录
                 // loginActivity.loginPresenter.requestTouristsShopId();
@@ -342,9 +344,9 @@ public class LoginPageFragment extends BaseFragment {
         initPhoneInputListener(LoginActivity.REGISTER);
 
         TextView registerPhoneProvision = (TextView) viewWrap.findViewById(R.id.login_register_provision);
-        registerPhoneProvision.setOnClickListener(new View.OnClickListener() {
+        registerPhoneProvision.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 // 跳转到服务协议页面
                 loginActivity.replaceFragment(LoginActivity.SERVICE);
             }
@@ -404,9 +406,9 @@ public class LoginPageFragment extends BaseFragment {
             }
         });
 
-        loginCodeObtain.setOnClickListener(new View.OnClickListener() {
+        loginCodeObtain.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 loginActivity.loginPresenter.obtainPhoneCode(phoneNum);
                 loginCodeSecond.setVisibility(View.VISIBLE);
                 if (loginCodeObtain == null) {
@@ -463,22 +465,22 @@ public class LoginPageFragment extends BaseFragment {
         });
 
         pwdSubmit.setEnabled(false);
-        pwdSubmit.setOnClickListener(new View.OnClickListener() {
+        pwdSubmit.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 toggleSoftKeyboard();
                 String phoneNum = phoneContent.getText().toString();
-                String password = passwordContent.getText().toString();
-                loginActivity.loginPresenter.loginByPassword(phoneNum, password);
+                loginActivity.password = passwordContent.getText().toString();
+                loginActivity.loginPresenter.checkRegister(phoneNum);
             }
         });
 
         TextView pwdForget = (TextView) viewWrap.findViewById(R.id.login_pwd_forget);
         final TextView pwdError = (TextView) viewWrap.findViewById(R.id.login_pwd_error);
 
-        pwdForget.setOnClickListener(new View.OnClickListener() {
+        pwdForget.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 phoneContent.setText("");
                 passwordContent.setText("");
                 pwdError.setVisibility(View.GONE);
@@ -533,9 +535,9 @@ public class LoginPageFragment extends BaseFragment {
             }
         });
 
-        setPwdSubmit.setOnClickListener(new View.OnClickListener() {
+        setPwdSubmit.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 String password = passwordContent.getText().toString();
                 if (password.length() >= 6) {
                     // 判断是注册流程还是修改密码流程
@@ -556,9 +558,9 @@ public class LoginPageFragment extends BaseFragment {
     private void initLoginWeChatFragment() {
         Button weChatSubmit = (Button) viewWrap.findViewById(R.id.login_we_chat_submit);
 
-        weChatSubmit.setOnClickListener(new View.OnClickListener() {
+        weChatSubmit.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 ((LoginActivity) getActivity()).loginPresenter.reqWXLogin();
             }
         });
@@ -668,9 +670,9 @@ public class LoginPageFragment extends BaseFragment {
             }
         });
 
-        viewWrap.setOnClickListener(new View.OnClickListener() {
+        viewWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 if (phoneContent.isCursorVisible()) {
                     phoneContent.setCursorVisible(false);
                     toggleSoftKeyboard(); // 关闭软键盘
@@ -678,9 +680,9 @@ public class LoginPageFragment extends BaseFragment {
             }
         });
 
-        phoneContent.setOnClickListener(new View.OnClickListener() {
+        phoneContent.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 phoneContent.setCursorVisible(true);
             }
         });
@@ -708,9 +710,9 @@ public class LoginPageFragment extends BaseFragment {
             case LoginActivity.MAIN:
             case LoginActivity.REGISTER:
                 // 首页获取验证码按钮
-                phoneObtainCode.setOnClickListener(new View.OnClickListener() {
+                phoneObtainCode.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                     @Override
-                    public void onClick(View v) {
+                    public void singleClick(View v) {
                         String phoneNumber = phoneContent.getText().toString();
                         if (phoneNumber.length() == 11) {
                             if (phoneContent.isCursorVisible()) {
@@ -728,9 +730,9 @@ public class LoginPageFragment extends BaseFragment {
                 // do nothing, 密码登录不需要验证码，隐藏该按钮
                 break;
             case LoginActivity.BIND_PHONE:
-                phoneObtainCode.setOnClickListener(new View.OnClickListener() {
+                phoneObtainCode.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                     @Override
-                    public void onClick(View v) {
+                    public void singleClick(View v) {
                         String phoneNum = phoneContent.getText().toString();
                         phoneContent.setText("");
                         toggleSoftKeyboard();
@@ -742,9 +744,9 @@ public class LoginPageFragment extends BaseFragment {
                 break;
             case LoginActivity.FIND_PWD:
                 loginActivity.isRegister = false;
-                phoneObtainCode.setOnClickListener(new View.OnClickListener() {
+                phoneObtainCode.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                     @Override
-                    public void onClick(View v) {
+                    public void singleClick(View v) {
                         String phoneNumber = phoneContent.getText().toString();
                         if (phoneNumber.length() == 11) {
                             phoneContent.setText("");

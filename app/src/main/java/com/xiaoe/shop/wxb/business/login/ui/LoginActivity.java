@@ -39,6 +39,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.login.LoginPresenter;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
@@ -85,6 +86,7 @@ public class LoginActivity extends XiaoeActivity {
     // 验证码
     protected String smsCode;
     protected boolean isRegister; // 是否为注册流程
+    protected boolean isPwdLogin; // 是否为密码登录流程
 
     protected LoginPresenter loginPresenter;
     protected SettingPresenter settingPresenter;
@@ -93,6 +95,7 @@ public class LoginActivity extends XiaoeActivity {
     Intent intent;
     private boolean isTouristClick; // 是否为游客点击
     private SQLiteUtil loginSQLiteUtil;
+    protected String password; // 密码登录流程 password
 
     protected String getPhoneNum() {
         return phoneNum;
@@ -157,16 +160,17 @@ public class LoginActivity extends XiaoeActivity {
 
     private void initListener() {
 
-        loginBack.setOnClickListener(new View.OnClickListener() {
+        loginBack.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 onBackPressed();
+
             }
         });
 
-        loginRegister.setOnClickListener(new View.OnClickListener() {
+        loginRegister.setOnClickListener(new OnClickEvent() {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 // 如果软件盘在的话，就把软键盘隐藏
                 toggleSoftKeyboard();
                 isRegister = true;
@@ -199,9 +203,11 @@ public class LoginActivity extends XiaoeActivity {
                 case PWD:
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
+                    isPwdLogin = false; // 回到首页之前，结束密码登录流程
                     replaceFragment(MAIN);
                     break;
                 case FIND_PWD:
+                    isPwdLogin = true; // 从找回密码回来，开始密码登录流程
                     replaceFragment(PWD);
                     break;
                 case SET_PWD:
@@ -216,6 +222,7 @@ public class LoginActivity extends XiaoeActivity {
                 case BIND_WE_CHAT:
                     loginBack.setVisibility(View.GONE);
                     loginRegister.setVisibility(View.VISIBLE);
+                    SharedPreferencesUtil.putData("accessToken", ""); // 离开绑定微信页面的时候清空 accessToken
                     replaceFragment(MAIN);
                     break;
                 case BIND_PHONE:
@@ -242,6 +249,7 @@ public class LoginActivity extends XiaoeActivity {
                 // 回到首页之前清空 preTag 以及处理初始化操作
                 preTag = null;
                 isRegister = false;
+                isPwdLogin = false;
                 phoneNum = "";
                 smsCode = "";
             } else {
@@ -345,6 +353,7 @@ public class LoginActivity extends XiaoeActivity {
                     // 绑定手机
                     obtainLimitUserInfo(data, false);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
+                    loginPresenter.checkRegister(phoneNum);
                     Toast("登录失败");
                     Log.d(TAG, "onMainThreadResponse: " + result.getString("msg"));
                 } else if (code == NetworkCodes.CODE_OBTAIN_ACCESS_TOKEN_FAIL) { // 获取 access token 失败
@@ -401,6 +410,14 @@ public class LoginActivity extends XiaoeActivity {
                 }
             } else if (iRequest instanceof LoginCheckRegisterRequest) { // 验证码检测
                 int code = result.getInteger("code");
+                if (isPwdLogin) { // 密码登录流程
+                    if (code == NetworkCodes.CODE_HAD_REGISTER) {
+                        loginPresenter.loginByPassword(iRequest.getFormBody().get("phone").toString(), password);
+                    } else {
+                        Toast("手机号未注册");
+                    }
+                    return;
+                }
                 if (isRegister) { // 注册流程
                     if (code == NetworkCodes.CODE_HAD_REGISTER) {
                         ((LoginPageFragment) currentFragment).phoneObtainCode.setEnabled(false);
@@ -658,7 +675,6 @@ public class LoginActivity extends XiaoeActivity {
             }
             // code 如果有，都要清空
             SharedPreferencesUtil.putData("wx_code", ""); // 清空 code
-            SharedPreferencesUtil.putData("accessToken", ""); // 清空 accessToken
         }
     }
 
