@@ -275,7 +275,10 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         // 初始化布局管理器
         LinearLayoutManager llm_content = new LinearLayoutManager(mContext);
         llm_content.setOrientation(LinearLayout.VERTICAL);
+        llm_content.setSmoothScrollbarEnabled(true);
+        llm_content.setAutoMeasureEnabled(true);
         microPageContent.setLayoutManager(llm_content);
+        microPageContent.setHasFixedSize(true);
 //        SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
 //        spacesItemDecoration.setMargin(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), 0);
 //        microPageContent.addItemDecoration(spacesItemDecoration);
@@ -437,11 +440,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     String updateCountStr = "已更新至" + updateCount + "期";
                     String srcType = jsonItem.getString("src_type");
                     component_recent.setTitle(recentTitle);
-                    String imgUrl = jsonItem.getString("img_url");
+                    String imgUrl;
                     if ("appe0MEs6qX8480".equals(Constants.getAppId())) { // 吴晓波 app，头像换成他的头像
-//                        imgUrl = "res:///" + ;
+                        imgUrl = "res:///" + R.mipmap.wu_logo;
                     } else {
-
+                        imgUrl = jsonItem.getString("img_url");
                     }
                     component_recent.setImgUrl(imgUrl);
 
