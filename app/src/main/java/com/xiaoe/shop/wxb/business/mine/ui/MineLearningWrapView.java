@@ -70,6 +70,10 @@ public class MineLearningWrapView extends LinearLayout {
         learningList = (ListView) view.findViewById(R.id.learning_list);
     }
 
+    public void setLearningMoreVisibility(int visibility) {
+        learningMore.setVisibility(visibility);
+    }
+
     public void setLearningMoreClickListener(OnClickListener listener) {
         learningMore.setOnClickListener(listener);
     }

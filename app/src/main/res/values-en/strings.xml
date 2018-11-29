@@ -249,7 +249,7 @@
     <string name="scholarship_yuan">元</string>
     <string name="scholarship_earn_tip">超级会员翻倍（10积分×2）</string>
     <string name="scholarship_page_title">可提现</string>
-    <string name="scholarship_page_submit">提现</string>
+    <string name="scholarship_page_submit">提 现</string>
     <string name="scholarship">元</string>
     <string name="scholarship_page_list_title">我的奖学金</string>
     <string name="integral_title">共获得</string>
@@ -338,4 +338,6 @@
     <string name="resource_try_see">试看</string>
 
     <string name="integral_desc">+%1$d积分</string>
+
+    <string name="coupon_unread_msg">%1$d张新优惠券</string>
 </resources>

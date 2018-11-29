@@ -549,10 +549,9 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         }
         switch (srcType) {
             case DecorateEntityType.IMAGE_TEXT: // 图文
-                return viewCount + "次阅读";
             case DecorateEntityType.AUDIO: // 音频
             case DecorateEntityType.VIDEO: // 视频
-                return viewCount + "次播放";
+                return viewCount + "次学习";
             case DecorateEntityType.TOPIC: // 大专栏
             case DecorateEntityType.COLUMN: // 专栏
             case DecorateEntityType.MEMBER: // 会员

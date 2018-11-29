@@ -8,14 +8,21 @@
         android:id="@+id/button_image"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/button_red_point"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:background="@drawable/red_point"
+        android:layout_toEndOf="@id/button_image"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/button_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button_image"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.xiaoe.common.app.CommonUserInfo;
-import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.shop.wxb.R;
 
 public class MineLearningListAdapter extends BaseAdapter {
@@ -34,7 +34,7 @@ public class MineLearningListAdapter extends BaseAdapter {
         imgList.add(R.mipmap.profile_coupon);
         imgList.add(R.mipmap.profile_code);
         titleList.add("我的收藏");
-        titleList.add("离线缓存");
+        titleList.add("下载列表");
         titleList.add("优惠券");
         titleList.add("兑换码");
     }
@@ -68,24 +68,16 @@ public class MineLearningListAdapter extends BaseAdapter {
         viewHolder.itemIcon.setImageResource(imgList.get(position));
         viewHolder.itemTitle.setText(titleList.get(position));
         if (titleList.get(position).equals("优惠券") && CommonUserInfo.getInstance().isHasUnreadMsg()) {
-            viewHolder.itemTip.setVisibility(View.VISIBLE);
+            viewHolder.itemCouponContainer.setVisibility(View.VISIBLE);
+            if (CommonUserInfo.getInstance().getUnreadMsgCount() > 0) {
+                viewHolder.itemContent.setVisibility(View.VISIBLE);
+                viewHolder.itemContent.setText(String.format(mContext.getResources().getString(R.string.coupon_unread_msg), CommonUserInfo.getInstance().getUnreadMsgCount()));
+            } else {
+                viewHolder.itemContent.setVisibility(View.GONE);
+            }
         } else {
-            viewHolder.itemTip.setVisibility(View.GONE);
+            viewHolder.itemCouponContainer.setVisibility(View.GONE);
         }
         return convertView;
-    }
-
-    class LearningListItemViewHolder{
-
-        @BindView(R.id.learning_list_item_icon)
-        ImageView itemIcon;
-        @BindView(R.id.learning_list_item_title)
-        TextView itemTitle;
-        @BindView(R.id.learning_list_item_coupon_tip)
-        TextView itemTip;
-
-        LearningListItemViewHolder(View itemView) {
-            ButterKnife.bind(this, itemView);
-        }
     }
 }

@@ -22,6 +22,7 @@ public class CommonUserInfo {
     private static CommonUserInfo commonUserInfo = null;
     private static LoginUser loginUser = null;
     private boolean hasUnreadMsg;
+    private int unreadMsgCount;
     private static SQLiteUtil loginSQLiteUtil;
 
     private CommonUserInfo(){
@@ -150,5 +151,13 @@ public class CommonUserInfo {
 
     public void clearLoginUserInfo() {
         loginUser = null;
+    }
+
+    public int getUnreadMsgCount() {
+        return unreadMsgCount;
+    }
+
+    public void setUnreadMsgCount(int unreadMsgCount) {
+        this.unreadMsgCount = unreadMsgCount;
     }
 }

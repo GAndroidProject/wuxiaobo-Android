@@ -31,6 +31,8 @@ public class BottomBarButton extends FrameLayout {
     private int buttonNameCheckedColor = 0;
     private String buttonNameText = "";
 
+    private TextView buttonRedPoint;
+
     public BottomBarButton(@NonNull Context context) {
         super(context);
         mContext = context;
@@ -47,6 +49,7 @@ public class BottomBarButton extends FrameLayout {
         rootView = View.inflate(context, R.layout.view_bottom_bar_button, this);
         buttonName = (TextView) rootView.findViewById(R.id.button_name);
         buttonImage = (ImageView) findViewById(R.id.button_image);
+        buttonRedPoint = (TextView) rootView.findViewById(R.id.button_red_point);
     }
 
     /**
@@ -99,4 +102,11 @@ public class BottomBarButton extends FrameLayout {
         setEnabled(!checked);
     }
 
+    public void setRedPointVisibility(int visibility) {
+        buttonRedPoint.setVisibility(visibility);
+    }
+
+    public int getRedPointVisibility() {
+        return buttonRedPoint.getVisibility();
+    }
 }

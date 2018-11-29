@@ -230,6 +230,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         if (3 == index && !TextUtils.isEmpty(CommonUserInfo.getInstance().getApiTokenByDB())) { // 有登录态才请求
             getUnreadMsg();
         }
+        if (3 == index && bottomTabBar.getBottomBarButtonByIndex(3).getRedPointVisibility() == View.VISIBLE) {
+            bottomTabBar.getBottomBarButtonByIndex(3).setRedPointVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -389,7 +392,12 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                     if (code == NetworkCodes.CODE_SUCCEED) {
                         JSONObject data = (JSONObject) result.get("data");
                         boolean hasUnread = data.getBoolean("has_unread") == null ? false : data.getBoolean("has_unread");
+                        int unreadCount = data.getInteger("unread_coupon_count") == null ? 0 : data.getInteger("unread_coupon_count");
                         CommonUserInfo.getInstance().setHasUnreadMsg(hasUnread);
+                        CommonUserInfo.getInstance().setUnreadMsgCount(unreadCount);
+                        if (hasUnread) {
+                            bottomTabBar.getBottomBarButtonByIndex(3).setRedPointVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }

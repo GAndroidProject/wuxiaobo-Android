@@ -184,15 +184,15 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         if (!mainActivity.isFormalUser) {
 
             touristDialog = new TouristDialog(getActivity());
-            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+            touristDialog.setDialogCloseClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
-                public void onClick(View v) {
+                public void singleClick(View v) {
                     touristDialog.dismissDialog();
                 }
             });
-            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+            touristDialog.setDialogConfirmClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
-                public void onClick(View v) {
+                public void singleClick(View v) {
                     touristDialog.dismissDialog();
                     JumpDetail.jumpLogin(getActivity(), true);
                 }
@@ -571,6 +571,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             mineLearningWrapView.setLearningContainerVisibility(View.GONE);
             mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
             mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+            mineLearningWrapView.setLearningMoreVisibility(View.GONE);
             isMineLearningFinish = true;
             return;
         }
@@ -583,6 +584,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             mineLearningWrapView.setLearningContainerVisibility(View.GONE);
             mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
             mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+            mineLearningWrapView.setLearningMoreVisibility(View.GONE);
             return;
         }
         mineLearningId = listItem.getString("resource_id");
@@ -594,6 +596,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         if (updateCount > 0) {
             mineLearningWrapView.setLearningUpdate("已更新至" + updateCount + "期");
         }
+        mineLearningWrapView.setLearningMoreVisibility(View.VISIBLE);
         isMineLearningFinish = true;
         initPageData();
         mineRefresh.finishRefresh();
@@ -884,6 +887,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 mineLearningWrapView.setLearningContainerVisibility(View.GONE);
                 mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
                 mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+                mineLearningWrapView.setLearningMoreVisibility(View.GONE);
                 isMineLearningFinish = true;
                 return;
             }
@@ -896,6 +900,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 mineLearningWrapView.setLearningContainerVisibility(View.GONE);
                 mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
                 mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+                mineLearningWrapView.setLearningMoreVisibility(View.GONE);
                 return;
             }
             mineLearningId = listItem.getString("resource_id");
@@ -907,6 +912,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             if (updateCount > 0) {
                 mineLearningWrapView.setLearningUpdate("已更新至" + updateCount + "期");
             }
+            mineLearningWrapView.setLearningMoreVisibility(View.VISIBLE);
             isMineLearningFinish = true;
             initPageData();
             mineRefresh.finishRefresh();

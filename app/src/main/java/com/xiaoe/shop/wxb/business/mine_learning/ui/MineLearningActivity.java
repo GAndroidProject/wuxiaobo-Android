@@ -41,6 +41,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.mine_learning.presenter.MineLearningPresenter;
 import com.xiaoe.shop.wxb.business.search.presenter.SpacesItemDecoration;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -153,10 +154,32 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
     private void initListener() {
         learningRefresh.setOnRefreshListener(this);
         learningRefresh.setOnLoadMoreListener(this);
-        learningBack.setOnClickListener(new View.OnClickListener() {
+        learningBack.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 onBackPressed();
+            }
+        });
+        learningLoading.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if ("我正在学".equals(pageTitle)) {
+                    if (mineLearningPresenter == null) {
+                        mineLearningPresenter = new MineLearningPresenter(MineLearningActivity.this);
+                    }
+                    if (pageIndex != 1) {
+                        pageIndex = 1;
+                    }
+                    mineLearningPresenter.requestLearningData(pageIndex, pageSize);
+                } else if ("我的收藏".equals(pageTitle)) {
+                    if (collectionUtils == null) {
+                        collectionUtils = new CollectionUtils(MineLearningActivity.this);
+                    }
+                    if (pageIndex != 1) {
+                        pageIndex = 1;
+                    }
+                    collectionUtils.requestCollectionList(pageIndex, pageSize);
+                }
             }
         });
     }

@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.interfaces.OnBottomTabSelectListener;
 
@@ -20,6 +22,7 @@ public class BottomTabBar extends FrameLayout implements View.OnClickListener {
     private View rootView;
     private LinearLayout bottomTabBar;
     private OnBottomTabSelectListener bottomTabSelectListener;
+    private List<BottomBarButton> bottomBarButtonList;
 
     public BottomTabBar(@NonNull Context context) {
         super(context);
@@ -36,6 +39,7 @@ public class BottomTabBar extends FrameLayout implements View.OnClickListener {
     private void initView(Context context) {
         rootView = View.inflate(context, R.layout.layout_bottom_tab_bar, this);
         bottomTabBar = (LinearLayout) rootView.findViewById(R.id.bottom_tab_bar);
+        bottomBarButtonList = new ArrayList<>();
     }
 
     public void setBottomTabSelectListener(final OnBottomTabSelectListener listener){
@@ -80,7 +84,12 @@ public class BottomTabBar extends FrameLayout implements View.OnClickListener {
                 bottomBarButton.setButtonChecked(false);
             }
             bottomTabBar.addView(bottomBarButton);
+            bottomBarButtonList.add(bottomBarButton);
         }
+    }
+
+    public BottomBarButton getBottomBarButtonByIndex(int index) {
+        return bottomBarButtonList.get(index);
     }
 
     @Override
