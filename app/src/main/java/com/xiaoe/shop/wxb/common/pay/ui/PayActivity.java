@@ -24,6 +24,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.coupon.presenter.CouponPresenter;
 import com.xiaoe.shop.wxb.business.coupon.ui.CouponFragment;
 import com.xiaoe.shop.wxb.business.coupon.ui.EmptyCouponFragment;
+import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnSelectCouponListener;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
@@ -226,7 +227,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
                 buyResource();
                 break;
             case R.id.btn_go_to:
-                finish();
+                JumpDetail.jumpMainTab(this, true, true, 3);
                 break;
             default:
                 break;

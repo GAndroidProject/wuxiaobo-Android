@@ -149,7 +149,7 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
                 JumpDetail.jumpCouponCanRerource(this, couponInfo);
                 break;
             case 1:
-                JumpDetail.jumpMainScholarship(this, true, true, 1);
+                JumpDetail.jumpMainTab(this, true, true, 1);
                 break;
             default:
                 break;

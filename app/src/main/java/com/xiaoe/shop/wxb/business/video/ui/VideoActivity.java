@@ -278,9 +278,9 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 break;
             case R.id.video_advertise_img:
                 if (loginUserList.size() == 1) {
-                    JumpDetail.jumpMainScholarship(this, true, true, 2);
+                    JumpDetail.jumpMainTab(this, true, true, 2);
                 } else {
-                    JumpDetail.jumpMainScholarship(this, false, true, 2);
+                    JumpDetail.jumpMainTab(this, false, true, 2);
                 }
                 break;
             case R.id.btn_back:

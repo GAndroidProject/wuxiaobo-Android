@@ -252,7 +252,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         audioAdvertiseImg.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
             public void singleClick(View v) {
-                JumpDetail.jumpMainScholarship(AudioActivity.this, true, true, 2);
+                JumpDetail.jumpMainTab(AudioActivity.this, true, true, 2);
             }
         });
     }

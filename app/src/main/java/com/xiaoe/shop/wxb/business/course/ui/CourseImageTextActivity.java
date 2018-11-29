@@ -279,9 +279,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             @Override
             public void singleClick(View v) {
                 if (loginList.size() == 1) {
-                    JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, true, true, 2);
+                    JumpDetail.jumpMainTab(CourseImageTextActivity.this, true, true, 2);
                 } else {
-                    JumpDetail.jumpMainScholarship(CourseImageTextActivity.this, false, true, 2);
+                    JumpDetail.jumpMainTab(CourseImageTextActivity.this, false, true, 2);
                 }
             }
         });

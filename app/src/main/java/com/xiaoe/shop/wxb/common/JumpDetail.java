@@ -163,7 +163,7 @@ public class JumpDetail {
      * @param needChange   是否需要切换
      * @param tabIndex      主页的
      */
-    public static void jumpMainScholarship(Context context, boolean isFormalUser, boolean needChange, int tabIndex) {
+    public static void jumpMainTab(Context context, boolean isFormalUser, boolean needChange, int tabIndex) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra("isFormalUser", isFormalUser);
         intent.putExtra("needChange", needChange);
