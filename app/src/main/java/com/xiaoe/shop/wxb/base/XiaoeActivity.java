@@ -445,15 +445,15 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         if(permission.length > 0){
             ActivityCompat.requestPermissions(this,permission,1);
         }else if(hidePermission.length > 0){
-            dialog.getTitleView().setGravity(Gravity.START);
-            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0 );
-            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-            dialog.setMessageVisibility(View.GONE);
-            dialog.setCancelable(false);
-            dialog.setHideCancelButton(false);
-            dialog.setTitle(getString(R.string.login_invalid));
-            dialog.setConfirmText(getString(R.string.btn_again_login));
-            dialog.showDialog(CustomDialog.REQUEST_PERMISSIONS_TAG);
+//            dialog.getTitleView().setGravity(Gravity.START);
+//            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0 );
+//            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+//            dialog.setMessageVisibility(View.GONE);
+//            dialog.setCancelable(false);
+//            dialog.setHideCancelButton(false);
+//            dialog.setTitle(getString(R.string.login_invalid));
+//            dialog.setConfirmText(getString(R.string.btn_again_login));
+//            dialog.showDialog(CustomDialog.REQUEST_PERMISSIONS_TAG);
         }
     }
 
@@ -463,7 +463,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         for (int i = 0; i < grantResults.length; i++){
             if(grantResults[i] != 0){
                 //用户拒绝后再次弹起授权
-                initPermission();
+//                initPermission();
                 break;
             }
         }
@@ -556,7 +556,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
             // 点击重新登录，登录完之后要回到原来的页面
             JumpDetail.jumpLogin(this);
             // 登录后需要回到原来的页面，所以不做 finish 操作
-            // finish();
+//             finish();
+            ActivityCollector.finishAll();
         }else if(tag == CustomDialog.NOT_WIFI_PLAY_TAG){
             AudioMediaPlayer.play();
         }else if(tag == CustomDialog.REQUEST_PERMISSIONS_TAG){

@@ -29,6 +29,7 @@ import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
+import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 
@@ -297,6 +298,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
             JumpDetail.jumpLogin(getContext());
             // 登录后需要回到原来的页面，所以不做 finish 操作
             // getActivity().finish();
+            ActivityCollector.finishAll();
         }
     }
 
