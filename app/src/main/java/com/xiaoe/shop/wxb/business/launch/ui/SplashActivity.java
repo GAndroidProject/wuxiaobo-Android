@@ -126,7 +126,7 @@ public class SplashActivity extends XiaoeActivity {
     }
 
     private void initData() {
-        String apiToken = CommonUserInfo.getInstance().getApiTokenByDB();
+        String apiToken = CommonUserInfo.getApiToken();
         if (apiToken != null) {
             UnReadMsgPresenter unReadMsgPresenter = new UnReadMsgPresenter(this);
             unReadMsgPresenter.requestUnReadCouponMsg();

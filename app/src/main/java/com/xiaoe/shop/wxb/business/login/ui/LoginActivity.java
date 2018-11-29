@@ -530,7 +530,7 @@ public class LoginActivity extends XiaoeActivity {
         loginSQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, localLoginUser);
 
         Toast("登录成功");
-        if (isTouristClick) {
+        if (!isTouristClick) {
             JumpDetail.jumpMain(this, true);
         } else {
             ChangeLoginIdentityEvent changeLoginIdentityEvent = new ChangeLoginIdentityEvent();
