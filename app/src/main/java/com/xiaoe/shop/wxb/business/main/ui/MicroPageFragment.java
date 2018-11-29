@@ -665,7 +665,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         microPageFresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
             @Override
             public void onHeaderMoving(RefreshHeader header, boolean isDragging, float percent, int offset, int headerHeight, int maxDragHeight) {
-                if (isDragging && microPageTitleBg2.getVisibility() == View.GONE){
+                if (microPageTitleBg2.getVisibility() == View.GONE){
                     microPageTitleBg2.setVisibility(View.VISIBLE);
                     microPageTitleBg.setVisibility(View.GONE);
                 }
