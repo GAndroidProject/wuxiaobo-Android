@@ -185,6 +185,8 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
                             dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(getContext(), 22), 0, Dp2Px2SpUtil.dp2px(getContext(), 22), 0 );
                             dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                             dialog.setMessageVisibility(View.GONE);
+                            dialog.setCancelable(false);
+                            dialog.setHideCancelButton(true);
                             dialog.setTitle(getString(R.string.login_invalid));
                             dialog.setConfirmText(getString(R.string.btn_again_login));
                             dialog.setOnCustomDialogListener(BaseFragment.this);
@@ -291,7 +293,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
             CommonUserInfo.setIsSuperVip(false);
             CommonUserInfo.setIsSuperVipAvailable(false);
             getDialog().dismissDialog();
-            JumpDetail.jumpLogin(getContext(), true);
+            JumpDetail.jumpLogin(getContext());
             // 登录后需要回到原来的页面，所以不做 finish 操作
             // getActivity().finish();
         }

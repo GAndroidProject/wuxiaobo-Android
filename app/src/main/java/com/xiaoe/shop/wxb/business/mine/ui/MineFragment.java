@@ -489,7 +489,9 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         } else {
             // iRequest 为空是登录被挤情况
             mineRefresh.finishRefresh();
-            mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            if (iRequest != null) {
+                mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            }
         }
     }
 
