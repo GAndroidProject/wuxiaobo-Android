@@ -816,6 +816,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             superVipPresenter = new SuperVipPresenter(this);
         }
         superVipPresenter.requestSuperVip();
+        mainActivity.getUnreadMsg();
     }
 
     private void setUnreadMsg(int unreadCount) {
