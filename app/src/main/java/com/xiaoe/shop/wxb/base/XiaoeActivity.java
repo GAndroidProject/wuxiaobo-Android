@@ -4,19 +4,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
@@ -35,7 +30,6 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.xiaoe.common.app.CommonUserInfo;
-import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
@@ -72,7 +66,6 @@ import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.ShareDialog;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -419,60 +412,6 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         unregisterReceiver(netBroadcastReceiver);
     }
 
-    public void initPermission() {
-        if(Build.VERSION.SDK_INT < 23){
-            return;
-        }
-
-        ArrayList<String> permissionList = new ArrayList<String>();
-        //用户禁止获取权限后，设置不在提示
-        ArrayList<String> hidePermissionList = new ArrayList<String>();
-        for(int i = 0; i < Constants.permissions.length ; i++){
-            String permissions = Constants.permissions[i];
-            boolean showPermission = shouldShowRequestPermissionRationale(permissions);
-            if (ContextCompat.checkSelfPermission(this, permissions) != PackageManager.PERMISSION_GRANTED) {
-                if(showPermission){
-                    //可以弹出选择允许权限
-                    permissionList.add(permissions);
-                }else{
-                    //不可以弹出选择允许权限，弹出对话框到设置页面
-                    hidePermissionList.add(permissions);
-                }
-            }
-        }
-        String[] permission = permissionList.toArray(new String[permissionList.size()]);
-        String[] hidePermission = hidePermissionList.toArray(new String[hidePermissionList.size()]);
-        if(permission.length > 0){
-            ActivityCompat.requestPermissions(this,permission,1);
-        }else if(hidePermission.length > 0){
-//            dialog.getTitleView().setGravity(Gravity.START);
-//            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0 );
-//            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-//            dialog.setMessageVisibility(View.GONE);
-//            dialog.setCancelable(false);
-//            dialog.setHideCancelButton(false);
-//            dialog.setTitle(getString(R.string.login_invalid));
-//            dialog.setConfirmText(getString(R.string.btn_again_login));
-//            dialog.showDialog(CustomDialog.REQUEST_PERMISSIONS_TAG);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        for (int i = 0; i < grantResults.length; i++){
-            if(grantResults[i] != 0){
-                //用户拒绝后再次弹起授权
-//                initPermission();
-                break;
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     public void setMiniPlayerAnimHeight(int miniPlayerAnimHeight) {
         this.miniPlayerAnimHeight = miniPlayerAnimHeight;
@@ -571,8 +510,8 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
-
-        startActivityForResult(intent, CustomDialog.REQUEST_PERMISSIONS_TAG);
+        startActivity(intent);
+//        startActivityForResult(intent, CustomDialog.REQUEST_PERMISSIONS_TAG);
     }
 
     @Override

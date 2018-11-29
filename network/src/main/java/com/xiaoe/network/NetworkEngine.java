@@ -32,18 +32,19 @@ import okhttp3.ResponseBody;
 public class NetworkEngine {
 
     private static final String TAG = "NetworkEngine";
+    public final static String BASE_URL_FORMAL = "https://app-server.xiaoeknow.com";
+    public final static String BASE_URL_TEST = "http://app-server.inside.xiaoeknow.com";
     //测试环境url http://demo.h5.inside.xiaoe-tech.com/openapp/login
-    private final static String TEST_API_THIRD_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
+//    private final static String TEST_API_THIRD_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
     //正式环境url http://api.inside.xiaoe-tech.com
-    private final static String FORMAL_API_THIRD_BASE_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
-//    public final static String BASE_URL = "http://134.175.39.17:9380/";
-    public final static String API_THIRD_BASE_URL = XiaoeApplication.isFormalCondition() ? FORMAL_API_THIRD_BASE_URL : TEST_API_THIRD_URL;
-    public final static String LOGIN_BASE_URL = "http://app-server.inside.xiaoeknow.com/api/"; // 登录接口 url
+//    private final static String FORMAL_API_THIRD_BASE_URL = BASE_URL+"/third/xiaoe_request/";
+    public final static String API_THIRD_BASE_URL = (XiaoeApplication.isFormalCondition() ? BASE_URL_FORMAL : BASE_URL_TEST)+"/third/xiaoe_request/";
+    public final static String LOGIN_BASE_URL = (XiaoeApplication.isFormalCondition() ? BASE_URL_FORMAL : BASE_URL_TEST)+"/api/"; // 登录接口 url
     /**
      * 用户登录及绑定注册（极光推送）
      * http://app-server.inside.xiaoeknow.com/api/xe.set.device.token/1.0.0
      */
-    public static final String BIND_JG_PUSH_URL = "http://app-server.inside.xiaoeknow.com/api/";
+    public static final String BIND_JG_PUSH_URL = (XiaoeApplication.isFormalCondition() ? BASE_URL_FORMAL : BASE_URL_TEST)+"/api/";
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private final SQLiteUtil cacheSQLiteUtil;

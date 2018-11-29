@@ -134,7 +134,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         }
 
         initView();
-        initPermission();
         if (!OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName())) {
             audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
             startService(audioPlayServiceIntent);
@@ -222,10 +221,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
     }
 
-    @Override
-    public void initPermission() {
-        super.initPermission();
-    }
 
     @Override
     public void onCheckedTab(int index) {

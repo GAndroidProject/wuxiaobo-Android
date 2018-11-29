@@ -134,6 +134,7 @@
     <string name="login_bind_phone_desc">依据《中华人民共和国网络安全法》要求，请绑定手机号完成实名认证</string>
     <string name="login_invalid">检测到该账号在另一设备上登录 如需继续使用，请重新登录</string>
     <string name="btn_again_login">重新登录</string>
+    <string name="request_permissions">吴晓波频道需要“电话、存储”权限。请前往设置中心进行权限授权。</string>
     <!--登陆 end-->
     <string name="course_more_title">知识商品</string>
     <!--优惠券 start-->

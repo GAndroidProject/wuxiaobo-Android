@@ -1,15 +1,25 @@
 package com.xiaoe.shop.wxb.business.launch.ui;
 
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.utils.CacheDataUtil;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.downloadUtil.DownloadFileConfig;
 import com.xiaoe.network.downloadUtil.DownloadManager;
@@ -19,6 +29,10 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.FrameAnimation;
+import com.xiaoe.shop.wxb.widget.CustomDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,10 +50,12 @@ public class SplashActivity extends XiaoeActivity {
     ImageView ivGif;
 
     private static final String TAG = "SplashActivity";
+    private boolean isApplyPermission = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ---- ");
         setStatusBar();
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
@@ -47,6 +63,15 @@ public class SplashActivity extends XiaoeActivity {
         initData();
         SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!isApplyPermission){
+            Log.d(TAG, "onResume: --------");
+            requestPermission(getUnauthorizedPermission(),getHideUnauthorizedPermission());
+        }
     }
 
     private void initView() {
@@ -64,8 +89,9 @@ public class SplashActivity extends XiaoeActivity {
             public void onAnimationEnd() {
                 Log.d(TAG, "end");
                 Log.d(TAG, "onAnimationEnd: " + (System.currentTimeMillis() - preTime));
-                JumpDetail.jumpLogin(mContext);
-                finish();
+//                JumpDetail.jumpLogin(mContext);
+//                finish();
+                requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission());
             }
 
             @Override
@@ -74,49 +100,6 @@ public class SplashActivity extends XiaoeActivity {
             }
         });
 
-//        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
-//            @Override
-//            public void onFinalImageSet(String id, ImageInfo imageInfo, final Animatable animatable) {
-//                Log.d(TAG, "onFinalImageSet: animatable - " + animatable);
-//                if (animatable == null) {
-//                    return;
-//                }
-//                int duration = 0;
-//                try {
-//                    // mTotalLoops mLoopCount
-//                    Field field = AnimatedDrawable2.class.getDeclaredField("mLoopCount");
-//                    field.setAccessible(true);
-//                    // 设置循环次数为 1
-//                    field.set(animatable, 1);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-////                animatable.start();
-//                if (animatable instanceof AnimatedDrawable2) {
-//                    duration = (int) ((AnimatedDrawable2) animatable).getLoopDurationMs();
-//                    Log.d(TAG, "onFinalImageSet: loopCount - " + ((AnimatedDrawable2) animatable).getLoopCount());
-//                }
-//                if (duration > 0) {
-//                    launchGif.postDelayed(() -> {
-//                        if (animatable.isRunning()) {
-//                            animatable.stop();
-//                            JumpDetail.jumpLogin(mContext);
-//                            finish();
-//                        }
-//                    }, duration);
-//                }
-//                Log.d(TAG, "onFinalImageSet: duration " + duration);
-//            }
-//        };
-//
-//        Uri uri = Uri.parse("res:///" + R.drawable.launch);
-//        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-//                .setUri(uri)
-//                .setControllerListener(controllerListener)
-//                // 设置加载图片完成后是否直接进行播放
-//                .setAutoPlayAnimations(true)
-//                .build();
-//        launchGif.setController(draweeController);
     }
 
     private void initData() {
@@ -151,5 +134,118 @@ public class SplashActivity extends XiaoeActivity {
         typedArray.recycle();
         return resId;
     }
+
+    /**
+     * 获取未授权的权限，可以直接申请弹窗授权
+     * @return
+     */
+    public List<String> getUnauthorizedPermission(){
+        ArrayList<String> permissionList = new ArrayList<String>();
+        if(Build.VERSION.SDK_INT < 23){
+            return null;
+        }
+        for(int i = 0; i < Constants.permissions.length ; i++){
+            String permissions = Constants.permissions[i];
+            boolean showPermission = shouldShowRequestPermissionRationale(permissions);
+            if (ContextCompat.checkSelfPermission(this, permissions) != PackageManager.PERMISSION_GRANTED) {
+                if(showPermission){
+                    //可以弹出选择允许权限
+                    permissionList.add(permissions);
+                }
+            }
+        }
+        return permissionList;
+    }
+
+    /**
+     * 获取未授权的权限，拒绝后不在提示的权限
+     * @return
+     */
+    public List<String> getHideUnauthorizedPermission(){
+        ArrayList<String> hidePermissionList = new ArrayList<String>();
+        if(Build.VERSION.SDK_INT < 23){
+            return hidePermissionList;
+        }
+        for(int i = 0; i < Constants.permissions.length ; i++){
+            String permissions = Constants.permissions[i];
+            boolean showPermission = shouldShowRequestPermissionRationale(permissions);
+            if (ContextCompat.checkSelfPermission(this, permissions) != PackageManager.PERMISSION_GRANTED) {
+                if(!showPermission){
+                    //可以弹出选择允许权限
+                    hidePermissionList.add(permissions);
+                }
+            }
+        }
+        return hidePermissionList;
+    }
+
+    public void requestPermission(List<String> permissionList, List<String> hidePermissionList) {
+        if(Build.VERSION.SDK_INT < 23){
+            return;
+        }
+        String[] permission = permissionList == null ? new String[]{} : permissionList.toArray(new String[permissionList.size()]);
+        String[] hidePermission = hidePermissionList == null ? new String[]{} : hidePermissionList.toArray(new String[hidePermissionList.size()]);
+        if(permission.length > 0){
+            Log.d(TAG, "requestPermission: ----");
+            isApplyPermission = false;
+            ActivityCompat.requestPermissions(this,permission,1);
+        }else if(hidePermission.length > 0){
+            Log.d(TAG, "requestPermission: ****");
+            getDialog().getTitleView().setGravity(Gravity.START);
+            getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(SplashActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(SplashActivity.this, 22), 0 );
+            getDialog().getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            getDialog().setMessageVisibility(View.GONE);
+            getDialog().setCancelable(false);
+            getDialog().setHideCancelButton(false);
+            getDialog().setTitle(getString(R.string.request_permissions));
+            getDialog().setConfirmText(getString(R.string.confirm_title));
+            getDialog().showDialog(CustomDialog.REQUEST_PERMISSIONS_TAG);
+            isApplyPermission = false;
+        }else {
+            Log.d(TAG, "requestPermission: ++++");
+            isApplyPermission = true;
+            JumpDetail.jumpLogin(this);
+            finish();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: --------");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean obtainPermissions = true;
+        for (int i = 0; i < grantResults.length; i++){
+            if(grantResults[i] != 0){
+                //用户拒绝后再次弹起授权
+                Log.d(TAG, "onRequestPermissionsResult: ** "+permissions[i]);
+                obtainPermissions = false;
+                requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission());
+                break;
+            }
+        }
+        if(obtainPermissions && isApplyPermission){
+            isApplyPermission = true;
+            Log.d(TAG, "onRequestPermissionsResult: -- ");
+            JumpDetail.jumpLogin(this);
+            finish();
+        }else{
+            isApplyPermission = false;
+        }
+    }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        Log.d(TAG, "onActivityResult: ** ");
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if(requestCode == CustomDialog.REQUEST_PERMISSIONS_TAG){
+//            Log.d(TAG, "onActivityResult: -- ");
+//            requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission());
+//        }
+//    }
 
 }
