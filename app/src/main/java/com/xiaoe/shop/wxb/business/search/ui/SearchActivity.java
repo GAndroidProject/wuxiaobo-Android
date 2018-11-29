@@ -3,22 +3,16 @@ package com.xiaoe.shop.wxb.business.search.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -61,7 +55,7 @@ public class SearchActivity extends XiaoeActivity {
     @BindView(R.id.search_title_wrap)
     FrameLayout searchTitleWrap;
     @BindView(R.id.search_content_et)
-    EditText searchContent;
+    SearchView searchContent;
     @BindView(R.id.search_cancel)
     TextView searchCancel;
     @BindView(R.id.search_result_wrap)
@@ -76,9 +70,6 @@ public class SearchActivity extends XiaoeActivity {
     List<SearchHistory> historyList;
 
     SearchPresenter searchPresenter;
-
-    // 搜索框后面的叉
-    Drawable right;
 
     Object dataList; // 搜索结果
     private SQLiteUtil sqLiteUtil;
@@ -108,8 +99,7 @@ public class SearchActivity extends XiaoeActivity {
 
     private void initView() {
         // 先默认显示我的财富计划
-        searchContent.setHint("我的财富计划");
-        searchContent.setSelection(searchContent.getText().toString().length());
+        searchContent.setQueryHint("我的财富计划");
     }
 
     private void initData() {
@@ -118,7 +108,7 @@ public class SearchActivity extends XiaoeActivity {
         // 初始化数据库
         sqLiteUtil = SQLiteUtil.init(this.getApplicationContext(), new SearchSQLiteCallback());
         // 如果表不存在，就去创建
-        if(!sqLiteUtil.tabIsExist(SearchSQLiteCallback.TABLE_NAME_CONTENT)){
+        if (!sqLiteUtil.tabIsExist(SearchSQLiteCallback.TABLE_NAME_CONTENT)) {
             sqLiteUtil.execSQL(SearchSQLiteCallback.TABLE_SCHEMA_CONTENT);
         }
         historyList = queryAllData();
@@ -147,99 +137,55 @@ public class SearchActivity extends XiaoeActivity {
             }
         });
 
-        // 输入完成后监听按键盘上的回车键进行搜索
-        searchContent.setOnKeyListener(new View.OnKeyListener() {
+        searchContent.setIconified(false);
+        searchContent.onActionViewExpanded();
+        searchContent.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            //输入完成后，点击回车或是完成键
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    // 关闭软件盘
-                    toggleSoftKeyboard();
-                    String content = searchContent.getText().toString();
-                    if (TextUtils.isEmpty(content)) { // 不输入搜索内容，默认搜索最近在搜的第一个，先写死为 list
-                        content = "我的财富计划";
-                        searchContent.setText(content);
-                        searchContent.setSelection(content.length());
-                    }
-                    if (!hasDbData(content)) { // 不为空并且没有存数据库，就存
-                        // 将输入的内容插入到数据库
-                        String currentTime = obtainCurrentTime();
-                        SearchHistory searchHistory = new SearchHistory(content, currentTime);
-                        sqLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
-
-                        // 刷新界面
-                        if (((SearchPageFragment) currentFragment).historyData != null && ((SearchPageFragment) currentFragment).historyAdapter != null) {
-                            if (((SearchPageFragment) currentFragment).historyData.size() == 5) {
-                                ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
-                                ((SearchPageFragment) currentFragment).historyData.remove(((SearchPageFragment) currentFragment).historyData.size() - 1);
-                            } else if (((SearchPageFragment) currentFragment).historyData.size() < 5)  { // 否则直接添加
-                                ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
-                            }
-                            ((SearchPageFragment) currentFragment).historyAdapter.notifyDataSetChanged();
-                        }
-                    }
-                    obtainSearchResult(content);
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        searchContent.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            public boolean onQueryTextSubmit(String query) {
+                return prepareSearch();
             }
 
+            //查询文本框有变化时事件
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String input = s.toString();
-                if (right == null) { // 如果关闭图片为 null 的话就进行初始化
-                    initCloseIcon();
-                }
-                if (input.length() == 0) {
-                    searchContent.setCompoundDrawables(null, null, null, null);
-                } else {
-                    searchContent.setCompoundDrawables(null, null, right, null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        searchContent.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // 拿到画在尾部的 drawable
-                Drawable drawable = searchContent.getCompoundDrawables()[2];
-                // 如果没有不处理
-                if (drawable == null) {
-                    return false;
-                }
-                // 如果不是抬起事件，不处理
-                if (event.getAction() != MotionEvent.ACTION_UP) {
-                    return false;
-                }
-                // 点中 drawable
-                if (event.getX() > searchContent.getWidth() - searchContent.getPaddingEnd() - drawable.getIntrinsicWidth()) {
-                    // 清空操作
-                    searchContent.setText("");
-                    searchContent.setSelection(searchContent.getText().toString().length());
-                    return true;
-                }
+            public boolean onQueryTextChange(String newText) {
                 return false;
             }
         });
     }
 
-    // 初始化关闭按钮
-    private void initCloseIcon() {
-        right = SearchActivity.this.getResources().getDrawable(R.mipmap.icon_clear);
-        Rect rect = new Rect(0, 0, right.getIntrinsicWidth(), right.getIntrinsicHeight());
-        right.setBounds(rect);
-//        searchContent.setCompoundDrawables(null, null, right, null);
+    public void prepareSearch(String content){
+        searchContent.setQuery(content,true);
+    }
+
+    private boolean prepareSearch() {
+        // 关闭软件盘
+//        toggleSoftKeyboard();
+        searchContent.clearFocus();
+        String content = searchContent.getQuery().toString();
+        if (TextUtils.isEmpty(content)) { // 不输入搜索内容，默认搜索最近在搜的第一个，先写死为 list
+            content = "我的财富计划";
+            searchContent.setQuery(content, false);
+        }
+        if (!hasDbData(content)) { // 不为空并且没有存数据库，就存
+            // 将输入的内容插入到数据库
+            String currentTime = obtainCurrentTime();
+            SearchHistory searchHistory = new SearchHistory(content, currentTime);
+            sqLiteUtil.insert(SearchSQLiteCallback.TABLE_NAME_CONTENT, searchHistory);
+
+            // 刷新界面
+            if (((SearchPageFragment) currentFragment).historyData != null && ((SearchPageFragment) currentFragment).historyAdapter != null) {
+                if (((SearchPageFragment) currentFragment).historyData.size() == 5) {
+                    ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
+                    ((SearchPageFragment) currentFragment).historyData.remove(((SearchPageFragment) currentFragment).historyData.size() - 1);
+                } else if (((SearchPageFragment) currentFragment).historyData.size() < 5) { // 否则直接添加
+                    ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
+                }
+                ((SearchPageFragment) currentFragment).historyAdapter.notifyDataSetChanged();
+            }
+        }
+        obtainSearchResult(content);
+        return true;
     }
 
     // 根据搜索内容进行查找
@@ -259,8 +205,8 @@ public class SearchActivity extends XiaoeActivity {
         if (currentFragment != null) {
             if (MAIN.equals(tag)) {
                 if (((SearchPageFragment) currentFragment).itemJsonList != null &&
-                    ((SearchPageFragment) currentFragment).groupJsonList != null &&
-                    ((SearchPageFragment) currentFragment).decorateRecyclerAdapter != null) {
+                        ((SearchPageFragment) currentFragment).groupJsonList != null &&
+                        ((SearchPageFragment) currentFragment).decorateRecyclerAdapter != null) {
                     ((SearchPageFragment) currentFragment).itemJsonList.clear();
                     ((SearchPageFragment) currentFragment).groupJsonList.clear();
                     ((SearchPageFragment) currentFragment).decorateRecyclerAdapter.notifyDataSetChanged();
@@ -314,7 +260,7 @@ public class SearchActivity extends XiaoeActivity {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
-                    if (data.get("dataList") != null && ((JSONArray)data.get("dataList")).size() > 0) { // 有内容，就切换到内容页面
+                    if (data.get("dataList") != null && ((JSONArray) data.get("dataList")).size() > 0) { // 有内容，就切换到内容页面
                         initResultData(data.get("dataList"));
                     } else { // 否则切换到空页
                         replaceFragment(EMPTY);
@@ -359,7 +305,7 @@ public class SearchActivity extends XiaoeActivity {
     // 查询最新创建的五条数据
     protected List<SearchHistory> queryAllData() {
         return sqLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
-            "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " order by " + SearchHistoryEntity.COLUMN_NAME_CREATE + " desc limit 5", null);
+                "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " order by " + SearchHistoryEntity.COLUMN_NAME_CREATE + " desc limit 5", null);
     }
 
     // 获取当前时间

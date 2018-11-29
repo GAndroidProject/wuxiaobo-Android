@@ -21,6 +21,10 @@ public abstract class OnClickEvent implements View.OnClickListener {
         this.delay = delay;
     }
 
+    public OnClickEvent() {
+        this.delay = DEFAULT_SECOND;
+    }
+
     @Override
     public void onClick(View view) {
         if (onMoreClick()) {

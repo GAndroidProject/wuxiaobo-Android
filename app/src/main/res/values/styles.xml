@@ -58,4 +58,9 @@
         <item name="android:windowEnterAnimation">@anim/action_sheet_dialog_in</item>
         <item name="android:windowExitAnimation">@anim/action_sheet_dialog_out</item>
     </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="searchHintIcon">@null</item>
+        <item name="searchIcon">@null</item>
+    </style>
 </resources>

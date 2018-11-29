@@ -24,19 +24,21 @@
             app:layout_collapseMode="pin"
             android:background="@color/self_transparent">
 
-            <EditText
+            <android.support.v7.widget.SearchView
+                style="@style/SearchViewStyle"
                 android:id="@+id/search_content_et"
                 android:layout_width="280dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:hint="@string/search_content_hint"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
+                app:closeIcon="@mipmap/icon_clear"
                 android:textColorHint="@color/knowledge_item_desc_color"
                 android:textSize="16sp"
+                android:searchMode="queryRewriteFromText"
                 android:gravity="center_vertical"
                 android:layout_marginStart="20dp"
                 android:inputType="text"/>
-
             <TextView
                 android:id="@+id/search_cancel"
                 android:layout_width="wrap_content"
