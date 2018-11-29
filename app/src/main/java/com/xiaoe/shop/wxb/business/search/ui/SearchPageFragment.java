@@ -423,13 +423,14 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         toggleSoftKeyboard();
         if (historyContentView.getVisibility() == View.VISIBLE && historyContentView.isMatchRecycler(view.getParent())) {
             String searchContent = historyList.get(position).getmContent();
-            ((SearchActivity) getActivity()).prepareSearch(searchContent);
+            ((SearchActivity) getActivity()).searchContent.setText(searchContent);
+            ((SearchActivity) getActivity()).searchContent.setSelection(searchContent.length());
+            ((SearchActivity) getActivity()).obtainSearchResult(((SearchActivity) getActivity()).searchContent.getText().toString());
         } else if (recommendContentView.getVisibility() == View.VISIBLE && recommendContentView.isMatchRecycler(view.getParent())) {
             String searchContent = recommendData.get(position);
-            ((SearchActivity) getActivity()).prepareSearch(searchContent);
-//            ((SearchActivity) getActivity()).searchContent.setText(searchContent);
-//            ((SearchActivity) getActivity()).searchContent.setSelection(searchContent.length());
-//            ((SearchActivity) getActivity()).obtainSearchResult(((SearchActivity) getActivity()).searchContent.getText().toString());
+            ((SearchActivity) getActivity()).searchContent.setText(searchContent);
+            ((SearchActivity) getActivity()).searchContent.setSelection(searchContent.length());
+            ((SearchActivity) getActivity()).obtainSearchResult(((SearchActivity) getActivity()).searchContent.getText().toString());
             if (!searchActivity.hasDbData(searchContent)) { // 点击推荐，查库没有后需要入库
                 String currentTime = searchActivity.obtainCurrentTime();
                 SearchHistory searchHistory = new SearchHistory(searchContent, currentTime);
