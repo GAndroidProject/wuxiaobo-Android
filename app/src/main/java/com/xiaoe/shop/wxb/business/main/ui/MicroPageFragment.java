@@ -22,8 +22,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bumptech.glide.Glide;
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
@@ -661,13 +659,6 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 updateToolbar(scrollY);
-                if (Math.abs(scrollY - oldScrollY) > 1) { // 滑动发生变化
-                    Fresco.getImagePipeline().pause();
-                    Glide.with(getContext()).pauseRequests();
-                } else {
-                    Fresco.getImagePipeline().resume();
-                    Glide.with(getContext()).resumeRequests();
-                }
             }
         });
         microPageFresh.setOnRefreshListener(this);

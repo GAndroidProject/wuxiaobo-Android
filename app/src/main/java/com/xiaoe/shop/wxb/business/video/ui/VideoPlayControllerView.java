@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.business.video.ui;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -102,7 +103,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     }
 
     public void setPreviewImage(String imageUrl){
-        previewImage.setImageURI(imageUrl);
+        previewImage.setImageURI(Uri.parse(imageUrl));
     }
 
     public void setPlayUrl(String url){

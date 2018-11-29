@@ -21,6 +21,7 @@ import com.xiaoe.common.entitys.ColumnDirectoryEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.tree.TreeChildRecyclerAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
@@ -30,6 +31,7 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.business.download.ui.DownloadActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickListPlayListener;
 import com.xiaoe.shop.wxb.widget.DashlineItemDivider;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
@@ -100,7 +102,12 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
         directoryRecyclerView = (RecyclerView) rootView.findViewById(R.id.directory_recycler_view);
         //全部播放按钮
         btnPlayAll = (LinearLayout) rootView.findViewById(R.id.btn_all_play);
-        btnPlayAll.setOnClickListener(this);
+        btnPlayAll.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                clickPlayAll();
+            }
+        });
         //全部播放状态icon
         allPlayIcon = (ImageView) rootView.findViewById(R.id.all_play_icon);
         //全部播放状态
@@ -149,9 +156,6 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_all_play:
-                clickPlayAll();
-                break;
             case R.id.btn_batch_download:
                 clickBatchDownload();
                 break;
@@ -169,8 +173,12 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
             for (ColumnSecondDirectoryEntity item : directoryAdapter.getData()){
                 if(item.getResource_type() == 3 && !TextUtils.isEmpty(item.getVideo_url())){
+                    boolean isDownload = DownloadManager.getInstance().isDownload(item.getApp_id(),item.getResource_id());
+                    item.setEnable(!isDownload);
                     newChildDataList.add(item);
                 }else if(item.getResource_type() == 2 && !TextUtils.isEmpty(item.getAudio_url())){
+                    boolean isDownload = DownloadManager.getInstance().isDownload(item.getApp_id(),item.getResource_id());
+                    item.setEnable(!isDownload);
                     newChildDataList.add(item);
                 }
             }

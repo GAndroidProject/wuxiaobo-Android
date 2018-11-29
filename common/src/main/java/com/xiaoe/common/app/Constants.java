@@ -20,10 +20,14 @@ public class Constants {
     private static final String wxAppIdTest = "wx764341f522a6c929";
     //微信开放平台SECRET  测试
     private static final String WX_SECRET_TEST ="3232dcd861af17be187ca219d535323e";
+    //微信正式环境 (内灰环境【体验店铺（标准版）】)
+    private static final String wxAppIdFormal = "wx764341f522a6c929";
     //微信正式环境 (吴晓波家)
-    private static final String wxAppIdFormal = "wx0205e0a559628d0b";
+//    private static final String wxAppIdFormal = "wx0205e0a559628d0b";
+    //微信开放平台SECRET  正式 (内灰环境【体验店铺（标准版）】)
+    private static final String WX_SECRET_FORMAL ="3232dcd861af17be187ca219d535323e";
     //微信开放平台SECRET  正式 (吴晓波家)
-    private static final String WX_SECRET_FORMAL ="903774ed6c897d4449f29c7e167f9322";
+//    private static final String WX_SECRET_FORMAL ="903774ed6c897d4449f29c7e167f9322";
 
     public static final String AUDIO_PLAY_RESOURCE_ID = "audioPlayResourceid";
     //上一次购买资源的id

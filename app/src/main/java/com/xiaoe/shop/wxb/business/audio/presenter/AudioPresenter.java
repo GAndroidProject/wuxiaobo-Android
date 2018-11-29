@@ -113,6 +113,7 @@ public class AudioPresenter implements IBizCallback {
             resourceInfo = data.getJSONObject("resource_info");
             int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
             playEntity.setHasFavorite(hasFavorite);
+            playEntity.setPrice(resourceInfo.getIntValue("price"));
         }
         playEntity.setCurrentPlayState(1);
         playEntity.setTitle(resourceInfo.getString("title"));
@@ -120,7 +121,6 @@ public class AudioPresenter implements IBizCallback {
         playEntity.setPlayCount(resourceInfo.getIntValue("audio_play_count"));
         playEntity.setHasBuy(available ? 1 : 0);
         playEntity.setResourceId(resourceInfo.getString("resource_id"));
-        playEntity.setPrice(resourceInfo.getIntValue("price"));
         playEntity.setImgUrl(resourceInfo.getString("img_url"));
         playEntity.setImgUrlCompressed(resourceInfo.getString("img_url_compressed"));
         playEntity.setFlowId(resourceId);

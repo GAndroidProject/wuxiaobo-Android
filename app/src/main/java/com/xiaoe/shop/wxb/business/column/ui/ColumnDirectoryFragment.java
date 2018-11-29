@@ -16,6 +16,7 @@ import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ColumnDirectoryEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.tree.ParentViewHolder;
 import com.xiaoe.shop.wxb.adapter.tree.TreeRecyclerAdapter;
@@ -128,8 +129,12 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                 List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
                 for (ColumnSecondDirectoryEntity secondDirectoryEntity : directoryEntity.getResource_list()){
                     if(secondDirectoryEntity.getResource_type() == 3 && !TextUtils.isEmpty(secondDirectoryEntity.getVideo_url())){
+                        boolean isDownload = DownloadManager.getInstance().isDownload(secondDirectoryEntity.getApp_id(),secondDirectoryEntity.getResource_id());
+                        secondDirectoryEntity.setEnable(!isDownload);
                         newChildDataList.add(secondDirectoryEntity);
                     }else if(secondDirectoryEntity.getResource_type() == 2 && !TextUtils.isEmpty(secondDirectoryEntity.getAudio_url())){
+                        boolean isDownload = DownloadManager.getInstance().isDownload(secondDirectoryEntity.getApp_id(),secondDirectoryEntity.getResource_id());
+                        secondDirectoryEntity.setEnable(!isDownload);
                         newChildDataList.add(secondDirectoryEntity);
                     }
                 }

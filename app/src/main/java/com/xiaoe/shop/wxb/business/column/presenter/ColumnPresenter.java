@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.entitys.ColumnDirectoryEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
-import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.ColumnListRequst;
@@ -98,9 +97,6 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setColumnId(columnId);
             secondDirectoryEntity.setBigColumnId(bigColumnId);
             secondDirectoryEntity.setIsTry(jsonObject.getIntValue("is_try"));
-
-            boolean isDownload = DownloadManager.getInstance().isDownload(secondDirectoryEntity.getApp_id(),secondDirectoryEntity.getResource_id());
-            secondDirectoryEntity.setEnable(!isDownload);
 
             directoryEntityList.add(secondDirectoryEntity);
         }

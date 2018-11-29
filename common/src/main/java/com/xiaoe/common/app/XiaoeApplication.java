@@ -66,12 +66,16 @@ public class XiaoeApplication extends Application {
         if (!TextUtils.isEmpty(packageName) && !packageName.equals(processName))//修复application会创建多次，初始化数据多次
             return;
         Global.g().setApplication(this);
-        isFormalCondition = false;
+        isFormalCondition = true;
         mContext = getApplicationContext();
         applicationContext = getApplicationContext();
         applicationHandler = new Handler(applicationContext.getMainLooper());
-        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext).setDownsampleEnabled(true).build();
+
+        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(mContext)
+                .setDownsampleEnabled(true)
+                .build();
         Fresco.initialize(mContext,imagePipelineConfig);
+
         //初始化一下库，在子线程初始化
         init();
     }

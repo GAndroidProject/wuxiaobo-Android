@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -184,9 +183,17 @@ public class CdKeyActivity extends XiaoeActivity {
                         }else if(good.getResource_type() == ColumnActivity.RESOURCE_TYPE_MEMBER){
                             JumpDetail.jumpColumn(CdKeyActivity.this,good.getResource_id(),
                                     null,5);
-                        }else {
+                        }else if(good.getResource_type() == ColumnActivity.RESOURCE_TYPE_COLUMN) {
                             JumpDetail.jumpColumn(CdKeyActivity.this,good.getResource_id(),
                                     null,6);
+                        }else if(good.getResource_type() == 1){
+                            JumpDetail.jumpImageText(CdKeyActivity.this, good.getResource_id(), "", "");
+                        }else if(good.getResource_type() == 2){
+                            JumpDetail.jumpAudio(CdKeyActivity.this, good.getResource_id(), 1);
+                        }else if(good.getResource_type() == 3){
+                            JumpDetail.jumpVideo(CdKeyActivity.this, good.getResource_id(), "", false, "");
+                        }else{
+                            Toast("未知类型");
                         }
 
                     }

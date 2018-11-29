@@ -13,10 +13,9 @@
         android:layout_height="match_parent" />
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/id_preview_img"
-        fresco:actualImageScaleType="focusCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:transitionName="share_video_preview" />
+        fresco:actualImageScaleType="focusCrop"/>
     <RelativeLayout
         android:id="@+id/play_controller_page"
         android:layout_width="match_parent"

@@ -188,11 +188,9 @@ public class SplashActivity extends XiaoeActivity {
         String[] permission = permissionList == null ? new String[]{} : permissionList.toArray(new String[permissionList.size()]);
         String[] hidePermission = hidePermissionList == null ? new String[]{} : hidePermissionList.toArray(new String[hidePermissionList.size()]);
         if(permission.length > 0){
-            Log.d(TAG, "requestPermission: ----");
             isApplyPermission = false;
             ActivityCompat.requestPermissions(this,permission,1);
         }else if(hidePermission.length > 0){
-            Log.d(TAG, "requestPermission: ****");
             getDialog().getTitleView().setGravity(Gravity.START);
             getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(SplashActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(SplashActivity.this, 22), 0 );
             getDialog().getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
@@ -204,7 +202,6 @@ public class SplashActivity extends XiaoeActivity {
             getDialog().showDialog(CustomDialog.REQUEST_PERMISSIONS_TAG);
             isApplyPermission = false;
         }else {
-            Log.d(TAG, "requestPermission: ++++");
             isApplyPermission = true;
             JumpDetail.jumpLogin(this);
             finish();
@@ -214,7 +211,6 @@ public class SplashActivity extends XiaoeActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy: --------");
     }
 
     @Override
@@ -224,15 +220,12 @@ public class SplashActivity extends XiaoeActivity {
         for (int i = 0; i < grantResults.length; i++){
             if(grantResults[i] != 0){
                 //用户拒绝后再次弹起授权
-                Log.d(TAG, "onRequestPermissionsResult: ** "+permissions[i]);
                 obtainPermissions = false;
                 requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission());
                 break;
             }
         }
         if(obtainPermissions && isApplyPermission){
-            isApplyPermission = true;
-            Log.d(TAG, "onRequestPermissionsResult: -- ");
             JumpDetail.jumpLogin(this);
             finish();
         }else{
@@ -240,14 +233,5 @@ public class SplashActivity extends XiaoeActivity {
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        Log.d(TAG, "onActivityResult: ** ");
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == CustomDialog.REQUEST_PERMISSIONS_TAG){
-//            Log.d(TAG, "onActivityResult: -- ");
-//            requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission());
-//        }
-//    }
 
 }
