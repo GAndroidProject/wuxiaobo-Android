@@ -13,7 +13,6 @@ public class BindJgPushRequest extends IRequest {
 
     public BindJgPushRequest(IBizCallback iBizCallback) {
         super(NetworkEngine.BIND_JG_PUSH_URL + "xe.set.device.token/1.0.0", iBizCallback);
-//        super(NetworkEngine.API_THIRD_BASE_URL + "xe.set.device.token/1.0.0", iBizCallback);
     }
 
     public void sendRequest() {
