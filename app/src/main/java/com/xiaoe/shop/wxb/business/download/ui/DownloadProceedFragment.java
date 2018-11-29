@@ -172,6 +172,10 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     @Override
     public void downloadItem(DownloadTableInfo download, int position, int type) {
         if(type == 0){
+            if(NetUtils.NETWORK_TYPE_NO_NETWORK.equals(NetUtils.getNetworkType(getContext())) || NetUtils.NETWORK_TYPE_UNKONW_NETWORK.equals(NetUtils.getNetworkType(getContext()))){
+                Toast.makeText(getContext(), getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+                return;
+            }
             //开始、暂停
             if(download.getDownloadState() == 0 || download.getDownloadState() == 1){
                 DownloadManager.getInstance().pause(download);

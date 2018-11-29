@@ -176,10 +176,6 @@ public class NetworkEngine {
                     mRequest.onResponse(false, null);
                     return;
                 }
-                //登录请求，后续写登录逻辑可放开注释
-//                if (mRequest instanceof LoginRequest) {
-//                    StatusKeepUtil.clearUserInfo();
-//                }
                 try {
                     String jsonString = body.string();
                     com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(jsonString);
