@@ -14,10 +14,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.DownloadTableInfo;
 import com.xiaoe.common.interfaces.OnDownloadListener;
+import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.download.DownloadProceedChildListAdapter;
@@ -129,6 +131,10 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     }
 
     private void allStartDownload() {
+        if(NetUtils.NETWORK_TYPE_NO_NETWORK.equals(NetUtils.getNetworkType(getContext())) || NetUtils.NETWORK_TYPE_UNKONW_NETWORK.equals(NetUtils.getNetworkType(getContext()))){
+            Toast.makeText(getContext(), getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+            return;
+        }
         if(adapter.getItemCount() <= 0 || runClickAllDownload){
             return;
         }

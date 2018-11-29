@@ -27,6 +27,8 @@ public class NetUtils {
     public static final String NETWORK_TYPE_3G = "3G";
     public static final String NETWORK_TYPE_4G = "4G";
     public static final String NETWORK_TYPE_WIFI = "WIFI";
+    public static final String NETWORK_TYPE_UNKONW_NETWORK = "unkonw network";
+    public static final String NETWORK_TYPE_NO_NETWORK = "no network";
 
     private NetUtils() {
     }
@@ -161,11 +163,11 @@ public class NetUtils {
                     case 13:
                         return NETWORK_TYPE_4G;
                     default:
-                        return "unkonw network";
+                        return NETWORK_TYPE_UNKONW_NETWORK;
                 }
             }
         } else {
-            return "no network";
+            return NETWORK_TYPE_NO_NETWORK;
         }
     }
 

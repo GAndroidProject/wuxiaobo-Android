@@ -190,19 +190,23 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     @Override
     public void onPlayPosition(View view, int parentPosition, int position, boolean jumpDetail) {
         if (loginUserList.size() == 1) {
-            if(!isHasBuy){
-                toastCustom("未购买课程");
-                return;
-            }
             ColumnDirectoryEntity parentEntity = directoryAdapter.getPositionData(parentPosition);
             isAddPlayList = playParentPosition == parentPosition;
             if(position == -1){
+                if(!isHasBuy){
+                    toastCustom("未购买课程");
+                    return;
+                }
                 //播放全部
                 List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
                 clickPlayAll(playList);
             }else{
                 //播放某一个，同时获取播放列表
                 ColumnSecondDirectoryEntity playEntity = parentEntity.getResource_list().get(position);
+                if(!isHasBuy && playEntity.getIsTry() == 0){
+                    toastCustom("未购买课程");
+                    return;
+                }
                 if(playEntity.getResource_type() == 2){
                     //音频
                     List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());

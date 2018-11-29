@@ -298,11 +298,11 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     @Override
     public void onPlayPosition(View view,int parentPosition, int position, boolean jumpDetail) {
         if (loginUserList.size() == 1) {
-            if(!isHasBuy){
+            ColumnSecondDirectoryEntity itemData = directoryAdapter.getData().get(position);
+            if(!isHasBuy && itemData.getIsTry() == 0){
                 toastCustom("未购买课程");
                 return;
             }
-            ColumnSecondDirectoryEntity itemData = directoryAdapter.getData().get(position);
             if(itemData.getResource_type() == 2){
                 playPosition(itemData.getResource_id(), itemData.getColumnId(), itemData.getBigColumnId(), jumpDetail);
             }

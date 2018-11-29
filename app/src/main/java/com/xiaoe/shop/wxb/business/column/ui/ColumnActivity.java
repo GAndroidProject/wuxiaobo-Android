@@ -443,7 +443,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else{
             price = data.getIntValue("price");
             buyView.setVisibility(cache ? View.GONE : View.VISIBLE);
-            setMiniPlayerPosition(RelativeLayout.ABOVE, R.id.common_buy_layout);
+            if(cache){
+                //显示缓存数据，会先隐藏购买按钮，所以间悬浮播放器置底
+                setMiniPlayerPosition(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            }else{
+                setMiniPlayerPosition(RelativeLayout.ABOVE, R.id.common_buy_layout);
+            }
             // 未购买
             if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员判断
                 buyView.setVipBtnVisibility(cache ? View.GONE : View.VISIBLE);
