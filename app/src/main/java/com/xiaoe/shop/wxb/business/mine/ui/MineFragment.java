@@ -112,6 +112,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     MineLearningListAdapter learningListAdapter; // 学习记录适配器
     private boolean showDataByDB = false;
     SuperVipPresenter superVipPresenter;
+    final String[] vipTips = {"全场免费听","亲友一起听","活动优先抢"};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -266,8 +267,9 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             // 会员权益假数据 -- 开始
             if (contentList == null) {
                 contentList = new ArrayList<>();
-                contentList.add("所有课程免费学习");
-                contentList.add("分享赢双倍积分");
+                for (int i = 0; i < vipTips.length; i++) {
+                    contentList.add(vipTips[i]);
+                }
                 mineEquityListAdapter = new MineEquityListAdapter(mContext, contentList);
                 mineVipCard.setEquityListAdapter(mineEquityListAdapter);
             }

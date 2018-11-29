@@ -32,7 +32,7 @@ public class MineEquityListAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         // 先只返回两个
-        return mEquityList == null ? 0 : Math.min(2, mEquityList.size());
+        return mEquityList == null ? 0 : Math.min(3, mEquityList.size());
     }
 
     @Override
