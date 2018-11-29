@@ -685,7 +685,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 }
             }
         });
-        toolbarHeight = Dp2Px2SpUtil.dp2px(mContext, 20);
+        toolbarHeight = Dp2Px2SpUtil.dp2px(mContext, 160);
 
         // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
         if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) { // 课程页设置一个顶部背景
