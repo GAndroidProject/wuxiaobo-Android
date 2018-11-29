@@ -662,15 +662,17 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             }
         });
         microPageFresh.setOnRefreshListener(this);
-        microPageFresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
-            @Override
-            public void onHeaderMoving(RefreshHeader header, boolean isDragging, float percent, int offset, int headerHeight, int maxDragHeight) {
-                if (microPageTitleBg2.getVisibility() == View.GONE){
-                    microPageTitleBg2.setVisibility(View.VISIBLE);
-                    microPageTitleBg.setVisibility(View.GONE);
+        if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
+            microPageFresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
+                @Override
+                public void onHeaderMoving(RefreshHeader header, boolean isDragging, float percent,
+                                           int offset, int headerHeight, int maxDragHeight) {
+                    if (microPageTitleBg2.getVisibility() == View.GONE){
+                        microPageTitleBg2.setVisibility(View.VISIBLE);
+                        microPageTitleBg.setVisibility(View.GONE);
+                    }
                 }
-            }
-        });
+            });
         microPageLoading.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
             public void singleClick(View v) {
