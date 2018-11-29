@@ -93,6 +93,7 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setAudio_length(jsonObject.getIntValue("audio_length"));
             secondDirectoryEntity.setVideo_length(jsonObject.getIntValue("video_length"));
             secondDirectoryEntity.setAudio_url(jsonObject.getString("audio_url"));
+            secondDirectoryEntity.setVideo_url(jsonObject.getString("video_url"));
             secondDirectoryEntity.setColumnTitle(columnTitle);
             secondDirectoryEntity.setColumnId(columnId);
             secondDirectoryEntity.setBigColumnId(bigColumnId);
