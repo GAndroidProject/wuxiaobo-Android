@@ -8,9 +8,11 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -416,7 +418,13 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         hasBuy = data.getBoolean("available"); // false 没买，true 买了
         if (hasBuy) { // 已购
             imgUrl = data.getString("img_url") == null ? "" : data.getString("img_url");
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 0, 0, 0);
+            itPushScrollView.setLayoutParams(layoutParams);
         } else { // 未购
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 0, 0, Dp2Px2SpUtil.dp2px(this, 44));
+            itPushScrollView.setLayoutParams(layoutParams);
             imgUrl = resourceInfo.getString("img_url") == null ? resourceInfo.getString("img_url_compressed") : resourceInfo.getString("img_url");
             // 未购数据格式，share_info 跟 resource_info 同级，所以在这里取到
             JSONObject shareInfo = (JSONObject) data.get("share_info");
