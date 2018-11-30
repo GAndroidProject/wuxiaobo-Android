@@ -487,6 +487,7 @@ public class LoginActivity extends XiaoeActivity {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) { // 修改成功
                     Toast("修改成功");
+                    isPwdLogin = true; // 回到密码登录流程
                     replaceFragment(PWD);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) { // 修改失败
                     Log.d(TAG, "onMainThreadResponse: 修改失败");

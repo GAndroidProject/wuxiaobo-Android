@@ -484,6 +484,7 @@ public class LoginPageFragment extends BaseFragment {
                 phoneContent.setText("");
                 passwordContent.setText("");
                 pwdError.setVisibility(View.GONE);
+                loginActivity.isPwdLogin = false;
                 loginActivity.replaceFragment(LoginActivity.FIND_PWD);
             }
         });
