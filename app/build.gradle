@@ -15,11 +15,10 @@ android {
     signingConfigs {
         release {
             //吴晓波签名文件
-//            storeFile file("../../shopwxb.jks")
-            storeFile file("../../xiaoeshop.jks")
-            storePassword RELEASE_STORE_PASSWORD
-            keyAlias RELEASE_KEY_ALIAS
-            keyPassword RELEASE_KEY_PASSWORD
+            storeFile file("../../shopwxb.jks")
+            storePassword RELEASE_STORE_PASSWORD_WXB
+            keyAlias RELEASE_KEY_ALIAS_WXB
+            keyPassword RELEASE_KEY_PASSWORD_WXB
         }
         debug {
             storeFile file("../../xiaoeshop.jks")

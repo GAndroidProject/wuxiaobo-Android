@@ -321,8 +321,8 @@
     <string name="new_tip">NEW</string>
     <string name="enable_text">Enable</string>
     <string name="to_text">%s to</string>
-    <string name="resource_sold_out">该课程已停售，快去别处看看吧</string>
-    <string name="resource_sale_stop">该课程已停售，快去别处看看吧</string>
+    <string name="resource_sold_out">该课程已下载，快去别处看看吧</string>
+    <string name="resource_sale_stop">该课程已暂停销售，快去别处看看吧</string>
     <string name="resource_delete">该课程已删除，快去别处看看吧</string>
     <string name="resource_stay_putaway">该课程待上架，快去别处看看吧</string>
 

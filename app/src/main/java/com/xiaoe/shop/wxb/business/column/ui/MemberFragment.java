@@ -9,7 +9,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
@@ -28,6 +30,7 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.business.download.ui.DownloadActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickListPlayListener;
 import com.xiaoe.shop.wxb.widget.DashlineItemDivider;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
@@ -53,6 +56,8 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
     TouristDialog touristDialog;
     private boolean isAddList = false;
     private List<ColumnSecondDirectoryEntity> tempList;
+    private ImageView allPlayIcon;
+    private TextView allPlayText;
 
     public MemberFragment() {
         playList = new ArrayList<AudioPlayEntity>();
@@ -95,7 +100,19 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
     private void initView() {
         directoryRecyclerView = (RecyclerView) rootView.findViewById(R.id.directory_recycler_view);
         btnPlayAll = (LinearLayout) rootView.findViewById(R.id.btn_all_play);
-        btnPlayAll.setOnClickListener(this);
+        btnPlayAll.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                clickPlayAll();
+            }
+        });
+
+        //全部播放状态icon
+        allPlayIcon = (ImageView) rootView.findViewById(R.id.all_play_icon);
+        //全部播放状态
+        allPlayText = (TextView) rootView.findViewById(R.id.all_play_text);
+        setAllPlayState();
+
         LinearLayout btnBatchDownload = (LinearLayout) rootView.findViewById(R.id.btn_batch_download);
         btnBatchDownload.setOnClickListener(this);
     }
@@ -138,9 +155,6 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_all_play:
-                clickPlayAll();
-                break;
             case R.id.btn_batch_download:
                 clickBatchDownload();
                 break;
@@ -332,9 +346,20 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
             case AudioPlayEvent.PAUSE:
             case AudioPlayEvent.PLAY:
             case AudioPlayEvent.STOP:
+                setAllPlayState();
                 directoryAdapter.notifyDataSetChanged();
             default:
                 break;
+        }
+    }
+
+    private void setAllPlayState(){
+        if(!TextUtils.isEmpty(resourceId) && AudioMediaPlayer.isPlaying() && resourceId.equals(AudioMediaPlayer.getAudio().getColumnId())){
+            allPlayText.setText(getString(R.string.stop_all));
+            allPlayIcon.setImageResource(R.mipmap.audiolist_playing);
+        }else{
+            allPlayText.setText(getString(R.string.play_all));
+            allPlayIcon.setImageResource(R.mipmap.audiolist_playall);
         }
     }
 

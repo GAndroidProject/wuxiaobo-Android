@@ -711,8 +711,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         int code = playEntity.getCode();
 
         if(!playEntity.isSingleBuy() && code == 0){
-//            JumpDetail.jumpColumn(this, playEntity.getProductId(), playEntity.getProductImgUrl(), playEntity.getProductType());
-//            finish();
+            JumpDetail.jumpColumn(this, playEntity.getProductId(), playEntity.getProductImgUrl(), playEntity.getProductType());
+            finish();
             return;
         }
         if (code == 1){
