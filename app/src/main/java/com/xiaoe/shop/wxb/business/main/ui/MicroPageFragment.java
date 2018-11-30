@@ -660,9 +660,23 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         microPageFresh.setOnRefreshListener(this);
         if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
             microPageFresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
+
+//                @Override
+//                public void onHeaderStartAnimator(RefreshHeader header, int footerHeight, int maxDragHeight) {
+//                    super.onHeaderStartAnimator(header, footerHeight, maxDragHeight);
+//                    Log.d(TAG, "onHeaderStartAnimator: ");
+//                }
+//
+//                @Override
+//                public void onHeaderReleased(RefreshHeader header, int headerHeight, int maxDragHeight) {
+//                    super.onHeaderReleased(header, headerHeight, maxDragHeight);
+//                    Log.d(TAG, "onHeaderReleased: ");
+//                }
+
                 @Override
                 public void onHeaderMoving(RefreshHeader header, boolean isDragging, float percent,
                                            int offset, int headerHeight, int maxDragHeight) {
+                    Log.d(TAG, "onHeaderMoving: ");
                     if (microPageTitleBg2.getVisibility() == View.GONE){
                         microPageTitleBg2.setVisibility(View.VISIBLE);
                         microPageTitleBg.setVisibility(View.GONE);
