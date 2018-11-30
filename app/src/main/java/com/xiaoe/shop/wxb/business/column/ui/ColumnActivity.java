@@ -281,6 +281,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         Object dataObject = jsonObject.get("data");
         if(iRequest instanceof DetailRequest){
             JSONObject data = (JSONObject) dataObject;
+            int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
+            setCollectState(hasFavorite == 1);
             detailRequest(data.getJSONObject("resource_info"), data.getJSONObject("product_info"), data.getBoolean("available"), false);
             JSONObject shareInfo = data.getJSONObject("share_info");
             if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
@@ -464,7 +466,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         collectTitle = title;
         collectImgUrl = data.getString("img_url");
         collectImgUrlCompressed = data.getString("img_url_compressed");
-        setCollectState(data.getIntValue("has_favorite") == 1);
 
         ColumnDetailFragment detailFragment = (ColumnDetailFragment) columnViewPagerAdapter.getItem(0);
         detailFragment.setContentDetail(data.getString("content"));
@@ -695,6 +696,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
         if(cacheDataList != null && cacheDataList.size() > 0){
             JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent()).getJSONObject("data");
+            int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
+            setCollectState(hasFavorite == 1);
             detailRequest(data.getJSONObject("resource_info"), data.getJSONObject("product_info"), data.getBoolean("available"), true);
             JSONObject shareInfo = data.getJSONObject("share_info");
             if(shareInfo != null && shareInfo.getJSONObject("wx") != null){

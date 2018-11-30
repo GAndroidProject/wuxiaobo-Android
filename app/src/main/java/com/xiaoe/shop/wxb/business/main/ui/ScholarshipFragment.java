@@ -25,10 +25,8 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
@@ -42,7 +40,6 @@ import com.xiaoe.common.entitys.TaskDetailIdEvent;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.MeasureUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
-import com.xiaoe.common.widget.CommonRefreshHeader;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.ScholarshipReceiveRequest;
@@ -711,6 +708,14 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             showDataByDB = true;
         }else{
             showDataByDB = false;
+        }
+        //奖学金金额
+        String sqlMoney = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+taskId+"_ranking'";
+        List<CacheData> moneyCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlMoney, null);
+        if(moneyCacheData != null && moneyCacheData.size() > 0){
+            String money = moneyCacheData.get(0).getContent();
+            ScholarshipEntity.getInstance().setTaskTotalMoney(money);
+            scholarshipTotalMoney.setText(ScholarshipEntity.getInstance().getTaskTotalMoney());
         }
 
     }

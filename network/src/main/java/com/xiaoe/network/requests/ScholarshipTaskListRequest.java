@@ -8,4 +8,7 @@ public class ScholarshipTaskListRequest extends IRequest {
     public ScholarshipTaskListRequest(IBizCallback iBizCallback) {
         super(NetworkEngine.API_THIRD_BASE_URL + "xe.get.task.list/1.0.0", iBizCallback);
     }
+    public void sendRequest(){
+        NetworkEngine.getInstance().sendRequest(this);
+    }
 }

@@ -197,7 +197,7 @@ public class NetworkEngine {
         });
     }
 
-    private void saveCacheData(String cacheKey, String data, String dataList){
+    public void saveCacheData(String cacheKey, String data, String dataList){
         if(!cacheSQLiteUtil.tabIsExist(CacheDataUtil.TABLE_NAME)){
             cacheSQLiteUtil.execSQL(CacheDataUtil.CREATE_TABLES_SQL);
         }

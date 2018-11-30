@@ -67,8 +67,7 @@ public class ScholarshipPresenter implements IBizCallback {
     public void requestTaskList(boolean needInitData) {
         this.needInitData = needInitData;
         ScholarshipTaskListRequest scholarshipTaskListRequest = new ScholarshipTaskListRequest(this);
-
-        NetworkEngine.getInstance().sendRequest(scholarshipTaskListRequest);
+        scholarshipTaskListRequest.sendRequest();
     }
 
     // 获取排行榜
@@ -142,6 +141,7 @@ public class ScholarshipPresenter implements IBizCallback {
             String taskId = itemJson.getString("task_id");
             int taskTotalMoney = itemJson.getInteger("reward_amount") == null ? 0 : itemJson.getInteger("reward_amount");
             String totalMoney = String.format("%.0f", taskTotalMoney / 100f);
+            NetworkEngine.getInstance().saveCacheData(taskId+"_money", totalMoney, null);
             SharedPreferencesUtil.getInstance(XiaoeApplication.getmContext(), SharedPreferencesUtil.FILE_NAME);
             SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_SCHOLARSHIP_ID, taskId);
             ScholarshipEntity.getInstance().setTaskId(taskId);
