@@ -21,10 +21,11 @@ android {
             keyPassword RELEASE_KEY_PASSWORD_WXB
         }
         debug {
-            storeFile file("../../xiaoeshop.jks")
-            storePassword RELEASE_STORE_PASSWORD
-            keyAlias RELEASE_KEY_ALIAS
-            keyPassword RELEASE_KEY_PASSWORD
+            //吴晓波签名文件
+            storeFile file("../../shopwxb.jks")
+            storePassword RELEASE_STORE_PASSWORD_WXB
+            keyAlias RELEASE_KEY_ALIAS_WXB
+            keyPassword RELEASE_KEY_PASSWORD_WXB
         }
     }
     compileSdkVersion 25
@@ -33,7 +34,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0.0.010d" // 正式：1.0.0    测试：1.0.0.***d
+        versionName "1.0.0" // 正式：1.0.0    测试：1.0.0.***d
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 //        ndk { abiFilters "armeabi","x86"}
         ndk {
