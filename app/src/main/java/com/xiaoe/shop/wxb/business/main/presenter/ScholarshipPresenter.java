@@ -53,10 +53,10 @@ public class ScholarshipPresenter implements IBizCallback {
             int code = data.getInteger("code");
             if (code == NetworkCodes.CODE_SUCCEED) {
                 JSONArray result = (JSONArray) data.get("data");
-                getTaskId2Request(result);
+                getTaskId2Request(result, iRequest);
             } else {
                 // 请求失败，直接回调 false 结果给调用者
-                inr.onResponse(null, false, null);
+                inr.onResponse(iRequest, false, null);
             }
         } else {
             inr.onResponse(iRequest, success, entity);
@@ -128,7 +128,10 @@ public class ScholarshipPresenter implements IBizCallback {
     }
 
     // 获取 taskId
-    private void getTaskId2Request(JSONArray data) {
+    private void getTaskId2Request(JSONArray data, IRequest iRequest) {
+        if (data.size() == 0) {
+            inr.onResponse(iRequest, false, null);
+        }
         for (Object item : data) {
             JSONObject itemJson = (JSONObject) item;
             int taskType = itemJson.getInteger("task_type") == null ? 0 : itemJson.getInteger("task_type");

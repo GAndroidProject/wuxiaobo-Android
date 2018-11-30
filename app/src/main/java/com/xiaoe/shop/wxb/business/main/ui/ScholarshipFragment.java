@@ -50,6 +50,7 @@ import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipRangeAdapter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -134,15 +135,15 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
 
         if (!mainActivity.isFormalUser) { // 不是正式用户
             touristDialog = new TouristDialog(getActivity());
-            touristDialog.setDialogCloseClickListener(new View.OnClickListener() {
+            touristDialog.setDialogCloseClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
-                public void onClick(View v) {
+                public void singleClick(View v) {
                     touristDialog.dismissDialog();
                 }
             });
-            touristDialog.setDialogConfirmClickListener(new View.OnClickListener() {
+            touristDialog.setDialogConfirmClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
-                public void onClick(View v) {
+                public void singleClick(View v) {
                     touristDialog.dismissDialog();
                     JumpDetail.jumpLogin(getActivity(), true);
                 }
