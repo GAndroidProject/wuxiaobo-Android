@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -94,6 +96,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private ImageView btnBack;
     private boolean mIsDownload;
     private String columnId;
+    private TextView bottomTip;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -213,6 +216,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             playControllerView.setDownloadState(0);
         }
 
+        bottomTip = (TextView) findViewById(R.id.bottom_end);
     }
 
     private void initDatas() {
@@ -487,7 +491,13 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             //已购或者免费
             if(data.getBoolean("available")){
                 setContent(data, true, cache);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(0, 0, 0, Dp2Px2SpUtil.dp2px(this, 20));
+                bottomTip.setLayoutParams(layoutParams);
             }else{
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(0, 0, 0, Dp2Px2SpUtil.dp2px(this, 64));
+                bottomTip.setLayoutParams(layoutParams);
                 //未购
                 JSONObject resourceInfo = data.getJSONObject("resource_info");
                 int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");

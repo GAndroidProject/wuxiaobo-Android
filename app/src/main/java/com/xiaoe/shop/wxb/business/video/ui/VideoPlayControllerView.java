@@ -252,7 +252,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                     }
                 }
             };
-            mTimer.schedule(mTimerTask,0,1000);
+            mTimer.schedule(mTimerTask,0,500);
         }
     }
 

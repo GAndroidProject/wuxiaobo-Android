@@ -14,7 +14,6 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/detail_buy"
         android:layout_below="@id/video_play_controller"
-        android:fillViewport="true"
         android:scrollbars="none"
         >
         <RelativeLayout
@@ -78,8 +77,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:background="@color/white"
-                android:layout_below="@id/video_advertise_img"
-                android:layout_above="@+id/bottom_end">
+                android:layout_below="@id/video_advertise_img">
 
                 <WebView
                     android:id="@+id/video_web_view"
@@ -87,21 +85,20 @@
                     android:layout_height="match_parent"
                     />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/bottom_end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/course_image_text_page_bottom"
+                    android:textSize="12sp"
+                    android:textColor="@color/course_page_bottom_color"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:gravity="center"
+                    android:background="@color/audio_page_bg_color"
+                    />
 
-            <TextView
-                android:id="@+id/bottom_end"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/course_image_text_page_bottom"
-                android:textSize="12sp"
-                android:textColor="@color/course_page_bottom_color"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:gravity="center"
-                android:background="@color/audio_page_bg_color"
-                android:layout_alignParentBottom="true"
-                />
+            </LinearLayout>
 
         </RelativeLayout>
     </ScrollView>
