@@ -75,30 +75,6 @@ public class SplashActivity extends XiaoeActivity {
     }
 
     private void initView() {
-        long preTime = System.currentTimeMillis();
-
-        // 每50ms一帧，播放动画一次
-//        FrameAnimation frameAnimation = new FrameAnimation(ivGif, getRes(), 10, false);
-//        frameAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
-//            @Override
-//            public void onAnimationStart() {
-//                Log.d(TAG, "start");
-//            }
-//
-//            @Override
-//            public void onAnimationEnd() {
-//                Log.d(TAG, "end");
-//                Log.d(TAG, "onAnimationEnd: " + (System.currentTimeMillis() - preTime));
-////                JumpDetail.jumpLogin(mContext);
-////                finish();
-//                requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission());
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat() {
-//                Log.d(TAG, "repeat");
-//            }
-//        });
         ivGif.postDelayed(() -> requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission()), 3000);
     }
 
@@ -119,20 +95,6 @@ public class SplashActivity extends XiaoeActivity {
                 sqLiteUtil.execSQL(CacheDataUtil.CREATE_TABLES_SQL);
             }
         });
-    }
-
-    /**
-     * 获取需要播放的动画资源
-     */
-    private int[] getRes() {
-        TypedArray typedArray = getResources().obtainTypedArray(R.array.animation_logo);
-        int len = typedArray.length();
-        int[] resId = new int[len];
-        for (int i = 0; i < len; i++) {
-            resId[i] = typedArray.getResourceId(i, -1);
-        }
-        typedArray.recycle();
-        return resId;
     }
 
     /**
