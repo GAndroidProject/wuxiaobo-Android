@@ -8,7 +8,6 @@ import android.Manifest;
 
 public class Constants {
     //应用appid 测试环境
-//    private static final String testAppid = "appiOW1KfWe9943";
     private static final String testAppid = "appiOW1KfWe9943";
     //应用appid 正式环境 (内灰环境【体验店铺（标准版）】)
     private static final String formalAppid = "app38itOR341547";
