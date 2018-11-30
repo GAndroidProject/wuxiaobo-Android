@@ -32,44 +32,44 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <FrameLayout
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/learning_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/learning_refresh"
+        <com.xiaoe.common.widget.CommonRefreshHeader
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"/>
 
-            <com.xiaoe.common.widget.CommonRefreshHeader
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <RelativeLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/learning_list"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="none"
-                    android:overScrollMode="never"
-                    android:nestedScrollingEnabled="false"/>
+                    android:layout_height="match_parent">
 
-            </RelativeLayout>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/learning_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="none"
+                        android:overScrollMode="never"
+                        android:nestedScrollingEnabled="false"/>
 
-            <com.xiaoe.common.widget.CommonRefreshFooter
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                </RelativeLayout>
 
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+                <com.xiaoe.shop.wxb.widget.StatusPagerView
+                    android:id="@+id/learning_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
-        <com.xiaoe.shop.wxb.widget.StatusPagerView
-            android:id="@+id/learning_loading"
+            </FrameLayout>
+
+        <com.xiaoe.common.widget.CommonRefreshFooter
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
 
-    </FrameLayout>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 </LinearLayout>

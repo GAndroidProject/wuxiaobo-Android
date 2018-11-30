@@ -3,12 +3,14 @@ package com.xiaoe.shop.wxb.business.earning.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -38,6 +40,7 @@ import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
 // 积分页面
 public class IntegralActivity extends XiaoeActivity {
@@ -56,6 +59,8 @@ public class IntegralActivity extends XiaoeActivity {
     TextView integralTitle;
     @BindView(R.id.title_end)
     TextView integralDesc;
+    @BindView(R.id.integral_loading)
+    StatusPagerView integralLoading;
 
     @BindView(R.id.integral_content)
     TextView integralContent;
@@ -100,6 +105,7 @@ public class IntegralActivity extends XiaoeActivity {
         integralDesc.setVisibility(View.GONE);
         integralTip.setText("暂无积分记录，快去做任务领取积分吧");
         integralTip.setVisibility(View.VISIBLE);
+        integralLoading.setVisibility(View.GONE);
         if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 超级会员可以买并且不是超级会员
             integralBeSuperVip.setVisibility(View.VISIBLE);
         } else {
@@ -155,10 +161,20 @@ public class IntegralActivity extends XiaoeActivity {
                     initPageData(data);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: request fail");
+                    integralLoading.setVisibility(View.VISIBLE);
+                    integralLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), R.mipmap.error_page);
                 }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail...");
+            integralRefresh.finishRefresh();
+            if (TextUtils.isEmpty(integralContent.getText().toString())) {
+                integralLoading.setVisibility(View.VISIBLE);
+                integralLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), R.mipmap.error_page);
+            } else {
+                integralLoading.setLoadingFinish();
+                Toast.makeText(this, getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -205,6 +221,7 @@ public class IntegralActivity extends XiaoeActivity {
             }
             MeasureUtil.setListViewHeightBasedOnChildren(integralList);
             integralTip.setVisibility(View.GONE);
+            integralLoading.setVisibility(View.GONE);
         } else {
             integralTip.setVisibility(View.VISIBLE);
         }

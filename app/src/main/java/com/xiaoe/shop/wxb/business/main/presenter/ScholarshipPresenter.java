@@ -131,6 +131,7 @@ public class ScholarshipPresenter implements IBizCallback {
     private void getTaskId2Request(JSONArray data, IRequest iRequest) {
         if (data.size() == 0) {
             inr.onResponse(iRequest, false, null);
+            return;
         }
         for (Object item : data) {
             JSONObject itemJson = (JSONObject) item;

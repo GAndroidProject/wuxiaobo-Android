@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -93,8 +94,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
 
     @BindView(R.id.micro_page_title_bg)
     SimpleDraweeView microPageTitleBg;
-    @BindView(R.id.micro_page_title_bg2)
-    SimpleDraweeView microPageTitleBg2;
+//    @BindView(R.id.micro_page_title_bg2)
+//    SimpleDraweeView microPageTitleBg2;
     @BindView(R.id.micro_page_content)
     RecyclerView microPageContent;
 
@@ -201,6 +202,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         if (success) { // 请求成功
             int code = result.getInteger("code");
             if (iRequest instanceof PageFragmentRequest) {
+                microPageFresh.finishRefresh();
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
                     if (microPageList != null) microPageList.clear();
@@ -212,36 +214,35 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     // 请求成功之后隐藏 loading
                     // microPageLogo.setVisibility(View.VISIBLE);
                     microPageLoading.setLoadingFinish();
-                    microPageFresh.finishRefresh();
                     microPageAdapter.notifyDataSetChanged();
                 } else if (code == NetworkCodes.CODE_GOODS_DELETE) { // 微页面不存在
                     Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
-                    microPageFresh.finishRefresh();
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 } else if (code == NetworkCodes.CODE_TINY_PAGER_NO_FIND) { // 微页面已被删除
                     Log.d(TAG, "onMainThreadResponse: micro_page --- " + result.get("msg"));
-                    microPageFresh.finishRefresh();
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }else{
-                    microPageFresh.finishRefresh();
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof ColumnListRequst) {
+                microPageFresh.finishRefresh();
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONArray data = (JSONArray) result.get("data");
                     refreshRecentComponent(data, iRequest.getDataParams().getString("goods_id"));
-                    microPageFresh.finishRefresh();
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取最近更新组件的列表失败..");
-                    microPageFresh.finishRefresh();
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             }
         } else {
             microPageFresh.finishRefresh();
             if (iRequest != null) {
-                microPageFresh.finishRefresh();
-                microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                if (microPageList.size() <= 0) { // 页面没数据
+                    microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                } else { // 有数据
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+                    microPageLoading.setLoadingFinish();
+                }
             }
         }
     }
@@ -660,49 +661,21 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         microPageFresh.setOnRefreshListener(this);
         if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
             microPageFresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
-
-//                @Override
-//                public void onHeaderStartAnimator(RefreshHeader header, int footerHeight, int maxDragHeight) {
-//                    super.onHeaderStartAnimator(header, footerHeight, maxDragHeight);
-//                    Log.d(TAG, "onHeaderStartAnimator: ");
-//                }
-//
-//                @Override
-//                public void onHeaderReleased(RefreshHeader header, int headerHeight, int maxDragHeight) {
-//                    super.onHeaderReleased(header, headerHeight, maxDragHeight);
-//                    Log.d(TAG, "onHeaderReleased: ");
-//                }
-
                 @Override
                 public void onHeaderMoving(RefreshHeader header, boolean isDragging, float percent,
                                            int offset, int headerHeight, int maxDragHeight) {
-                    Log.d(TAG, "onHeaderMoving: ");
-                    if (microPageTitleBg2.getVisibility() == View.GONE){
-                        microPageTitleBg2.setVisibility(View.VISIBLE);
-                        microPageTitleBg.setVisibility(View.GONE);
-                    }
+//                    if (microPageTitleBg2.getVisibility() == View.GONE){
+//                        microPageTitleBg2.setVisibility(View.VISIBLE);
+//                        microPageTitleBg.setVisibility(View.GONE);
+//                    }
                 }
             });
-        microPageLoading.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-            @Override
-            public void singleClick(View v) {
-                if (hp == null) {
-                    hp = new PageFragmentPresenter(MicroPageFragment.this);
-                }
-                if (microPageLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面异常，点击重新请求
-                    microPageLoading.setPagerState(StatusPagerView.LOADING, "", 0);
-                    hp.requestMicroPageData(microPageId);
-                    microPageLoading.setVisibility(View.VISIBLE);
-                    microPageLoading.setLoadingState(View.VISIBLE);
-                }
-            }
-        });
         toolbarHeight = Dp2Px2SpUtil.dp2px(mContext, 160);
 
         // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
         if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) { // 课程页设置一个顶部背景
             microPageTitleBg.setImageURI("res:///" + R.mipmap.class_bg);
-            microPageTitleBg2.setImageURI("res:///" + R.mipmap.class_bg);
+//            microPageTitleBg2.setImageURI("res:///" + R.mipmap.class_bg);
             microPageToolbar.setVisibility(View.VISIBLE);
             // 初始化 toolbar
             int top = 0;
@@ -721,13 +694,13 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     JumpDetail.jumpSearch(mContext);
                 }
             });
-//            microPageFresh.setEnableHeaderTranslationContent(false);
+            microPageFresh.setEnableHeaderTranslationContent(false);
             isMain = false;
         } else {
             microPageTitleBg.setImageURI("");
-            microPageTitleBg2.setVisibility(View.GONE);
+//            microPageTitleBg2.setVisibility(View.GONE);
             microPageToolbar.setVisibility(View.GONE);
-//            microPageFresh.setEnableHeaderTranslationContent(true);
+            microPageFresh.setEnableHeaderTranslationContent(true);
             isMain = true;
         }
 
@@ -834,10 +807,10 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     private void updateToolbar(int scrollY) {
         if (!isMain) {
             alpha = (scrollY / (toolbarHeight * 1.0f)) * 255;
-            if (alpha >= 0 && microPageTitleBg2.getVisibility() == View.VISIBLE){
-                microPageTitleBg.setVisibility(View.VISIBLE);
-                microPageTitleBg2.setVisibility(View.GONE);
-            }
+//            if (alpha >= 0 && microPageTitleBg2.getVisibility() == View.VISIBLE){
+//                microPageTitleBg.setVisibility(View.VISIBLE);
+//                microPageTitleBg2.setVisibility(View.GONE);
+//            }
             if (alpha > maxAlpha) {
                 if (microPageToolbarTitle.getVisibility() != View.VISIBLE) {
                     microPageToolbarTitle.setVisibility(View.VISIBLE);
@@ -868,15 +841,13 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         if (hp == null) {
             hp = new PageFragmentPresenter(this);
         }
-        if (microPageList.size() != 0 && microPageAdapter != null) {
-//            microPageLogo.setVisibility(View.GONE);
-//            microPageList.clear();
-//            microPageAdapter.notifyDataSetChanged();
-            // 刷新前，设置需要重新渲染
-            networkDecorate = false;
-            microPageAdapter = null;
-            hp.requestMicroPageData(microPageId);
-        }
+//        microPageLogo.setVisibility(View.GONE);
+//        microPageList.clear();
+//        microPageAdapter.notifyDataSetChanged();
+        // 刷新前，设置需要重新渲染
+        networkDecorate = false;
+        microPageAdapter = null;
+        hp.requestMicroPageData(microPageId);
     }
 
     @Override

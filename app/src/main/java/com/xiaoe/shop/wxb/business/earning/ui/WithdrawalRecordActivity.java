@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -139,7 +140,13 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: ");
-            wrLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            wrRefresh.finishRefresh();
+            if (dataList.size() == 0) {
+                wrLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            } else {
+                wrLoading.setLoadingFinish();
+                Toast.makeText(this, getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

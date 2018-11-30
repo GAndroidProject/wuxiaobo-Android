@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -160,28 +161,6 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 onBackPressed();
             }
         });
-        learningLoading.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-            @Override
-            public void singleClick(View v) {
-                if ("我正在学".equals(pageTitle)) {
-                    if (mineLearningPresenter == null) {
-                        mineLearningPresenter = new MineLearningPresenter(MineLearningActivity.this);
-                    }
-                    if (pageIndex != 1) {
-                        pageIndex = 1;
-                    }
-                    mineLearningPresenter.requestLearningData(pageIndex, pageSize);
-                } else if ("我的收藏".equals(pageTitle)) {
-                    if (collectionUtils == null) {
-                        collectionUtils = new CollectionUtils(MineLearningActivity.this);
-                    }
-                    if (pageIndex != 1) {
-                        pageIndex = 1;
-                    }
-                    collectionUtils.requestCollectionList(pageIndex, pageSize);
-                }
-            }
-        });
     }
 
     @Override
@@ -225,10 +204,16 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
             learningRefresh.finishRefresh();
             learningRefresh.setNoMoreData(true);
             learningRefresh.setEnableLoadMore(false);
+            isRefresh = false;
             if (result != null) {
                 int code = result.getInteger("code");
                 if (NetworkStateResult.ERROR_NETWORK == code) {
-                    learningLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                    if (pageList.size() <= 0) {
+                        learningLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                    } else {
+                        learningLoading.setLoadingFinish();
+                        Toast.makeText(this, getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }
@@ -240,6 +225,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
         List<KnowledgeCommodityItem> itemList = new ArrayList<>();
         if (goodsList == null) {
             // 收藏列表为空，显示为空的页面
+            learningRefresh.finishRefresh();
             if (pageList.size() == 0) {
                 learningLoading.setPagerState(StatusPagerView.FAIL, "暂无收藏内容，快去首页逛逛吧", R.mipmap.collection_none);
             } else {

@@ -3,12 +3,14 @@ package com.xiaoe.shop.wxb.business.earning.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -38,7 +40,9 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningListAdapter;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
 public class ScholarshipActivity extends XiaoeActivity {
 
@@ -63,6 +67,8 @@ public class ScholarshipActivity extends XiaoeActivity {
     TextView scholarshipSubmit;
     @BindView(R.id.scholarship_page_be_super_vip)
     TextView scholarshipBeSuperVip;
+    @BindView(R.id.scholarship_loading)
+    StatusPagerView scholarshipLoading;
 
     @BindView(R.id.earning_list_title)
     TextView scholarshipListTitle;
@@ -106,6 +112,7 @@ public class ScholarshipActivity extends XiaoeActivity {
         scholarshipListTitle.setText("我的奖学金");
         scholarshipTip.setText("暂无奖学金记录，快去做任务领取奖学金吧");
         scholarshipTip.setVisibility(View.VISIBLE);
+        scholarshipLoading.setVisibility(View.GONE);
         if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 不是超级会员
             scholarshipBeSuperVip.setVisibility(View.VISIBLE);
         } else {
@@ -134,27 +141,27 @@ public class ScholarshipActivity extends XiaoeActivity {
                 earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NEED_FLOW ,Constants.EARNING_FLOW_TYPE, ++pageIndex, pageSize);
             }
         });
-        scholarshipBack.setOnClickListener(new View.OnClickListener() {
+        scholarshipBack.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 onBackPressed();
             }
         });
-        scholarshipWithdrawal.setOnClickListener(new View.OnClickListener() {
+        scholarshipWithdrawal.setOnClickListener(new OnClickEvent() {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 JumpDetail.jumpWrRecord(ScholarshipActivity.this);
             }
         });
-        scholarshipSubmit.setOnClickListener(new View.OnClickListener() {
+        scholarshipSubmit.setOnClickListener(new OnClickEvent() {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 JumpDetail.jumpWr(ScholarshipActivity.this, allMoney);
             }
         });
-        scholarshipBeSuperVip.setOnClickListener(new View.OnClickListener() {
+        scholarshipBeSuperVip.setOnClickListener(new OnClickEvent() {
             @Override
-            public void onClick(View v) {
+            public void singleClick(View v) {
                 JumpDetail.jumpSuperVip(ScholarshipActivity.this);
             }
         });
@@ -171,11 +178,21 @@ public class ScholarshipActivity extends XiaoeActivity {
                     JSONObject data = (JSONObject) result.get("data");
                     initPageData(data);
                 } else {
+                    scholarshipLoading.setVisibility(View.VISIBLE);
+                    scholarshipLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), R.mipmap.error_page);
                     Log.d(TAG, "onMainThreadResponse: 请求数据失败...");
                 }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail...");
+            scholarshipRefresh.finishRefresh();
+            if (TextUtils.isEmpty(scholarshipMoney.getText().toString())) {
+                scholarshipLoading.setVisibility(View.VISIBLE);
+                scholarshipLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), R.mipmap.error_page);
+            } else {
+                scholarshipLoading.setLoadingFinish();
+                Toast.makeText(this, getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -228,6 +245,7 @@ public class ScholarshipActivity extends XiaoeActivity {
             }
             MeasureUtil.setListViewHeightBasedOnChildren(scholarshipList);
             scholarshipTip.setVisibility(View.GONE);
+            scholarshipLoading.setVisibility(View.GONE);
         } else {
             scholarshipTip.setVisibility(View.VISIBLE);
         }

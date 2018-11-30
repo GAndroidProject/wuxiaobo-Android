@@ -16,18 +16,18 @@
         android:layout_marginTop="14dp"
         android:layout_marginBottom="14dp" />
 
-    <FrameLayout
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/withdrawal_record_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/withdrawal_record_refresh"
+        <com.xiaoe.common.widget.CommonRefreshHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <com.xiaoe.common.widget.CommonRefreshHeader
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
 
             <com.xiaoe.shop.wxb.widget.CustomScrollView
                 android:layout_width="match_parent"
@@ -53,18 +53,18 @@
 
             </com.xiaoe.shop.wxb.widget.CustomScrollView>
 
-            <com.xiaoe.common.widget.CommonRefreshFooter
+            <com.xiaoe.shop.wxb.widget.StatusPagerView
+                android:id="@+id/withdrawal_loading"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="match_parent"
+                android:layout_marginTop="-100dp"/>
 
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+        </FrameLayout>
 
-        <com.xiaoe.shop.wxb.widget.StatusPagerView
-            android:id="@+id/withdrawal_loading"
+        <com.xiaoe.common.widget.CommonRefreshFooter
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="-100dp"/>
+            android:layout_height="wrap_content"/>
 
-    </FrameLayout>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 </LinearLayout>

@@ -434,28 +434,6 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 }
             }
         });
-        mineLoading.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-            @Override
-            public void singleClick(View v) {
-                if (mineLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 页面错误点击再请求、
-                    mineLoading.setPagerState(StatusPagerView.LOADING, "", 0);
-
-                    if (mineLearningPresenter == null) {
-                        mineLearningPresenter = new MineLearningPresenter(MineFragment.this);
-                    }
-                    if (earningPresenter == null) {
-                        earningPresenter = new EarningPresenter(MineFragment.this);
-                    }
-
-                    isScholarshipFinish = false;
-                    isIntegralFinish = false;
-                    isMineLearningFinish = false;
-                    earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-                    earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-                    mineLearningPresenter.requestLearningData(1, 1);
-                }
-            }
-        });
     }
 
     @Override

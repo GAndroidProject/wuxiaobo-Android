@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<com.scwang.smartrefresh.layout.SmartRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mine_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/mine_refresh"
+    <com.xiaoe.common.widget.CommonRefreshHeader
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"/>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -81,11 +86,11 @@
 
         </com.xiaoe.shop.wxb.widget.PushScrollView>
 
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+        <com.xiaoe.shop.wxb.widget.StatusPagerView
+            android:id="@+id/mine_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-    <com.xiaoe.shop.wxb.widget.StatusPagerView
-        android:id="@+id/mine_loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    </FrameLayout>
 
-</FrameLayout>
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

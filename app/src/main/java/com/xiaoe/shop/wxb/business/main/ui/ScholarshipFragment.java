@@ -25,8 +25,10 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
@@ -40,6 +42,7 @@ import com.xiaoe.common.entitys.TaskDetailIdEvent;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.MeasureUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
+import com.xiaoe.common.widget.CommonRefreshHeader;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.ScholarshipReceiveRequest;
@@ -158,6 +161,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         scholarshipLoading.setLoadingState(View.VISIBLE);
+        scholarshipRefresh.setEnableLoadMore(false);
         initListener();
     }
 
@@ -167,7 +171,6 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         scholarshipDivide.setOnClickListener(this);
         scholarshipRealRange.setOnClickListener(this);
         scholarshipAllRange.setOnClickListener(this);
-        scholarshipLoading.setOnClickListener(this);
     }
 
     @Override
@@ -221,16 +224,6 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 scholarshipAllList.setVisibility(View.VISIBLE);
                 scholarshipRealRange.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_column_menu));
                 scholarshipAllRange.setBackground(getActivity().getResources().getDrawable(R.drawable.recent_update_btn_pressed));
-                break;
-            case R.id.scholarship_loading:
-                if (scholarshipPresenter == null) {
-                    scholarshipPresenter = new ScholarshipPresenter(this);
-                }
-                if (scholarshipLoading.getCurrentLoadingStatus() == StatusPagerView.FAIL) { // 网络请求错误才显示
-                    scholarshipLoading.setPagerState(StatusPagerView.LOADING, "", 0);
-
-                    scholarshipPresenter.requestTaskList(true);
-                }
                 break;
             default:
                 break;
@@ -382,7 +375,12 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         } else {
             scholarshipRefresh.finishRefresh();
             if(!showDataByDB){
-                scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                if (TextUtils.isEmpty(scholarshipTotalMoney.getText().toString())) { // 为空，不显示页面
+                    scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                } else { // 不为空
+                    scholarshipLoading.setLoadingFinish();
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -673,6 +671,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        showDataByDB = false;
         if (scholarshipPresenter == null) {
             scholarshipPresenter = new ScholarshipPresenter(this);
         }
