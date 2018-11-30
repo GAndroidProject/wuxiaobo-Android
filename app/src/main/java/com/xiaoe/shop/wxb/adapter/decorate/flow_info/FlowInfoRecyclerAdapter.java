@@ -76,6 +76,8 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_video, null);
                 view.setLayoutParams(layoutParams);
                 return new FlowInfoVideoViewHolder(view);
+            default:
+                break;
         }
         return null;
     }
@@ -229,6 +231,8 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         JumpDetail.jumpVideo(mContext, bindItem.getItemId(), bindItem.getItemImg(), false, "");
                     }
                 });
+                break;
+            default:
                 break;
         }
     }
