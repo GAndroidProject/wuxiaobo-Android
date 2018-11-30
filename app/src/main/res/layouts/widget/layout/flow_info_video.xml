@@ -22,7 +22,7 @@
             fresco:roundedCornerRadius="8dp"
             fresco:roundBottomLeft="false"
             fresco:roundBottomRight="false"
-            fresco:roundingBorderWidth="1dp"
+            fresco:roundingBorderWidth="0.5dp"
             android:transitionName="share_video_preview"/>
 
         <TextView

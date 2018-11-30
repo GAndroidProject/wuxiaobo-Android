@@ -50,7 +50,7 @@
         android:layout_height="72dp"
         android:padding="5dp"
         fresco:roundedCornerRadius="36dp"
-        fresco:roundingBorderWidth="1dp"
+        fresco:roundingBorderWidth="0.5dp"
         android:background="@drawable/avatar_bg"
         android:layout_gravity="end"/>
 

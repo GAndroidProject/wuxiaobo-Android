@@ -25,7 +25,7 @@
         android:layout_gravity="end|center"
         android:layout_marginEnd="24dp"
         fresco:roundedCornerRadius="20dp"
-        fresco:roundingBorderWidth="1dp"
+        fresco:roundingBorderWidth="0.5dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"/>
 

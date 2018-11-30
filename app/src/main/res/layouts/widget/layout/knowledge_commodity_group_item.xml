@@ -16,9 +16,8 @@
             android:id="@+id/knowledge_group_item_icon"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_margin="1dp"
             fresco:roundedCornerRadius="@dimen/corner_border_radius_size"
-            fresco:roundingBorderWidth="1dp"
+            fresco:roundingBorderWidth="0.5dp"
             fresco:roundBottomLeft="false"
             fresco:roundBottomRight="false"/>
 

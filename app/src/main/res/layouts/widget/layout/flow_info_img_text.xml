@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             fresco:roundedCornerRadius="8dp"
-            fresco:roundingBorderWidth="1dp"
+            fresco:roundingBorderWidth="0.5dp"
             fresco:roundBottomLeft="false"
             fresco:roundBottomRight="false"
             android:transitionName="@string/share_img" />

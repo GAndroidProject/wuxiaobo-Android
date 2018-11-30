@@ -63,7 +63,7 @@
             android:paddingBottom="28dp"/>
 
         <View
-            android:layout_width="1dp"
+            android:layout_width="0.5dp"
             android:layout_height="12dp"
             android:background="@color/recent_list_color"
             android:visibility="gone"
