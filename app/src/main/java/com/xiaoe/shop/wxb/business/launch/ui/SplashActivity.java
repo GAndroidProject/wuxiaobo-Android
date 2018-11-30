@@ -78,28 +78,28 @@ public class SplashActivity extends XiaoeActivity {
         long preTime = System.currentTimeMillis();
 
         // 每50ms一帧，播放动画一次
-        FrameAnimation frameAnimation = new FrameAnimation(ivGif, getRes(), 10, false);
-        frameAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
-            @Override
-            public void onAnimationStart() {
-                Log.d(TAG, "start");
-            }
-
-            @Override
-            public void onAnimationEnd() {
-                Log.d(TAG, "end");
-                Log.d(TAG, "onAnimationEnd: " + (System.currentTimeMillis() - preTime));
-//                JumpDetail.jumpLogin(mContext);
-//                finish();
-                requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission());
-            }
-
-            @Override
-            public void onAnimationRepeat() {
-                Log.d(TAG, "repeat");
-            }
-        });
-
+//        FrameAnimation frameAnimation = new FrameAnimation(ivGif, getRes(), 10, false);
+//        frameAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart() {
+//                Log.d(TAG, "start");
+//            }
+//
+//            @Override
+//            public void onAnimationEnd() {
+//                Log.d(TAG, "end");
+//                Log.d(TAG, "onAnimationEnd: " + (System.currentTimeMillis() - preTime));
+////                JumpDetail.jumpLogin(mContext);
+////                finish();
+//                requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission());
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat() {
+//                Log.d(TAG, "repeat");
+//            }
+//        });
+        ivGif.postDelayed(() -> requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission()), 3000);
     }
 
     private void initData() {
