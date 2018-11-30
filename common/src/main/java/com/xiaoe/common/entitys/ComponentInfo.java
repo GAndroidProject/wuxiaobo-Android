@@ -45,6 +45,8 @@ public class ComponentInfo {
     private boolean isFormUser;
     // 搜索 type -- 知识商品列表形式使用
     private int searchType;
+    // 知识商品背景颜色（列表、宫格）
+    private int knowledgeCompBg;
 
     public ComponentInfo() { }
 
@@ -198,6 +200,14 @@ public class ComponentInfo {
 
     public void setSearchType(int searchType) {
         this.searchType = searchType;
+    }
+
+    public int getKnowledgeCompBg() {
+        return knowledgeCompBg;
+    }
+
+    public void setKnowledgeCompBg(int knowledgeCompBg) {
+        this.knowledgeCompBg = knowledgeCompBg;
     }
 
     @Override

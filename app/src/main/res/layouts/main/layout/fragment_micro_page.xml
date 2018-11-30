@@ -8,6 +8,7 @@
     android:layout_height="match_parent">
 
     <com.xiaoe.common.widget.CommonRefreshHeader
+        android:id="@+id/micro_header"
         android:paddingTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

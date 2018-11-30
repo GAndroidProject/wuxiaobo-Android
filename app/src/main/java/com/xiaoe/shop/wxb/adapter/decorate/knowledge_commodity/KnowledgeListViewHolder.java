@@ -23,6 +23,8 @@ public class KnowledgeListViewHolder extends BaseViewHolder {
 
     Context mContext;
 
+    @BindView(R.id.list_wrap)
+    public FrameLayout knowledgeListWrap;
     @BindView(R.id.knowledge_list_title)
     public TextView knowledgeListTitle;
     @BindView(R.id.knowledge_list_more)
@@ -72,6 +74,7 @@ public class KnowledgeListViewHolder extends BaseViewHolder {
             }
         }
         knowledgeListView.setAdapter(knowledgeListAdapter);
+        knowledgeListWrap.setBackgroundColor(currentBindComponent.getKnowledgeCompBg());
         MeasureUtil.setListViewHeightBasedOnChildren(knowledgeListView);
     }
 }

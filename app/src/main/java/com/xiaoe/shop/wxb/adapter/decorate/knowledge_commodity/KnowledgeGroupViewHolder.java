@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.xiaoe.common.entitys.ComponentInfo;
@@ -31,6 +32,8 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
 
     Context mContext;
 
+    @BindView(R.id.group_wrap)
+    public FrameLayout groupWrap;
     @BindView(R.id.knowledge_group_title)
     public TextView groupTitle;
     @BindView(R.id.knowledge_group_more)
@@ -93,6 +96,7 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
         }
         knowledgeGroupRecyclerAdapter.setOnItemClickWithKnowledgeListener(this);
         groupRecyclerView.setAdapter(knowledgeGroupRecyclerAdapter);
+        groupWrap.setBackgroundColor(currentBindComponent.getKnowledgeCompBg());
     }
 
     @Override

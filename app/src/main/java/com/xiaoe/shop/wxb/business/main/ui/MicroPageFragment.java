@@ -42,6 +42,7 @@ import com.xiaoe.common.entitys.RecentUpdateListItem;
 import com.xiaoe.common.entitys.ShufflingItem;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.common.widget.CommonRefreshHeader;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.IRequest;
@@ -105,6 +106,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     TextView microPageToolbarTitle;
     @BindView(R.id.micro_page_toolbar_search)
     ImageView microPageToolbarSearch;
+    @BindView(R.id.micro_header)
+    CommonRefreshHeader microPageHeader;
 
     @BindView(R.id.micro_page_loading)
     StatusPagerView microPageLoading;
@@ -480,6 +483,20 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     if (knowledgeListSubList == null) {
                         return;
                     }
+                    String colorStr = itemObj.getString("color") == null ? "" : itemObj.getString("color");
+                    int bgColor;
+                    if (TextUtils.isEmpty(colorStr)) { // 为空，设置为白色
+                        bgColor = Color.parseColor("#ffffff");
+                    } else { // 否则，设置为后台的颜色
+                        if (colorStr.length() == 4) { // #fff 这种情况
+                            String tailStr = colorStr.substring(1);
+                            String resultStr = colorStr + tailStr;
+                            bgColor = Color.parseColor(resultStr);
+                        } else {
+                            bgColor = Color.parseColor(colorStr);
+                        }
+                    }
+                    componentInfo_know_list.setKnowledgeCompBg(bgColor);
                     initKnowledgeData(listItems, knowledgeListSubList);
                     componentInfo_know_list.setKnowledgeCommodityItemList(listItems);
                     microPageList.add(componentInfo_know_list);
@@ -496,6 +513,20 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                         componentInfo_know_group.setNeedDecorate(false);
                     }
                     List<KnowledgeCommodityItem> groupItems = new ArrayList<>();
+                    String colorStr = itemObj.getString("color") == null ? "" : itemObj.getString("color");
+                    int bgColor;
+                    if (TextUtils.isEmpty(colorStr)) { // 为空，设置为白色
+                        bgColor = Color.parseColor("#ffffff");
+                    } else { // 否则，设置为后台的颜色
+                        if (colorStr.length() == 4) { // #fff 这种情况
+                            String tailStr = colorStr.substring(1);
+                            String resultStr = colorStr + tailStr;
+                            bgColor = Color.parseColor(resultStr);
+                        } else {
+                            bgColor = Color.parseColor(colorStr);
+                        }
+                    }
+                    componentInfo_know_group.setKnowledgeCompBg(bgColor);
                     JSONArray knowledgeGroupSubList = (JSONArray) itemObj.get("list");
                     if (knowledgeGroupSubList == null) {
                         return;
@@ -694,13 +725,15 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     JumpDetail.jumpSearch(mContext);
                 }
             });
-            microPageFresh.setEnableHeaderTranslationContent(false);
+//            microPageFresh.setEnableHeaderTranslationContent(false);
+            microPageHeader.setBackgroundColor(getResources().getColor(R.color.high_title_color));
             isMain = false;
         } else {
             microPageTitleBg.setImageURI("");
 //            microPageTitleBg2.setVisibility(View.GONE);
             microPageToolbar.setVisibility(View.GONE);
-            microPageFresh.setEnableHeaderTranslationContent(true);
+//            microPageFresh.setEnableHeaderTranslationContent(true);
+            microPageHeader.setBackgroundColor(getResources().getColor(R.color.white));
             isMain = true;
         }
 
