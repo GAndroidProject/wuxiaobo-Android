@@ -120,6 +120,8 @@ public class KnowledgeListAdapter extends BaseAdapter {
                             Toast.makeText(mContext, "app 暂不支持非一年规格的会员购买", Toast.LENGTH_SHORT).show();
                         }
                         break;
+                    default:
+                        break;
                 }
             }
         });
