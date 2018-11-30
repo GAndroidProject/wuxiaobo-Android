@@ -25,29 +25,31 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="16dp"
         android:textSize="20sp"
+        android:textStyle="bold"
         android:textColor="@color/main_title_color"/>
 
     <TextView
         android:id="@+id/radius_dialog_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/main_title_color"
-        android:lineSpacingExtra="8dp"
+        android:textSize="14sp"
+        android:textColor="@color/recent_list_color"
+        android:lineSpacingExtra="10dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"/>
 
     <TextView
         android:id="@+id/radius_dialog_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:textSize="16sp"
         android:textColor="@color/white"
-        android:background="@drawable/recent_update_btn_pressed"
+        android:background="@drawable/know_btn_pressed"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:paddingStart="30dp"
         android:paddingEnd="30dp"
+        android:gravity="center"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="24dp"/>
