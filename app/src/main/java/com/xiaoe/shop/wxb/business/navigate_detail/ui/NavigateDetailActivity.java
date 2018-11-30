@@ -79,8 +79,6 @@ public class NavigateDetailActivity extends XiaoeActivity {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
 
-        navigateToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
-
         // 发送网络请求
         navigateDetailPresenter = new NavigateDetailPresenter(this);
         navigateDetailPresenter.requestData(groupId, pageIndex, pageSize, lastId);
@@ -169,6 +167,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
         // 导航页面的 title 不隐藏
         knowledgeListComponent.setHideTitle(false);
         knowledgeListComponent.setTitle("系列课程");
+        knowledgeGroupComponent.setDesc("");
         initKnowledgeData(listItems, columnsJSONList);
         knowledgeListComponent.setKnowledgeCommodityItemList(listItems);
         pageDataList.add(knowledgeListComponent);
@@ -177,7 +176,8 @@ public class NavigateDetailActivity extends XiaoeActivity {
         knowledgeGroupComponent.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
         knowledgeGroupComponent.setSubType(DecorateEntityType.KNOWLEDGE_GROUP_STR);
         // 当行页面的宫格显示是单品，所以没有查看更多
-        knowledgeGroupComponent.setTitle("单品");
+        knowledgeListComponent.setHideTitle(false);
+        knowledgeGroupComponent.setTitle("单品课程");
         knowledgeGroupComponent.setDesc("");
         initKnowledgeData(groupItems, itemJSONList);
         knowledgeGroupComponent.setKnowledgeCommodityItemList(groupItems);

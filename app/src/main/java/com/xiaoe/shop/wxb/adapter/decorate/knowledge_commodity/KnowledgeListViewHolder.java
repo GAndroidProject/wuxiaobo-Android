@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,7 @@ public class KnowledgeListViewHolder extends BaseViewHolder {
             knowledgeListView.setLayoutParams(layoutParams);
         } else {
             knowledgeListTitle.setText(currentBindComponent.getTitle());
-            if ("".equals(currentBindComponent.getDesc())) { // 为空，不显示查看全部
+            if (TextUtils.isEmpty(currentBindComponent.getDesc())) { // 为空，不显示查看全部
                 knowledgeListMore.setVisibility(View.GONE);
             } else { // 显示查看更多
                 knowledgeListMore.setVisibility(View.VISIBLE);

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -71,6 +72,10 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
                 public void singleClick(View v) {
                     // 跳转到更多课程的页面
                     String groupId = currentBindComponent.getGroupId();
+                    if (TextUtils.isEmpty(groupId)) {
+                        Log.d(TAG, "singleClick: 没有 groupId");
+                        return;
+                    }
                     Intent intent = new Intent(mContext, CourseMoreActivity.class);
                     intent.putExtra("groupId", groupId);
                     mContext.startActivity(intent);

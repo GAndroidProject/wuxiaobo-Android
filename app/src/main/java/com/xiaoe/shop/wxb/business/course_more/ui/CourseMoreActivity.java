@@ -69,8 +69,6 @@ public class CourseMoreActivity extends XiaoeActivity {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
 
-        courseMoreWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
-
         intent = getIntent();
         groupId = intent.getStringExtra("groupId");
 
