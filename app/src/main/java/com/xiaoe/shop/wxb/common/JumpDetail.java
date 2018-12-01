@@ -57,7 +57,7 @@ public class JumpDetail {
             resourceId = playEntity.getResourceId();
             flowId = playEntity.getFlowId();
         }
-        if(!(resourceId.equals(resId) || flowId.equals(resId))){
+        if(!(resourceId.equals(resId) || (!TextUtils.isEmpty(flowId) && flowId.equals(resId)))){
             AudioMediaPlayer.stop();
 
             playEntity = new AudioPlayEntity();

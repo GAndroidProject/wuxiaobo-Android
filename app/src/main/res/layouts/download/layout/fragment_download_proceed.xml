@@ -29,7 +29,7 @@
             android:gravity="center"
             android:textColor="@color/recent_list_color"
             android:textSize="16sp"
-            android:text="@string/all_delete"
+            android:text="@string/all_start_clear"
             android:background="@drawable/all_delete_download_white"
             />
         <TextView
