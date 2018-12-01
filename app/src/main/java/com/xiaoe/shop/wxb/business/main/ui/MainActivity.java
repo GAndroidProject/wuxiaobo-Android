@@ -466,16 +466,17 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         boolean isCanBuy = data.getBoolean("is_can_buy");
         boolean hasYearBuy = false; // 是否有一年规格
         JSONArray vipType = (JSONArray) data.get("svip_type");
-        if (vipType == null)    return;
-        for (int i = 0; i < vipType.size(); i++) {
-            int item = vipType.getInteger(i);
-            if (item == 5) { // 有一年规格
-                hasYearBuy = true;
+        if (vipType != null) {
+            for (int i = 0; i < vipType.size(); i++) {
+                int item = vipType.getInteger(i);
+                if (item == 5) { // 有一年规格
+                    hasYearBuy = true;
+                }
             }
         }
 
         String expire = data.getString("expire_at");
-        if (expire != null) {
+        if (!TextUtils.isEmpty(expire)) {
             expireAt = expire.split(" ")[0];
         }
 

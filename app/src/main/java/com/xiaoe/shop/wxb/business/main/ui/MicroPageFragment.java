@@ -505,8 +505,13 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     componentInfo_know_group.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
                     componentInfo_know_group.setSubType(DecorateEntityType.KNOWLEDGE_GROUP_STR);
                     componentInfo_know_group.setTitle(itemObj.getString("title") == null ? "学会管理自己的财富" : itemObj.getString("title"));
-                    componentInfo_know_group.setDesc("查看更多");
                     componentInfo_know_group.setGroupId(itemObj.getString("tag_id"));
+                    boolean showCheckAll = itemObj.getBoolean("check_all") == null ? false : itemObj.getBoolean("check_all");
+                    if (showCheckAll) {
+                        componentInfo_know_group.setDesc("查看更多");
+                    } else {
+                        componentInfo_know_group.setDesc("");
+                    }
                     if (!networkDecorate) {
                         componentInfo_know_group.setNeedDecorate(true);
                     } else {
@@ -652,8 +657,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 JSONObject flowInfo = (JSONObject) item;
                 FlowInfoItem fii = new FlowInfoItem();
                 String resourceType = flowInfo.getString("src_type");
-                // true 表示关联售卖，否则为非关联售卖
-                boolean isRelated = flowInfo.getInteger("is_related") != null && flowInfo.getInteger("is_related") == 1;
+                // true 表示关联售卖，否则为非关联售卖（字段不准确，不用）
+                // boolean isRelated = flowInfo.getInteger("is_related") != null && flowInfo.getInteger("is_related") == 1;
                 String resourceId = flowInfo.getString("src_id");
                 String tag = flowInfo.getString("info_tag") == null ? "" : flowInfo.getString("info_tag");
                 String title = flowInfo.getString("title");
@@ -667,11 +672,12 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 fii.setItemTag(tag);
                 fii.setItemTitle(title);
                 fii.setItemDesc(desc);
-                if (isRelated) { // 关联售卖，则不显示价格
-                    hasBuy = true; // 仅仅是将价格隐藏，不是真的已购
-                } else {
-                    fii.setItemPrice(showPrice);
-                }
+                fii.setItemPrice(showPrice);
+//                if (isRelated) { // 关联售卖，则不显示价格
+//                    hasBuy = true; // 仅仅是将价格隐藏，不是真的已购
+//                } else {
+//                    fii.setItemPrice(showPrice);
+//                }
                 fii.setItemHasBuy(hasBuy);
                 fii.setItemImg(imgUrl);
 
@@ -727,6 +733,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             });
 //            microPageFresh.setEnableHeaderTranslationContent(false);
             microPageHeader.setBackgroundColor(getResources().getColor(R.color.high_title_color));
+            microPageFresh.setHeaderMaxDragRate(1.2f);
             isMain = false;
         } else {
             microPageTitleBg.setImageURI("");

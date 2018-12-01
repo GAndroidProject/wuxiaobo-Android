@@ -40,13 +40,44 @@
             android:src="@mipmap/fundationlist_search"
             android:layout_gravity="end"
             android:layout_marginEnd="24dp"/>
+
     </android.support.v7.widget.Toolbar>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/navigate_content"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/navigate_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="-12dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:background="@color/white"
+        android:paddingBottom="12dp">
+
+        <com.xiaoe.common.widget.CommonRefreshHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/navigate_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="-12dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:scrollbars="none"
+                android:overScrollMode="never"/>
+
+            <com.xiaoe.shop.wxb.widget.StatusPagerView
+                android:id="@+id/navigate_loading"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+        <com.xiaoe.common.widget.CommonRefreshFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 </LinearLayout>

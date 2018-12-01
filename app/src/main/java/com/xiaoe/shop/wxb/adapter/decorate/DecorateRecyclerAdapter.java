@@ -84,7 +84,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return new FlowInfoViewHolder(mContext, view);
             case DecorateEntityType.RECENT_UPDATE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_update, null);
-                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 26), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 18), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+                view.setPadding(0, 0, 0, Dp2Px2SpUtil.dp2px(mContext, 8));
                 view.setLayoutParams(layoutParams);
                 if (recentUpdateListAdapterArr == null) {
                     recentUpdateListAdapterArr = new SparseArray<>();
@@ -92,8 +93,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return new RecentUpdateViewHolder(mContext, view);
             case DecorateEntityType.KNOWLEDGE_LIST:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_list, null);
-                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 12), 0, 0);
-                view.setPadding(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 8), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 10), 0, 0);
+                view.setPadding(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 8), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24));
                 view.setLayoutParams(layoutParams);
                 if (knowledgeListAdapterArr == null) {
                     knowledgeListAdapterArr = new SparseArray<>();
@@ -101,8 +102,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return new KnowledgeListViewHolder(mContext, view);
             case DecorateEntityType.KNOWLEDGE_GROUP:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group, null);
-                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 24), 0, Dp2Px2SpUtil.dp2px(mContext, 12));
-                view.setPadding(Dp2Px2SpUtil.dp2px(mContext, 20), 0, Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 12));
+                layoutParams.setMargins(0, 0, 0, Dp2Px2SpUtil.dp2px(mContext, 12));
+                view.setPadding(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 12));
                 view.setLayoutParams(layoutParams);
                 if (knowledgeGroupRecyclerList == null) { // 保证 list 不会被覆盖
                     knowledgeGroupRecyclerList = new ArrayList<>();
@@ -124,7 +125,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.GRAPHIC_NAVIGATION:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.graphic_navigation, null);
                 layoutParams.gravity = Gravity.CENTER;
-                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 16), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+                view.setPadding(0, 0, 0, Dp2Px2SpUtil.dp2px(mContext, 8));
                 view.setLayoutParams(layoutParams);
                 if (graphicNavRecyclerAdapterArr == null) {
                     graphicNavRecyclerAdapterArr = new SparseArray<>();

@@ -307,6 +307,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
      * 初始化搜索结果数据类型，分类依据 -- 单品 / 专栏、大专栏
      * 备注一下，这套代码是用于筛选返回结果中的单品课程和系列课程，然后进行显示
      * 11.23 需求变更后不再使用，但保留
+     * @deprecated 使用 initTypeData 代替
      */
     private void initDataList() {
         JSONArray dataJsonList = (JSONArray) dataList;
@@ -333,7 +334,10 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         initSearchResultData();
     }
 
-    // 初始化搜索结果数据
+    /**
+     * 初始化搜索结果数据（配合分类进行初始化）
+     * @deprecated
+     */
     private void initSearchResultData() {
         // 专栏、大专栏
         if (groupJsonList.size() > 0) {
@@ -350,10 +354,11 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
     }
 
     /**
-     * 初始化页面数据 -- 大于 3 个宫格显示，否则列表显示
+     * 初始化页面数据 -- 大于 3 个宫格显示，否则列表显示（配合分类进行初始化）
      *
      * @param listData 页面数据（包括单品、专栏、大专栏）
      * @param isGroup 是否为专栏/大专栏
+     * @deprecated
      */
     private void initPageDataByJson(List<JSONObject> listData, boolean isGroup) {
         ComponentInfo itemComponentInfo = new ComponentInfo();

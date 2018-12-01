@@ -225,7 +225,7 @@ public class WithdrawalActivity extends XiaoeActivity {
                     getDialog().setHideCancelButton(true);
                     getDialog().showDialog(1);
 
-                } else if (price > 0 && price < 10) { // 至少 10 块钱才能提现
+                } else if (price >= 0 && price < 10) { // 至少 10 块钱才能提现
                     wrErrorTip.setText(R.string.withdrawal_less_tip);
                     wrErrorTip.setVisibility(View.VISIBLE);
                 } else {
