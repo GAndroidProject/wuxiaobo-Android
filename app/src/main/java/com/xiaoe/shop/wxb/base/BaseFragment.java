@@ -44,7 +44,7 @@ import java.util.List;
 
 public class BaseFragment extends Fragment implements INetworkResponse, OnCustomDialogListener {
     private static final String TAG = "BaseFragment";
-    private static PopupWindow popupWindow;
+    private PopupWindow popupWindow;
     private TextView mToastText;
     protected boolean isFragmentDestroy = false;
     private static final int DIALOG_TAG_LOADING = 5110;//登录弹窗类型
@@ -58,7 +58,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
     private boolean hasToast;
 
 
-    static class BfHandler extends Handler {
+    class BfHandler extends Handler {
 
         WeakReference<BaseFragment> wrf;
 
