@@ -708,7 +708,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             showDataByDB = false;
         }
         //奖学金金额
-        String sqlMoney = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+taskId+"_ranking'";
+        String sqlMoney = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+taskId+"_money'";
         List<CacheData> moneyCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlMoney, null);
         if(moneyCacheData != null && moneyCacheData.size() > 0){
             String money = moneyCacheData.get(0).getContent();

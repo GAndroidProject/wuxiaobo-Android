@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
@@ -24,6 +25,7 @@ import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayTable;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.anim.TranslationAnimator;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
@@ -174,7 +176,11 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
             if(!AudioMediaPlayer.isStop()){
                 AudioMediaPlayer.play();
             }else{
-                AudioMediaPlayer.start();
+                if(NetUtils.NETWORK_TYPE_NO_NETWORK.equals(NetUtils.getNetworkType(mContext)) || NetUtils.NETWORK_TYPE_UNKONW_NETWORK.equals(NetUtils.getNetworkType(mContext))){
+                    Toast.makeText(mContext, mContext.getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+                }else{
+                    AudioMediaPlayer.start();
+                }
             }
         }else if(v.getId() == R.id.id_audio_mini_close){
             close();

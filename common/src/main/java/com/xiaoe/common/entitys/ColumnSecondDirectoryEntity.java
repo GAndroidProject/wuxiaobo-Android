@@ -42,6 +42,7 @@ public class ColumnSecondDirectoryEntity implements Serializable {
     private String m3u8_url;
     private String video_url;
     private int isTry = 0;
+    private int isHasBuy = 0;
 
     private String columnTitle = "";
     private String columnId = "";
@@ -246,5 +247,13 @@ public class ColumnSecondDirectoryEntity implements Serializable {
 
     public void setIsTry(int isTry) {
         this.isTry = isTry;
+    }
+
+    public int getIsHasBuy() {
+        return isHasBuy;
+    }
+
+    public void setIsHasBuy(int isHasBuy) {
+        this.isHasBuy = isHasBuy;
     }
 }

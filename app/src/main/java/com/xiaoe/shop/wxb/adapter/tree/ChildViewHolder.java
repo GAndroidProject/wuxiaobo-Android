@@ -23,7 +23,7 @@ import com.xiaoe.shop.wxb.interfaces.OnClickListPlayListener;
  * @Description
  */
 public class ChildViewHolder extends BaseViewHolder {
-
+	private static final String TAG = "ChildViewHolder";
 	public TextView text;
 	public RelativeLayout relativeLayout;
 	private final TextView playLength;
@@ -55,7 +55,7 @@ public class ChildViewHolder extends BaseViewHolder {
 		}else{
 			playLength.setVisibility(View.GONE);
 		}
-		if(itemData.getIsTry() == 1){
+		if(itemData.getIsTry() == 1 && itemData.getIsHasBuy() == 0){
 			resourceTry.setVisibility(View.VISIBLE);
 		}else{
 			resourceTry.setVisibility(View.GONE);
