@@ -376,18 +376,18 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             if (iRequest instanceof AddCollectionRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    Toast("收藏成功");
+                    Toast(getString(R.string.collect_succeed));
                     isCollected = !isCollected;
                 } else if (code == NetworkCodes.CODE_COLLECT_FAILED) {
-                    Toast("收藏失败");
+                    Toast(getString(R.string.collect_fail));
                 }
             } else if (iRequest instanceof RemoveCollectionListRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    Toast("取消收藏成功");
+                    Toast(getString(R.string.cancel_collect_succeed));
                     isCollected = !isCollected;
                 } else if (code == NetworkCodes.CODE_DELETE_COLLECT_FAILED) {
-                    Toast("取消收藏失败");
+                    Toast(getString(R.string.cancel_collect_fail));
                 }
             } else if (iRequest instanceof CourseITDetailRequest) {
                 int code = result.getInteger("code");
@@ -479,7 +479,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         // 订阅量
         int purchaseCount = data.getInteger("view_count") == null ? 0 : data.getInteger("view_count");
         if (purchaseCount > 0 && purchaseCount < 10000) {
-            String purchaseStr = NumberFormat.viewCountToString(purchaseCount) + "次阅读";
+            String purchaseStr = NumberFormat.viewCountToString(purchaseCount) + getString(R.string.second_reading);
             itDesc.setText(purchaseStr);
         } else {
             // 如果没有阅读量的话就将文本设置为空，并且将前面的点页隐藏
@@ -499,7 +499,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             String orgContent = data.getString("preview_content");
             setOrgContent(orgContent);
             itBuy.setVisibility(cache ? View.GONE : View.VISIBLE);
-            itBuy.setBuyBtnText("购买￥" + price);
+            itBuy.setBuyBtnText(getString(R.string.purchase_text) + price);
             // 如果是超级会员但是且要购买，那就把超级会员的按钮显示出来
             if (CommonUserInfo.isIsSuperVip()) {
                 itBuy.setVipBtnVisibility(cache ? View.GONE : View.VISIBLE);

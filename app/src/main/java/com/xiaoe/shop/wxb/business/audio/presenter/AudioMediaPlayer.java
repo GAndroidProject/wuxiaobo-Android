@@ -1,5 +1,6 @@
 package com.xiaoe.shop.wxb.business.audio.presenter;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public static float mPlaySpeed = 1f;//播放倍数
     private static AudioFocusManager audioFocusManager;
 
+    @SuppressLint("HandlerLeak")
     private static Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {

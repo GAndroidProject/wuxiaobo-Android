@@ -170,13 +170,13 @@ public class CourseMoreActivity extends XiaoeActivity {
         }
         switch (srcType) {
             case DecorateEntityType.IMAGE_TEXT: // 图文
-                return viewCount + "次阅读";
+                return String.format(getString(R.string.second_reading),viewCount);
             case DecorateEntityType.AUDIO: // 音频
             case DecorateEntityType.VIDEO: // 视频
-                return viewCount + "次播放";
+                return String.format(getString(R.string.time_play), viewCount);
             case DecorateEntityType.TOPIC: // 大专栏
             case DecorateEntityType.COLUMN: // 专栏
-                return "已更新" + viewCount + "期";
+                return String.format(getString(R.string.stages_text), viewCount);
             default:
                 return "";
         }

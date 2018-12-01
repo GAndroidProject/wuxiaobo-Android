@@ -37,7 +37,7 @@ public class CacheColumnActivity extends XiaoeActivity implements View.OnClickLi
         recyclerView.setAdapter(columnListAdapter);
 
         cacheColumnTitle = (TextView) findViewById(R.id.cache_column_title);
-        cacheColumnTitle.setText("我的财富计划");
+        cacheColumnTitle.setText(R.string.my_wealth_plan);
 
         //批量删除按钮
         btnBatchDelete = (TextView) findViewById(R.id.btn_batch_delete);

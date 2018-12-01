@@ -60,6 +60,8 @@ public class AudioFocusManager implements AudioManager.OnAudioFocusChangeListene
                     AudioMediaPlayer.getMediaPlayer().setVolume(0.5f, 0.5f);
                 }
                 break;
+            default:
+                break;
         }
     }
 

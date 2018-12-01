@@ -196,7 +196,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                                 // TODO: 失败的操作
                                 break;
                             case ScholarshipEntity.SCHOLARSHIP_PROCESSING: // 处理中
-                                Toast.makeText(mainActivity, "奖学金发放中", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mainActivity, getString(R.string.scholarship_in_progress), Toast.LENGTH_SHORT).show();
                                 break;
                             case ScholarshipEntity.SCHOLARSHIP_ISSUED: // 领取成功
                                 showEarnDialog();
@@ -531,15 +531,13 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 if (amount == null) {
                     amount = "20";
                 }
-                String content = "送你" + amount + "积分";
-                earnContent.setText(content);
+                earnContent.setText(String.format(getString(R.string.giving_you_credits), amount));
                 earnTip.setVisibility(View.GONE);
             } else {
                 if (amount == null) {
                     amount = "10";
                 }
-                String content = "送你" + amount + "积分";
-                earnContent.setText(content);
+                earnContent.setText(String.format(getString(R.string.giving_you_credits), amount));
                 earnContent.setTextSize(20);
                 earnContent.setTextColor(getActivity().getResources().getColor(R.color.scholarship_btn_press));
                 earnTip.setVisibility(View.GONE);

@@ -250,6 +250,8 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
                 mIsDragging = false;
                 mActivePointerId = INVALID_POINTER;
                 break;
+            default:
+                break;
         }
         if(isShowDetail && mIsDragging){
             return true;

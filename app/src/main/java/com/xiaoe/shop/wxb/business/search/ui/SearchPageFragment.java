@@ -184,10 +184,10 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
 
         recommendData = new ArrayList<>();
         // 默认的四个关键词
-        recommendData.add("我的财富计划");
-        recommendData.add("吴晓波频道");
-        recommendData.add("我的职场计划");
-        recommendData.add("避免败局");
+        recommendData.add(getString(R.string.my_wealth_plan));
+        recommendData.add(getString(R.string.search_wxb_channel));
+        recommendData.add(getString(R.string.search_my_career_plan));
+        recommendData.add(getString(R.string.search_avoid_failure));
         RecommendRecyclerAdapter recommendAdapter = new RecommendRecyclerAdapter(mContext, recommendData);
         recommendAdapter.setOnTabClickListener(this);
         recommendContentView.setRecommendContentAdapter(recommendAdapter);
@@ -239,6 +239,8 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                 case "会员":
                     initTypeData(label, type, showMore, list);
                     break;
+                default:
+                    break;
             }
         }
         // 初始化 recyclerView
@@ -260,7 +262,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         String keyword = searchActivity.searchKeyword;
         itemComponentInfo.setJoinedDesc(keyword); // 注意：使用 joinedDesc 字段表示搜索的关键字
         if (showMore) { // 只是让组件知道需要显示查看全部的按钮，需要查看更多就传 !""，否则传 ""
-            itemComponentInfo.setDesc("查看全部");
+            itemComponentInfo.setDesc(getString(R.string.list_watch_more));
         } else {
             itemComponentInfo.setDesc("");
         }
@@ -357,11 +359,11 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         ComponentInfo itemComponentInfo = new ComponentInfo();
         itemComponentInfo.setHideTitle(false);
         if (isGroup) { // 系列课程 -- 列表显示
-            itemComponentInfo.setTitle("系列课程");
+            itemComponentInfo.setTitle(getString(R.string.series_courses));
             itemComponentInfo.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
             itemComponentInfo.setSubType(DecorateEntityType.KNOWLEDGE_LIST_STR);
         } else { // 单品课程 -- 宫格显示
-            itemComponentInfo.setTitle("单品课程");
+            itemComponentInfo.setTitle(getString(R.string.item_course));
             itemComponentInfo.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
             itemComponentInfo.setSubType(DecorateEntityType.KNOWLEDGE_GROUP_STR);
         }

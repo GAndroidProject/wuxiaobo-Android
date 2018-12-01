@@ -108,7 +108,7 @@ public class SearchActivity extends XiaoeActivity {
 
     private void initView() {
         // 先默认显示我的财富计划
-        searchContent.setHint("我的财富计划");
+        searchContent.setHint(getString(R.string.my_wealth_plan));
         searchContent.setSelection(searchContent.getText().toString().length());
     }
 
@@ -156,7 +156,7 @@ public class SearchActivity extends XiaoeActivity {
                     toggleSoftKeyboard();
                     String content = searchContent.getText().toString();
                     if (TextUtils.isEmpty(content)) { // 不输入搜索内容，默认搜索最近在搜的第一个，先写死为 list
-                        content = "我的财富计划";
+                        content = getString(R.string.my_wealth_plan);
                         searchContent.setText(content);
                         searchContent.setSelection(content.length());
                     }
@@ -283,6 +283,8 @@ public class SearchActivity extends XiaoeActivity {
                 case EMPTY: // 搜索空白页
                     currentFragment = SearchPageFragment.newInstance(R.layout.fragment_search_empty);
                     break;
+                default:
+                    break;
             }
             if (currentFragment != null) {
                 getSupportFragmentManager().beginTransaction().add(R.id.search_result_wrap, currentFragment, tag).commit();
@@ -295,6 +297,8 @@ public class SearchActivity extends XiaoeActivity {
                     ((SearchPageFragment) currentFragment).setDataList(dataList);
                     break;
                 case EMPTY:
+                    break;
+                default:
                     break;
             }
             getSupportFragmentManager().beginTransaction().show(currentFragment).commit();

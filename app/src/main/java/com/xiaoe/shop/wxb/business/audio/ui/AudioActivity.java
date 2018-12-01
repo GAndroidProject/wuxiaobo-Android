@@ -352,7 +352,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             }
             showEarnDialog();
         } else if (status == 2) { // 处理中
-            Toast("奖学金发放中");
+            Toast(getString(R.string.scholarship_in_progress));
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_PROCESSING);
             runnable = new Runnable() {
                 @Override
@@ -363,7 +363,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             handler.postDelayed(runnable, 3000);
         } else if (status == 1) {
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_FAIL);
-            Toast.makeText(this, "领取失败，请重试", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.failed_to_collect, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -826,7 +826,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         TextView earnSubmit = (TextView) view.findViewById(R.id.scholarship_dialog_submit);
 
         if (hasEarnMoney) { // 拿到钱了
-            earnTitle.setText("恭喜你，获得奖学金");
+            earnTitle.setText(R.string.congratulations_winning_scholarship);
             earnWrap.setBackground(getResources().getDrawable(R.mipmap.scholarship_popup_bg));
             earnContent.setText(amount);
             earnContentTail.setVisibility(View.VISIBLE);
@@ -840,17 +840,15 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 }
             });
         } else {
-            earnTitle.setText("差一点就瓜分到了");
+            earnTitle.setText(R.string.almost_got_it);
             earnContentTail.setVisibility(View.GONE);
             earnWrap.setBackgroundColor(getResources().getColor(R.color.white));
             earnSubmit.setText(getString(R.string.scholarship_earn_integral));
             if (CommonUserInfo.isIsSuperVip()) { // 超级会员
-                String content = "送你" + amount + "积分";
-                earnContent.setText(content);
+                earnContent.setText(String.format(getString(R.string.giving_you_credits), amount));
                 earnTip.setVisibility(View.GONE);
             } else {
-                String content = "送你" + amount + "积分";
-                earnContent.setText(content);
+                earnContent.setText(String.format(getString(R.string.giving_you_credits), amount));
                 earnContent.setTextSize(20);
                 earnContent.setTextColor(getResources().getColor(R.color.scholarship_btn_press));
                 earnTip.setVisibility(View.GONE);

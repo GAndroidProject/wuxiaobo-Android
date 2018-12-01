@@ -212,7 +212,7 @@
     <!--收藏提示 start-->
     <string name="collect_succeed">收藏成功</string>
     <string name="collect_fail">收藏失败</string>
-    <string name="cancel_collect_succeed">取消收藏</string>
+    <string name="cancel_collect_succeed">取消收藏成功</string>
     <string name="cancel_collect_fail">取消收藏失败</string>
     <!--收藏提示 end-->
 
@@ -344,4 +344,19 @@
     <string name="weChat_not_installed">未安装微信呦</string>
     <string name="withdrawal_record_text">提现记录</string>
     <string name="no_scholarship_record">暂无奖学金记录，快去做任务领取奖学金吧</string>
+    <string name="scholarship_in_progress">奖学金发放中</string>
+    <string name="failed_to_collect">领取失败，请重试</string>
+    <string name="congratulations_winning_scholarship">恭喜你，获得奖学金</string>
+    <string name="almost_got_it">差一点就瓜分到了</string>
+    <string name="giving_you_credits">送你%s积分</string>
+    <string name="my_wealth_plan">我的财富计划</string>
+    <string name="search_wxb_channel">吴晓波频道</string>
+    <string name="search_my_career_plan">我的职场计划</string>
+    <string name="search_avoid_failure">避免败局</string>
+    <string name="series_courses">系列课程</string>
+    <string name="item_course">单品课程</string>
+    <string name="second_reading">%d次阅读</string>
+    <string name="time_play">%d次播放</string>
+    <string name="stages_text">已更新%d期</string>
+    <string name="purchase_text">购买￥</string>
 </resources>

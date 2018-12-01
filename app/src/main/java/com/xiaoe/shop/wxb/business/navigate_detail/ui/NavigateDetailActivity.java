@@ -166,7 +166,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
         knowledgeListComponent.setSubType(DecorateEntityType.KNOWLEDGE_LIST_STR);
         // 导航页面的 title 不隐藏
         knowledgeListComponent.setHideTitle(false);
-        knowledgeListComponent.setTitle("系列课程");
+        knowledgeListComponent.setTitle(getString(R.string.series_courses));
         knowledgeGroupComponent.setDesc("");
         initKnowledgeData(listItems, columnsJSONList);
         knowledgeListComponent.setKnowledgeCommodityItemList(listItems);
@@ -177,7 +177,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
         knowledgeGroupComponent.setSubType(DecorateEntityType.KNOWLEDGE_GROUP_STR);
         // 当行页面的宫格显示是单品，所以没有查看更多
         knowledgeListComponent.setHideTitle(false);
-        knowledgeGroupComponent.setTitle("单品课程");
+        knowledgeGroupComponent.setTitle(getString(R.string.item_course));
         knowledgeGroupComponent.setDesc("");
         initKnowledgeData(groupItems, itemJSONList);
         knowledgeGroupComponent.setKnowledgeCommodityItemList(groupItems);
@@ -233,13 +233,13 @@ public class NavigateDetailActivity extends XiaoeActivity {
         }
         switch (srcType) {
             case DecorateEntityType.IMAGE_TEXT: // 图文
-                return viewCount + "次阅读";
+                return String.format(getString(R.string.second_reading),viewCount);
             case DecorateEntityType.AUDIO: // 音频
             case DecorateEntityType.VIDEO: // 视频
-                return viewCount + "次播放";
+                return String.format(getString(R.string.time_play), viewCount);
             case DecorateEntityType.TOPIC: // 大专栏
             case DecorateEntityType.COLUMN: // 专栏
-                return "已更新" + viewCount + "期";
+                return String.format(getString(R.string.stages_text), viewCount);
             default:
                 return "";
         }
