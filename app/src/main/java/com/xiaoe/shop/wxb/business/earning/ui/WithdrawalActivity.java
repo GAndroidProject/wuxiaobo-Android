@@ -119,7 +119,7 @@ public class WithdrawalActivity extends XiaoeActivity {
     }
 
     private void initData() {
-        wrTitle.setText("提现");
+        wrTitle.setText(getString(R.string.withdrawal_text));
         wrDesc.setVisibility(View.GONE);
         wrBalance.setText(String.format(getResources().getString(R.string.withdrawal_left), balance));
         String localPhone = CommonUserInfo.getPhone();
@@ -285,7 +285,7 @@ public class WithdrawalActivity extends XiaoeActivity {
                                     clipboardManager.setPrimaryClip(clipData);
                                     startActivity(intent);
                                 } catch (Exception e) {
-                                    Toast("未安装微信呦");
+                                    Toast(getString(R.string.weChat_not_installed));
                                 }
                             }
 

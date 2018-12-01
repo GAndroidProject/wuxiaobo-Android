@@ -107,10 +107,10 @@ public class ScholarshipActivity extends XiaoeActivity {
 
     private void initData() {
         dataList = new ArrayList<>();
-        scholarshipTitle.setText("奖学金");
-        scholarshipWithdrawal.setText("提现记录");
-        scholarshipListTitle.setText("我的奖学金");
-        scholarshipTip.setText("暂无奖学金记录，快去做任务领取奖学金吧");
+        scholarshipTitle.setText(getString(R.string.scholarship_title));
+        scholarshipWithdrawal.setText(R.string.withdrawal_record_text);
+        scholarshipListTitle.setText(getString(R.string.scholarship_page_list_title));
+        scholarshipTip.setText(R.string.no_scholarship_record);
         scholarshipTip.setVisibility(View.VISIBLE);
         scholarshipLoading.setVisibility(View.GONE);
         if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 不是超级会员

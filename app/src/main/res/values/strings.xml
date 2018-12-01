@@ -337,4 +337,8 @@
     <string name="integral_desc">+%1$d积分</string>
 
     <string name="coupon_unread_msg">%1$d张新优惠券</string>
+    <string name="withdrawal_text">提现</string>
+    <string name="weChat_not_installed">未安装微信呦</string>
+    <string name="withdrawal_record_text">提现记录</string>
+    <string name="no_scholarship_record">暂无奖学金记录，快去做任务领取奖学金吧</string>
 </resources>
