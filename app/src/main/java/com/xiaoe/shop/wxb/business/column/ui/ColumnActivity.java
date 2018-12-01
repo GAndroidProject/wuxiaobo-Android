@@ -502,22 +502,17 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         int isStopSell = data.getIntValue("is_stop_sell");
         //离待上线时间，如有则是待上架
         int timeLeft = data.getInteger("time_left");
-        if(hasBuy && isFree == 0){
+        if(saleStatus == 1 || detailState == 1){
+            setPagerState(2);
+        }else if(isStopSell == 1){
+            setPagerState(3);
+        }else if(timeLeft > 0){
+            setPagerState(4);
+        }else if(detailState == 2){
+            setPagerState(NetworkCodes.CODE_GOODS_DELETE);
+        }else {
             setPagerState(0);
             columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
-        }else{
-            if(saleStatus == 1 || detailState == 1){
-                setPagerState(2);
-            }else if(isStopSell == 1){
-                setPagerState(3);
-            }else if(timeLeft > 0){
-                setPagerState(4);
-            }else if(detailState == 2){
-                setPagerState(NetworkCodes.CODE_GOODS_DELETE);
-            }else {
-                setPagerState(0);
-                columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
-            }
         }
     }
 

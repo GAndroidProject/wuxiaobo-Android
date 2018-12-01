@@ -190,20 +190,16 @@ public class AudioPresenter implements IBizCallback {
         int isStopSell = data.getIntValue("is_stop_sell");
         //离待上线时间，如有则是待上架
         int timeLeft = data.getIntValue("time_left");
-        if(hasBuy && isFree == 0){
+        if(saleStatus == 1 || detailState == 1){
+            playEntity.setResourceStateCode(2);
+        }else if(isStopSell == 1){
+            playEntity.setResourceStateCode(3);
+        }else if(timeLeft > 0){
+            playEntity.setResourceStateCode(4);
+        }else if(detailState == 2 ){
+            playEntity.setResourceStateCode(NetworkCodes.CODE_GOODS_DELETE);
+        }else {
             playEntity.setResourceStateCode(0);
-        }else{
-            if(saleStatus == 1 || detailState == 1){
-                playEntity.setResourceStateCode(2);
-            }else if(isStopSell == 1){
-                playEntity.setResourceStateCode(3);
-            }else if(timeLeft > 0){
-                playEntity.setResourceStateCode(4);
-            }else if(detailState == 2 ){
-                playEntity.setResourceStateCode(NetworkCodes.CODE_GOODS_DELETE);
-            }else {
-                playEntity.setResourceStateCode(0);
-            }
         }
     }
 
