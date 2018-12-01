@@ -547,7 +547,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if (View.VISIBLE == mSpeedMenuLayout.getVisibility())
             mSpeedMenuLayout.setVisibility(View.GONE);
         boolean isChange = AudioMediaPlayer.changePlayerSpeed(speed);
-        if (!isChange)   return;
+        if (!isChange) {
+            Toast(getString(R.string.speed_play_fail));
+            return;
+        }
         updateSpeedPlayButtonView(speed);
     }
 

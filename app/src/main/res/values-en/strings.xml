@@ -17,6 +17,7 @@
     <string name="play_has_first_sing">已经是第一首了</string>
     <string name="play_has_last_sing">已经是最后一首了</string>
     <string name="speed_play_not_support">系统版本不支持倍速切换</string>
+    <string name="speed_play_fail">倍速切换失败</string>
     <string name="listen_after_purchase">购买后可收听</string>
     <string name="test_audio_url1">http://wechatapppro-1252524126.file.myqcloud.com/app04csshyE7030/audio/a7e4064f0f62f68e84b339736f6ce2d9.mp3</string>
     <string name="test_audio_url2">http://wechatapppro-1252524126.file.myqcloud.com/app04csshyE7030/audio/cc0b8733b398370fe76fb1f7aef30a5e.mp3</string>

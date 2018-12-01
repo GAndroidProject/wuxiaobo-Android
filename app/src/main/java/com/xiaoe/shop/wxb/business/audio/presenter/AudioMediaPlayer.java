@@ -330,13 +330,18 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if (!prepared)    return false;
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
-                } else {
-                    mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
-                    mediaPlayer.pause();
+                try {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
+                    } else {
+                        mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
+                        mediaPlayer.pause();
+                    }
+                    mPlaySpeed = speed;
+                }catch (Exception e){
+                    e.printStackTrace();
+                    return false;
                 }
-                mPlaySpeed = speed;
             }
             return true;
         }
