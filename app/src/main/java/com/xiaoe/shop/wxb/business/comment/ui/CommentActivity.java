@@ -128,7 +128,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                 RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
                 int visibleItemCount = layoutManager.getChildCount();
                 int totalItemCount = layoutManager.getItemCount();
-                if ((visibleItemCount > 0 && (lastVisibleItemPosition) >= totalItemCount - 1)) {
+                if (commentAdapter.getItemCount() > 1 && (visibleItemCount > 0 && (lastVisibleItemPosition) >= totalItemCount - 1)) {
                     onLoadMore(recyclerView);
                 }
             }
