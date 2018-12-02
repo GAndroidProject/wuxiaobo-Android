@@ -122,15 +122,12 @@ public class StatusPagerView extends FrameLayout {
             setHintStateVisibility(View.VISIBLE);
             setStateImage(imageResourceId);
             if (state == SOLD) {
-                stateImageWH(Dp2Px2SpUtil.dp2px(getContext(), 200), Dp2Px2SpUtil.dp2px(getContext(), 108));
                 rootView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
                     }
                 });
-            }else if(state == FAIL){
-                stateImageWH(Dp2Px2SpUtil.dp2px(getContext(), 156), Dp2Px2SpUtil.dp2px(getContext(), 140));
             }
             stateText.setTextColor(getResources().getColor(R.color.error_hint_color));
             setStateText(hintText);

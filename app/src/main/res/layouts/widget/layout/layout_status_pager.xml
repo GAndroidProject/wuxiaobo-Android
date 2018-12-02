@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/state_image"
-            android:layout_width="156dp"
-            android:layout_height="140dp"
+            android:layout_width="200dp"
+            android:layout_height="130dp"
             android:src="@mipmap/download_tocheck"
             tools:ignore="ContentDescription" />
 

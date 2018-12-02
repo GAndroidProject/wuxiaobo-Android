@@ -678,10 +678,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if (!hasCollect)
             EventBus.getDefault().post(new MyCollectListRefreshEvent(true,AudioMediaPlayer
                     .getAudio() == null ? "" : AudioMediaPlayer.getAudio().getResourceId()));
-        AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
-        if(audioPlayEntity != null && audioPlayEntity.getHasBuy() == 0){
-            AudioMediaPlayer.setAudio(null, false);
-        }
     }
 
     @Override
@@ -729,6 +725,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             return;
         }else if(code == -2){
             setButtonEnabled(false);
+        }else{
+            getDialog().dismissDialog();
         }
         if(playEntity.getHasBuy() == 0 && code == 0){
             //未购买
