@@ -119,19 +119,19 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         JgPushSaveInfo jgPushSaveInfo = JSON.parseObject(bindJPushSuccess, JgPushSaveInfo.class);
         Log.d(TAG, "onCreate: " + jgPushSaveInfo);
         MessagePushPresenter messagePushPresenter = new MessagePushPresenter(this);
-//        if (jgPushSaveInfo != null) {
-//            if (!jgPushSaveInfo.isBindRegIdSuccess()) {
-//                messagePushPresenter.requestBindJgPush();
-//            } else {
-//                if (jgPushRegId != null && !jgPushRegId.equals(jgPushSaveInfo.getRegistrationID())) {
-//                    messagePushPresenter.requestBindJgPush();
-//                }
-//            }
-//        } else {
-//            if (jgPushRegId != null) {
+        if (jgPushSaveInfo != null) {
+            if (!jgPushSaveInfo.isBindRegIdSuccess()) {
                 messagePushPresenter.requestBindJgPush();
-//            }
-//        }
+            } else {
+                if (jgPushRegId != null && !jgPushRegId.equals(jgPushSaveInfo.getRegistrationID())) {
+                    messagePushPresenter.requestBindJgPush();
+                }
+            }
+        } else {
+            if (jgPushRegId != null) {
+                messagePushPresenter.requestBindJgPush();
+            }
+        }
 
         initView();
         if (!OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName())) {
