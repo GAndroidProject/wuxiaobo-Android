@@ -42,6 +42,7 @@ public class AudioPlayEntity {
     private String productsTitle;
     private String flowId;
     private boolean cache = false;
+    private boolean isLocalResource = false;
 
     public String getAppId() {
         return appId;
@@ -314,5 +315,13 @@ public class AudioPlayEntity {
 
     public void setCache(boolean cache) {
         this.cache = cache;
+    }
+
+    public boolean isLocalResource() {
+        return isLocalResource;
+    }
+
+    public void setLocalResource(boolean localResource) {
+        isLocalResource = localResource;
     }
 }

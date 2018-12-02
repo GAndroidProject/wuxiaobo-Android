@@ -10,11 +10,9 @@ import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.CacheData;
-import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.ContentRequest;
@@ -25,7 +23,6 @@ import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
 import java.util.List;
 
 public class AudioPresenter implements IBizCallback {
@@ -69,7 +66,6 @@ public class AudioPresenter implements IBizCallback {
     }
 
     private void setAudioDetail(boolean success, JSONObject jsonObject, String resourceId, boolean cache) {
-
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
         if(playEntity == null){
             playEntity = new AudioPlayEntity();
@@ -129,21 +125,11 @@ public class AudioPresenter implements IBizCallback {
         int isFree = resourceInfo.getInteger("is_free") == null ? 0 : resourceInfo.getInteger("is_free");
         playEntity.setFree(isFree != 0);
 
-        //如果存在本地音频则播放本地是否
-        DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(Constants.getAppId(), resourceId);
-        String localAudioPath = "";
-        if(download != null){
-            File file = new File(download.getLocalFilePath());
-            if(file.exists()){
-                localAudioPath = download.getLocalFilePath();
-            }
-        }
         resourceState(resourceInfo, available, playEntity);
         if(available){
-            if(TextUtils.isEmpty(localAudioPath)){
+            if(!playEntity.isLocalResource()){
+                //没有下载过，没有本地资源
                 playEntity.setPlayUrl(resourceInfo.getString("audio_url"));
-            }else{
-                playEntity.setPlayUrl(localAudioPath);
             }
             playEntity.setContent(resourceInfo.getString("content"));
             playEntity.setCode(0);
@@ -190,6 +176,11 @@ public class AudioPresenter implements IBizCallback {
         int isStopSell = data.getIntValue("is_stop_sell");
         //离待上线时间，如有则是待上架
         int timeLeft = data.getIntValue("time_left");
+        if(hasBuy && detailState != 2){
+            //删除状态优秀级最高，available=true是除了删除状态显示删除页面外，其他的均可查看详情
+            playEntity.setResourceStateCode(0);
+            return;
+        }
         if(saleStatus == 1 || detailState == 1){
             playEntity.setResourceStateCode(2);
         }else if(isStopSell == 1){

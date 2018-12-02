@@ -30,11 +30,13 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
+import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.NetUtils;
@@ -50,7 +52,6 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioSQLiteUtil;
-import com.xiaoe.shop.wxb.business.audio.ui.AudioActivity;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
@@ -65,6 +66,7 @@ import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.ShareDialog;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -277,6 +279,16 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                 AudioPlayUtil.getInstance().refreshAudio(playEntity);
                 AudioPlayUtil.getInstance().setCloseMiniPlayer(false);
 
+                //如果存在本地音频则播放本地是否
+                DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(Constants.getAppId(), playEntity.getResourceId());
+                if(download != null){
+                    File file = new File(download.getLocalFilePath());
+                    if(file.exists()){
+                        String localAudioPath = download.getLocalFilePath();
+                        playEntity.setPlayUrl(localAudioPath);
+                        playEntity.setLocalResource(true);
+                    }
+                }
                 AudioMediaPlayer.setAudio(playEntity, false);
                 AudioPresenter audioPresenter = new AudioPresenter(null);
                 audioPresenter.requestDetail(playEntity.getResourceId());
@@ -425,9 +437,13 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
         this.miniAudioPlayController.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(XiaoeActivity.this, AudioActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_bottom_in,R.anim.slide_top_out);
+                AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
+                if(audioPlayEntity != null){
+                    JumpDetail.jumpAudio(XiaoeActivity.this, audioPlayEntity.getResourceId(), audioPlayEntity.getHasBuy());
+                }
+//                Intent intent = new Intent(XiaoeActivity.this, AudioActivity.class);
+//                startActivity(intent);
+//                overridePendingTransition(R.anim.slide_bottom_in,R.anim.slide_top_out);
             }
         });
     }

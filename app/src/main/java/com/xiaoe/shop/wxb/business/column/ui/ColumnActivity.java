@@ -369,27 +369,27 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             fragment.setHasBuy(isHasBuy);
             if(refreshData || showDataByDB){
                 refreshData = false;
-                fragment.refreshData(columnPresenter.formatColumnEntity(data, resourceId));
+                fragment.refreshData(columnPresenter.formatColumnEntity(data, resourceId, hasBuy ? 1 : 0));
             }else{
-                fragment.addData(columnPresenter.formatColumnEntity(data, resourceId));
+                fragment.addData(columnPresenter.formatColumnEntity(data, resourceId, hasBuy ? 1 : 0));
             }
         }else if(resourceType == RESOURCE_TYPE_MEMBER){
             MemberFragment fragment = (MemberFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
             if(refreshData || showDataByDB){
                 refreshData = false;
-                fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, ""));
+                fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", hasBuy ? 1 : 0));
             }else{
-                fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, ""));
+                fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", hasBuy ? 1 : 0));
             }
         }else{
             LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
             if(refreshData || showDataByDB){
                 refreshData = false;
-                fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, ""));
+                fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", hasBuy ? 1 : 0));
             }else{
-                fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, ""));
+                fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", hasBuy ? 1 : 0));
             }
         }
         if(data.size() < pageSize){
@@ -484,14 +484,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             expireTime = data.getString("expire_time");
             memberExpireTime.setText("有效期至："+expireTime);
         }
-        resourceState(data);
+        resourceState(data, available);
     }
 
     /**
      * 课程状态
      * @param data
      */
-    private void resourceState(JSONObject data){
+    private void resourceState(JSONObject data, boolean available){
         //是否免费0：否，1：是
         int isFree = data.getIntValue("is_free");
         //0-正常, 1-隐藏, 2-删除
@@ -502,6 +502,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         int isStopSell = data.getIntValue("is_stop_sell");
         //离待上线时间，如有则是待上架
         int timeLeft = data.getInteger("time_left");
+        if(available && detailState != 2){
+            //删除状态优秀级最高，available=true是除了删除状态显示删除页面外，其他的均可查看详情
+            setPagerState(0);
+            columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
+            return;
+        }
         if(saleStatus == 1 || detailState == 1){
             setPagerState(2);
         }else if(isStopSell == 1){

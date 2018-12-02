@@ -11,6 +11,7 @@ import com.xiaoe.network.requests.DetailRequest;
 import com.xiaoe.network.requests.IRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ColumnPresenter implements IBizCallback {
@@ -53,7 +54,7 @@ public class ColumnPresenter implements IBizCallback {
      * 格式化一级目录数据
      * @param jsonArray
      */
-    public List<ColumnDirectoryEntity> formatColumnEntity(JSONArray jsonArray, String bigColumnId){
+    public List<ColumnDirectoryEntity> formatColumnEntity(JSONArray jsonArray, String bigColumnId, int hasBuy){
         List<ColumnDirectoryEntity> directoryEntityList = new ArrayList<ColumnDirectoryEntity>();
         for (Object object : jsonArray) {
             ColumnDirectoryEntity directoryEntity = new ColumnDirectoryEntity();
@@ -66,7 +67,7 @@ public class ColumnPresenter implements IBizCallback {
             directoryEntity.setResource_id(columnId);
             directoryEntity.setBigColumnId(bigColumnId);
             directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
-            List<ColumnSecondDirectoryEntity> childList = formatSingleResourceEntity(jsonObject.getJSONArray("resource_list"), directoryEntity.getTitle(), columnId , bigColumnId);
+            List<ColumnSecondDirectoryEntity> childList = formatSingleResourceEntity(jsonObject.getJSONArray("resource_list"), directoryEntity.getTitle(), columnId , bigColumnId, hasBuy);
             directoryEntity.setResource_list(childList);
             directoryEntityList.add(directoryEntity);
         }
@@ -78,11 +79,17 @@ public class ColumnPresenter implements IBizCallback {
      * @param jsonArray
      * @return
      */
-    public List<ColumnSecondDirectoryEntity> formatSingleResourceEntity(JSONArray jsonArray, String columnTitle, String columnId, String bigColumnId){
+    public List<ColumnSecondDirectoryEntity> formatSingleResourceEntity(JSONArray jsonArray, String columnTitle, String columnId, String bigColumnId, int hasBuy){
         List<ColumnSecondDirectoryEntity> directoryEntityList = new ArrayList<ColumnSecondDirectoryEntity>();
         for (Object object : jsonArray) {
             ColumnSecondDirectoryEntity secondDirectoryEntity = new ColumnSecondDirectoryEntity();
             JSONObject jsonObject = (JSONObject) object;
+            int resourceType = jsonObject.getIntValue("resource_type");
+            int[] types = new int[]{1 , 2, 3};
+            if(Arrays.binarySearch(types, resourceType) < 0){
+                //过滤掉非图文音视频资源
+                continue;
+            }
             secondDirectoryEntity.setApp_id(jsonObject.getString("app_id"));
             secondDirectoryEntity.setResource_id(jsonObject.getString("resource_id"));
             secondDirectoryEntity.setTitle(jsonObject.getString("title"));
@@ -97,6 +104,7 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setColumnId(columnId);
             secondDirectoryEntity.setBigColumnId(bigColumnId);
             secondDirectoryEntity.setIsTry(jsonObject.getIntValue("is_try"));
+            secondDirectoryEntity.setIsHasBuy(hasBuy);
 
             directoryEntityList.add(secondDirectoryEntity);
         }

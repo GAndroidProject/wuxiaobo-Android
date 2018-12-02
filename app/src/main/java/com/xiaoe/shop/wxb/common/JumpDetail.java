@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.CouponInfo;
+import com.xiaoe.common.entitys.DownloadResourceTableInfo;
+import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
@@ -40,6 +42,8 @@ import com.xiaoe.shop.wxb.business.super_vip.ui.SuperVipActivity;
 import com.xiaoe.shop.wxb.business.video.ui.VideoActivity;
 import com.xiaoe.shop.wxb.common.pay.ui.PayActivity;
 
+import java.io.File;
+
 public class JumpDetail {
     private static final String TAG = "JumpDetail";
 
@@ -67,6 +71,18 @@ public class JumpDetail {
             playEntity.setPlay(true);
             playEntity.setCode(-2);
             playEntity.setHasBuy(hasBuy);
+
+            //如果存在本地音频则播放本地是否
+            DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(Constants.getAppId(), playEntity.getResourceId());
+            if(download != null){
+                File file = new File(download.getLocalFilePath());
+                if(file.exists()){
+                    String localAudioPath = download.getLocalFilePath();
+                    playEntity.setPlayUrl(localAudioPath);
+                    playEntity.setLocalResource(true);
+                }
+            }
+
             AudioMediaPlayer.setAudio(playEntity, false);
 
             AudioPlayUtil.getInstance().refreshAudio(playEntity);

@@ -678,6 +678,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if (!hasCollect)
             EventBus.getDefault().post(new MyCollectListRefreshEvent(true,AudioMediaPlayer
                     .getAudio() == null ? "" : AudioMediaPlayer.getAudio().getResourceId()));
+        AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
+        if(audioPlayEntity != null && audioPlayEntity.getHasBuy() == 0){
+            AudioMediaPlayer.setAudio(null, false);
+        }
     }
 
     @Override
@@ -718,7 +722,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             finish();
             return;
         }
-        if (code == 1){
+        if (code == 1 && !playEntity.isLocalResource()){
             setPagerState(1);
             getDialog().dismissDialog();
             Toast(getString(R.string.network_error_text));

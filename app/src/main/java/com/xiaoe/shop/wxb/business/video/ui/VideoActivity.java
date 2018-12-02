@@ -572,7 +572,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 }
             }
         }
-        boolean valid = resourceState(data);
+        boolean valid = resourceState(data, available);
         if(available && valid){
             collectPrice = "";
             buyView.setVisibility(View.GONE);
@@ -581,10 +581,12 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 setContentDetail(detail);
             }
             mVideoUrl = data.getString("video_mp4");
-            if(TextUtils.isEmpty(mLocalVideoUrl)){
-                playControllerView.setPlayUrl(mVideoUrl);
-            }else{
-                playControllerView.setPlayUrl(mLocalVideoUrl);
+            if(!cache){
+                if(TextUtils.isEmpty(mLocalVideoUrl)){
+                    playControllerView.setPlayUrl(mVideoUrl);
+                }else{
+                    playControllerView.setPlayUrl(mLocalVideoUrl);
+                }
             }
 
             collectImgUrl = data.getString("img_url");
@@ -621,7 +623,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
      * 课程状态
      * @param data
      */
-    private boolean resourceState(JSONObject data){
+    private boolean resourceState(JSONObject data, boolean available){
         //是否免费0：否，1：是
         int isFree = data.getIntValue("is_free");
         //0-正常, 1-隐藏, 2-删除
@@ -632,6 +634,12 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         int isStopSell = data.getIntValue("is_stop_sell");
         //离待上线时间，如有则是待上架
         int timeLeft = data.getIntValue("time_left");
+        if(available && detailState != 2){
+            //删除状态优秀级最高，available=true是除了删除状态显示删除页面外，其他的均可查看详情
+            setPagerState(0);
+            return true;
+        }
+
         if(saleStatus == 1 || detailState == 1){
             setPagerState(2);
             return false;
