@@ -122,10 +122,8 @@ public class SettingPersonItemActivity extends XiaoeActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().length() > 0) {
                     personEditSubmit.setClickable(true);
-                    personEditSubmit.setAlpha(1);
                 } else {
                     personEditSubmit.setClickable(false);
-                    personEditSubmit.setAlpha(0.8f);
                 }
             }
 
