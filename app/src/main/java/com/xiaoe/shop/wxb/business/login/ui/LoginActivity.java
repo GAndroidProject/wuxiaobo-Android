@@ -50,6 +50,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import butterknife.internal.DebouncingOnClickListener;
 
 public class LoginActivity extends XiaoeActivity {
 
@@ -160,17 +161,17 @@ public class LoginActivity extends XiaoeActivity {
 
     private void initListener() {
 
-        loginBack.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-            @Override
-            public void singleClick(View v) {
-                onBackPressed();
+        loginBack.setOnClickListener(new DebouncingOnClickListener() {
 
+            @Override
+            public void doClick(View v) {
+                onBackPressed();
             }
         });
 
-        loginRegister.setOnClickListener(new OnClickEvent() {
+        loginRegister.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void singleClick(View v) {
+            public void doClick(View v) {
                 // 如果软件盘在的话，就把软键盘隐藏
                 toggleSoftKeyboard();
                 isRegister = true;
@@ -472,6 +473,7 @@ public class LoginActivity extends XiaoeActivity {
                     Toast("验证码错误");
                 } else if (code == NetworkCodes.CODE_REGISTER_FAIL) {
                     Log.d(TAG, "onMainThreadResponse: 注册失败..");
+                    Toast("注册失败，请重试");
                 } else if (code == NetworkCodes.CODE_OBTAIN_ACCESS_TOKEN_FAIL) {
                     Log.d(TAG, "onMainThreadResponse: 服务器访问失败");
                 } else if (code == NetworkCodes.CODE_PARAMS_ERROR) {

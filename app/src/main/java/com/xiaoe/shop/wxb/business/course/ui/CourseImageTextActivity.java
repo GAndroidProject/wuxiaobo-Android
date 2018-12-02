@@ -306,7 +306,11 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         String descImgUrl = "res:///" + R.mipmap.img_text_bg;
         SetImageUriUtil.setImgURI(itDescImg, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 250));
         if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) {
-            itBuy.setVipBtnVisibility(View.VISIBLE);
+            if (CommonUserInfo.getSuperVipEffective() == 1) { // 全店免费
+                itBuy.setVipBtnVisibility(View.VISIBLE);
+            } else {
+                itBuy.setVipBtnVisibility(View.GONE);
+            }
         } else {
             itBuy.setVipBtnVisibility(View.GONE);
         }
@@ -451,10 +455,17 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             if(resourceInfo.getIntValue("is_related") == 1){
                 //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                 JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
+                if (productList.size() == 0) {
+                    setPagerState(3004);
+                    return;
+                }
                 JSONObject product = productList.getJSONObject(0);
                 int productType = product.getIntValue("product_type");
                 String productId = product.getString("id");
                 String productImgUrl = product.getString("img_url");
+                if (cache) { // 再缓存取的就不跳了
+                    return;
+                }
                 //1-专栏, 2-会员, 3-大专栏
                 if(productType == 3){
                     JumpDetail.jumpColumn(this, productId, productImgUrl, 8);
@@ -633,7 +644,11 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
         if(cacheDataList != null && cacheDataList.size() > 0){
             JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent()).getJSONObject("data");
-            initPageData(data, true);
+            try {
+                initPageData(data, true);
+            } catch (Exception e) {
+                Toast(getString(R.string.cache_error_msg));
+            }
         }
     }
 

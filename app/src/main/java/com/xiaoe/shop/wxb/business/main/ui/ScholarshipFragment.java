@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bumptech.glide.Glide;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -80,12 +81,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     TextView scholarshipRule;
     @BindView(R.id.scholarship_total_money)
     TextView scholarshipTotalMoney;
-    @BindView(R.id.scholarship_step_one)
-    ImageView scholarshipStepOne;
-    @BindView(R.id.scholarship_step_two)
-    ImageView scholarshipStepTwo;
-    @BindView(R.id.scholarship_step_three)
-    ImageView scholarshipStepThree;
+    @BindView(R.id.scholarship_process)
+    ImageView scholarshipProcess;
     @BindView(R.id.scholarship_divide)
     Button scholarshipDivide;
     @BindView(R.id.scholarship_real_range)
@@ -466,27 +463,19 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 scholarshipDivide.setAlpha(0.8f);
                 scholarshipDivide.setClickable(false);
                 // 三个步骤都执行完成
-                scholarshipStepOne.setVisibility(View.VISIBLE);
-                scholarshipStepTwo.setVisibility(View.VISIBLE);
-                scholarshipStepThree.setVisibility(View.VISIBLE);
+                Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipProcess);
                 break;
             case 2: // 当前任务不满足领取条件 -- 判断是否已经购买
                 ScholarshipEntity.getInstance().setTaskState(ScholarshipEntity.TASK_UNFINISHED);
                 if (hasBuy) { // 买了
-                    scholarshipStepOne.setVisibility(View.VISIBLE);
-                    scholarshipStepTwo.setVisibility(View.GONE);
-                    scholarshipStepThree.setVisibility(View.GONE);
+                    Glide.with(this).load(R.mipmap.scholarship_process_one);
                 } else { // 没买
-                    scholarshipStepOne.setVisibility(View.GONE);
-                    scholarshipStepTwo.setVisibility(View.GONE);
-                    scholarshipStepThree.setVisibility(View.GONE);
+                    Glide.with(this).load(R.mipmap.scholarship_process);
                 }
                 break;
             case 3: // 未领取 -- 已经购买了
                 ScholarshipEntity.getInstance().setTaskState(ScholarshipEntity.TASK_NOT_RECEIVED);
-                scholarshipStepOne.setVisibility(View.VISIBLE);
-                scholarshipStepTwo.setVisibility(View.GONE);
-                scholarshipStepThree.setVisibility(View.GONE);
+                Glide.with(this).load(R.mipmap.scholarship_process_one);
                 break;
             default:
                 break;
@@ -608,9 +597,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             scholarshipDivide.setText("明日再来");
             scholarshipDivide.setAlpha(0.8f);
             scholarshipDivide.setClickable(false);
-            scholarshipStepOne.setVisibility(View.VISIBLE);
-            scholarshipStepTwo.setVisibility(View.VISIBLE);
-            scholarshipStepThree.setVisibility(View.VISIBLE);
+            Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipProcess);
 
             // TODO: 禁止点击事件
             int type = reward.getInteger("type");
@@ -629,21 +616,21 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_PROCESSING);
             scholarshipDivide.setText("瓜分中...");
 
-            scholarshipStepOne.setVisibility(View.VISIBLE);
-            scholarshipStepTwo.setVisibility(View.VISIBLE);
-            scholarshipStepThree.setVisibility(View.VISIBLE);
+            Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipProcess);
 
             runnable = () -> scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
             handler.postDelayed(runnable, 3000);
         } else if (status == 1) {
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_FAIL);
             Toast.makeText(getActivity(), "领取失败，请重试", Toast.LENGTH_SHORT).show();
+            Glide.with(this).load(R.mipmap.scholarship_process_one).into(scholarshipProcess);
         }
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        Log.d(TAG, "onHiddenChanged: ");
         if (hidden) { // 隐藏
             if (handler != null && runnable != null) {
                 handler.removeCallbacks(runnable);

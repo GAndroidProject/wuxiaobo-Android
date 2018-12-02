@@ -1,11 +1,13 @@
 package com.xiaoe.shop.wxb.business.search.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,7 @@ import com.xiaoe.shop.wxb.business.search.presenter.HistoryRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.search.presenter.RecommendRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.search.presenter.SearchSQLiteCallback;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
+import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,10 +166,35 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                 @Override
                 public void singleClick(View v) {
                     // 删除数据库中全部数据
-                    SQLiteUtil.init(mContext, new SearchSQLiteCallback()).execSQL("delete from " + SearchSQLiteCallback.TABLE_NAME_CONTENT);
-                    Toast.makeText(searchActivity, "删除成功", Toast.LENGTH_SHORT).show();
-                    historyData.clear();
-                    historyContentView.setVisibility(View.GONE);
+                    getDialog().setTitleVisibility(View.GONE);
+                    getDialog().setHintMessage(getString(R.string.clear_history_record));
+                    getDialog().setConfirmText(getResources().getString(R.string.confirm_title));
+                    getDialog().setConfirmTextColor(getResources().getColor(R.color.recent_update_btn_pressed));
+                    getDialog().setCancelText(getResources().getString(R.string.cancel_title));
+                    getDialog().setCancelTextColor(getResources().getColor(R.color.recent_update_btn_pressed));
+                    getDialog().setOnCustomDialogListener(new OnCustomDialogListener() {
+                        @Override
+                        public void onClickCancel(View view, int tag) {
+                            getDialog().dismissDialog();
+                            Log.d(TAG, "onClickCancel: 2");
+                        }
+
+                        @Override
+                        public void onClickConfirm(View view, int tag) {
+                            getDialog().dismissDialog();
+                            Log.d(TAG, "onClickConfirm: 1");
+                            SQLiteUtil.init(mContext, new SearchSQLiteCallback()).execSQL("delete from " + SearchSQLiteCallback.TABLE_NAME_CONTENT);
+                            Toast.makeText(searchActivity, "删除成功", Toast.LENGTH_SHORT).show();
+                            historyData.clear();
+                            historyContentView.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
+
+                        }
+                    });
+                    getDialog().showDialog(1);
                 }
             });
 

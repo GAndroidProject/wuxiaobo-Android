@@ -1,12 +1,17 @@
 package com.xiaoe.shop.wxb.business.coupon.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.entitys.CouponInfo;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -41,6 +46,9 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
     private CouponPresenter mCouponPresenter;
     private StatusPagerView statusPagerView;
     private CouponFragment currentFragment;
+    private SmartRefreshLayout couponRefresh;
+
+    private List<CouponInfo> couponList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,10 +73,12 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void initView() {
+        couponList = new ArrayList<CouponInfo>();
+
         couponBack = (ImageView) findViewById(R.id.coupon_back);
 
         statusPagerView = (StatusPagerView) findViewById(R.id.state_pager_view);
-
+        couponRefresh = (SmartRefreshLayout) findViewById(R.id.coupon_refresh);
         currentFragment = CouponFragment.newInstance(R.layout.fragment_coupone);
         currentFragment.setMarginTop(Dp2Px2SpUtil.dp2px(this, 20));
         getSupportFragmentManager().beginTransaction().add(R.id.coupon_content_wrap, currentFragment, EMPTY_CONTENT).commit();
@@ -78,6 +88,13 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
         couponBack.setOnClickListener(this);
         currentFragment.setOnSelectCouponListener(this);
         statusPagerView.setOnClickListener(this);
+        couponRefresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                mCouponPresenter.requestMineCoupon("all");
+            }
+        });
+        couponRefresh.setEnableLoadMore(false);
     }
 
     @Override
@@ -88,11 +105,17 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
         }
         if(success){
             if(iRequest instanceof MineCouponRequest){
+                couponRefresh.finishRefresh();
                 JSONObject jsonObject = (JSONObject) entity;
                 mineCouponRequest(jsonObject);
             }
         }else{
-            statusPagerView.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            couponRefresh.finishRefresh();
+            if (couponList.size() == 0) {
+                statusPagerView.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+            } else {
+                Toast(getString(R.string.network_error_text));
+            }
         }
     }
 
@@ -112,7 +135,9 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
             return;
         }
         statusPagerView.setLoadingFinish();
-        List<CouponInfo> couponList = new ArrayList<CouponInfo>();
+        if (couponList.size() > 0) {
+            couponList.clear();
+        }
         for (CouponInfo couponInfo : validCoupon) {
             couponInfo.setValid(true);
             couponList.add(couponInfo);
@@ -132,10 +157,7 @@ public class CouponActivity extends XiaoeActivity implements View.OnClickListene
                 finish();
                 break;
             case R.id.state_pager_view:
-                if (statusPagerView.getCurrentLoadingStatus() == StatusPagerView.FAIL) {
-                    statusPagerView.setPagerState(StatusPagerView.LOADING, "", 0);
-                    mCouponPresenter.requestMineCoupon("all");
-                }
+                // do nothing;
                 break;
             default:
                 break;

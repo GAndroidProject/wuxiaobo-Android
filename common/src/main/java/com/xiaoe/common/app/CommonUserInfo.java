@@ -18,6 +18,8 @@ public class CommonUserInfo {
     private static boolean isSuperVip;
     // 超级会员是否可用
     private static boolean isSuperVipAvailable;
+    // 超级会员影响范围
+    private static int superVipEffective;
 
     private static CommonUserInfo commonUserInfo = null;
     private static LoginUser loginUser = null;
@@ -159,5 +161,14 @@ public class CommonUserInfo {
 
     public void setUnreadMsgCount(int unreadMsgCount) {
         this.unreadMsgCount = unreadMsgCount;
+    }
+
+    public static void setSuperVipEffective(int superVipEffective) {
+        CommonUserInfo.superVipEffective = superVipEffective;
+    }
+
+    public static int getSuperVipEffective() {
+
+        return superVipEffective;
     }
 }

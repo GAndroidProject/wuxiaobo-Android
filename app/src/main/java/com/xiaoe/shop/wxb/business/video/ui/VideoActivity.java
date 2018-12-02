@@ -506,10 +506,17 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                     //1-免费,2-单卖，3-非单卖
                     //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                     JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
+                    if (productList.size() == 0) {
+                        setPagerState(3004);
+                        return;
+                    }
                     JSONObject product = productList.getJSONObject(0);
                     int productType = product.getIntValue("product_type");
                     String productId = product.getString("id");
                     String productImgUrl = product.getString("img_url");
+                    if (cache) {
+                        return;
+                    }
                     //1-专栏, 2-会员, 3-大专栏
                     if(productType == 3){
                         JumpDetail.jumpColumn(this, productId, productImgUrl, 8);
@@ -598,7 +605,11 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             buyView.setVisibility(cache ? View.GONE : View.VISIBLE);
             // 未购
             if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员的判断
-                buyView.setVipBtnVisibility(cache ? View.GONE : View.VISIBLE);
+                if (CommonUserInfo.getSuperVipEffective() == 1) { // 全店免费
+                    buyView.setVipBtnVisibility(View.VISIBLE);
+                } else {
+                    buyView.setVipBtnVisibility(View.GONE);
+                }
             } else {
                 buyView.setVipBtnVisibility(View.GONE);
             }

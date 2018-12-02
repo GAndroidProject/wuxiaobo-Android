@@ -124,8 +124,6 @@ public class AudioPresenter implements IBizCallback {
         // isFree -- 1 免费，0 付费
         int isFree = resourceInfo.getInteger("is_free") == null ? 0 : resourceInfo.getInteger("is_free");
         playEntity.setFree(isFree != 0);
-
-        resourceState(resourceInfo, available, playEntity);
         if(available){
             if(!playEntity.isLocalResource()){
                 //没有下载过，没有本地资源
@@ -139,23 +137,29 @@ public class AudioPresenter implements IBizCallback {
                 //是否仅关联售卖，0-否，1-是
                 //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                 JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
-                JSONObject product = productList.getJSONObject(0);
-                int productType = product.getIntValue("product_type");
-                String productId = product.getString("id");
-                String productImgUrl = product.getString("img_url");
-                //1-专栏, 2-会员, 3-大专栏
-               playEntity.setSingleBuy(false);
-               playEntity.setProductId(productId);
-               playEntity.setProductImgUrl(productImgUrl);
-               if(productType == 3){
-                   playEntity.setProductType(8);
-               }else if(productType == 2){
-                   playEntity.setProductType(5);
-               }else{
-                   playEntity.setProductType(6);
-               }
-            }
+                if(productList.size() > 0){
+                    JSONObject product = productList.getJSONObject(0);
+                    int productType = product.getIntValue("product_type");
+                    String productId = product.getString("id");
+                    String productImgUrl = product.getString("img_url");
+                    //1-专栏, 2-会员, 3-大专栏
+                    playEntity.setSingleBuy(false);
+                    playEntity.setProductId(productId);
+                    playEntity.setProductImgUrl(productImgUrl);
+                    if(productType == 3){
+                        playEntity.setProductType(8);
+                    }else if(productType == 2){
+                        playEntity.setProductType(5);
+                    }else{
+                        playEntity.setProductType(6);
+                    }
+                }else{
+                    //仅关联专栏售卖，但关联专栏被删，则显示课程被删除
+                    resourceInfo.put("state", 2);
+                }
 
+            }
+            resourceState(resourceInfo, available, playEntity);
             playEntity.setCode(0);
             playEntity.setContent(resourceInfo.getString("preview_content"));
             playAudio(false);

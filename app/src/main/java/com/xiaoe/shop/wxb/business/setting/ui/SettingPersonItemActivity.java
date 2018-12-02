@@ -61,6 +61,7 @@ public class SettingPersonItemActivity extends XiaoeActivity {
     String apiToken;
     SettingPresenter settingPresenter;
     SQLiteUtil loginSQLiteUtil;
+    boolean hasSetNickName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -138,8 +139,10 @@ public class SettingPersonItemActivity extends XiaoeActivity {
                 // TODO: 请求保存接口
                 String title = personEditTitle.getText().toString();
                 inputContent = personEditContent.getText().toString();
+                hasSetNickName = false;
                 switch (title) {
                     case "昵称":
+                        hasSetNickName = true;
                         settingPresenter.updateWxNickname(apiToken, inputContent);
                         break;
                     case "真实姓名":
@@ -181,17 +184,19 @@ public class SettingPersonItemActivity extends XiaoeActivity {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     Toast("修改成功");
-                    List<LoginUser> resultList = loginSQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
-                    String rowId = resultList.get(0).getRowId();
-                    String sql = "update " + LoginSQLiteCallback.TABLE_NAME_USER +
-                            " set " + LoginUserEntity.COLUMN_NAME_WX_NICKNAME +
-                            " = '" + inputContent +
-                            "' where " + LoginUserEntity.COLUMN_NAME_ROW_ID +
-                            " = '" + rowId + "'";
-                    loginSQLiteUtil.execSQL(sql);
-                    UpdateMineMsgEvent updateMineMsgEvent = new UpdateMineMsgEvent();
-                    updateMineMsgEvent.setWxNickName(inputContent);
-                    EventBus.getDefault().post(updateMineMsgEvent);
+                    if (hasSetNickName) {
+                        List<LoginUser> resultList = loginSQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
+                        String rowId = resultList.get(0).getRowId();
+                        String sql = "update " + LoginSQLiteCallback.TABLE_NAME_USER +
+                                " set " + LoginUserEntity.COLUMN_NAME_WX_NICKNAME +
+                                " = '" + inputContent +
+                                "' where " + LoginUserEntity.COLUMN_NAME_ROW_ID +
+                                " = '" + rowId + "'";
+                        loginSQLiteUtil.execSQL(sql);
+                        UpdateMineMsgEvent updateMineMsgEvent = new UpdateMineMsgEvent();
+                        updateMineMsgEvent.setWxNickName(inputContent);
+                        EventBus.getDefault().post(updateMineMsgEvent);
+                    }
                     // 更新数据库
                     Intent intent = new Intent();
                     intent.putExtra("content", inputContent);

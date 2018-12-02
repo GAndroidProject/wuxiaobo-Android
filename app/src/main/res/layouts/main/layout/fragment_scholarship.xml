@@ -109,49 +109,13 @@
 
                     </LinearLayout>
 
-                    <FrameLayout
+                    <ImageView
+                        android:id="@+id/scholarship_process"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginBottom="30dp">
-
-                        <ImageView
-                            android:id="@+id/scholarship_progress"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:src="@mipmap/scholarship_process"
-                            tools:ignore="ContentDescription" />
-
-                        <ImageView
-                            android:id="@+id/scholarship_step_one"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@mipmap/scholarship_complete"
-                            android:layout_marginStart="42dp"
-                            android:layout_marginTop="50dp"
-                            android:layout_gravity="start"
-                            tools:ignore="ContentDescription" />
-
-                        <ImageView
-                            android:id="@+id/scholarship_step_two"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@mipmap/scholarship_complete"
-                            android:layout_marginTop="22dp"
-                            android:layout_gravity="center_horizontal"
-                            tools:ignore="ContentDescription" />
-
-                        <ImageView
-                            android:id="@+id/scholarship_step_three"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@mipmap/scholarship_complete"
-                            android:layout_marginTop="50dp"
-                            android:layout_marginEnd="42dp"
-                            android:layout_gravity="end"
-                            tools:ignore="ContentDescription" />
-
-                    </FrameLayout>
+                        android:src="@mipmap/scholarship_process"
+                        tools:ignore="ContentDescription"
+                        android:layout_marginTop="30dp"/>
 
                 </LinearLayout>
 

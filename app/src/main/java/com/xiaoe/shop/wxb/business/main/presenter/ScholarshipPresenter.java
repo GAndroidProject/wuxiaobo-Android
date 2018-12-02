@@ -1,5 +1,7 @@
 package com.xiaoe.shop.wxb.business.main.presenter;
 
+import android.text.TextUtils;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.XiaoeApplication;
@@ -150,6 +152,9 @@ public class ScholarshipPresenter implements IBizCallback {
                 requestRange(taskId);
                 requestTaskStatues(taskId);
             } else { // 不需要初始化信息（音频详情页不需要知道排行榜，和初始的状态）
+                if (TextUtils.isEmpty(resourceId) || TextUtils.isEmpty(resourceType)) {
+                    return;
+                }
                 requestSubmitTask(taskId, resourceId, resourceType, isSuperVip);
             }
             break; // 拿到奖学金任务 id 后退出循环

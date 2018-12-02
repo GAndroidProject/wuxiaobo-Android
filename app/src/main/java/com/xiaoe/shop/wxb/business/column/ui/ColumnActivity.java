@@ -453,7 +453,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             }
             // 未购买
             if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员判断
-                buyView.setVipBtnVisibility(cache ? View.GONE : View.VISIBLE);
+                if (CommonUserInfo.getSuperVipEffective() == 1) { // 全店免费
+                    buyView.setVipBtnVisibility(View.VISIBLE);
+                } else {
+                    buyView.setVipBtnVisibility(View.GONE);
+                }
             } else {
                 buyView.setVipBtnVisibility(View.GONE);
             }

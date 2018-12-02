@@ -29,17 +29,29 @@
             android:textSize="18sp" />
     </android.support.v7.widget.Toolbar>
 
-    <FrameLayout
-        android:id="@+id/coupon_content_wrap"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/coupon_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/coupon_bar"/>
+        android:layout_below="@id/coupon_bar">
 
-    <com.xiaoe.shop.wxb.widget.StatusPagerView
-        android:id="@+id/state_pager_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/coupon_bar"
-        />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/coupon_content_wrap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <com.xiaoe.shop.wxb.widget.StatusPagerView
+                android:id="@+id/state_pager_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+        </FrameLayout>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 </RelativeLayout>

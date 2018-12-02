@@ -54,6 +54,11 @@ public class CouponListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     public void addAll(List<CouponInfo> list){
+        if (couponList != null) {
+            couponList.clear();
+        } else {
+            return;
+        }
         couponList.addAll(list);
         notifyDataSetChanged();
     }

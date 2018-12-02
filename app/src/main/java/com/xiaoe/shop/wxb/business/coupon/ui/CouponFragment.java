@@ -112,6 +112,9 @@ public class CouponFragment extends BaseFragment implements View.OnClickListener
     }
 
     public void addData(List<CouponInfo> list){
+        if (couponList != null) {
+            couponList.clear();
+        }
         couponList = list;
         if(couponListAdapter == null){
             return;

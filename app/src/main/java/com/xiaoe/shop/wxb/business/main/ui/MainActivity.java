@@ -30,6 +30,7 @@ import com.xiaoe.network.requests.GetUnreadMessageRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.IsSuperVipRequest;
 import com.xiaoe.network.requests.CouponHandleRequest;
+import com.xiaoe.network.requests.ScholarshipTaskListRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.main.MainFragmentStatePagerAdapter;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
@@ -37,6 +38,7 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
 import com.xiaoe.shop.wxb.business.launch.presenter.CouponHandlePresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.MessagePushPresenter;
+import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
@@ -82,6 +84,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
      */
     private boolean isGetUnreadMsg;
     CouponHandlePresenter couponHandlePresenter;
+    ScholarshipPresenter scholarshipPresenter;
+    boolean needHiddenScholarship;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +157,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 //        getUnreadMsg();
         couponHandlePresenter = new CouponHandlePresenter(this);
         couponHandlePresenter.requestSendCoupon();
+        scholarshipPresenter = new ScholarshipPresenter(this);
+        scholarshipPresenter.requestTaskList( false);
     }
 
     private void initView() {
@@ -165,17 +171,23 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         List<String> buttonNames = new ArrayList<String>();
         buttonNames.add("今日");
         buttonNames.add("课程");
-        buttonNames.add("奖学金");
+        if (!needHiddenScholarship) {
+            buttonNames.add("奖学金");
+        }
         buttonNames.add("我的");
         List<Integer> buttonCheckedIcons = new ArrayList<Integer>();
         buttonCheckedIcons.add(R.mipmap.today_selected);
         buttonCheckedIcons.add(R.mipmap.class_selected);
-        buttonCheckedIcons.add(R.mipmap.scholarship_select);
+        if (!needHiddenScholarship) {
+            buttonCheckedIcons.add(R.mipmap.scholarship_select);
+        }
         buttonCheckedIcons.add(R.mipmap.profile_selected);
         List<Integer> buttonIcons = new ArrayList<Integer>();
         buttonIcons.add(R.mipmap.today_default);
         buttonIcons.add(R.mipmap.class_default);
-        buttonIcons.add(R.mipmap.scholarship_default);
+        if (!needHiddenScholarship) {
+            buttonIcons.add(R.mipmap.scholarship_default);
+        }
         buttonIcons.add(R.mipmap.profile_default);
         bottomTabBar.addTabButton(4, buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
 
@@ -227,11 +239,20 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         Log.d(TAG, "onCheckedTab: "+index);
         mainViewPager.setCurrentItem(index);
         Log.d(TAG, "onCheckedTab: I "+mainViewPager.getCurrentItem());
-        if (3 == index && !TextUtils.isEmpty(CommonUserInfo.getInstance().getApiTokenByDB())) { // 有登录态才请求
-            getUnreadMsg();
-        }
-        if (3 == index && bottomTabBar.getBottomBarButtonByIndex(3).getRedPointVisibility() == View.VISIBLE) {
-            bottomTabBar.getBottomBarButtonByIndex(3).setRedPointVisibility(View.GONE);
+        if (needHiddenScholarship) {
+            if (2 == index && !TextUtils.isEmpty(CommonUserInfo.getInstance().getApiTokenByDB())) { // 有登录态才请求
+                getUnreadMsg();
+            }
+            if (2 == index && bottomTabBar.getBottomBarButtonByIndex(2).getRedPointVisibility() == View.VISIBLE) {
+                bottomTabBar.getBottomBarButtonByIndex(2).setRedPointVisibility(View.GONE);
+            }
+        } else {
+            if (3 == index && !TextUtils.isEmpty(CommonUserInfo.getInstance().getApiTokenByDB())) { // 有登录态才请求
+                getUnreadMsg();
+            }
+            if (3 == index && bottomTabBar.getBottomBarButtonByIndex(3).getRedPointVisibility() == View.VISIBLE) {
+                bottomTabBar.getBottomBarButtonByIndex(3).setRedPointVisibility(View.GONE);
+            }
         }
     }
 
@@ -396,7 +417,11 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                         CommonUserInfo.getInstance().setHasUnreadMsg(hasUnread);
                         CommonUserInfo.getInstance().setUnreadMsgCount(unreadCount);
                         if (hasUnread) {
-                            bottomTabBar.getBottomBarButtonByIndex(3).setRedPointVisibility(View.VISIBLE);
+                            if (needHiddenScholarship) {
+                                bottomTabBar.getBottomBarButtonByIndex(2).setRedPointVisibility(View.VISIBLE);
+                            } else {
+                                bottomTabBar.getBottomBarButtonByIndex(3).setRedPointVisibility(View.VISIBLE);
+                            }
                         }
                     }
                 }
@@ -404,6 +429,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail...");
             isGetUnreadMsg = false;
+            if (iRequest instanceof ScholarshipTaskListRequest) { // 获取奖学金任务列表，data 为 []，隐藏奖学金 tab
+                needHiddenScholarship = true;
+            }
         }
     }
 
@@ -464,6 +492,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     public void initSuperVipMsg(JSONObject data) {
         boolean isSuperVip = data.getBoolean("is_svip");
         boolean isCanBuy = data.getBoolean("is_can_buy");
+        int effectiveRange = data.getInteger("effactive_range");
         boolean hasYearBuy = false; // 是否有一年规格
         JSONArray vipType = (JSONArray) data.get("svip_type");
         if (vipType != null) {
@@ -482,6 +511,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         CommonUserInfo.setIsSuperVip(isSuperVip);
         CommonUserInfo.setIsSuperVipAvailable(isCanBuy && hasYearBuy);
+        CommonUserInfo.setSuperVipEffective(effectiveRange);
     }
 
     public void getUnreadMsg() {
