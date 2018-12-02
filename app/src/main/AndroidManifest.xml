@@ -317,6 +317,9 @@
             android:name=".business.earning.ui.IntegralActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".business.earning.ui.IntegralNewActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".business.earning.ui.WithdrawalRecordActivity"
             android:screenOrientation="portrait"/>
         <activity

@@ -253,8 +253,10 @@
     <string name="scholarship_page_submit">提 现</string>
     <string name="scholarship">元</string>
     <string name="scholarship_page_list_title">我的奖学金</string>
-    <string name="integral_title">共获得</string>
+    <string name="integral_title">当前共</string>
     <string name="integral">积分</string>
+    <string name="integral_rule">积分规则</string>
+    <string name="integral_rule_content">1. 获取方式：在“奖学金”中分享课程 \n2. 超级会员：可获双倍积分 \n3. 积分兑换：可在商城中使用(建设中)</string>
     <string name="integral_build">积分商城正在疯狂建设中&#8230;</string>
     <string name="be_super_vip">开通超级会员，获取更多积分 >></string>
     <string name="integral_list_title">积分流水</string>
