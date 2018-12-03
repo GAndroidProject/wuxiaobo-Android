@@ -120,7 +120,7 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
             statePager.setVisibility(View.VISIBLE);
             statePager.setLoadingState(View.GONE);
             statePager.setHintStateVisibility(View.VISIBLE);
-            statePager.setStateText(getString(R.string.not_has_content));
+            statePager.setStateText(getString(R.string.not_has_download_content));
             statePager.setStateImage(R.mipmap.downloading);
         }else{
             statePager.setVisibility(View.GONE);

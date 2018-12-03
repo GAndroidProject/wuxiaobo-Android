@@ -91,7 +91,7 @@
     <string name="no_text">否</string>
 
     <string name="not_has_content">暂无内容，快去看看吧</string>
-    <string name="not_has_download_content">你当前没有正在下载的课程哦</string>
+    <string name="not_has_download_content">暂无下载内容，快去首页看看吧</string>
 
     <!--删除提示 start-->
     <string name="all_start_download">全部开始</string>

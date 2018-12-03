@@ -9,7 +9,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -309,7 +308,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
             //获取评论列表失败
             statusPagerView.setHintStateVisibility(View.VISIBLE);
             statusPagerView.setLoadingState(View.GONE);
-            statusPagerView.setStateImage(R.mipmap.network_none);
+            statusPagerView.setStateImage(R.mipmap.ic_network_error);
             statusPagerView.setStateText(getResources().getString(R.string.get_comment_fail));
         }
         statusPagerView.setVisibility(state >= 0 ? View.GONE : View.VISIBLE);

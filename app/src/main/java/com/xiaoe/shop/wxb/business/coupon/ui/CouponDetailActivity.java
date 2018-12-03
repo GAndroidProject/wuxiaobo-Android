@@ -74,7 +74,7 @@ public class CouponDetailActivity extends XiaoeActivity implements View.OnClickL
             CouponPresenter couponPresenter = new CouponPresenter(this);
             couponPresenter.requestCouponCanResource(couponInfo.getId());
         }else{
-            statusPagerView.setPagerState(StatusPagerView.FAIL, getResources().getString(R.string.request_fail), R.mipmap.network_none);
+            statusPagerView.setPagerState(StatusPagerView.FAIL, getResources().getString(R.string.request_fail), R.mipmap.ic_network_error);
         }
     }
 
@@ -87,7 +87,7 @@ public class CouponDetailActivity extends XiaoeActivity implements View.OnClickL
         if(success){
             JSONObject jsonObject = (JSONObject) entity;
             if(jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED){
-                statusPagerView.setPagerState(StatusPagerView.FAIL, getResources().getString(R.string.request_fail), R.mipmap.network_none);
+                statusPagerView.setPagerState(StatusPagerView.FAIL, getResources().getString(R.string.request_fail), R.mipmap.ic_network_error);
                 return;
             }
             statusPagerView.setLoadingFinish();
@@ -123,7 +123,7 @@ public class CouponDetailActivity extends XiaoeActivity implements View.OnClickL
 //            couponListAdapter.addAllData(resourceInfoList);
             couponListAdapter.notifyDataSetChanged();
         }else{
-            statusPagerView.setPagerState(StatusPagerView.FAIL, getResources().getString(R.string.request_fail), R.mipmap.network_none);
+            statusPagerView.setPagerState(StatusPagerView.FAIL, getResources().getString(R.string.request_fail), R.mipmap.ic_network_error);
         }
     }
 

@@ -10,7 +10,7 @@
         android:layout_height="140dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
-        android:src="@mipmap/network_none" />
+        android:src="@mipmap/ic_network_error" />
 
     <TextView
         android:id="@+id/tvNetworkErrorTip"

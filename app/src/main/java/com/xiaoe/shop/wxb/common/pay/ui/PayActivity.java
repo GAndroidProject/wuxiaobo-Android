@@ -352,12 +352,12 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         }else if (state == FAIL){
             statusPagerView.setLoadingState(View.GONE);
             statusPagerView.setHintStateVisibility(View.VISIBLE);
-            statusPagerView.setStateImage(R.mipmap.network_none);
+            statusPagerView.setStateImage(R.mipmap.ic_network_error);
             statusPagerView.setStateText(getResources().getString(R.string.request_fail));
         }else if (state == EMPTY){
             statusPagerView.setLoadingState(View.GONE);
             statusPagerView.setHintStateVisibility(View.VISIBLE);
-            statusPagerView.setStateImage(R.mipmap.network_none);
+            statusPagerView.setStateImage(R.mipmap.ic_network_error);
             statusPagerView.setStateText(getResources().getString(R.string.coupon_empty_desc));
         }else if(state == PAY_SUCCEED){
             statusPagerView.setLoadingState(View.GONE);
