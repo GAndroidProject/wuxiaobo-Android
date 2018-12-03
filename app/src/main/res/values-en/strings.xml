@@ -369,4 +369,8 @@
     <string name="service_link">http://app-server.inside.xiaoeknow.com/web/agree</string>
     <string name="learn_count">%1$d次学习</string>
     <string name="we_chat_error_tip">微信版本异常，建议从正确去到下载微信</string>
+    <string name="login_successfully">登录成功</string>
+    <string name="tab_mine">我的</string>
+    <string name="none_learning_course">你当前暂无正在学的课程哦</string>
+    <string name="super_members">超级会员</string>
 </resources>

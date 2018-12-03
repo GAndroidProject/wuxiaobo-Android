@@ -117,23 +117,23 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         String jgPushRegId = JPushInterface.getRegistrationID(mContext);
         Log.d(TAG, "onCreate: JPush RegID " + jgPushRegId);
 
-        String bindJPushSuccess = (String) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, "");
-        JgPushSaveInfo jgPushSaveInfo = JSON.parseObject(bindJPushSuccess, JgPushSaveInfo.class);
-        Log.d(TAG, "onCreate: " + jgPushSaveInfo);
+//        String bindJPushSuccess = (String) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, "");
+//        JgPushSaveInfo jgPushSaveInfo = JSON.parseObject(bindJPushSuccess, JgPushSaveInfo.class);
+//        Log.d(TAG, "onCreate: " + jgPushSaveInfo);
         MessagePushPresenter messagePushPresenter = new MessagePushPresenter(this);
-        if (jgPushSaveInfo != null) {
-            if (!jgPushSaveInfo.isBindRegIdSuccess()) {
+//        if (jgPushSaveInfo != null) {
+//            if (!jgPushSaveInfo.isBindRegIdSuccess()) {
                 messagePushPresenter.requestBindJgPush();
-            } else {
-                if (jgPushRegId != null && !jgPushRegId.equals(jgPushSaveInfo.getRegistrationID())) {
-                    messagePushPresenter.requestBindJgPush();
-                }
-            }
-        } else {
-            if (jgPushRegId != null) {
-                messagePushPresenter.requestBindJgPush();
-            }
-        }
+//            } else {
+//                if (jgPushRegId != null && !jgPushRegId.equals(jgPushSaveInfo.getRegistrationID())) {
+//                    messagePushPresenter.requestBindJgPush();
+//                }
+//            }
+//        } else {
+//            if (jgPushRegId != null) {
+//                messagePushPresenter.requestBindJgPush();
+//            }
+//        }
 
         needShowScholarship = ScholarshipEntity.getInstance().isTaskExist();
         initView();
@@ -173,9 +173,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         buttonNames.add("今日");
         buttonNames.add("课程");
         if (needShowScholarship) {
-            buttonNames.add("奖学金");
+            buttonNames.add(getString(R.string.scholarship_title));
         }
-        buttonNames.add("我的");
+        buttonNames.add(getString(R.string.tab_mine));
         List<Integer> buttonCheckedIcons = new ArrayList<Integer>();
         buttonCheckedIcons.add(R.mipmap.today_selected);
         buttonCheckedIcons.add(R.mipmap.class_selected);
@@ -375,10 +375,10 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             } else if (iRequest instanceof BindJgPushRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    setBindJPushSP(true);
+//                    setBindJPushSP(true);
                     Log.d(TAG, "onMainThreadResponse: 绑定极光推送成功...");
                 } else {
-                    setBindJPushSP(false);
+//                    setBindJPushSP(false);
                     Log.d(TAG, "onMainThreadResponse: 绑定极光推送失败...");
                 }
             } else if (iRequest instanceof GetPushStateRequest) {

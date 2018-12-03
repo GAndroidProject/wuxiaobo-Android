@@ -506,7 +506,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 if (item_1 == null) {
                     item_1 = new MineMoneyItemInfo();
                     item_1.setItemTitle(balance);
-                    item_1.setItemDesc("奖学金");
+                    item_1.setItemDesc(getString(R.string.scholarship_title));
                 } else {
                     item_1.setItemTitle(balance);
                 }
@@ -549,7 +549,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             // 学习记录为空
             mineLearningWrapView.setLearningContainerVisibility(View.GONE);
             mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-            mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+            mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_learning_course));
             mineLearningWrapView.setLearningMoreVisibility(View.GONE);
             isMineLearningFinish = true;
             return;
@@ -562,7 +562,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         if (listItem == null) {
             mineLearningWrapView.setLearningContainerVisibility(View.GONE);
             mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-            mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+            mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_learning_course));
             mineLearningWrapView.setLearningMoreVisibility(View.GONE);
             return;
         }
@@ -591,7 +591,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             String expireAtEnd = data.getString("expire_at_end");
             int price = data.getInteger("price");
             JumpDetail.jumpPay(getActivity(), resourceId, productId, 23, "res:///" + R.mipmap.pay_vip_bg,
-                    "超级会员", price, expireAtStart + "-" + expireAtEnd);
+                    getString(R.string.super_members), price, expireAtStart + "-" + expireAtEnd);
         } else {
             Log.d(TAG, "onMainThreadResponse: 超级会员购买信息请求失败");
             mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
@@ -845,7 +845,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             if (item_1 == null) {
                 item_1 = new MineMoneyItemInfo();
                 item_1.setItemTitle(balance);
-                item_1.setItemDesc("奖学金");
+                item_1.setItemDesc(getString(R.string.scholarship_title));
             } else {
                 item_1.setItemTitle(balance);
             }
@@ -865,7 +865,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 // 学习记录为空
                 mineLearningWrapView.setLearningContainerVisibility(View.GONE);
                 mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-                mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+                mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_learning_course));
                 mineLearningWrapView.setLearningMoreVisibility(View.GONE);
                 isMineLearningFinish = true;
                 return;
@@ -878,7 +878,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             if (listItem == null) {
                 mineLearningWrapView.setLearningContainerVisibility(View.GONE);
                 mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-                mineLearningWrapView.setLearningLoginDesc("你当前暂无正在学的课程哦");
+                mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_learning_course));
                 mineLearningWrapView.setLearningMoreVisibility(View.GONE);
                 return;
             }
