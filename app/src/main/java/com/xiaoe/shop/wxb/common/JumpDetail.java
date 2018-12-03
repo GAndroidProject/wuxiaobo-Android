@@ -24,7 +24,7 @@ import com.xiaoe.shop.wxb.business.coupon.ui.CouponActivity;
 import com.xiaoe.shop.wxb.business.coupon.ui.CouponDetailActivity;
 import com.xiaoe.shop.wxb.business.course.ui.CourseImageTextActivity;
 import com.xiaoe.shop.wxb.business.download.ui.OffLineCacheActivity;
-import com.xiaoe.shop.wxb.business.earning.ui.IntegralActivity;
+import com.xiaoe.shop.wxb.business.earning.ui.IntegralNewActivity;
 import com.xiaoe.shop.wxb.business.earning.ui.ScholarshipActivity;
 import com.xiaoe.shop.wxb.business.earning.ui.WithdrawalActivity;
 import com.xiaoe.shop.wxb.business.earning.ui.WithdrawalRecordActivity;
@@ -333,7 +333,7 @@ public class JumpDetail {
      * @param context
      */
     public static void jumpIntegralActivity(Context context) {
-        Intent intent = new Intent(context, IntegralActivity.class);
+        Intent intent = new Intent(context, IntegralNewActivity.class);
         context.startActivity(intent);
     }
 
