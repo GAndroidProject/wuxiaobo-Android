@@ -40,11 +40,6 @@ public class NetworkEngine {
 //    private final static String FORMAL_API_THIRD_BASE_URL = BASE_URL+"/third/xiaoe_request/";
     public final static String API_THIRD_BASE_URL = (XiaoeApplication.isFormalCondition() ? BASE_URL_FORMAL : BASE_URL_TEST)+"/third/xiaoe_request/";
     public final static String LOGIN_BASE_URL = (XiaoeApplication.isFormalCondition() ? BASE_URL_FORMAL : BASE_URL_TEST)+"/api/"; // 登录接口 url
-    /**
-     * 用户登录及绑定注册（极光推送）
-     * http://app-server.inside.xiaoeknow.com/api/xe.set.device.token/1.0.0
-     */
-    public static final String BIND_JG_PUSH_URL = (XiaoeApplication.isFormalCondition() ? BASE_URL_FORMAL : BASE_URL_TEST)+"/api/";
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private final SQLiteUtil cacheSQLiteUtil;

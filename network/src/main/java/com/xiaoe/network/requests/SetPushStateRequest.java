@@ -12,7 +12,7 @@ import com.xiaoe.network.network_interface.IBizCallback;
 public class SetPushStateRequest extends IRequest {
 
     public SetPushStateRequest(IBizCallback iBizCallback) {
-        super(NetworkEngine.BIND_JG_PUSH_URL + "xe.set.user.message.state/1.0.0", iBizCallback);
+        super(NetworkEngine.LOGIN_BASE_URL + "xe.set.user.message.state/1.0.0", iBizCallback);
     }
 
     public void sendRequest() {
