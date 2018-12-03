@@ -84,10 +84,7 @@ public class AudioPresenter implements IBizCallback {
             return;
         }
         JSONObject data = jsonObject.getJSONObject("data");
-//        if(!resourceId.equals(playEntity.getResourceId())){
-//            //当前播放的音频与请求到的音频数据不是同一资源，则放弃结果
-//            return;
-//        }
+
         boolean available = data.getBoolean("available");
         JSONObject resourceInfo = null;
         if(available){
@@ -157,7 +154,23 @@ public class AudioPresenter implements IBizCallback {
                     //仅关联专栏售卖，但关联专栏被删，则显示课程被删除
                     resourceInfo.put("state", 2);
                 }
-
+                //如果是仅关联售卖，则把缓存中的数据清除
+                SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
+                sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=?", new String[]{Constants.getAppId(), resourceId});
+                ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AudioPlayEvent event = new AudioPlayEvent();
+                        event.setState(AudioPlayEvent.CLOSE);
+                        EventBus.getDefault().post(event);
+                    }
+                });
+            }
+            String tryAudioUrl = resourceInfo.getString("preview_audio_url");
+            if(!TextUtils.isEmpty(tryAudioUrl)){
+                playEntity.setPlayUrl(tryAudioUrl);
+                playEntity.setTryPlayUrl(tryAudioUrl);
+                playEntity.setIsTry(1);
             }
             resourceState(resourceInfo, available, playEntity);
             playEntity.setCode(0);

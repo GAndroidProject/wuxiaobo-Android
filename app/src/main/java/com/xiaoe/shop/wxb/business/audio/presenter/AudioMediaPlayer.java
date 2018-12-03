@@ -122,6 +122,11 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         event.setState(AudioPlayEvent.STOP);
         EventBus.getDefault().post(event);
         isStop = true;
+        if(audio.getIsTry() == 1){
+            //如果是试听，播放
+            Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
+            return;
+        }
         playNext(false);
     }
 
@@ -137,14 +142,16 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
      * 开始播放
      */
     public static void start(){
-        if(audio == null || mediaPlayer == null || TextUtils.isEmpty(audio.getPlayUrl()) && isStop){
+        if(audio == null || mediaPlayer == null || (TextUtils.isEmpty(audio.getPlayUrl()) && isStop)){
             return;
         }
-        if (0 == audio.getHasBuy()){//如果未购买时
+        if (0 == audio.getHasBuy() && 0 == audio.getIsTry()){
+            //如果未购买时并且也没有试听
             Context context = XiaoeApplication.getmContext();
             Toast.makeText(context,context.getString(R.string.listen_after_purchase),Toast.LENGTH_SHORT).show();
             return;
         }
+        audio.setPlay(true);
         prepared = false;
         mediaPlayer.reset();
         try {
@@ -365,10 +372,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     public static void setAudio(AudioPlayEntity audio, boolean autoPlay) {
         AudioMediaPlayer.audio = audio;
-        if(!autoPlay || audio.getHasBuy() == 0){
+        if(!autoPlay){
             return;
         }
-        audio.setPlay(true);
         start();
     }
     private static void saveAudioDB(){

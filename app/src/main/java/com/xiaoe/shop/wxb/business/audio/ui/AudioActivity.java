@@ -739,7 +739,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             } else {
                 commonBuyView.setVipBtnVisibility(View.GONE);
             }
-            setButtonEnabled(false);
+            setButtonEnabled(playEntity.getIsTry() == 1);
         }else{
             commonBuyView.setVisibility(View.GONE);
             setButtonEnabled(true);

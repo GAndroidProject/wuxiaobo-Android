@@ -29,6 +29,7 @@ import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.anim.TranslationAnimator;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioNotifier;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioSQLiteUtil;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
@@ -155,6 +156,7 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
     public void setIsClose(boolean close) {
         isClose = close;
         AudioPlayUtil.getInstance().setCloseMiniPlayer(false);
+        translationAnimator.initState();
     }
 
     public void close(){
@@ -163,6 +165,7 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
         }
         isClose = true;
         AudioPlayUtil.getInstance().setCloseMiniPlayer(true);
+        AudioNotifier.get().cancelAll();
         translationAnimator.setAnimator(this)
                 .remove(miniPlayerAnimHeight);
         SQLiteUtil audioSQLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());

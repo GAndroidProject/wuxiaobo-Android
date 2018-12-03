@@ -21,6 +21,7 @@ public class TranslationAnimator {
 //    private TranslationAnimator ta;
     private ObjectAnimator animator;
     private View mAnimatorView;
+    private boolean show = true;
 
     public TranslationAnimator() {
     }
@@ -36,6 +37,7 @@ public class TranslationAnimator {
         }
         mBreak =false;
         mRmove = true;
+        show = false;
         mRemoveFinish = false;
         animator = ObjectAnimator.ofFloat(mAnimatorView,"translationY",0,to);
         animator.setDuration(500);
@@ -54,6 +56,7 @@ public class TranslationAnimator {
         if(mBreak || !mRemoveFinish){
             return;
         }
+        show = true;
         mRmove = false;
         mBreak = true;
         mBreakFinish = false;
@@ -75,5 +78,21 @@ public class TranslationAnimator {
             animator.cancel();
         }
         animator = null;
+    }
+
+    public void initState(){
+        if(show){
+            mBreak = false;
+        }else{
+            mRmove = false;
+        }
+    }
+
+    public boolean isShow() {
+        return show;
+    }
+
+    public void setShow(boolean show) {
+        this.show = show;
     }
 }

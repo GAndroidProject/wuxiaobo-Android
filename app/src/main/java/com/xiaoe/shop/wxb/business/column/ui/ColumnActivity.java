@@ -404,7 +404,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(isRelated == 1 && !available && productInfo != null){
             //是否只关联售卖 0-不是, 1-仅关联
             //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
+            //如果是仅关联售卖，则把缓存中的数据清除
+            SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
+            sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=?", new String[]{Constants.getAppId(), resourceId});
             JSONArray productList = productInfo.getJSONArray("product_list");
+            if (productList.size() == 0) {
+                setPagerState(3004);
+                return;
+            }
             JSONObject product = productList.getJSONObject(0);
             int productType = product.getIntValue("product_type");
             String productId = product.getString("id");

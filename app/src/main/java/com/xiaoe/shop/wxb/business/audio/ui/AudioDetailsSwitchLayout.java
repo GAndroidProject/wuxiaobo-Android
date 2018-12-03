@@ -6,7 +6,6 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -256,7 +255,6 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
         if(isShowDetail && mIsDragging){
             return true;
         }
-        Log.d(TAG, "onInterceptTouchEvent: super.onInterceptTouchEvent(ev) = " + super.onInterceptTouchEvent(ev));
         return super.onInterceptTouchEvent(ev);
     }
 

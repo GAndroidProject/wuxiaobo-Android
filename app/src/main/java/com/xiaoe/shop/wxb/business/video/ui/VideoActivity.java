@@ -24,6 +24,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
+import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
@@ -505,6 +506,9 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 if(resourceInfo.getIntValue("is_related") == 1){
                     //1-免费,2-单卖，3-非单卖
                     //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
+                    //如果是仅关联售卖，则把缓存中的数据清除
+                    SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
+                    sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=?", new String[]{Constants.getAppId(), mResourceId});
                     JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
                     if (productList.size() == 0) {
                         setPagerState(3004);

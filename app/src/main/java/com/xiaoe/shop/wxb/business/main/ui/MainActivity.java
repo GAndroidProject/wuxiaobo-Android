@@ -315,6 +315,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             case AudioPlayEvent.PROGRESS:
                 miniAudioPlayController.setProgress(event.getProgress());
                 break;
+            case AudioPlayEvent.CLOSE:
+                miniAudioPlayController.close();
+                break;
             default:
                 break;
         }

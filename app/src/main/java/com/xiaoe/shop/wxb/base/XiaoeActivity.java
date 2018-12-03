@@ -379,7 +379,7 @@ public class XiaoeActivity extends AppCompatActivity implements INetworkResponse
                     actionDownY = (int) ev.getY();
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    if (actionDownY - ev.getY() < -5) {
+                    if (actionDownY - ev.getY() < -5 ) {
                         translationAnimator.setAnimator(miniAudioPlayController)
                                 .brak(miniPlayerAnimHeight);
                     } else if(actionDownY - ev.getY() > 5) {

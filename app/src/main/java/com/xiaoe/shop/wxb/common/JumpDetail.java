@@ -61,7 +61,7 @@ public class JumpDetail {
             resourceId = playEntity.getResourceId();
             flowId = playEntity.getFlowId();
         }
-        if(!(resourceId.equals(resId) || (!TextUtils.isEmpty(flowId) && flowId.equals(resId)))){
+        if(!(resourceId.equals(resId) || (!TextUtils.isEmpty(flowId) && flowId.equals(resId))) || AudioPlayUtil.getInstance().isCloseMiniPlayer()){
             AudioMediaPlayer.stop();
 
             playEntity = new AudioPlayEntity();
@@ -71,6 +71,7 @@ public class JumpDetail {
             playEntity.setPlay(true);
             playEntity.setCode(-2);
             playEntity.setHasBuy(hasBuy);
+            playEntity.setProductType(0);
 
             //如果存在本地音频则播放本地是否
             DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(Constants.getAppId(), playEntity.getResourceId());
