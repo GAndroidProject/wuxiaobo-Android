@@ -15,6 +15,8 @@ public class MoneyItemViewHolder extends BaseViewHolder {
     LinearLayout money_item_wrap;
     @BindView(R.id.money_item_title)
     TextView money_item_title;
+    @BindView(R.id.money_item_title2)
+    TextView money_item_title2;
     @BindView(R.id.money_item_desc)
     TextView money_item_desc;
 

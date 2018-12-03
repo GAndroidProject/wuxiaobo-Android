@@ -57,7 +57,9 @@ public class MoneyWrapRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
         int currentPos = holder.getAdapterPosition();
         final MineMoneyItemInfo currentItem = mItemList.get(currentPos);
         MoneyItemViewHolder viewHolder = (MoneyItemViewHolder) holder;
+
         viewHolder.money_item_title.setText(currentItem.getItemTitle());
+        viewHolder.money_item_title2.setVisibility(0 == position ? View.VISIBLE : View.GONE);
         viewHolder.money_item_desc.setText(currentItem.getItemDesc());
         viewHolder.money_item_wrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override

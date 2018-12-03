@@ -235,7 +235,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         // 金钱容器（未登录状态）
         List<MineMoneyItemInfo> tempList = new ArrayList<>();
         MineMoneyItemInfo item_1_temp = new MineMoneyItemInfo();
-        item_1_temp.setItemTitle("￥0.00");
+        item_1_temp.setItemTitle("0.00");
         item_1_temp.setItemDesc("奖学金");
         MineMoneyItemInfo item_2_temp = new MineMoneyItemInfo();
         item_2_temp.setItemTitle("0");
@@ -501,7 +501,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             if (code == NetworkCodes.CODE_SUCCEED) {
                 JSONObject data = (JSONObject) result.get("data");
                 int scholarship = data.getInteger("balance");
-                balance = "￥" + String.format("%.2f", scholarship / 100f);
+                balance = String.format("%.2f", scholarship / 100f);
                 if (item_1 == null) {
                     item_1 = new MineMoneyItemInfo();
                     item_1.setItemTitle(balance);
@@ -840,7 +840,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             String content = scholarshipCacheDataList.get(0).getContent();
             JSONObject data = (JSONObject) JSONObject.parseObject(content).get("data");
             int scholarship = data.getInteger("balance");
-            balance = "￥" + String.format("%.2f", scholarship / 100f);
+            balance = String.format("%.2f", scholarship / 100f);
             if (item_1 == null) {
                 item_1 = new MineMoneyItemInfo();
                 item_1.setItemTitle(balance);
