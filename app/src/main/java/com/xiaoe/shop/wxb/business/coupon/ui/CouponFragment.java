@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -39,7 +40,7 @@ public class CouponFragment extends BaseFragment implements View.OnClickListener
     private RelativeLayout btnNoUseCoupon;
     private boolean useCoupon;
     private ImageView noUseCouponIcon;
-    private List<CouponInfo> couponList;
+    private List<CouponInfo> couponList = new ArrayList<>();
     private boolean isAdd = false;
 
     public static CouponFragment newInstance(int layoutId) {
@@ -115,7 +116,7 @@ public class CouponFragment extends BaseFragment implements View.OnClickListener
         if (couponList != null) {
             couponList.clear();
         }
-        couponList = list;
+        couponList.addAll(list);
         if(couponListAdapter == null){
             return;
         }
