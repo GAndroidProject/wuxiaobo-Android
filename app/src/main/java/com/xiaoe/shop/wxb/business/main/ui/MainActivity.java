@@ -170,8 +170,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         }
         bottomTabBar.setBottomTabSelectListener(this);
         List<String> buttonNames = new ArrayList<String>();
-        buttonNames.add("今日");
-        buttonNames.add("课程");
+        buttonNames.add(getString(R.string.tab_today));
+        buttonNames.add(getString(R.string.micro_fragment_title));
         if (needShowScholarship) {
             buttonNames.add(getString(R.string.scholarship_title));
         }
