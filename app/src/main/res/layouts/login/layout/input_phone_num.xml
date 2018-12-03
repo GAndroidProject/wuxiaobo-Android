@@ -12,28 +12,35 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/login_input_num_head"
-            android:labelFor="@id/login_input_num_head"
+        <!--<EditText-->
+            <!--android:id="@+id/login_input_num_head"-->
+            <!--android:labelFor="@id/login_input_num_head"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/login_main_phone_head"-->
+            <!--android:textSize="16sp"-->
+            <!--android:textColor="@color/main_title_color"-->
+            <!--android:clickable="false"-->
+            <!--android:cursorVisible="false"-->
+            <!--android:focusable="false"-->
+            <!--android:focusableInTouchMode="false"-->
+            <!--android:inputType="none"-->
+            <!--tools:ignore="TextFields"-->
+            <!--android:paddingTop="16dp"-->
+            <!--android:paddingBottom="16dp"/>-->
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_main_phone_head"
             android:textSize="16sp"
-            android:textColor="@color/main_title_color"
-            android:clickable="false"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:inputType="none"
-            tools:ignore="TextFields"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"/>
+            android:paddingBottom="8dp"
+            android:background="@drawable/bottom_border"
+            />
 
         <EditText
             android:id="@+id/login_input_num_content"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:textSize="16sp"
             android:hint="@string/login_main_phone_content_hint"
             android:paddingTop="16dp"
