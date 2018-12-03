@@ -362,4 +362,6 @@
     <string name="not_double_click">请不要连续点击</string>
     <string name="cache_error_msg">缓存数据有误</string>
     <string name="clear_history_record">确认清空历史搜索吗？</string>
+    <string name="self_service_title">服务协议</string>
+    <string name="service_link">http://app-server.inside.xiaoeknow.com/web/agree</string>
 </resources>

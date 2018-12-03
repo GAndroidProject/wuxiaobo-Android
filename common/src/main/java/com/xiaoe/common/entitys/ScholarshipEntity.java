@@ -18,6 +18,7 @@ public class ScholarshipEntity {
     private int issueState; // 发放状态
     private String taskDetailId; // 任务详情 id，用于请求发放状态
     private String taskTotalMoney; // 任务总金额
+    private boolean isTaskExist; // 奖学金任务是否存在
 
     private static ScholarshipEntity scholarshipEntity = null;
 
@@ -51,7 +52,6 @@ public class ScholarshipEntity {
     }
 
     public String getTaskId() {
-
         return taskId;
     }
 
@@ -72,7 +72,14 @@ public class ScholarshipEntity {
     }
 
     public String getTaskTotalMoney() {
-
         return taskTotalMoney;
+    }
+
+    public boolean isTaskExist() {
+        return isTaskExist;
+    }
+
+    public void setTaskExist(boolean taskExist) {
+        isTaskExist = taskExist;
     }
 }

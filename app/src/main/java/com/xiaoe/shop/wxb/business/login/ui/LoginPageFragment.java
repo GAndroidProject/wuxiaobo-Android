@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -18,6 +19,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -350,6 +354,7 @@ public class LoginPageFragment extends BaseFragment {
             public void doClick(View v) {
                 toggleSoftKeyboard();
                 // 跳转到服务协议页面
+                loginActivity.loginTitleText.setVisibility(View.VISIBLE);
                 loginActivity.replaceFragment(LoginActivity.SERVICE);
             }
         });
@@ -768,10 +773,12 @@ public class LoginPageFragment extends BaseFragment {
 
     // 服务协议 fragment
     private void initLoginServiceFragment() {
-        String content = FileUtils.readAssetsTextReturnStr(getActivity(), "agreement");
-        TextView serviceContent = (TextView) viewWrap.findViewById(R.id.service_content);
-        if (serviceContent != null) {
-            serviceContent.setText(content);
-        }
+        // String content = FileUtils.readAssetsTextReturnStr(getActivity(), "agreement");
+        WebView serviceContent = (WebView) viewWrap.findViewById(R.id.service_content);
+        WebSettings webSettings = serviceContent.getSettings();
+        webSettings.setJavaScriptEnabled(false);
+        webSettings.setAllowFileAccess(true);
+        serviceContent.loadUrl(getResources().getString(R.string.service_link));
+        serviceContent.setWebViewClient(new WebViewClient());
     }
 }

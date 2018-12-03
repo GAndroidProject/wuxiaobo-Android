@@ -20,20 +20,25 @@ import com.xiaoe.shop.wxb.business.mine.ui.MineFragment;
 public class MainFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = "MainFragmentStatePagerAdapter";
     private List<BaseFragment> list = new ArrayList<BaseFragment>();
-    public MainFragmentStatePagerAdapter(FragmentManager fm) {
+    public MainFragmentStatePagerAdapter(FragmentManager fm, boolean needShowScholarship) {
         super(fm);
         // TODO: 拿到微页面 id
         // 首页微页面
         MicroPageFragment homePageFragment = MicroPageFragment.newInstance(MainActivity.MICRO_PAGE_MAIN);
         // 课程页微页面
         MicroPageFragment coursePageFragment = MicroPageFragment.newInstance(MainActivity.MICRO_PAGE_COURSE);
-        // 任务奖学金页面
-        ScholarshipFragment scholarshipFragment = new ScholarshipFragment();
+        ScholarshipFragment scholarshipFragment = null;
+        if (needShowScholarship) {
+            // 任务奖学金页面
+            scholarshipFragment = new ScholarshipFragment();
+        }
         // 我的页面
         MineFragment mineFragment = new MineFragment();
         list.add(homePageFragment);
         list.add(coursePageFragment);
-        list.add(scholarshipFragment);
+        if (needShowScholarship) {
+            list.add(scholarshipFragment);
+        }
         list.add(mineFragment);
     }
 

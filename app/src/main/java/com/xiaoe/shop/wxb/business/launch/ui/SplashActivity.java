@@ -15,18 +15,22 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.downloadUtil.DownloadFileConfig;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.downloadUtil.DownloadSQLiteUtil;
+import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.utils.FrameAnimation;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
@@ -52,6 +56,8 @@ public class SplashActivity extends XiaoeActivity {
     private static final String TAG = "SplashActivity";
     private boolean isApplyPermission = true;
 
+    ScholarshipPresenter scholarshipPresenter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +65,8 @@ public class SplashActivity extends XiaoeActivity {
         setStatusBar();
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        initView();
+        scholarshipPresenter = new ScholarshipPresenter(this, true);
+        scholarshipPresenter.requestTaskList( false);
         initData();
         SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
@@ -75,7 +82,8 @@ public class SplashActivity extends XiaoeActivity {
     }
 
     private void initView() {
-        ivGif.postDelayed(() -> requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission()), 3000);
+        // 加上网络请求的时间，减一秒
+        ivGif.postDelayed(() -> requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission()), 2000);
     }
 
     private void initData() {
@@ -196,4 +204,15 @@ public class SplashActivity extends XiaoeActivity {
     }
 
 
+    @Override
+    public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
+        super.onMainThreadResponse(iRequest, success, entity);
+        if (success) {
+            ScholarshipEntity.getInstance().setTaskExist(true);
+        } else {
+            ScholarshipEntity.getInstance().setTaskExist(false);
+        }
+        // 需要拿到结果后再进行跳转
+        initView();
+    }
 }

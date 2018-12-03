@@ -249,7 +249,7 @@ public class WithdrawalActivity extends XiaoeActivity {
         if (success) {
             if (iRequest instanceof WithDrawalRequest) {
                 int code = result.getInteger("code");
-                if (code == NetworkCodes.CODE_SUCCEED || code == NetworkCodes.CODE_NO_MONEY) {
+                if (code == NetworkCodes.CODE_SUCCEED || code == NetworkCodes.CODE_WITHDRAWAL_SUCCESS || code == NetworkCodes.CODE_NO_MONEY) {
                     // 测试环境因为没钱，所以会返回 NetworkCodes.CODE_NO_MONEY，也是提现成功的标识
                     Log.d(TAG, "onMainThreadResponse: 提现提交成功...");
                     JumpDetail.jumpWrResult(WithdrawalActivity.this, String.valueOf(resultPrice / 100));

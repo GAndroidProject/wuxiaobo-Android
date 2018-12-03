@@ -9,7 +9,7 @@
     android:background="@color/white">
 
     <FrameLayout
-        android:id="@+id/login_title"
+        android:id="@+id/login_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
@@ -25,6 +25,17 @@
             android:paddingEnd="26dp"
             android:paddingTop="14dp"
             android:paddingBottom="14dp"/>
+
+        <TextView
+            android:id="@+id/login_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/self_service_title"
+            android:textSize="18sp"
+            android:textColor="@color/main_title_color"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/login_register"

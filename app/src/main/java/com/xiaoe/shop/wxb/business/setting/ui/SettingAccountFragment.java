@@ -17,6 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -511,9 +514,13 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
 
     // 初始化服务协议
     private void initServiceFragment() {
-        String content = FileUtils.readAssetsTextReturnStr(getActivity(), "agreement");
-        TextView serviceContent = (TextView) viewWrap.findViewById(R.id.service_content);
-        serviceContent.setText(content);
+        // String content = FileUtils.readAssetsTextReturnStr(getActivity(), "agreement");
+        WebView serviceContent = (WebView) viewWrap.findViewById(R.id.service_content);
+        WebSettings webSettings = serviceContent.getSettings();
+        webSettings.setJavaScriptEnabled(false);
+        webSettings.setAllowFileAccess(true);
+        serviceContent.loadUrl(getResources().getString(R.string.service_link));
+        serviceContent.setWebViewClient(new WebViewClient());
     }
 
     @Override

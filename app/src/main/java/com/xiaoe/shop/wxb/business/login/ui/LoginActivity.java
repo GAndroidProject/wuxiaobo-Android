@@ -22,7 +22,6 @@ import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.NetworkStateResult;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.LoginBindRequest;
 import com.xiaoe.network.requests.LoginCheckRegisterRequest;
@@ -39,7 +38,6 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.login.LoginPresenter;
-import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
@@ -54,10 +52,12 @@ import butterknife.internal.DebouncingOnClickListener;
 
 public class LoginActivity extends XiaoeActivity {
 
-    @BindView(R.id.login_title)
-    FrameLayout loginTitle;
+    @BindView(R.id.login_header)
+    FrameLayout loginHeader;
     @BindView(R.id.login_back)
     ImageView loginBack;
+    @BindView(R.id.login_title)
+    TextView loginTitleText;
     @BindView(R.id.login_register)
     TextView loginRegister;
 
@@ -128,7 +128,7 @@ public class LoginActivity extends XiaoeActivity {
         intent = getIntent();
         isTouristClick = intent.getBooleanExtra("isTouristClick", false);
 
-        loginTitle.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+        loginHeader.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         currentFragment = LoginPageFragment.newInstance(R.layout.fragment_login_main);
         getSupportFragmentManager().beginTransaction().add(R.id.login_container, currentFragment, MAIN).commit();
@@ -150,12 +150,22 @@ public class LoginActivity extends XiaoeActivity {
     }
 
     private void initView() {
-        if (currentFragment.getTag().equals(MAIN)) {
-            loginRegister.setVisibility(View.VISIBLE);
-            loginBack.setVisibility(View.GONE);
-        } else {
-            loginRegister.setVisibility(View.GONE);
-            loginBack.setVisibility(View.VISIBLE);
+        switch (currentFragment.getTag()) {
+            case MAIN:
+                loginRegister.setVisibility(View.VISIBLE);
+                loginBack.setVisibility(View.GONE);
+                loginTitleText.setVisibility(View.GONE);
+                break;
+            case SERVICE:
+                loginRegister.setVisibility(View.GONE);
+                loginBack.setVisibility(View.VISIBLE);
+                loginTitleText.setVisibility(View.VISIBLE);
+                break;
+            default:
+                loginRegister.setVisibility(View.GONE);
+                loginBack.setVisibility(View.VISIBLE);
+                loginTitleText.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -234,6 +244,7 @@ public class LoginActivity extends XiaoeActivity {
                 case SERVICE:
                     loginBack.setVisibility(View.VISIBLE);
                     loginRegister.setVisibility(View.GONE);
+                    loginTitleText.setVisibility(View.GONE);
                     replaceFragment(REGISTER);
                     break;
                 default:

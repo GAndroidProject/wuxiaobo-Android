@@ -20,6 +20,7 @@ import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.AudioPlayEntity;
+import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -30,7 +31,6 @@ import com.xiaoe.network.requests.GetUnreadMessageRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.IsSuperVipRequest;
 import com.xiaoe.network.requests.CouponHandleRequest;
-import com.xiaoe.network.requests.ScholarshipTaskListRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.main.MainFragmentStatePagerAdapter;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
@@ -38,7 +38,6 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
 import com.xiaoe.shop.wxb.business.launch.presenter.CouponHandlePresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.MessagePushPresenter;
-import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
@@ -84,8 +83,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
      */
     private boolean isGetUnreadMsg;
     CouponHandlePresenter couponHandlePresenter;
-    ScholarshipPresenter scholarshipPresenter;
-    boolean needHiddenScholarship;
+    boolean needShowScholarship;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +135,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             }
         }
 
+        needShowScholarship = ScholarshipEntity.getInstance().isTaskExist();
         initView();
         if (!OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName())) {
             audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
@@ -157,8 +156,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 //        getUnreadMsg();
         couponHandlePresenter = new CouponHandlePresenter(this);
         couponHandlePresenter.requestSendCoupon();
-        scholarshipPresenter = new ScholarshipPresenter(this);
-        scholarshipPresenter.requestTaskList( false);
     }
 
     private void initView() {
@@ -166,34 +163,42 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         mainActivityRootView.setBackgroundColor(Color.parseColor(Global.g().getGlobalColor()));
         bottomTabBar = (BottomTabBar) findViewById(R.id.bottom_tab_bar_layout);
         bottomTabBar.setBottomTabBarOrientation(LinearLayout.HORIZONTAL);
-        bottomTabBar.setTabBarWeightSum(4);
+        if (!needShowScholarship) {
+            bottomTabBar.setTabBarWeightSum(3);
+        } else {
+            bottomTabBar.setTabBarWeightSum(4);
+        }
         bottomTabBar.setBottomTabSelectListener(this);
         List<String> buttonNames = new ArrayList<String>();
         buttonNames.add("今日");
         buttonNames.add("课程");
-        if (!needHiddenScholarship) {
+        if (needShowScholarship) {
             buttonNames.add("奖学金");
         }
         buttonNames.add("我的");
         List<Integer> buttonCheckedIcons = new ArrayList<Integer>();
         buttonCheckedIcons.add(R.mipmap.today_selected);
         buttonCheckedIcons.add(R.mipmap.class_selected);
-        if (!needHiddenScholarship) {
+        if (needShowScholarship) {
             buttonCheckedIcons.add(R.mipmap.scholarship_select);
         }
         buttonCheckedIcons.add(R.mipmap.profile_selected);
         List<Integer> buttonIcons = new ArrayList<Integer>();
         buttonIcons.add(R.mipmap.today_default);
         buttonIcons.add(R.mipmap.class_default);
-        if (!needHiddenScholarship) {
+        if (needShowScholarship) {
             buttonIcons.add(R.mipmap.scholarship_default);
         }
         buttonIcons.add(R.mipmap.profile_default);
-        bottomTabBar.addTabButton(4, buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
+        if (!needShowScholarship) {
+            bottomTabBar.addTabButton(3, buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
+        } else {
+            bottomTabBar.addTabButton(4, buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
+        }
 
         mainViewPager = (ScrollViewPager) findViewById(R.id.main_view_pager);
         mainViewPager.setScroll(false);
-        MainFragmentStatePagerAdapter adapter = new MainFragmentStatePagerAdapter(getSupportFragmentManager());
+        MainFragmentStatePagerAdapter adapter = new MainFragmentStatePagerAdapter(getSupportFragmentManager(), needShowScholarship);
         mainViewPager.setAdapter(adapter);
         mainViewPager.setOffscreenPageLimit(3);
         mainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -239,7 +244,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         Log.d(TAG, "onCheckedTab: "+index);
         mainViewPager.setCurrentItem(index);
         Log.d(TAG, "onCheckedTab: I "+mainViewPager.getCurrentItem());
-        if (needHiddenScholarship) {
+        if (!needShowScholarship) {
             if (2 == index && !TextUtils.isEmpty(CommonUserInfo.getInstance().getApiTokenByDB())) { // 有登录态才请求
                 getUnreadMsg();
             }
@@ -417,7 +422,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                         CommonUserInfo.getInstance().setHasUnreadMsg(hasUnread);
                         CommonUserInfo.getInstance().setUnreadMsgCount(unreadCount);
                         if (hasUnread) {
-                            if (needHiddenScholarship) {
+                            if (!needShowScholarship) {
                                 bottomTabBar.getBottomBarButtonByIndex(2).setRedPointVisibility(View.VISIBLE);
                             } else {
                                 bottomTabBar.getBottomBarButtonByIndex(3).setRedPointVisibility(View.VISIBLE);
@@ -429,9 +434,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         } else {
             Log.d(TAG, "onMainThreadResponse: request fail...");
             isGetUnreadMsg = false;
-            if (iRequest instanceof ScholarshipTaskListRequest) { // 获取奖学金任务列表，data 为 []，隐藏奖学金 tab
-                needHiddenScholarship = true;
-            }
         }
     }
 

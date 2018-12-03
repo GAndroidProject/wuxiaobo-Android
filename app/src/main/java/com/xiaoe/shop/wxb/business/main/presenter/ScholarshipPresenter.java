@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
@@ -32,8 +33,15 @@ public class ScholarshipPresenter implements IBizCallback {
     private String resourceId;
     private String resourceType;
     private boolean isSuperVip;
+    // 不继续请求奖学金页面的数据
+    private boolean stopGoOn;
 
     public ScholarshipPresenter(INetworkResponse inr) {
+        this.inr = inr;
+    }
+
+    public ScholarshipPresenter(INetworkResponse inr, boolean stopGoOn) {
+        this.stopGoOn = stopGoOn;
         this.inr = inr;
     }
 
@@ -46,19 +54,24 @@ public class ScholarshipPresenter implements IBizCallback {
 
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
-        JSONObject data = (JSONObject) entity;
-        if (data == null) {
-            inr.onResponse(null, false, null);
-            return;
-        }
+
         if (iRequest instanceof ScholarshipTaskListRequest) { // 接收任务列表的请求
-            int code = data.getInteger("code");
-            if (code == NetworkCodes.CODE_SUCCEED) {
-                JSONArray result = (JSONArray) data.get("data");
-                getTaskId2Request(result, iRequest);
+            JSONObject result = (JSONObject) entity;
+            JSONArray data = (JSONArray) result.get("data");
+            if (stopGoOn) {
+                if (data.size() == 0) { // 兼容没有任务的情况
+                    inr.onResponse(iRequest, false, entity);
+                } else {
+                    inr.onResponse(iRequest, true, entity);
+                }
             } else {
-                // 请求失败，直接回调 false 结果给调用者
-                inr.onResponse(iRequest, false, null);
+                int code = result.getInteger("code");
+                if (code == NetworkCodes.CODE_SUCCEED) {
+                    getTaskId2Request(data, iRequest);
+                } else {
+                    // 请求失败，直接回调 false 结果给调用者
+                    inr.onResponse(iRequest, false, null);
+                }
             }
         } else {
             inr.onResponse(iRequest, success, entity);
