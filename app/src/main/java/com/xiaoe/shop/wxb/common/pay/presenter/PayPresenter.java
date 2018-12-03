@@ -6,8 +6,6 @@ import android.text.TextUtils;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
-
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
@@ -41,7 +39,7 @@ public class PayPresenter implements IBizCallback {
     public void payOrder(int paymentType, int resourceType, String resourceId, String productId, String couponId){
         PayOrderRequest payOrderRequest = new PayOrderRequest(this);
         payOrderRequest.addBUZDataParam("user_account_type", "0");
-        payOrderRequest.addBUZDataParam("force_collection", "1");
+        payOrderRequest.addBUZDataParam("force_collection", "0");
         payOrderRequest.addBUZDataParam("payment_type", ""+paymentType);
         payOrderRequest.addBUZDataParam("resource_type", ""+resourceType);
         payOrderRequest.addBUZDataParam("resource_id", ""+resourceId);
