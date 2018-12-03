@@ -14,7 +14,6 @@ public class SearchPresenter implements IBizCallback {
 
     public SearchPresenter(INetworkResponse inr) {
         this.inr = inr;
-//        this.cmd = "api/xe.shop.search/1.0.0"; // 默认接口
         this.cmd = "xe.shop.search/1.0.0"; // 默认接口
     }
 

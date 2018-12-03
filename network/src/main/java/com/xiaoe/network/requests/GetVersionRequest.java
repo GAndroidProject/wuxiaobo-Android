@@ -3,6 +3,7 @@ package com.xiaoe.network.requests;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 
+@Deprecated
 public class GetVersionRequest extends IRequest {
 
     /**

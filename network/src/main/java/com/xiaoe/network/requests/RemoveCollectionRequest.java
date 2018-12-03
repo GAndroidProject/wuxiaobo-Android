@@ -4,6 +4,7 @@ import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 
 // 移除收藏
+@Deprecated
 public class RemoveCollectionRequest extends IRequest {
     public RemoveCollectionRequest(String cmd, Class entityClass, IBizCallback iBizCallback) {
         super(cmd, entityClass, iBizCallback);
