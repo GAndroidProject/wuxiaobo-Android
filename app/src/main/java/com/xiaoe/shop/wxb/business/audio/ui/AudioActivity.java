@@ -758,7 +758,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         int count = playEntity.getPlayCount();
         if(count > 0){
             playNum.setVisibility(View.VISIBLE);
-            playNum.setText(NumberFormat.viewCountToString(count)+"次播放");
+            playNum.setText(String.format(getString(R.string.learn_count), count));
         }else{
             playNum.setVisibility(View.GONE);
         }

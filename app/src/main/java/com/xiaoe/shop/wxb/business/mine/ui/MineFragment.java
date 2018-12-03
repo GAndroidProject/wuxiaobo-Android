@@ -309,6 +309,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
     private void initListener() {
         mineRefresh.setOnRefreshListener(this);
+        mineRefresh.setEnableOverScrollBounce(false);
         mineTitleView.setMsgClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
             public void singleClick(View v) {

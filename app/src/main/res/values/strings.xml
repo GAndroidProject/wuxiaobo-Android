@@ -364,4 +364,6 @@
     <string name="clear_history_record">确认清空历史搜索吗？</string>
     <string name="self_service_title">服务协议</string>
     <string name="service_link">http://app-server.inside.xiaoeknow.com/web/agree</string>
+    <string name="learn_count">%1$d次学习</string>
+    <string name="we_chat_error_tip">微信版本异常，建议从正确去到下载微信</string>
 </resources>

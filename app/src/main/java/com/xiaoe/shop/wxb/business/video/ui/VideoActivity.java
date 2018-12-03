@@ -558,7 +558,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         int count = data.getIntValue("view_count");
         if(count > 0){
             playCount.setVisibility(View.VISIBLE);
-            playCount.setText(NumberFormat.viewCountToString(count)+"次播放");
+            playCount.setText(String.format(getString(R.string.learn_count), count));
         }else{
             playCount.setVisibility(View.GONE);
         }

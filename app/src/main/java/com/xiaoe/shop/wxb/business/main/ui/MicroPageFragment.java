@@ -696,6 +696,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         }
         microScrollView.setScrollChanged(this);
         microPageFresh.setOnRefreshListener(this);
+        microPageFresh.setEnableOverScrollBounce(false);
         if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
             microPageFresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
                 @Override
@@ -733,7 +734,6 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             });
 //            microPageFresh.setEnableHeaderTranslationContent(false);
             microPageHeader.setBackgroundColor(getResources().getColor(R.color.high_title_color));
-            microPageFresh.setHeaderMaxDragRate(1.2f);
             isMain = false;
         } else {
             microPageTitleBg.setImageURI("");

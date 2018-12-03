@@ -1,6 +1,9 @@
 package com.xiaoe.shop.wxb.common.login;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -25,6 +28,9 @@ import com.xiaoe.network.requests.LoginRequest;
 import com.xiaoe.network.requests.ResetPasswordRequest;
 import com.xiaoe.network.requests.TouristsShopIdRequest;
 import com.xiaoe.network.requests.UpdatePhoneRequest;
+import com.xiaoe.shop.wxb.R;
+
+import java.util.List;
 
 /**
  * @author zak
@@ -51,7 +57,10 @@ public class LoginPresenter implements IBizCallback {
         // 获取 WXAPIFactory 实例
         iwxapi = WXAPIFactory.createWXAPI(context, Constants.getWXAppId(), true);
         // 将应用的 appId 注册到微信
-        iwxapi.registerApp(Constants.getWXAppId());
+        boolean isRegisterSuccess = iwxapi.registerApp(Constants.getWXAppId());
+        if (!isRegisterSuccess) { // 注册不成功
+            Toast.makeText(mContext, mContext.getResources().getString(R.string.we_chat_error_tip), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -63,13 +72,34 @@ public class LoginPresenter implements IBizCallback {
      * 调起微信登录
      */
     public void reqWXLogin() {
-        if (!iwxapi.isWXAppInstalled()) {
+        if (!isWeChatAppInstalled(mContext)) {
             // 没装微信
             Toast.makeText(mContext, "需要安装微信", Toast.LENGTH_SHORT).show();
         } else {
             SendAuth.Req req = new SendAuth.Req();
             req.scope = "snsapi_userinfo";
             iwxapi.sendReq(req);
+            Log.d("sssssssssssssss", "reqWXLogin: " + iwxapi.sendReq(req));
+        }
+    }
+
+    private boolean isWeChatAppInstalled(Context context) {
+        Log.d("sssssssssssssss", "isWeChatAppInstalled: " + iwxapi.isWXAppInstalled());
+        if (iwxapi.isWXAppInstalled()) {
+            return true;
+        } else {
+            final PackageManager packageManager = context.getPackageManager();// 获取packageManager
+            List<PackageInfo> pInfo = packageManager.getInstalledPackages(0);// 获取所有已安装程序的包信息
+            if (pInfo != null) {
+                for (int i = 0; i < pInfo.size(); i++) {
+                    String pn = pInfo.get(i).packageName;
+                    Log.d("sssssssssssssss", "isWeChatAppInstalled: " + pn);
+                    if (pn.equalsIgnoreCase("com.tencent.mm")) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 

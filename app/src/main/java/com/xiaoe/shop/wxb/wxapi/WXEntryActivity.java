@@ -17,7 +17,6 @@ import org.greenrobot.eventbus.EventBus;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.HadSharedEvent;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
-import com.xiaoe.shop.wxb.common.login.LoginPresenter;
 
 
 /**
@@ -37,7 +36,6 @@ public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHa
 
     private IWXAPI mApi;
 
-    LoginPresenter loginPresenter;
     boolean hasObtainShareCallback; // 已经拿到分享回调，用于处理分享回调两次的情况
 
     @Override

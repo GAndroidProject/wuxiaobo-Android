@@ -156,6 +156,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         super.onViewCreated(view, savedInstanceState);
         scholarshipLoading.setLoadingState(View.VISIBLE);
         scholarshipRefresh.setEnableLoadMore(false);
+        scholarshipRefresh.setEnableOverScrollBounce(false);
         initListener();
     }
 

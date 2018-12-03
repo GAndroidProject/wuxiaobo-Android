@@ -490,7 +490,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         // 订阅量
         int purchaseCount = data.getInteger("view_count") == null ? 0 : data.getInteger("view_count");
         if (purchaseCount > 0 && purchaseCount < 10000) {
-            String purchaseStr = NumberFormat.viewCountToString(purchaseCount) + getString(R.string.second_reading);
+            String purchaseStr = String.format(getString(R.string.learn_count), purchaseCount);
             itDesc.setText(purchaseStr);
         } else {
             // 如果没有阅读量的话就将文本设置为空，并且将前面的点页隐藏

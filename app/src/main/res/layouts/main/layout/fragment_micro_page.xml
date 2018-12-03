@@ -11,7 +11,9 @@
         android:id="@+id/micro_header"
         android:paddingTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layout_srlSpinnerStyle="Scale"
+        app:layout_srlBackgroundColor="@android:color/transparent"/>
 
     <FrameLayout
         android:id="@+id/micro_page_wrap"
