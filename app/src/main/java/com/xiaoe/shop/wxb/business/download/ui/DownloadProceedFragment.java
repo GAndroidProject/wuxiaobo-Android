@@ -306,7 +306,8 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                 item.setProgress(downloadInfo.getProgress());
                 item.setTotalSize(downloadInfo.getTotalSize());
                 item.setDownloadState(downloadInfo.getDownloadState());
-                adapter.notifyItemChanged(index);
+//                adapter.notifyItemChanged(index);
+                adapter.notifyItemChanged(index,item);
                 break;
             }
         }

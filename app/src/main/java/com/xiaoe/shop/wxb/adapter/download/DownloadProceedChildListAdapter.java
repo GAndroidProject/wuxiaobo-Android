@@ -30,6 +30,16 @@ public class DownloadProceedChildListAdapter extends RecyclerView.Adapter<BaseVi
     }
 
     @Override
+    public void onBindViewHolder(BaseViewHolder holder, int position, List<Object> payloads) {
+        if (payloads == null || payloads.isEmpty())
+            super.onBindViewHolder(holder, position, payloads);
+        else {
+            DownloadProceedChildListHolder childListHolder = (DownloadProceedChildListHolder) holder;
+            childListHolder.bindChangeView(downloadResourceList.get(position));
+        }
+    }
+
+    @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 //        View view = LayoutInflater.from(mContext).inflate(R.layout.item_child_download_proceed, parent, false);
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_child_download_proceed_new, parent, false);

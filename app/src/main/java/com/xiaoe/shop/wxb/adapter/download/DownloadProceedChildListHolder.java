@@ -50,8 +50,15 @@ public class DownloadProceedChildListHolder extends BaseViewHolder implements Vi
     public void bindView(DownloadTableInfo info, int position){
         mPosition = position;
         downloadInfo = info;
-//        layoutContent.getLayoutParams().width = displayWidth;
         childTitle.setText(info.getTitle());
+        bindChangeView(info);
+    }
+
+    /**
+     * bind变动的视图
+     * @param info
+     */
+    public void bindChangeView(DownloadTableInfo info){
         downloadWait.setVisibility(View.GONE);
         downloadStartIcon.setVisibility(View.VISIBLE);
         //0-等待，1-下载中，2-暂停，3-完成
@@ -68,7 +75,8 @@ public class DownloadProceedChildListHolder extends BaseViewHolder implements Vi
         float totalSize = info.getTotalSize() / (1024f * 1024f);
         float strCount = (float)(Math.round(progress*10*2))/(10*2);
         float strTotal = (float)(Math.round(totalSize*10*2))/(10*2);
-        downloadSpeed.setText(strCount+"MB/"+strTotal+"MB");
+//        downloadSpeed.setText(strCount+"MB/"+strTotal+"MB");
+        downloadSpeed.setText(String.format("%.2fMB/%.2fMB",strCount,strTotal));
     }
 
     @Override
