@@ -23,7 +23,7 @@ public class BaseSwipeBackActivity extends AppCompatActivity implements SwipeBac
 
     private SwipeBackActivityHelper mHelper;
 
-    private boolean isNoSwipBackActivity() {
+    private boolean isNoSwipeBackActivity() {
         if (this instanceof SplashActivity) {
             return true;
         }
@@ -36,7 +36,7 @@ public class BaseSwipeBackActivity extends AppCompatActivity implements SwipeBac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (isNoSwipBackActivity()) {
+        if (isNoSwipeBackActivity()) {
             return;
         }
         mHelper = new SwipeBackActivityHelper(this);
@@ -77,7 +77,7 @@ public class BaseSwipeBackActivity extends AppCompatActivity implements SwipeBac
 
     @Override
     public void scrollToFinishActivity() {
-        if (isNoSwipBackActivity()) {
+        if (isNoSwipeBackActivity()) {
             return;
         }
         Utils.convertActivityToTranslucent(this);
