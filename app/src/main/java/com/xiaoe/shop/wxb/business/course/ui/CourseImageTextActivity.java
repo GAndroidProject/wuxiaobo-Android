@@ -514,10 +514,6 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             setOrgContent(orgContent);
             itBuy.setVisibility(cache ? View.GONE : View.VISIBLE);
             itBuy.setBuyBtnText(getString(R.string.purchase_text) + price);
-            // 如果是超级会员但是且要购买，那就把超级会员的按钮显示出来
-            if (CommonUserInfo.isIsSuperVip()) {
-                itBuy.setVipBtnVisibility(cache ? View.GONE : View.VISIBLE);
-            }
         } else {
             itBuy.setVisibility(View.GONE);
             String orgContent = data.getString("content");
