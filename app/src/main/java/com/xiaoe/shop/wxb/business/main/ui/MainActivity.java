@@ -573,8 +573,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
     private void requestPermission(List<String> permissionList, List<String> hidePermissionList) {
         if(Build.VERSION.SDK_INT < 23){
-            JumpDetail.jumpLogin(this);
-            finish();
             return;
         }
         String[] permission = permissionList == null ? new String[]{} : permissionList.toArray(new String[permissionList.size()]);
