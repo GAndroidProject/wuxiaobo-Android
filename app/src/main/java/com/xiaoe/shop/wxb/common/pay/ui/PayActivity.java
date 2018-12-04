@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -227,7 +228,11 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
                 buyResource();
                 break;
             case R.id.btn_go_to:
-                JumpDetail.jumpMainTab(this, true, true, 3);
+                if (!TextUtils.isEmpty(productId)) { // 买超级会员就跳到个人中心
+                    JumpDetail.jumpMainTab(this, true, true, 3);
+                } else { // 否则关闭当前页面
+                    finish();
+                }
                 break;
             default:
                 break;
@@ -249,7 +254,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         } else {
             paymentType = 2;
         }
-        if (productId != null) { // productId 不为空表示为超级会员的购买
+        if (!TextUtils.isEmpty(productId)) { // productId 不为空表示为超级会员的购买
             if (useCouponInfo != null) {
                 payOrder(resourceId, productId, resourceType, paymentType, useCouponInfo.getCu_id());
             } else {
@@ -365,7 +370,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             statusPagerView.setStateImage(R.mipmap.payment_success);
             statusPagerView.setStateText(getResources().getString(R.string.pay_succeed));
             statusPagerView.setBtnGoToText(getResources().getString(R.string.go_to_study));
-            if (productId != null) { // 购买会员，发送需要更新的事件
+            if (TextUtils.isEmpty(productId)) { // 购买会员，发送需要更新的事件
                 GetSuperMemberSuccessEvent getSuperMemberSuccessEvent = new GetSuperMemberSuccessEvent(true);
                 EventBus.getDefault().post(getSuperMemberSuccessEvent);
             }

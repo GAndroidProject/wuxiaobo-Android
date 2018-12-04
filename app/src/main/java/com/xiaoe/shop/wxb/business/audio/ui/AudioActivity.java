@@ -735,6 +735,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员判断
                 if (CommonUserInfo.getSuperVipEffective() == 1) {
                     commonBuyView.setVipBtnVisibility(View.VISIBLE);
+                } else {
+                    commonBuyView.setVipBtnVisibility(View.GONE);
                 }
             } else {
                 commonBuyView.setVipBtnVisibility(View.GONE);
