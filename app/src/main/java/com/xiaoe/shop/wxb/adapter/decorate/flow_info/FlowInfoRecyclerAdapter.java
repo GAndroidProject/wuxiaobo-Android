@@ -20,6 +20,8 @@ import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 
 import java.util.List;
 
+import butterknife.internal.DebouncingOnClickListener;
+
 public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private static final String TAG = "FlowInfoRecyclerAdapter";
@@ -107,9 +109,9 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     itViewHolder.flowInfoPrice.setText(bindItem.getItemPrice());
                 }
 //                final String imgUrl = bindItem.getItemImg();
-                itViewHolder.flowInfoWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+                itViewHolder.flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
                     @Override
-                    public void singleClick(View v) {
+                    public void doClick(View v) {
 //                        ActivityOptions options =
 //                                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
 //                                        Pair.create(((View) itViewHolder.flowInfoBg), mContext.getResources().getString(R.string.share_img)),
@@ -137,9 +139,9 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     columnViewHolder.flowInfoPrice.setVisibility(View.VISIBLE);
                     columnViewHolder.flowInfoPrice.setText(bindItem.getItemPrice());
                 }
-                columnViewHolder.flowInfoWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+                columnViewHolder.flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
                     @Override
-                    public void singleClick(View v) {
+                    public void doClick(View v) {
                         JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemType(), 6);
                     }
                 });
@@ -157,9 +159,9 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     topicViewHolder.flowInfoPrice.setVisibility(View.VISIBLE);
                     topicViewHolder.flowInfoPrice.setText(bindItem.getItemPrice());
                 }
-                topicViewHolder.flowInfoWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+                topicViewHolder.flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
                     @Override
-                    public void singleClick(View v) {
+                    public void doClick(View v) {
                         JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemType(), 8);
                     }
                 });
@@ -194,9 +196,9 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     joinedDesc = bindItem.getItemJoinedDesc() + "人在听";
                 }
                 audioViewHolder.flowInfoJoinedDesc.setText(joinedDesc);
-                audioViewHolder.flowInfoWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+                audioViewHolder.flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
                     @Override
-                    public void singleClick(View v) {
+                    public void doClick(View v) {
                         // TODO: 转场动画
                         AudioPlayUtil.getInstance().setFromTag("flowInfo");
                         JumpDetail.jumpAudio(mContext, bindItem.getItemId(), bindItem.isItemHasBuy() ? 1 : 0 );
@@ -218,9 +220,9 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     videoViewHolder.flowInfoPrice.setText(bindItem.getItemPrice());
 
                 }
-                videoViewHolder.flowInfoWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+                videoViewHolder.flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
                     @Override
-                    public void singleClick(View v) {
+                    public void doClick(View v) {
                         // TODO: 转场动画
 //                        ActivityOptions options =
 //                                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,

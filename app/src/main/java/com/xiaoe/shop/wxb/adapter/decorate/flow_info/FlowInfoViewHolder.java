@@ -13,6 +13,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.internal.DebouncingOnClickListener;
 
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -74,9 +75,9 @@ public class FlowInfoViewHolder extends BaseViewHolder {
             flowInfoRecyclerAdapter = flowInfoRecyclerAdapterArr.get(currentBindPos);
         }
         flowInfoRecycler.setAdapter(flowInfoRecyclerAdapter);
-        flowInfoLearnWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+        flowInfoLearnWrap.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void singleClick(View v) {
+            public void doClick(View v) {
                 if (currentBindComponent.isFormUser()) {
                     Intent intent = new Intent(mContext, MineLearningActivity.class);
                     intent.putExtra("pageTitle", "我正在学");
