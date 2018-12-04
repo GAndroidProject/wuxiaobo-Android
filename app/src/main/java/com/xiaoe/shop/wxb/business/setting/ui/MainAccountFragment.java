@@ -19,6 +19,7 @@ import com.xiaoe.common.entitys.SettingItemInfo;
 import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import com.xiaoe.common.utils.CacheManagerUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
@@ -111,6 +112,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
                 CommonUserInfo.setIsSuperVip(false);
                 CommonUserInfo.setIsSuperVipAvailable(false);
                 JumpDetail.jumpLogin(getActivity());
+                DownloadManager.getInstance().allPaushDownload();
             }
         });
     }

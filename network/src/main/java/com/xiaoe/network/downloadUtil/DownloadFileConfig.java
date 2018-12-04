@@ -2,8 +2,8 @@ package com.xiaoe.network.downloadUtil;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.db.ISQLiteCallBack;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.DownloadTableInfo;
@@ -40,6 +40,7 @@ public class DownloadFileConfig implements ISQLiteCallBack {
 
     public static final String CREATE_TABLE_SQL = "CREATE TABLE "+TABLE_NAME+" ("+
             APP_ID+" VARCHAR(64) not null,"+
+            "user_id VARCHAR(64) not null,"+
             RESOURCE_ID+" VARCHAR(64) not null,"+
             ID+" VARCHAR(512) not null,"+
             COLUMN_ID+" VARCHAR(64) default null,"+
@@ -57,7 +58,7 @@ public class DownloadFileConfig implements ISQLiteCallBack {
             RESOURCE_TYPE+" INTEGER default 0, "+//1-音频，2-视频，3-专栏，4-大专栏
             CREATE_AT+" DATETIME default '0000-00-00 00:00:00',"+
             UPDATE_AT+" DATETIME default '0000-00-00 00:00:00',"+
-            "primary key ("+APP_ID +","+ ID+"))";
+            "primary key ("+APP_ID +", user_id, "+ ID+"))";
 
 
     public static DownloadFileConfig getInstance(){
@@ -96,6 +97,7 @@ public class DownloadFileConfig implements ISQLiteCallBack {
     public <T> void assignValuesByEntity(String tableName, T entity, ContentValues values) {
         DownloadTableInfo downloadTableInfo = (DownloadTableInfo) entity;
         values.put(APP_ID, downloadTableInfo.getAppId());
+        values.put("user_id", CommonUserInfo.getLoginUserIdOrAnonymousUserId());
         values.put(ID, downloadTableInfo.getId());
         values.put(RESOURCE_ID, downloadTableInfo.getResourceId());
         values.put(COLUMN_ID, downloadTableInfo.getColumnId());

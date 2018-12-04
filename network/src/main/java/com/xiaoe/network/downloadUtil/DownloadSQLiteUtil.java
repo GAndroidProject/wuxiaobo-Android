@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.db.ISQLiteCallBack;
 import com.xiaoe.common.entitys.DownloadTableInfo;
 
@@ -26,7 +27,7 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
     private final String TAG = "SQLiteUtil";
     private static final String DATABASE_NAME = "xiaoeshop_download.db";
     private DownloadSQLiteUtil INSTANCE;
-    SQLiteDatabase mDB = null;
+    private SQLiteDatabase mDB = null;
     /**
      * ConcurrentHashMap可以高并发操作，线程安全，高效
      */
@@ -217,8 +218,8 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
 
 
     public void updateDownloadInfo(DownloadTableInfo downloadTableInfo){
-        String whereSQL = "app_id=? and resource_id=?";
-        String[] whereVal = {downloadTableInfo.getAppId(), downloadTableInfo.getResourceId()};
+        String whereSQL = "app_id=? and user_id=? and resource_id=?";
+        String[] whereVal = {downloadTableInfo.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), downloadTableInfo.getResourceId()};
 //        SQLiteUtil.update(TABLE_NAME, downloadTableInfo, whereSQL, whereVal);
         update(DownloadFileConfig.TABLE_NAME, downloadTableInfo, whereSQL, whereVal);
     }

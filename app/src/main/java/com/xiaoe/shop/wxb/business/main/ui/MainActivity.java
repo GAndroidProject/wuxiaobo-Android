@@ -1,5 +1,6 @@
 package com.xiaoe.shop.wxb.business.main.ui;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +47,6 @@ import com.xiaoe.shop.wxb.business.main.presenter.MessagePushPresenter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
-import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.jpush.ExampleUtil;
 import com.xiaoe.shop.wxb.common.jpush.LocalBroadcastManager;
 import com.xiaoe.shop.wxb.common.jpush.entity.JgPushSaveInfo;
@@ -63,6 +63,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
@@ -584,9 +585,18 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             getDialog().dismissDialog();
             getDialog().setTitleVisibility(View.GONE);
             getDialog().setMessageVisibility(View.VISIBLE);
+            getDialog().setMessageTextColor(getColor(R.color.main_title_color));
             getDialog().setCancelable(false);
             getDialog().setHideCancelButton(true);
-            getDialog().setHintMessage(getString(R.string.request_permissions));
+            if(Arrays.binarySearch(hidePermission, Manifest.permission.READ_PHONE_STATE) >= 0 && (Arrays.binarySearch(hidePermission, Manifest.permission.READ_EXTERNAL_STORAGE) >= 0 || Arrays.binarySearch(hidePermission, Manifest.permission.WRITE_EXTERNAL_STORAGE) >= 0)){
+                getDialog().setHintMessage(getString(R.string.request_permissions));
+            }else if(Arrays.binarySearch(hidePermission, Manifest.permission.READ_PHONE_STATE) >= 0){
+                getDialog().setHintMessage(getString(R.string.request_permissions_phone));
+            }else if(Arrays.binarySearch(hidePermission, Manifest.permission.READ_EXTERNAL_STORAGE) >= 0 || Arrays.binarySearch(hidePermission, Manifest.permission.WRITE_EXTERNAL_STORAGE) >= 0) {
+                getDialog().setHintMessage(getString(R.string.request_permissions_storage));
+            }else{
+                getDialog().setHintMessage(getString(R.string.request_permissions));
+            }
             getDialog().setConfirmText(getString(R.string.to_permit));
             getDialog().showDialog(CustomDialog.REQUEST_PERMISSIONS_TAG);
         }else{

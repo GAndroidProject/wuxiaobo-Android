@@ -326,6 +326,7 @@ public class XiaoeActivity extends BaseSwipeBackActivity implements INetworkResp
                             dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0 );
                             dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                             dialog.setMessageVisibility(View.GONE);
+                            dialog.setTitleVisibility(View.VISIBLE);
                             dialog.setCancelable(false);
                             dialog.setHideCancelButton(true);
                             dialog.setTitle(getString(R.string.login_invalid));

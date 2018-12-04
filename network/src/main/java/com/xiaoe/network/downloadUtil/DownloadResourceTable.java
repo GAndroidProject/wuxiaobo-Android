@@ -3,6 +3,7 @@ package com.xiaoe.network.downloadUtil;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.db.ISQLiteCallBack;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
@@ -14,6 +15,7 @@ public class DownloadResourceTable implements ISQLiteCallBack {
     public static final String TABLE_NAME = "download_resource";
     public static final String CREATE_TABLE_SQL = "CREATE TABLE "+TABLE_NAME+"( "+
             "app_id VARCHAR(64) not null, "+
+            "user_id VARCHAR(64) not null, "+
             "resource_id VARCHAR(64) not null, "+
             "title TEXT default \"\", "+
             "desc TEXT default \"\", "+
@@ -22,7 +24,7 @@ public class DownloadResourceTable implements ISQLiteCallBack {
             "depth INTEGER default 0, "+//深度，大专栏-2，小专栏-1，单品-0
             "create_at DATETIME default '0000-00-00 00:00:00', "+
             "update_at DATETIME default '0000-00-00 00:00:00', "+
-            "primary key (app_id, resource_id))";
+            "primary key (app_id, user_id, resource_id))";
     @Override
     public String getDatabaseName() {
         return null;
@@ -33,10 +35,6 @@ public class DownloadResourceTable implements ISQLiteCallBack {
         return SQLiteUtil.DATABASE_VERSION;
     }
 
-//    @Override
-//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//
-//    }
 
     @Override
     public List<String> createTablesSQL() {
@@ -47,6 +45,7 @@ public class DownloadResourceTable implements ISQLiteCallBack {
     public <T> void assignValuesByEntity(String tableName, T entity, ContentValues values) {
         DownloadResourceTableInfo tableInfo = (DownloadResourceTableInfo) entity;
         values.put("app_id", tableInfo.getAppId());
+        values.put("user_id", CommonUserInfo.getLoginUserIdOrAnonymousUserId());
         values.put("resource_id", tableInfo.getResourceId());
         values.put("title", tableInfo.getTitle());
         values.put("desc", tableInfo.getDesc());

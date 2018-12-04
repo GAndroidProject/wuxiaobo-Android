@@ -1,5 +1,7 @@
 package com.xiaoe.common.app;
 
+import android.text.TextUtils;
+
 import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.LoginUser;
@@ -106,6 +108,10 @@ public class CommonUserInfo {
 
     public static String getUserId() {
         return userId;
+    }
+
+    public static String getLoginUserIdOrAnonymousUserId(){
+        return TextUtils.isEmpty(userId) ? Constants.ANONYMOUS_USER_ID : userId;
     }
 
     public String getUserIdByDB(){

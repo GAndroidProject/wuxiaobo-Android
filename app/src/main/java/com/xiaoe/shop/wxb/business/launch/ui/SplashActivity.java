@@ -75,7 +75,6 @@ public class SplashActivity extends XiaoeActivity {
                 DownloadManager.getInstance().setDownloadPause();
                 DownloadManager.getInstance().getAllDownloadList();
             } else {
-//                DownloadSQLiteUtil downloadSQLiteUtil = new DownloadSQLiteUtil(XiaoeApplication.getmContext(), DownloadFileConfig.getInstance());
                 downloadSQLiteUtil.execSQL(DownloadFileConfig.CREATE_TABLE_SQL);
             }
             SQLiteUtil sqLiteUtil = SQLiteUtil.init(this, new CacheDataUtil());

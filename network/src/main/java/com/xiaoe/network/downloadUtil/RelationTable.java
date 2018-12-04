@@ -2,8 +2,8 @@ package com.xiaoe.network.downloadUtil;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.db.ISQLiteCallBack;
 import com.xiaoe.common.db.SQLiteUtil;
 
@@ -15,10 +15,11 @@ public class RelationTable implements ISQLiteCallBack {
     public static final String TABLE_NAME = "relation_table";
     public static final String CREATE_TABLE_SQL = "CREATE TABLE "+TABLE_NAME+"( "+
             "app_id VARCHAR(64) not null,"+
+            "user_id VARCHAR(64) not null,"+
             "id VARCHAR(512) not null,"+//md5(resource_id + 专栏id + 大专栏id)
             "resource_id VARCHAR(64) not null,"+//单品资源id
             "path TEXT default \"\","+//json格式{"topic":"","column":""}//如果未空，说明是单品
-            "primary key (app_id, resource_id, id))";
+            "primary key (app_id, user_id, resource_id, id))";
 
     @Override
     public String getDatabaseName() {
@@ -44,6 +45,7 @@ public class RelationTable implements ISQLiteCallBack {
     public <T> void assignValuesByEntity(String tableName, T entity, ContentValues values) {
         RelationTableInfo relationTableInfo = (RelationTableInfo) entity;
         values.put("app_id",relationTableInfo.getAppId());
+        values.put("user_id",CommonUserInfo.getLoginUserIdOrAnonymousUserId());
         values.put("id",relationTableInfo.getId());
         values.put("resource_id",relationTableInfo.getResourceId());
         values.put("path",relationTableInfo.getPath());
