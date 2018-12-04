@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
+import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 public class MainActivity extends XiaoeActivity implements OnBottomTabSelectListener {
     private static final String TAG = "MainActivity";
@@ -592,4 +593,20 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             getDialog().dismissDialog();
         }
     }
+
+    @Override
+    public SwipeBackLayout getSwipeBackLayout() {
+//        return super.getSwipeBackLayout();
+        return null;
+    }
+
+//    @Override
+//    public void setSwipeBackEnable(boolean enable) {
+//        super.setSwipeBackEnable(false);
+//    }
+//
+//    @Override
+//    public void scrollToFinishActivity() {
+//        super.scrollToFinishActivity();
+//    }
 }

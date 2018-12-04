@@ -2,14 +2,19 @@
 package me.imid.swipebacklayout.lib.app;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 import me.imid.swipebacklayout.lib.Utils;
 
+/**
+ * @author Administrator
+ * <p>
+ * 描述：项目中没有使用
+ */
 public class SwipeBackActivity extends AppCompatActivity implements SwipeBackActivityBase {
+
     private SwipeBackActivityHelper mHelper;
 
     @Override
@@ -28,8 +33,9 @@ public class SwipeBackActivity extends AppCompatActivity implements SwipeBackAct
     @Override
     public View findViewById(int id) {
         View v = super.findViewById(id);
-        if (v == null && mHelper != null)
+        if (v == null && mHelper != null) {
             return mHelper.findViewById(id);
+        }
         return v;
     }
 

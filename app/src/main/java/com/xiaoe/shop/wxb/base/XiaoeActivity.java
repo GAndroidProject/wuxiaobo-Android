@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -70,14 +69,12 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
-
 /**
  *
  * @author Administrator
  * @date 2017/7/17
  */
-public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse, OnCustomDialogListener, UMShareListener, OnNetChangeListener {
+public class XiaoeActivity extends BaseSwipeBackActivity implements INetworkResponse, OnCustomDialogListener, UMShareListener, OnNetChangeListener {
 
     private static final String TAG = "XiaoeActivity";
     private static final int DISMISS_POPUP_WINDOW = 1;
