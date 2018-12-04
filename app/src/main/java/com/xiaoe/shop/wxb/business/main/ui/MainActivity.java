@@ -604,19 +604,4 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         }
     }
 
-    @Override
-    public SwipeBackLayout getSwipeBackLayout() {
-//        return super.getSwipeBackLayout();
-        return null;
-    }
-
-//    @Override
-//    public void setSwipeBackEnable(boolean enable) {
-//        super.setSwipeBackEnable(false);
-//    }
-//
-//    @Override
-//    public void scrollToFinishActivity() {
-//        super.scrollToFinishActivity();
-//    }
 }
