@@ -17,6 +17,8 @@ import android.widget.Scroller;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.utils.ScreenUtils;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 
 /**
@@ -181,9 +183,10 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
         ensureHeaderViewAndScrollView();
 
         final int childLeft = getPaddingLeft();
-        final int childTop = getPaddingTop();
+        int childTop = getPaddingTop();
         final int childWidth = width - getPaddingLeft() - getPaddingRight();
-        final int childHeight = height - getPaddingTop() - getPaddingBottom();
+        int childHeight = height - getPaddingTop() - getPaddingBottom();
+        if (ScreenUtils.isAllScreenDevice(getContext()))    childTop += StatusBarUtil.getStatusBarHeight(getContext());
         mTargetView.layout(childLeft, childTop + mTargetCurrentOffset,
                 childLeft + childWidth, childTop + childHeight + mTargetCurrentOffset);
 
