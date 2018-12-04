@@ -18,7 +18,6 @@ import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.utils.ScreenUtils;
-import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 
 /**
@@ -86,6 +85,7 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
         ((XiaoeActivity)context).getWindowManager().getDefaultDisplay().getMetrics(dm);
         int sW = dm.widthPixels;
         int sH = dm.heightPixels;
+        if (ScreenUtils.isAllScreenDevice(context))   sH = ScreenUtils.getFullActivityHeight(context);
         mHeaderInitOffset = array.getDimensionPixelSize(R.styleable.AudioDetailsSwitchLayout_header_init_offset, Dp2Px2SpUtil.dp2px(getContext(), 0));
         mTargetInitOffset = array.getDimensionPixelSize(R.styleable.AudioDetailsSwitchLayout_target_init_offset, sH);
         mHeaderCurrentOffset = mHeaderInitOffset;
@@ -183,10 +183,9 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
         ensureHeaderViewAndScrollView();
 
         final int childLeft = getPaddingLeft();
-        int childTop = getPaddingTop();
+        final int childTop = getPaddingTop();
         final int childWidth = width - getPaddingLeft() - getPaddingRight();
-        int childHeight = height - getPaddingTop() - getPaddingBottom();
-        if (ScreenUtils.isAllScreenDevice(getContext()))    childTop += StatusBarUtil.getStatusBarHeight(getContext());
+        final int childHeight = height - getPaddingTop() - getPaddingBottom();
         mTargetView.layout(childLeft, childTop + mTargetCurrentOffset,
                 childLeft + childWidth, childTop + childHeight + mTargetCurrentOffset);
 
