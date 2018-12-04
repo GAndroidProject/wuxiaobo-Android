@@ -1,7 +1,6 @@
 package com.xiaoe.shop.wxb.business.launch.ui;
 
 import android.content.pm.PackageManager;
-import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
@@ -32,7 +30,6 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.utils.FrameAnimation;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 
 import java.util.ArrayList;
@@ -77,13 +74,13 @@ public class SplashActivity extends XiaoeActivity {
         super.onResume();
         if(!isApplyPermission){
             Log.d(TAG, "onResume: --------");
-            requestPermission(getUnauthorizedPermission(),getHideUnauthorizedPermission());
+            requestPermission(getUnauthorizedPermission(false),getHideUnauthorizedPermission());
         }
     }
 
     private void initView() {
         // 加上网络请求的时间，减一秒
-        ivGif.postDelayed(() -> requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission()), 2000);
+        ivGif.postDelayed(() -> requestPermission(getUnauthorizedPermission(true), getHideUnauthorizedPermission()), 2000);
     }
 
     private void initData() {
@@ -109,7 +106,7 @@ public class SplashActivity extends XiaoeActivity {
      * 获取未授权的权限，可以直接申请弹窗授权
      * @return
      */
-    public List<String> getUnauthorizedPermission(){
+    public List<String> getUnauthorizedPermission(boolean first){
         ArrayList<String> permissionList = new ArrayList<String>();
         if(Build.VERSION.SDK_INT < 23){
             return null;
@@ -118,7 +115,7 @@ public class SplashActivity extends XiaoeActivity {
             String permissions = Constants.permissions[i];
             boolean showPermission = shouldShowRequestPermissionRationale(permissions);
             if (ContextCompat.checkSelfPermission(this, permissions) != PackageManager.PERMISSION_GRANTED) {
-                if(showPermission){
+                if(showPermission || first){
                     //可以弹出选择允许权限
                     permissionList.add(permissions);
                 }
@@ -141,7 +138,7 @@ public class SplashActivity extends XiaoeActivity {
             boolean showPermission = shouldShowRequestPermissionRationale(permissions);
             if (ContextCompat.checkSelfPermission(this, permissions) != PackageManager.PERMISSION_GRANTED) {
                 if(!showPermission){
-                    //可以弹出选择允许权限
+                    //不可以弹出选择允许权限
                     hidePermissionList.add(permissions);
                 }
             }
@@ -191,7 +188,7 @@ public class SplashActivity extends XiaoeActivity {
             if(grantResults[i] != 0){
                 //用户拒绝后再次弹起授权
                 obtainPermissions = false;
-                requestPermission(getUnauthorizedPermission(), getHideUnauthorizedPermission());
+                requestPermission(getUnauthorizedPermission(false), getHideUnauthorizedPermission());
                 break;
             }
         }

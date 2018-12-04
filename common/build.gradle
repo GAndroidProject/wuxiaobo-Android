@@ -36,7 +36,7 @@ dependencies {
     api 'com.facebook.fresco:animated-gif:1.10.0'
     api 'org.greenrobot:eventbus:3.0.0'
     //腾讯x5内核
-    api files("libs/tbs_sdk_thirdapp_v3.6.0.1352_43618_sharewithdownload_withoutGame_obfs_20180918_120327.jar")
+//    api files("libs/tbs_sdk_thirdapp_v3.6.0.1352_43618_sharewithdownload_withoutGame_obfs_20180918_120327.jar")
     //微信sdk
     api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
     //友盟集成
