@@ -117,6 +117,7 @@ public class LoginActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSwipeBackEnable(false);
         setStatusBar();
         StatusBarUtil.setRootViewFitsSystemWindows(this, false);
 

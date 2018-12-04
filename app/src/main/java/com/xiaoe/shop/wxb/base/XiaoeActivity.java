@@ -69,12 +69,14 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
+
 /**
  *
  * @author Administrator
  * @date 2017/7/17
  */
-public class XiaoeActivity extends BaseSwipeBackActivity implements INetworkResponse, OnCustomDialogListener, UMShareListener, OnNetChangeListener {
+public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse, OnCustomDialogListener, UMShareListener, OnNetChangeListener {
 
     private static final String TAG = "XiaoeActivity";
     private static final int DISMISS_POPUP_WINDOW = 1;

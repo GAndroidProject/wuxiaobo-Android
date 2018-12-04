@@ -99,6 +99,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSwipeBackEnable(false);
         Log.d(TAG,"onCreate -- before");
         // 设置状态栏需要在 setContentView 之前进行
         setStatusBar();

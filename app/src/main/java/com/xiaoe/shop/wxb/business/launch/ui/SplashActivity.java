@@ -43,6 +43,7 @@ public class SplashActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSwipeBackEnable(false);
         Log.d(TAG, "onCreate: ---- ");
         setStatusBar();
         setContentView(R.layout.activity_splash);
