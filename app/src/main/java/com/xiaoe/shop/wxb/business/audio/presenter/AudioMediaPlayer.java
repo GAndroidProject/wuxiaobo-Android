@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.xiaoe.common.app.XiaoeApplication;
@@ -98,6 +99,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        Log.d(TAG, "onPrepared: ");
         prepared = true;
         mediaPlayer.start();
         audioFocusManager.requestAudioFocus();
@@ -109,6 +111,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     @Override
     public void onSeekComplete(MediaPlayer mp) {
+        Log.d(TAG, "onSeekComplete: ");
         if(isPlaying()){
             event.setState(AudioPlayEvent.PLAY);
         }else{
@@ -119,6 +122,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        Log.d(TAG, "onCompletion: ");
         event.setState(AudioPlayEvent.STOP);
         EventBus.getDefault().post(event);
         isStop = true;
@@ -132,6 +136,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        Log.d(TAG, "onError: ");
         event.setState(AudioPlayEvent.STOP);
         EventBus.getDefault().post(event);
         return false;
@@ -356,6 +361,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     private static void playProgress() {
+        Log.d(TAG, "playProgress: ");
         if(!isPlaying()){
             //已经停止就不需要在轮循获取当前进度
             return;

@@ -4,8 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,11 +31,11 @@ import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.requests.BindJgPushRequest;
+import com.xiaoe.network.requests.CouponHandleRequest;
 import com.xiaoe.network.requests.GetPushStateRequest;
 import com.xiaoe.network.requests.GetUnreadMessageRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.IsSuperVipRequest;
-import com.xiaoe.network.requests.CouponHandleRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.main.MainFragmentStatePagerAdapter;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
@@ -41,6 +46,7 @@ import com.xiaoe.shop.wxb.business.main.presenter.MessagePushPresenter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
+import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.jpush.ExampleUtil;
 import com.xiaoe.shop.wxb.common.jpush.LocalBroadcastManager;
 import com.xiaoe.shop.wxb.common.jpush.entity.JgPushSaveInfo;
@@ -50,6 +56,7 @@ import com.xiaoe.shop.wxb.interfaces.OnBottomTabSelectListener;
 import com.xiaoe.shop.wxb.utils.OSUtils;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.BottomTabBar;
+import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.ScrollViewPager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -71,6 +78,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
     public static boolean isForeground = false;
     private Intent audioPlayServiceIntent;
+    private boolean firstShow = true;
 
     Intent intent;
     public boolean isFormalUser;
@@ -85,6 +93,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     CouponHandlePresenter couponHandlePresenter;
     boolean needShowScholarship;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,11 +105,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         EventBus.getDefault().register(this);
 
-//        apiToken = CommonUserInfo.getApiToken();
-//        loginUserList = getLoginUserInfoList();
-//        settingPresenter = new SettingPresenter(this);
-//        settingPresenter.requestPersonData(apiToken, false);
-//        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
         intent = getIntent();
 
         isFormalUser = intent.getBooleanExtra("isFormalUser", false);
@@ -117,23 +121,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         String jgPushRegId = JPushInterface.getRegistrationID(mContext);
         Log.d(TAG, "onCreate: JPush RegID " + jgPushRegId);
 
-//        String bindJPushSuccess = (String) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, "");
-//        JgPushSaveInfo jgPushSaveInfo = JSON.parseObject(bindJPushSuccess, JgPushSaveInfo.class);
-//        Log.d(TAG, "onCreate: " + jgPushSaveInfo);
         MessagePushPresenter messagePushPresenter = new MessagePushPresenter(this);
-//        if (jgPushSaveInfo != null) {
-//            if (!jgPushSaveInfo.isBindRegIdSuccess()) {
-                messagePushPresenter.requestBindJgPush();
-//            } else {
-//                if (jgPushRegId != null && !jgPushRegId.equals(jgPushSaveInfo.getRegistrationID())) {
-//                    messagePushPresenter.requestBindJgPush();
-//                }
-//            }
-//        } else {
-//            if (jgPushRegId != null) {
-//                messagePushPresenter.requestBindJgPush();
-//            }
-//        }
+        messagePushPresenter.requestBindJgPush();
+
 
         needShowScholarship = ScholarshipEntity.getInstance().isTaskExist();
         initView();
@@ -225,17 +215,12 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             }
         });
 
-//        boolean needChange = intent.getBooleanExtra("needChange", false);
-//        int tabIndex = intent.getIntExtra("tabIndex", 0);
-//        if (needChange) {
-//            // 如果需要改变，就去到奖学金页面
-//            replaceFragment(tabIndex);
-//        }
-//        Log.d(TAG, "initView: needChange " + needChange + " tabIndex " + tabIndex);
 
         miniAudioPlayController = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
         setMiniAudioPlayController(miniAudioPlayController);
         setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
+        //申请权限
+//        requestPermission(getUnauthorizedPermission(true),getHideUnauthorizedPermission());
     }
 
 
@@ -328,6 +313,12 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         isForeground = true;
         super.onResume();
         Log.d(TAG,"onResume");
+//        if(!isApplyPermission){
+            Log.d(TAG, "onResume: --------");
+        //申请权限
+            requestPermission(getUnauthorizedPermission(firstShow),getHideUnauthorizedPermission());
+            firstShow = false;
+//        }
     }
 
 
@@ -522,5 +513,85 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     public void getUnreadMsg() {
         settingPresenter.requestUnreadMessage();
         isGetUnreadMsg = true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for (int i = 0; i < grantResults.length; i++){
+            if(grantResults[i] != 0){
+                //用户拒绝后再次弹起授权
+                requestPermission(getUnauthorizedPermission(false), getHideUnauthorizedPermission());
+                break;
+            }
+        }
+    }
+
+    /**
+     * 获取未授权的权限，可以直接申请弹窗授权
+     * @return
+     */
+    private List<String> getUnauthorizedPermission(boolean first){
+        ArrayList<String> permissionList = new ArrayList<String>();
+        if(Build.VERSION.SDK_INT < 23){
+            return null;
+        }
+        for(int i = 0; i < Constants.permissions.length ; i++){
+            String permissions = Constants.permissions[i];
+            boolean showPermission = shouldShowRequestPermissionRationale(permissions);
+            if (ContextCompat.checkSelfPermission(this, permissions) != PackageManager.PERMISSION_GRANTED) {
+                if(showPermission || first){
+                    //可以弹出选择允许权限
+                    permissionList.add(permissions);
+                }
+            }
+        }
+        return permissionList;
+    }
+
+    /**
+     * 获取未授权的权限，拒绝后不在提示的权限
+     * @return
+     */
+    private List<String> getHideUnauthorizedPermission(){
+        ArrayList<String> hidePermissionList = new ArrayList<String>();
+        if(Build.VERSION.SDK_INT < 23){
+            return hidePermissionList;
+        }
+        for(int i = 0; i < Constants.permissions.length ; i++){
+            String permissions = Constants.permissions[i];
+            boolean showPermission = shouldShowRequestPermissionRationale(permissions);
+            if (ContextCompat.checkSelfPermission(this, permissions) != PackageManager.PERMISSION_GRANTED) {
+                if(!showPermission){
+                    //不可以弹出选择允许权限
+                    hidePermissionList.add(permissions);
+                }
+            }
+        }
+        return hidePermissionList;
+    }
+
+    private void requestPermission(List<String> permissionList, List<String> hidePermissionList) {
+        if(Build.VERSION.SDK_INT < 23){
+            JumpDetail.jumpLogin(this);
+            finish();
+            return;
+        }
+        String[] permission = permissionList == null ? new String[]{} : permissionList.toArray(new String[permissionList.size()]);
+        String[] hidePermission = hidePermissionList == null ? new String[]{} : hidePermissionList.toArray(new String[hidePermissionList.size()]);
+        if(permission.length > 0){
+            ActivityCompat.requestPermissions(this,permission,1);
+        }else if(hidePermission.length > 0){
+            getDialog().dismissDialog();
+            getDialog().setTitleVisibility(View.GONE);
+            getDialog().setMessageVisibility(View.VISIBLE);
+            getDialog().setCancelable(false);
+            getDialog().setHideCancelButton(true);
+            getDialog().setHintMessage(getString(R.string.request_permissions));
+            getDialog().setConfirmText(getString(R.string.to_permit));
+            getDialog().showDialog(CustomDialog.REQUEST_PERMISSIONS_TAG);
+        }else{
+            getDialog().dismissDialog();
+        }
     }
 }
