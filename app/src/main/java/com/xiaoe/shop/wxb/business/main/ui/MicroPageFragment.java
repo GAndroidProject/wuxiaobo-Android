@@ -340,7 +340,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             if (componentInfo.getType().equals(DecorateEntityType.RECENT_UPDATE_STR)) {
                 if (columnId.equals(componentInfo.getColumnId())) { // 是同一个组件才添加数据
                     componentInfo.setSubList(itemList);
-                    // 12.4 需求变更，无论是否全部音频都显示收听全部按钮
+                    // 12.4 需求变更，无论是否全部音频都显示收听全部按钮（不想加字段，就用这个 hideTitle 来判断）
                     if (audioCount == 0) {
                         componentInfo.setHideTitle(true);
                     } else {
@@ -455,7 +455,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     String srcType = jsonItem.getString("src_type");
                     component_recent.setTitle(recentTitle);
                     String imgUrl;
-                    if ("appe0MEs6qX8480".equals(Constants.getAppId())) { // 吴晓波 app，头像换成他的头像
+                    if ("appe0MEs6qX8480".equals(Constants.getAppId()) || "app38itOR341547".equals(Constants.getAppId())) { // 吴晓波 app，头像换成他的头像
                         imgUrl = "res:///" + R.mipmap.wu_logo;
                     } else {
                         imgUrl = jsonItem.getString("img_url");
