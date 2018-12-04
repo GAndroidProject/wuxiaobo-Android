@@ -268,6 +268,9 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             microPageLoading.setLoadingFinish();
             microPageFresh.finishRefresh();
             microPageAdapter.notifyDataSetChanged();
+        } else {
+            microPageLoading.setVisibility(View.VISIBLE);
+            microPageLoading.setLoadingState(View.VISIBLE);
         }
     }
 
@@ -337,11 +340,18 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             if (componentInfo.getType().equals(DecorateEntityType.RECENT_UPDATE_STR)) {
                 if (columnId.equals(componentInfo.getColumnId())) { // 是同一个组件才添加数据
                     componentInfo.setSubList(itemList);
-                    if (audioCount == data.size()) { // 全部都是音频，就显示收听全部按钮，不想加字段，就用这个 hideTitle 来判断
-                        componentInfo.setHideTitle(false);
-                    } else {
+                    // 12.4 需求变更，无论是否全部音频都显示收听全部按钮
+                    if (audioCount == 0) {
                         componentInfo.setHideTitle(true);
+                    } else {
+                        componentInfo.setHideTitle(false);
                     }
+                    // 根据音频数量显示收听全部按钮
+//                    if (audioCount == data.size()) { // 全部都是音频，就显示收听全部按钮，不想加字段，就用这个 hideTitle 来判断
+//                        componentInfo.setHideTitle(false);
+//                    } else {
+//                        componentInfo.setHideTitle(true);
+//                    }
                     // 局部刷新...
                     if (microPageAdapter != null)
                         microPageAdapter.notifyItemChanged(i);

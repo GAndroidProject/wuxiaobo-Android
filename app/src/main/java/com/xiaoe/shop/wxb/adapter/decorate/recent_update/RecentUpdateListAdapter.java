@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.RecentUpdateListItem;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
@@ -30,6 +31,7 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.LoginDialogUtils;
+import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 /**
@@ -173,7 +175,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                 }
             }
         });
-        if(recentUpdateListItem.getResourceType() == 2){
+        if(recentUpdateListItem.getResourceType() == 2){ // 音频
             boolean resourceEqual = playResourceEquals(recentUpdateListItem.getListResourceId(), recentUpdateListItem.getColumnId(), recentUpdateListItem.getBigColumnId());
             Log.d(TAG, "getView: resourceEqual = "+resourceEqual+" ; "+AudioMediaPlayer.isPlaying());
             if(resourceEqual){
@@ -184,15 +186,23 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                 viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
             }
             if(resourceEqual && (AudioMediaPlayer.isPlaying() || AudioMediaPlayer.getAudio().isPlaying())){
-                viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playing);
+                SetImageUriUtil.setImgURI(viewHolder.itemIcon, "res:///" + R.mipmap.audiolist_playing, Dp2Px2SpUtil.dp2px(mContext, 16), Dp2Px2SpUtil.dp2px(mContext, 16));
             }else{
-                viewHolder.itemIcon.setImageURI("res:///" + R.mipmap.audiolist_playall);
+                SetImageUriUtil.setImgURI(viewHolder.itemIcon, "res:///" + R.mipmap.audiolist_playall, Dp2Px2SpUtil.dp2px(mContext, 16), Dp2Px2SpUtil.dp2px(mContext, 16));
                 viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
 //                if (isClickPauseAllButton)
 //                    viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
             }
-        }else{
-            // 没有设置播放状态的话，就隐藏这个播放按钮
+        } else if (recentUpdateListItem.getResourceType() == 1) { // 图文
+            viewHolder.itemIcon.setVisibility(View.VISIBLE);
+            viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
+            SetImageUriUtil.setImgURI(viewHolder.itemIcon, "res:///" + R.mipmap.image_text_pic, Dp2Px2SpUtil.dp2px(mContext, 16), Dp2Px2SpUtil.dp2px(mContext, 16));
+        } else if (recentUpdateListItem.getResourceType() == 3) { // 视频
+            viewHolder.itemIcon.setVisibility(View.VISIBLE);
+            viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
+            SetImageUriUtil.setImgURI(viewHolder.itemIcon, "res:///" + R.mipmap.audiolist_vedio, Dp2Px2SpUtil.dp2px(mContext, 16), Dp2Px2SpUtil.dp2px(mContext, 16));
+        } else {
+            // 除了单品，就隐藏这个播放按钮
             viewHolder.itemIcon.setVisibility(View.GONE);
             viewHolder.itemTitle.setTextColor(mContext.getResources().getColor(R.color.recent_list_color));
         }
@@ -318,9 +328,15 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         // isClickPauseAllButton = false;
         isPlaying = true;
         AudioPlayEntity playAudio = AudioMediaPlayer.getAudio();
+        List<RecentUpdateListItem> audioList = new ArrayList<>();
+        for (RecentUpdateListItem listItem : mItemList) {
+            if (listItem.getResourceType() == 2) { // 视音频
+                audioList.add(listItem);
+            }
+        }
         if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
             AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
-            AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
+            AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(audioList));
             AudioPlayUtil.getInstance().setSingleAudio(false);
         }
 
@@ -330,8 +346,8 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             }
         } else { // 有音频在播放
             if (!AudioPlayUtil.resourceEquals(playAudio.getResourceId(), playAudio.getColumnId(), playAudio.getBigColumnId(),
-                    mItemList.get(0).getListResourceId(), columnId, "")) { // 不同一个专栏
-                AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
+                    audioList.get(0).getListResourceId(), columnId, "")) { // 不同一个专栏
+                AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(audioList));
                 playFirstAudio(true);
             } else {
                 playFirstAudio(false);
