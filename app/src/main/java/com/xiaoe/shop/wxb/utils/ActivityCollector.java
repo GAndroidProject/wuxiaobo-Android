@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 
-// activity 处理类
+/**
+ * activity 处理类
+ */
 public class ActivityCollector {
 
     private static List<XiaoeActivity> activities = new ArrayList<>();

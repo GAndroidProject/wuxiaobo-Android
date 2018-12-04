@@ -70,12 +70,15 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-/**
- * Created by Administrator on 2017/7/17.
- */
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
-public class XiaoeActivity extends AppCompatActivity implements INetworkResponse, OnCustomDialogListener,
-        UMShareListener, OnNetChangeListener {
+/**
+ *
+ * @author Administrator
+ * @date 2017/7/17
+ */
+public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse, OnCustomDialogListener, UMShareListener, OnNetChangeListener {
+
     private static final String TAG = "XiaoeActivity";
     private static final int DISMISS_POPUP_WINDOW = 1;
     private static final int DISMISS_TOAST = 2;
