@@ -3,6 +3,7 @@ package com.xiaoe.shop.wxb.business.audio.presenter;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.db.ISQLiteCallBack;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
@@ -25,13 +26,6 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
         return SQLiteUtil.DATABASE_VERSION;
     }
 
-//    @Override
-//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        if(newVersion > oldVersion && newVersion == 4){
-//            db.execSQL(AudioPlayTable.ADD_TRY_PLAY_URL_ROW_SQL);
-//            db.execSQL(AudioPlayTable.ADD_IS_TRY_ROW_SQL);
-//        }
-//    }
 
     @Override
     public List<String> createTablesSQL() {
@@ -42,6 +36,7 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
     public <T> void assignValuesByEntity(String tableName, T entity, ContentValues values) {
         AudioPlayEntity tableEntity = (AudioPlayEntity) entity;
         values.put(AudioPlayTable.getAppId(), tableEntity.getAppId());
+        values.put("user_id", CommonUserInfo.getLoginUserIdOrAnonymousUserId());
         values.put(AudioPlayTable.getResourceId(), tableEntity.getResourceId());
         values.put(AudioPlayTable.getTitle(), tableEntity.getTitle());
         values.put(AudioPlayTable.getContent(), tableEntity.getContent());

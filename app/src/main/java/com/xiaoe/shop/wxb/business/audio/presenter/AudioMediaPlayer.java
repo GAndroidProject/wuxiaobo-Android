@@ -15,6 +15,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
@@ -78,6 +80,10 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     private void init() {
         audioSQLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
+        boolean tableExist = audioSQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
+        if(!tableExist){
+            audioSQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+        }
         if(mediaPlayer == null){
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -211,13 +217,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         audio.setCurrentPlayState(0);
         audio.setUpdateAt(DateFormat.currentTime());
 
-        boolean tableExist = audioSQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
-        if(!tableExist){
-            audioSQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
-        }
-        String sqlWhereClause = AudioPlayTable.getAppId()+"=? and "+AudioPlayTable.getResourceId()+"=?";
+        String sqlWhereClause = AudioPlayTable.getAppId()+"=? and "+AudioPlayTable.getResourceId()+"=? and user_id=?";
         audioSQLiteUtil.update(AudioPlayTable.TABLE_NAME, audio, sqlWhereClause,
-                new String[]{audio.getAppId(),audio.getResourceId()});
+                new String[]{audio.getAppId(),audio.getResourceId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId()});
 
         event.setState(AudioPlayEvent.STOP);
         EventBus.getDefault().post(event);
@@ -252,12 +254,12 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     public static int getCurrentPosition(){
         if(mediaPlayer != null){
-            boolean tableExist = audioSQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
-            if(!tableExist){
-                audioSQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
-            }else{
-                audioSQLiteUtil.query(AudioPlayTable.TABLE_NAME, "select * from "+AudioPlayTable.TABLE_NAME, null);
-            }
+//            boolean tableExist = audioSQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
+//            if(!tableExist){
+//                audioSQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
+//            }else{
+//                audioSQLiteUtil.query(AudioPlayTable.TABLE_NAME, "select * from "+AudioPlayTable.TABLE_NAME, null);
+//            }
             return mediaPlayer.getCurrentPosition();
         }
         return  -1;
@@ -384,20 +386,16 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         start();
     }
     private static void saveAudioDB(){
-        boolean tableExist = audioSQLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME);
-        if(!tableExist){
-            audioSQLiteUtil.execSQL(AudioPlayTable.CREATE_TABLE_SQL);
-        }
 
         audio.setState(0);
         audio.setCurrentPlayState(1);
         audio.setUpdateAt(DateFormat.currentTime());
         List<AudioPlayEntity> dbAudioEntitys = audioSQLiteUtil.query(AudioPlayTable.TABLE_NAME,
-                "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getResourceId()+"=?", new String[]{audio.getResourceId()});
+                "select * from "+AudioPlayTable.TABLE_NAME+" where app_id=? and user_id =? and "+AudioPlayTable.getResourceId()+"=?", new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audio.getResourceId()});
         if(dbAudioEntitys.size() > 0){
-            String sqlWhereClause = AudioPlayTable.getAppId()+"=? and "+AudioPlayTable.getResourceId()+"=?";
+            String sqlWhereClause = AudioPlayTable.getAppId()+"=? and user_id=? and "+AudioPlayTable.getResourceId()+"=?";
             audioSQLiteUtil.update(AudioPlayTable.TABLE_NAME, audio, sqlWhereClause,
-                    new String[]{audio.getAppId(),audio.getResourceId()});
+                    new String[]{audio.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audio.getResourceId()});
         }else{
             audio.setCreateAt(DateFormat.currentTime());
             audioSQLiteUtil.insert(AudioPlayTable.TABLE_NAME, audio);

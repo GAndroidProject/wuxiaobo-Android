@@ -27,6 +27,7 @@ public class AudioPlayTable {
     private static final String updateAt = "update_at";
     public static final String CREATE_TABLE_SQL = "CREATE TABLE "+TABLE_NAME+" ("+
             appId+" "+TYPE_VARCHAR_64+" not null,"+
+            "user_id "+TYPE_VARCHAR_64+" not null,"+
             resourceId+" "+TYPE_VARCHAR_64+" not null,"+
             columnId+" "+TYPE_VARCHAR_64+" default \"\","+
             bigColumnId+" "+TYPE_VARCHAR_64+" default \"\","+
@@ -40,7 +41,7 @@ public class AudioPlayTable {
             "is_try INTEGER default 0,"+//是否是试看0：否，1：是
             createAt+" "+TYPE_DATETIME+" default '0000-00-00 00:00:00',"+
             updateAt+" "+TYPE_DATETIME+" default '0000-00-00 00:00:00',"+
-            "primary key ("+appId +","+ resourceId+"))";
+            "primary key ("+appId +", user_id, "+ resourceId+"))";
 
 //    public static final String ADD_TRY_PLAY_URL_ROW_SQL = "ALTER TABLE "+TABLE_NAME+" add try_play_url TEXT default \"\"";
     //是否是试看0：否，1：是

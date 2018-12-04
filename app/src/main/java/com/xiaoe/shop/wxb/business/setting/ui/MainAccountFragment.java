@@ -23,6 +23,7 @@ import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
@@ -105,6 +106,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
         accountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AudioMediaPlayer.stop();
                 SQLiteUtil.init(getActivity(), new LoginSQLiteCallback()).deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
                 CommonUserInfo.getInstance().clearUserInfo();
                 ActivityCollector.finishAll();

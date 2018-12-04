@@ -268,9 +268,7 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
         }
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(this, new AudioSQLiteUtil());
         if(sqLiteUtil.tabIsExist(AudioPlayTable.TABLE_NAME)){
-//            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where "+AudioPlayTable.getCurrentPlayState()+"=? limit 10";
-//            List<AudioPlayEntity> entityList = SQLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,new String[]{"1"});
-            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where current_play_state=1 order by update_at desc limit 1";
+            String sql = "select * from "+AudioPlayTable.TABLE_NAME+" where current_play_state=1 and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"' order by update_at desc limit 1";
             List<AudioPlayEntity> entityList = sqLiteUtil.query(AudioPlayTable.TABLE_NAME,sql,null);
             if(entityList.size() > 0){
                 AudioPlayUtil.getInstance().setSingleAudio(true);

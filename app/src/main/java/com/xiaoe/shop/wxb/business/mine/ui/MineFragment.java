@@ -818,7 +818,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(getContext(), new CacheDataUtil());
         //积分
-        String integralSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+Constants.INTEGRAL_ASSET_TYPE+"'";
+        String integralSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+Constants.INTEGRAL_ASSET_TYPE+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> integralCacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, integralSQL, null);
         if(integralCacheDataList != null && integralCacheDataList.size() > 0){
             String content = integralCacheDataList.get(0).getContent();
@@ -835,7 +836,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             initPageData();
         }
         //奖学金
-        String scholarshipSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+Constants.SCHOLARSHIP_ASSET_TYPE+"'";
+        String scholarshipSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+Constants.SCHOLARSHIP_ASSET_TYPE+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> scholarshipCacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, scholarshipSQL, null);
         if(scholarshipCacheDataList != null && scholarshipCacheDataList.size() > 0){
             String content = scholarshipCacheDataList.get(0).getContent();
@@ -853,7 +855,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             initPageData();
         }
         //正在学习
-        String learningSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='learning'";
+        String learningSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='learning' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> learningCacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, learningSQL, null);
         if(learningCacheDataList != null && learningCacheDataList.size() > 0){
             JSONObject data;

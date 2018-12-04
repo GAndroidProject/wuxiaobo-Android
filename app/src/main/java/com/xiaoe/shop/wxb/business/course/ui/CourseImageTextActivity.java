@@ -44,7 +44,6 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
-import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
@@ -455,7 +454,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             if(resourceInfo.getIntValue("is_related") == 1){
                 //如果是仅关联售卖，则把缓存中的数据清除
                 SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
-                sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=?", new String[]{Constants.getAppId(), resourceId});
+                sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=? and user_id=?", new String[]{Constants.getAppId(), resourceId, CommonUserInfo.getLoginUserIdOrAnonymousUserId()});
                 //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                 JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
                 if (productList.size() == 0) {
@@ -639,7 +638,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
 
     private void setDataByDB(){
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
-        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+resourceId+"'";
+        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+resourceId+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
         if(cacheDataList != null && cacheDataList.size() > 0){
             JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent()).getJSONObject("data");

@@ -3,6 +3,7 @@ package com.xiaoe.shop.wxb.business.search.presenter;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.db.ISQLiteCallBack;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.SearchHistory;
@@ -21,9 +22,11 @@ public class SearchSQLiteCallback implements ISQLiteCallBack {
     // 建表 sql
     public static final String TABLE_SCHEMA_CONTENT =
             "CREATE TABLE " + TABLE_NAME_CONTENT + " (" +
-            SearchHistoryEntity.COLUMN_NAME_ID + TYPE_TEXT + " PRIMARY KEY " + SEP_COMMA +
+            SearchHistoryEntity.COLUMN_NAME_ID + TYPE_TEXT + SEP_COMMA +
+            SearchHistoryEntity.COLUMN_NAME_USER_ID + TYPE_TEXT + SEP_COMMA +
             SearchHistoryEntity.COLUMN_NAME_CONTENT + TYPE_TEXT + SEP_COMMA +
-            SearchHistoryEntity.COLUMN_NAME_CREATE + TYPE_TEXT + ")";
+            SearchHistoryEntity.COLUMN_NAME_CREATE + TYPE_TEXT + SEP_COMMA +
+            " PRIMARY KEY ("+SearchHistoryEntity.COLUMN_NAME_ID+","+SearchHistoryEntity.COLUMN_NAME_USER_ID +"))";
 
     public SearchSQLiteCallback() {  }
 
@@ -37,18 +40,6 @@ public class SearchSQLiteCallback implements ISQLiteCallBack {
         return SQLiteUtil.DATABASE_VERSION;
     }
 
-//    @Override
-//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        switch (oldVersion) {
-//            case 0:
-//                // 升级操作
-////                db.execSQL(TABLE_SCHEMA_CONTENT);
-//            case 1:
-//                break;
-//            default:
-//                break;
-//        }
-//    }
 
     @Override
     public List<String> createTablesSQL() {
@@ -62,6 +53,7 @@ public class SearchSQLiteCallback implements ISQLiteCallBack {
                 if (entity instanceof SearchHistory) {
                     SearchHistory searchHistory = (SearchHistory) entity;
                     values.put(SearchHistoryEntity.COLUMN_NAME_ID, searchHistory.getmId());
+                    values.put(SearchHistoryEntity.COLUMN_NAME_USER_ID, CommonUserInfo.getLoginUserIdOrAnonymousUserId());
                     values.put(SearchHistoryEntity.COLUMN_NAME_CONTENT, searchHistory.getmContent());
                     values.put(SearchHistoryEntity.COLUMN_NAME_CREATE, searchHistory.getmCreate());
                 }

@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.SearchHistory;
@@ -354,16 +355,17 @@ public class SearchActivity extends XiaoeActivity {
     // 判断数据库是否已经存了这条数据
     protected boolean hasDbData(String tempContent) {
         // 从 search_history 表里面找到 content = tempContent 的那条数据
-        List<SearchHistory> lists = sqLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
-                "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " where " + SearchHistoryEntity.COLUMN_NAME_CONTENT + " = ?", new String[]{tempContent});
+        String sql = "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " where " + SearchHistoryEntity.COLUMN_NAME_CONTENT + " = ? and user_id=?";
+        List<SearchHistory> lists = sqLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT, sql, new String[]{tempContent, CommonUserInfo.getLoginUserIdOrAnonymousUserId()});
         // 已经有一条数据的话就不用再插入
         return lists.size() == 1;
     }
 
     // 查询最新创建的五条数据
     protected List<SearchHistory> queryAllData() {
-        return sqLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT,
-            "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " order by " + SearchHistoryEntity.COLUMN_NAME_CREATE + " desc limit 5", null);
+        String sql = "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " where user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"' order by "
+                + SearchHistoryEntity.COLUMN_NAME_CREATE + " desc limit 5";
+        return sqLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT, sql, null);
     }
 
     // 获取当前时间

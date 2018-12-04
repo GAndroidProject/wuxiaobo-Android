@@ -675,7 +675,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         }
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(getContext(), new CacheDataUtil());
         //任务状态
-        String sqlState = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+taskId+"_state'";
+        String sqlState = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+taskId+"_state' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> stateCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlState, null);
         if(stateCacheData != null && stateCacheData.size() > 0){
             JSONObject result = JSONObject.parseObject(stateCacheData.get(0).getContent()).getJSONObject("data");
@@ -683,7 +684,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             scholarshipRefresh.finishRefresh();
         }
         //排行榜
-        String sqlRanking = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+taskId+"_ranking'";
+        String sqlRanking = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+taskId+"_ranking' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> rankingCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlRanking, null);
         if(rankingCacheData != null && rankingCacheData.size() > 0){
             JSONObject result = JSONObject.parseObject(rankingCacheData.get(0).getContent()).getJSONObject("data");
@@ -696,7 +698,8 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             showDataByDB = false;
         }
         //奖学金金额
-        String sqlMoney = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+taskId+"_money'";
+        String sqlMoney = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+taskId+"_money' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> moneyCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlMoney, null);
         if(moneyCacheData != null && moneyCacheData.size() > 0){
             String money = moneyCacheData.get(0).getContent();

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.SharedElementCallback;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -29,6 +28,7 @@ import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
@@ -253,7 +253,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     private void setDataByDB() {
         obtainDataInCache = true;
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(getContext(), new CacheDataUtil());
-        String sql = "select * from " + CacheDataUtil.TABLE_NAME + " where app_id='" + Constants.getAppId() + "' and resource_id='" + microPageId + "'";
+        String sql = "select * from " + CacheDataUtil.TABLE_NAME + " where app_id='" + Constants.getAppId()
+                + "' and resource_id='" + microPageId + "' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
         if (cacheDataList != null && cacheDataList.size() > 0) {
             JSONObject result = JSONObject.parseObject(cacheDataList.get(0).getContent());

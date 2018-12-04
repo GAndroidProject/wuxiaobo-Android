@@ -156,7 +156,7 @@ public class AudioPresenter implements IBizCallback {
                 }
                 //如果是仅关联售卖，则把缓存中的数据清除
                 SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
-                sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=?", new String[]{Constants.getAppId(), resourceId});
+                sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=? and user_id=?", new String[]{Constants.getAppId(), resourceId, CommonUserInfo.getLoginUserIdOrAnonymousUserId()});
                 ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
                     @Override
                     public void run() {
@@ -227,7 +227,8 @@ public class AudioPresenter implements IBizCallback {
      */
     public void requestDetail(String resourceId){
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
-        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+resourceId+"'";
+        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+resourceId+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
         if(cacheDataList != null && cacheDataList.size() > 0){
             JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent());

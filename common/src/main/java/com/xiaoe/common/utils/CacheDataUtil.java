@@ -3,6 +3,7 @@ package com.xiaoe.common.utils;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.db.ISQLiteCallBack;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
@@ -15,12 +16,13 @@ public class CacheDataUtil implements ISQLiteCallBack {
     public static final String TABLE_NAME = "data_cache";
     public static final String CREATE_TABLES_SQL = "CREATE TABLE "+TABLE_NAME+" ("+
             "app_id VARCHAR(64) not null, "+
+            "user_id VARCHAR(64) not null, "+
             "resource_id VARCHAR(64) not null, "+
             "img_url TEXT default \"\", "+
             "img_url_compress TEXT default \"\", "+
             "content TEXT default \"\", "+
             "resource_list TEXT default \"\", "+//产品包资料列表
-            "primary key (app_id, resource_id))";
+            "primary key (app_id, user_id, resource_id))";
 
     @Override
     public String getDatabaseName() {
@@ -46,6 +48,7 @@ public class CacheDataUtil implements ISQLiteCallBack {
     public <T> void assignValuesByEntity(String tableName, T entity, ContentValues values) {
         CacheData cacheData = (CacheData) entity;
         values.put("app_id", cacheData.getAppId());
+        values.put("user_id", CommonUserInfo.getLoginUserIdOrAnonymousUserId());
         values.put("resource_id", cacheData.getResourceId());
         values.put("img_url", cacheData.getImgUrl());
         values.put("img_url_compress", cacheData.getImgUrlCompress());

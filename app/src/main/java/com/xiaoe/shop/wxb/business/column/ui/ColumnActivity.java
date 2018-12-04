@@ -406,7 +406,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
             //如果是仅关联售卖，则把缓存中的数据清除
             SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
-            sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=?", new String[]{Constants.getAppId(), resourceId});
+            sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=? and user_id=?", new String[]{Constants.getAppId(), resourceId, CommonUserInfo.getLoginUserIdOrAnonymousUserId()});
             JSONArray productList = productInfo.getJSONArray("product_list");
             if (productList.size() == 0) {
                 setPagerState(3004);
@@ -704,7 +704,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     public void setDataByDB(){
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
-        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+resourceId+"'";
+        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+resourceId+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> cacheDataList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null );
         if(cacheDataList != null && cacheDataList.size() > 0){
             JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent()).getJSONObject("data");
@@ -716,7 +717,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
             }
         }
-        String sqlList = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+resourceId+"_list'";
+        String sqlList = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+resourceId+"_list' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> cacheDataResourceList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlList, null );
         if(cacheDataResourceList != null && cacheDataResourceList.size() > 0){
             JSONArray data = JSONObject.parseObject(cacheDataResourceList.get(0).getResourceList()).getJSONArray("data");

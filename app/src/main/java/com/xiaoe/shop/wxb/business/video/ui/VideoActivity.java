@@ -49,7 +49,6 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
-import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
@@ -225,8 +224,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         localResource = mIntent.getBooleanExtra("local_resource", false);
         if(!TextUtils.isEmpty(mResourceId)){
             //先查询数据库中是否存在，如果存在则先显示
-            String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+mResourceId+"'";
-            List<CacheData> cacheDataList = SQLiteUtil.init(this, new CacheDataUtil()).query(CacheDataUtil.TABLE_NAME, sql, null);
+            String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                    +"' and resource_id='"+mResourceId+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
+            List<CacheData> cacheDataList = SQLiteUtil.init(this, new CacheDataUtil())
+                    .query(CacheDataUtil.TABLE_NAME, sql, null);
             if(cacheDataList != null && cacheDataList.size() > 0){
                 detailRequest(JSONObject.parseObject(cacheDataList.get(0).getContent()), true);
                 showCacheData = true;
@@ -508,7 +509,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                     //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                     //如果是仅关联售卖，则把缓存中的数据清除
                     SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
-                    sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=?", new String[]{Constants.getAppId(), mResourceId});
+                    sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=? and user_id=?", new String[]{Constants.getAppId(), mResourceId, CommonUserInfo.getLoginUserIdOrAnonymousUserId()});
                     JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
                     if (productList.size() == 0) {
                         setPagerState(3004);

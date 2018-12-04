@@ -107,7 +107,6 @@ public class AudioPlayUtil {
         }else{
             sqLiteUtil.deleteFrom(AudioPlayTable.TABLE_NAME);
         }
-
     }
     private void addCache(){
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());

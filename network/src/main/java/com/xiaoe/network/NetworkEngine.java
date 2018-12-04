@@ -3,6 +3,7 @@ package com.xiaoe.network;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
@@ -196,7 +197,8 @@ public class NetworkEngine {
         if(!cacheSQLiteUtil.tabIsExist(CacheDataUtil.TABLE_NAME)){
             cacheSQLiteUtil.execSQL(CacheDataUtil.CREATE_TABLES_SQL);
         }
-        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()+"' and resource_id='"+cacheKey+"'";
+        String sql = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+cacheKey+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> cacheDataList = cacheSQLiteUtil.query(CacheDataUtil.TABLE_NAME, sql, null);
         if(cacheDataList == null || cacheDataList.size() <= 0){
             CacheData cacheData = new CacheData();
@@ -213,8 +215,8 @@ public class NetworkEngine {
             if(!TextUtils.isEmpty(dataList)){
                 cacheData.setResourceList(dataList);
             }
-            String whereVal = "app_id=? and resource_id=?";
-            cacheSQLiteUtil.update(CacheDataUtil.TABLE_NAME, cacheData, whereVal, new String[]{Constants.getAppId(), cacheKey});
+            String whereVal = "app_id=? and resource_id=? and user_id=?";
+            cacheSQLiteUtil.update(CacheDataUtil.TABLE_NAME, cacheData, whereVal, new String[]{Constants.getAppId(), cacheKey, CommonUserInfo.getLoginUserIdOrAnonymousUserId()});
         }
     }
 
