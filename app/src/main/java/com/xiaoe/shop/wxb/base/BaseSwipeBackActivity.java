@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.xiaoe.shop.wxb.business.launch.ui.SplashActivity;
+import com.xiaoe.shop.wxb.business.login.ui.LoginActivity;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
@@ -22,13 +23,24 @@ public class BaseSwipeBackActivity extends AppCompatActivity implements SwipeBac
 
     private SwipeBackActivityHelper mHelper;
 
+    private boolean isNoSwipBackActivity() {
+        if (this instanceof SplashActivity) {
+            return true;
+        }
+        if (this instanceof LoginActivity) {
+            return true;
+        }
+        return this instanceof MainActivity;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!(this instanceof MainActivity) && !(this instanceof SplashActivity)) {
-            mHelper = new SwipeBackActivityHelper(this);
-            mHelper.onActivityCreate();
+        if (isNoSwipBackActivity()) {
+            return;
         }
+        mHelper = new SwipeBackActivityHelper(this);
+        mHelper.onActivityCreate();
     }
 
     @Override
@@ -65,9 +77,10 @@ public class BaseSwipeBackActivity extends AppCompatActivity implements SwipeBac
 
     @Override
     public void scrollToFinishActivity() {
-        if (!(this instanceof MainActivity) && !(this instanceof SplashActivity)) {
-            Utils.convertActivityToTranslucent(this);
-            getSwipeBackLayout().scrollToFinishActivity();
+        if (isNoSwipBackActivity()) {
+            return;
         }
+        Utils.convertActivityToTranslucent(this);
+        getSwipeBackLayout().scrollToFinishActivity();
     }
 }
