@@ -93,8 +93,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return new RecentUpdateViewHolder(mContext, view);
             case DecorateEntityType.KNOWLEDGE_LIST:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_list, null);
-                layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 10), 0, 0);
-                view.setPadding(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 8), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24));
+                // layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 10), 0, 0);
+                view.setPadding(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 16), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 16));
                 view.setLayoutParams(layoutParams);
                 if (knowledgeListAdapterArr == null) {
                     knowledgeListAdapterArr = new SparseArray<>();
@@ -102,8 +102,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return new KnowledgeListViewHolder(mContext, view);
             case DecorateEntityType.KNOWLEDGE_GROUP:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group, null);
-                layoutParams.setMargins(0, 0, 0, Dp2Px2SpUtil.dp2px(mContext, 12));
-                view.setPadding(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 24), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 12));
+                // layoutParams.setMargins(0, 0, 0, Dp2Px2SpUtil.dp2px(mContext, 12));
+                view.setPadding(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 16), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 16));
                 view.setLayoutParams(layoutParams);
                 if (knowledgeGroupRecyclerList == null) { // 保证 list 不会被覆盖
                     knowledgeGroupRecyclerList = new ArrayList<>();

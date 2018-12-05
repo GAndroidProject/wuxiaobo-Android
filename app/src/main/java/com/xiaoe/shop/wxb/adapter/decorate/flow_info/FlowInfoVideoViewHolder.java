@@ -1,5 +1,6 @@
 package com.xiaoe.shop.wxb.adapter.decorate.flow_info;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -8,13 +9,21 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.internal.DebouncingOnClickListener;
+
+import com.xiaoe.common.entitys.FlowInfoItem;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 
 /**
  * 视频 ViewHolder
  */
 public class FlowInfoVideoViewHolder extends BaseViewHolder {
+
+    private Context mContext;
 
     @BindView(R.id.flow_info_video_wrap)
     public FrameLayout flowInfoWrap;
@@ -29,8 +38,47 @@ public class FlowInfoVideoViewHolder extends BaseViewHolder {
     @BindView(R.id.flow_info_video_price)
     public TextView flowInfoPrice;
 
-    FlowInfoVideoViewHolder(View itemView) {
+    public FlowInfoVideoViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+    }
+
+    public FlowInfoVideoViewHolder(Context context, View itemView) {
+        super(itemView);
+        this.mContext = context;
+        ButterKnife.bind(this, itemView);
+    }
+
+    public void initViewHolder(FlowInfoItem bindItem) {
+        if (SetImageUriUtil.isGif(bindItem.getItemImg())) {
+            SetImageUriUtil.setGifURI(flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 190), Dp2Px2SpUtil.dp2px(mContext, 375));
+        } else {
+            SetImageUriUtil.setImgURI(flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 190), Dp2Px2SpUtil.dp2px(mContext, 375));
+        }
+        if (!"".equals(bindItem.getItemTag())) {
+            flowInfoTag.setText(bindItem.getItemTag());
+        }
+        flowInfoTitle.setText(bindItem.getItemTitle());
+        flowInfoDesc.setText(bindItem.getItemDesc());
+        if (bindItem.isItemHasBuy()) {
+            flowInfoPrice.setVisibility(View.GONE);
+        } else {
+            flowInfoPrice.setVisibility(View.VISIBLE);
+            flowInfoPrice.setText(bindItem.getItemPrice());
+
+        }
+        flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
+            @Override
+            public void doClick(View v) {
+            // TODO: 转场动画
+//            ActivityOptions options =
+//                    ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+//                            Pair.create(((View) videoViewHolder.flowInfoBg), "share_video_preview"));
+//            Intent videoIntent = new Intent(mContext, VideoActivity.class);
+//            videoIntent.putExtra("videoImageUrl", videoImageUrl);
+//            mContext.startActivity(videoIntent, options.toBundle());
+            JumpDetail.jumpVideo(mContext, bindItem.getItemId(), bindItem.getItemImg(), false, "");
+            }
+        });
     }
 }
