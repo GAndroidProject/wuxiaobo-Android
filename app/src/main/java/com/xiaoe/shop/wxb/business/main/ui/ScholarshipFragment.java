@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -52,7 +53,9 @@ import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipRangeAdapter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
+import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
@@ -68,7 +71,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ScholarshipFragment extends BaseFragment implements View.OnClickListener, OnRefreshListener {
+public class ScholarshipFragment extends BaseFragment implements View.OnClickListener, OnRefreshListener, OnCustomScrollChangedListener {
 
     private static final String TAG = "ScholarshipFragment";
 
@@ -97,6 +100,12 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     ListBottomLoadMoreView scholarshipLoadMore;
     @BindView(R.id.scholarship_loading)
     StatusPagerView scholarshipLoading;
+    @BindView(R.id.scholarship_title_wrap)
+    LinearLayout scholarshipTitleWrap;
+    @BindView(R.id.scholarship_title_blank)
+    View scholarshipBlank;
+    @BindView(R.id.scholarship_scroller)
+    CustomScrollView shcolrshipScroller;
 
     protected static final String RULE = "rule";
     protected static final String GO_BUY = "go_buy";
@@ -147,7 +156,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             });
         }
 
-        view.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
+        scholarshipTitleWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
         return view;
     }
 
@@ -166,6 +175,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         scholarshipDivide.setOnClickListener(this);
         scholarshipRealRange.setOnClickListener(this);
         scholarshipAllRange.setOnClickListener(this);
+        shcolrshipScroller.setScrollChanged(this);
     }
 
     @Override
@@ -706,6 +716,22 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             ScholarshipEntity.getInstance().setTaskTotalMoney(money);
             scholarshipTotalMoney.setText(ScholarshipEntity.getInstance().getTaskTotalMoney());
         }
+
+    }
+
+    @Override
+    public void onScrollChanged(int l, int t, int oldl, int oldt) {
+        if (t >= StatusBarUtil.getStatusBarHeight(getActivity())) {
+            scholarshipBlank.setVisibility(View.VISIBLE);
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, StatusBarUtil.getStatusBarHeight(getActivity()));
+            scholarshipBlank.setLayoutParams(layoutParams);
+        } else {
+            scholarshipBlank.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onLoadState(int state) {
 
     }
 }

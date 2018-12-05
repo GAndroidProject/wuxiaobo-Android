@@ -14,6 +14,8 @@ import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 
+import butterknife.internal.DebouncingOnClickListener;
+
 public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private Context mContext;
@@ -45,25 +47,29 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
         final int tempPos = viewHolder.getAdapterPosition();
         final SettingItemInfo currentItem = itemList.get(tempPos);
         if (tempPos == 0) { // 是头像，约定如果有 title 会优先显示 title
-            if (currentItem.getItemTitle().equals("头像")) {
-                viewHolder.itemIcon.setVisibility(View.VISIBLE);
-                viewHolder.itemContent.setVisibility(View.GONE);
-                viewHolder.itemGo.setVisibility(View.GONE);
-                viewHolder.itemTitle.setText(currentItem.getItemTitle());
-                viewHolder.itemIcon.setImageURI(currentItem.getItemIcon());
-            } else if (currentItem.getItemTitle().equals("联系我们")) {
-                viewHolder.itemIcon.setVisibility(View.VISIBLE);
-                viewHolder.itemContent.setVisibility(View.VISIBLE);
-                viewHolder.itemGo.setVisibility(View.GONE);
-                viewHolder.itemTitle.setText(currentItem.getItemTitle());
-                viewHolder.itemContent.setText(currentItem.getItemContent());
-                viewHolder.itemIcon.setImageURI(""); // 占位
-            } else {
-                viewHolder.itemIcon.setVisibility(View.VISIBLE);
-                viewHolder.itemContent.setVisibility(View.GONE);
-                viewHolder.itemGo.setVisibility(View.VISIBLE);
-                viewHolder.itemTitle.setText(currentItem.getItemTitle());
-                viewHolder.itemIcon.setImageURI(""); // 占位
+            switch (currentItem.getItemTitle()) {
+                case "头像":
+                    viewHolder.itemIcon.setVisibility(View.VISIBLE);
+                    viewHolder.itemContent.setVisibility(View.GONE);
+                    viewHolder.itemGo.setVisibility(View.GONE);
+                    viewHolder.itemTitle.setText(currentItem.getItemTitle());
+                    viewHolder.itemIcon.setImageURI(currentItem.getItemIcon());
+                    break;
+                case "联系我们":
+                    viewHolder.itemIcon.setVisibility(View.VISIBLE);
+                    viewHolder.itemContent.setVisibility(View.VISIBLE);
+                    viewHolder.itemGo.setVisibility(View.GONE);
+                    viewHolder.itemTitle.setText(currentItem.getItemTitle());
+                    viewHolder.itemContent.setText(currentItem.getItemContent());
+                    viewHolder.itemIcon.setImageURI(""); // 占位
+                    break;
+                default:
+                    viewHolder.itemIcon.setVisibility(View.VISIBLE);
+                    viewHolder.itemContent.setVisibility(View.GONE);
+                    viewHolder.itemGo.setVisibility(View.VISIBLE);
+                    viewHolder.itemTitle.setText(currentItem.getItemTitle());
+                    viewHolder.itemIcon.setImageURI(""); // 占位
+                    break;
             }
         } else {
             itemList.size(); // 其他内容
@@ -73,9 +79,9 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
             viewHolder.itemContent.setText(currentItem.getItemContent());
         }
         if (tempPos != itemList.size()) {
-            viewHolder.itemContainer.setOnClickListener(new View.OnClickListener() {
+            viewHolder.itemContainer.setOnClickListener(new DebouncingOnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void doClick(View v) {
                     if (onItemClickWithSettingItemInfoListener != null) {
                         onItemClickWithSettingItemInfoListener.onItemClick(v, currentItem);
                     }

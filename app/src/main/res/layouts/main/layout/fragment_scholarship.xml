@@ -11,13 +11,15 @@
     <com.xiaoe.common.widget.CommonRefreshHeader
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="20dp"/>
+        android:paddingTop="20dp"
+        android:background="@color/recent_update_btn_pressed"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.xiaoe.shop.wxb.widget.CustomScrollView
+            android:id="@+id/scholarship_scroller"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -30,6 +32,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/scholarship_title_wrap"
                     android:layout_width="match_parent"
                     android:layout_height="330dp"
                     android:orientation="vertical"
@@ -273,6 +276,13 @@
             </LinearLayout>
 
         </com.xiaoe.shop.wxb.widget.CustomScrollView>
+
+        <View
+            android:id="@+id/scholarship_title_blank"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            android:background="@color/recent_update_btn_pressed"/>
 
         <com.xiaoe.shop.wxb.widget.StatusPagerView
             android:id="@+id/scholarship_loading"

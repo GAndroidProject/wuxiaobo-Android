@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.business.setting.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.ActivityCollector;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import butterknife.internal.DebouncingOnClickListener;
 
 public class MainAccountFragment extends BaseFragment implements OnItemClickWithSettingItemInfoListener {
 
@@ -104,19 +107,42 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
     }
 
     private void initListener() {
-        accountBtn.setOnClickListener(new View.OnClickListener() {
+        accountBtn.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void onClick(View v) {
-                AudioMediaPlayer.stop();
-                AudioPlayUtil.getInstance().setCloseMiniPlayer(true);
-                SQLiteUtil.init(getActivity(), new LoginSQLiteCallback()).deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
-                CommonUserInfo.getInstance().clearUserInfo();
-                ActivityCollector.finishAll();
-                CommonUserInfo.setApiToken("");
-                CommonUserInfo.setIsSuperVip(false);
-                CommonUserInfo.setIsSuperVipAvailable(false);
-                JumpDetail.jumpLogin(getActivity());
-                DownloadManager.getInstance().allPaushDownload();
+            public void doClick(View v) {
+                getDialog().setTitleVisibility(View.VISIBLE);
+                getDialog().setMessageVisibility(View.GONE);
+                getDialog().setTitle("确认退出？");
+                getDialog().setConfirmText(getResources().getString(R.string.confirm_title));
+                getDialog().setConfirmTextColor(getResources().getColor(R.color.login_error));
+                getDialog().setCancelText(getResources().getString(R.string.cancel_title));
+                getDialog().setOnCustomDialogListener(new OnCustomDialogListener() {
+                    @Override
+                    public void onClickCancel(View view, int tag) {
+                        getDialog().dismissDialog();
+                    }
+
+                    @Override
+                    public void onClickConfirm(View view, int tag) {
+                        getDialog().dismissDialog();
+                        AudioMediaPlayer.stop();
+                        AudioPlayUtil.getInstance().setCloseMiniPlayer(true);
+                        SQLiteUtil.init(getActivity(), new LoginSQLiteCallback()).deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+                        CommonUserInfo.getInstance().clearUserInfo();
+                        ActivityCollector.finishAll();
+                        CommonUserInfo.setApiToken("");
+                        CommonUserInfo.setIsSuperVip(false);
+                        CommonUserInfo.setIsSuperVipAvailable(false);
+                        JumpDetail.jumpLogin(getActivity());
+                        DownloadManager.getInstance().allPaushDownload();
+                    }
+
+                    @Override
+                    public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
+
+                    }
+                });
+                getDialog().showDialog(1);
             }
         });
     }

@@ -486,7 +486,11 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
 
     private void initData(JSONObject data, boolean cache) {
         realSrcId = data.getString("resource_id");
-        SetImageUriUtil.setImgURI(itBg, imgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 250));
+        if (SetImageUriUtil.isGif(imgUrl)) {
+            SetImageUriUtil.setGifURI(itBg, imgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 250));
+        } else {
+            SetImageUriUtil.setImgURI(itBg, imgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 250));
+        }
         // 标题
         String title = data.getString("title");
         // 订阅量

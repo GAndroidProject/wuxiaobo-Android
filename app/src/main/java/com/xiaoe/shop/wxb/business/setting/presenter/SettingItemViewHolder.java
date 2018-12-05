@@ -26,8 +26,6 @@ public class SettingItemViewHolder extends BaseViewHolder {
     @BindView(R.id.item_go)
     ImageView itemGo;
 
-    private OnItemClickWithPosListener itemClickListener;
-
     SettingItemViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);

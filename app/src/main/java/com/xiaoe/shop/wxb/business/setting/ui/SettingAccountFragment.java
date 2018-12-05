@@ -288,6 +288,9 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
 
     // 关于布局
     private void initAboutFragment() {
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(getActivity(), 1), 0, 0);
+        viewWrap.setLayoutParams(layoutParams);
         SimpleDraweeView aboutLogo = (SimpleDraweeView) viewWrap.findViewById(R.id.about_logo);
         TextView aboutDesc = (TextView) viewWrap.findViewById(R.id.about_desc);
         aboutDesc.setText("杭州巴九灵文化创意股份有限公司 版权所有");

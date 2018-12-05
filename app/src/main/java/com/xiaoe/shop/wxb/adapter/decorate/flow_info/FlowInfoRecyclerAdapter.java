@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.adapter.decorate.flow_info;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -82,7 +83,11 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         switch (itemType) {
             case DecorateEntityType.FLOW_INFO_IMG_TEXT: // 图文
                 final FlowInfoImgTextViewHolder itViewHolder = (FlowInfoImgTextViewHolder) holder;
-                SetImageUriUtil.setImgURI(itViewHolder.flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 250), Dp2Px2SpUtil.dp2px(mContext, 375));
+                if (SetImageUriUtil.isGif(bindItem.getItemImg())) {
+                    SetImageUriUtil.setGifURI(itViewHolder.flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 250), Dp2Px2SpUtil.dp2px(mContext, 375));
+                } else {
+                    SetImageUriUtil.setImgURI(itViewHolder.flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 250), Dp2Px2SpUtil.dp2px(mContext, 375));
+                }
                 if (bindItem.isItemHasBuy()) { // 买了，价格就不显示
                     itViewHolder.flowInfoPrice.setVisibility(View.GONE);
                 }
@@ -164,7 +169,15 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 } else {
                     url = "res:///" + R.mipmap.audio_ring;
                 }
-                SetImageUriUtil.setImgURI(audioViewHolder.flowInfoAvatar, url, Dp2Px2SpUtil.dp2px(mContext, 194), Dp2Px2SpUtil.dp2px(mContext, 194));
+                if (url.contains("res:///")) { // 本地图片
+                    SetImageUriUtil.setImgURI(audioViewHolder.flowInfoAvatar, url, Dp2Px2SpUtil.dp2px(mContext, 194), Dp2Px2SpUtil.dp2px(mContext, 194));
+                } else { // 网络图片
+                    if (SetImageUriUtil.isGif(url)) { // gif 图
+                        SetImageUriUtil.setRoundAsCircle(audioViewHolder.flowInfoAvatar, Uri.parse(url));
+                    } else { // 普通图
+                        SetImageUriUtil.setImgURI(audioViewHolder.flowInfoAvatar, url, Dp2Px2SpUtil.dp2px(mContext, 194), Dp2Px2SpUtil.dp2px(mContext, 194));
+                    }
+                }
                 if (!"".equals(bindItem.getItemTag())) {
                     audioViewHolder.flowInfoTag.setText(bindItem.getItemTag());
                 }

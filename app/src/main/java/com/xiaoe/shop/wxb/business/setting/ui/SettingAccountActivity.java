@@ -36,6 +36,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.login.LoginPresenter;
+import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 import butterknife.BindView;
@@ -226,26 +227,32 @@ public class SettingAccountActivity extends XiaoeActivity {
         if (tag.equals(CACHE) || tag.equals(VERSION)) {
             switch (tag) {
                 case CACHE:
-                    final AlertDialog alertDialog = new AlertDialog.Builder(this)
-                        .setTitle("")
-                        .setMessage("确定清除")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                CacheManagerUtil.clearAllCache(SettingAccountActivity.this);
-                                MainAccountFragment mainAccountFragment = (MainAccountFragment) currentFragment;
-                                mainAccountFragment.itemInfoList.get(2).setItemContent("");
-                                mainAccountFragment.settingRecyclerAdapter.notifyDataSetChanged();
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).create();
-                    alertDialog.show();
+                    getDialog().setTitleVisibility(View.VISIBLE);
+                    getDialog().setTitle("确定清除？");
+                    getDialog().setMessageVisibility(View.GONE);
+                    getDialog().setConfirmText(getResources().getString(R.string.confirm_title));
+                    getDialog().setCancelText(getResources().getString(R.string.cancel_title));
+                    getDialog().setOnCustomDialogListener(new OnCustomDialogListener() {
+                        @Override
+                        public void onClickCancel(View view, int tag) {
+                            getDialog().dismissDialog();
+                        }
+
+                        @Override
+                        public void onClickConfirm(View view, int tag) {
+                            CacheManagerUtil.clearAllCache(SettingAccountActivity.this);
+                            MainAccountFragment mainAccountFragment = (MainAccountFragment) currentFragment;
+                            mainAccountFragment.itemInfoList.get(2).setItemContent("");
+                            mainAccountFragment.settingRecyclerAdapter.notifyDataSetChanged();
+                            getDialog().dismissDialog();
+                        }
+
+                        @Override
+                        public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
+
+                        }
+                    });
+                    getDialog().showDialog(1);
                     break;
                 case VERSION: // 版本更新
 //                    final AlertDialog versionDialog = new AlertDialog.Builder(this)

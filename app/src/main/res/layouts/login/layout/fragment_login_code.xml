@@ -35,7 +35,8 @@
         app:cv_text_color="@android:color/black"
         app:cv_text_size="16sp"
         app:cv_width="48dp"
-        app:cv_height="56dp"/>
+        app:cv_height="56dp"
+        app:cv_bg="@drawable/bottom_border"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

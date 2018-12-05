@@ -63,7 +63,8 @@
             android:inputType="textPassword"
             android:maxLength="12"
             android:paddingTop="16dp"
-            android:paddingBottom="16dp" />
+            android:paddingBottom="16dp"
+            android:background="@drawable/bottom_border"/>
 
         <ImageView
             android:id="@+id/ivShowPwd"

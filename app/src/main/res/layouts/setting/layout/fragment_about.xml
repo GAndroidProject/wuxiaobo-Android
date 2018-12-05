@@ -8,12 +8,8 @@
     android:background="@color/audio_page_bg_color">
 
     <FrameLayout
-        android:id="@+id/about_title"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingTop="100dp"
-        android:paddingBottom="100dp"
+        android:layout_height="300dp"
         android:background="@color/white">
 
         <com.facebook.drawee.view.SimpleDraweeView
@@ -30,7 +26,14 @@
         android:id="@+id/about_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"/>
+        android:scrollbars="none"
+        android:overScrollMode="never"
+        android:nestedScrollingEnabled="false"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <TextView
         android:id="@+id/about_desc"

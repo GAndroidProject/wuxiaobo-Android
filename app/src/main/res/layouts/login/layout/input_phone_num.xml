@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="@string/login_main_phone_head"
             android:textSize="16sp"
-            android:paddingBottom="8dp"
+            android:paddingBottom="16dp"
             android:background="@drawable/bottom_border"
             />
 
@@ -46,7 +46,11 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:inputType="phone"
-            android:maxLength="11"/>
+            android:maxLength="11"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bottom_border"/>
 
     </LinearLayout>
 

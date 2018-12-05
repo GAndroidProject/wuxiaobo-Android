@@ -109,4 +109,8 @@ public class SetImageUriUtil {
                 .setImageRequest(request);
         audioRing.setController(builder.build());
     }
+
+    public static boolean isGif(String url) {
+        return "gif".equals(url.substring(url.lastIndexOf(".") + 1)) || "GIF".equals(url.substring(url.lastIndexOf(".") + 1));
+    }
 }
