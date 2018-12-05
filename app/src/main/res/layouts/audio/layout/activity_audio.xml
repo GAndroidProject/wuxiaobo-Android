@@ -119,7 +119,7 @@
             <RelativeLayout
                 android:id="@+id/audio_poster_wrap"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:layout_above="@id/controller_wrap"
                 >
@@ -131,6 +131,13 @@
                     android:transitionName="share_img_audio_bg"
                     android:layout_centerHorizontal="true"
                     />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="ContentDescription"
+                    android:src="@mipmap/cd_shadow"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"/>
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/audio_ring"
                     android:layout_width="190dp"
@@ -251,7 +258,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:src="@mipmap/audio_white_back"
+            android:src="@mipmap/audiodetail_back"
             />
     </RelativeLayout>
 </RelativeLayout>

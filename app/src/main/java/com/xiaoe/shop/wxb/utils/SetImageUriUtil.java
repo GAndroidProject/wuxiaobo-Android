@@ -3,8 +3,12 @@ package com.xiaoe.shop.wxb.utils;
 import android.net.Uri;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ImageDecodeOptions;
+import com.facebook.imagepipeline.common.ImageDecodeOptionsBuilder;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
@@ -81,5 +85,28 @@ public class SetImageUriUtil {
             simpleDraweeView.setImageURI("");
         }
 
+    }
+
+    /**
+     * 代码处理未圆形图
+     * @param uri
+     */
+    public static void setRoundAsCircle(SimpleDraweeView audioRing, Uri uri){
+        audioRing.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+
+        ImageDecodeOptions imageDecodeOptions = new ImageDecodeOptionsBuilder()
+                .setForceStaticImage(true)
+                .build();
+
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+//                .setResizeOptions(new ResizeOptions(100, 100))
+                .setCacheChoice(ImageRequest.CacheChoice.SMALL)
+                .setImageDecodeOptions(imageDecodeOptions)
+                .build();
+
+        PipelineDraweeControllerBuilder builder = Fresco.getDraweeControllerBuilderSupplier().get()
+                .setOldController(audioRing.getController())
+                .setImageRequest(request);
+        audioRing.setController(builder.build());
     }
 }

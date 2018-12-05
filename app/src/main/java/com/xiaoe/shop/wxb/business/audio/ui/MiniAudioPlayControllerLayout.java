@@ -13,14 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
-import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.ImageDecodeOptions;
-import com.facebook.imagepipeline.common.ImageDecodeOptionsBuilder;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayTable;
@@ -33,6 +26,7 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioNotifier;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioSQLiteUtil;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
+import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.widget.TasksCompletedView;
 
 public class MiniAudioPlayControllerLayout extends FrameLayout implements View.OnClickListener {
@@ -103,29 +97,10 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
             return;
         }
         if("gif".equals(url.substring(url.lastIndexOf(".")+1)) || "GIF".equals(url.substring(url.lastIndexOf(".")+1))){
-            setRoundAsCircle(Uri.parse(url));
+            SetImageUriUtil.setRoundAsCircle(audioDisk,Uri.parse(url));
         }else{
             audioDisk.setImageURI(Uri.parse(url));
         }
-    }
-
-    private void setRoundAsCircle(Uri uri){
-        audioDisk.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
-
-        ImageDecodeOptions imageDecodeOptions = new ImageDecodeOptionsBuilder()
-                .setForceStaticImage(true)
-                .build();
-
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-//                .setResizeOptions(new ResizeOptions(100, 100))
-                .setCacheChoice(ImageRequest.CacheChoice.SMALL)
-                .setImageDecodeOptions(imageDecodeOptions)
-                .build();
-
-        PipelineDraweeControllerBuilder builder = Fresco.getDraweeControllerBuilderSupplier().get()
-                .setOldController(audioDisk.getController())
-                .setImageRequest(request);
-        audioDisk.setController(builder.build());
     }
 
     public void setPlayState(int state){
