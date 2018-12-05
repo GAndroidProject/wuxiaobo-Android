@@ -108,7 +108,7 @@ public class JumpDetail {
         intent.putExtra("resource_id", resId);
 //        intent.putExtra("isBigColumn", isBigColumn);
         intent.putExtra("resource_type", resourceType);
-        if(!TextUtils.isEmpty(imageUrl)){
+        if(!TextUtils.isEmpty(imageUrl) && imageUrl.indexOf("res:///") < 0){
             intent.putExtra("column_image_url", imageUrl);
         }
         context.startActivity(intent);

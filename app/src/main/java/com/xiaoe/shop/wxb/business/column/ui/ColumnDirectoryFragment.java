@@ -127,6 +127,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             List<ColumnDirectoryEntity> newDataList = new ArrayList<ColumnDirectoryEntity>();
             for (ColumnDirectoryEntity directoryEntity : directoryAdapter.getData()){
                 List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
+                int downloadCount = 0;
                 for (ColumnSecondDirectoryEntity secondDirectoryEntity : directoryEntity.getResource_list()){
                     if(secondDirectoryEntity.getResource_type() == 3 && !TextUtils.isEmpty(secondDirectoryEntity.getVideo_url())){
                         boolean isDownload = DownloadManager.getInstance().isDownload(secondDirectoryEntity.getApp_id(),secondDirectoryEntity.getResource_id());
@@ -136,6 +137,9 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                         boolean isDownload = DownloadManager.getInstance().isDownload(secondDirectoryEntity.getApp_id(),secondDirectoryEntity.getResource_id());
                         secondDirectoryEntity.setEnable(!isDownload);
                         newChildDataList.add(secondDirectoryEntity);
+                    }
+                    if(!secondDirectoryEntity.isEnable()){
+                        downloadCount++;
                     }
                 }
                 if(newChildDataList.size() > 0){
@@ -154,6 +158,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                     newDirectoryEntity.setM3u8_url(directoryEntity.getM3u8_url());
                     newDirectoryEntity.setSelect(false);
                     newDirectoryEntity.setStart_at(directoryEntity.getStart_at());
+                    newDirectoryEntity.setEnable(!(downloadCount == newChildDataList.size()));
 
                     newDataList.add(newDirectoryEntity);
                 }

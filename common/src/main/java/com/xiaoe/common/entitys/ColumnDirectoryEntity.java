@@ -10,6 +10,7 @@ public class ColumnDirectoryEntity implements Serializable {
 
     private boolean expand = false;// 是否展开
     private boolean isSelect = false; //是否选择
+    private boolean enable = true;//是否可选
     /**
      * app_id : apppcHqlTPT3482
      * resource_id : a_5bc6df02009f9_lhQh0lbk
@@ -184,5 +185,13 @@ public class ColumnDirectoryEntity implements Serializable {
 
     public void setBigColumnId(String bigColumnId) {
         this.bigColumnId = bigColumnId;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 }

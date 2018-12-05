@@ -13,9 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-
-import java.util.List;
-
 import com.xiaoe.common.entitys.ColumnDirectoryEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.network.downloadUtil.DownloadManager;
@@ -23,6 +20,8 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.download.BatchDownloadAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.interfaces.OnSelectListener;
+
+import java.util.List;
 
 public class DownloadDirectoryFragment extends BaseFragment implements View.OnClickListener, OnSelectListener {
     private static final String TAG = "DownloadDirectory";
@@ -37,6 +36,7 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
     private String resourceId;
     private String fromType;
     private TextView selectCount;
+    private boolean allSelectEnable;
 
     @Nullable
     @Override
@@ -58,6 +58,19 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
         resourceId = intent.getStringExtra("resourceId");
         fromType = intent.getStringExtra("from_type");
         List<ColumnDirectoryEntity> dataList = JSONObject.parseArray(dataJson, ColumnDirectoryEntity.class);
+        int downloadCount = 0;
+        for (ColumnDirectoryEntity directoryEntity : dataList){
+            if (!directoryEntity.isEnable()){
+                downloadCount++;
+            }
+        }
+        allSelectEnable = !(downloadCount == dataList.size());
+        //全选是否可选
+        btnAllSelect.setEnabled(allSelectEnable);
+        btnDownload.setEnabled(allSelectEnable);
+        if(!allSelectEnable){
+            allSetectImage.setImageResource(R.mipmap.download_alreadychecked);
+        }
         adapter.addAllData(dataList);
     }
 
@@ -98,15 +111,34 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
 
     private void clickDownload() {
         boolean download = false;
+        int downloadCount = 0;
         for (ColumnDirectoryEntity directoryEntity : adapter.getDate()){
+            int childDownloadCount = 0;
             for (ColumnSecondDirectoryEntity secondDirectoryEntity : directoryEntity.getResource_list()){
                 if(secondDirectoryEntity.isSelect() && secondDirectoryEntity.isEnable()){
                     download = true;
                     secondDirectoryEntity.setEnable(false);
                     DownloadManager.getInstance().addDownload(null, null, secondDirectoryEntity);
                 }
+                if(!secondDirectoryEntity.isEnable()){
+                    childDownloadCount++;
+                }
+            }
+            if(childDownloadCount == directoryEntity.getResource_list().size()){
+                directoryEntity.setEnable(false);
+                downloadCount++;
             }
         }
+        allSelectEnable = !(downloadCount == adapter.getDate().size());
+        //全选是否可选
+        btnAllSelect.setEnabled(allSelectEnable);
+        btnDownload.setEnabled(allSelectEnable);
+        if(!allSelectEnable){
+            allSetectImage.setImageResource(R.mipmap.download_alreadychecked);
+            selectCount.setText(String.valueOf("已选 0条"));
+            allSelectText.setText(getResources().getString(R.string.all_select_text));
+        }
+
         if(download){
             download = false;
             toastCustom(getString(R.string.add_download_list));
@@ -116,7 +148,12 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
         }
     }
 
-    private void setAllsetectState(){
+    private void setAllSelectState(){
+        if(!allSelectEnable){
+            allSelectText.setText(getResources().getString(R.string.all_select_text));
+            allSetectImage.setImageResource(R.mipmap.download_alreadychecked);
+            return;
+        }
         if(isAllSelect){
             allSelectText.setText(getResources().getString(R.string.cancel_text));
             allSetectImage.setImageResource(R.mipmap.download_checking);
@@ -127,7 +164,7 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
     }
     private void clickAllSelect() {
         isAllSelect = !isAllSelect;
-        setAllsetectState();
+        setAllSelectState();
         int count = 0;
         for (ColumnDirectoryEntity item : adapter.getDate()) {
             item.setSelect(isAllSelect);
@@ -147,7 +184,7 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
         int count = 0;
         int childCount = 0;
         for (ColumnDirectoryEntity item: adapter.getDate()) {
-            if(item.isSelect()){
+            if(item.isSelect() || !item.isEnable()){
                 count++;
             }
             for (ColumnSecondDirectoryEntity childItem : item.getResource_list()){
@@ -157,7 +194,10 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
             }
         }
         isAllSelect = count == adapter.getDate().size();
-        setAllsetectState();
+        setAllSelectState();
+        if(!allSelectEnable){
+            childCount = 0;
+        }
         selectCount.setText(String.valueOf("已选 "+childCount+"条"));
 
     }

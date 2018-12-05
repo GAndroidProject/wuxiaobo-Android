@@ -21,6 +21,7 @@ import com.xiaoe.common.entitys.ColumnDirectoryEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.tree.TreeChildRecyclerAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
@@ -170,17 +171,26 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
                 return;
             }
             List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
+            int downloadCount = 0;
             for (ColumnSecondDirectoryEntity item : directoryAdapter.getData()){
                 if(item.getResource_type() == 3 && !TextUtils.isEmpty(item.getVideo_url())){
+                    boolean isDownload = DownloadManager.getInstance().isDownload(item.getApp_id(),item.getResource_id());
+                    item.setEnable(!isDownload);
                     newChildDataList.add(item);
                 }else if(item.getResource_type() == 2 && !TextUtils.isEmpty(item.getAudio_url())){
+                    boolean isDownload = DownloadManager.getInstance().isDownload(item.getApp_id(),item.getResource_id());
+                    item.setEnable(!isDownload);
                     newChildDataList.add(item);
+                }
+                if(!item.isEnable()){
+                    downloadCount++;
                 }
             }
 
             List<ColumnDirectoryEntity> newDataList = new ArrayList<ColumnDirectoryEntity>();
             if(newChildDataList.size() > 0){
                 ColumnDirectoryEntity directoryEntity = new ColumnDirectoryEntity();
+                directoryEntity.setEnable(!(downloadCount == newChildDataList.size()));
                 directoryEntity.setTitle(((ColumnActivity)getActivity()).getColumnTitle());
                 directoryEntity.setResource_list(newChildDataList);
                 newDataList.add(directoryEntity);

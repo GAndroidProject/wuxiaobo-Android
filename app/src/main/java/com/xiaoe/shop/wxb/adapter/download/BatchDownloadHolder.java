@@ -74,7 +74,11 @@ public class BatchDownloadHolder extends BaseViewHolder implements View.OnClickL
         }else{
             setExpandHide();
         }
-        setAllSelect(itemData.isSelect());
+        if(itemData.isEnable()){
+            setAllSelect(itemData.isSelect());
+        }else{
+            allSelectIcon.setImageResource(R.mipmap.download_alreadychecked);
+        }
         childDownloadAdapter.setSelectListener(this);
         childDownloadAdapter.setParentPosition(position);
         childDownloadAdapter.setItemData(itemData.getResource_list());
@@ -125,16 +129,23 @@ public class BatchDownloadHolder extends BaseViewHolder implements View.OnClickL
         }
     }
     private void clickAllSelect() {
+        if(!mItemData.isEnable()){
+            return;
+        }
         if(mItemData.isSelect()){
             for (ColumnSecondDirectoryEntity item: mItemData.getResource_list()) {
                 item.setSelect(false);
             }
             mItemData.setSelect(false);
         }else{
+            int selectCount = 0;
             for (ColumnSecondDirectoryEntity item: mItemData.getResource_list()) {
-                item.setSelect(true);
+                if(item.isEnable()){
+                    selectCount++;
+                    item.setSelect(true);
+                }
             }
-            mItemData.setSelect(true);
+            mItemData.setSelect(selectCount > 0);
         }
         setAllSelect(mItemData.isSelect());
         childDownloadAdapter.notifyDataSetChanged();

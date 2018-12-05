@@ -173,6 +173,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
                 return;
             }
             List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
+            int downloadCount = 0;
             for (ColumnSecondDirectoryEntity item : directoryAdapter.getData()){
                 if(item.getResource_type() == 3 && !TextUtils.isEmpty(item.getVideo_url())){
                     boolean isDownload = DownloadManager.getInstance().isDownload(item.getApp_id(),item.getResource_id());
@@ -183,11 +184,15 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
                     item.setEnable(!isDownload);
                     newChildDataList.add(item);
                 }
+                if(!item.isEnable()){
+                    downloadCount++;
+                }
             }
 
             List<ColumnDirectoryEntity> newDataList = new ArrayList<ColumnDirectoryEntity>();
             if(newChildDataList.size() > 0){
                 ColumnDirectoryEntity directoryEntity = new ColumnDirectoryEntity();
+                directoryEntity.setEnable(!(downloadCount == newChildDataList.size()));
                 directoryEntity.setTitle(((ColumnActivity)getActivity()).getColumnTitle());
                 directoryEntity.setResource_list(newChildDataList);
                 newDataList.add(directoryEntity);
