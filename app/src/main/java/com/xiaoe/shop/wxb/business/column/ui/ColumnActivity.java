@@ -724,8 +724,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             JSONArray data = JSONObject.parseObject(cacheDataResourceList.get(0).getResourceList()).getJSONArray("data");
             columnListRequest( data);
         }
-        if(cacheDataList != null && cacheDataList.size() > 0 &&
-                cacheDataResourceList != null && cacheDataResourceList.size() > 0){
+        if(cacheDataList != null && cacheDataList.size() > 0){
             showDataByDB = true;
         }
     }

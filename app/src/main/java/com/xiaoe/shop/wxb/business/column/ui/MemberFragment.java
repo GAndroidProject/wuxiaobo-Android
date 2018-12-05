@@ -217,6 +217,7 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
             playEntity.setBigColumnId(entity.getBigColumnId());
             playEntity.setTotalDuration(entity.getAudio_length());
             playEntity.setProductsTitle(entity.getColumnTitle());
+            playEntity.setIsTry(entity.getIsTry());
             index++;
             playList.add(playEntity);
         }
@@ -224,7 +225,7 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
 
     private void clickPlayAll() {
         if (loginUserList.size() == 1) {
-            if(!isHasBuy){
+            if(!isHasBuy && playList.size() <= 0){
                 toastCustom("未购买课程");
                 return;
             }

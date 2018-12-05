@@ -147,6 +147,8 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
 
     public void refreshData(List<ColumnSecondDirectoryEntity> list){
         directoryAdapter.refreshData(list);
+        playList.clear();
+        setAudioPlayList(list);
     }
 
     public void clearData(){
@@ -222,6 +224,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             playEntity.setBigColumnId(entity.getBigColumnId());
             playEntity.setTotalDuration(entity.getAudio_length());
             playEntity.setProductsTitle(entity.getColumnTitle());
+            playEntity.setIsTry(entity.getIsTry());
             index++;
             playList.add(playEntity);
         }
@@ -229,7 +232,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
 
     private void clickPlayAll() {
         if (loginUserList.size() == 1) {
-            if(!isHasBuy){
+            if(!isHasBuy && playList.size() <= 0){
                 toastCustom("未购买课程");
                 return;
             }

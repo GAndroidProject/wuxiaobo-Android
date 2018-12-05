@@ -193,12 +193,12 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             ColumnDirectoryEntity parentEntity = directoryAdapter.getPositionData(parentPosition);
             isAddPlayList = playParentPosition == parentPosition;
             if(position == -1){
-                if(!isHasBuy){
+                //播放全部
+                List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
+                if(!isHasBuy && playList.size() <= 0 ){
                     toastCustom("未购买课程");
                     return;
                 }
-                //播放全部
-                List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
                 clickPlayAll(playList);
             }else{
                 //播放某一个，同时获取播放列表
@@ -299,6 +299,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
             playEntity.setBigColumnId(entity.getBigColumnId());
             playEntity.setTotalDuration(entity.getAudio_length());
             playEntity.setProductsTitle(entity.getColumnTitle());
+            playEntity.setIsTry(entity.getIsTry());
             index++;
             playList.add(playEntity);
         }

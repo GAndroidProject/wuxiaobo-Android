@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -345,10 +346,20 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
                 try {
+                    PlaybackParams playbackParams = new PlaybackParams();
+                    playbackParams.setSpeed(2);
+                    playbackParams.setPitch(1);
+                    playbackParams.setAudioFallbackMode(
+                            PlaybackParams.AUDIO_FALLBACK_MODE_DEFAULT);
+//                    mediaPlayer.setPlaybackParams(playbackParams);
+//                    PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
+//                    playbackParams.setSpeed(speed);
+//                    playbackParams.setPitch(speed);
+//                    playbackParams.setAudioFallbackMode(PlaybackParams.AUDIO_FALLBACK_MODE_MUTE);
                     if (mediaPlayer.isPlaying()) {
-                        mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
+                        mediaPlayer.setPlaybackParams(playbackParams);
                     } else {
-                        mediaPlayer.setPlaybackParams(mediaPlayer.getPlaybackParams().setSpeed(speed));
+                        mediaPlayer.setPlaybackParams(playbackParams);
                         mediaPlayer.pause();
                     }
                     mPlaySpeed = speed;

@@ -15,7 +15,6 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 
 import java.util.List;
@@ -102,15 +101,6 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 itViewHolder.flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
                     @Override
                     public void doClick(View v) {
-//                        ActivityOptions options =
-//                                ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
-//                                        Pair.create(((View) itViewHolder.flowInfoBg), mContext.getResources().getString(R.string.share_img)),
-//                                        Pair.create(((View) itViewHolder.flowInfoTag), mContext.getResources().getString(R.string.share_txt)));
-//                        Intent transitionIntent = new Intent(mContext, CourseImageTextActivity.class);
-//                        transitionIntent.putExtra("type", DecorateEntityType.FLOW_INFO_IMG_TEXT_STR);
-//                        transitionIntent.putExtra("imgUrl", imgUrl);
-//                        transitionIntent.putExtra("resourceId", bindItem.getItemId());
-//                        mContext.startActivity(transitionIntent, options.toBundle());
                         JumpDetail.jumpImageText(mContext, bindItem.getItemId(), "", "");
                     }
                 });
@@ -135,7 +125,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 columnViewHolder.flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
                     @Override
                     public void doClick(View v) {
-                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemType(), 6);
+                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemImg(), 6);
                     }
                 });
                 break;
@@ -159,7 +149,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 topicViewHolder.flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
                     @Override
                     public void doClick(View v) {
-                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemType(), 8);
+                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemImg(), 8);
                     }
                 });
                 break;
