@@ -29,9 +29,6 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     private Context mContext;
     private List<FlowInfoItem> mItemList;
 
-    private int currentPos;
-    private FlowInfoItem currentItem;
-
     public FlowInfoRecyclerAdapter(Context context, List<FlowInfoItem> list) {
         this.mContext = context;
         this.mItemList = list;
@@ -46,28 +43,18 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         View view = null;
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0,0,0,30);
-        currentItem = mItemList.get(currentPos);
         switch (viewType) {
             case DecorateEntityType.FLOW_INFO_IMG_TEXT: // 图文
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_img_text, null);
-                if (currentItem.isItemHasBuy()) { // 买了，价格就不显示
-                    view.findViewById(R.id.flow_info_img_text_price).setVisibility(View.GONE);
-                }
                 view.setLayoutParams(layoutParams);
                 return new FlowInfoImgTextViewHolder(view);
             // 图文、专栏、大专栏都是用一个布局
             case DecorateEntityType.FLOW_INFO_COLUMN:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_img_text, null);
-                if (currentItem.isItemHasBuy()) {
-                    view.findViewById(R.id.flow_info_img_text_price).setVisibility(View.GONE);
-                }
                 view.setLayoutParams(layoutParams);
                 return new FlowInfoImgTextViewHolder(view);
             case DecorateEntityType.FLOW_INFO_TOPIC:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_img_text, null);
-                if (currentItem.isItemHasBuy()) {
-                    view.findViewById(R.id.flow_info_img_text_price).setVisibility(View.GONE);
-                }
                 view.setLayoutParams(layoutParams);
                 return new FlowInfoImgTextViewHolder(view);
             case DecorateEntityType.FLOW_INFO_AUDIO: // 音频
@@ -87,16 +74,19 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         int bindPos = holder.getAdapterPosition();
-        int itemType = getItemViewType(bindPos);
+        final FlowInfoItem bindItem = mItemList.get(bindPos);
+        int itemType = covertStr2Int(bindItem.getItemType());
         if (itemType == -1) {
             Log.d(TAG, "onBindViewHolder: flow_info component viewType get -1");
             return;
         }
-        final FlowInfoItem bindItem = mItemList.get(bindPos);
         switch (itemType) {
             case DecorateEntityType.FLOW_INFO_IMG_TEXT: // 图文
                 final FlowInfoImgTextViewHolder itViewHolder = (FlowInfoImgTextViewHolder) holder;
                 SetImageUriUtil.setImgURI(itViewHolder.flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 250), Dp2Px2SpUtil.dp2px(mContext, 375));
+                if (bindItem.isItemHasBuy()) { // 买了，价格就不显示
+                    itViewHolder.flowInfoPrice.setVisibility(View.GONE);
+                }
                 if (!"".equals(bindItem.getItemTag())) {
                     itViewHolder.flowInfoTag.setText(bindItem.getItemTag());
                 }
@@ -128,6 +118,9 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.FLOW_INFO_COLUMN: // 专栏
                 final FlowInfoImgTextViewHolder columnViewHolder = (FlowInfoImgTextViewHolder) holder;
                 SetImageUriUtil.setImgURI(columnViewHolder.flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 250), Dp2Px2SpUtil.dp2px(mContext, 375));
+                if (bindItem.isItemHasBuy()) {
+                    columnViewHolder.flowInfoPrice.setVisibility(View.GONE);
+                }
                 if (!"".equals(bindItem.getItemTag())) {
                     columnViewHolder.flowInfoTag.setText(bindItem.getItemTag());
                 }
@@ -145,9 +138,13 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemType(), 6);
                     }
                 });
+                break;
             case DecorateEntityType.FLOW_INFO_TOPIC: // 大专栏
                 final FlowInfoImgTextViewHolder topicViewHolder = (FlowInfoImgTextViewHolder) holder;
                 SetImageUriUtil.setImgURI(topicViewHolder.flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 250), Dp2Px2SpUtil.dp2px(mContext, 375));
+                if (bindItem.isItemHasBuy()) {
+                    topicViewHolder.flowInfoPrice.setVisibility(View.GONE);
+                }
                 if (!"".equals(bindItem.getItemTag())) {
                     topicViewHolder.flowInfoTag.setText(bindItem.getItemTag());
                 }
@@ -246,8 +243,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        currentPos = position;
-        currentItem = mItemList.get(position);
+        FlowInfoItem currentItem = mItemList.get(position);
         String itemType = currentItem.getItemType();
         switch (itemType) {
             case DecorateEntityType.FLOW_INFO_IMG_TEXT_STR:
@@ -265,4 +261,25 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         }
     }
 
+    /**
+     * 信息流资源类型转换 str - int
+     * @param resourceType 资源类型
+     * @return 资源类型的字符串形式
+     */
+    private int covertStr2Int(String resourceType) {
+        switch (resourceType) {
+            case DecorateEntityType.IMAGE_TEXT:
+                return DecorateEntityType.FLOW_INFO_IMG_TEXT;
+            case DecorateEntityType.AUDIO:
+                return DecorateEntityType.FLOW_INFO_AUDIO;
+            case DecorateEntityType.VIDEO:
+                return DecorateEntityType.FLOW_INFO_VIDEO;
+            case DecorateEntityType.COLUMN:
+                return DecorateEntityType.FLOW_INFO_COLUMN;
+            case DecorateEntityType.TOPIC:
+                return DecorateEntityType.FLOW_INFO_TOPIC;
+            default:
+                return -1;
+        }
+    }
 }

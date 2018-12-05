@@ -62,7 +62,7 @@ public class CommonRefreshHeader extends LinearLayout implements RefreshHeader {
     @Override
     public SpinnerStyle getSpinnerStyle() {
         // 指定变化方式为平移
-        return SpinnerStyle.Translate;
+        return SpinnerStyle.Scale;
     }
 
     /**

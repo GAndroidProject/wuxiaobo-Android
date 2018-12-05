@@ -202,10 +202,10 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         }
         super.onMainThreadResponse(iRequest, success, entity);
         JSONObject result = (JSONObject) entity;
+        microPageFresh.finishRefresh();
         if (success) { // 请求成功
             int code = result.getInteger("code");
             if (iRequest instanceof PageFragmentRequest) {
-                microPageFresh.finishRefresh();
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = (JSONObject) result.get("data");
                     if (microPageList != null) microPageList.clear();
@@ -228,7 +228,6 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof ColumnListRequst) {
-                microPageFresh.finishRefresh();
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONArray data = (JSONArray) result.get("data");
                     refreshRecentComponent(data, iRequest.getDataParams().getString("goods_id"));
@@ -238,7 +237,6 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 }
             }
         } else {
-            microPageFresh.finishRefresh();
             if (iRequest != null) {
                 if (microPageList.size() <= 0) { // 页面没数据
                     microPageLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
@@ -636,7 +634,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             if (i == 0) { // 第一个要显示我正在学
                 String flowInfoTitle;
                 if (yearStr != 0 && year == yearStr) {
-                    flowInfoTitle = titleTwo;
+                    flowInfoTitle = titleTwo + " " + dateTag.getString(2);
                 } else {
                     flowInfoTitle = dateTag.getString(1);
                 }
@@ -708,17 +706,17 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         microScrollView.setScrollChanged(this);
         microPageFresh.setOnRefreshListener(this);
         microPageFresh.setEnableOverScrollBounce(false);
-        if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
-            microPageFresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
-                @Override
-                public void onHeaderMoving(RefreshHeader header, boolean isDragging, float percent,
-                                           int offset, int headerHeight, int maxDragHeight) {
+//        if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
+//            microPageFresh.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
+//                @Override
+//                public void onHeaderMoving(RefreshHeader header, boolean isDragging, float percent,
+//                                           int offset, int headerHeight, int maxDragHeight) {
 //                    if (microPageTitleBg2.getVisibility() == View.GONE){
 //                        microPageTitleBg2.setVisibility(View.VISIBLE);
 //                        microPageTitleBg.setVisibility(View.GONE);
 //                    }
-                }
-            });
+//                }
+//            });
         toolbarHeight = Dp2Px2SpUtil.dp2px(mContext, 160);
 
         // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
