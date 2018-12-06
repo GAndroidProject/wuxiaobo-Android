@@ -83,6 +83,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
 
     LinearLayoutManager layoutManager;
     DecorateRecyclerAdapter decorateRecyclerAdapter;
+    SpacesItemDecoration spacesItemDecoration;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -302,24 +303,31 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
         if (pageList.size() > 0 && isRefresh) { // 有数据并且在刷新
             isRefresh = false;
             pageList.clear();
+            learningList.removeItemDecoration(spacesItemDecoration);
         }
         pageList.add(knowledgeList);
         if (!hasDecorate) {
             layoutManager = new LinearLayoutManager(this);
+            spacesItemDecoration = new SpacesItemDecoration();
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             learningList.setLayoutManager(layoutManager);
             decorateRecyclerAdapter = new DecorateRecyclerAdapter(this, pageList);
             learningList.setAdapter(decorateRecyclerAdapter);
-//            SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
-//            spacesItemDecoration.setMargin(
-//                    Dp2Px2SpUtil.dp2px(this, 20),
-//                    Dp2Px2SpUtil.dp2px(this, 0),
-//                    Dp2Px2SpUtil.dp2px(this, 20),
-//                    Dp2Px2SpUtil.dp2px(this, 0));
-//            learningList.addItemDecoration(spacesItemDecoration);
+            spacesItemDecoration.setMargin(
+                    Dp2Px2SpUtil.dp2px(this, 0),
+                    Dp2Px2SpUtil.dp2px(this, -16),
+                    Dp2Px2SpUtil.dp2px(this, 0),
+                    Dp2Px2SpUtil.dp2px(this, 0));
             hasDecorate = true;
         } else {
-            decorateRecyclerAdapter.notifyDataSetChanged();
+            if (pageList.size() == 2) { // 第二个开始添加 decoration，只添加一次
+                learningList.addItemDecoration(spacesItemDecoration);
+            }
+            if (pageList.size() >= 2) { // 刷新新增数据的那一个 item
+                decorateRecyclerAdapter.notifyItemChanged(pageList.size() - 1);
+            } else { // 第一个直接通知更新
+                decorateRecyclerAdapter.notifyDataSetChanged();
+            }
             learningList.setFocusableInTouchMode(false);
         }
         learningLoading.setLoadingFinish();

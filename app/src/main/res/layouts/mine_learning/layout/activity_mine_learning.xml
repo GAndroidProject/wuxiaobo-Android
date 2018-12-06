@@ -35,7 +35,8 @@
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/learning_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:srlEnableOverScrollBounce="false">
 
         <com.xiaoe.common.widget.CommonRefreshHeader
             android:layout_width="match_parent"
