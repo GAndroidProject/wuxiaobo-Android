@@ -27,7 +27,7 @@ import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.IRequest;
-import com.xiaoe.network.requests.WithDrawalRequest;
+import com.xiaoe.network.requests.WithdrawRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter;
@@ -247,7 +247,7 @@ public class WithdrawalActivity extends XiaoeActivity {
             return;
         }
         if (success) {
-            if (iRequest instanceof WithDrawalRequest) {
+            if (iRequest instanceof WithdrawRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED || code == NetworkCodes.CODE_WITHDRAWAL_SUCCESS || code == NetworkCodes.CODE_NO_MONEY) {
                     // 测试环境因为没钱，所以会返回 NetworkCodes.CODE_NO_MONEY，也是提现成功的标识

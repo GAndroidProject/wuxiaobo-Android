@@ -27,7 +27,7 @@ public class PageFragmentPresenter implements IBizCallback {
      */
     public void requestMicroPageData(String microPageId) {
 
-        PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(NetworkEngine.API_THIRD_BASE_URL + "xe.shop.page.get/1.0.0", this);
+        PageFragmentRequest pageFragmentRequest = new PageFragmentRequest(this);
         pageFragmentRequest.addDataParam("micro_page_id", microPageId);
         pageFragmentRequest.addDataParam("client", "6");
         pageFragmentRequest.setNeedCache(true);

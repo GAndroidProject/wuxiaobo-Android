@@ -33,8 +33,7 @@ public class SearchPresenter implements IBizCallback {
      * @param keyWord 搜索关键词
      */
     public void requestSearchResult(String keyWord) {
-//        SearchRequest searchRequest = new SearchRequest(NetworkEngine.BASE_URL + cmd, this);
-        SearchRequest searchRequest = new SearchRequest(NetworkEngine.API_THIRD_BASE_URL + cmd, this);
+        SearchRequest searchRequest = new SearchRequest(cmd, this);
         searchRequest.addDataParam("keyword", keyWord);
         searchRequest.addDataParam("page", 1);
         searchRequest.addDataParam("page_size", 10);
@@ -45,8 +44,7 @@ public class SearchPresenter implements IBizCallback {
      * 指定页码、页面大小请求搜索结果
      */
     public void requestSearchResultByPage(String keyWord, int pageIndex, int pageSize) {
-//        SearchRequest searchRequest = new SearchRequest(NetworkEngine.BASE_URL + cmd, this);
-        SearchRequest searchRequest = new SearchRequest(NetworkEngine.API_THIRD_BASE_URL + cmd, this);
+        SearchRequest searchRequest = new SearchRequest(cmd, this);
         searchRequest.addDataParam("keyword", keyWord);
         searchRequest.addDataParam("page", pageIndex);
         searchRequest.addDataParam("page_size", pageSize);
@@ -62,7 +60,7 @@ public class SearchPresenter implements IBizCallback {
      * @param type      商品类型
      */
     public void requestSearchMore(String keyword, int pageIndex, int pageSize, String requestId, int type) {
-        SearchRequest searchRequest = new SearchRequest(NetworkEngine.API_THIRD_BASE_URL + cmd, this);
+        SearchRequest searchRequest = new SearchRequest(cmd, this);
 
         searchRequest.addDataParam("keyword", keyword);
         searchRequest.addDataParam("page", pageIndex);

@@ -5,7 +5,7 @@ import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.EarningRequest;
 import com.xiaoe.network.requests.IRequest;
-import com.xiaoe.network.requests.WithDrawalRequest;
+import com.xiaoe.network.requests.WithdrawRequest;
 
 public class EarningPresenter implements IBizCallback {
 
@@ -29,7 +29,6 @@ public class EarningPresenter implements IBizCallback {
      * @param pageSize  页面大小
      */
     public void requestLaundryList(String assetType, int needFlow, int flowType, int pageIndex, int pageSize) {
-//        EarningRequest earningRequest = new EarningRequest(NetworkEngine.EARNING_BASE_URL + "xe.user.asset.get/1.0.0", this);
         EarningRequest earningRequest = new EarningRequest(this);
 
         earningRequest.addRequestParam("asset_type", assetType);
@@ -50,16 +49,15 @@ public class EarningPresenter implements IBizCallback {
      * @param ip       手机 ip
      */
     public void requestWithdrawal(double price, String ip) {
-//        WithDrawalRequest withDrawalRequest = new WithDrawalRequest(NetworkEngine.EARNING_BASE_URL + "done_c_withdraw", this);
-        WithDrawalRequest withDrawalRequest = new WithDrawalRequest(this);
+        WithdrawRequest withdrawRequest = new WithdrawRequest(this);
 
-        withDrawalRequest.addRequestParam("amount", price);
-        withDrawalRequest.addRequestParam("re_user_name", "");
-        withDrawalRequest.addRequestParam("assert_type", "profit");
-        withDrawalRequest.addRequestParam("account_type", 2);
-        withDrawalRequest.addRequestParam("desc", "提现");
-        withDrawalRequest.addRequestParam("client_ip", ip);
+        withdrawRequest.addRequestParam("amount", price);
+        withdrawRequest.addRequestParam("re_user_name", "");
+        withdrawRequest.addRequestParam("assert_type", "profit");
+        withdrawRequest.addRequestParam("account_type", 2);
+        withdrawRequest.addRequestParam("desc", "提现");
+        withdrawRequest.addRequestParam("client_ip", ip);
 
-        NetworkEngine.getInstance().sendRequest(withDrawalRequest);
+        NetworkEngine.getInstance().sendRequest(withdrawRequest);
     }
 }

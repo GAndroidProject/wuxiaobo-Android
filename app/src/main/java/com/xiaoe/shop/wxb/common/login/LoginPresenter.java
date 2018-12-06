@@ -109,7 +109,7 @@ public class LoginPresenter implements IBizCallback {
      * @param phoneNum
      */
     public void checkRegister(String phoneNum) {
-        LoginCheckRegisterRequest loginCheckRegisterRequest = new LoginCheckRegisterRequest(NetworkEngine.LOGIN_BASE_URL + "check_phone", this);
+        LoginCheckRegisterRequest loginCheckRegisterRequest = new LoginCheckRegisterRequest(this);
 
 //        loginCheckRegisterRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginCheckRegisterRequest.addRequestParam("phone", phoneNum);
@@ -123,7 +123,7 @@ public class LoginPresenter implements IBizCallback {
      * @param phoneNum
      */
     public void obtainPhoneCode(String phoneNum) {
-        LoginPhoneCodeRequest loginPhoneCodeRequest = new LoginPhoneCodeRequest(NetworkEngine.LOGIN_BASE_URL + "send_msg", this);
+        LoginPhoneCodeRequest loginPhoneCodeRequest = new LoginPhoneCodeRequest(this);
 
 //        loginPhoneCodeRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginPhoneCodeRequest.addRequestParam("phone", phoneNum);
@@ -138,7 +138,7 @@ public class LoginPresenter implements IBizCallback {
      * @param code
      */
     public void verifyCode(String phoneNum, String code) {
-        LoginCodeVerifyRequest loginCodeVerifyRequest = new LoginCodeVerifyRequest(NetworkEngine.LOGIN_BASE_URL + "verify_code", this);
+        LoginCodeVerifyRequest loginCodeVerifyRequest = new LoginCodeVerifyRequest(this);
 
 //        loginCodeVerifyRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginCodeVerifyRequest.addRequestParam("phone", phoneNum);
@@ -154,7 +154,7 @@ public class LoginPresenter implements IBizCallback {
      * @param code
      */
     public void verifyNewCode(String phoneNum, String code) {
-        LoginNewCodeVerifyRequest loginNewCodeVerifyRequest = new LoginNewCodeVerifyRequest(NetworkEngine.LOGIN_BASE_URL + "verify_code", this);
+        LoginNewCodeVerifyRequest loginNewCodeVerifyRequest = new LoginNewCodeVerifyRequest(this);
 
 //        loginNewCodeVerifyRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginNewCodeVerifyRequest.addRequestParam("phone", phoneNum);
@@ -170,7 +170,7 @@ public class LoginPresenter implements IBizCallback {
      * @param code
      */
     public void verifyRegisterCode(String phoneNum, String code) {
-        LoginRegisterCodeVerifyRequest loginRegisterCodeVerifyRequest = new LoginRegisterCodeVerifyRequest(NetworkEngine.LOGIN_BASE_URL + "verify_code", this);
+        LoginRegisterCodeVerifyRequest loginRegisterCodeVerifyRequest = new LoginRegisterCodeVerifyRequest(this);
 
 //        loginRegisterCodeVerifyRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginRegisterCodeVerifyRequest.addRequestParam("phone", phoneNum);
@@ -186,7 +186,7 @@ public class LoginPresenter implements IBizCallback {
      * @param code
      */
     public void verifyFindPwdCode(String phoneNum, String code) {
-        LoginFindPwdCodeVerifyRequest loginFindPwdCodeVerifyRequest = new LoginFindPwdCodeVerifyRequest(NetworkEngine.LOGIN_BASE_URL + "verify_code", this);
+        LoginFindPwdCodeVerifyRequest loginFindPwdCodeVerifyRequest = new LoginFindPwdCodeVerifyRequest(this);
 
 //        loginFindPwdCodeVerifyRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginFindPwdCodeVerifyRequest.addRequestParam("phone", phoneNum);
@@ -203,7 +203,7 @@ public class LoginPresenter implements IBizCallback {
      * @param smsCode
      */
     public void doRegister(String phoneNum, String passWord, String smsCode) {
-        LoginDoRegisterRequest loginDoRegisterRequest = new LoginDoRegisterRequest(NetworkEngine.LOGIN_BASE_URL + "auth/register", this);
+        LoginDoRegisterRequest loginDoRegisterRequest = new LoginDoRegisterRequest(this);
 
 //        loginDoRegisterRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginDoRegisterRequest.addRequestParam("phone", phoneNum);
@@ -221,7 +221,7 @@ public class LoginPresenter implements IBizCallback {
      * @param smsCode
      */
     public void bindPhone(String accessToken, String phoneNum, String smsCode) {
-        LoginBindRequest loginBindRequest = new LoginBindRequest(NetworkEngine.LOGIN_BASE_URL + "auth/bind", this);
+        LoginBindRequest loginBindRequest = new LoginBindRequest(this);
 
 //        loginBindRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginBindRequest.addRequestParam("access_token", accessToken);
@@ -238,7 +238,7 @@ public class LoginPresenter implements IBizCallback {
      * @param code
      */
     public void bindWeChat(String accessToken, String code) {
-        LoginBindRequest loginBindRequest = new LoginBindRequest(NetworkEngine.LOGIN_BASE_URL + "auth/bind", this);
+        LoginBindRequest loginBindRequest = new LoginBindRequest(this);
 
 //        loginBindRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginBindRequest.addRequestParam("access_token", accessToken);
@@ -253,7 +253,7 @@ public class LoginPresenter implements IBizCallback {
      * @param code
      */
     public void loginByWeChat(String code) {
-        LoginRequest loginRequest = new LoginRequest(NetworkEngine.LOGIN_BASE_URL + "auth/login", this);
+        LoginRequest loginRequest = new LoginRequest(this);
 
 //        loginRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginRequest.addRequestParam("code", code);
@@ -268,7 +268,7 @@ public class LoginPresenter implements IBizCallback {
      * @param password
      */
     public void loginByPassword(String phoneNum, String password) {
-        LoginRequest loginRequest = new LoginRequest(NetworkEngine.LOGIN_BASE_URL + "auth/login", this);
+        LoginRequest loginRequest = new LoginRequest(this);
 
 //        loginRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginRequest.addRequestParam("phone", phoneNum);
@@ -284,7 +284,7 @@ public class LoginPresenter implements IBizCallback {
      * @param smsCode
      */
     public void loginBySmsCode(String phoneNum, String smsCode) {
-        LoginRequest loginRequest = new LoginRequest(NetworkEngine.LOGIN_BASE_URL + "auth/login", this);
+        LoginRequest loginRequest = new LoginRequest(this);
 
 //        loginRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginRequest.addRequestParam("phone", phoneNum);
@@ -301,7 +301,7 @@ public class LoginPresenter implements IBizCallback {
      * @param password
      */
     public void resetPasswordBySms(String phoneNum, String smsCode, String password) {
-        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(NetworkEngine.LOGIN_BASE_URL + "auth/reset_password", this);
+        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(this);
 
 //        resetPasswordRequest.addHeaderParam("app-id", Constants.getWXAppId());
         resetPasswordRequest.addRequestParam("phone", phoneNum);
@@ -320,7 +320,7 @@ public class LoginPresenter implements IBizCallback {
      * @param newSmsCode
      */
     public void updatePhone(String apiToken, String smsCode, String newPhone, String newSmsCode) {
-        UpdatePhoneRequest updatePhoneRequest = new UpdatePhoneRequest(NetworkEngine.LOGIN_BASE_URL + "reset_phone", this);
+        UpdatePhoneRequest updatePhoneRequest = new UpdatePhoneRequest(this);
 
 //        updatePhoneRequest.addHeaderParam("app-id", Constants.getWXAppId());
         updatePhoneRequest.addRequestParam("api_token", apiToken);
@@ -333,7 +333,7 @@ public class LoginPresenter implements IBizCallback {
 
     // 游客登录模式请求店铺 id
     public void requestTouristsShopId() {
-        TouristsShopIdRequest touristsShopIdRequest = new TouristsShopIdRequest(NetworkEngine.LOGIN_BASE_URL + "shop", this);
+        TouristsShopIdRequest touristsShopIdRequest = new TouristsShopIdRequest(this);
 
 //        touristsShopIdRequest.addHeaderParam("app-id", Constants.getWXAppId());
 
