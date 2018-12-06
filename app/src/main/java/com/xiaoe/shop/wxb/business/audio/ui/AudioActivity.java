@@ -491,7 +491,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 if (AudioMediaPlayer.prepared) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         String phoneBrand = Global.getPhoneBrand().toUpperCase();
-                        //华为
+                        //华为手机Android8.0倍速播放限制
                         if(Build.VERSION.SDK_INT >= 26 && (Constants.PHONE_HONOR.equals(phoneBrand) || Constants.PHONE_HUAWEI.equals(phoneBrand))){
                             toastCustom(getString(R.string.speed_play_not_support));
                             return;
