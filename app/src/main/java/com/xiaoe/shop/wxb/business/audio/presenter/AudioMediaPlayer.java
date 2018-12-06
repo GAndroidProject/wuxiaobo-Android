@@ -346,16 +346,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
                 try {
-                    PlaybackParams playbackParams = new PlaybackParams();
-                    playbackParams.setSpeed(2);
-                    playbackParams.setPitch(1);
-                    playbackParams.setAudioFallbackMode(
-                            PlaybackParams.AUDIO_FALLBACK_MODE_DEFAULT);
-//                    mediaPlayer.setPlaybackParams(playbackParams);
-//                    PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
-//                    playbackParams.setSpeed(speed);
-//                    playbackParams.setPitch(speed);
-//                    playbackParams.setAudioFallbackMode(PlaybackParams.AUDIO_FALLBACK_MODE_MUTE);
+                    PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
+                    playbackParams.setSpeed(speed);
                     if (mediaPlayer.isPlaying()) {
                         mediaPlayer.setPlaybackParams(playbackParams);
                     } else {

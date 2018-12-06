@@ -46,6 +46,7 @@ import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommentActivity extends XiaoeActivity implements View.OnClickListener, OnClickSendCommentListener,
@@ -274,7 +275,13 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         mCommentCount = count;
         commentCountView.setText("评论 "+count+" 条");
         JSONArray comments = dataObject.getJSONArray("comments");
-        List<CommentEntity> commentList = comments.toJavaList(CommentEntity.class);
+        List<CommentEntity> commentList = null;
+        if(comments == null){
+            commentList = new ArrayList<CommentEntity>();
+        }else{
+            commentList = comments.toJavaList(CommentEntity.class);
+        }
+
         if(refreshComment){
             refreshComment = false;
             smartRefreshLayout.finishRefresh();

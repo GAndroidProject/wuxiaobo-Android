@@ -33,6 +33,7 @@ import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
@@ -489,6 +490,12 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             case R.id.audio_speed_play:
                 if (AudioMediaPlayer.prepared) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        String phoneBrand = Global.getPhoneBrand().toUpperCase();
+                        //华为
+                        if(Build.VERSION.SDK_INT >= 26 && (Constants.PHONE_HONOR.equals(phoneBrand) || Constants.PHONE_HUAWEI.equals(phoneBrand))){
+                            toastCustom(getString(R.string.speed_play_not_support));
+                            return;
+                        }
                         if (View.VISIBLE != mSpeedMenuLayout.getVisibility())
                             mSpeedMenuLayout.setVisibility(View.VISIBLE);
                     } else {

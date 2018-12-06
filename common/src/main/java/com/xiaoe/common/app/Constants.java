@@ -61,6 +61,10 @@ public class Constants {
     // 游客登录的 user_id
     public static final String ANONYMOUS_USER_ID = "u_app_anonymous";
 
+    //手机品牌
+    public static final String PHONE_HUAWEI = "HUAWEI";//华为
+    public static final String PHONE_HONOR = "HONOR";//荣耀
+
     //获取微信登录appid
     public static String getWXAppId(){
         if(XiaoeApplication.isFormalCondition()){
