@@ -11,7 +11,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -100,6 +103,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private boolean hasCollect = false;//是否收藏
     private CollectionUtils collectionUtils;
     private ImageView btnAudioDownload;
+    private TextView tryAudioText;
 
     List<LoginUser> loginUserList;
 
@@ -248,6 +252,14 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 JumpDetail.jumpMainTab(AudioActivity.this, true, true, 2);
             }
         });
+        //购买前试听
+        tryAudioText = (TextView) findViewById(R.id.try_audio_text);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.price_color));
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+        stringBuilder.append(getString(R.string.try_audio_hint));
+        //购买前试听“免费试听”文字颜色
+        stringBuilder.setSpan(colorSpan,0, 4, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tryAudioText.setText(stringBuilder);
     }
     private void initDatas() {
         collectionUtils = new CollectionUtils(this);
@@ -516,10 +528,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             //如果已经下载了，则不做任何操作
             return;
         }
-        if(TextUtils.isEmpty(AudioMediaPlayer.getAudio().getPlayUrl())){
+        AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
+        if(TextUtils.isEmpty(audioPlayEntity.getPlayUrl()) || (audioPlayEntity.getIsTry() == 1 && audioPlayEntity.getHasBuy() == 0)){
             toastCustom(getString(R.string.cannot_download));
         }else{
-            AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
             boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), audioPlayEntity.getResourceId());
             if(!isDownload){
                 ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
@@ -723,6 +735,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }
         if(playEntity.getHasBuy() == 0 && code == 0){
             //未购买
+            tryAudioText.setVisibility(playEntity.getIsTry() == 0 ? View.GONE : View.VISIBLE);
             commonBuyView.setVisibility(playEntity.isCache() ? View.GONE : View.VISIBLE);
             commonBuyView.setBuyPrice(playEntity.getPrice());
             if (CommonUserInfo.isIsSuperVipAvailable()) { // 超级会员判断
@@ -737,6 +750,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             setButtonEnabled(playEntity.getIsTry() == 1);
         }else{
             commonBuyView.setVisibility(View.GONE);
+            tryAudioText.setVisibility(View.GONE);
             setButtonEnabled(true);
         }
         if(code == 0){

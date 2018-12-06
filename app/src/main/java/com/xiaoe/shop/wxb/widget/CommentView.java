@@ -204,22 +204,12 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         //现在认为只要控件将Activity向上推的高度超过了100px屏幕高，就认为软键盘弹起
-        if(oldBottom != 0 && bottom != 0 &&(oldBottom - bottom > 100)){
-            sendComment.setVisibility(VISIBLE);
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) editComment.getLayoutParams();
-            lp.width = LayoutParams.MATCH_PARENT;
-            editComment.setLayoutParams(lp);
-        }else if(oldBottom != 0 && bottom != 0 &&(bottom - oldBottom > 100)){
+        if(oldBottom != 0 && bottom != 0 &&(bottom - oldBottom > 100)) {
             String tempContent = editComment.getText().toString();
-            if(isReply){
+            if (isReply) {
                 tempContent = tempContent.substring(srcHint.length());
             }
-            if(TextUtils.isEmpty(tempContent)){
-                sendComment.setVisibility(GONE);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) editComment.getLayoutParams();
-                lp.width = LayoutParams.MATCH_PARENT;
-                editComment.setLayoutParams(lp);
-
+            if (TextUtils.isEmpty(tempContent)) {
                 isReply = false;
                 srcHint = "";
                 editComment.setText("");

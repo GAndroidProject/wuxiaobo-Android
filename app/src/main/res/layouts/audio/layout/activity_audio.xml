@@ -54,9 +54,9 @@
                     android:textSize="14sp"
                     android:textColor="@color/btn_speed_border_color"
                     android:text="@string/speed_play_text"
-                    android:drawableRight="@mipmap/icon_speed_play"
+                    android:drawableEnd="@mipmap/icon_speed_play"
                     android:drawablePadding="-10dp"
-                    android:paddingRight="10dp"
+                    android:paddingEnd="10dp"
                     />
                 <com.xiaoe.shop.wxb.business.audio.ui.AudioPlayControllerView
                     android:id="@+id/audio_play_controller"
@@ -64,10 +64,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:layout_marginTop="38dp"/>
+                    android:layout_marginTop="20dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:orientation="horizontal"
                     android:background="@mipmap/audio_detail_bottom"
                     android:gravity="center"
@@ -166,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/audio_ring"
-                    android:layout_marginTop="48dp"
+                    android:layout_marginTop="28dp"
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:textColor="@color/main_title_color"
@@ -188,6 +188,16 @@
                     android:drawablePadding="5dp"
                     android:textColor="@color/secondary_title_color"
                     android:textSize="14sp"
+                    />
+                <TextView
+                    android:id="@+id/try_audio_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_below="@id/play_num"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/secondary_title_color"
+                    android:textSize="12sp"
                     />
             </RelativeLayout>
         </RelativeLayout>
@@ -258,7 +268,7 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:src="@mipmap/audiodetail_back"

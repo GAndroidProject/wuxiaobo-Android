@@ -112,7 +112,7 @@ public class AudioPresenter implements IBizCallback {
         playEntity.setCurrentPlayState(1);
         playEntity.setTitle(resourceInfo.getString("title"));
 
-        playEntity.setPlayCount(resourceInfo.getIntValue("audio_play_count"));
+        playEntity.setPlayCount(resourceInfo.getIntValue("view_count"));
         playEntity.setHasBuy(available ? 1 : 0);
         playEntity.setResourceId(resourceInfo.getString("resource_id"));
         playEntity.setImgUrl(resourceInfo.getString("img_url"));

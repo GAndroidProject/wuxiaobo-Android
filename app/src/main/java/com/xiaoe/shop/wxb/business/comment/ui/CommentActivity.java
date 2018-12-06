@@ -80,7 +80,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusBar();
+        initStatusBar();
         setContentView(R.layout.activity_comment);
         commentPresenter = new CommentPresenter(this);
         loginUserList = getLoginUserList();
