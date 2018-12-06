@@ -57,6 +57,10 @@ public class ScholarshipPresenter implements IBizCallback {
 
         if (iRequest instanceof ScholarshipTaskListRequest) { // 接收任务列表的请求
             JSONObject result = (JSONObject) entity;
+            if (result == null) { // 为空的话页隐藏奖学金 tab
+                inr.onResponse(iRequest, false, entity);
+                return;
+            }
             JSONArray data = (JSONArray) result.get("data");
             if (stopGoOn) {
                 if (data.size() == 0) { // 兼容没有任务的情况
