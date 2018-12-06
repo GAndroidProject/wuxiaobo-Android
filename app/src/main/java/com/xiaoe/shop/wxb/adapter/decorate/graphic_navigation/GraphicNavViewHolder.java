@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -66,6 +67,7 @@ public class GraphicNavViewHolder extends BaseViewHolder implements OnItemClickW
         String pageTitle = graphicNavItem.getNavContent();
         String resourceId = graphicNavItem.getNavResourceId();
         String resourceType = graphicNavItem.getNavResourceType();
+        String jumpUrl = graphicNavItem.getNavJumpUrl();
         switch (resourceType) {
             case DecorateEntityType.IMAGE_TEXT: // 图文
                 JumpDetail.jumpImageText(mContext, resourceId, "", "");
@@ -88,7 +90,11 @@ public class GraphicNavViewHolder extends BaseViewHolder implements OnItemClickW
                 JumpDetail.jumpShopGroup(mContext, pageTitle, graphicNavItem.getNavResourceId());
                 break;
             case DecorateEntityType.EXTERNAL_LINKS: // 外部链接
-                openWebClient("http://www.baidu.com");
+                if (!TextUtils.isEmpty(jumpUrl)) {
+                    openWebClient(jumpUrl);
+                } else { // 若外部链接为空，默认跳转到咱们的官网
+                    openWebClient("https://www.xiaoe-tech.com/");
+                }
                 break;
         }
     }

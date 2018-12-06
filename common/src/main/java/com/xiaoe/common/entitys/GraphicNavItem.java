@@ -10,6 +10,8 @@ public class GraphicNavItem {
     private String navResourceType;
     // 跳转的资源 id
     private String navResourceId;
+    // 跳转链接（仅适用于外链跳转）
+    private String navJumpUrl;
 
     public GraphicNavItem() { }
 
@@ -43,5 +45,13 @@ public class GraphicNavItem {
 
     public void setNavResourceId(String navResourceId) {
         this.navResourceId = navResourceId;
+    }
+
+    public String getNavJumpUrl() {
+        return navJumpUrl;
+    }
+
+    public void setNavJumpUrl(String navJumpUrl) {
+        this.navJumpUrl = navJumpUrl;
     }
 }

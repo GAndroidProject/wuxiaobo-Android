@@ -415,6 +415,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                         graphicNavItem.setNavContent(subItemObj.getString("title"));
                         graphicNavItem.setNavResourceType(subItemObj.getString("src_type"));
                         graphicNavItem.setNavResourceId(subItemObj.getString("src_id"));
+                        graphicNavItem.setNavJumpUrl(subItemObj.getString("jump_url"));
                         graphicNavItemList.add(graphicNavItem);
                     }
                     componentInfo_navigator.setGraphicNavItemList(graphicNavItemList);
