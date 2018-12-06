@@ -62,4 +62,7 @@ public class DecorateEntityType {
     // 频道组件播放、暂定 flag
     public static final String ITEM_RECENT_PLAY = "play";
     public static final String ITEM_RECENT_STOP = "stop";
+
+    // 外部链接
+    public static final String EXTERNAL_LINKS = "custom";
 }

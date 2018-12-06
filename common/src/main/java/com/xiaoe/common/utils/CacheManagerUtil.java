@@ -37,12 +37,12 @@ public class CacheManagerUtil {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
             for (String aChildren : children) {
-                boolean success = deleteDir(new File(dir, aChildren));
+                File file = new File(dir, aChildren);
+                boolean success = deleteDir(file); // false 的话就是文件
                 if (!success) {
-                    return false;
+                    return file.delete();
                 }
             }
-            return dir.delete();
         }
         return false;
     }

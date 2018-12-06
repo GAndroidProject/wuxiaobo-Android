@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
@@ -39,12 +42,17 @@ import com.xiaoe.shop.wxb.common.login.LoginPresenter;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SettingAccountActivity extends XiaoeActivity {
 
     private static final String TAG = "SettingAccountActivity";
+
+    private static final int CLEAN_SUCCESS = 0X001;
+    private static final int CLEAN_FAIL = 0X002;
 
     // 需要切换的 fragment tag
     protected static final String MAIN = "main"; // 设置主页
@@ -86,6 +94,8 @@ public class SettingAccountActivity extends XiaoeActivity {
     boolean isUpdatePassword = false; // 是否修改密码
 
     boolean isHasUpgradeCurrentApp;
+
+    private Handler cacheHandler = new CacheHandler(this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -240,10 +250,7 @@ public class SettingAccountActivity extends XiaoeActivity {
 
                         @Override
                         public void onClickConfirm(View view, int tag) {
-                            CacheManagerUtil.clearAllCache(SettingAccountActivity.this);
-                            MainAccountFragment mainAccountFragment = (MainAccountFragment) currentFragment;
-                            mainAccountFragment.itemInfoList.get(2).setItemContent("");
-                            mainAccountFragment.settingRecyclerAdapter.notifyDataSetChanged();
+                            clearCache();
                             getDialog().dismissDialog();
                         }
 
@@ -449,5 +456,49 @@ public class SettingAccountActivity extends XiaoeActivity {
             default:
                 break;
         }
+    }
+
+    // 在子线程中清除缓存
+    private void clearCache() {
+        new Thread() {
+            @Override
+            public void run() {
+                Message msg = new Message();
+                try {
+                    CacheManagerUtil.clearAllCache(getApplicationContext());
+                    msg.what = CLEAN_SUCCESS;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    msg.what = CLEAN_FAIL;
+                }
+                cacheHandler.sendMessage(msg);
+            }
+        }.start();
+    }
+
+    static class CacheHandler extends Handler {
+
+        WeakReference<SettingAccountActivity> wrf;
+
+        CacheHandler(SettingAccountActivity activity) {
+            wrf = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == CLEAN_SUCCESS){
+                try {
+                    MainAccountFragment mainAccountFragment = (MainAccountFragment) wrf.get().currentFragment;
+                    mainAccountFragment.itemInfoList.get(2).setItemContent(CacheManagerUtil.getTotalCacheSize(wrf.get().getApplicationContext()));
+                    mainAccountFragment.settingRecyclerAdapter.notifyDataSetChanged();
+                    Toast.makeText(wrf.get(), "清除成功", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else if(msg.what == CLEAN_FAIL){
+                Toast.makeText(wrf.get(), "清除失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 }

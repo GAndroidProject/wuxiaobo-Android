@@ -745,6 +745,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             microPageHeader.setBackgroundColor(getResources().getColor(R.color.high_title_color));
             isMain = false;
         } else {
+            microPageTitleBg.setVisibility(View.GONE);
             microPageTitleBg.setImageURI("");
 //            microPageTitleBg2.setVisibility(View.GONE);
             microPageToolbar.setVisibility(View.GONE);
@@ -877,6 +878,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 mStatusBarBlank.setVisibility(View.GONE);
                 microPageToolbarSearch.setVisibility(View.GONE);
             }
+        } else {
+            mStatusBarBlank.setVisibility(View.GONE);
         }
     }
 

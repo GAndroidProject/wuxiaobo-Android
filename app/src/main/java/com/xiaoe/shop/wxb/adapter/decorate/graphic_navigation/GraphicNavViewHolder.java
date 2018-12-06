@@ -1,10 +1,15 @@
 package com.xiaoe.shop.wxb.adapter.decorate.graphic_navigation;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.widget.Toast;
 
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
@@ -82,6 +87,25 @@ public class GraphicNavViewHolder extends BaseViewHolder implements OnItemClickW
             case DecorateEntityType.RESOURCE_TAG: // 商品分组
                 JumpDetail.jumpShopGroup(mContext, pageTitle, graphicNavItem.getNavResourceId());
                 break;
+            case DecorateEntityType.EXTERNAL_LINKS: // 外部链接
+                openWebClient("http://www.baidu.com");
+                break;
+        }
+    }
+
+    // 打开浏览器选择器
+    private void openWebClient(String url) {
+        final Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        // 注意此处的判断intent.resolveActivity()可以返回显示该Intent的Activity对应的组件名
+        // 官方解释 : Name of the component implementing an activity that can display the intent
+        if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+            final ComponentName componentName = intent.resolveActivity(mContext.getPackageManager());
+            Log.d("GraphicNavViewHolder", "openWebClient: " + componentName);
+            mContext.startActivity(Intent.createChooser(intent, "请选择浏览器"));
+        } else {
+            Toast.makeText(mContext, "没有匹配的程序", Toast.LENGTH_SHORT).show();
         }
     }
 }
