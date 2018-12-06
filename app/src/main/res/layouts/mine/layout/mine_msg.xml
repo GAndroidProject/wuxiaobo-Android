@@ -2,7 +2,6 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -26,21 +25,17 @@
         <Button
             android:id="@+id/title_buy_vip"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:minHeight="0dp"
-            android:layout_weight="1"
+            android:layout_height="28dp"
             android:background="@drawable/super_vip_bg"
             android:text="@string/super_vip"
             android:textColor="@color/main_title_color"
             android:textSize="12sp"
-            android:layout_marginTop="12dp"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
+            android:layout_marginTop="10dp"
             style="?android:attr/buttonBarButtonStyle"
             android:drawableStart="@mipmap/profile_diamond"
             android:drawablePadding="4dp"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
             android:includeFontPadding="false"/>
     </LinearLayout>
     

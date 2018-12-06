@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="#33FFD753"/>
+            <solid android:color="#230F59F6"/>
             <corners android:radius="14dp"/>
             <padding
                 android:bottom="2dp"
@@ -13,7 +13,7 @@
     </item>
     <item >
         <shape>
-            <solid android:color="@color/mine_super_vip_bg"/>
+            <solid android:color="#0F59F6"/>
             <corners android:radius="12dp"/>
         </shape>
     </item>

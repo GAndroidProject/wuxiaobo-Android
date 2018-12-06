@@ -6,6 +6,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -44,6 +45,8 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
     TextView recentUpdateSubDesc;
     @BindView(R.id.recent_update_sub_btn)
     Button recentUpdateSubBtn;
+    @BindView(R.id.btn_recent_update_icon)
+    ImageView recentUpdateBtnIcon;
 
     private Context mContext;
     private RecentUpdateListAdapter recentUpdateListAdapter;
@@ -78,23 +81,26 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
         if (AudioMediaPlayer.getAudio() != null && AudioMediaPlayer.getAudio().isPlaying()) { // 有歌在播
             if (AudioMediaPlayer.getAudio().getColumnId().equals(currentBindComponent.getColumnId())) { // 同一个专栏
                 recentUpdateSubBtn.setText(R.string.stop_all);
-                Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_stopall);
-                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
-                recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
+                recentUpdateBtnIcon.setImageResource(R.mipmap.class_stopall);
+//                Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_stopall);
+//                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+//                recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
+//                recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
             } else { // 不同专栏
                 recentUpdateSubBtn.setText(R.string.recent_update_btn_txt);
-                Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_playall);
-                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
-                recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
+                recentUpdateBtnIcon.setImageResource(R.mipmap.class_playall);
+//                Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_playall);
+//                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+//                recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
+//                recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
             }
         } else { // 没有歌在播
             recentUpdateSubBtn.setText(R.string.recent_update_btn_txt);
-            Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_playall);
-            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-            recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
-            recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
+            recentUpdateBtnIcon.setImageResource(R.mipmap.class_playall);
+//            Drawable drawable = mContext.getResources().getDrawable(R.mipmap.class_playall);
+//            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+//            recentUpdateSubBtn.setCompoundDrawables(drawable, null, null, null);
+//            recentUpdateSubBtn.setCompoundDrawablePadding(Dp2Px2SpUtil.dp2px(mContext, 6));
         }
         recentUpdateListView.setAdapter(recentUpdateListAdapter);
         MeasureUtil.setListViewHeightBasedOnChildren(recentUpdateListView);

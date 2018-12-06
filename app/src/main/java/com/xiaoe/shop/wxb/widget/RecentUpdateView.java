@@ -6,10 +6,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
-
 import com.facebook.drawee.view.SimpleDraweeView;
-
 import com.xiaoe.shop.wxb.R;
 
 public class RecentUpdateView extends LinearLayout {
@@ -17,7 +16,7 @@ public class RecentUpdateView extends LinearLayout {
     private Context mContext;
 
     private LinearLayout mContainer;
-    private LinearLayout mRecentUpdateSubList;
+    private ListView mRecentUpdateSubList;
 
     private SimpleDraweeView mRecentUpdateAvatar;
     private TextView mRecentUpdateSubTitle;
@@ -50,7 +49,7 @@ public class RecentUpdateView extends LinearLayout {
 
     private void initView() {
         mContainer = (LinearLayout) View.inflate(mContext, R.layout.recent_update, null);
-        mRecentUpdateSubList = (LinearLayout) mContainer.findViewById(R.id.recent_update_sub_list);
+        mRecentUpdateSubList = (ListView) mContainer.findViewById(R.id.recent_update_sub_list);
         mRecentUpdateAvatar = (SimpleDraweeView) mContainer.findViewById(R.id.recent_update_avatar);
         mRecentUpdateSubTitle = (TextView) mContainer.findViewById(R.id.recent_update_sub_title);
         mRecentUpdateSubDesc = (TextView) mContainer.findViewById(R.id.recent_update_sub_desc);
