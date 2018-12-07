@@ -62,4 +62,14 @@ public class MineTitleView extends RelativeLayout {
             tvUnreadMsg.setVisibility(INVISIBLE);
         }
     }
+
+    public void setUnreadMsgCount(int unreadMsgCount) {
+        if (unreadMsgCount <= 0) {
+            tvUnreadMsg.setText("");
+        } else if (unreadMsgCount > 99) {
+            tvUnreadMsg.setText(99 + "+");
+        } else {
+            tvUnreadMsg.setText(String.valueOf(unreadMsgCount));
+        }
+    }
 }

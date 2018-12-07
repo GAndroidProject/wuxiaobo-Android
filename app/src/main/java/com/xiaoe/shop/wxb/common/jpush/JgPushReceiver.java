@@ -57,7 +57,7 @@ public class JgPushReceiver extends BroadcastReceiver {
                 int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
                 d(TAG, "[JgPushReceiver] 接收到推送下来的通知的ID: " + notifactionId);
 
-                EventBus.getDefault().post(new OnUnreadMsgEvent(0, 1));
+                EventBus.getDefault().post(new OnUnreadMsgEvent(0, 1, OnUnreadMsgEvent.MessageOrigin.NOTICE));
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
                 d(TAG, "[JgPushReceiver] 用户点击打开了通知");
                 if (jgPushReceiverEntity == null) {

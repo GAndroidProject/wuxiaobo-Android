@@ -396,7 +396,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject data = result.getJSONObject("data");
                     int messageCount = data.getInteger("message_count");
-                    EventBus.getDefault().post(new OnUnreadMsgEvent(0, messageCount));
+                    EventBus.getDefault().post(new OnUnreadMsgEvent(0, messageCount, OnUnreadMsgEvent.MessageOrigin.HTTP));
                     Log.d(TAG, "onMainThreadResponse: 未读消息数 " + messageCount);
                 } else if (code == NetworkCodes.CODE_FAILED) {
                     Log.d(TAG, "onMainThreadResponse: 获取未读消息失败...");
@@ -436,6 +436,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         }
     }
 
+    //-----start----- for receive customer msg from jpush server ------
+
     private void setBindJPushSP(boolean bindSuccess) {
         JgPushSaveInfo jgPushSaveInfo = new JgPushSaveInfo();
         jgPushSaveInfo.setFormalUser(isFormalUser);
@@ -445,8 +447,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_BIND_JPUSH_USER_CODE, JSON.toJSONString(jgPushSaveInfo));
         Log.d(TAG, "setBindJPushSP: " + JSON.toJSONString(jgPushSaveInfo));
     }
-
-    // for receive customer msg from jpush server
 
     private MessageReceiver mMessageReceiver;
     public static final String MESSAGE_RECEIVED_ACTION = "com.xiaoe.shop.wxb.MESSAGE_RECEIVED_ACTION";
@@ -477,17 +477,19 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                     }
                     setCustomMsg(showMsg.toString());
                 }
-            } catch (Exception ignored){
+            } catch (Exception ignored) {
             }
         }
     }
 
-    private void setCustomMsg(String msg){
+    private void setCustomMsg(String msg) {
 //        if (null != msgText) {
 //            msgText.setText(msg);
 //            msgText.setVisibility(android.view.View.VISIBLE);
 //        }
     }
+
+    //-----end----- for receive customer msg from jpush server ------
 
     // 初始化超级会员信息
     public void initSuperVipMsg(JSONObject data) {

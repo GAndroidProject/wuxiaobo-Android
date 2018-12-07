@@ -113,6 +113,10 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     private boolean showDataByDB = false;
     SuperVipPresenter superVipPresenter;
     final String[] vipTips = {"全场免费学","亲友一起听","活动优先抢"};
+    /**
+     * 未读消息数
+     */
+    private int saveCount;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,7 +147,6 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void onResume() {
         super.onResume();
-        setUnreadMsg(0);
         mainActivity.getUnreadMsg();
     }
 
@@ -213,8 +216,6 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             } else {
                 initTouristData();
             }
-
-//            initListener();
         }
     }
 
@@ -325,6 +326,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             public void singleClick(View v) {
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpAccount(mContext);
+                    saveCount = 0;
                 } else {
                     touristDialog.showDialog();
                 }
@@ -694,7 +696,17 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         if (null == onUnreadMsgEvent) {
             return;
         }
-        setUnreadMsg(onUnreadMsgEvent.getUnreadCount());
+        switch (onUnreadMsgEvent.getMessageOrigin()) {
+            case NOTICE:
+                saveCount += onUnreadMsgEvent.getUnreadCount();
+                break;
+            case HTTP:
+                saveCount = onUnreadMsgEvent.getUnreadCount();
+                break;
+            default:
+                break;
+        }
+        setUnreadMsg(saveCount);
     }
 
     @Override
@@ -804,14 +816,10 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     }
 
     private void setUnreadMsg(int unreadCount) {
-        int saveCount = (int) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_UNREAD_MSG_COUNT, 0);
+        mineTitleView.setUnreadMsgVisible(unreadCount > 0);
+        mineTitleView.setUnreadMsgCount(unreadCount);
 
-        int newCount = saveCount + unreadCount;
-        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_UNREAD_MSG_COUNT, newCount);
-
-        mineTitleView.setUnreadMsgVisible(newCount > 0);
-
-        Log.d(TAG, "setUnreadMsg: count " + newCount);
+        Log.d(TAG, "setUnreadMsg: unreadCount " + unreadCount);
     }
 
     private void setDataByDB(){
