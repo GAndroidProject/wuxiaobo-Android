@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/common_btn_bg_enabled_blue" android:state_enabled="false" />
-    <item android:drawable="@drawable/common_btn_bg_pressed_blue" android:state_pressed="true" />
-    <item android:drawable="@drawable/common_btn_bg_normal_blue" />
+    <!--<item android:drawable="@drawable/common_btn_bg_enabled_blue" android:state_enabled="false" />-->
+    <!--<item android:drawable="@drawable/common_btn_bg_pressed_blue" android:state_pressed="true" />-->
+    <!--<item android:drawable="@drawable/common_btn_bg_normal_blue" />-->
+
+    <item android:drawable="@drawable/rectangle_button_unclickable" android:state_enabled="false" />
+    <item android:drawable="@drawable/rectangle_button_click" android:state_pressed="true" />
+    <item android:drawable="@drawable/rectangle_button_normal" />
 </selector>

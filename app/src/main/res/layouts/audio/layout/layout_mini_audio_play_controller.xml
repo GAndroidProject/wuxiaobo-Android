@@ -80,24 +80,16 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:layout_toStartOf="@id/id_btn_play_state"
-        android:layout_toEndOf="@id/wrap_disk">
-
-        <ImageView
-            android:id="@+id/mini_swipe_up"
-            android:layout_width="20dp"
-            android:layout_height="10dp"
-            android:layout_marginTop="8dp"
-            android:layout_centerHorizontal="true"
-            android:src="@mipmap/audiolist_swipeup"
-            />
+        android:layout_toEndOf="@id/wrap_disk"
+        >
 
         <TextView
             android:id="@+id/id_audio_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/mini_swipe_up"
             android:maxLines="1"
             android:textColor="@color/white"
             android:textSize="14sp"
@@ -112,4 +104,12 @@
             android:textColor="@color/white"
             android:textSize="12sp"/>
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/mini_swipe_up"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/audiolist_swipeup"
+        />
 </RelativeLayout>
