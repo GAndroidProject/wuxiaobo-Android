@@ -67,7 +67,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
-import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 public class MainActivity extends XiaoeActivity implements OnBottomTabSelectListener {
     private static final String TAG = "MainActivity";
@@ -224,8 +223,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         miniAudioPlayController = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
         setMiniAudioPlayController(miniAudioPlayController);
         setMiniPlayerAnimHeight(Dp2Px2SpUtil.dp2px(this, 76));
-        //申请权限
-//        requestPermission(getUnauthorizedPermission(true),getHideUnauthorizedPermission());
     }
 
 

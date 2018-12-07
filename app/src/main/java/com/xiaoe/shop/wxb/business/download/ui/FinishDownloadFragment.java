@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.common.entitys.DownloadTableInfo;
@@ -55,6 +56,23 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
             finishDownloadListAdapter.setData(list);
         }else{
             setStatePager(View.VISIBLE);
+        }
+        
+        OffLineCacheActivity cacheActivity = (OffLineCacheActivity) getActivity();
+        cacheActivity.getBottomButton().setVisibility(View.GONE);
+    }
+
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        OffLineCacheActivity cacheActivity = (OffLineCacheActivity) getActivity();
+        if(isVisibleToUser && cacheActivity != null && cacheActivity.getBottomButton() != null){
+            cacheActivity.getBottomButton().setVisibility(View.GONE);
+        }
+        if(isVisibleToUser && cacheActivity != null){
+            cacheActivity.setMiniPlayerPosition(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         }
     }
 

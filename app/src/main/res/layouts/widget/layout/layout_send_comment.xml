@@ -42,7 +42,7 @@
             android:layout_toStartOf="@id/id_icon_comment_send"
             android:background="@drawable/border"
             android:padding="10dp"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:gravity="top"
             android:textColor="@color/main_title_color"
             android:hint="我来说两句"

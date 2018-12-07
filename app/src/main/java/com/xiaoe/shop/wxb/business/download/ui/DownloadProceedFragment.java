@@ -42,6 +42,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     private boolean runClickAllDownload = false;
     private RelativeLayout bottomButton;
     private StatusPagerView statePager;
+    private OffLineCacheActivity cacheActivity;
 
     @Nullable
     @Override
@@ -58,6 +59,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     }
 
     private void initViews() {
+        cacheActivity = (OffLineCacheActivity) getActivity();
         DownloadManager.getInstance().setOnDownloadListener(TAG, this);
 
         downloadProceedRecyclerView = (RecyclerView) rootView.findViewById(R.id.download_proceed_recycler_view);
@@ -66,14 +68,13 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
         downloadProceedRecyclerView.setLayoutManager(layoutManager);
         adapter = new DownloadProceedChildListAdapter(getContext(), this);
         downloadProceedRecyclerView.setAdapter(adapter);
-
-        btnAllDelete = (TextView) rootView.findViewById(R.id.btn_all_delete);
+        btnAllDelete = cacheActivity.getAllDeleteButton();
         btnAllDelete.setOnClickListener(this);
 
-        btnAllStart = (TextView) rootView.findViewById(R.id.btn_all_start_download);
+        btnAllStart = cacheActivity.getAllStartDownloadButton();
         btnAllStart.setOnClickListener(this);
         //底部的按钮
-        bottomButton = (RelativeLayout) rootView.findViewById(R.id.bottom_button);
+        bottomButton = cacheActivity.getBottomButton();
         //状态页
         statePager = (StatusPagerView) rootView.findViewById(R.id.state_pager);
         setStatePager(View.GONE);
@@ -81,14 +82,27 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     private void initData() {
         List<DownloadTableInfo> list = DownloadManager.getInstance().getDownloadingList();
         if(list == null || list.size() <= 0){
-            bottomButton.setVisibility(View.GONE);
             setStatePager(View.VISIBLE);
         }else {
-            bottomButton.setVisibility(View.VISIBLE);
             adapter.addAllData(list);
             isAllDownload = isAllDownload();
         }
         setAllDownloadButton(isAllDownload);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser && bottomButton != null && adapter != null && adapter.getItemCount() > 0){
+            bottomButton.setVisibility(View.VISIBLE);
+        }
+        if(isVisibleToUser && bottomButton != null){
+            if(bottomButton.getVisibility() == View.VISIBLE){
+                cacheActivity.setMiniPlayerPosition(RelativeLayout.ABOVE, R.id.bottom_button);
+            }else{
+                cacheActivity.setMiniPlayerPosition(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            }
+        }
     }
 
     private void setAllDownloadButton(boolean all) {
@@ -219,6 +233,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                 adapter.notifyDataSetChanged();
                 if(adapter.getItemCount() <= 0){
                     bottomButton.setVisibility(View.GONE);
+                    cacheActivity.setMiniPlayerPosition(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
                     setStatePager(View.VISIBLE);
                 }
             }
@@ -262,6 +277,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                 adapter.clearData();
                 dialog.dismiss();
                 bottomButton.setVisibility(View.GONE);
+                cacheActivity.setMiniPlayerPosition(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
                 setStatePager(View.VISIBLE);
             }
         });
@@ -294,6 +310,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
             }
             if(adapter.getItemCount() <= 0){
                 bottomButton.setVisibility(View.GONE);
+                cacheActivity.setMiniPlayerPosition(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
                 setStatePager(View.VISIBLE);
             }else{
                 setStatePager(View.GONE);

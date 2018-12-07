@@ -89,12 +89,72 @@
                 />
         </RelativeLayout>
     </LinearLayout>
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/line"
+        android:layout_below="@id/table_bar"
+        />
 
     <com.xiaoe.shop.wxb.widget.ScrollViewPager
         android:id="@+id/tab_view_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/table_bar"
+        android:layout_below="@id/line"
+        android:layout_above="@+id/bottom_button"
         />
+
+    <com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout
+        android:id="@+id/mini_audio_play_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        android:visibility="visible"
+        />
+
+    <RelativeLayout
+        android:id="@+id/bottom_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:visibility="gone"
+        >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/line"
+            />
+        <TextView
+            android:id="@+id/btn_all_delete"
+            android:layout_width="112dp"
+            android:layout_height="34dp"
+            android:layout_toStartOf="@+id/btn_all_start_download"
+            android:layout_marginEnd="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textColor="@color/recent_list_color"
+            android:textSize="16sp"
+            android:text="@string/all_start_clear"
+            android:background="@drawable/all_delete_download_white"
+            />
+        <TextView
+            android:id="@+id/btn_all_start_download"
+            android:layout_width="112dp"
+            android:layout_height="34dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:text="@string/all_start_download"
+            android:background="@drawable/recent_update_btn_pressed"
+            />
+    </RelativeLayout>
 
 </RelativeLayout>

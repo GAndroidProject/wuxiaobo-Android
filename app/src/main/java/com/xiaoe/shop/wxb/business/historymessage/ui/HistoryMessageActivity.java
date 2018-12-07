@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -133,7 +134,7 @@ public class HistoryMessageActivity extends XiaoeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusBar();
+//        setStatusBar();
         setContentView(R.layout.activity_history_message);
         ButterKnife.bind(this);
 
@@ -147,7 +148,10 @@ public class HistoryMessageActivity extends XiaoeActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-        accountToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+//        accountToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+        FrameLayout.LayoutParams toolbarParams = (FrameLayout.LayoutParams) accountToolbar.getLayoutParams();
+        toolbarParams.height = Dp2Px2SpUtil.dp2px(this, 44);
+        accountToolbar.setLayoutParams(toolbarParams);
         settingAccountEditTitle.setText(mContext.getString(R.string.message_notice_text));
     }
 
