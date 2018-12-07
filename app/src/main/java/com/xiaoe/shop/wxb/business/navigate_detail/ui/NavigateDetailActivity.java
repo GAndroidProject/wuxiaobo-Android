@@ -361,7 +361,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
             case DecorateEntityType.IMAGE_TEXT: // 图文
             case DecorateEntityType.AUDIO: // 音频
             case DecorateEntityType.VIDEO: // 视频
-                return viewCount + "次学习";
+                return String.format(getString(R.string.learn_count), viewCount);
             case DecorateEntityType.TOPIC: // 大专栏
             case DecorateEntityType.COLUMN: // 专栏
                 return String.format(getString(R.string.stages_text), viewCount);

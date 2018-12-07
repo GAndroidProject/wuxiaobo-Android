@@ -32,6 +32,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.OSUtils;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -193,7 +194,7 @@ public class CdKeyActivity extends XiaoeActivity {
                         }else if(good.getResource_type() == 3){
                             JumpDetail.jumpVideo(CdKeyActivity.this, good.getResource_id(), "", false, "");
                         }else{
-                            Toast("未知类型");
+                            ToastUtils.show(mContext, R.string.unknown_type);
                         }
 
                     }

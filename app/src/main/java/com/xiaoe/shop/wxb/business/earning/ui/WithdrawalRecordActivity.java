@@ -92,7 +92,7 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
     }
 
     private void initData() {
-        wrTitle.setText("提现记录");
+        wrTitle.setText(getString(R.string.withdrawal_record_text));
         wrEnd.setVisibility(View.GONE);
         dataList = new ArrayList<>();
     }
@@ -196,7 +196,7 @@ public class WithdrawalRecordActivity extends XiaoeActivity {
             }
             MeasureUtil.setListViewHeightBasedOnChildren(wrList);
         } else {
-            wrLoading.setPagerState(StatusPagerView.EMPTY, "无提现记录，快去做任务领取奖学金吧", R.mipmap.cash_none);
+            wrLoading.setPagerState(StatusPagerView.EMPTY, getString(R.string.no_withdrawal_record), R.mipmap.cash_none);
             return;
         }
 

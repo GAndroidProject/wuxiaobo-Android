@@ -360,6 +360,8 @@ public class AudioDetailsSwitchLayout extends ViewGroup implements GestureDetect
             case MotionEvent.ACTION_CANCEL:
                 releaseVelocityTracker();
                 return false;
+            default:
+                break;
         }
         return true;
     }

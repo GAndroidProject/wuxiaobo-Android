@@ -533,8 +533,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        for (int i = 0; i < grantResults.length; i++){
-            if(grantResults[i] != 0){
+        for (int grantResult : grantResults) {
+            if (grantResult != 0) {
                 //用户拒绝后再次弹起授权
                 requestPermission(getUnauthorizedPermission(false), getHideUnauthorizedPermission());
                 break;

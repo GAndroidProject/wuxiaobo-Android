@@ -438,7 +438,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         String type_title = itemObj.getString("type_title");
         switch (type_title) {
             case DecorateEntityType.RECENT_UPDATE_STR: // 频道
-                // TODO: 初始化频道数据
+                // 初始化频道数据
                 JSONArray recentList = (JSONArray) itemObj.get("list");
                 for (Object listItem : recentList) {
                     ComponentInfo component_recent = new ComponentInfo();
@@ -451,7 +451,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     // 频道组件对应的专栏 id
                     String recentId = jsonItem.getString("src_id");
                     int updateCount = jsonItem.getInteger("resource_count") == null ? 0 : jsonItem.getInteger("resource_count");
-                    String updateCountStr = "已更新至" + updateCount + "期";
+                    String updateCountStr = String.format(getString(R.string.updated_to_issue), updateCount);
                     String srcType = jsonItem.getString("src_type");
                     component_recent.setTitle(recentTitle);
                     String imgUrl;
@@ -514,11 +514,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     ComponentInfo componentInfo_know_group = new ComponentInfo();
                     componentInfo_know_group.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
                     componentInfo_know_group.setSubType(DecorateEntityType.KNOWLEDGE_GROUP_STR);
-                    componentInfo_know_group.setTitle(itemObj.getString("title") == null ? "学会管理自己的财富" : itemObj.getString("title"));
+                    componentInfo_know_group.setTitle(itemObj.getString("title") == null ? getString(R.string.learn_manage_wealth) : itemObj.getString("title"));
                     componentInfo_know_group.setGroupId(itemObj.getString("tag_id"));
                     boolean showCheckAll = itemObj.getBoolean("check_all") == null ? false : itemObj.getBoolean("check_all");
                     if (showCheckAll) {
-                        componentInfo_know_group.setDesc("查看更多");
+                        componentInfo_know_group.setDesc(getString(R.string.see_more));
                     } else {
                         componentInfo_know_group.setDesc("");
                     }
@@ -598,11 +598,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             case DecorateEntityType.IMAGE_TEXT: // 图文
             case DecorateEntityType.AUDIO: // 音频
             case DecorateEntityType.VIDEO: // 视频
-                return viewCount + "次学习";
+                return String.format(getString(R.string.learn_count), viewCount);
             case DecorateEntityType.TOPIC: // 大专栏
             case DecorateEntityType.COLUMN: // 专栏
             case DecorateEntityType.MEMBER: // 会员
-                return "已更新" + viewCount + "期";
+                return String.format(getString(R.string.stages_text), viewCount);
             default:
                 return "";
         }

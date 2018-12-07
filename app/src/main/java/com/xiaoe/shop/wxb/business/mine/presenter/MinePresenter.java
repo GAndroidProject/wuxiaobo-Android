@@ -4,6 +4,7 @@ import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
 
+@Deprecated
 public class MinePresenter implements IBizCallback {
 
     private INetworkResponse inr;

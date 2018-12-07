@@ -101,6 +101,8 @@ public class FlowInfoImgTextViewHolder extends BaseViewHolder {
                     }
                 });
                 break;
+            default:
+                break;
         }
     }
 }

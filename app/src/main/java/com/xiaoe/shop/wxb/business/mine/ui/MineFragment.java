@@ -56,6 +56,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -112,7 +113,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     MineLearningListAdapter learningListAdapter; // 学习记录适配器
     private boolean showDataByDB = false;
     SuperVipPresenter superVipPresenter;
-    final String[] vipTips = {"全场免费学","亲友一起听","活动优先抢"};
+    String[] vipTips;
     /**
      * 未读消息数
      */
@@ -124,6 +125,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         EventBus.getDefault().register(this);
         // 网络请求数据代码
 //        MinePresenter minePresenter = new MinePresenter(this);
+        vipTips = new String[]{getString(R.string.free_admission), getString(R.string.free_friends_and_relatives), getString(R.string.activity_priority)};
     }
 
     @Nullable
@@ -221,7 +223,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
     private void initTouristData() {
         // 游客登录
-        mineMsgView.setNickName("点击登录");
+        mineMsgView.setNickName(getString(R.string.click_login));
         mineMsgView.setAvatar("res:///" + R.mipmap.default_avatar);
         mineVipCard.setVisibility(View.GONE);
         mineMsgView.setBuyVipVisibility(View.VISIBLE);
@@ -237,10 +239,10 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         List<MineMoneyItemInfo> tempList = new ArrayList<>();
         MineMoneyItemInfo item_1_temp = new MineMoneyItemInfo();
         item_1_temp.setItemTitle("0.00");
-        item_1_temp.setItemDesc("奖学金");
+        item_1_temp.setItemDesc(getString(R.string.scholarship_title));
         MineMoneyItemInfo item_2_temp = new MineMoneyItemInfo();
         item_2_temp.setItemTitle("0");
-        item_2_temp.setItemDesc("积分");
+        item_2_temp.setItemDesc(getString(R.string.integral));
         tempList.add(item_1_temp);
         tempList.add(item_2_temp);
         MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, tempList);
@@ -268,9 +270,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             // 会员权益假数据 -- 开始
             if (contentList == null) {
                 contentList = new ArrayList<>();
-                for (int i = 0; i < vipTips.length; i++) {
-                    contentList.add(vipTips[i]);
-                }
+                contentList.addAll(Arrays.asList(vipTips));
                 mineEquityListAdapter = new MineEquityListAdapter(mContext, contentList);
                 mineVipCard.setEquityListAdapter(mineEquityListAdapter);
             }
@@ -504,7 +504,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             if (code == NetworkCodes.CODE_SUCCEED) {
                 JSONObject data = (JSONObject) result.get("data");
                 int scholarship = data.getInteger("balance");
-                balance = String.format("%.2f", scholarship / 100f);
+                balance = String.format(getString(R.string.price_decimal), scholarship / 100f);
                 if (item_1 == null) {
                     item_1 = new MineMoneyItemInfo();
                     item_1.setItemTitle(balance);
@@ -525,7 +525,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 if (item_2 == null) {
                     item_2 = new MineMoneyItemInfo();
                     item_2.setItemTitle(String.valueOf(integral));
-                    item_2.setItemDesc("积分");
+                    item_2.setItemDesc(getString(R.string.integral));
                 } else {
                     item_2.setItemTitle(String.valueOf(integral));
                 }
@@ -575,7 +575,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         mineLearningWrapView.setLearningTitle(item.getString("title"));
         int updateCount = item.getInteger("periodical_count") == null ? 0 : item.getInteger("periodical_count");
         if (updateCount > 0) {
-            mineLearningWrapView.setLearningUpdate("已更新至" + updateCount + "期");
+            mineLearningWrapView.setLearningUpdate(String.format(getString(R.string.updated_to_issue), updateCount));
         }
         mineLearningWrapView.setLearningMoreVisibility(View.VISIBLE);
         isMineLearningFinish = true;
@@ -636,7 +636,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         // 设置界面信息
         if ("".equals(wxNickname) || "null".equals(wxNickname)) {
             // 微信昵称为空
-            mineMsgView.setNickName("请设置昵称");
+            mineMsgView.setNickName(getString(R.string.set_the_nickname));
         } else {
             mineMsgView.setNickName(wxNickname);
         }
@@ -753,23 +753,18 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void onMineMoneyItemInfoClickListener(View view, MineMoneyItemInfo mineMoneyItemInfo) {
         String desc = mineMoneyItemInfo.getItemDesc();
-        switch (desc) {
-            case "奖学金":
-                if (mainActivity.isFormalUser) {
-                    JumpDetail.jumpScholarshipActivity(mContext);
-                } else {
-                    touristDialog.showDialog();
-                }
-                break;
-            case "积分":
-                if (mainActivity.isFormalUser) {
-                    JumpDetail.jumpIntegralActivity(mContext);
-                } else {
-                    touristDialog.showDialog();
-                }
-                break;
-            default:
-                break;
+        if (getString(R.string.scholarship_title).equals(desc)) {
+            if (mainActivity.isFormalUser) {
+                JumpDetail.jumpScholarshipActivity(mContext);
+            } else {
+                touristDialog.showDialog();
+            }
+        } else if (getString(R.string.integral).equals(desc)) {
+            if (mainActivity.isFormalUser) {
+                JumpDetail.jumpIntegralActivity(mContext);
+            } else {
+                touristDialog.showDialog();
+            }
         }
     }
 
@@ -836,7 +831,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             if (item_2 == null) {
                 item_2 = new MineMoneyItemInfo();
                 item_2.setItemTitle(String.valueOf(integral));
-                item_2.setItemDesc("积分");
+                item_2.setItemDesc(getString(R.string.integral));
             } else {
                 item_2.setItemTitle(String.valueOf(integral));
             }
@@ -851,7 +846,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             String content = scholarshipCacheDataList.get(0).getContent();
             JSONObject data = (JSONObject) JSONObject.parseObject(content).get("data");
             int scholarship = data.getInteger("balance");
-            balance = String.format("%.2f", scholarship / 100f);
+            balance = String.format(getString(R.string.price_decimal), scholarship / 100f);
             if (item_1 == null) {
                 item_1 = new MineMoneyItemInfo();
                 item_1.setItemTitle(balance);
@@ -900,7 +895,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             mineLearningWrapView.setLearningTitle(item.getString("title"));
             int updateCount = item.getInteger("periodical_count") == null ? 0 : item.getInteger("periodical_count");
             if (updateCount > 0) {
-                mineLearningWrapView.setLearningUpdate("已更新至" + updateCount + "期");
+                mineLearningWrapView.setLearningUpdate(String.format(getString(R.string.updated_to_issue), updateCount));
             }
             mineLearningWrapView.setLearningMoreVisibility(View.VISIBLE);
             isMineLearningFinish = true;

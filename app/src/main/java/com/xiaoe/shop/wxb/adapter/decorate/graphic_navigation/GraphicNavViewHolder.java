@@ -19,6 +19,7 @@ import com.xiaoe.common.interfaces.OnItemClickWithNavItemListener;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,6 +97,8 @@ public class GraphicNavViewHolder extends BaseViewHolder implements OnItemClickW
                     openWebClient("https://www.xiaoe-tech.com/");
                 }
                 break;
+            default:
+                break;
         }
     }
 
@@ -109,9 +112,9 @@ public class GraphicNavViewHolder extends BaseViewHolder implements OnItemClickW
         if (intent.resolveActivity(mContext.getPackageManager()) != null) {
             final ComponentName componentName = intent.resolveActivity(mContext.getPackageManager());
             Log.d("GraphicNavViewHolder", "openWebClient: " + componentName);
-            mContext.startActivity(Intent.createChooser(intent, "请选择浏览器"));
+            mContext.startActivity(Intent.createChooser(intent, mContext.getString(R.string.please_select_browser)));
         } else {
-            Toast.makeText(mContext, "没有匹配的程序", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(mContext, R.string.no_matching_program);
         }
     }
 }

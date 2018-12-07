@@ -66,7 +66,7 @@ public class CommentListHolder extends BaseViewHolder implements View.OnClickLis
         userAvatar.setImageURI(commentEntity.getUser_avatar());
         userName.setText(commentEntity.getUser_nickname());
         commentContent.setText(commentEntity.getContent());
-        likeCount.setText(NumberFormat.viewCountToString(commentEntity.getLike_num()));
+        likeCount.setText(NumberFormat.viewCountToString(mContext, commentEntity.getLike_num()));
         sendCommentDate.setText(commentEntity.getComment_at());
         if(commentEntity.isIs_praise()){
             likeIcon.setImageResource(R.mipmap.comment_liked);

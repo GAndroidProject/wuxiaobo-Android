@@ -100,9 +100,9 @@ public class IntegralNewActivity extends XiaoeActivity {
 
     private void initData() {
         dataList = new ArrayList<>();
-        integralTitle.setText("积分");
+        integralTitle.setText(getString(R.string.integral));
         integralDesc.setVisibility(View.GONE);
-        integralTip.setText("暂无积分记录，快去做任务领取积分吧");
+        integralTip.setText(getString(R.string.earning_empty_tip));
         integralTip.setVisibility(View.VISIBLE);
         integralLoading.setVisibility(View.GONE);
 //        if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) { // 超级会员可以买并且不是超级会员
@@ -110,7 +110,7 @@ public class IntegralNewActivity extends XiaoeActivity {
 //        } else {
 //            integralBeSuperVip.setVisibility(View.GONE);
 //        }
-        integralListTitle.setText("积分流水");
+        integralListTitle.setText(getString(R.string.integral_list_title));
     }
 
     private void initListener() {

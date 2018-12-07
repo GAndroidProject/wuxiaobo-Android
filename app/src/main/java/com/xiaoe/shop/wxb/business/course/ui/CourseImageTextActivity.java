@@ -168,7 +168,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             touristDialog.setDialogCloseClickListener(v -> touristDialog.dismissDialog());
             touristDialog.setDialogConfirmClickListener(v -> {
                 touristDialog.dismissDialog();
-                JumpDetail.jumpLogin(CourseImageTextActivity.this, true);
+                JumpDetail.jumpLogin(mContext, true);
             });
         }
 
@@ -253,7 +253,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             @Override
             public void singleClick(View v) {
                 if (loginList.size() == 1) {
-                    JumpDetail.jumpSuperVip(CourseImageTextActivity.this);
+                    JumpDetail.jumpSuperVip(mContext);
                 } else {
                     touristDialog.showDialog();
                 }
@@ -263,7 +263,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             @Override
             public void singleClick(View v) {
                 if (loginList.size() == 1) {
-                    JumpDetail.jumpPay(CourseImageTextActivity.this, resourceId, 1, collectionImgUrl, collectionTitle, resPrice, null);
+                    JumpDetail.jumpPay(mContext, resourceId, 1, collectionImgUrl, collectionTitle, resPrice, null);
                 } else {
                     touristDialog.showDialog();
                 }
@@ -279,9 +279,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             @Override
             public void singleClick(View v) {
                 if (loginList.size() == 1) {
-                    JumpDetail.jumpMainTab(CourseImageTextActivity.this, true, true, 2);
+                    JumpDetail.jumpMainTab(mContext, true, true, 2);
                 } else {
-                    JumpDetail.jumpMainTab(CourseImageTextActivity.this, false, true, 2);
+                    JumpDetail.jumpMainTab(mContext, false, true, 2);
                 }
             }
         });
@@ -328,7 +328,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
 
     @Override
     public void onBackPressed() {
-        // TODO: 获取学习进度
+        // 获取学习进度
         if (hasBuy) { // 买了才需要上报
             UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
             updateLearningUtils.updateLearningProgress(realSrcId, Integer.parseInt(resourceType), 10);
@@ -477,7 +477,6 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                     JumpDetail.jumpColumn(this, productId, productImgUrl, 6);
                 }
                 finish();
-                return;
             }else{
                 initData(resourceInfo, cache);
             }

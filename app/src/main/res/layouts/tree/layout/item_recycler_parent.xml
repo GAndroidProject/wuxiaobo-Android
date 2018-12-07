@@ -77,7 +77,7 @@
 			android:layout_centerVertical="true"
 			android:singleLine="true"
             android:textStyle="bold"
-			android:text="大专栏"
+			android:text="@string/big_column_text"
 			android:textColor="@color/main_title_color"
 			android:textSize="16sp" />
 	</RelativeLayout>

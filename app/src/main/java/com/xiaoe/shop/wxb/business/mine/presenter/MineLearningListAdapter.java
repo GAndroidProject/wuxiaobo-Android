@@ -34,9 +34,9 @@ public class MineLearningListAdapter extends BaseAdapter {
         imgList.add(R.mipmap.profile_coupon);
         imgList.add(R.mipmap.profile_code);
         titleList.add(mContext.getString(R.string.myCollect));
-        titleList.add("下载列表");
-        titleList.add("优惠券");
-        titleList.add("兑换码");
+        titleList.add(mContext.getString(R.string.off_line_cache_text));
+        titleList.add(mContext.getString(R.string.coupon_title));
+        titleList.add(mContext.getString(R.string.cd_key_title));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class MineLearningListAdapter extends BaseAdapter {
         }
         viewHolder.itemIcon.setImageResource(imgList.get(position));
         viewHolder.itemTitle.setText(titleList.get(position));
-        if (titleList.get(position).equals("优惠券") && CommonUserInfo.getInstance().isHasUnreadMsg()) {
+        if (titleList.get(position).equals(mContext.getString(R.string.coupon_title)) && CommonUserInfo.getInstance().isHasUnreadMsg()) {
             viewHolder.itemCouponContainer.setVisibility(View.VISIBLE);
             if (CommonUserInfo.getInstance().getUnreadMsgCount() > 0) {
                 viewHolder.itemContent.setVisibility(View.VISIBLE);

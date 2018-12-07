@@ -121,7 +121,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     private void clickBatchDownload() {
         if (loginUserList.size() == 1) {
             if(!isHasBuy){
-                toastCustom("未购买课程");
+                toastCustom(getString(R.string.courses_not_purchased));
                 return;
             }
             List<ColumnDirectoryEntity> newDataList = new ArrayList<ColumnDirectoryEntity>();
@@ -201,7 +201,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                 //播放全部
                 List<AudioPlayEntity> playList = getAudioPlayList(parentEntity.getResource_list());
                 if(!isHasBuy && playList.size() <= 0 ){
-                    toastCustom("未购买课程");
+                    toastCustom(getString(R.string.courses_not_purchased));
                     return;
                 }
                 clickPlayAll(playList);
@@ -209,7 +209,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                 //播放某一个，同时获取播放列表
                 ColumnSecondDirectoryEntity playEntity = parentEntity.getResource_list().get(position);
                 if(!isHasBuy && playEntity.getIsTry() == 0){
-                    toastCustom("未购买课程");
+                    toastCustom(getString(R.string.courses_not_purchased));
                     return;
                 }
                 if(playEntity.getResource_type() == 2){
@@ -250,7 +250,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
     public void onJumpDetail(ColumnSecondDirectoryEntity itemData, int parentPosition, int position) {
         if (loginUserList.size() == 1) {
             if(!isHasBuy){
-                toastCustom("未购买课程");
+                toastCustom(getString(R.string.courses_not_purchased));
                 return;
             }
             int resourceType = itemData.getResource_type();
@@ -266,8 +266,7 @@ public class ColumnDirectoryFragment extends BaseFragment implements View.OnClic
                 //视频
                 JumpDetail.jumpVideo(getContext(), resourceId, "",false, itemData.getColumnId());
             }else{
-                toastCustom("未知课程");
-                return;
+                toastCustom(getString(R.string.unknown_course));
             }
         } else {
             touristDialog.showDialog();

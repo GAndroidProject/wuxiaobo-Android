@@ -123,6 +123,8 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
                                 case DecorateEntityType.MEMBER:
                                     JumpDetail.jumpColumn(mContext, currentBindComponent.getColumnId(), "", 5);
                                     break;
+                                default:
+                                    break;
                             }
                             return;
                         }

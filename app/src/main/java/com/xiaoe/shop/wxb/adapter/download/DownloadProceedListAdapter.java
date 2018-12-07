@@ -13,6 +13,7 @@ import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 
+@Deprecated
 public class DownloadProceedListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private static final String TAG = "DownloadProceedListAdap";
     private final Context mContext;

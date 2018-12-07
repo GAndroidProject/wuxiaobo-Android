@@ -33,6 +33,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickListPlayListener;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.DashlineItemDivider;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
@@ -169,7 +170,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     private void clickBatchDownload() {
         if (loginUserList.size() == 1) {
             if(!isHasBuy){
-                toastCustom("未购买课程");
+                toastCustom(getString(R.string.courses_not_purchased));
                 return;
             }
             List<ColumnSecondDirectoryEntity> newChildDataList = new ArrayList<ColumnSecondDirectoryEntity>();
@@ -238,7 +239,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     private void clickPlayAll() {
         if (loginUserList.size() == 1) {
             if(!isHasBuy && playList.size() <= 0){
-                toastCustom("未购买课程");
+                toastCustom(getString(R.string.courses_not_purchased));
                 return;
             }
             if(playList.size() > 0){
@@ -256,7 +257,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
                 new AudioPresenter(null).requestDetail(playEntity.getResourceId());
                 directoryAdapter.notifyDataSetChanged();
             }else {
-                Toast.makeText(XiaoeApplication.getmContext(),"无可播放音频",Toast.LENGTH_SHORT).show();
+                ToastUtils.show(getContext(), R.string.no_audio_playback);
             }
         } else {
             touristDialog.showDialog();
@@ -308,7 +309,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
         if (loginUserList.size() == 1) {
             ColumnSecondDirectoryEntity itemData = directoryAdapter.getData().get(position);
             if(!isHasBuy && itemData.getIsTry() == 0){
-                toastCustom("未购买课程");
+                toastCustom(getString(R.string.courses_not_purchased));
                 return;
             }
             if(itemData.getResource_type() == 2){
@@ -323,7 +324,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     public void onJumpDetail(ColumnSecondDirectoryEntity itemData, int parentPosition, int position) {
         if (loginUserList.size() == 1) {
             if(!isHasBuy && itemData.getIsTry() == 0){
-                toastCustom("未购买课程");
+                toastCustom(getString(R.string.courses_not_purchased));
                 return;
             }
             int resourceType = itemData.getResource_type();
@@ -339,8 +340,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
                 //视频
                 JumpDetail.jumpVideo(getContext(), resourceId, "",false, itemData.getColumnId());
             }else{
-                toastCustom("未知课程");
-                return;
+                toastCustom(getString(R.string.unknown_course));
             }
         } else {
             touristDialog.showDialog();

@@ -129,6 +129,8 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
                     case DecorateEntityType.MEMBER: // 会员
                         JumpDetail.jumpColumn(mContext, knowledgeCommodityItem.getResourceId(), knowledgeCommodityItem.getItemImg(), 5);
                         break;
+                    default:
+                        break;
                 }
             }
         }

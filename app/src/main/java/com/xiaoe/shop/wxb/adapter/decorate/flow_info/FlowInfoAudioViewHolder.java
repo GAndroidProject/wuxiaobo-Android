@@ -89,7 +89,7 @@ public class FlowInfoAudioViewHolder extends BaseViewHolder {
         if (bindItem.getItemJoinedDesc() == null) {
             joinedDesc = "";
         } else {
-            joinedDesc = bindItem.getItemJoinedDesc() + "人在听";
+            joinedDesc = String.format(mContext.getString(R.string.people_listening), bindItem.getItemJoinedDesc());
         }
         flowInfoJoinedDesc.setText(joinedDesc);
         flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {

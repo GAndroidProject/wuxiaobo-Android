@@ -58,6 +58,8 @@ public class SearchSQLiteCallback implements ISQLiteCallBack {
                     values.put(SearchHistoryEntity.COLUMN_NAME_CREATE, searchHistory.getmCreate());
                 }
                 break;
+            default:
+                break;
         }
     }
 
@@ -75,6 +77,8 @@ public class SearchSQLiteCallback implements ISQLiteCallBack {
                         cursor.getString(cursor.getColumnIndex(SearchHistoryEntity.COLUMN_NAME_CONTENT)),
                         cursor.getString(cursor.getColumnIndex(SearchHistoryEntity.COLUMN_NAME_CREATE))
                 );
+            default:
+                break;
         }
         return null;
     }

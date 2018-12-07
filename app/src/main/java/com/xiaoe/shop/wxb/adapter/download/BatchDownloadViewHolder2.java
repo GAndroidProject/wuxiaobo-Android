@@ -9,6 +9,7 @@ import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.interfaces.IonSlidingButtonListener;
 import com.xiaoe.shop.wxb.widget.SlidingButtonView;
 
+@Deprecated
 public class BatchDownloadViewHolder2 extends BaseViewHolder {
     private static final String TAG = "BatchDownloadHolder";
     private final View mItemView;

@@ -76,7 +76,7 @@ public class DownloadProceedChildListHolder extends BaseViewHolder implements Vi
         float strCount = (float)(Math.round(progress*10*2))/(10*2);
         float strTotal = (float)(Math.round(totalSize*10*2))/(10*2);
 //        downloadSpeed.setText(strCount+"MB/"+strTotal+"MB");
-        downloadSpeed.setText(String.format("%.2fMB/%.2fMB",strCount,strTotal));
+        downloadSpeed.setText(String.format(rootView.getContext().getString(R.string.mb_mb), strCount, strTotal));
     }
 
     @Override

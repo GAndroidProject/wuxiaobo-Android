@@ -41,6 +41,7 @@ import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.login.LoginPresenter;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -154,7 +155,7 @@ public class SettingAccountActivity extends XiaoeActivity {
                     }
                     replaceFragment(COMPLETE);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
-                    Toast("验证码错误");
+                    ToastUtils.show(mContext, R.string.verification_code_error);
                     Log.d(TAG, "onMainThreadResponse: 旧手机号验证失败...");
                 }
             } else if (iRequest instanceof LoginNewCodeVerifyRequest) {
@@ -162,7 +163,7 @@ public class SettingAccountActivity extends XiaoeActivity {
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     loginPresenter.updatePhone(apiToken, smsCode, newPhone, newSmsCode);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
-                    Toast("验证码错误");
+                    ToastUtils.show(mContext, R.string.verification_code_error);
                     Log.d(TAG, "onMainThreadResponse: 新手机验证失败...");
                 }
             } else if (iRequest instanceof UpdatePhoneRequest) {

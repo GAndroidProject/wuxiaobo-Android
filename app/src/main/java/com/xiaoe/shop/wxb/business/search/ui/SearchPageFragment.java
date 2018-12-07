@@ -31,6 +31,7 @@ import com.xiaoe.shop.wxb.business.search.presenter.RecommendRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.search.presenter.SearchSQLiteCallback;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +185,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                             getDialog().dismissDialog();
                             Log.d(TAG, "onClickConfirm: 1");
                             SQLiteUtil.init(mContext, new SearchSQLiteCallback()).execSQL("delete from " + SearchSQLiteCallback.TABLE_NAME_CONTENT);
-                            Toast.makeText(searchActivity, "删除成功", Toast.LENGTH_SHORT).show();
+                            ToastUtils.show(searchActivity, R.string.successfully_delete);
                             historyData.clear();
                             historyContentView.setVisibility(View.GONE);
                         }

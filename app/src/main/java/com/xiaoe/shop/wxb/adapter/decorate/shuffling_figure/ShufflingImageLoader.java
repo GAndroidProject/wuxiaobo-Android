@@ -15,7 +15,7 @@ import com.youth.banner.loader.ImageLoader;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 
-
+@Deprecated
 public class ShufflingImageLoader extends ImageLoader {
 
     @Override

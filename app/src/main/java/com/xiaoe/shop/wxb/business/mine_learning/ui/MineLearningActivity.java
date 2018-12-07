@@ -146,7 +146,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
         } else {
             // 其他情况处理（没传 title）
             Log.d(TAG, "initPageData: 没传 title");
-            learningLoading.setPagerState(StatusPagerView.FAIL, "出现了点问题哦!", R.mipmap.error_page);
+            learningLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.something_wrong), R.mipmap.error_page);
         }
     }
 
@@ -173,7 +173,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                     initPageData(data);
                 } else if (code == NetworkCodes.CODE_COLLECT_LIST_FAILED) {
                     Log.d(TAG, "onMainThreadResponse: 获取收藏列表失败");
-                    learningLoading.setPagerState(StatusPagerView.FAIL, "暂无收藏内容，快去首页逛逛吧", R.mipmap.collection_none);
+                    learningLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.no_collection_content), R.mipmap.collection_none);
                 }
             } else if (iRequest instanceof MineLearningRequest) {
                 int code = result.getInteger("code");
@@ -185,7 +185,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                         learningRefresh.finishLoadMoreWithNoMoreData();
                         learningRefresh.setEnableLoadMore(false);
                     } else {
-                        learningLoading.setPagerState(StatusPagerView.FAIL, "暂无正在学的内容，快去首页逛逛吧", R.mipmap.collection_none);
+                        learningLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.no_learning_content), R.mipmap.collection_none);
                     }
                     e.printStackTrace();
                     return;
@@ -193,7 +193,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     initPageData(data);
                 } else if (code == NetworkCodes.CODE_OBTAIN_LEARNING_FAIL) {
-                    learningLoading.setPagerState(StatusPagerView.FAIL, "暂无正在学的内容，快去首页逛逛吧", R.mipmap.collection_none);
+                    learningLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.no_learning_content), R.mipmap.collection_none);
                     Log.d(TAG, "onMainThreadResponse: 获取学习记录失败...");
                 }
             }
@@ -225,7 +225,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
             // 收藏列表为空，显示为空的页面
             learningRefresh.finishRefresh();
             if (pageList.size() == 0) {
-                learningLoading.setPagerState(StatusPagerView.FAIL, "暂无收藏内容，快去首页逛逛吧", R.mipmap.collection_none);
+                learningLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.no_collection_content), R.mipmap.collection_none);
             } else {
                 learningRefresh.finishLoadMoreWithNoMoreData();
                 learningRefresh.setEnableLoadMore(false);
@@ -255,7 +255,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 int updateCount = learningInfo.getInteger("periodical_count") == null ? 0 : learningInfo.getInteger("periodical_count");
                 String updateStr = "";
                 if (updateCount > 0) {
-                    updateStr = "已更新至" + updateCount + "期";
+                    updateStr = String.format(getString(R.string.updated_to_issue), updateCount);
                 }
 
                 // 我正在学的数据
@@ -279,7 +279,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 int updateCount = infoMsg.getInteger("periodical_count") == null ? 0 : infoMsg.getInteger("periodical_count");
                 String updateStr = "";
                 if (updateCount > 0) {
-                    updateStr = "已更新至" + updateCount + "期";
+                    updateStr = String.format(getString(R.string.updated_to_issue), updateCount);
                 }
 
                 item.setItemImg(collectionImg);

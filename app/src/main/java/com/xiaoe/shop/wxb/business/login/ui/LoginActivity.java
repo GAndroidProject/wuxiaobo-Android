@@ -40,6 +40,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.login.LoginPresenter;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -146,8 +147,7 @@ public class LoginActivity extends XiaoeActivity {
     }
 
     private void initData() {
-        // 初始化 SharedPreference
-//        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
+
     }
 
     private void initView() {
@@ -367,12 +367,12 @@ public class LoginActivity extends XiaoeActivity {
                     obtainLimitUserInfo(data, false);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
                     loginPresenter.checkRegister(phoneNum);
-                    Toast("登录失败");
+                    ToastUtils.show(mContext, R.string.login_failure);
                     Log.d(TAG, "onMainThreadResponse: " + result.getString("msg"));
                 } else if (code == NetworkCodes.CODE_OBTAIN_ACCESS_TOKEN_FAIL) { // 获取 access token 失败
                     Log.d(TAG, "onMainThreadResponse: 获取 access token 失败");
                 } else if (code == NetworkCodes.CODE_LOGIN_PASSWORD_ERROR) {
-                    Toast("密码错误");
+                    ToastUtils.show(mContext, R.string.wrong_password);
                     Log.d(TAG, "onMainThreadResponse: " + result.getString("msg"));
                 }
             } else if (iRequest instanceof LoginPhoneCodeRequest) { // 获取验证码回调
@@ -391,7 +391,7 @@ public class LoginActivity extends XiaoeActivity {
                     Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
                     loginPresenter.loginBySmsCode(phoneNum, smsCode);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
-                    Toast("验证码错误");
+                    ToastUtils.show(mContext, R.string.verification_code_error);
                     Log.d(TAG, "onMainThreadResponse: msg --- " + result.getString("msg"));
                 }
             } else if (iRequest instanceof LoginRegisterCodeVerifyRequest) { // 注册验证码确认回调
@@ -427,7 +427,7 @@ public class LoginActivity extends XiaoeActivity {
                     if (code == NetworkCodes.CODE_HAD_REGISTER) {
                         loginPresenter.loginByPassword(iRequest.getFormBody().get("phone").toString(), password);
                     } else {
-                        Toast("手机号未注册");
+                        ToastUtils.show(mContext, getString(R.string.phone_not_registered));
                     }
                     return;
                 }
@@ -474,7 +474,7 @@ public class LoginActivity extends XiaoeActivity {
                 } else if (code == NetworkCodes.CODE_PHONE_CODE_ERROR) { // 验证码错误
                     Log.d(TAG, "onMainThreadResponse: register --- " + msg);
                 }
-                Toast(msg);
+                ToastUtils.show(mContext, msg);
             } else if (iRequest instanceof LoginBindRequest) { // 绑定操作回调
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) { // 注册成功
@@ -482,30 +482,30 @@ public class LoginActivity extends XiaoeActivity {
                     initUserInfo(data);
                 } else if (code == NetworkCodes.CODE_PHONE_CODE_ERROR) {
                     Log.d(TAG, "onMainThreadResponse: 验证码错误...");
-                    Toast("验证码错误");
+                    ToastUtils.show(mContext, R.string.verification_code_error);
                 } else if (code == NetworkCodes.CODE_REGISTER_FAIL) {
                     Log.d(TAG, "onMainThreadResponse: 注册失败..");
-                    Toast("注册失败，请重试");
+                    ToastUtils.show(mContext, getString(R.string.registration_failed));
                 } else if (code == NetworkCodes.CODE_OBTAIN_ACCESS_TOKEN_FAIL) {
                     Log.d(TAG, "onMainThreadResponse: 服务器访问失败");
                 } else if (code == NetworkCodes.CODE_PARAMS_ERROR) {
                     Log.d(TAG, "onMainThreadResponse: 参数错误");
                 } else if (code == NetworkCodes.CODE_PHONE_HAD_BIND) {
                     Log.d(TAG, "onMainThreadResponse: 手机已被绑定");
-                    Toast("手机已被绑定");
+                    ToastUtils.show(mContext, getString(R.string.phone_has_bundled));
                 } else if (code == NetworkCodes.CODE_WX_HAD_BIND) {
                     Log.d(TAG, "onMainThreadResponse: 微信号已被绑定");
-                    Toast("微信号已被绑定");
+                    ToastUtils.show(mContext, R.string.wechat_id_is_bound);
                 }
             } else if (iRequest instanceof ResetPasswordRequest) { // 重置密码回调
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) { // 修改成功
-                    Toast("修改成功");
+                    ToastUtils.show(mContext, R.string.modify_successfully);
                     isPwdLogin = true; // 回到密码登录流程
                     replaceFragment(PWD);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) { // 修改失败
                     Log.d(TAG, "onMainThreadResponse: 修改失败");
-                    Toast("修改失败，请重试");
+                    ToastUtils.show(mContext, R.string.modification_failed);
                 }
             } else if (iRequest instanceof SettingPseronMsgRequest) {
                 int code = result.getInteger("code");
@@ -561,7 +561,7 @@ public class LoginActivity extends XiaoeActivity {
         CommonUserInfo.getInstance().clearUserInfo();
         loginSQLiteUtil.insert(LoginSQLiteCallback.TABLE_NAME_USER, localLoginUser);
 
-        Toast(getString(R.string.login_successfully));
+        ToastUtils.show(mContext, getString(R.string.login_successfully));
         if (!isTouristClick) {
             JumpDetail.jumpMain(this, true);
         } else {

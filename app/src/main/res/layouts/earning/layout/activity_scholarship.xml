@@ -74,7 +74,7 @@
                                 android:id="@+id/scholarship_page_content_tail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/scholarship"
+                                android:text="@string/scholarship_yuan"
                                 android:textSize="18sp"
                                 android:textColor="@color/scholarship_btn_press"
                                 android:layout_gravity="bottom"

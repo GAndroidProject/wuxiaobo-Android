@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.common.JumpDetail;
 
 public class DownloadActivity extends XiaoeActivity implements View.OnClickListener{
     private static final String TAG = "DownloadActivity";
@@ -48,8 +49,7 @@ public class DownloadActivity extends XiaoeActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.btn_off_line_cache:
-                Intent intent = new Intent(this, OffLineCacheActivity.class);
-                startActivity(intent);
+                JumpDetail.jumpOffLine(mContext);
                 break;
             default:
                 break;

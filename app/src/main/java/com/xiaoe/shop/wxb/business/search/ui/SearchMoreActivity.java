@@ -155,12 +155,12 @@ public class SearchMoreActivity extends XiaoeActivity {
                     searchMoreLoading.setLoadingFinish();
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 搜索结果有误 --- " + result.getString("msg"));
-                    searchMoreLoading.setPagerState(StatusPagerView.FAIL, "搜索出现问题了噢:)", R.mipmap.error_page);
+                    searchMoreLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.search_error), R.mipmap.error_page);
                 }
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: 加载更多请求失败...");
-            searchMoreLoading.setPagerState(StatusPagerView.FAIL, "搜索出现问题了噢:)", R.mipmap.error_page);
+            searchMoreLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.search_error), R.mipmap.error_page);
         }
     }
 
@@ -223,7 +223,7 @@ public class SearchMoreActivity extends XiaoeActivity {
             pageList.add(itemComponentInfo);
         } else {
             // 暂时显示这个..
-            searchMoreLoading.setPagerState(StatusPagerView.FAIL, "页面加载有误，请重试", R.mipmap.error_page);
+            searchMoreLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.loading_error), R.mipmap.error_page);
         }
 
         if (!hasDecorate) {
@@ -245,17 +245,17 @@ public class SearchMoreActivity extends XiaoeActivity {
     private String obtainTitle(int type) {
         switch (type) {
             case 1:
-                return "图文";
+                return getString(R.string.image_text);
             case 2:
-                return "音频";
+                return getString(R.string.audio_text);
             case 3:
-                return "视频";
+                return getString(R.string.video_text);
             case 5:
-                return "会员";
+                return getString(R.string.member_text);
             case 6:
-                return "专栏";
+                return getString(R.string.column_text);
             case 8:
-                return "大专栏";
+                return getString(R.string.big_column_text);
             default:
                 return "";
         }

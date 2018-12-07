@@ -52,7 +52,7 @@ public class WithdrawalResultActivity extends XiaoeActivity {
     }
 
     private void initData() {
-        wrResultContent.setText("提现结果");
+        wrResultContent.setText(R.string.show_the_result);
         wrResultDesc.setVisibility(View.GONE);
         wrResultSuccess.setText(showPrice);
     }

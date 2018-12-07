@@ -118,7 +118,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
     private void initView() {
         RelativeLayout activityRootView = (RelativeLayout) findViewById(R.id.comment_pager);
         commentCountView = (TextView) findViewById(R.id.comment_count);
-        commentCountView.setText("评论");
+        commentCountView.setText(getString(R.string.comment_title));
         commentRecyclerView = (RecyclerView) findViewById(R.id.comment_recycler_view);
         commentRecyclerView.setItemAnimator(null);
         commentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -249,7 +249,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
             setPagerState(0);
         }
         mCommentCount++;
-        commentCountView.setText("评论 "+mCommentCount+" 条");
+        commentCountView.setText(String.format(getString(R.string.comments_on_count), mCommentCount));
         int commentId = data.getIntValue("comment_id");
         sendComment.setComment_id(commentId);
         commentAdapter.addPosition(sendComment, 0);
@@ -273,7 +273,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
             return;
         }
         mCommentCount = count;
-        commentCountView.setText("评论 "+count+" 条");
+        commentCountView.setText(String.format(getString(R.string.comments_on_count), count));
         JSONArray comments = dataObject.getJSONArray("comments");
         List<CommentEntity> commentList = null;
         if(comments == null){
@@ -390,7 +390,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
                     public void onClickConfirm(View view, int tag) {
                         if(DIALOG_TAG_DELETE_COMMENT == tag){
                             mCommentCount--;
-                            commentCountView.setText("评论 "+mCommentCount+" 条");
+                            commentCountView.setText(String.format(getString(R.string.comments_on_count), mCommentCount));
                             commentEntity.setDelete(true);
                             commentPresenter.deleteComment(resourceId, resourceType, commentEntity.getComment_id());
                             commentAdapter.getData().remove(position);

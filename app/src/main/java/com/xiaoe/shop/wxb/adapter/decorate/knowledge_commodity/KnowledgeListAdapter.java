@@ -16,6 +16,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 
 import java.util.List;
@@ -117,7 +118,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         if (CommonUserInfo.isIsSuperVipAvailable()) {
                             JumpDetail.jumpSuperVip(mContext);
                         } else {
-                            Toast.makeText(mContext, "app 暂不支持非一年规格的会员购买", Toast.LENGTH_SHORT).show();
+                            ToastUtils.show(mContext, "app 暂不支持非一年规格的会员购买");
                         }
                         break;
                     default:
@@ -129,7 +130,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
             viewHolder.itemWrap.setOnLongClickListener(v -> {
                 CustomDialog customDialog = new CustomDialog(mContext);
                 customDialog.setMessageVisibility(View.GONE);
-                customDialog.setTitle("确认删除收藏吗");
+                customDialog.setTitle(mContext.getString(R.string.are_delete_favorites));
                 customDialog.setOnCustomDialogListener(new OnCustomDialogListener() {
                     @Override
                     public void onClickCancel(View view, int tag) {
@@ -142,7 +143,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
                         collectionUtils.requestRemoveCollection(mItemList.get(position).getResourceId(), type);
                         mItemList.remove(mItemList.get(position));
                         notifyDataSetChanged();
-                        Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+                        ToastUtils.show(mContext, R.string.successfully_delete);
                     }
 
                     @Override

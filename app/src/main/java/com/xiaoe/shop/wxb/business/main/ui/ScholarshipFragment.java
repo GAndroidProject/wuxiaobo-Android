@@ -55,6 +55,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -384,7 +385,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                     scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 } else { // 不为空
                     scholarshipLoading.setLoadingFinish();
-                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(getContext(), getString(R.string.network_error_text));
                 }
             }
         }
@@ -434,7 +435,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             isSuperVip = itemJson.getBoolean("is_supermember") == null ? false : itemJson.getBoolean("is_supermember");
             int money = itemJson.getInteger("all_money");
             String range = String.valueOf(i + 1);
-            String scholarship = String.format("%.2f%s",money / 100f,"元");
+            String scholarship = String.format(getString(R.string.format_yuan), money / 100f);
 
             scholarshipRangeItem.setItemRange(range);
             scholarshipRangeItem.setItemAvatar(wxAvatar);
@@ -469,7 +470,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         switch (status) {
             case 1: // 已领取 -- 显示明日再来
                 ScholarshipEntity.getInstance().setTaskState(ScholarshipEntity.TASK_RECEIVED);
-                scholarshipDivide.setText("明日再来");
+                scholarshipDivide.setText(R.string.come_again_tomorrow);
                 scholarshipDivide.setBackground(getActivity().getResources().getDrawable(R.drawable.divide_btn_content_bg));
                 scholarshipDivide.setAlpha(0.8f);
                 scholarshipDivide.setClickable(false);
@@ -509,7 +510,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         TextView earnSubmit = (TextView) view.findViewById(R.id.scholarship_dialog_submit);
 
         if (hasEarnMoney) { // 拿到钱了
-            earnTitle.setText("恭喜你，获得奖学金");
+            earnTitle.setText(getString(R.string.congratulations_winning_scholarship));
             earnWrap.setBackground(getActivity().getResources().getDrawable(R.mipmap.scholarship_popup_bg));
             earnContent.setText(amount);
             earnContentTail.setVisibility(View.VISIBLE);
@@ -523,7 +524,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 }
             });
         } else {
-            earnTitle.setText("差一点就瓜分到了");
+            earnTitle.setText(getString(R.string.almost_got_it));
             earnContentTail.setVisibility(View.GONE);
             earnWrap.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
             earnSubmit.setText(getString(R.string.scholarship_earn_integral));
@@ -605,12 +606,12 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         if (status == 3 && reward != null) { // 已经完成并拿到数据
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_ISSUED);
 
-            scholarshipDivide.setText("明日再来");
+            scholarshipDivide.setText(getString(R.string.come_again_tomorrow));
             scholarshipDivide.setAlpha(0.8f);
             scholarshipDivide.setClickable(false);
             Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipProcess);
 
-            // TODO: 禁止点击事件
+            // 禁止点击事件
             int type = reward.getInteger("type");
             int amount = reward.getInteger("amount");
             if (type == 1) { // 拿到钱
@@ -625,7 +626,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             showEarnDialog();
         } else if (status == 2) { // 处理中
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_PROCESSING);
-            scholarshipDivide.setText("瓜分中...");
+            scholarshipDivide.setText(R.string.in_the_split);
 
             Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipProcess);
 
@@ -633,7 +634,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             handler.postDelayed(runnable, 3000);
         } else if (status == 1) {
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_FAIL);
-            Toast.makeText(getActivity(), "领取失败，请重试", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(getContext(), getString(R.string.failed_to_collect));
             Glide.with(this).load(R.mipmap.scholarship_process_one).into(scholarshipProcess);
         }
     }
@@ -701,12 +702,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             JSONObject result = JSONObject.parseObject(rankingCacheData.get(0).getContent()).getJSONObject("data");
             initRange(result);
         }
-        if(stateCacheData != null && stateCacheData.size() > 0
-                && rankingCacheData != null && rankingCacheData.size() > 0){
-            showDataByDB = true;
-        }else{
-            showDataByDB = false;
-        }
+        showDataByDB = stateCacheData != null && stateCacheData.size() > 0 && rankingCacheData != null && rankingCacheData.size() > 0;
         //奖学金金额
         String sqlMoney = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
                 +"' and resource_id='"+taskId+"_money' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";

@@ -65,6 +65,8 @@ public class EmptyCouponFragment extends BaseFragment {
                 RelativeLayout noUseCoupon = (RelativeLayout) viewWrap.findViewById(R.id.no_use_coupon);
                 noUseCoupon.setVisibility(noUseCouponVisibility);
                 break;
+            default:
+                break;
         }
     }
 

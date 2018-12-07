@@ -92,7 +92,7 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
         btnDownload.setOnClickListener(this);
 
         selectCount = (TextView) mRootView.findViewById(R.id.select_size);
-        selectCount.setText(String.valueOf("已选 0条"));
+        selectCount.setText(String.format(getString(R.string.the_selected_count), 0));
     }
 
     @Override
@@ -135,7 +135,7 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
         btnDownload.setEnabled(allSelectEnable);
         if(!allSelectEnable){
             allSetectImage.setImageResource(R.mipmap.download_alreadychecked);
-            selectCount.setText(String.valueOf("已选 0条"));
+            selectCount.setText(String.format(getString(R.string.the_selected_count), 0));
             allSelectText.setText(getResources().getString(R.string.all_select_text));
         }
 
@@ -176,11 +176,11 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
             }
         }
         adapter.notifyDataSetChanged();
-        selectCount.setText(String.valueOf("已选 "+count+"条"));
+        selectCount.setText(String.format(getString(R.string.the_selected_count), count));
     }
 
     @Override
-    public void onSelect(int positiont) {
+    public void onSelect(int position) {
         int count = 0;
         int childCount = 0;
         for (ColumnDirectoryEntity item: adapter.getDate()) {
@@ -198,7 +198,6 @@ public class DownloadDirectoryFragment extends BaseFragment implements View.OnCl
         if(!allSelectEnable){
             childCount = 0;
         }
-        selectCount.setText(String.valueOf("已选 "+childCount+"条"));
-
+        selectCount.setText(String.format(getString(R.string.the_selected_count), childCount));
     }
 }

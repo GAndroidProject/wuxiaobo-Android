@@ -486,14 +486,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         int purchaseCount = data.getIntValue("purchase_count");
         if(purchaseCount > 0){
             buyCount.setVisibility(View.VISIBLE);
-            buyCount.setText(NumberFormat.viewCountToString(purchaseCount)+"人学习");
+            buyCount.setText(String.format(getString(R.string.people_learn), NumberFormat.viewCountToString(mContext, purchaseCount)));
         }else {
             buyCount.setVisibility(View.GONE);
         }
         if(!TextUtils.isEmpty(data.getString("expire_time"))){
             memberExpireTime.setVisibility(View.VISIBLE);
             expireTime = data.getString("expire_time");
-            memberExpireTime.setText("有效期至："+expireTime);
+            memberExpireTime.setText(String.format(getString(R.string.valid_until), expireTime));
         }
         resourceState(data, available);
     }
