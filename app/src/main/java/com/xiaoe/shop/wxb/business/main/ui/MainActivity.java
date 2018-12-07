@@ -118,10 +118,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             CommonUserInfo.setUserId(Constants.ANONYMOUS_USER_ID);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
-
         superVipPresenter = new SuperVipPresenter(this);
         superVipPresenter.requestSuperVip();
 
@@ -202,16 +198,20 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         mainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (1 == position){
-                    if (!StatusBarUtil.setStatusBarDarkTheme(MainActivity.this, false)) {
-                        // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
-                        StatusBarUtil.setStatusBarColor(MainActivity.this, 0x55000000);
-                    }
-                }else {
-                    if (!StatusBarUtil.setStatusBarDarkTheme(MainActivity.this, true)) {
-                        // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
-                        StatusBarUtil.setStatusBarColor(MainActivity.this, 0x55000000);
-                    }
+//                if (1 == position){
+//                    if (!StatusBarUtil.setStatusBarDarkTheme(MainActivity.this, false)) {
+//                        // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
+//                        StatusBarUtil.setStatusBarColor(MainActivity.this, 0x55000000);
+//                    }
+//                }else {
+//                    if (!StatusBarUtil.setStatusBarDarkTheme(MainActivity.this, true)) {
+//                        // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
+//                        StatusBarUtil.setStatusBarColor(MainActivity.this, 0x55000000);
+//                    }
+//                }
+                if (!StatusBarUtil.setStatusBarDarkTheme(MainActivity.this, true)) {
+                    // 如果不支持设置深色风格，可以设置状态栏为半透明 0x55000000
+                    StatusBarUtil.setStatusBarColor(MainActivity.this, 0x55000000);
                 }
             }
             @Override
