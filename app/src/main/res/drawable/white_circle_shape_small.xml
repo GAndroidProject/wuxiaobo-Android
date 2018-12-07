@@ -8,7 +8,7 @@
     </item>
     <item>
         <shape android:shape="oval">
-            <stroke android:color="#FFCCAA68" android:width="1px"/>
+            <stroke android:color="#FFCCAA68" android:width="0.5dp"/>
             <size android:height="5dp" android:width="5dp" />
         </shape>
     </item>

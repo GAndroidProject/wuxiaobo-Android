@@ -17,6 +17,8 @@ class KnowledgeItemViewHolder extends BaseViewHolder {
     FrameLayout itemWrap;
     @BindView(R.id.knowledge_group_item_icon)
     SimpleDraweeView itemIcon;
+    @BindView(R.id.knowledge_group_item_icon_bg)
+    SimpleDraweeView itemIconBg;
     @BindView(R.id.knowledge_group_item_title)
     TextView itemTitle;
     @BindView(R.id.knowledge_group_item_title_column)

@@ -1,27 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/knowledge_list_item_wrap"
     android:layout_width="match_parent"
     android:layout_height="120dp"
     android:background="@drawable/corners_bg_with_border">
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/knowledge_list_item_icon_bg"
-        android:layout_width="1px"
-        android:layout_height="1px"/>
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/knowledge_list_item_icon"
+    <RelativeLayout
+        android:id="@+id/knowledge_list_item"
         android:layout_width="160dp"
-        android:layout_height="120dp"
-        fresco:roundedCornerRadius="@dimen/corner_border_radius_size"
-        fresco:roundingBorderWidth="1dp"
-        fresco:roundBottomRight="false"
-        fresco:roundTopRight="false"/>
+        android:layout_height="120dp">
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/knowledge_list_item_icon_bg"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_alignParentLeft="true"
+            fresco:roundedCornerRadius="@dimen/corner_border_radius_size"
+            fresco:roundingBorderWidth="0.5dp"
+            fresco:roundBottomRight="false"
+            fresco:roundTopRight="false"/>
+        <ImageView
+            android:layout_width="105dp"
+            android:layout_height="105dp"
+            tools:ignore="ContentDescription"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/cd_shadow"/>
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/knowledge_list_item_icon"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            fresco:roundedCornerRadius="42dp"
+            android:layout_centerInParent="true"
+            android:transitionName="@string/share_img"/>
+        <View
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/white_circle_shape_small"/>
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/knowledge_list_item_icon"
+        android:layout_toEndOf="@id/knowledge_list_item"
         android:layout_marginStart="14dp"
         android:layout_marginEnd="14dp"
         android:layout_marginTop="10dp">
@@ -54,7 +75,7 @@
         android:textSize="14sp"
         android:textColor="@color/price_color"
         android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@id/knowledge_list_item_icon"
+        android:layout_toEndOf="@id/knowledge_list_item"
         android:layout_marginStart="14dp"
         android:layout_marginBottom="12dp"
         android:layout_marginEnd="12dp"

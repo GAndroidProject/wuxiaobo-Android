@@ -2,6 +2,8 @@ package com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +13,13 @@ import android.widget.Toast;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
+import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 
@@ -28,6 +32,8 @@ public class KnowledgeListAdapter extends BaseAdapter {
     private List<KnowledgeCommodityItem> mItemList;
     private Context mContext;
     private LayoutInflater mInflater;
+    private final int TYPE_AUDIO = 1;
+    private final int TYPE_OTHER = 2;
 
     public KnowledgeListAdapter(Context context, List<KnowledgeCommodityItem> itemList) {
         this.mContext = context;
@@ -38,6 +44,19 @@ public class KnowledgeListAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         return mItemList == null ? 0 : mItemList.size();
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return mItemList.size()< 2 ? 1 : 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        String type = convertItemType(mItemList.get(position).getSrcType());
+        if ("2".equals(type))
+            return TYPE_AUDIO;
+        return TYPE_OTHER;
     }
 
     @Override
@@ -52,18 +71,37 @@ public class KnowledgeListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final KnowledgeHolder viewHolder;
+        int type = getItemViewType(position);
+        KnowledgeHolder viewHolder = null,viewHolderAudio = null;
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.knowledge_commodity_list_item, parent, false);
-            viewHolder = new KnowledgeHolder(convertView);
-            convertView.setTag(viewHolder);
+            if (TYPE_AUDIO == type){
+                convertView = mInflater.inflate(R.layout.knowledge_audio_list_item, parent, false);
+                viewHolderAudio = new KnowledgeHolder(convertView);
+                convertView.setTag(viewHolderAudio);
+            }else {
+                convertView = mInflater.inflate(R.layout.knowledge_commodity_list_item, parent, false);
+                viewHolder = new KnowledgeHolder(convertView);
+                convertView.setTag(viewHolder);
+            }
         } else {
-            viewHolder = (KnowledgeHolder) convertView.getTag();
+            if (TYPE_AUDIO == type)
+                viewHolderAudio = (KnowledgeHolder) convertView.getTag();
+            else viewHolder = (KnowledgeHolder) convertView.getTag();
         }
+        if (TYPE_AUDIO == type)
+            updateView(position, viewHolderAudio,type);
+        else updateView(position, viewHolder,type);
+
+        return convertView;
+    }
+
+    private void updateView(int position, KnowledgeHolder viewHolder,int type) {
+        if (viewHolder == null)  return;
         // 如果是专栏的话需要有两行标题，其他单品就显示一行标题和一行描述
         String srcType = mItemList.get(position).getSrcType();
         if (srcType != null) { // 写的数据的时候并没有添加 srcType 先兼容，课程页用了真数据之后删掉
-            if (srcType.equals(DecorateEntityType.TOPIC) || srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.MEMBER)) { // 专栏或者大专栏
+            if (srcType.equals(DecorateEntityType.TOPIC) || srcType.equals(DecorateEntityType.COLUMN)
+                    || srcType.equals(DecorateEntityType.MEMBER)) { // 专栏或者大专栏
                 viewHolder.itemTitle.setText(mItemList.get(position).getItemTitle());
                 viewHolder.itemTitle.setMaxLines(1);
                 viewHolder.itemTitleColumn.setVisibility(View.VISIBLE);
@@ -74,7 +112,25 @@ public class KnowledgeListAdapter extends BaseAdapter {
                 viewHolder.itemTitleColumn.setVisibility(View.GONE);
             }
         }
-        viewHolder.itemIcon.setImageURI(mItemList.get(position).getItemImg());
+        if (TYPE_AUDIO == type){
+            viewHolder.itemIconBg.setVisibility(View.VISIBLE);
+            SetImageUriUtil.setImgURI(viewHolder.itemIconBg, "res:///" +
+                            R.mipmap.audio_list_bg , Dp2Px2SpUtil.dp2px(mContext, 160),
+                    Dp2Px2SpUtil.dp2px(mContext, 120));
+            String url = TextUtils.isEmpty(mItemList.get(position).getItemImg()) ? "res:///" +
+                    R.mipmap.audio_ring : mItemList.get(position).getItemImg();
+            int imageWidthDp = 84;
+            if (url.contains("res:///") || !SetImageUriUtil.isGif(url)) {// 本地图片
+                SetImageUriUtil.setImgURI(viewHolder.itemIcon, url, Dp2Px2SpUtil.dp2px(mContext, imageWidthDp),
+                        Dp2Px2SpUtil.dp2px(mContext, imageWidthDp));
+            } else {// 网络图片
+                SetImageUriUtil.setRoundAsCircle(viewHolder.itemIcon, Uri.parse(url));
+            }
+        }else {
+            viewHolder.itemIconBg.setVisibility(View.GONE);
+            viewHolder.itemIcon.setImageURI(mItemList.get(position).getItemImg());
+        }
+
         if (mItemList.get(position).isHasBuy()) { // 买了
 //            viewHolder.itemPrice.setText("");
 //            viewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
@@ -154,8 +210,8 @@ public class KnowledgeListAdapter extends BaseAdapter {
                 return false;
             });
         }
-        return convertView;
     }
+
     public void addAllData(List<KnowledgeCommodityItem> list){
         mItemList.addAll(list);
         notifyDataSetChanged();
