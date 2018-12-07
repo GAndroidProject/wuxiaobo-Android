@@ -79,7 +79,7 @@
     <Button
         android:id="@+id/login_pwd_submit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="@string/login_main_title"
         android:textColor="@color/white"
         android:textSize="16sp"

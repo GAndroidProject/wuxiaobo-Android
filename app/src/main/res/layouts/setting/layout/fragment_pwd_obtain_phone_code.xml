@@ -23,7 +23,7 @@
     <Button
         android:id="@+id/pwd_obtain_phone_code"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="@string/login_main_phone_submit"
         android:textSize="16sp"
         android:textColor="@color/white"

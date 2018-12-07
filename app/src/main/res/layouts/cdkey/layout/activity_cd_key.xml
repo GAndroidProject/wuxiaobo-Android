@@ -40,7 +40,7 @@
         </FrameLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="220dp"
             android:background="@mipmap/bg_exchange_shadow"
             android:orientation="vertical"
             android:paddingLeft="30dp"
@@ -78,7 +78,7 @@
             <Button
                 android:id="@+id/cd_key_submit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:text="@string/cd_key_submit"
                 android:textSize="16sp"
                 android:textColor="@color/white"

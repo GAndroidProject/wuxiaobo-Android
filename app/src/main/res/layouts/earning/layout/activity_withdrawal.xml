@@ -177,7 +177,7 @@
     <TextView
         android:id="@+id/wr_page_now"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:background="@drawable/common_btn_bg_selector_blue"
         android:text="@string/withdrawal_now"
         android:textColor="@color/white"
