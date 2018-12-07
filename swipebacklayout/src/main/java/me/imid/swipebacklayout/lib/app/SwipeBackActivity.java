@@ -11,7 +11,8 @@ import me.imid.swipebacklayout.lib.Utils;
 /**
  * @author Administrator
  * <p>
- * 描述：项目中没有使用
+ * 描述：手势右滑关闭页面，所有Activity继承该类，如果不需要该功能，
+ * 可在子类中的onCreate方法中的super.onCreate(savedInstanceState);下面添加：setSwipeBackEnable(false);
  */
 public class SwipeBackActivity extends AppCompatActivity implements SwipeBackActivityBase {
 
@@ -27,7 +28,9 @@ public class SwipeBackActivity extends AppCompatActivity implements SwipeBackAct
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        mHelper.onPostCreate();
+        if (mHelper != null) {
+            mHelper.onPostCreate();
+        }
     }
 
     @Override
@@ -41,17 +44,24 @@ public class SwipeBackActivity extends AppCompatActivity implements SwipeBackAct
 
     @Override
     public SwipeBackLayout getSwipeBackLayout() {
-        return mHelper.getSwipeBackLayout();
+        if (mHelper != null) {
+            return mHelper.getSwipeBackLayout();
+        }
+        return null;
     }
 
     @Override
     public void setSwipeBackEnable(boolean enable) {
-        getSwipeBackLayout().setEnableGesture(enable);
+        if (getSwipeBackLayout() != null) {
+            getSwipeBackLayout().setEnableGesture(enable);
+        }
     }
 
     @Override
     public void scrollToFinishActivity() {
         Utils.convertActivityToTranslucent(this);
-        getSwipeBackLayout().scrollToFinishActivity();
+        if (getSwipeBackLayout() != null) {
+            getSwipeBackLayout().scrollToFinishActivity();
+        }
     }
 }
