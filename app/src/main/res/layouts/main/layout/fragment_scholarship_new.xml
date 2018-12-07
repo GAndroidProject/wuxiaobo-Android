@@ -60,6 +60,13 @@
 
         </com.xiaoe.shop.wxb.widget.CustomScrollView>
 
+        <View
+            android:id="@+id/scholarship_title_blank_new"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            android:background="@color/white"/>
+
         <com.xiaoe.shop.wxb.widget.StatusPagerView
             android:id="@+id/scholarship_loading_new"
             android:layout_width="match_parent"

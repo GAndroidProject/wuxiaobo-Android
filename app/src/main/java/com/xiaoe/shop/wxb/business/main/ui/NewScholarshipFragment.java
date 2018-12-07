@@ -40,6 +40,7 @@ import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.entitys.ScholarshipRangeItem;
 import com.xiaoe.common.entitys.TaskDetailIdEvent;
 import com.xiaoe.common.utils.CacheDataUtil;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.MeasureUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -102,6 +103,8 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
     ListView scholarshipNewAllList;
     @BindView(R.id.scholarship_loading_new)
     StatusPagerView scholarshipNewLoading;
+    @BindView(R.id.scholarship_title_blank_new)
+    View scholarshipBlankNew;
 
     protected static final String RULE = "rule";
     protected static final String GO_BUY = "go_buy";
@@ -125,6 +128,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
     Runnable runnable;
     String amount; // 拿到的奖学金或者积分
     private boolean showDataByDB = false;
+    FrameLayout.LayoutParams layoutParams;
 
     @Nullable
     @Override
@@ -151,6 +155,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
                 }
             });
         }
+        layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, StatusBarUtil.getStatusBarHeight(getActivity()));
         return view;
     }
 
@@ -390,7 +395,15 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
 
     @Override
     public void onScrollChanged(int l, int t, int oldl, int oldt) {
-
+        if (t >= StatusBarUtil.getStatusBarHeight(getActivity())) {
+            if (scholarshipBlankNew.getVisibility() == View.GONE) {
+                scholarshipBlankNew.setVisibility(View.VISIBLE);
+                scholarshipBlankNew.setLayoutParams(layoutParams);
+                scholarshipBlankNew.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+        } else {
+            scholarshipBlankNew.setVisibility(View.GONE);
+        }
     }
 
     @Override
