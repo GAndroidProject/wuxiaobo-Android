@@ -127,8 +127,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         MessagePushPresenter messagePushPresenter = new MessagePushPresenter(this);
         messagePushPresenter.requestBindJgPush();
 
-
-        needShowScholarship = ScholarshipEntity.getInstance().isTaskExist();
+        // 一直显示奖学金 tab
+        needShowScholarship = !ScholarshipEntity.getInstance().isTaskExist();
         initView();
         if (!OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName())) {
             audioPlayServiceIntent = new Intent(this, AudioMediaPlayer.class);
