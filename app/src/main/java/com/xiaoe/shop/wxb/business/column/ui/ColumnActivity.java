@@ -543,7 +543,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 break;
             case R.id.btn_content_directory:
                 setColumnViewPager(1);
-                loadMoreView.setVisibility(View.VISIBLE);
+                if(loadMoreView.getLoadState() == ListBottomLoadMoreView.STATE_ALL_FINISH){
+                    loadMoreView.setVisibility(View.GONE);
+                }else{
+                    loadMoreView.setVisibility(View.VISIBLE);
+                }
                 mBottomEndView.setVisibility(View.GONE);
                 break;
             case R.id.btn_back:
@@ -641,6 +645,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
     public void setLoadState(int state){
         loadMoreView.setLoadState(state);
+        if(state == ListBottomLoadMoreView.STATE_ALL_FINISH){
+            loadMoreView.setVisibility(View.GONE);
+        }else{
+            loadMoreView.setVisibility(View.VISIBLE);
+        }
         columnScrollView.setLoadState(state);
     }
 

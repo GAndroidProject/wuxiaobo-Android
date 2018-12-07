@@ -108,8 +108,12 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     private void setAllDownloadButton(boolean all) {
         if(all){
             btnAllStart.setText(getString(R.string.all_stop_download));
+            btnAllStart.setTextColor(getResources().getColor(R.color.recent_list_color));
+            btnAllStart.setBackgroundResource(R.drawable.all_delete_download_white);
         }else{
             btnAllStart.setText(getString(R.string.all_start_download));
+            btnAllStart.setTextColor(getResources().getColor(R.color.white));
+            btnAllStart.setBackgroundResource(R.drawable.recent_update_btn_pressed);
         }
     }
 
