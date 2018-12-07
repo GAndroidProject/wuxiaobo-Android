@@ -66,16 +66,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <!--<TextView-->
-                <!--android:id="@+id/status_bar_blank"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:visibility="gone"-->
-                <!--android:layout_height="wrap_content" />-->
+            <TextView
+                android:id="@+id/status_bar_blank"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="wrap_content" />
             <FrameLayout
                 android:id="@+id/micro_page_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/recent_update_btn_pressed"
                 android:visibility="gone">
 
                 <TextView

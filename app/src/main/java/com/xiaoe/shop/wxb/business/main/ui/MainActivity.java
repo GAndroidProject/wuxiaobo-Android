@@ -120,6 +120,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            StatusBarUtil.setStatusBarColor(MainActivity.this,R.color.white);
         }
 
         superVipPresenter = new SuperVipPresenter(this);

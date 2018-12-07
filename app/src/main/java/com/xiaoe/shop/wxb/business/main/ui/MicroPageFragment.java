@@ -79,8 +79,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     protected static final int NETWORK_DECORATE = 2001;
     protected static final int CACHE_DECORATE = 2002;
 
-//    @BindView(R.id.status_bar_blank)
-//    TextView mStatusBarBlank;
+    @BindView(R.id.status_bar_blank)
+    TextView mStatusBarBlank;
 
     private Unbinder unbinder;
     private Context mContext;
@@ -156,8 +156,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
             top = StatusBarUtil.getStatusBarHeight(mContext);
         view.setPadding(0, top, 0, 0);
-//        mStatusBarBlank.setBackgroundColor(Color.argb(255, 255, 255, 255));
-//        mStatusBarBlank.setHeight(StatusBarUtil.getStatusBarHeight(mContext));
+        mStatusBarBlank.setBackgroundColor(Color.argb(255, 255, 255, 255));
+        mStatusBarBlank.setHeight(StatusBarUtil.getStatusBarHeight(mContext));
         EventBus.getDefault().register(this);
         return view;
     }
@@ -865,7 +865,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             if (alpha > maxAlpha) {
                 if (microPageToolbarTitle.getVisibility() != View.VISIBLE) {
                     microPageToolbarTitle.setVisibility(View.VISIBLE);
-//                    mStatusBarBlank.setVisibility(View.VISIBLE);
+                    mStatusBarBlank.setVisibility(View.VISIBLE);
                     int color = Color.argb(255, 255, 255, 255);
                     microPageToolbar.setBackgroundColor(color);
                     if (hasSearch) {
@@ -876,11 +876,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 }
             } else {
                 microPageToolbarTitle.setVisibility(View.GONE);
-//                mStatusBarBlank.setVisibility(View.GONE);
+                mStatusBarBlank.setVisibility(View.GONE);
                 microPageToolbarSearch.setVisibility(View.GONE);
             }
         } else {
-//            mStatusBarBlank.setVisibility(View.GONE);
+            mStatusBarBlank.setVisibility(View.GONE);
         }
     }
 
