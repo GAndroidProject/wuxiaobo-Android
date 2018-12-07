@@ -422,7 +422,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             @Override
             public void singleClick(View v) {
                 if (mainActivity.isFormalUser) {
-                    JumpDetail.jumpMineLearning(mContext, "我正在学");
+                    JumpDetail.jumpMineLearning(mContext, getString(R.string.learning_tab_title));
                 } else {
                     touristDialog.showDialog();
                 }
@@ -714,7 +714,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         switch (position) {
             case 0: // 我的收藏
                 if (mainActivity.isFormalUser) {
-                    JumpDetail.jumpMineLearning(mContext, "我的收藏");
+                    JumpDetail.jumpMineLearning(mContext, getString(R.string.myCollect));
                 } else {
                     touristDialog.showDialog();
                 }

@@ -80,7 +80,7 @@ public class FlowInfoViewHolder extends BaseViewHolder {
             public void doClick(View v) {
                 if (currentBindComponent.isFormUser()) {
                     Intent intent = new Intent(mContext, MineLearningActivity.class);
-                    intent.putExtra("pageTitle", "我正在学");
+                    intent.putExtra("pageTitle", mContext.getString(R.string.learning_tab_title));
                     mContext.startActivity(intent);
                 } else {
                     LoginDialogUtils.showTouristDialog(mContext);

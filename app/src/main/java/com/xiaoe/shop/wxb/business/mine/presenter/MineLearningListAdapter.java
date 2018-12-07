@@ -33,7 +33,7 @@ public class MineLearningListAdapter extends BaseAdapter {
         imgList.add(R.mipmap.profile_download);
         imgList.add(R.mipmap.profile_coupon);
         imgList.add(R.mipmap.profile_code);
-        titleList.add("我的收藏");
+        titleList.add(mContext.getString(R.string.myCollect));
         titleList.add("下载列表");
         titleList.add("优惠券");
         titleList.add("兑换码");

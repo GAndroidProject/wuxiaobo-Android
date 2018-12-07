@@ -79,7 +79,7 @@ public class ShufflingFigureViewHolder extends BaseViewHolder {
                 case "message": // 消息页面 TODO: 跳转到消息页面
                     break;
                 case "my_purchase": // 已购
-                    JumpDetail.jumpMineLearning(mContext, "我正在学");
+                    JumpDetail.jumpMineLearning(mContext, mContext.getString(R.string.learning_tab_title));
                     break;
                 case "custom": // 外部链接 TODO: 跳转到外部链接
                     break;

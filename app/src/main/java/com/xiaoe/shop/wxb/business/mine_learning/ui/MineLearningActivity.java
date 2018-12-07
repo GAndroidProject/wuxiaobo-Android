@@ -109,7 +109,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
     @Subscribe
     public void onEventMainThread(MyCollectListRefreshEvent event) {
         if (event != null && event.isRefresh()){//如果从我的收藏进入详情，用户取消了收藏，回到我的收藏页面需要刷新列表数据
-            if ("我的收藏".equals(pageTitle)) {
+            if (getString(R.string.myCollect).equals(pageTitle)) {
                 if (collectionUtils == null) {
                     collectionUtils = new CollectionUtils(this);
                 }
@@ -134,22 +134,19 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
         pageList = new ArrayList<>();
         learningLoading.setVisibility(View.VISIBLE);
         learningLoading.setLoadingState(View.VISIBLE);
-        switch (pageTitle) {
-            case "我的收藏":
-                learningTitle.setText(pageTitle);
-                collectionUtils = new CollectionUtils(this);
-                collectionUtils.requestCollectionList(1, 10);
-                break;
-            case "我正在学":
-                learningTitle.setText(pageTitle);
-                mineLearningPresenter = new MineLearningPresenter(this);
-                mineLearningPresenter.requestLearningData(1, 10);
-                break;
-            default:
-                // 其他情况处理（没传 title）
-                Log.d(TAG, "initPageData: 没传 title");
-                learningLoading.setPagerState(StatusPagerView.FAIL, "出现了点问题哦!", R.mipmap.error_page);
-                break;
+
+        if (getString(R.string.myCollect).equals(pageTitle)) {
+            learningTitle.setText(pageTitle);
+            collectionUtils = new CollectionUtils(this);
+            collectionUtils.requestCollectionList(1, 10);
+        } else if (getString(R.string.learning_tab_title).equals(pageTitle)) {
+            learningTitle.setText(pageTitle);
+            mineLearningPresenter = new MineLearningPresenter(this);
+            mineLearningPresenter.requestLearningData(1, 10);
+        } else {
+            // 其他情况处理（没传 title）
+            Log.d(TAG, "initPageData: 没传 title");
+            learningLoading.setPagerState(StatusPagerView.FAIL, "出现了点问题哦!", R.mipmap.error_page);
         }
     }
 
@@ -245,7 +242,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
         for (Object goodItem : goodsList) {
             KnowledgeCommodityItem item = new KnowledgeCommodityItem();
             JSONObject infoItem = (JSONObject) goodItem;
-            if ("我正在学".equals(pageTitle)) { // 我正在学列表
+            if (getString(R.string.learning_tab_title).equals(pageTitle)) { // 我正在学列表
                 JSONObject learningInfo = (JSONObject) infoItem.get("info");
                 String learningId = learningInfo.getString("goods_id");
                 if ("".equals(learningId)) {
@@ -270,7 +267,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 item.setItemPrice(updateStr);
                 item.setCollectionList(false);
                 itemList.add(item);
-            } else if ("我的收藏".equals(pageTitle)) { // 我的收藏列表
+            } else if (getString(R.string.myCollect).equals(pageTitle)) { // 我的收藏列表
                 JSONObject infoMsg = (JSONObject) infoItem.get("info");
                 JSONObject collectionInfo = (JSONObject) infoItem.get("org_content");
                 String collectionId = infoItem.getString("content_id");
@@ -363,7 +360,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
         if (!isRefresh) {
             learningRefresh.setEnableLoadMore(true);
-            if ("我正在学".equals(pageTitle)) {
+            if (getString(R.string.learning_tab_title).equals(pageTitle)) {
                 if (mineLearningPresenter == null) {
                     mineLearningPresenter = new MineLearningPresenter(this);
                 }
@@ -372,7 +369,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 }
                 mineLearningPresenter.requestLearningData(pageIndex, pageSize);
                 isRefresh = true;
-            } else if ("我的收藏".equals(pageTitle)) {
+            } else if (getString(R.string.myCollect).equals(pageTitle)) {
                 if (collectionUtils == null) {
                     collectionUtils = new CollectionUtils(this);
                 }
@@ -388,13 +385,13 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
     @Override
     public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
         if (!isLoadMore) {
-            if ("我正在学".equals(pageTitle)) {
+            if (getString(R.string.learning_tab_title).equals(pageTitle)) {
                 if (mineLearningPresenter == null) {
                     mineLearningPresenter = new MineLearningPresenter(this);
                 }
                 pageIndex = pageIndex + 1;
                 mineLearningPresenter.requestLearningData(pageIndex, pageSize);
-            } else if ("我的收藏".equals(pageTitle)) {
+            } else if (getString(R.string.myCollect).equals(pageTitle)) {
                 if (collectionUtils == null) {
                     collectionUtils = new CollectionUtils(this);
                 }

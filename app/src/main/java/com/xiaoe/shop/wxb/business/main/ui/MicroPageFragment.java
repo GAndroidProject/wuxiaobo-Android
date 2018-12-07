@@ -645,7 +645,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 } else {
                     flowInfoComponent.setDesc(today);
                 }
-                flowInfoComponent.setJoinedDesc("我正在学");
+                flowInfoComponent.setJoinedDesc(getString(R.string.learning_tab_title));
                 flowInfoComponent.setImgUrl("res:///" + R.mipmap.icon_taday_learning);
             } else { // 非今日，不显示我正在学
                 String flowInfoTitle;
