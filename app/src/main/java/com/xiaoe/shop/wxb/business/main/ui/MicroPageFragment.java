@@ -156,7 +156,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
             top = StatusBarUtil.getStatusBarHeight(mContext);
         view.setPadding(0, top, 0, 0);
-        mStatusBarBlank.setBackgroundColor(Color.argb(255, 30, 89, 246));
+        mStatusBarBlank.setBackgroundColor(Color.argb(255, 255, 255, 255));
         mStatusBarBlank.setHeight(StatusBarUtil.getStatusBarHeight(mContext));
         EventBus.getDefault().register(this);
         return view;
@@ -722,7 +722,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
 
         // 微页面 id 存在并且不是首页的微页面 id，默认是课程页面
         if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) { // 课程页设置一个顶部背景
-            microPageTitleBg.setImageURI("res:///" + R.mipmap.class_bg);
+            microPageTitleBg.setImageURI("res:///" + R.mipmap.line_bg);
 //            microPageTitleBg2.setImageURI("res:///" + R.mipmap.class_bg);
             microPageToolbar.setVisibility(View.VISIBLE);
             // 初始化 toolbar
@@ -743,7 +743,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 }
             });
 //            microPageFresh.setEnableHeaderTranslationContent(false);
-            microPageHeader.setBackgroundColor(getResources().getColor(R.color.high_title_color));
+            microPageHeader.setBackgroundColor(getResources().getColor(R.color.white));
             isMain = false;
         } else {
             microPageTitleBg.setVisibility(View.GONE);
@@ -866,7 +866,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 if (microPageToolbarTitle.getVisibility() != View.VISIBLE) {
                     microPageToolbarTitle.setVisibility(View.VISIBLE);
                     mStatusBarBlank.setVisibility(View.VISIBLE);
-                    int color = Color.argb(255, 30, 89, 246);
+                    int color = Color.argb(255, 255, 255, 255);
                     microPageToolbar.setBackgroundColor(color);
                     if (hasSearch) {
                         microPageToolbarSearch.setVisibility(View.VISIBLE);

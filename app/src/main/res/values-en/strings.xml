@@ -233,7 +233,7 @@
     <string name="action_sheet_woman">女</string>
 
     <string name="scholarship_title">奖学金</string>
-    <string name="scholarship_rule">活动规则</string>
+    <string name="scholarship_rule">详细规则</string>
     <string name="scholarship_day_title">每天瓜分</string>
     <string name="scholarship_money_head">￥ </string>
     <string name="scholarship_money_content">10000</string>
@@ -256,6 +256,7 @@
     <string name="scholarship_page_title">可提现</string>
     <string name="scholarship_page_submit">提 现</string>
     <string name="scholarship_page_list_title">我的奖学金</string>
+    <string name="scholarship_page_title_new">每天瓜分 %1$s 元现金</string>
     <string name="integral_title">当前共</string>
     <string name="integral">积分</string>
     <string name="integral_rule">积分规则</string>

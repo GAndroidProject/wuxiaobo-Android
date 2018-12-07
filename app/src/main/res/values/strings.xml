@@ -117,7 +117,7 @@
     <string name="login_register_desc">注册即表示您已阅读并同意</string>
     <string name="login_register_desc_content">服务条款</string>
     <string name="login_code_title">输入验证码</string>
-    <string name="login_code_desc">已向 %1$s 发送验证码</string><!-- 第一个参数为数字 -->
+    <string name="login_code_desc">已向 %1$s 发送验证码</string><!-- 第一个参数字符串 -->
     <string name="login_code_desc_title">重新获取</string>
     <string name="login_code_desc_content">(%1$ds)</string> <!-- 第一个参数为数字 -->
     <string name="login_pwd_title">密码登录</string>
@@ -235,7 +235,7 @@
     <string name="action_sheet_woman">女</string>
 
     <string name="scholarship_title">奖学金</string>
-    <string name="scholarship_rule">活动规则</string>
+    <string name="scholarship_rule">详细规则</string>
     <string name="scholarship_day_title">每天瓜分</string>
     <string name="scholarship_money_head">¥ </string>
     <string name="scholarship_money_content">10000</string>
@@ -258,6 +258,7 @@
     <string name="scholarship_page_title">可提现</string>
     <string name="scholarship_page_submit">提 现</string>
     <string name="scholarship_page_list_title">我的奖学金</string>
+    <string name="scholarship_page_title_new">每天瓜分 %1$s 元现金</string>
     <string name="integral_title">当前共</string>
     <string name="integral">积分</string>
     <string name="integral_rule">积分规则</string>
@@ -270,7 +271,7 @@
     <string name="withdrawal_input_hint">请输入金额</string>
     <string name="withdrawal_error_tip">超过可提现余额</string>
     <string name="withdrawal_less_tip">满10元才可提现</string>
-    <string name="withdrawal_left">奖学金余额: %1$s元</string> <!-- 第一个参数为数字 -->
+    <string name="withdrawal_left">奖学金余额: %1$s元</string> <!-- 第一个参数为字符串 -->
     <string name="withdrawal_all">全部提现</string>
     <string name="withdrawal_to">提现到</string>
     <string name="withdrawal_wx_account">微信账户</string>

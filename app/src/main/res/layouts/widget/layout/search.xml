@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/common_title_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/search_wxb"
+        android:id="@+id/search_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="@color/white"/>
+        android:textSize="18sp"
+        android:textColor="@color/main_title_color"
+        android:textStyle="bold"
+        android:layout_gravity="start|center_vertical"/>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp">
+    <!--<FrameLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="4dp">-->
 
-        <TextView
-            android:id="@+id/search_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/micro_fragment_title"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"/>
+    <!--<TextView-->
+        <!--android:id="@+id/search_title"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/micro_fragment_title"-->
+        <!--android:textSize="32sp"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textColor="@color/main_title_color"/>-->
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/search_icon"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_gravity="end"
-            android:paddingStart="16dp"
-            android:paddingBottom="16dp"/>
-    </FrameLayout>
-</LinearLayout>
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/search_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="end|center_vertical"
+        android:paddingBottom="16dp"
+        app:actualImageScaleType="fitCenter"/>
+
+    <!--</FrameLayout>-->
+</FrameLayout>

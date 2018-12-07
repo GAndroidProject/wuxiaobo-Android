@@ -53,6 +53,7 @@ public class ShufflingFigureViewHolder extends BaseViewHolder {
                 .setBannerStyle(BannerConfig.CIRCLE_INDICATOR)
                 .setDelayTime(1500)
                 .start();
+        // banner.setBackground(mContext.getResources().getDrawable(R.drawable.bg_shadow));
         banner.setOnBannerListener(position1 -> {
             ShufflingItem shufflingItem = shufflingList.get(position1);
             String resourceType = shufflingItem.getSrcType();

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smartrefresh.layout.SmartRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scholarship_fresh_new"
+    android:focusableInTouchMode="true"
+    android:background="@color/main_bg_color">
+
+    <com.xiaoe.common.widget.CommonRefreshHeader
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        android:background="@color/white"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.xiaoe.shop.wxb.widget.CustomScrollView
+            android:id="@+id/scholarship_scroller_new"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:id="@+id/scholarship_title_wrap_new"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/white">
+
+                <include
+                    layout="@layout/scholarship_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <include
+                    layout="@layout/scholarship_range_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <include
+                    layout="@layout/scholarship_range_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="34dp"
+                    android:src="@mipmap/logo_logo_xiaoetong_new"
+                    android:contentDescription="@string/xet_logo"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"/>
+
+            </LinearLayout>
+
+        </com.xiaoe.shop.wxb.widget.CustomScrollView>
+
+        <com.xiaoe.shop.wxb.widget.StatusPagerView
+            android:id="@+id/scholarship_loading_new"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
+
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingTop="50dp"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/scholarship_title_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="26sp"
+        android:textColor="@color/main_title_color"
+        android:layout_gravity="center"
+        android:text="@string/scholarship_page_title_new"/>
+
+    <TextView
+        android:id="@+id/scholarship_rule_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/scholarship_rule"
+        android:textSize="14sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_gravity="center"
+        android:drawableEnd="@mipmap/scholarship_go"
+        android:drawablePadding="1dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:src="@mipmap/scholarship_prize"
+        android:layout_gravity="center"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/scholarship_progress_new"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/scholarship_divide_new"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:layout_margin="20dp"
+        android:textColor="@color/main_title_color"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:background="@drawable/scholarship_divider_selector"
+        android:text="@string/scholarship_money_submit"/>
+
+</LinearLayout>

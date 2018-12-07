@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:background="@color/white">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/layout_bottom_line">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scholarship_range"
+            android:textSize="14sp"
+            android:textColor="@color/recent_list_color"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scholarship_user"
+            android:textSize="14sp"
+            android:textColor="@color/recent_list_color"
+            android:layout_marginStart="86dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scholarship_title"
+            android:textSize="14sp"
+            android:textColor="@color/recent_list_color"
+            android:layout_gravity="end"/>
+
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/real_range_list_new"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/list_dotted_line"
+        android:dividerHeight="28dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="10dp"
+        android:layerType="software"
+        android:scrollbars="none"/>
+
+    <ListView
+        android:id="@+id/all_range_list_new"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/list_dotted_line"
+        android:dividerHeight="28dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="10dp"
+        android:layerType="software"
+        android:scrollbars="none"/>
+
+</FrameLayout>

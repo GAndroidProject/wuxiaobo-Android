@@ -78,4 +78,8 @@
 
     <color name="resource_try">#AEBCAF</color>
 
+    <color name="scholarship_div_normal_start">#FFCF60</color>
+    <color name="scholarship_div_normal_end">#FDC200</color>
+    <color name="scholarship_div_press_start">#EEC259</color>
+    <color name="scholarship_div_press_end">#EAB400</color>
 </resources>

@@ -10,7 +10,7 @@ import java.util.List;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.main.ui.MicroPageFragment;
-import com.xiaoe.shop.wxb.business.main.ui.ScholarshipFragment;
+import com.xiaoe.shop.wxb.business.main.ui.NewScholarshipFragment;
 import com.xiaoe.shop.wxb.business.mine.ui.MineFragment;
 
 /**
@@ -27,10 +27,10 @@ public class MainFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
         MicroPageFragment homePageFragment = MicroPageFragment.newInstance(MainActivity.MICRO_PAGE_MAIN);
         // 课程页微页面
         MicroPageFragment coursePageFragment = MicroPageFragment.newInstance(MainActivity.MICRO_PAGE_COURSE);
-        ScholarshipFragment scholarshipFragment = null;
+        NewScholarshipFragment scholarshipFragment = null;
         if (needShowScholarship) {
             // 任务奖学金页面
-            scholarshipFragment = new ScholarshipFragment();
+            scholarshipFragment = new NewScholarshipFragment();
         }
         // 我的页面
         MineFragment mineFragment = new MineFragment();

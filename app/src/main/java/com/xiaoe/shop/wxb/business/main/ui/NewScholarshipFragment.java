@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,7 +40,6 @@ import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.entitys.ScholarshipRangeItem;
 import com.xiaoe.common.entitys.TaskDetailIdEvent;
 import com.xiaoe.common.utils.CacheDataUtil;
-import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.MeasureUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -56,9 +55,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
-import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
@@ -74,48 +71,43 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import butterknife.internal.DebouncingOnClickListener;
 
-/**
- * 12.7 后弃用
- * @deprecated
- */
-public class ScholarshipFragment extends BaseFragment implements View.OnClickListener, OnRefreshListener, OnCustomScrollChangedListener {
+public class NewScholarshipFragment extends BaseFragment implements OnRefreshListener, View.OnClickListener, OnCustomScrollChangedListener {
 
     private static final String TAG = "ScholarshipFragment";
 
     private Unbinder unbinder;
     private Context mContext;
 
-    @BindView(R.id.scholarship_fresh)
-    SmartRefreshLayout scholarshipRefresh;
-    @BindView(R.id.scholarship_rule)
-    TextView scholarshipRule;
-    @BindView(R.id.scholarship_total_money)
-    TextView scholarshipTotalMoney;
-    @BindView(R.id.scholarship_process)
-    ImageView scholarshipProcess;
-    @BindView(R.id.scholarship_divide)
-    Button scholarshipDivide;
-    @BindView(R.id.scholarship_real_range)
-    TextView scholarshipRealRange;
-    @BindView(R.id.scholarship_all_range)
-    TextView scholarshipAllRange;
-    @BindView(R.id.real_range_list)
-    ListView scholarshipRealList;
-    @BindView(R.id.all_range_list)
-    ListView scholarshipAllList;
-    @BindView(R.id.scholarship_bottom_load_more)
-    ListBottomLoadMoreView scholarshipLoadMore;
-    @BindView(R.id.scholarship_loading)
-    StatusPagerView scholarshipLoading;
-    @BindView(R.id.scholarship_title_wrap)
-    LinearLayout scholarshipTitleWrap;
-    @BindView(R.id.scholarship_title_blank)
-    View scholarshipBlank;
-    @BindView(R.id.scholarship_scroller)
-    CustomScrollView scholarshipScroller;
+    @BindView(R.id.scholarship_fresh_new)
+    SmartRefreshLayout scholarshipNewRefresh;
+    @BindView(R.id.scholarship_scroller_new)
+    CustomScrollView scholarshipNewScroller;
+    @BindView(R.id.scholarship_title_wrap_new)
+    LinearLayout scholarshipNewTitleWrap;
+    @BindView(R.id.scholarship_title_new)
+    TextView scholarshipNewTitle;
+    @BindView(R.id.scholarship_rule_new)
+    TextView scholarshipNewRule;
+    @BindView(R.id.scholarship_progress_new)
+    ImageView scholarshipNewProgress;
+    @BindView(R.id.scholarship_divide_new)
+    TextView scholarshipNewDivide;
+    @BindView(R.id.scholarship_real_range_new)
+    TextView scholarshipNewRealRange;
+    @BindView(R.id.scholarship_all_range_new)
+    TextView scholarshipNewAllRange;
+    @BindView(R.id.real_range_list_new)
+    ListView scholarshipNewRealList;
+    @BindView(R.id.all_range_list_new)
+    ListView scholarshipNewAllList;
+    @BindView(R.id.scholarship_loading_new)
+    StatusPagerView scholarshipNewLoading;
 
     protected static final String RULE = "rule";
     protected static final String GO_BUY = "go_buy";
+
+    MainActivity mainActivity;
+    TouristDialog touristDialog;
 
     Dialog dialog;
 
@@ -129,19 +121,15 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     boolean hasEarnMoney = false;
     String taskDetailId; // 提交任务成功后的 id
 
-    MainActivity mainActivity;
-    TouristDialog touristDialog;
-
     Handler handler = new Handler();
     Runnable runnable;
     String amount; // 拿到的奖学金或者积分
     private boolean showDataByDB = false;
-    FrameLayout.LayoutParams layoutParams;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_scholarship, null, false);
+        View view = inflater.inflate(R.layout.fragment_scholarship_new, null, false);
         unbinder = ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
         mContext = getContext();
@@ -163,47 +151,115 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 }
             });
         }
-
-        scholarshipTitleWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(mContext), 0, 0);
-        layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, StatusBarUtil.getStatusBarHeight(getActivity()));
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        scholarshipLoading.setLoadingState(View.VISIBLE);
-        scholarshipRefresh.setEnableLoadMore(false);
-        scholarshipRefresh.setEnableOverScrollBounce(false);
+        scholarshipNewLoading.setLoadingState(View.VISIBLE);
+        scholarshipNewRefresh.setEnableLoadMore(false);
+        scholarshipNewRefresh.setEnableOverScrollBounce(false);
         initListener();
     }
 
     private void initListener() {
-        scholarshipRefresh.setOnRefreshListener(this);
-        scholarshipRule.setOnClickListener(this);
-        scholarshipDivide.setOnClickListener(this);
-        scholarshipRealRange.setOnClickListener(this);
-        scholarshipAllRange.setOnClickListener(this);
-        scholarshipScroller.setScrollChanged(this);
+        scholarshipNewRefresh.setOnRefreshListener(this);
+        scholarshipNewRule.setOnClickListener(this);
+        scholarshipNewDivide.setOnClickListener(this);
+        scholarshipNewRealRange.setOnClickListener(this);
+        scholarshipNewAllRange.setOnClickListener(this);
+        scholarshipNewScroller.setScrollChanged(this);
+    }
+
+    @Override
+    protected void onFragmentFirstVisible() {
+        super.onFragmentFirstVisible();
+        setDataByDB();
+        scholarshipPresenter = new ScholarshipPresenter(this);
+        scholarshipPresenter.requestTaskList(true);
+        if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
+            if (scholarshipPresenter == null) {
+                scholarshipPresenter = new ScholarshipPresenter(this);
+            }
+            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
         if (unbinder != null) {
             unbinder.unbind();
         }
     }
 
     @Override
+    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+        showDataByDB = false;
+        if (scholarshipPresenter == null) {
+            scholarshipPresenter = new ScholarshipPresenter(this);
+        }
+        scholarshipPresenter.requestTaskList(true);
+        if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
+            if (scholarshipPresenter == null) {
+                scholarshipPresenter = new ScholarshipPresenter(this);
+            }
+            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
+        }
+    }
+
+    private void setDataByDB(){
+        SharedPreferencesUtil.getInstance(XiaoeApplication.getmContext(), SharedPreferencesUtil.FILE_NAME);
+        String taskId = (String) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_SCHOLARSHIP_ID, "");
+        if(TextUtils.isEmpty(taskId)){
+            return;
+        }
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(getContext(), new CacheDataUtil());
+        //任务状态
+        String sqlState = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+taskId+"_state' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
+        List<CacheData> stateCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlState, null);
+        if(stateCacheData != null && stateCacheData.size() > 0){
+            JSONObject result = JSONObject.parseObject(stateCacheData.get(0).getContent()).getJSONObject("data");
+            initTaskState(result);
+            scholarshipNewRefresh.finishRefresh();
+        }
+        //排行榜
+        String sqlRanking = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+taskId+"_ranking' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
+        List<CacheData> rankingCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlRanking, null);
+        if(rankingCacheData != null && rankingCacheData.size() > 0){
+            JSONObject result = JSONObject.parseObject(rankingCacheData.get(0).getContent()).getJSONObject("data");
+            initRange(result);
+        }
+        if(stateCacheData != null && stateCacheData.size() > 0
+                && rankingCacheData != null && rankingCacheData.size() > 0){
+            showDataByDB = true;
+        }else{
+            showDataByDB = false;
+        }
+        //奖学金金额
+        String sqlMoney = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+                +"' and resource_id='"+taskId+"_money' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
+        List<CacheData> moneyCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlMoney, null);
+        if(moneyCacheData != null && moneyCacheData.size() > 0){
+            String money = moneyCacheData.get(0).getContent();
+            ScholarshipEntity.getInstance().setTaskTotalMoney(money);
+            String htmlMoney = completeScholarshipTitle();
+            scholarshipNewTitle.setText(Html.fromHtml(htmlMoney));
+        }
+
+    }
+
+    @Override
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.scholarship_rule:
+            case R.id.scholarship_rule_new:
                 showDialogByType(RULE);
                 break;
-            case R.id.scholarship_divide:
+            case R.id.scholarship_divide_new:
                 if (mainActivity.isFormalUser) {
                     if (!hasBuy) { // 没买
                         showDialogByType(GO_BUY);
@@ -227,17 +283,17 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                     touristDialog.showDialog();
                 }
                 break;
-            case R.id.scholarship_real_range:
-                scholarshipRealList.setVisibility(View.VISIBLE);
-                scholarshipAllList.setVisibility(View.GONE);
-                scholarshipRealRange.setBackground(getActivity().getResources().getDrawable(R.drawable.recent_update_btn_pressed));
-                scholarshipAllRange.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_column_menu));
+            case R.id.scholarship_real_range_new:
+                scholarshipNewRealList.setVisibility(View.VISIBLE);
+                scholarshipNewAllList.setVisibility(View.GONE);
+                scholarshipNewRealRange.setBackground(getActivity().getResources().getDrawable(R.drawable.recent_update_btn_pressed));
+                scholarshipNewAllRange.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_column_menu));
                 break;
-            case R.id.scholarship_all_range:
-                scholarshipRealList.setVisibility(View.GONE);
-                scholarshipAllList.setVisibility(View.VISIBLE);
-                scholarshipRealRange.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_column_menu));
-                scholarshipAllRange.setBackground(getActivity().getResources().getDrawable(R.drawable.recent_update_btn_pressed));
+            case R.id.scholarship_all_range_new:
+                scholarshipNewRealList.setVisibility(View.GONE);
+                scholarshipNewAllList.setVisibility(View.VISIBLE);
+                scholarshipNewRealRange.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_column_menu));
+                scholarshipNewAllRange.setBackground(getActivity().getResources().getDrawable(R.drawable.recent_update_btn_pressed));
                 break;
             default:
                 break;
@@ -269,9 +325,9 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 dialogTitle.setText(mContext.getResources().getString(R.string.scholarship_dialog_rule_title));
                 dialogContent.setText(mContext.getResources().getString(R.string.scholarship_dialog_rule_content));
                 dialogBtn.setText(mContext.getResources().getString(R.string.scholarship_dialog_rule_btn));
-                dialogBtn.setOnClickListener(new View.OnClickListener() {
+                dialogBtn.setOnClickListener(new DebouncingOnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void doClick(View v) {
                         dialog.dismiss();
                     }
                 });
@@ -333,16 +389,37 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Override
-    protected void onFragmentFirstVisible() {
-        super.onFragmentFirstVisible();
-        setDataByDB();
-        scholarshipPresenter = new ScholarshipPresenter(this);
-        scholarshipPresenter.requestTaskList(true);
-        if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
+    public void onScrollChanged(int l, int t, int oldl, int oldt) {
+
+    }
+
+    @Override
+    public void onLoadState(int state) {
+
+    }
+
+    @Subscribe
+    public void obtainEvent(TaskDetailIdEvent taskDetailIdEvent) {
+        if (taskDetailIdEvent != null) {
+            taskDetailId = taskDetailIdEvent.getTaskDetailId();
+            ScholarshipEntity.getInstance().setTaskDetailId(taskDetailId);
+            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), taskDetailId);
+        }
+    }
+
+    @Subscribe
+    public void obtainEvent(ChangeLoginIdentityEvent changeLoginIdentityEvent) {
+        if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
             if (scholarshipPresenter == null) {
                 scholarshipPresenter = new ScholarshipPresenter(this);
             }
-            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
+            scholarshipPresenter.requestTaskList(true);
+            if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
+                if (scholarshipPresenter == null) {
+                    scholarshipPresenter = new ScholarshipPresenter(this);
+                }
+                scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
+            }
         }
     }
 
@@ -359,7 +436,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 } else if (code == NetworkCodes.CODE_REQUEST_ERROR) {
                     Log.d(TAG, "onMainThreadResponse: 获取奖学金列表失败...");
                     if(!showDataByDB){
-                        scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                        scholarshipNewLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                     }
                 }
             } else if (iRequest instanceof ScholarshipTaskStateRequest) {
@@ -367,12 +444,12 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     JSONObject result = (JSONObject) data.get("data");
                     initTaskState(result);
-                    scholarshipRefresh.finishRefresh();
+                    scholarshipNewRefresh.finishRefresh();
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取奖学金任务状态失败...");
-                    scholarshipRefresh.finishRefresh();
+                    scholarshipNewRefresh.finishRefresh();
                     if(!showDataByDB){
-                        scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                        scholarshipNewLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                     }
                 }
             } else if (iRequest instanceof ScholarshipReceiveRequest) {
@@ -383,17 +460,17 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                     updatePageState(result);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 获取奖学金失败...");
-                    scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                    scholarshipNewLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             }
         } else {
-            scholarshipRefresh.finishRefresh();
+            scholarshipNewRefresh.finishRefresh();
             if(!showDataByDB){
-                if (TextUtils.isEmpty(scholarshipTotalMoney.getText().toString())) { // 为空，不显示页面
-                    scholarshipLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                if (TextUtils.isEmpty(ScholarshipEntity.getInstance().getTaskTotalMoney())) { // 为空，不显示页面
+                    scholarshipNewLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 } else { // 不为空
-                    scholarshipLoading.setLoadingFinish();
-                    ToastUtils.show(getContext(), getString(R.string.network_error_text));
+                    scholarshipNewLoading.setLoadingFinish();
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -413,17 +490,17 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         ScholarshipRangeAdapter realRangeAdapter = new ScholarshipRangeAdapter(mContext, realList);
         ScholarshipRangeAdapter allRangeAdapter = new ScholarshipRangeAdapter(mContext, allList);
 
-        scholarshipRealList.setAdapter(realRangeAdapter);
-        scholarshipAllList.setAdapter(allRangeAdapter);
+        scholarshipNewRealList.setAdapter(realRangeAdapter);
+        scholarshipNewAllList.setAdapter(allRangeAdapter);
 
-        MeasureUtil.setListViewHeightBasedOnChildren(scholarshipRealList);
-        MeasureUtil.setListViewHeightBasedOnChildren(scholarshipAllList);
+        MeasureUtil.setListViewHeightBasedOnChildren(scholarshipNewRealList);
+        MeasureUtil.setListViewHeightBasedOnChildren(scholarshipNewAllList);
 
         // 初始化的时候默认显示实时榜
-        scholarshipRealRange.setBackground(getActivity().getResources().getDrawable(R.drawable.recent_update_btn_pressed));
-        scholarshipAllRange.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_column_menu));
-        scholarshipRealList.setVisibility(View.VISIBLE);
-        scholarshipAllList.setVisibility(View.GONE);
+        scholarshipNewRealRange.setBackground(getActivity().getResources().getDrawable(R.drawable.recent_update_btn_pressed));
+        scholarshipNewAllRange.setBackground(getActivity().getResources().getDrawable(R.drawable.btn_column_menu));
+        scholarshipNewRealList.setVisibility(View.VISIBLE);
+        scholarshipNewAllList.setVisibility(View.GONE);
     }
 
     /**
@@ -443,7 +520,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             isSuperVip = itemJson.getBoolean("is_supermember") == null ? false : itemJson.getBoolean("is_supermember");
             int money = itemJson.getInteger("all_money");
             String range = String.valueOf(i + 1);
-            String scholarship = String.format(getString(R.string.format_yuan), money / 100f);
+            String scholarship = String.format("%.2f%s",money / 100f,"元");
 
             scholarshipRangeItem.setItemRange(range);
             scholarshipRangeItem.setItemAvatar(wxAvatar);
@@ -478,12 +555,11 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         switch (status) {
             case 1: // 已领取 -- 显示明日再来
                 ScholarshipEntity.getInstance().setTaskState(ScholarshipEntity.TASK_RECEIVED);
-                scholarshipDivide.setText(R.string.come_again_tomorrow);
-                scholarshipDivide.setBackground(getActivity().getResources().getDrawable(R.drawable.divide_btn_content_bg));
-                scholarshipDivide.setAlpha(0.8f);
-                scholarshipDivide.setClickable(false);
+                scholarshipNewDivide.setText("明日再来");
+                scholarshipNewDivide.setAlpha(0.8f);
+                scholarshipNewDivide.setClickable(false);
                 // 三个步骤都执行完成
-                Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipProcess);
+                Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipNewProgress);
                 break;
             case 2: // 当前任务不满足领取条件 -- 判断是否已经购买
                 ScholarshipEntity.getInstance().setTaskState(ScholarshipEntity.TASK_UNFINISHED);
@@ -500,8 +576,19 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             default:
                 break;
         }
-        scholarshipTotalMoney.setText(ScholarshipEntity.getInstance().getTaskTotalMoney());
-        scholarshipLoading.setLoadingFinish();
+        String money = completeScholarshipTitle();
+        scholarshipNewTitle.setText(Html.fromHtml(money));
+        scholarshipNewLoading.setLoadingFinish();
+    }
+
+    private String completeScholarshipTitle() {
+        String htmlTextStart = "<font color='#FDC200'><big>";
+        String htmlTextEnd = "</big></font>";
+        if (TextUtils.isEmpty(ScholarshipEntity.getInstance().getTaskTotalMoney())) {
+            return "";
+        } else {
+            return String.format("每天瓜分 %s%s%s 元现金", htmlTextStart, ScholarshipEntity.getInstance().getTaskTotalMoney(), htmlTextEnd);
+        }
     }
 
     // 显示收益对话框
@@ -518,7 +605,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         TextView earnSubmit = (TextView) view.findViewById(R.id.scholarship_dialog_submit);
 
         if (hasEarnMoney) { // 拿到钱了
-            earnTitle.setText(getString(R.string.congratulations_winning_scholarship));
+            earnTitle.setText("恭喜你，获得奖学金");
             earnWrap.setBackground(getActivity().getResources().getDrawable(R.mipmap.scholarship_popup_bg));
             earnContent.setText(amount);
             earnContentTail.setVisibility(View.VISIBLE);
@@ -532,7 +619,7 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
                 }
             });
         } else {
-            earnTitle.setText(getString(R.string.almost_got_it));
+            earnTitle.setText("差一点就瓜分到了");
             earnContentTail.setVisibility(View.GONE);
             earnWrap.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
             earnSubmit.setText(getString(R.string.scholarship_earn_integral));
@@ -582,31 +669,6 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         dialog.setContentView(view);
     }
 
-    @Subscribe
-    public void obtainEvent(TaskDetailIdEvent taskDetailIdEvent) {
-        if (taskDetailIdEvent != null) {
-            taskDetailId = taskDetailIdEvent.getTaskDetailId();
-            ScholarshipEntity.getInstance().setTaskDetailId(taskDetailId);
-            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), taskDetailId);
-        }
-    }
-
-    @Subscribe
-    public void obtainEvent(ChangeLoginIdentityEvent changeLoginIdentityEvent) {
-        if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
-            if (scholarshipPresenter == null) {
-                scholarshipPresenter = new ScholarshipPresenter(this);
-            }
-            scholarshipPresenter.requestTaskList(true);
-            if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
-                if (scholarshipPresenter == null) {
-                    scholarshipPresenter = new ScholarshipPresenter(this);
-                }
-                scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
-            }
-        }
-    }
-
     // 更新页面状态
     private void updatePageState(JSONObject data) {
         int status = data.getInteger("status");
@@ -614,12 +676,12 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
         if (status == 3 && reward != null) { // 已经完成并拿到数据
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_ISSUED);
 
-            scholarshipDivide.setText(getString(R.string.come_again_tomorrow));
-            scholarshipDivide.setAlpha(0.8f);
-            scholarshipDivide.setClickable(false);
-            Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipProcess);
+            scholarshipNewDivide.setText("明日再来");
+            scholarshipNewDivide.setAlpha(0.8f);
+            scholarshipNewDivide.setClickable(false);
+            Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipNewProgress);
 
-            // 禁止点击事件
+            // TODO: 禁止点击事件
             int type = reward.getInteger("type");
             int amount = reward.getInteger("amount");
             if (type == 1) { // 拿到钱
@@ -634,114 +696,16 @@ public class ScholarshipFragment extends BaseFragment implements View.OnClickLis
             showEarnDialog();
         } else if (status == 2) { // 处理中
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_PROCESSING);
-            scholarshipDivide.setText(R.string.in_the_split);
+            scholarshipNewDivide.setText("瓜分中...");
 
-            Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipProcess);
+            Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipNewProgress);
 
             runnable = () -> scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
             handler.postDelayed(runnable, 3000);
         } else if (status == 1) {
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_FAIL);
-            ToastUtils.show(getContext(), getString(R.string.failed_to_collect));
-            Glide.with(this).load(R.mipmap.scholarship_process_one).into(scholarshipProcess);
+            Toast.makeText(getActivity(), "领取失败，请重试", Toast.LENGTH_SHORT).show();
+            Glide.with(this).load(R.mipmap.scholarship_process_one).into(scholarshipNewProgress);
         }
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        Log.d(TAG, "onHiddenChanged: ");
-        if (hidden) { // 隐藏
-            if (handler != null && runnable != null) {
-                handler.removeCallbacks(runnable);
-            }
-        }
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) { // 可见的时候
-            if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
-                if (scholarshipPresenter == null) {
-                    scholarshipPresenter = new ScholarshipPresenter(this);
-                }
-                scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
-            }
-        }
-    }
-
-    @Override
-    public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-        showDataByDB = false;
-        if (scholarshipPresenter == null) {
-            scholarshipPresenter = new ScholarshipPresenter(this);
-        }
-        scholarshipPresenter.requestTaskList(true);
-        if (ScholarshipEntity.getInstance().getIssueState() == ScholarshipEntity.SCHOLARSHIP_PROCESSING) { // 本来是处理中的话，重新请求拿到的结果
-            if (scholarshipPresenter == null) {
-                scholarshipPresenter = new ScholarshipPresenter(this);
-            }
-            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
-        }
-    }
-
-    private void setDataByDB(){
-        SharedPreferencesUtil.getInstance(XiaoeApplication.getmContext(), SharedPreferencesUtil.FILE_NAME);
-        String taskId = (String) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_SCHOLARSHIP_ID, "");
-        if(TextUtils.isEmpty(taskId)){
-            return;
-        }
-        SQLiteUtil sqLiteUtil = SQLiteUtil.init(getContext(), new CacheDataUtil());
-        //任务状态
-        String sqlState = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
-                +"' and resource_id='"+taskId+"_state' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
-        List<CacheData> stateCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlState, null);
-        if(stateCacheData != null && stateCacheData.size() > 0){
-            JSONObject result = JSONObject.parseObject(stateCacheData.get(0).getContent()).getJSONObject("data");
-            initTaskState(result);
-            scholarshipRefresh.finishRefresh();
-        }
-        //排行榜
-        String sqlRanking = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
-                +"' and resource_id='"+taskId+"_ranking' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
-        List<CacheData> rankingCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlRanking, null);
-        if(rankingCacheData != null && rankingCacheData.size() > 0){
-            JSONObject result = JSONObject.parseObject(rankingCacheData.get(0).getContent()).getJSONObject("data");
-            initRange(result);
-        }
-        showDataByDB = stateCacheData != null && stateCacheData.size() > 0 && rankingCacheData != null && rankingCacheData.size() > 0;
-        //奖学金金额
-        String sqlMoney = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
-                +"' and resource_id='"+taskId+"_money' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
-        List<CacheData> moneyCacheData = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlMoney, null);
-        if(moneyCacheData != null && moneyCacheData.size() > 0){
-            String money = moneyCacheData.get(0).getContent();
-            ScholarshipEntity.getInstance().setTaskTotalMoney(money);
-            scholarshipTotalMoney.setText(ScholarshipEntity.getInstance().getTaskTotalMoney());
-        }
-
-    }
-
-    @Override
-    public void onScrollChanged(int l, int t, int oldl, int oldt) {
-        if (t >= StatusBarUtil.getStatusBarHeight(getActivity()) && t <= Dp2Px2SpUtil.dp2px(getActivity(), 350)) {
-            if (scholarshipBlank.getVisibility() == View.GONE) {
-                scholarshipBlank.setVisibility(View.VISIBLE);
-                scholarshipBlank.setLayoutParams(layoutParams);
-                scholarshipBlank.setBackgroundColor(getResources().getColor(R.color.scholarship_bg_end));
-            } else {
-                scholarshipBlank.setBackgroundColor(getResources().getColor(R.color.scholarship_bg_end));
-            }
-        } else if (t > Dp2Px2SpUtil.dp2px(getActivity(), 350)) {
-            scholarshipBlank.setBackgroundColor(getResources().getColor(R.color.white));
-        } else {
-            scholarshipBlank.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void onLoadState(int state) {
-
     }
 }
