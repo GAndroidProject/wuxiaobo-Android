@@ -572,19 +572,19 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
                 scholarshipNewDivide.setAlpha(0.8f);
                 scholarshipNewDivide.setClickable(false);
                 // 三个步骤都执行完成
-                Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipNewProgress);
+                Glide.with(this).load(R.mipmap.progress_step_three).into(scholarshipNewProgress);
                 break;
             case 2: // 当前任务不满足领取条件 -- 判断是否已经购买
                 ScholarshipEntity.getInstance().setTaskState(ScholarshipEntity.TASK_UNFINISHED);
                 if (hasBuy) { // 买了
-                    Glide.with(this).load(R.mipmap.scholarship_process_one);
+                    Glide.with(this).load(R.mipmap.progress_step_one);
                 } else { // 没买
-                    Glide.with(this).load(R.mipmap.scholarship_process);
+                    Glide.with(this).load(R.mipmap.progress_unfinish);
                 }
                 break;
             case 3: // 未领取 -- 已经购买了
                 ScholarshipEntity.getInstance().setTaskState(ScholarshipEntity.TASK_NOT_RECEIVED);
-                Glide.with(this).load(R.mipmap.scholarship_process_one);
+                Glide.with(this).load(R.mipmap.progress_step_one);
                 break;
             default:
                 break;
@@ -692,7 +692,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
             scholarshipNewDivide.setText("明日再来");
             scholarshipNewDivide.setAlpha(0.8f);
             scholarshipNewDivide.setClickable(false);
-            Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipNewProgress);
+            Glide.with(this).load(R.mipmap.progress_step_three).into(scholarshipNewProgress);
 
             // TODO: 禁止点击事件
             int type = reward.getInteger("type");
@@ -711,14 +711,14 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_PROCESSING);
             scholarshipNewDivide.setText("瓜分中...");
 
-            Glide.with(this).load(R.mipmap.scholarship_process_three).into(scholarshipNewProgress);
+            Glide.with(this).load(R.mipmap.progress_step_three).into(scholarshipNewProgress);
 
             runnable = () -> scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
             handler.postDelayed(runnable, 3000);
         } else if (status == 1) {
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_FAIL);
             Toast.makeText(getActivity(), "领取失败，请重试", Toast.LENGTH_SHORT).show();
-            Glide.with(this).load(R.mipmap.scholarship_process_one).into(scholarshipNewProgress);
+            Glide.with(this).load(R.mipmap.progress_step_one).into(scholarshipNewProgress);
         }
     }
 }
