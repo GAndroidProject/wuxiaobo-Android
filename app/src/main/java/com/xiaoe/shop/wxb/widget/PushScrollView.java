@@ -126,6 +126,8 @@ public class PushScrollView extends ScrollView {
                 }
                 break;
             }
+            default:
+                break;
         }
         return super.dispatchTouchEvent(event);
     }

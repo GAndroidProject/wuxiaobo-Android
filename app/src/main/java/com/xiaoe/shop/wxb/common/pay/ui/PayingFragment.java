@@ -79,7 +79,7 @@ public class PayingFragment extends BaseFragment {
         if(useConpon == null || count <= 0){
             return;
         }
-        useConpon.setText("有"+count+"张可用优惠券");
+        useConpon.setText(String.format(getString(R.string.coupons_available), count));
         useConpon.setTextColor(getResources().getColor(R.color.high_title_color));
     }
 

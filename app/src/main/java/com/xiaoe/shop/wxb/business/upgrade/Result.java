@@ -3,10 +3,7 @@ package com.xiaoe.shop.wxb.business.upgrade;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-/**
- * Created by Administrator on 2018/5/18.
- */
-
+@Deprecated
 public class Result {
     public boolean status;
     public int code;

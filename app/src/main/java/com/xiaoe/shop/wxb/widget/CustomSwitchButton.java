@@ -1031,10 +1031,8 @@ public class CustomSwitchButton extends View implements Checkable {
         public void onAnimationUpdate(ValueAnimator animation) {
             float value = (Float) animation.getAnimatedValue();
             switch (animateState) {
-                case ANIMATE_STATE_PENDING_SETTLE: {
-                }
-                case ANIMATE_STATE_PENDING_RESET: {
-                }
+                case ANIMATE_STATE_PENDING_SETTLE:
+                case ANIMATE_STATE_PENDING_RESET:
                 case ANIMATE_STATE_PENDING_DRAG: {
                     viewState.checkedLineColor = (int) argbEvaluator.evaluate(
                             value,
@@ -1078,12 +1076,10 @@ public class CustomSwitchButton extends View implements Checkable {
                     );
                     break;
                 }
+                case ANIMATE_STATE_DRAGING:
+                case ANIMATE_STATE_NONE:
                 default:
-                case ANIMATE_STATE_DRAGING: {
-                }
-                case ANIMATE_STATE_NONE: {
                     break;
-                }
             }
             postInvalidate();
         }

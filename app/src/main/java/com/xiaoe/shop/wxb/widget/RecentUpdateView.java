@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.xiaoe.shop.wxb.R;
 
+@Deprecated
 public class RecentUpdateView extends LinearLayout {
 
     private Context mContext;

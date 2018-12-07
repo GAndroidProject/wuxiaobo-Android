@@ -121,7 +121,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
         }
 
         isReply = true;
-        srcHint = "回复 "+hint+"：";
+        srcHint = String.format(getContext().getString(R.string.reply_people), hint);
         stringBuilder.clear();
         stringBuilder.append(srcHint);
         stringBuilder.setSpan(colorSpan,0,srcHint.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -152,7 +152,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
         }
 
         String commentContent = editComment.getText().toString().trim();
-        editComment.setHint("我来说两句");
+        editComment.setHint(R.string.let_me_say_something);
         editComment.setText("");
         if(isReply){
             commentContent = commentContent.substring(srcHint.length());
@@ -172,13 +172,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener, Vi
             v.getLocationInWindow(l);
             int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left
                     + v.getWidth();
-            if (ev.getX() > left && ev.getX() < right && ev.getY() > top
-                    && ev.getY() < bottom) {
-                // 点击EditText的事件，忽略它。
-                return false;
-            } else {
-                return true;
-            }
+            return !(ev.getX() > left) || !(ev.getX() < right) || !(ev.getY() > top) || !(ev.getY() < bottom);
         }
         // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditView上，和用户用轨迹球选择其他的焦点
         return false;

@@ -292,9 +292,7 @@ public class AppUpgradeHelper {
         List<ActivityManager.RunningTaskInfo> info = activityManager.getRunningTasks(1);
         if(info != null && info.size() > 0){
             ComponentName component = info.get(0).topActivity;
-            if(activityClassName.equals(component.getClassName())){
-                return true;
-            }
+            return activityClassName.equals(component.getClassName());
         }
         return false;
     }
@@ -347,7 +345,6 @@ public class AppUpgradeHelper {
                     Log.d(TAG,"install-Apk-file = 下载任务已经完成！");
 //                    Toast.makeText(mContext, "下载任务已经完成！", Toast.LENGTH_SHORT).show();
                     break;
-
                 case DownloadManager.STATUS_RUNNING://下载中
                     //int progress = (int) msg.obj;
                     if (mProgressDialog != null && mProgressDialog.isShowing()) {
@@ -356,7 +353,6 @@ public class AppUpgradeHelper {
                     }
                     //canceledDialog();
                     break;
-
                 case DownloadManager.STATUS_FAILED://下载失败
                     ThreadPoolUtils.runTaskOnUIThread(new Runnable() {
                         @Override
@@ -375,6 +371,8 @@ public class AppUpgradeHelper {
                     break;
                 case DownloadManager.STATUS_PENDING://准备下载
 //                showDialog(activity);
+                    break;
+                default:
                     break;
             }
         }

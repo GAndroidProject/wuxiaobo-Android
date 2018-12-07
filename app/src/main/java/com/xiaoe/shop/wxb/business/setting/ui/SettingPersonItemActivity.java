@@ -31,6 +31,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -98,7 +99,7 @@ public class SettingPersonItemActivity extends XiaoeActivity {
         Log.d(TAG, "initData: position ----- " + position);
         personEditTitle.setText(title);
         if (TextUtils.isEmpty(content)) {
-            personEditContent.setHint("请输入" + title);
+            personEditContent.setHint(String.format(getString(R.string.please_input), title));
         } else {
             personEditContent.setText(content);
         }
@@ -140,36 +141,25 @@ public class SettingPersonItemActivity extends XiaoeActivity {
                 String title = personEditTitle.getText().toString();
                 inputContent = personEditContent.getText().toString();
                 hasSetNickName = false;
-                switch (title) {
-                    case "昵称":
-                        hasSetNickName = true;
-                        settingPresenter.updateWxNickname(apiToken, inputContent);
-                        break;
-                    case "真实姓名":
-                        settingPresenter.updateName(apiToken, inputContent);
-                        break;
-                    case "性别":
-                        settingPresenter.updateGender(apiToken, inputContent);
-                        break;
-                    case "生日":
-                        settingPresenter.updateBirth(apiToken, inputContent);
-                        break;
-                    case "手机":
-                        // TODO: 更新手机号
-                        Toast("没做");
-//                        settingPresenter.updatePhone(apiToken, content);
-                        break;
-                    case "地址":
-                        settingPresenter.updateAddress(apiToken, inputContent);
-                        break;
-                    case "公司":
-                        settingPresenter.updateCompany(apiToken, inputContent);
-                        break;
-                    case "职位":
-                        settingPresenter.updateJob(apiToken, inputContent);
-                        break;
-                    default:
-                        break;
+                if (getString(R.string.nickname).equals(title)) {
+                    hasSetNickName = true;
+                    settingPresenter.updateWxNickname(apiToken, inputContent);
+                } else if (getString(R.string.real_name).equals(title)) {
+                    settingPresenter.updateName(apiToken, inputContent);
+                } else if (getString(R.string.gender).equals(title)) {
+                    settingPresenter.updateGender(apiToken, inputContent);
+                } else if (getString(R.string.birthday).equals(title)) {
+                    settingPresenter.updateBirth(apiToken, inputContent);
+                } else if (getString(R.string.phone_number).equals(title)) {
+                    // 更新手机号
+                    ToastUtils.show(mContext, R.string.temporary_not_support);
+//                    settingPresenter.updatePhone(apiToken, content);
+                } else if (getString(R.string.address).equals(title)) {
+                    settingPresenter.updateAddress(apiToken, inputContent);
+                } else if (getString(R.string.company).equals(title)) {
+                    settingPresenter.updateCompany(apiToken, inputContent);
+                } else if (getString(R.string.post).equals(title)) {
+                    settingPresenter.updateJob(apiToken, inputContent);
                 }
             }
         });
@@ -183,7 +173,7 @@ public class SettingPersonItemActivity extends XiaoeActivity {
             if (iRequest instanceof SettingPersonItemRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    Toast("修改成功");
+                    ToastUtils.show(mContext, R.string.modify_successfully);
                     if (hasSetNickName) {
                         List<LoginUser> resultList = loginSQLiteUtil.query(LoginSQLiteCallback.TABLE_NAME_USER, "select * from " + LoginSQLiteCallback.TABLE_NAME_USER, null);
                         String rowId = resultList.get(0).getRowId();

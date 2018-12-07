@@ -77,8 +77,8 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
         // 账号设置主页面假数据
         itemInfoList = new ArrayList<>();
         // TODO: 获取最新版本信息和缓存信息
-        SettingItemInfo account = new SettingItemInfo("账号设置", "", "");
-        SettingItemInfo message = new SettingItemInfo("推送消息设置", "", "");
+        SettingItemInfo account = new SettingItemInfo(getString(R.string.account_settings), "", "");
+        SettingItemInfo message = new SettingItemInfo(getString(R.string.message_settings), "", "");
         // 获取缓存信息
         String cacheSize = "0K";
         try {
@@ -86,10 +86,10 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
         } catch (Exception e) {
             e.printStackTrace();
         }
-        SettingItemInfo memory = new SettingItemInfo("消除缓存", "", cacheSize);
-        SettingItemInfo version = new SettingItemInfo("版本更新", "",
-                AppUpgradeHelper.getInstance().isHasUpgradeCurrentApp() ? Global.g().getVersionName() : "已是最新版本");
-        SettingItemInfo us = new SettingItemInfo("关于我们", "", "");
+        SettingItemInfo memory = new SettingItemInfo(getString(R.string.remove_cache), "", cacheSize);
+        SettingItemInfo version = new SettingItemInfo(getString(R.string.find_a_new_version), "",
+                AppUpgradeHelper.getInstance().isHasUpgradeCurrentApp() ? Global.g().getVersionName() : getString(R.string.is_latest_version));
+        SettingItemInfo us = new SettingItemInfo(getString(R.string.setting_about_us), "", "");
         itemInfoList.add(account);
         itemInfoList.add(message);
         itemInfoList.add(memory);
@@ -112,7 +112,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
             public void doClick(View v) {
                 getDialog().setTitleVisibility(View.VISIBLE);
                 getDialog().setMessageVisibility(View.GONE);
-                getDialog().setTitle("确认退出？");
+                getDialog().setTitle(getString(R.string.confirm_exit));
                 getDialog().setConfirmText(getResources().getString(R.string.confirm_title));
                 getDialog().setConfirmTextColor(getResources().getColor(R.color.login_error));
                 getDialog().setCancelText(getResources().getString(R.string.cancel_title));

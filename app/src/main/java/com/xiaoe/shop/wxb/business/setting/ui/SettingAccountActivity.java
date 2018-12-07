@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
+import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.LoginSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.LoginUser;
@@ -126,7 +127,7 @@ public class SettingAccountActivity extends XiaoeActivity {
     }
 
     private void init() {
-        accountTitle.setText("设置");
+        accountTitle.setText(getString(R.string.setting_account_title));
     }
 
     @Override
@@ -143,7 +144,7 @@ public class SettingAccountActivity extends XiaoeActivity {
                         ((SettingAccountFragment) currentFragment).phoneNumTitle.setText(String.format(getResources().getString(R.string.setting_phone_num_title), newPhone));
                     }
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) { // 发送失败
-                    Toast("获取验证码失败");
+                    ToastUtils.show(mContext, getString(R.string.failed_get_verification_code));
                     Log.d(TAG, "onMainThreadResponse: 发送失败");
                 }
             } else if (iRequest instanceof LoginCodeVerifyRequest) {
@@ -170,17 +171,17 @@ public class SettingAccountActivity extends XiaoeActivity {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     updateLocalUserInfo();
-                    Toast("更换成功");
+                    ToastUtils.show(mContext, getString(R.string.replace_success));
                     replaceFragment(MAIN);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
-                    Toast("更换失败");
+                    ToastUtils.show(mContext, getString(R.string.replace_failed));
                     Log.d(TAG, "onMainThreadResponse: 更换失败");
                 }
             } else if (iRequest instanceof ResetPasswordRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    Toast("修改成功");
-                    accountTitle.setText("设置");
+                    ToastUtils.show(mContext, R.string.modify_successfully);
+                    accountTitle.setText(getString(R.string.setting_account_title));
                     replaceFragment(SettingAccountActivity.MAIN);
                 } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
                     Log.d(TAG, "onMainThreadResponse: 修改密码失败...");
@@ -205,7 +206,7 @@ public class SettingAccountActivity extends XiaoeActivity {
                     }
                 } else if (code == NetworkCodes.CODE_FAILED) {
                     Log.d(TAG, "onMainThreadResponse: 设置推送消息状态失败...");
-                    Toast("设置失败");
+                    ToastUtils.show(mContext, getString(R.string.setup_failed));
                 }
             }
         } else {
@@ -239,7 +240,7 @@ public class SettingAccountActivity extends XiaoeActivity {
             switch (tag) {
                 case CACHE:
                     getDialog().setTitleVisibility(View.VISIBLE);
-                    getDialog().setTitle("确定清除？");
+                    getDialog().setTitle(getString(R.string.sure_to_clear));
                     getDialog().setMessageVisibility(View.GONE);
                     getDialog().setConfirmText(getResources().getString(R.string.confirm_title));
                     getDialog().setCancelText(getResources().getString(R.string.cancel_title));
@@ -296,15 +297,15 @@ public class SettingAccountActivity extends XiaoeActivity {
         if (currentFragment == null) {
             switch (tag) {
                 case ACCOUNT: // 账号设置
-                    accountTitle.setText("账号设置");
+                    accountTitle.setText(getString(R.string.account_settings));
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_account);
                     break;
                 case MESSAGE: // 推送消息设置
-                    accountTitle.setText("推送消息设置");
+                    accountTitle.setText(getString(R.string.message_settings));
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_message);
                     break;
                 case ABOUT: // 关于我们
-                    accountTitle.setText("关于我们");
+                    accountTitle.setText(getString(R.string.setting_about_us));
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_about);
                     break;
 //                case SUGGESTION: // 意见反馈
@@ -312,27 +313,27 @@ public class SettingAccountActivity extends XiaoeActivity {
 //                    currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_suggestion);
 //                    break;
                 case CURRENT_PHONE:
-                    accountTitle.setText("更换手机号");
+                    accountTitle.setText(R.string.change_phone_number);
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_current_phone);
                     break;
                 case PWD_PHONE_CODE:
-                    accountTitle.setText("修改密码");
+                    accountTitle.setText(R.string.change_password);
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_pwd_obtain_phone_code);
                     break;
                 case PWD_NEW:
-                    accountTitle.setText("设置新密码");
+                    accountTitle.setText(getString(R.string.login_set_pwd_title));
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_pwd_new);
                     break;
                 case PHONE_CODE:
-                    accountTitle.setText("输入验证码");
+                    accountTitle.setText(getString(R.string.login_code_title));
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_phone_code);
                     break;
                 case COMPLETE:
-                    accountTitle.setText("修改手机号");
+                    accountTitle.setText(R.string.modify_phone_number);
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_change_phone_complete);
                     break;
                 case SERVICE:
-                    accountTitle.setText("服务协议");
+                    accountTitle.setText(getString(R.string.self_service_title));
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_service);
                     break;
                 default:
@@ -344,34 +345,34 @@ public class SettingAccountActivity extends XiaoeActivity {
         } else {
             switch (currentFragment.getTag()) {
                 case ACCOUNT: // 账号设置
-                    accountTitle.setText("账号设置");
+                    accountTitle.setText(getString(R.string.account_settings));
                     break;
                 case MESSAGE: // 推送消息设置
-                    accountTitle.setText("推送消息设置");
+                    accountTitle.setText(getString(R.string.message_settings));
                     break;
                 case ABOUT: // 关于我们
-                    accountTitle.setText("关于我们");
+                    accountTitle.setText(getString(R.string.setting_about_us));
                     break;
 //                case SUGGESTION: // 意见反馈
 //                    accountTitle.setText("意见反馈");
 //                    break;
                 case CURRENT_PHONE:
-                    accountTitle.setText("更换手机号");
+                    accountTitle.setText(getString(R.string.change_phone_number));
                     break;
                 case PWD_PHONE_CODE:
-                    accountTitle.setText("设置新密码");
+                    accountTitle.setText(getString(R.string.login_set_pwd_title));
                     break;
                 case PWD_NEW:
-                    accountTitle.setText("设置新密码");
+                    accountTitle.setText(getString(R.string.login_set_pwd_title));
                     break;
                 case PHONE_CODE:
-                    accountTitle.setText("输入验证码");
+                    accountTitle.setText(getString(R.string.login_code_title));
                     break;
                 case COMPLETE:
-                    accountTitle.setText("修改手机号");
+                    accountTitle.setText(getString(R.string.modify_phone_number));
                     break;
                 case SERVICE:
-                    accountTitle.setText("服务协议");
+                    accountTitle.setText(getString(R.string.self_service_title));
                     break;
                 default:
                     break;
@@ -437,21 +438,21 @@ public class SettingAccountActivity extends XiaoeActivity {
             case ABOUT:
 //                case SUGGESTION:
             case COMPLETE:
-                accountTitle.setText("设置");
+                accountTitle.setText(getString(R.string.setting_account_title));
                 replaceFragment(MAIN);
                 break;
             case CURRENT_PHONE:
             case PWD_PHONE_CODE:
             case PHONE_CODE:
-                accountTitle.setText("账号设置");
+                accountTitle.setText(getString(R.string.account_settings));
                 replaceFragment(ACCOUNT);
                 break;
             case PWD_NEW:
-                accountTitle.setText("设置新密码");
+                accountTitle.setText(getString(R.string.login_set_pwd_title));
                 replaceFragment(PWD_PHONE_CODE);
                 break;
             case SERVICE:
-                accountTitle.setText("关于我们");
+                accountTitle.setText(getString(R.string.setting_about_us));
                 replaceFragment(ABOUT);
                 break;
             default:
@@ -492,12 +493,12 @@ public class SettingAccountActivity extends XiaoeActivity {
                     MainAccountFragment mainAccountFragment = (MainAccountFragment) wrf.get().currentFragment;
                     mainAccountFragment.itemInfoList.get(2).setItemContent(CacheManagerUtil.getTotalCacheSize(wrf.get().getApplicationContext()));
                     mainAccountFragment.settingRecyclerAdapter.notifyDataSetChanged();
-                    Toast.makeText(wrf.get(), "清除成功", Toast.LENGTH_SHORT).show();
+                    ToastUtils.show(XiaoeApplication.applicationContext, R.string.clear_success);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }else if(msg.what == CLEAN_FAIL){
-                Toast.makeText(wrf.get(), "清除失败", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(XiaoeApplication.applicationContext, R.string.removal_failure);
             }
         }
 

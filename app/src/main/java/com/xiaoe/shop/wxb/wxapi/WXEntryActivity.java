@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.EventBus;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.HadSharedEvent;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
+import com.xiaoe.shop.wxb.R;
 
 
 /**
@@ -65,15 +66,15 @@ public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHa
                     SendAuth.Resp sendResp = (SendAuth.Resp) resp;
                     code = sendResp.code;
                 }
-                msg = "发送成功";
+                msg = getString(R.string.send_successfully);
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
                 //发送取消
-                msg = "发送取消";
+                msg = getString(R.string.send_to_cancel);
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
                 //发送被拒绝
-                msg = "发送被拒绝";
+                msg = getString(R.string.send_rejected);
                 break;
             default:
                 //发送返回
@@ -97,10 +98,9 @@ public class WXEntryActivity extends WXCallbackActivity implements IWXAPIEventHa
             }
         } else if (resp.getType() == ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX && !hasObtainShareCallback) { // 分享到微信后的回调
             hasObtainShareCallback = true;
-            if ("发送成功".equals(msg)) {
-                //
+            if (getString(R.string.send_successfully).equals(msg)) {
                 EventBus.getDefault().post(new HadSharedEvent(true));
-            } else if ("发送取消".equals(msg)) {
+            } else if (getString(R.string.send_to_cancel).equals(msg)) {
                 EventBus.getDefault().post(new HadSharedEvent(false));
             }
         }

@@ -47,6 +47,7 @@ import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
 import java.util.ArrayList;
@@ -193,23 +194,23 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
                 gender = "";
                 break;
             case "1":
-                gender = "男";
+                gender = getString(R.string.action_sheet_man);
                 break;
             case "2":
-                gender = "女";
+                gender = getString(R.string.action_sheet_woman);
                 break;
             default:
                 break;
         }
-        SettingItemInfo itemAvatar = new SettingItemInfo("头像", imgUrl, "");
-        SettingItemInfo itemNickname = new SettingItemInfo("昵称", "", wxNickname);
-        SettingItemInfo itemName = new SettingItemInfo("真实姓名", "", wxName);
-        SettingItemInfo itemGender = new SettingItemInfo("性别", "", gender);
-        SettingItemInfo itemBirthday = new SettingItemInfo("生日", "", birth);
-        SettingItemInfo itemPhone = new SettingItemInfo("手机", "", phone);
-        SettingItemInfo itemAddress = new SettingItemInfo("地址", "", address);
-        SettingItemInfo itemCompany = new SettingItemInfo("公司", "", company);
-        SettingItemInfo itemJob = new SettingItemInfo("职位", "", job);
+        SettingItemInfo itemAvatar = new SettingItemInfo(getString(R.string.avatar_text), imgUrl, "");
+        SettingItemInfo itemNickname = new SettingItemInfo(getString(R.string.nickname), "", wxNickname);
+        SettingItemInfo itemName = new SettingItemInfo(getString(R.string.real_name), "", wxName);
+        SettingItemInfo itemGender = new SettingItemInfo(getString(R.string.gender), "", gender);
+        SettingItemInfo itemBirthday = new SettingItemInfo(getString(R.string.birthday), "", birth);
+        SettingItemInfo itemPhone = new SettingItemInfo(getString(R.string.phone_number), "", phone);
+        SettingItemInfo itemAddress = new SettingItemInfo(getString(R.string.address), "", address);
+        SettingItemInfo itemCompany = new SettingItemInfo(getString(R.string.company), "", company);
+        SettingItemInfo itemJob = new SettingItemInfo(getString(R.string.post), "", job);
 
         dataList.add(itemAvatar);
         dataList.add(itemNickname);
@@ -234,24 +235,20 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
 
     @Override
     public void onItemClick(View view, SettingItemInfo itemInfo) {
-        switch (itemInfo.getItemTitle()) {
-            case "头像":
-            case "手机": // 手机和头像先不支持在个人资料页面进行修改
-                return;
-            case "性别":
-                initActionSheetGender(dataList.indexOf(itemInfo));
-                break;
-            case "生日":
-                // TODO: 显示日期选择器
-                initActionSheetDate(dataList.indexOf(itemInfo));
-                break;
-            default:
-                Intent intent = new Intent(this, SettingPersonItemActivity.class);
-                intent.putExtra("title", itemInfo.getItemTitle());
-                intent.putExtra("content", itemInfo.getItemContent());
-                intent.putExtra("position", dataList.indexOf(itemInfo));
-                startActivityForResult(intent, REQUEST_CODE);
-                break;
+        if (getString(R.string.avatar_text).equals(itemInfo.getItemTitle())
+                || getString(R.string.phone_number).equals(itemInfo.getItemTitle())) {
+            return;
+        }
+        if (getString(R.string.gender).equals(itemInfo.getItemTitle())) {
+            initActionSheetGender(dataList.indexOf(itemInfo));
+        } else if (getString(R.string.birthday).equals(itemInfo.getItemTitle())) {
+            initActionSheetDate(dataList.indexOf(itemInfo));
+        } else {
+            Intent intent = new Intent(this, SettingPersonItemActivity.class);
+            intent.putExtra("title", itemInfo.getItemTitle());
+            intent.putExtra("content", itemInfo.getItemContent());
+            intent.putExtra("position", dataList.indexOf(itemInfo));
+            startActivityForResult(intent, REQUEST_CODE);
         }
     }
 
@@ -309,11 +306,11 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
             @Override
             public void doClick(View v) {
                 if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
-                    settingPresenter.updateGender(apiToken, "男");
-                    dataList.get(position).setItemContent("男");
+                    settingPresenter.updateGender(apiToken, getString(R.string.action_sheet_man));
+                    dataList.get(position).setItemContent(getString(R.string.action_sheet_man));
                     settingRecyclerAdapter.notifyDataSetChanged();
                 } else {
-                    Toast(getString(R.string.network_error_text));
+                    ToastUtils.show(mContext, getString(R.string.network_error_text));
                 }
                 dialog.dismiss();
             }
@@ -323,11 +320,11 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
             @Override
             public void doClick(View v) {
                 if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
-                    settingPresenter.updateGender(apiToken, "女");
-                    dataList.get(position).setItemContent("女");
+                    settingPresenter.updateGender(apiToken, getString(R.string.action_sheet_woman));
+                    dataList.get(position).setItemContent(getString(R.string.action_sheet_woman));
                     settingRecyclerAdapter.notifyDataSetChanged();
                 } else {
-                    Toast(getString(R.string.network_error_text));
+                    ToastUtils.show(mContext, getString(R.string.network_error_text));
                 }
                 dialog.dismiss();
             }
@@ -362,7 +359,7 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
                     dataList.get(position).setItemContent(dateStr);
                     settingRecyclerAdapter.notifyDataSetChanged();
                 } else {
-                    Toast(getString(R.string.network_error_text));
+                    ToastUtils.show(mContext, getString(R.string.network_error_text));
                 }
             }
         }).setContentTextSize(18)

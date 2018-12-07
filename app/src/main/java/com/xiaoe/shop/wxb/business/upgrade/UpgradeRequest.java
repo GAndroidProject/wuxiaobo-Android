@@ -1,9 +1,6 @@
 package com.xiaoe.shop.wxb.business.upgrade;
 
-/**
- * Created by Administrator on 2018/3/21.
- */
-
+@Deprecated
 public class UpgradeRequest {
 //    final String HOST = ServiceConfigMgr.getInstance().getDemain(false) + Constants.GROUP_API_PREFIX;
 //

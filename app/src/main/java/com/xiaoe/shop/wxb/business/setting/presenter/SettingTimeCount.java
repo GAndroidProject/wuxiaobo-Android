@@ -43,7 +43,7 @@ public class SettingTimeCount extends CountDownTimer {
     @Override
     public void onFinish() {
         tv.setEnabled(true);
-        tv.setText("重新获取验证码");
+        tv.setText(R.string.retrieves_verification_code);
         tv.setTextColor(mContext.getResources().getColor(R.color.edit_cursor));
     }
 }

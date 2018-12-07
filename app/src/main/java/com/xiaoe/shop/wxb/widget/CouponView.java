@@ -125,7 +125,7 @@ public class CouponView extends FrameLayout {
             couponType.setText(mContext.getResources().getString(R.string.no_threshold_coupon));
         }else{
             float limitF = limit / 100f;
-            couponType.setText("满"+limitF+"元使用");
+            couponType.setText(String.format(getContext().getString(R.string.full_yuan_used), limitF));
         }
     }
 

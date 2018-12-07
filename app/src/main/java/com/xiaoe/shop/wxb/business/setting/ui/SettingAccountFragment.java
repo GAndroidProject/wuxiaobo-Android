@@ -42,6 +42,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.FileUtils;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CodeVerifyView;
 import com.xiaoe.shop.wxb.widget.CustomSwitchButton;
 
@@ -194,10 +195,10 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         // 账号设置页面假数据
         itemList = new ArrayList<>();
         accountRecycler = (RecyclerView) viewWrap.findViewById(R.id.account_content);
-        SettingItemInfo changePwd = new SettingItemInfo("修改密码", "", "");
-        SettingItemInfo changePhone = new SettingItemInfo("更换手机号", "" ,settingAccountActivity.localPhone);
-        String tip = settingAccountActivity.apiToken == null ? "未绑定" : "已绑定";
-        SettingItemInfo bindWeChat = new SettingItemInfo("绑定微信", "", tip);
+        SettingItemInfo changePwd = new SettingItemInfo(getString(R.string.change_password), "", "");
+        SettingItemInfo changePhone = new SettingItemInfo(getString(R.string.change_phone_number), "" ,settingAccountActivity.localPhone);
+        String tip = settingAccountActivity.apiToken == null ? getString(R.string.not_bound) : getString(R.string.is_binding);
+        SettingItemInfo bindWeChat = new SettingItemInfo(getString(R.string.login_we_chat_title), "", tip);
         itemList.add(changePwd);
 //        itemList.add(changePhone); // 需求变更（2018.11.17）
         itemList.add(bindWeChat);
@@ -244,10 +245,10 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
             }
         } else {
             if (messageSwitch.isChecked()) {
-                Toast.makeText(getActivity(), "已开启", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(mContext, R.string.has_been_open);
                 isPushState = "1";
             } else {
-                Toast.makeText(getActivity(), "已关闭", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(mContext, R.string.closed);
                 isPushState = "2";
             }
             SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_JPUSH_STATE_CODE, isPushState);
@@ -286,20 +287,22 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         });
     }*/
 
-    // 关于布局
+    /**
+     * 关于布局
+     */
     private void initAboutFragment() {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(getActivity(), 1), 0, 0);
         viewWrap.setLayoutParams(layoutParams);
         SimpleDraweeView aboutLogo = (SimpleDraweeView) viewWrap.findViewById(R.id.about_logo);
         TextView aboutDesc = (TextView) viewWrap.findViewById(R.id.about_desc);
-        aboutDesc.setText("杭州巴九灵文化创意股份有限公司 版权所有");
+        aboutDesc.setText(R.string.all_right_reserved);
         aboutContent = (RecyclerView) viewWrap.findViewById(R.id.about_content);
         // 关于布局假数据
         aboutLogo.setImageURI("res:///" + R.mipmap.logo);
         itemList = new ArrayList<>();
-        SettingItemInfo connectUs = new SettingItemInfo("联系我们", "", "wxbpd@meihaoplus.shop");
-        SettingItemInfo service = new SettingItemInfo("服务协议", "" ,"");
+        SettingItemInfo connectUs = new SettingItemInfo(getString(R.string.connect_us), "", "wxbpd@meihaoplus.shop");
+        SettingItemInfo service = new SettingItemInfo(getString(R.string.self_service_title), "" ,"");
         itemList.add(connectUs);
         itemList.add(service);
         SettingRecyclerAdapter settingRecyclerAdapter = new SettingRecyclerAdapter(getActivity(), itemList);
@@ -405,7 +408,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
 
         newBtn.setOnClickListener(v -> {
             if (newPwd.getText().toString().length() < 6) {
-                Toast.makeText(getActivity(), "密码长度不能少于6", Toast.LENGTH_SHORT).show();
+                ToastUtils.show(mContext, R.string.password_rule);
                 return;
             }
             if (imm != null && imm.isActive()) {
@@ -553,7 +556,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
 //                case 2: // 需求变更（2018.11.17）
                     // 绑定微信
                     String tip = itemList.get(index).getItemContent();
-                    if (tip.equals("未绑定")) {
+                    if (tip.equals(getString(R.string.not_bound))) {
                         JumpDetail.jumpLogin(getActivity(), true);
                     }
                     break;

@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
@@ -26,8 +27,7 @@ public class StatusPagerView extends FrameLayout {
     public static final int EMPTY = 10004;
     public static final int SOLD = 10005;
 
-    public static final String FINISH_CONTENT = "加载成功";
-    public static final String FAIL_CONTENT = "页面还没找到，刷新试试吧";
+    public static final String FAIL_CONTENT = XiaoeApplication.applicationContext.getString(R.string.request_fail);
 
     private View rootView;
     private RelativeLayout loadingWrap;

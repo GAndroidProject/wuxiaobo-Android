@@ -70,49 +70,60 @@ public class DownLoadRunnable implements Runnable {
             while (isGoing) {
                 Cursor cursor = downloadManager.query(query);
                 if (cursor != null && cursor.moveToFirst()) {
-
                     //获得下载状态
                     int state = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
                     switch (state) {
                         case DownloadManager.STATUS_SUCCESSFUL://下载成功
                             isGoing = false;
-                            if (handler != null)
+                            if (handler != null) {
                                 handler.obtainMessage(downloadManager.STATUS_SUCCESSFUL).sendToTarget();//发送到主线程，更新ui
-                            else    EventBus.getDefault().post(new UpgradeProgressUpdateEvent(downloadManager.STATUS_SUCCESSFUL));
+                            } else {
+                                EventBus.getDefault().post(new UpgradeProgressUpdateEvent(downloadManager.STATUS_SUCCESSFUL));
+                            }
                             break;
                         case DownloadManager.STATUS_FAILED://下载失败
                             isGoing = false;
                             if (handler != null) {
                                 handler.obtainMessage(downloadManager.STATUS_FAILED).sendToTarget();//发送到主线程，更新ui
-                            }else   EventBus.getDefault().post(new UpgradeProgressUpdateEvent(downloadManager.STATUS_FAILED));
+                            } else {
+                                EventBus.getDefault().post(new UpgradeProgressUpdateEvent(downloadManager.STATUS_FAILED));
+                            }
                             break;
                         case DownloadManager.STATUS_RUNNING://下载中
-                            /**
-                             * 计算下载下载率；
-                             */
+                            // 计算下载下载率
                             int totalSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
                             int currentSize = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
                             int progress = (int) (((float) currentSize) / ((float) totalSize) * 100);
                             if (progress - lastProgress >= 1){
-                                if (handler != null)
+                                if (handler != null) {
                                     handler.obtainMessage(downloadManager.STATUS_RUNNING, progress).sendToTarget();//发送到主线程，更新ui
-                                else    EventBus.getDefault().post(new UpgradeProgressUpdateEvent(downloadManager.STATUS_RUNNING, progress));
+                                } else {
+                                    EventBus.getDefault().post(new UpgradeProgressUpdateEvent(downloadManager.STATUS_RUNNING, progress));
+                                }
                                 lastProgress = progress;
                             }
                             break;
                         case DownloadManager.STATUS_PAUSED://下载停止
                             isGoing = false;
-                            if (handler != null)
+                            if (handler != null) {
                                 handler.obtainMessage(DownloadManager.STATUS_PAUSED).sendToTarget();
-                            else    EventBus.getDefault().post(new UpgradeProgressUpdateEvent(downloadManager.STATUS_PAUSED));
+                            } else {
+                                EventBus.getDefault().post(new UpgradeProgressUpdateEvent(downloadManager.STATUS_PAUSED));
+                            }
                             break;
                         case DownloadManager.STATUS_PENDING://准备下载
-                            if (isStarted)  break;
-                            if (handler != null)
+                            if (isStarted) {
+                                break;
+                            }
+                            if (handler != null) {
                                 handler.obtainMessage(DownloadManager.STATUS_PENDING).sendToTarget();
-                            else    EventBus.getDefault().post(new UpgradeProgressUpdateEvent(downloadManager.STATUS_PENDING));
+                            } else {
+                                EventBus.getDefault().post(new UpgradeProgressUpdateEvent(downloadManager.STATUS_PENDING));
+                            }
                             isStarted = true;
                             lastProgress = 0;
+                            break;
+                        default:
                             break;
                     }
                 }

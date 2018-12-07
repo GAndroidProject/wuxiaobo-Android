@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+@Deprecated
 public class RecycleViewDivider extends RecyclerView.ItemDecoration {
 
     private Paint mPaint;

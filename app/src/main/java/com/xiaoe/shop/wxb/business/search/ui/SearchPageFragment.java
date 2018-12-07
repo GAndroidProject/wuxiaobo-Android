@@ -249,28 +249,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
                 continue;
             }
             JSONArray list = (JSONArray) dataListItem.get("list");
-            switch (label) {
-                case "图文":
-                    initTypeData(label, type, showMore, list);
-                    break;
-                case "音频":
-                    initTypeData(label, type, showMore, list);
-                    break;
-                case "视频":
-                    initTypeData(label, type, showMore, list);
-                    break;
-                case "专栏":
-                    initTypeData(label, type, showMore, list);
-                    break;
-                case "大专栏":
-                    initTypeData(label, type, showMore, list);
-                    break;
-                case "会员":
-                    initTypeData(label, type, showMore, list);
-                    break;
-                default:
-                    break;
-            }
+            initTypeData(label, type, showMore, list);
         }
         // 初始化 recyclerView
         if (!searchActivity.hasDecorate) {
@@ -345,13 +324,17 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             String label = dataListItem.getString("label");
             // 内容 list
             JSONArray list = (JSONArray) dataListItem.get("list");
-            if (label.equals("图文") || label.equals("音频") || label.equals("视频")) {
+            if (label.equals(getString(R.string.image_text))
+                    || label.equals(getString(R.string.audio_text))
+                    || label.equals(getString(R.string.video_text))) {
                 for (Object listItem : list) {
                     JSONObject item = (JSONObject) listItem;
                     item.put("resource_type", dataListItem.getInteger("type"));
                     itemJsonList.add(item);
                 }
-            } else if (label.equals("专栏") || label.equals("大专栏") || label.equals("会员")) {
+            } else if (label.equals(getString(R.string.column_text))
+                    || label.equals(getString(R.string.big_column_text))
+                    || label.equals(getString(R.string.member_text))) {
                 for (Object listItem : list) {
                     JSONObject item = (JSONObject) listItem;
                     item.put("resource_type", dataListItem.getInteger("type"));

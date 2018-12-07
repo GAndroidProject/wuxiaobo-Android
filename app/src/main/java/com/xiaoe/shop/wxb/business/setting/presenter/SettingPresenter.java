@@ -10,6 +10,7 @@ import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.SetPushStateRequest;
 import com.xiaoe.network.requests.SettingPersonItemRequest;
 import com.xiaoe.network.requests.SettingPseronMsgRequest;
+import com.xiaoe.shop.wxb.R;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -79,7 +80,7 @@ public class SettingPresenter implements IBizCallback {
     public void updateGender(String apiToken, String gender) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(this);
 
-        String wxGender = gender.equals("男") ? "1" : "2";
+        String wxGender = gender.equals(XiaoeApplication.applicationContext.getString(R.string.action_sheet_man)) ? "1" : "2";
 //        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("wx_gender", wxGender);

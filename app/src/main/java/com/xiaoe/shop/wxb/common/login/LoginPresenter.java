@@ -29,6 +29,7 @@ import com.xiaoe.network.requests.ResetPasswordRequest;
 import com.xiaoe.network.requests.TouristsShopIdRequest;
 import com.xiaoe.network.requests.UpdatePhoneRequest;
 import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class LoginPresenter implements IBizCallback {
     public void reqWXLogin() {
         if (!isWeChatAppInstalled(mContext)) {
             // 没装微信
-            Toast.makeText(mContext, "需要安装微信", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(mContext, R.string.need_install_wechat);
         } else {
             SendAuth.Req req = new SendAuth.Req();
             req.scope = "snsapi_userinfo";

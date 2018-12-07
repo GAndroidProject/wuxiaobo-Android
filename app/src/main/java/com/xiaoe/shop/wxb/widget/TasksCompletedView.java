@@ -1,9 +1,5 @@
 package com.xiaoe.shop.wxb.widget;
 
-/**
- * Created by Administrator on 2017/8/16.
- */
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -14,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.xiaoe.shop.wxb.R;
-
 
 public class TasksCompletedView extends View {
     private static final String TAG = "TasksCompletedView";
