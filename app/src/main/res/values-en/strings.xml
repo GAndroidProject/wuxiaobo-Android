@@ -379,4 +379,5 @@
     <string name="none_learning_course">你当前暂无正在学的课程哦</string>
     <string name="super_members">超级会员</string>
     <string name="tab_today">今日</string>
+    <string name="again_back_pressed_exit">再按一次退出</string>
 </resources>

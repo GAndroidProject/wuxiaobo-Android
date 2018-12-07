@@ -95,6 +95,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     CouponHandlePresenter couponHandlePresenter;
     boolean needShowScholarship;
 
+    boolean isExit = false;
+    Runnable exitAppRunnable = () -> isExit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -516,6 +518,17 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     public void getUnreadMsg() {
         settingPresenter.requestUnreadMessage();
         isGetUnreadMsg = true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mainViewPager == null || isExit){
+            finish();
+            return;
+        }else    Toast(getString(R.string.again_back_pressed_exit));
+        isExit = true;
+        mainViewPager.removeCallbacks(exitAppRunnable);
+        mainViewPager.postDelayed(exitAppRunnable,1500);
     }
 
     @Override
