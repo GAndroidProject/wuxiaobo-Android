@@ -71,10 +71,12 @@ public class SettingRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder>
                     viewHolder.itemIcon.setImageURI(""); // 占位
                     break;
             }
-        } else {
-            itemList.size(); // 其他内容
+        } else { // 其他内容（手机号暂不支持修改因此将 go 箭头去掉）
             viewHolder.itemIcon.setVisibility(View.GONE);
             viewHolder.itemContent.setVisibility(View.VISIBLE);
+            if ("手机".equals(currentItem.getItemTitle())) {
+                viewHolder.itemGo.setVisibility(View.GONE);
+            }
             viewHolder.itemTitle.setText(currentItem.getItemTitle());
             viewHolder.itemContent.setText(currentItem.getItemContent());
         }

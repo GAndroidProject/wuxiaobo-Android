@@ -39,8 +39,8 @@ public class CacheManagerUtil {
             for (String aChildren : children) {
                 File file = new File(dir, aChildren);
                 boolean success = deleteDir(file); // false 的话就是文件
-                if (!success) {
-                    return file.delete();
+                if (!success) { // 是文件就删掉
+                    file.delete();
                 }
             }
         }

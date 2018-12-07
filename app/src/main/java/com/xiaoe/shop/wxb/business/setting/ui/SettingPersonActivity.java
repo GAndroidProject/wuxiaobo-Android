@@ -56,6 +56,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.internal.DebouncingOnClickListener;
 
 public class SettingPersonActivity extends XiaoeActivity implements OnItemClickWithSettingItemInfoListener {
 
@@ -304,9 +305,9 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
 
     // 初始化性别底部选择器监听
     private void initActionSheetGenderListener(final int position) {
-        actionSheetMan.setOnClickListener(new View.OnClickListener() {
+        actionSheetMan.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void doClick(View v) {
                 if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
                     settingPresenter.updateGender(apiToken, "男");
                     dataList.get(position).setItemContent("男");
@@ -318,9 +319,9 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
             }
         });
 
-        actionSheetWoman.setOnClickListener(new View.OnClickListener() {
+        actionSheetWoman.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void doClick(View v) {
                 if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
                     settingPresenter.updateGender(apiToken, "女");
                     dataList.get(position).setItemContent("女");
@@ -332,9 +333,9 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
             }
         });
 
-        actionSheetCancel.setOnClickListener(new View.OnClickListener() {
+        actionSheetCancel.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void doClick(View v) {
                 dialog.dismiss();
             }
         });
@@ -364,7 +365,7 @@ public class SettingPersonActivity extends XiaoeActivity implements OnItemClickW
                     Toast(getString(R.string.network_error_text));
                 }
             }
-        }).setContentTextSize(20)
+        }).setContentTextSize(18)
                 .setTitleColor(getResources().getColor(R.color.main_title_color))
                 .setTitleSize(16)
                 .setOutSideCancelable(true)

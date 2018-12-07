@@ -41,6 +41,8 @@
             android:id="@+id/setting_person_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:overScrollMode="never"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <com.xiaoe.shop.wxb.widget.StatusPagerView
