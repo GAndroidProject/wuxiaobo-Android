@@ -443,12 +443,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             }
             setLoadState(ListBottomLoadMoreView.STATE_NOT_LOAD);
         }
+        realSrcId = data.getString("resource_id");
         if(available){
             buyView.setVisibility(View.GONE);
             setMiniPlayerPosition(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             isHasBuy = true;
             collectPrice = "";
-            realSrcId = data.getString("resource_id");
         }else{
             price = data.getIntValue("price");
             buyView.setVisibility(cache ? View.GONE : View.VISIBLE);
@@ -563,7 +563,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             case R.id.buy_course:
                 if (loginUserList.size() == 1) {
                     int resourceType = this.resourceType;
-                    JumpDetail.jumpPay(this,resourceId,resourceType, collectImgUrl, collectTitle, price, null);
+                    JumpDetail.jumpPay(this,realSrcId,resourceType, collectImgUrl, collectTitle, price, null);
                 } else {
                     touristDialog.showDialog();
                 }
