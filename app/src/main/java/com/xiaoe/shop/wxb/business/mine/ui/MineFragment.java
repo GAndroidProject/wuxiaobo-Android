@@ -305,7 +305,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             itemInfoList = new ArrayList<>();
         }
         // 我正在学
-        if (!mineLearningWrapView.getLearningLoginDesc().equals(getResources().getString(R.string.none_learning_course))) {
+        if (!mineLearningWrapView.getLearningLoginDesc().equals(getResources().getString(R.string.none_bought_course))) {
             mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
         }
     }
@@ -553,7 +553,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             // 学习记录为空
             mineLearningWrapView.setLearningContainerVisibility(View.GONE);
             mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-            mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_learning_course));
+            mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_bought_course));
             mineLearningWrapView.setLearningMoreVisibility(View.GONE);
             isMineLearningFinish = true;
             return;
@@ -566,7 +566,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         if (listItem == null) {
             mineLearningWrapView.setLearningContainerVisibility(View.GONE);
             mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-            mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_learning_course));
+            mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_bought_course));
             mineLearningWrapView.setLearningMoreVisibility(View.GONE);
             return;
         }
@@ -873,7 +873,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 // 学习记录为空
                 mineLearningWrapView.setLearningContainerVisibility(View.GONE);
                 mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-                mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_learning_course));
+                mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_bought_course));
                 mineLearningWrapView.setLearningMoreVisibility(View.GONE);
                 isMineLearningFinish = true;
                 return;
@@ -886,7 +886,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             if (listItem == null) {
                 mineLearningWrapView.setLearningContainerVisibility(View.GONE);
                 mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
-                mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_learning_course));
+                mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_bought_course));
                 mineLearningWrapView.setLearningMoreVisibility(View.GONE);
                 return;
             }
