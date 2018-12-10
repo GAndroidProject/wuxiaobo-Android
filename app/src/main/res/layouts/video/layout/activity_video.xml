@@ -61,13 +61,14 @@
                 android:textColor="@color/secondary_title_color"
                 android:textSize="14sp"
                 />
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/video_advertise_img"
-                android:layout_below="@id/play_num"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginTop="20dp"
-                />
+            <!--广告位（去掉）-->
+            <!--<com.facebook.drawee.view.SimpleDraweeView-->
+                <!--android:id="@+id/video_advertise_img"-->
+                <!--android:layout_below="@id/play_num"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:layout_marginTop="20dp"-->
+                <!--/>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -77,7 +78,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:background="@color/white"
-                android:layout_below="@id/video_advertise_img">
+                android:layout_below="@id/play_num">
 
                 <WebView
                     android:id="@+id/video_web_view"

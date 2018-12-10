@@ -84,7 +84,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private String mVideoUrl;
     private String mLocalVideoUrl;
     private boolean localResource = false;
-    private SimpleDraweeView videoAdvertise;
+//    private SimpleDraweeView videoAdvertise;
     private boolean showCacheData = false;
 
     List<LoginUser> loginUserList;
@@ -200,10 +200,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         ImageView btnShare = (ImageView) findViewById(R.id.btn_share);
         btnShare.setOnClickListener(this);
         // 广告图片
-        videoAdvertise = (SimpleDraweeView) findViewById(R.id.video_advertise_img);
-        String descImgUrl = "res:///" + R.mipmap.img_text_bg;
-        SetImageUriUtil.setImgURI(videoAdvertise, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
-        videoAdvertise.setOnClickListener(this);
+//        videoAdvertise = (SimpleDraweeView) findViewById(R.id.video_advertise_img);
+//        String descImgUrl = "res:///" + R.mipmap.img_text_bg;
+//        SetImageUriUtil.setImgURI(videoAdvertise, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
+//        videoAdvertise.setOnClickListener(this);
 
         btnBack = (ImageView) findViewById(R.id.btn_back);
         btnBack.setVisibility(View.GONE);
@@ -282,13 +282,13 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             case R.id.btn_share:
                 umShare(collectTitle, TextUtils.isEmpty(collectImgUrlCompressed) ? collectImgUrl : collectImgUrlCompressed, shareUrl, "");
                 break;
-            case R.id.video_advertise_img:
-                if (loginUserList.size() == 1) {
-                    JumpDetail.jumpMainTab(this, true, true, 2);
-                } else {
-                    JumpDetail.jumpMainTab(this, false, true, 2);
-                }
-                break;
+//            case R.id.video_advertise_img:
+//                if (loginUserList.size() == 1) {
+//                    JumpDetail.jumpMainTab(this, true, true, 2);
+//                } else {
+//                    JumpDetail.jumpMainTab(this, false, true, 2);
+//                }
+//                break;
             case R.id.btn_back:
                 finish();
                 break;

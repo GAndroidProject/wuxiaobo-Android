@@ -88,8 +88,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     @BindView(R.id.image_text_desc)
     TextView itDesc;
 
-    @BindView(R.id.image_text_advertise_img)
-    SimpleDraweeView itDescImg;
+//    @BindView(R.id.image_text_advertise_img)
+//    SimpleDraweeView itDescImg;
 //    @BindView(R.id.image_text_advertise_title)
 //    TextView itDescTitle;
 //    @BindView(R.id.image_text_advertise_desc)
@@ -204,7 +204,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         // 显示 loading
         itLoading.setLoadingState(View.VISIBLE);
         itLoading.setVisibility(View.VISIBLE);
-        itDescImg.setClickable(false);
+        // itDescImg.setClickable(false);
     }
 
     private void initListener() {
@@ -275,16 +275,16 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 onBackPressed();
             }
         });
-        itDescImg.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-            @Override
-            public void singleClick(View v) {
-                if (loginList.size() == 1) {
-                    JumpDetail.jumpMainTab(mContext, true, true, 2);
-                } else {
-                    JumpDetail.jumpMainTab(mContext, false, true, 2);
-                }
-            }
-        });
+//        itDescImg.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+//            @Override
+//            public void singleClick(View v) {
+//                if (loginList.size() == 1) {
+//                    JumpDetail.jumpMainTab(mContext, true, true, 2);
+//                } else {
+//                    JumpDetail.jumpMainTab(mContext, false, true, 2);
+//                }
+//            }
+//        });
         itLoading.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
             public void singleClick(View v) {
@@ -302,8 +302,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         if (imgUrl != null) {
             itBg.setImageURI("");
         }
-        String descImgUrl = "res:///" + R.mipmap.img_text_bg;
-        SetImageUriUtil.setImgURI(itDescImg, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 250));
+        // String descImgUrl = "res:///" + R.mipmap.img_text_bg;
+        // SetImageUriUtil.setImgURI(itDescImg, descImgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 250));
         if (CommonUserInfo.isIsSuperVipAvailable() && !CommonUserInfo.isIsSuperVip()) {
             if (CommonUserInfo.getSuperVipEffective() == 1) { // 全店免费
                 itBuy.setVipBtnVisibility(View.VISIBLE);
@@ -550,7 +550,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         collectionPrice = price + "";
         // 购买前初始化完成，去掉 loading
 //      itLoading.setVisibility(View.GONE);
-        itDescImg.setClickable(true);
+//        itDescImg.setClickable(true);
 
         resourceState(data, hasBuy);
     }

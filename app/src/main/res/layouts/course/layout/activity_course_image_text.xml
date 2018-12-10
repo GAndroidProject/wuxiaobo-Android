@@ -46,11 +46,12 @@
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_marginTop="20dp"/>-->
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/image_text_advertise_img"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginTop="20dp"/>
+            <!--广告位（去掉）-->
+            <!--<com.facebook.drawee.view.SimpleDraweeView-->
+                <!--android:id="@+id/image_text_advertise_img"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:layout_marginTop="20dp"/>-->
 
             <WebView
                 android:id="@+id/image_text_org_content"

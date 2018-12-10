@@ -116,7 +116,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private Runnable runnable;
     Dialog dialog;
     private boolean mIsDownload = false;
-    private SimpleDraweeView audioAdvertiseImg;
+//    private SimpleDraweeView audioAdvertiseImg;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -244,15 +244,15 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         btnAudioDownload.setOnClickListener(this);
 
         // 广告位
-        audioAdvertiseImg = (SimpleDraweeView) findViewById(R.id.audio_advertise_img);
-        String imgUrl = "res:///" + R.mipmap.img_text_bg;
-        SetImageUriUtil.setImgURI(audioAdvertiseImg, imgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
-        audioAdvertiseImg.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-            @Override
-            public void singleClick(View v) {
-                JumpDetail.jumpMainTab(AudioActivity.this, true, true, 2);
-            }
-        });
+//        audioAdvertiseImg = (SimpleDraweeView) findViewById(R.id.audio_advertise_img);
+//        String imgUrl = "res:///" + R.mipmap.img_text_bg;
+//        SetImageUriUtil.setImgURI(audioAdvertiseImg, imgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
+//        audioAdvertiseImg.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+//            @Override
+//            public void singleClick(View v) {
+//                JumpDetail.jumpMainTab(AudioActivity.this, true, true, 2);
+//            }
+//        });
         //购买前试听
         tryAudioText = (TextView) findViewById(R.id.try_audio_text);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.price_color));
