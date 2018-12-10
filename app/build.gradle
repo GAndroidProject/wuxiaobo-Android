@@ -34,7 +34,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0.6f" // 测试：1.0.0.***d   内灰：1.0.0f   吴晓波：1.0.0
+        versionName "1.0.8f" // 测试：1.0.0.***d   内灰：1.0.0f   吴晓波：1.0.0
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 //        ndk { abiFilters "armeabi","x86"}
         ndk {
@@ -48,8 +48,8 @@ android {
     buildTypes {
         debug {
             //启用代码混淆
-//            minifyEnabled true
-//            shrinkResources true//去掉不用资源
+            minifyEnabled true
+            shrinkResources true // 去掉不用资源
             //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug

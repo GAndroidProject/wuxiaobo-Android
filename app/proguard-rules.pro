@@ -164,6 +164,11 @@
 -dontwarn com.facebook.**
 #↑↑↑↑↑↑↑↑facebook↑↑↑↑↑↑↑↑
 
+# Fresco
+-keep class com.facebook.fresco.** {*;}
+-keep interface com.facebook.fresco.** {*;}
+-keep enum com.facebook.fresco.** {*;}
+
 #↓↓↓↓↓↓↓↓glide↓↓↓↓↓↓↓↓
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
