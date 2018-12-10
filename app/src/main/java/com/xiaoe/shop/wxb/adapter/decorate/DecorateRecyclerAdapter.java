@@ -114,7 +114,8 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return new KnowledgeGroupViewHolder(mContext, view);
             case DecorateEntityType.SHUFFLING_FIGURE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shuffling_figure, null);
-                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20), 0);
+                // 15 是减去阴影的 (15.5px=5px)
+                layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 15), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 15), 0);
                 view.setLayoutParams(layoutParams);
                 if (bannerArr == null) {
                     bannerArr = new SparseArray<>();

@@ -8,6 +8,7 @@ import android.view.View;
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.ShufflingItem;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.common.JumpDetail;
@@ -53,7 +54,7 @@ public class ShufflingFigureViewHolder extends BaseViewHolder {
                 .setBannerStyle(BannerConfig.CIRCLE_INDICATOR)
                 .setDelayTime(1500)
                 .start();
-        // banner.setBackground(mContext.getResources().getDrawable(R.mipmap.banner_shadow));
+        banner.setBackground(mContext.getResources().getDrawable(R.drawable.banner_shadow));
         banner.setOnBannerListener(position1 -> {
             ShufflingItem shufflingItem = shufflingList.get(position1);
             String resourceType = shufflingItem.getSrcType();
