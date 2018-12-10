@@ -482,11 +482,25 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 break;
             case DecorateEntityType.KNOWLEDGE_COMMODITY_STR: // 知识商品
                 if (itemObj.getInteger("list_style") == 0) { // 列表形式
+                    // 若数据有问题，默认不显示标题
                     ComponentInfo componentInfo_know_list = new ComponentInfo();
                     componentInfo_know_list.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
                     componentInfo_know_list.setSubType(DecorateEntityType.KNOWLEDGE_LIST_STR);
+                    int showTitle = itemObj.getInteger("show_title") == null ? 0 : itemObj.getInteger("show_title");
+                    boolean showCheckAll = itemObj.getBoolean("check_all") == null ? false : itemObj.getBoolean("check_all");
                     // 微页面列表形式的知识商品组件都隐藏 title
-                    componentInfo_know_list.setHideTitle(true);
+                    if (showTitle == 0) {
+                        componentInfo_know_list.setHideTitle(true);
+                    } else if (showTitle == 1) {
+                        componentInfo_know_list.setHideTitle(false);
+                        String title = itemObj.getString("title") == null ? getString(R.string.learn_manage_wealth) : itemObj.getString("type_title");
+                        componentInfo_know_list.setTitle(title);
+                        if (showCheckAll) {
+                            componentInfo_know_list.setDesc(getString(R.string.see_more));
+                        } else {
+                            componentInfo_know_list.setDesc("");
+                        }
+                    }
                     componentInfo_know_list.setGroupId(itemObj.getString("tag_id"));
                     List<KnowledgeCommodityItem> listItems = new ArrayList<>();
                     JSONArray knowledgeListSubList = (JSONArray) itemObj.get("list");
@@ -514,13 +528,20 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     ComponentInfo componentInfo_know_group = new ComponentInfo();
                     componentInfo_know_group.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
                     componentInfo_know_group.setSubType(DecorateEntityType.KNOWLEDGE_GROUP_STR);
-                    componentInfo_know_group.setTitle(itemObj.getString("title") == null ? getString(R.string.learn_manage_wealth) : itemObj.getString("title"));
                     componentInfo_know_group.setGroupId(itemObj.getString("tag_id"));
+                    int showTitle = itemObj.getInteger("show_title") == null ? 0 : itemObj.getInteger("show_title");
                     boolean showCheckAll = itemObj.getBoolean("check_all") == null ? false : itemObj.getBoolean("check_all");
-                    if (showCheckAll) {
-                        componentInfo_know_group.setDesc(getString(R.string.see_more));
-                    } else {
-                        componentInfo_know_group.setDesc("");
+                    if (showTitle == 0) {
+                        componentInfo_know_group.setHideTitle(true);
+                    } else if (showTitle == 1) {
+                        componentInfo_know_group.setHideTitle(false);
+                        String title = itemObj.getString("title") == null ? getString(R.string.learn_manage_wealth) : itemObj.getString("title");
+                        componentInfo_know_group.setTitle(title);
+                        if (showCheckAll) {
+                            componentInfo_know_group.setDesc(getString(R.string.see_more));
+                        } else {
+                            componentInfo_know_group.setDesc("");
+                        }
                     }
                     if (!networkDecorate) {
                         componentInfo_know_group.setNeedDecorate(true);
