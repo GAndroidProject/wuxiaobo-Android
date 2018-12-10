@@ -106,6 +106,10 @@ public class MineLearningWrapView extends LinearLayout {
         learningLoginDesc.setText(loginDesc);
     }
 
+    public String getLearningLoginDesc() {
+        return learningLoginDesc.getText().toString();
+    }
+
     public void setLearningLoginDescVisibility(int visibility) {
         learningLoginDesc.setVisibility(visibility);
     }

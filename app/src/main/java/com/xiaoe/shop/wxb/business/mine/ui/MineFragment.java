@@ -305,7 +305,9 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             itemInfoList = new ArrayList<>();
         }
         // 我正在学
-        mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
+        if (!mineLearningWrapView.getLearningLoginDesc().equals(getResources().getString(R.string.none_learning_course))) {
+            mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
+        }
     }
 
     private void initListener() {

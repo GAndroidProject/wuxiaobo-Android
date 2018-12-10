@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,6 +37,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.FileUtils;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CodeVerifyView;
 
 import butterknife.ButterKnife;
@@ -390,11 +392,13 @@ public class LoginPageFragment extends BaseFragment {
                     // 绑定手机
                     case LoginActivity.BIND_PHONE:
                         String accessToken = SharedPreferencesUtil.getData("accessToken", "").toString();
-                        if (accessToken != null && !accessToken.equals("")) {
+                        if (!TextUtils.isEmpty(accessToken)) {
                             loginActivity.loginPresenter.bindPhone(accessToken, phoneNum, content);
                             // 用完就清空
                             SharedPreferencesUtil.putData("accessToken", "");
                             toggleSoftKeyboard();
+                        } else {
+                            Log.d(TAG, "onComplete: 微信登录绑定手机异常...");
                         }
                         break;
                     // 确认注册验证码

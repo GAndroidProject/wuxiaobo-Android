@@ -30,7 +30,8 @@ public class JudgeUtil {
         } else {
             ((TextView)errorView).setText("手机号格式错误，请重新输入");
         }
-        if (head.length() == 2) {
+        // 检测第二位是否合法，暂时去掉
+        /*if (head.length() == 2) {
             if (head.equals("13") || head.equals("14") || head.equals("15")
                     || head.equals("17") || head.equals("18") || head.equals("19")){
                 top = Dp2Px2SpUtil.dp2px(context, 28);
@@ -43,7 +44,8 @@ public class JudgeUtil {
                 layoutParams.setMargins(0, top, 0, 0);
                 belowError.setLayoutParams(layoutParams);
             }
-        } else if (head.length() < 2) {
+        } else */
+        if (head.length() < 2) {
             if (head.length() == 1) {
                 if (head.equals("1")) {
                     top = Dp2Px2SpUtil.dp2px(context, 28);
