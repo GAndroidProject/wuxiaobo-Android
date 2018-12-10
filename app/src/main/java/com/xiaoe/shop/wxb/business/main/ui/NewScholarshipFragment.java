@@ -56,6 +56,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
@@ -238,12 +239,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
             JSONObject result = JSONObject.parseObject(rankingCacheData.get(0).getContent()).getJSONObject("data");
             initRange(result);
         }
-        if(stateCacheData != null && stateCacheData.size() > 0
-                && rankingCacheData != null && rankingCacheData.size() > 0){
-            showDataByDB = true;
-        }else{
-            showDataByDB = false;
-        }
+        showDataByDB = stateCacheData != null && stateCacheData.size() > 0 && rankingCacheData != null && rankingCacheData.size() > 0;
         //奖学金金额
         String sqlMoney = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
                 +"' and resource_id='"+taskId+"_money' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
@@ -533,7 +529,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
             isSuperVip = itemJson.getBoolean("is_supermember") == null ? false : itemJson.getBoolean("is_supermember");
             int money = itemJson.getInteger("all_money");
             String range = String.valueOf(i + 1);
-            String scholarship = String.format("%.2f%s",money / 100f,"元");
+            String scholarship = String.format(getString(R.string.format_yuan), money / 100f);
 
             scholarshipRangeItem.setItemRange(range);
             scholarshipRangeItem.setItemAvatar(wxAvatar);
@@ -568,7 +564,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
         switch (status) {
             case 1: // 已领取 -- 显示明日再来
                 ScholarshipEntity.getInstance().setTaskState(ScholarshipEntity.TASK_RECEIVED);
-                scholarshipNewDivide.setText("明日再来");
+                scholarshipNewDivide.setText(R.string.come_again_tomorrow);
                 scholarshipNewDivide.setAlpha(0.8f);
                 scholarshipNewDivide.setClickable(false);
                 // 三个步骤都执行完成
@@ -600,7 +596,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
         if (TextUtils.isEmpty(ScholarshipEntity.getInstance().getTaskTotalMoney())) {
             return "";
         } else {
-            return String.format("每天瓜分 %s%s%s 元现金", htmlTextStart, ScholarshipEntity.getInstance().getTaskTotalMoney(), htmlTextEnd);
+            return String.format(getString(R.string.scholarship_page_text), htmlTextStart, ScholarshipEntity.getInstance().getTaskTotalMoney(), htmlTextEnd);
         }
     }
 
@@ -618,7 +614,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
         TextView earnSubmit = (TextView) view.findViewById(R.id.scholarship_dialog_submit);
 
         if (hasEarnMoney) { // 拿到钱了
-            earnTitle.setText("恭喜你，获得奖学金");
+            earnTitle.setText(R.string.congratulations_winning_scholarship);
             earnWrap.setBackground(getActivity().getResources().getDrawable(R.mipmap.scholarship_popup_bg));
             earnContent.setText(amount);
             earnContentTail.setVisibility(View.VISIBLE);
@@ -632,7 +628,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
                 }
             });
         } else {
-            earnTitle.setText("差一点就瓜分到了");
+            earnTitle.setText(R.string.almost_got_it);
             earnContentTail.setVisibility(View.GONE);
             earnWrap.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
             earnSubmit.setText(getString(R.string.scholarship_earn_integral));
@@ -689,7 +685,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
         if (status == 3 && reward != null) { // 已经完成并拿到数据
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_ISSUED);
 
-            scholarshipNewDivide.setText("明日再来");
+            scholarshipNewDivide.setText(R.string.come_again_tomorrow);
             scholarshipNewDivide.setAlpha(0.8f);
             scholarshipNewDivide.setClickable(false);
             Glide.with(this).load(R.mipmap.progress_step_three).into(scholarshipNewProgress);
@@ -709,7 +705,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
             showEarnDialog();
         } else if (status == 2) { // 处理中
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_PROCESSING);
-            scholarshipNewDivide.setText("瓜分中...");
+            scholarshipNewDivide.setText(R.string.in_the_split);
 
             Glide.with(this).load(R.mipmap.progress_step_three).into(scholarshipNewProgress);
 
@@ -717,7 +713,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
             handler.postDelayed(runnable, 3000);
         } else if (status == 1) {
             ScholarshipEntity.getInstance().setIssueState(ScholarshipEntity.SCHOLARSHIP_FAIL);
-            Toast.makeText(getActivity(), "领取失败，请重试", Toast.LENGTH_SHORT).show();
+            ToastUtils.show(getContext(), getString(R.string.failed_to_collect));
             Glide.with(this).load(R.mipmap.progress_step_one).into(scholarshipNewProgress);
         }
     }

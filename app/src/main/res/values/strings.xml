@@ -468,4 +468,5 @@
     <string name="send_successfully">发送成功</string>
     <string name="send_to_cancel">发送取消</string>
     <string name="send_rejected">发送被拒绝</string>
+    <string name="scholarship_page_text">每天瓜分 %s%s%s 元现金</string>
 </resources>
