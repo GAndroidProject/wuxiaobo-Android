@@ -18,13 +18,6 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -44,6 +37,12 @@ import com.xiaoe.shop.wxb.business.search.ui.SearchActivity;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class NavigateDetailActivity extends XiaoeActivity {
 
@@ -338,13 +337,13 @@ public class NavigateDetailActivity extends XiaoeActivity {
             }
             String srcType = listSubItemObj.getString("src_type");
             String srcId = listSubItemObj.getString("src_id");
-            int viewCount = listSubItemObj.getInteger("view_count") == null ? 0 : listSubItemObj.getInteger("view_count");
-            int purchaseCount = listSubItemObj.getInteger("purchase_count") == null ? 0 : listSubItemObj.getInteger("purchase_count");
+            String viewCount = TextUtils.isEmpty(listSubItemObj.getString("view_count"))  ? "0" : listSubItemObj.getString("view_count");
+            String resourceCount = TextUtils.isEmpty(listSubItemObj.getString("resource_count"))  ? "0" : listSubItemObj.getString("resource_count");
             item.setSrcType(srcType);
             item.setResourceId(srcId);
-            // 专栏或者大专栏订阅量就是 purchaseCount
+            // 专栏或者大专栏订阅量就是 resourceCount
             if (srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.TOPIC)) {
-                viewCount = purchaseCount;
+                viewCount = resourceCount;
             }
             String viewDesc = obtainViewCountDesc(srcType, viewCount);
             item.setItemDesc(viewDesc);
@@ -353,18 +352,18 @@ public class NavigateDetailActivity extends XiaoeActivity {
     }
 
     // 根据子类型获取浏览字段
-    private String obtainViewCountDesc (String srcType, int viewCount) {
-        if (viewCount == 0) {
+    private String obtainViewCountDesc (String srcType, String viewCount) {
+        if (TextUtils.isEmpty(viewCount) || "0".equals(viewCount)) {
             return "";
         }
         switch (srcType) {
             case DecorateEntityType.IMAGE_TEXT: // 图文
             case DecorateEntityType.AUDIO: // 音频
             case DecorateEntityType.VIDEO: // 视频
-                return String.format(getString(R.string.learn_count), viewCount);
+                return String.format(getString(R.string.learn_count_str), viewCount);
             case DecorateEntityType.TOPIC: // 大专栏
             case DecorateEntityType.COLUMN: // 专栏
-                return String.format(getString(R.string.stages_text), viewCount);
+                return String.format(getString(R.string.stages_text_str), viewCount);
             default:
                 return "";
         }

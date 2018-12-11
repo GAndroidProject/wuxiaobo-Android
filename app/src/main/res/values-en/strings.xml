@@ -366,6 +366,7 @@
     <string name="second_reading">%d次阅读</string>
     <string name="time_play">%d次播放</string>
     <string name="stages_text">已更新%d期</string>
+    <string name="stages_text_str">已更新%s期</string>
     <string name="purchase_text">购买￥</string>
     <string name="not_double_click">请不要连续点击</string>
     <string name="cache_error_msg">缓存数据有误</string>
@@ -373,6 +374,7 @@
     <string name="self_service_title">服务协议</string>
     <string name="service_link">http://app-server.inside.xiaoeknow.com/web/agree</string>
     <string name="learn_count">%1$d次学习</string>
+    <string name="learn_count_str">%1$s次学习</string>
     <string name="we_chat_error_tip">微信版本异常，建议从正确去到下载微信</string>
     <string name="login_successfully">登录成功</string>
     <string name="tab_mine">我的</string>
