@@ -47,6 +47,8 @@ public class ComponentInfo {
     private int searchType;
     // 知识商品背景颜色（列表、宫格）
     private int knowledgeCompBg;
+    // 知识商品是否在微页面
+    private boolean isInMicro;
 
     public ComponentInfo() { }
 
@@ -208,6 +210,14 @@ public class ComponentInfo {
 
     public void setKnowledgeCompBg(int knowledgeCompBg) {
         this.knowledgeCompBg = knowledgeCompBg;
+    }
+
+    public boolean isInMicro() {
+        return isInMicro;
+    }
+
+    public void setInMicro(boolean inMicro) {
+        isInMicro = inMicro;
     }
 
     @Override

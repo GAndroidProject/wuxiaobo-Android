@@ -72,7 +72,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MicroPageFragment extends BaseFragment implements OnRefreshListener, OnCustomScrollChangedListener {
+public class MicroPageFragment extends BaseFragment implements OnRefreshListener {
 
     private static final String TAG = "MicroPageFragment";
 
@@ -90,8 +90,6 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     FrameLayout microPageWrap;
     @BindView(R.id.micro_page_fresh)
     SmartRefreshLayout microPageFresh;
-    @BindView(R.id.micro_scroller)
-    CustomScrollView microScrollView;
 
     @BindView(R.id.micro_page_title_bg)
     SimpleDraweeView microPageTitleBg;
@@ -131,6 +129,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     public static float maxAlpha;
     boolean obtainDataInCache = false; // 从缓存中获取数据
     SparseArray<Banner> bannerArr;
+    int totalScrollY = 0; // 垂直滑动总距离
 
     public float getAlpha() {
         return alpha;
@@ -497,6 +496,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                         componentInfo_know_list.setTitle(title);
                         if (showCheckAll) {
                             componentInfo_know_list.setDesc(getString(R.string.see_more));
+                            componentInfo_know_list.setInMicro(true); // 标识是在微页面中
                         } else {
                             componentInfo_know_list.setDesc("");
                         }
@@ -539,6 +539,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                         componentInfo_know_group.setTitle(title);
                         if (showCheckAll) {
                             componentInfo_know_group.setDesc(getString(R.string.see_more));
+                            componentInfo_know_group.setInMicro(true); // 标识是在微页面中
                         } else {
                             componentInfo_know_group.setDesc("");
                         }
@@ -586,7 +587,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             item.setItemTitleColumn(listSubItemObj.getString("summary"));
             item.setItemImg(listSubItemObj.getString("img_url"));
             String price = "￥" + listSubItemObj.getString("show_price");
-            if ("￥".equals(price) || "￥0.00".equals(price)) { // 表示买了，所以没有价格
+            if ("￥".equals(price) || "￥0.00".equals(price) || "￥null".equals(price)) { // 表示买了，所以没有价格
                 item.setItemPrice("");
                 item.setHasBuy(true);
             } else {
@@ -596,8 +597,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             String srcType = listSubItemObj.getString("src_type");
             String srcId = listSubItemObj.getString("src_id");
             // view_count -- 浏览次数 / resource_count -- 更新期数 / purchase_count -- 订阅数
-            int viewCount = listSubItemObj.getInteger("view_count") == null ? 0 : listSubItemObj.getInteger("view_count");
-            int resourceCount = listSubItemObj.getInteger("resource_count") == null ? 0 : listSubItemObj.getInteger("resource_count");
+            String viewCount = TextUtils.isEmpty(listSubItemObj.getString("view_count")) ? "" : listSubItemObj.getString("view_count");
+            String resourceCount = TextUtils.isEmpty(listSubItemObj.getString("resource_count")) ? "" : listSubItemObj.getString("resource_count");
             item.setSrcType(srcType);
             item.setResourceId(srcId);
             // 专栏或者大专栏订阅量就是 purchaseCount
@@ -611,19 +612,19 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     }
 
     // 根据子类型获取浏览字段
-    private String obtainViewCountDesc(String srcType, int viewCount) {
-        if (viewCount == 0) {
+    private String obtainViewCountDesc(String srcType, String viewCount) {
+        if (TextUtils.isEmpty(viewCount)) {
             return "";
         }
         switch (srcType) {
             case DecorateEntityType.IMAGE_TEXT: // 图文
             case DecorateEntityType.AUDIO: // 音频
             case DecorateEntityType.VIDEO: // 视频
-                return String.format(getString(R.string.learn_count), viewCount);
+                return String.format(getString(R.string.learn_count_str), viewCount);
             case DecorateEntityType.TOPIC: // 大专栏
             case DecorateEntityType.COLUMN: // 专栏
             case DecorateEntityType.MEMBER: // 会员
-                return String.format(getString(R.string.stages_text), viewCount);
+                return String.format(getString(R.string.stages_text_str), viewCount);
             default:
                 return "";
         }
@@ -725,7 +726,14 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         if (microPageList == null) {
             microPageList = new ArrayList<>();
         }
-        microScrollView.setScrollChanged(this);
+//        microScrollView.setScrollChanged(this);
+        microPageContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                newUpdateToolbar(dy);
+            }
+        });
         microPageFresh.setOnRefreshListener(this);
         microPageFresh.setEnableOverScrollBounce(false);
 //        if (!microPageId.equals("") && !microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
@@ -875,7 +883,43 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         }
     }
 
-    // 更新 toolbar
+    /**
+     * 监听 recyclerView 的滑动事件对 toolbar 进行显示与隐藏
+     * @param dy
+     */
+    private void newUpdateToolbar(int dy) {
+        if (!isMain) {
+            totalScrollY += dy;
+            Log.d(TAG, "newUpdateToolbar: totalScrollY -- " + totalScrollY);
+            alpha = (totalScrollY / (toolbarHeight * 1.0f)) * 255;
+            if (alpha > maxAlpha) {
+                if (microPageToolbarTitle.getVisibility() != View.VISIBLE) {
+                    microPageToolbarTitle.setVisibility(View.VISIBLE);
+                    mStatusBarBlank.setVisibility(View.VISIBLE);
+                    int color = Color.argb(255, 255, 255, 255);
+                    microPageToolbar.setBackgroundColor(color);
+                    if (hasSearch) {
+                        microPageToolbarSearch.setVisibility(View.VISIBLE);
+                    } else {
+                        microPageToolbarSearch.setVisibility(View.GONE);
+                    }
+                }
+            } else {
+                microPageToolbarTitle.setVisibility(View.GONE);
+                mStatusBarBlank.setVisibility(View.GONE);
+                microPageToolbarSearch.setVisibility(View.GONE);
+            }
+        } else {
+            mStatusBarBlank.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 更新 toolbar（监听 scrollerView 的滚动事件）
+     *
+     * @deprecated
+     * @param scrollY
+     */
     private void updateToolbar(int scrollY) {
         if (!isMain) {
             alpha = (scrollY / (toolbarHeight * 1.0f)) * 255;
@@ -922,15 +966,5 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         networkDecorate = false;
         microPageAdapter = null;
         hp.requestMicroPageData(microPageId);
-    }
-
-    @Override
-    public void onScrollChanged(int l, int t, int oldl, int oldt) {
-        updateToolbar(t);
-    }
-
-    @Override
-    public void onLoadState(int state) {
-
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.AudioPlayEntity;
@@ -24,6 +25,7 @@ import com.xiaoe.shop.wxb.business.comment.ui.CommentActivity;
 import com.xiaoe.shop.wxb.business.coupon.ui.CouponActivity;
 import com.xiaoe.shop.wxb.business.coupon.ui.CouponDetailActivity;
 import com.xiaoe.shop.wxb.business.course.ui.CourseImageTextActivity;
+import com.xiaoe.shop.wxb.business.course_more.ui.CourseMoreActivity;
 import com.xiaoe.shop.wxb.business.download.ui.OffLineCacheActivity;
 import com.xiaoe.shop.wxb.business.earning.ui.IntegralNewActivity;
 import com.xiaoe.shop.wxb.business.earning.ui.ScholarshipActivity;
@@ -32,6 +34,7 @@ import com.xiaoe.shop.wxb.business.earning.ui.WithdrawalRecordActivity;
 import com.xiaoe.shop.wxb.business.earning.ui.WithdrawalResultActivity;
 import com.xiaoe.shop.wxb.business.historymessage.ui.HistoryMessageActivity;
 import com.xiaoe.shop.wxb.business.login.ui.LoginActivity;
+import com.xiaoe.shop.wxb.business.login.ui.LoginSplashActivity;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
 import com.xiaoe.shop.wxb.business.navigate_detail.ui.NavigateDetailActivity;
@@ -195,6 +198,15 @@ public class JumpDetail {
      */
     public static void jumpLogin(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到新的登录页面
+     * @param context
+     */
+    public static void jumpLoginSplash(Context context) {
+        Intent intent = new Intent(context, LoginSplashActivity.class);
         context.startActivity(intent);
     }
 
@@ -428,6 +440,19 @@ public class JumpDetail {
 
         intent.putExtra("keyword", keyword);
         intent.putExtra("resourceType", resourceType);
+
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到更多课程页面
+     * @param context   上下文
+     * @param groupId   分组 id
+     */
+    public static void jumpCourseMore(Context context, String groupId) {
+        Intent intent = new Intent(context, CourseMoreActivity.class);
+
+        intent.putExtra("groupId", groupId);
 
         context.startActivity(intent);
     }

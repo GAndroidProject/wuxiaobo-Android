@@ -24,43 +24,30 @@
             <!--android:visibility="gone"-->
             <!--android:layout_height="400dp" />-->
 
-        <com.xiaoe.shop.wxb.widget.CustomScrollView
-            android:id="@+id/micro_scroller"
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/micro_page_title_bg"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="250dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/micro_page_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="false"
             android:overScrollMode="never"
-            android:scrollbars="none">
+            android:scrollbars="none" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/micro_page_title_bg"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/micro_page_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never"
-                    android:scrollbars="none" />
-
-                <!--<ImageView-->
-                    <!--android:id="@+id/micro_page_logo"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:src="@mipmap/logo_logo_xiaoetong"-->
-                    <!--android:contentDescription="@string/xet_logo"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:layout_marginTop="24dp"-->
-                    <!--android:layout_alignParentBottom="true"-->
-                    <!--android:layout_centerHorizontal="true"-->
-                    <!--android:layout_below="@id/micro_page_content"/>-->
-            </RelativeLayout>
-        </com.xiaoe.shop.wxb.widget.CustomScrollView>
+        <!--<ImageView-->
+            <!--android:id="@+id/micro_page_logo"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@mipmap/logo_logo_xiaoetong"-->
+            <!--android:contentDescription="@string/xet_logo"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginTop="24dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_below="@id/micro_page_content"/>-->
 
         <LinearLayout
             android:layout_width="match_parent"

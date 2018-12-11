@@ -1,7 +1,9 @@
 package com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +18,14 @@ import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.utils.MeasureUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.business.course_more.ui.CourseMoreActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 
 // RecyclerView 的 ViewHolder
 public class KnowledgeListViewHolder extends BaseViewHolder {
+
+    private static final String TAG = "KnowledgeListViewHolder";
 
     Context mContext;
 
@@ -69,7 +74,17 @@ public class KnowledgeListViewHolder extends BaseViewHolder {
                 knowledgeListMore.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                     @Override
                     public void singleClick(View v) {
-                        JumpDetail.jumpSearchMore(mContext, currentBindComponent.getJoinedDesc(), currentBindComponent.getSearchType());
+                        if (currentBindComponent.isInMicro()) {
+                            // 跳转到更多课程的页面
+                            String groupId = currentBindComponent.getGroupId();
+                            if (TextUtils.isEmpty(groupId)) {
+                                Log.d(TAG, "singleClick: 没有 groupId");
+                                return;
+                            }
+                            JumpDetail.jumpCourseMore(mContext, groupId);
+                        } else { // 默认跳转到搜索更多页面
+                            JumpDetail.jumpSearchMore(mContext, currentBindComponent.getJoinedDesc(), currentBindComponent.getSearchType());
+                        }
                     }
                 });
             }

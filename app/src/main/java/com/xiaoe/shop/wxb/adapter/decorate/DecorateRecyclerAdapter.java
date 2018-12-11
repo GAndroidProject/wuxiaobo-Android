@@ -93,7 +93,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 return new RecentUpdateViewHolder(mContext, view);
             case DecorateEntityType.KNOWLEDGE_LIST:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_list, null);
-                // layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 10), 0, 0);
+//                 layoutParams.setMargins(0, Dp2Px2SpUtil.dp2px(mContext, 10), 0, 0);
                 view.setPadding(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 16), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 16));
                 view.setLayoutParams(layoutParams);
                 if (knowledgeListAdapterArr == null) {

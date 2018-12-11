@@ -70,15 +70,18 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
             groupMore.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
                 public void singleClick(View v) {
-                    // 跳转到更多课程的页面
-                    String groupId = currentBindComponent.getGroupId();
-                    if (TextUtils.isEmpty(groupId)) {
-                        Log.d(TAG, "singleClick: 没有 groupId");
-                        return;
+                    if (currentBindComponent.isInMicro()) {
+                        // 跳转到更多课程的页面
+                        String groupId = currentBindComponent.getGroupId();
+                        if (TextUtils.isEmpty(groupId)) {
+                            Log.d(TAG, "singleClick: 没有 groupId");
+                            return;
+                        }
+                        JumpDetail.jumpCourseMore(mContext, groupId);
+                    } else {
+                        // do nothing
+                        Log.d(TAG, "singleClick: 扩展位置");
                     }
-                    Intent intent = new Intent(mContext, CourseMoreActivity.class);
-                    intent.putExtra("groupId", groupId);
-                    mContext.startActivity(intent);
                 }
             });
         }
