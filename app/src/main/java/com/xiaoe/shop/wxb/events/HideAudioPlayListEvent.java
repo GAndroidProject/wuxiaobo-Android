@@ -1,13 +1,13 @@
 package com.xiaoe.shop.wxb.events;
 
-public class HideVideoPlayListEvent {
+public class HideAudioPlayListEvent {
     private boolean isHide;
 
     public boolean isHide() {
         return isHide;
     }
 
-    public HideVideoPlayListEvent(boolean isHide){
+    public HideAudioPlayListEvent(boolean isHide){
         this.isHide = isHide;
     }
 }

@@ -16,6 +16,7 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.business.audio.ui.AudioActivity;
+import com.xiaoe.shop.wxb.business.audio.ui.AudioNewActivity;
 import com.xiaoe.shop.wxb.business.bought_list.ui.BoughtListActivity;
 import com.xiaoe.shop.wxb.business.cdkey.ui.CdKeyActivity;
 import com.xiaoe.shop.wxb.business.column.ui.ColumnActivity;
@@ -90,7 +91,7 @@ public class JumpDetail {
             AudioPresenter audioPresenter = new AudioPresenter(null);
             audioPresenter.requestDetail(resId);
         }
-        Intent intent = new Intent(context, AudioActivity.class);
+        Intent intent = new Intent(context, AudioNewActivity.class);
         context.startActivity(intent);
         if (context instanceof Activity)
             ((Activity)context).overridePendingTransition(R.anim.slide_bottom_in,R.anim.slide_top_out);

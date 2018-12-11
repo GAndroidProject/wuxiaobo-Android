@@ -69,7 +69,7 @@ public class AudioPlayUtil {
      * @return
      */
     public boolean isSingleAudio() {
-        return singleAudio;
+        return  1 == AudioPlayUtil.getInstance().getAudioList().size();
     }
 
     /**

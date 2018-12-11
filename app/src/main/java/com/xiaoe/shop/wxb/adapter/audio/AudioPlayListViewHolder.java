@@ -10,7 +10,7 @@ import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
-import com.xiaoe.shop.wxb.events.HideVideoPlayListEvent;
+import com.xiaoe.shop.wxb.events.HideAudioPlayListEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -43,7 +43,7 @@ public class AudioPlayListViewHolder extends BaseViewHolder {
                 //点击的item和现在播放的资源不相同才播放，如果相同则放弃点击事件
                 if(!resourceId.equals(AudioMediaPlayer.getAudio().getResourceId())){
                     AudioMediaPlayer.playAppoint(position);
-                    EventBus.getDefault().post(new HideVideoPlayListEvent(true));
+                    EventBus.getDefault().post(new HideAudioPlayListEvent(true));
                 }
             }
         });

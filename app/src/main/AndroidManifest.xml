@@ -76,6 +76,13 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
         <activity
+            android:name=".business.audio.ui.AudioNewActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated="false"
+            android:launchMode="singleTop"/>
+        <activity
             android:name=".business.video.ui.VideoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
             android:screenOrientation="portrait"

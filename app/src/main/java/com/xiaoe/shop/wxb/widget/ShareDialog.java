@@ -55,6 +55,7 @@ public class ShareDialog implements View.OnClickListener {
         if (window == null) {
             return;
         }
+        window.setWindowAnimations(R.style.ActionSheetDialogAnimation);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setGravity(Gravity.BOTTOM);

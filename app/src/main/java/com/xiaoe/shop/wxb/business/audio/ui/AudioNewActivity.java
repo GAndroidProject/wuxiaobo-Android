@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.net.Uri;
@@ -11,11 +12,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,13 +27,10 @@ import android.view.animation.LinearInterpolator;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.alibaba.fastjson.JSONObject;
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.view.DraweeTransition;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
@@ -65,41 +66,34 @@ import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickMoreMenuListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
-import com.xiaoe.shop.wxb.widget.ContentMenuLayout;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
-import com.xiaoe.shop.wxb.widget.SpeedMenuLayout;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
 import java.math.BigDecimal;
 import java.util.List;
 
-public class AudioActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener {
+@RequiresApi(api = Build.VERSION_CODES.M)
+public class AudioNewActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener, View.OnScrollChangeListener {
     private static final String TAG = "AudioActivity";
     private SimpleDraweeView audioBG;
     private SimpleDraweeView audioRing;
     private ViewAnim mViewAnim;
 
-
-    private RelativeLayout btnPageClose;
+    private ImageView btnPageClose;
     private TextView audioTitle;
     private TextView playNum;
     private TextView btnSpeedPlay;
     private AudioPlayControllerView audioPlayController;
     private ObjectAnimator diskRotate;
-    private AudioHoverControllerLayout audioHoverPlayController;
-    private ContentMenuLayout contentMenuLayout;
-    private SpeedMenuLayout mSpeedMenuLayout;
     private WebView detailContent;
     private CommonBuyView commonBuyView;
     private StatusPagerView statusPagerView;
-    private AudioDetailsSwitchLayout pagerContentDetailLayout;
-    private AudioPlayListLayout audioPlayList;
+    private AudioPlayListDialog audioPlayList;
     private ImageView btnCollect;
     private boolean hasCollect = false;//是否收藏
     private CollectionUtils collectionUtils;
@@ -116,19 +110,26 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     private Runnable runnable;
     Dialog dialog;
     private boolean mIsDownload = false;
-//    private SimpleDraweeView audioAdvertiseImg;
+    private ScrollView audioScrollView;
+
+    private int toolBarHeight;
+    private View audioTitleBar;
+    private TextView barTitle;
+    private TextView mStatusBarBlank;
+    private Dialog mPlaySpeedDialog;
+    private View mPlaySpeedDialogView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setSharedElementEnterTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
-            getWindow().setSharedElementReturnTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.CENTER_CROP));
+//            getWindow().setSharedElementEnterTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
+//            getWindow().setSharedElementReturnTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.CENTER_CROP));
         }
         EventBus.getDefault().register(this);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         setStatusBar();
-        setContentView(R.layout.activity_audio);
+        setContentView(R.layout.activity_audio_new);
         loginUserList = getLoginUserList();
 
         if (loginUserList.size() == 0) {
@@ -143,7 +144,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 @Override
                 public void onClick(View v) {
                     touristDialog.dismissDialog();
-                    JumpDetail.jumpLogin(AudioActivity.this);
+                    JumpDetail.jumpLogin(AudioNewActivity.this);
                 }
             });
         }
@@ -175,7 +176,14 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void initViews() {
-        pagerContentDetailLayout = (AudioDetailsSwitchLayout) findViewById(R.id.pager_content_detail);
+
+        audioScrollView = (ScrollView) findViewById(R.id.audio_scroll_view);
+        audioScrollView.setOnScrollChangeListener(this);
+//        audioScrollView.setLoadHeight(Dp2Px2SpUtil.dp2px(this, 40));
+
+        mStatusBarBlank = (TextView) findViewById(R.id.status_bar_blank);
+        audioTitleBar = findViewById(R.id.audio_title_bar);
+        barTitle = (TextView) findViewById(R.id.title);
 
         mViewAnim = new ViewAnim();
         audioBG = (SimpleDraweeView) findViewById(R.id.audio_bg);
@@ -184,7 +192,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 //        audioRing.setImageURI("res:///"+R.mipmap.detail_disk);
 
         //页面关闭按钮
-        btnPageClose = (RelativeLayout) findViewById(R.id.audio_page_close_btn);
+        btnPageClose = (ImageView) findViewById(R.id.audio_page_close_btn);
         btnPageClose.setOnClickListener(this);
         //标题
         audioTitle = (TextView) findViewById(R.id.audio_title);
@@ -197,19 +205,9 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         updateSpeedPlayButtonView(AudioMediaPlayer.mPlaySpeed);
         //音频播放控制器
         audioPlayController = (AudioPlayControllerView) findViewById(R.id.audio_play_controller);
-        //悬浮播放控制器
-        audioHoverPlayController = (AudioHoverControllerLayout) findViewById(R.id.audio_hover_controller);
-        audioHoverPlayController.setOnMenuListener(this);
-        //菜单栏
-        contentMenuLayout = (ContentMenuLayout) findViewById(R.id.content_menu_layout);
-        contentMenuLayout.setButtonClickListener(this);
-        //播放倍数菜单
-        mSpeedMenuLayout = (SpeedMenuLayout) findViewById(R.id.speed_menu_layout);
-        mSpeedMenuLayout.setButtonClickListener(this);
 
         //播放列表
-        audioPlayList = (AudioPlayListLayout) findViewById(R.id.audio_play_list);
-        audioPlayList.setVisibility(View.GONE);
+        audioPlayList = new AudioPlayListDialog(this);
         //播放列表按钮
         ImageView btnPlayList = (ImageView) findViewById(R.id.btn_play_list);
         btnPlayList.setOnClickListener(this);
@@ -243,16 +241,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         btnAudioDownload = (ImageView) findViewById(R.id.btn_audio_download);
         btnAudioDownload.setOnClickListener(this);
 
-        // 广告位
-//        audioAdvertiseImg = (SimpleDraweeView) findViewById(R.id.audio_advertise_img);
-//        String imgUrl = "res:///" + R.mipmap.img_text_bg;
-//        SetImageUriUtil.setImgURI(audioAdvertiseImg, imgUrl, Dp2Px2SpUtil.dp2px(this, 375), Dp2Px2SpUtil.dp2px(this, 100));
-//        audioAdvertiseImg.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-//            @Override
-//            public void singleClick(View v) {
-//                JumpDetail.jumpMainTab(AudioActivity.this, true, true, 2);
-//            }
-//        });
         //购买前试听
         tryAudioText = (TextView) findViewById(R.id.try_audio_text);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.price_color));
@@ -411,27 +399,21 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
      */
     public boolean setPagerState(int state){
         if(state == 1){
-            pagerContentDetailLayout.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), StatusPagerView.DETAIL_NONE);
             return false;
         }else if(state == 2){
-            pagerContentDetailLayout.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sold_out), R.mipmap.course_off);
             return false;
         }else if(state == 3){
-            pagerContentDetailLayout.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_sale_stop), R.mipmap.course_off);
             return false;
         }else if(state == 4){
-            pagerContentDetailLayout.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_stay_putaway), R.mipmap.course_off);
             return false;
         }else if(state == 3004){
-            pagerContentDetailLayout.setVisibility(View.GONE);
             statusPagerView.setPagerState(StatusPagerView.SOLD, getString(R.string.resource_delete), R.mipmap.course_off);
             return false;
         }else{
-            pagerContentDetailLayout.setVisibility(View.VISIBLE);
             statusPagerView.setVisibility(View.GONE);
             statusPagerView.setLoadingState(View.GONE);
             statusPagerView.setHintStateVisibility(View.GONE);
@@ -451,11 +433,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                 JumpDetail.jumpComment(this,playEntity.getResourceId(), 2, audioTitle.getText().toString());
                 break;
             case R.id.btn_play_list:
-                if(audioPlayList.getVisibility() == View.VISIBLE){
-                    audioPlayList.setVisibility(View.GONE);
-                }else{
-                    audioPlayList.setVisibility(View.VISIBLE);
-                }
+                if (audioPlayList != null)
+                    audioPlayList.showDialog();
                 break;
             case R.id.buy_course:
                 if (loginUserList.size() == 1) {
@@ -496,8 +475,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
                             toastCustom(getString(R.string.speed_play_not_support));
                             return;
                         }
-                        if (View.VISIBLE != mSpeedMenuLayout.getVisibility())
-                            mSpeedMenuLayout.setVisibility(View.VISIBLE);
+                        showPlaySpeedDialog();
                     } else {
                         toastCustom(getString(R.string.speed_play_not_support));
                     }
@@ -530,6 +508,36 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }
     }
 
+    private void showPlaySpeedDialog() {
+        if (mPlaySpeedDialog == null){
+            AlertDialog.Builder playSpeedBuilder = new AlertDialog.Builder(this);
+
+            mPlaySpeedDialog = playSpeedBuilder.create();
+            mPlaySpeedDialogView = LayoutInflater.from(this).inflate(R.layout.layout_speed_menu2, null, false);
+            mPlaySpeedDialogView.findViewById(R.id.btn_speed_1).setOnClickListener(AudioNewActivity.this);
+            mPlaySpeedDialogView.findViewById(R.id.btn_speed_2).setOnClickListener(AudioNewActivity.this);
+            mPlaySpeedDialogView.findViewById(R.id.btn_speed_3).setOnClickListener(AudioNewActivity.this);
+            mPlaySpeedDialogView.findViewById(R.id.btn_speed_4).setOnClickListener(AudioNewActivity.this);
+            mPlaySpeedDialogView.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickEvent() {
+                @Override
+                public void singleClick(View v) {
+                    if (mPlaySpeedDialog != null && mPlaySpeedDialog.isShowing())
+                        mPlaySpeedDialog.dismiss();
+                }
+            });
+        }
+        mPlaySpeedDialog.show();
+        Window window = mPlaySpeedDialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        window.setWindowAnimations(R.style.ActionSheetDialogAnimation);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.getDecorView().setPadding(0, 0, 0, 0);
+        window.setGravity(Gravity.BOTTOM);
+        mPlaySpeedDialog.setContentView(mPlaySpeedDialogView);
+    }
+
     private void clickDownload() {
         if(mIsDownload){
             //如果已经下载了，则不做任何操作
@@ -556,8 +564,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     }
 
     private void changePlaySpeed(float speed) {
-        if (View.VISIBLE == mSpeedMenuLayout.getVisibility())
-            mSpeedMenuLayout.setVisibility(View.GONE);
+        if (mPlaySpeedDialog != null && mPlaySpeedDialog.isShowing())
+            mPlaySpeedDialog.dismiss();
         boolean isChange = AudioMediaPlayer.changePlayerSpeed(speed);
         if (!isChange) {
             Toast(getString(R.string.speed_play_fail));
@@ -613,11 +621,12 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
     @Subscribe
     public void onEventMainThread(HideAudioPlayListEvent event){
-        if (event != null && event.isHide() && audioPlayList.getVisibility() == View.VISIBLE){
-            audioPlayList.postDelayed(new Runnable() {
+        if (event != null && event.isHide() && audioPlayList != null){
+            statusPagerView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    findViewById(R.id.btn_play_list).performClick();
+                    audioPlayList.dismissDialog();
+//                    findViewById(R.id.btn_play_list).performClick();
                 }
             },50);
         }
@@ -632,19 +641,16 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             case AudioPlayEvent.PLAY:
                 audioPlayController.setPlayButtonEnabled(true);
                 audioPlayController.setPlayState(true);
-                audioHoverPlayController.setPlayState(true);
                 audioPlayController.setTotalDuration(AudioMediaPlayer.getDuration());
                 setDiskRotateAnimator(true);
                 break;
             case AudioPlayEvent.PAUSE:
                 audioPlayController.setPlayButtonEnabled(true);
                 audioPlayController.setPlayState(false);
-                audioHoverPlayController.setPlayState(false);
                 setDiskRotateAnimator(false);
                 break;
             case AudioPlayEvent.STOP:
                 audioPlayController.setPlayState(false);
-                audioHoverPlayController.setPlayState(false);
                 setDiskRotateAnimator(false);
                 break;
             case AudioPlayEvent.PROGRESS:
@@ -703,13 +709,11 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     @Override
     public void onClickMoreMenu(View view) {
         if(view.getId() == R.id.hover_audio_more){
-            contentMenuLayout.setVisibility(View.VISIBLE);
         }
     }
 
     private void setButtonEnabled(boolean enabled){
         audioPlayController.setButtonEnabled(enabled);
-        audioHoverPlayController.setButtonEnabled(enabled);
     }
 
     private void refreshPager(){
@@ -726,7 +730,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         int code = playEntity.getCode();
 
         if(!playEntity.isSingleBuy() && code == 0){
-            JumpDetail.jumpColumn(this, playEntity.getProductId(), playEntity.getProductImgUrl(), playEntity.getProductType());
+            JumpDetail.jumpColumn(this, playEntity.getProductId(), playEntity.getProductImgUrl(),
+                    playEntity.getProductType());
             finish();
             return;
         }
@@ -760,6 +765,8 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             tryAudioText.setVisibility(View.GONE);
             setButtonEnabled(true);
         }
+        int top = View.VISIBLE == commonBuyView.getVisibility() ? 45 : 15;
+        detailContent.setPadding(0,0,0,Dp2Px2SpUtil.dp2px(this,top));
         if(code == 0){
             getDialog().dismissDialog();
             setContentDetail(playEntity.getContent());
@@ -771,6 +778,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             AudioMediaPlayer.setAudio(playEntity, true);
         }
         audioTitle.setText(playEntity.getTitle());
+        barTitle.setText(playEntity.getTitle());
         int count = playEntity.getPlayCount();
         if(count > 0){
             playNum.setVisibility(View.VISIBLE);
@@ -785,7 +793,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             }else{
                 audioRing.setImageURI(Uri.parse(imageUrl));
             }
-            audioHoverPlayController.setAudioImage(imageUrl);
         }
 
         audioPlayList.setProductsTitle(playEntity.getProductsTitle());
@@ -800,7 +807,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }else{
             btnAudioDownload.setImageResource(R.mipmap.audio_download);
         }
-        contentMenuLayout.setDownloadState(download);
         mIsDownload = download;
     }
     /**
@@ -814,7 +820,6 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }else{
             btnCollect.setImageResource(R.mipmap.video_collect);
         }
-        contentMenuLayout.setCollectState(collect);
     }
 
     private void showEarnDialog() {
@@ -839,7 +844,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             earnSubmit.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
                 public void singleClick(View v) {
-                    JumpDetail.jumpScholarshipActivity(AudioActivity.this);
+                    JumpDetail.jumpScholarshipActivity(AudioNewActivity.this);
                     dialog.dismiss();
                 }
             });
@@ -860,7 +865,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             earnSubmit.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
                 public void singleClick(View v) {
-                    JumpDetail.jumpIntegralActivity(AudioActivity.this);
+                    JumpDetail.jumpIntegralActivity(AudioNewActivity.this);
                     dialog.dismiss();
                 }
             });
@@ -889,5 +894,26 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         if(tag == CustomDialog.PAGER_LOAD_TAG && backKey){
             finish();
         }
+    }
+
+    @Override
+    public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        int[] location = new int[2];
+        audioTitle.getLocationOnScreen(location);
+        int y = location[1];
+        if (toolBarHeight < 1)
+            toolBarHeight = y;
+        float alpha = (1 - y /(toolBarHeight * 1.0f)) * 255;
+        if(alpha > 200){
+            alpha = 255;
+        }else if(alpha < 0){
+            alpha = 0;
+        }
+        int backgroundColor = Color.argb((int) alpha,255,255,255);
+        mStatusBarBlank.setBackgroundColor(backgroundColor);
+        mStatusBarBlank.setHeight(StatusBarUtil.getStatusBarHeight(mContext));
+        barTitle.setVisibility(alpha > 30 ? View.VISIBLE : View.GONE);
+        audioTitleBar.setBackgroundColor(backgroundColor);
+        barTitle.setTextColor(Color.argb((int) alpha,0,0,0));
     }
 }
