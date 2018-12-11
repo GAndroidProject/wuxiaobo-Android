@@ -44,6 +44,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
+import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
@@ -494,8 +495,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         String title = data.getString("title");
         // 订阅量
         int purchaseCount = data.getInteger("view_count") == null ? 0 : data.getInteger("view_count");
-        if (purchaseCount > 0 && purchaseCount < 10000) {
-            String purchaseStr = String.format(getString(R.string.learn_count), purchaseCount);
+        if (purchaseCount > 0 ) {
+
+            String purchaseStr = String.format(getString(R.string.learn_count_str), NumberFormat.viewCountToString(purchaseCount));
             itDesc.setText(purchaseStr);
         } else {
             // 如果没有阅读量的话就将文本设置为空，并且将前面的点页隐藏
