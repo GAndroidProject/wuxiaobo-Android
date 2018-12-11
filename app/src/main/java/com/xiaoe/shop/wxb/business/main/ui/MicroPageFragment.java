@@ -890,7 +890,6 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     private void newUpdateToolbar(int dy) {
         if (!isMain) {
             totalScrollY += dy;
-            Log.d(TAG, "newUpdateToolbar: totalScrollY -- " + totalScrollY);
             alpha = (totalScrollY / (toolbarHeight * 1.0f)) * 255;
             if (alpha > maxAlpha) {
                 if (microPageToolbarTitle.getVisibility() != View.VISIBLE) {
