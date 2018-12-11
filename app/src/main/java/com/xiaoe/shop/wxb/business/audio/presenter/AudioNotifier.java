@@ -84,7 +84,9 @@ public class AudioNotifier {
     }
 
     public void cancelAll() {
-        notificationManager.cancelAll();
+        if (notificationManager != null) {
+            notificationManager.cancelAll();
+        }
     }
 
     private Notification buildNotification(Context context, AudioPlayEntity music, boolean isPlaying,Bitmap bitmap) {
