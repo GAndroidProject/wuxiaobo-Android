@@ -64,12 +64,14 @@ import com.xiaoe.shop.wxb.events.HideAudioPlayListEvent;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickMoreMenuListener;
+import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
+import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 import org.greenrobot.eventbus.EventBus;
@@ -77,8 +79,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.math.BigDecimal;
 import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.M)
-public class AudioNewActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener, View.OnScrollChangeListener {
+public class AudioNewActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener,
+        OnCustomScrollChangedListener {
     private static final String TAG = "AudioActivity";
     private SimpleDraweeView audioBG;
     private SimpleDraweeView audioRing;
@@ -110,7 +112,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     private Runnable runnable;
     Dialog dialog;
     private boolean mIsDownload = false;
-    private ScrollView audioScrollView;
+    private CustomScrollView audioScrollView;
 
     private int toolBarHeight;
     private View audioTitleBar;
@@ -177,8 +179,8 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
 
     private void initViews() {
 
-        audioScrollView = (ScrollView) findViewById(R.id.audio_scroll_view);
-        audioScrollView.setOnScrollChangeListener(this);
+        audioScrollView = (CustomScrollView) findViewById(R.id.audio_scroll_view);
+        audioScrollView.setScrollChanged(this);
 //        audioScrollView.setLoadHeight(Dp2Px2SpUtil.dp2px(this, 40));
 
         mStatusBarBlank = (TextView) findViewById(R.id.status_bar_blank);
@@ -897,7 +899,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     }
 
     @Override
-    public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+    public void onScrollChanged(int l, int t, int oldl, int oldt) {
         int[] location = new int[2];
         audioTitle.getLocationOnScreen(location);
         int y = location[1];
@@ -915,5 +917,10 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         barTitle.setVisibility(alpha > 30 ? View.VISIBLE : View.GONE);
         audioTitleBar.setBackgroundColor(backgroundColor);
         barTitle.setTextColor(Color.argb((int) alpha,0,0,0));
+    }
+
+    @Override
+    public void onLoadState(int state) {
+
     }
 }
