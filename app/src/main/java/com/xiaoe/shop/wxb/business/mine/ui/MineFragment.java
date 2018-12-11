@@ -573,7 +573,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         mineLearningId = listItem.getString("resource_id");
         mineLearningType = convertInt2Str(listItem.getInteger("resource_type"));
         JSONObject item = (JSONObject) listItem.get("info");
-        mineLearningWrapView.setLearningIconURI(item.getString("img_url"));
+        mineLearningWrapView.setLearningIconURI(item.getString("img_url"),mineLearningType);
         mineLearningWrapView.setLearningTitle(item.getString("title"));
         int updateCount = item.getInteger("periodical_count") == null ? 0 : item.getInteger("periodical_count");
         if (updateCount > 0) {
@@ -893,7 +893,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             mineLearningId = listItem.getString("resource_id");
             mineLearningType = convertInt2Str(listItem.getInteger("resource_type"));
             JSONObject item = (JSONObject) listItem.get("info");
-            mineLearningWrapView.setLearningIconURI(item.getString("img_url"));
+            mineLearningWrapView.setLearningIconURI(item.getString("img_url"),mineLearningType);
             mineLearningWrapView.setLearningTitle(item.getString("title"));
             int updateCount = item.getInteger("periodical_count") == null ? 0 : item.getInteger("periodical_count");
             if (updateCount > 0) {

@@ -1,7 +1,9 @@
 package com.xiaoe.shop.wxb.business.mine.ui;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.MeasureUtil;
 import com.xiaoe.shop.wxb.R;
@@ -37,6 +40,9 @@ public class MineLearningWrapView extends LinearLayout {
     private TextView learningLoginDesc;
     // 我正在学列表
     private ListView learningList;
+    private SimpleDraweeView learningItemAudioIcon;
+    private SimpleDraweeView learningItemAudioBgIcon;
+    private View learningItemAudio;
 
     public MineLearningWrapView(Context context) {
         super(context);
@@ -68,6 +74,10 @@ public class MineLearningWrapView extends LinearLayout {
         learningContainer = (RelativeLayout) view.findViewById(R.id.learning_item_container);
         learningLoginDesc = (TextView) view.findViewById(R.id.learning_login_desc);
         learningList = (ListView) view.findViewById(R.id.learning_list);
+
+        learningItemAudio = view.findViewById(R.id.learning_item_audio_item);
+        learningItemAudioIcon = (SimpleDraweeView)view.findViewById(R.id.learning_item_audio_icon);
+        learningItemAudioBgIcon = (SimpleDraweeView)view.findViewById(R.id.learning_item_audio_icon_bg);
     }
 
     public void setLearningMoreVisibility(int visibility) {
@@ -78,8 +88,24 @@ public class MineLearningWrapView extends LinearLayout {
         learningMore.setOnClickListener(listener);
     }
 
-    public void setLearningIconURI(String url) {
-        SetImageUriUtil.setImgURI(learningIcon, url, Dp2Px2SpUtil.dp2px(mContext, 160), Dp2Px2SpUtil.dp2px(mContext, 120));
+    public void setLearningIconURI(String urlString,String type) {
+        boolean isAudio = DecorateEntityType.AUDIO.equals(type);
+        learningIcon.setVisibility(isAudio ? INVISIBLE : VISIBLE);
+        learningItemAudio.setVisibility(isAudio ? VISIBLE : GONE);
+        if (isAudio){
+            SetImageUriUtil.setImgURI(learningItemAudioBgIcon, "res:///" +  R.mipmap.audio_list_bg ,
+                    Dp2Px2SpUtil.dp2px(mContext, 160),Dp2Px2SpUtil.dp2px(mContext, 120));
+            String url = TextUtils.isEmpty(urlString) ? "res:///" + R.mipmap.audio_ring : urlString;
+            int imageWidthDp = 84;
+            if (url.contains("res:///") || !SetImageUriUtil.isGif(url)) {// 本地图片
+                SetImageUriUtil.setImgURI(learningItemAudioIcon, url, Dp2Px2SpUtil.dp2px(mContext, imageWidthDp),
+                        Dp2Px2SpUtil.dp2px(mContext, imageWidthDp));
+            } else {// 网络图片
+                SetImageUriUtil.setRoundAsCircle(learningItemAudioIcon, Uri.parse(url));
+            }
+        }else{
+            SetImageUriUtil.setImgURI(learningIcon, urlString, Dp2Px2SpUtil.dp2px(mContext, 160), Dp2Px2SpUtil.dp2px(mContext, 120));
+        }
     }
 
     public void setLearningTitle(String title) {
