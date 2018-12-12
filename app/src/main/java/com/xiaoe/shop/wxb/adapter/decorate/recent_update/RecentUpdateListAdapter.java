@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,6 +30,8 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.LoginDialogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
@@ -120,6 +123,11 @@ public class RecentUpdateListAdapter extends BaseAdapter {
         viewHolder.itemWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
             public void singleClick(View v) {
+
+                HashMap<String, String> map = new HashMap<>(1);
+                map.put(MobclickEvent.INDEX, position + "");
+                EventReportManager.onEvent(mContext, MobclickEvent.COURSE_WXB_EVERYDAY_ITEM_CLICK, map);
+
                 if (recentUpdateListItem.isListIsFormUser()) {
                     if(!hasBuy){
                         switch (columnType) {

@@ -6,17 +6,20 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.internal.DebouncingOnClickListener;
-
 import com.xiaoe.common.entitys.FlowInfoItem;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
+
+import java.util.HashMap;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.internal.DebouncingOnClickListener;
 
 /**
  * 视频 ViewHolder
@@ -49,7 +52,7 @@ public class FlowInfoVideoViewHolder extends BaseViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void initViewHolder(FlowInfoItem bindItem) {
+    public void initViewHolder(FlowInfoItem bindItem, int position) {
         if (SetImageUriUtil.isGif(bindItem.getItemImg())) {
             SetImageUriUtil.setGifURI(flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 190), Dp2Px2SpUtil.dp2px(mContext, 375));
         } else {
@@ -78,6 +81,10 @@ public class FlowInfoVideoViewHolder extends BaseViewHolder {
 //            videoIntent.putExtra("videoImageUrl", videoImageUrl);
 //            mContext.startActivity(videoIntent, options.toBundle());
             JumpDetail.jumpVideo(mContext, bindItem.getItemId(), bindItem.getItemImg(), false, "");
+
+                HashMap<String, String> map = new HashMap<>(1);
+                map.put(MobclickEvent.INDEX, position + "");
+                EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
             }
         });
     }

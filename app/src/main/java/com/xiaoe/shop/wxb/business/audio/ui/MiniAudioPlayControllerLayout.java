@@ -25,6 +25,8 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioNotifier;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioSQLiteUtil;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.widget.TasksCompletedView;
@@ -150,18 +152,25 @@ public class MiniAudioPlayControllerLayout extends FrameLayout implements View.O
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.id_btn_play_state){
-            if(!AudioMediaPlayer.isStop()){
-                AudioMediaPlayer.play();
-            }else{
-                if(NetUtils.NETWORK_TYPE_NO_NETWORK.equals(NetUtils.getNetworkType(mContext)) || NetUtils.NETWORK_TYPE_UNKONW_NETWORK.equals(NetUtils.getNetworkType(mContext))){
-                    Toast.makeText(mContext, mContext.getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
-                }else{
-                    AudioMediaPlayer.start();
+        switch (v.getId()) {
+            case R.id.id_btn_play_state:
+                if (!AudioMediaPlayer.isStop()) {
+                    AudioMediaPlayer.play();
+                } else {
+                    if (NetUtils.NETWORK_TYPE_NO_NETWORK.equals(NetUtils.getNetworkType(mContext)) || NetUtils.NETWORK_TYPE_UNKONW_NETWORK.equals(NetUtils.getNetworkType(mContext))) {
+                        Toast.makeText(mContext, mContext.getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+                    } else {
+                        AudioMediaPlayer.start();
+                    }
                 }
-            }
-        }else if(v.getId() == R.id.id_audio_mini_close){
-            close();
+                break;
+            case R.id.id_audio_mini_close:
+                close();
+
+                EventReportManager.onEvent(mContext, MobclickEvent.VOICEPLAYER_CLOSEBTN_CLICK);
+                break;
+            default:
+                break;
         }
     }
 

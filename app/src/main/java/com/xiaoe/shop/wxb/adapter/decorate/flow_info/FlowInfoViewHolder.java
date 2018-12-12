@@ -1,7 +1,6 @@
 package com.xiaoe.shop.wxb.adapter.decorate.flow_info;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
@@ -10,19 +9,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.internal.DebouncingOnClickListener;
-
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
-import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
-import com.xiaoe.shop.wxb.events.OnClickEvent;
+import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.utils.LoginDialogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.internal.DebouncingOnClickListener;
 
 public class FlowInfoViewHolder extends BaseViewHolder {
 
@@ -79,12 +78,12 @@ public class FlowInfoViewHolder extends BaseViewHolder {
             @Override
             public void doClick(View v) {
                 if (currentBindComponent.isFormUser()) {
-                    Intent intent = new Intent(mContext, MineLearningActivity.class);
-                    intent.putExtra("pageTitle", mContext.getString(R.string.learning_tab_title));
-                    mContext.startActivity(intent);
+                    JumpDetail.jumpMineLearning(mContext, mContext.getString(R.string.learning_tab_title));
                 } else {
                     LoginDialogUtils.showTouristDialog(mContext);
                 }
+
+                EventReportManager.onEvent(mContext, MobclickEvent.TODAY_PURCHASED_BTN_CLICK);
             }
         });
     }

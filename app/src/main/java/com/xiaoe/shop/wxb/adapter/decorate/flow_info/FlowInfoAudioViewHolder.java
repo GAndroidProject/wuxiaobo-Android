@@ -18,7 +18,11 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
+
+import java.util.HashMap;
 
 /**
  * 音频 ViewHolder
@@ -55,7 +59,7 @@ public class FlowInfoAudioViewHolder extends BaseViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void initViewHolder(FlowInfoItem bindItem) {
+    public void initViewHolder(FlowInfoItem bindItem, int position) {
         String audioDefault = "res:///" + R.mipmap.audio_bg;
         flowInfoBg.getWidth();
         SetImageUriUtil.setImgURI(flowInfoBg, audioDefault, Dp2Px2SpUtil.dp2px(mContext, 190), Dp2Px2SpUtil.dp2px(mContext, 375));
@@ -98,6 +102,10 @@ public class FlowInfoAudioViewHolder extends BaseViewHolder {
                 // TODO: 转场动画
                 AudioPlayUtil.getInstance().setFromTag("flowInfo");
                 JumpDetail.jumpAudio(mContext, bindItem.getItemId(), bindItem.isItemHasBuy() ? 1 : 0 );
+
+                HashMap<String, String> map = new HashMap<>(1);
+                map.put(MobclickEvent.INDEX, position + "");
+                EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
             }
         });
     }

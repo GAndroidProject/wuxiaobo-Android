@@ -9,12 +9,13 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
+import com.xiaoe.shop.wxb.interfaces.OnBottomTabSelectListener;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.xiaoe.common.app.CommonUserInfo;
-import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.interfaces.OnBottomTabSelectListener;
 
 public class BottomTabBar extends FrameLayout implements View.OnClickListener {
     private String TAG = "BottomTabBar";
@@ -98,21 +99,25 @@ public class BottomTabBar extends FrameLayout implements View.OnClickListener {
             case R.id.bottom_bar_button_1:
                 if(bottomTabSelectListener != null){
                     setCheckedButton(0);
+                    EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_TODAY_CLICK);
                 }
                 break;
             case R.id.bottom_bar_button_2:
                 if(bottomTabSelectListener != null){
                     setCheckedButton(1);
+                    EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_COURSE_CLICK);
                 }
                 break;
             case R.id.bottom_bar_button_3:
                 if(bottomTabSelectListener != null){
                     setCheckedButton(2);
+                    EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_SCHOLARSHIP_CLICK);
                 }
                 break;
             case R.id.bottom_bar_button_4:
                 if(bottomTabSelectListener != null){
                     setCheckedButton(3);
+                    EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_MINE_CLICK);
                 }
                 break;
             default:

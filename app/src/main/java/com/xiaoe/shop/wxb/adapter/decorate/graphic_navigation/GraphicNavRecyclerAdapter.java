@@ -2,16 +2,20 @@ package com.xiaoe.shop.wxb.adapter.decorate.graphic_navigation;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.xiaoe.common.entitys.GraphicNavItem;
 import com.xiaoe.common.interfaces.OnItemClickWithNavItemListener;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 
 public class GraphicNavRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
@@ -48,6 +52,10 @@ public class GraphicNavRecyclerAdapter extends RecyclerView.Adapter<BaseViewHold
                 if (onItemClickWithNavItemListener != null) {
                     onItemClickWithNavItemListener.onNavItemClick(v, mItemList.get(innerPos));
                 }
+
+                HashMap<String, String> map = new HashMap<>(1);
+                map.put(MobclickEvent.TITLE, mItemList.get(innerPos).getNavContent());
+                EventReportManager.onEvent(mContext, MobclickEvent.COURSE_MENU_CLICK, map);
             }
         });
     }

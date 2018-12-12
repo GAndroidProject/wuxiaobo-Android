@@ -12,10 +12,13 @@ import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -91,6 +94,10 @@ public class ShufflingFigureViewHolder extends BaseViewHolder {
                     Log.d(TAG, "OnBannerClick: 未知链接");
                     break;
             }
+
+            HashMap<String, String> map = new HashMap<>(1);
+            map.put(MobclickEvent.INDEX, position1 + "");
+            EventReportManager.onEvent(mContext, MobclickEvent.COURSE_BANNER_CLICK, map);
         });
         bannerArr.put(currentBindPos, banner);
     }

@@ -15,6 +15,8 @@ import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 
@@ -53,6 +55,8 @@ public class SearchViewHolder extends BaseViewHolder {
             @Override
             public void singleClick(View v) {
                 JumpDetail.jumpSearch(mContext);
+
+                EventReportManager.onEvent(mContext, MobclickEvent.COURSE_SEARCH_BTN_CLICK);
             }
         });
     }

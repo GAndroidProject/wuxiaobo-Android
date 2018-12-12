@@ -53,6 +53,8 @@ import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipRangeAdapter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
@@ -264,24 +266,30 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
                 if (mainActivity.isFormalUser) {
                     if (!hasBuy) { // 没买
                         showDialogByType(GO_BUY);
+
+                        EventReportManager.onEvent(mContext, MobclickEvent.SCHOLARSHIP_CARVEUP_BTN_CLICK);
                     } else { // 买了，根据领取状态进行不同操作
                         switch (ScholarshipEntity.getInstance().getIssueState()) {
                             case ScholarshipEntity.SCHOLARSHIP_FAIL: // 未发放
                                 // TODO: 失败的操作
                                 break;
                             case ScholarshipEntity.SCHOLARSHIP_PROCESSING: // 处理中
-                                Toast.makeText(mainActivity, getString(R.string.scholarship_in_progress), Toast.LENGTH_SHORT).show();
+                                ToastUtils.show(mContext, getString(R.string.scholarship_in_progress));
                                 break;
                             case ScholarshipEntity.SCHOLARSHIP_ISSUED: // 领取成功
                                 showEarnDialog();
                                 break;
                             default: // 没有给状态赋值，那就去分享
                                 JumpDetail.jumpBoughtList(mContext, ScholarshipEntity.getInstance().getTaskId(), isSuperVip);
+
+                                EventReportManager.onEvent(mContext, MobclickEvent.SCHOLARSHIP_SHAREVIOCELIST_CLICK);
                                 break;
                         }
                     }
                 } else {
                     touristDialog.showDialog();
+
+                    EventReportManager.onEvent(mContext, MobclickEvent.SCHOLARSHIP_CARVEUP_BTN_CLICK);
                 }
                 break;
             case R.id.scholarship_real_range_new:
@@ -364,6 +372,8 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
                     @Override
                     public void doClick(View v) {
                         dialog.dismiss();
+
+                        EventReportManager.onEvent(mContext, MobclickEvent.SCHOLARSHIP_CHOOSEBOX_CLOSE_CLICK);
                     }
                 });
                 dialogBtn.setOnClickListener(new DebouncingOnClickListener() {
@@ -371,6 +381,8 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
                     public void doClick(View v) {
                         ((MainActivity) getActivity()).replaceFragment(1);
                         dialog.dismiss();
+
+                        EventReportManager.onEvent(mContext, MobclickEvent.SCHOLARSHIP_CHOOSEBOX_OK_CLICK);
                     }
                 });
                 dialog.show();
@@ -698,9 +710,13 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
                 BigDecimal priceTop = new BigDecimal(amount);
                 BigDecimal priceBottom = new BigDecimal(100);
                 this.amount = priceTop.divide(priceBottom, 2, BigDecimal.ROUND_HALF_UP).toPlainString();
+
+                EventReportManager.onEvent(mContext, MobclickEvent.SCHOLARSHIP_GETBURSE_SUCCESS_COUNT);
             } else if (type == 2) { // 拿到积分
                 hasEarnMoney = false;
                 this.amount = String.valueOf(amount);
+
+                EventReportManager.onEvent(mContext, MobclickEvent.SCHOLARSHIP_GETGRADE_SUCCESS_COUNT);
             }
             showEarnDialog();
         } else if (status == 2) { // 处理中

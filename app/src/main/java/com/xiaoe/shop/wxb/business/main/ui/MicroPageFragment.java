@@ -53,6 +53,8 @@ import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.PageFragmentPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
@@ -152,8 +154,9 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         mContext = getContext();
         mainActivity = (MainActivity) getActivity();
         int top = 0;
-        if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
+        if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
             top = StatusBarUtil.getStatusBarHeight(mContext);
+        }
         view.setPadding(0, top, 0, 0);
         mStatusBarBlank.setBackgroundColor(Color.argb(255, 255, 255, 255));
         mStatusBarBlank.setHeight(StatusBarUtil.getStatusBarHeight(mContext));
@@ -369,7 +372,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             switch (itemObj.getString("type")) {
                 case DecorateEntityType.SEARCH_STR: // 搜索组件
                     ComponentInfo componentInfo_title = new ComponentInfo();
-                    componentInfo_title.setTitle("课程");
+                    componentInfo_title.setTitle(getString(R.string.micro_fragment_title));
                     componentInfo_title.setType(DecorateEntityType.SEARCH_STR);
                     microPageList.add(componentInfo_title);
                     hasSearch = true;
@@ -721,7 +724,9 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     }
 
 
-    // 拿到请求到的数据后进行界面初始化
+    /**
+     * 拿到请求到的数据后进行界面初始化
+     */
     public void init() {
         if (microPageList == null) {
             microPageList = new ArrayList<>();
@@ -756,8 +761,9 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             microPageToolbar.setVisibility(View.VISIBLE);
             // 初始化 toolbar
             int top = 0;
-            if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN))
+            if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
                 top = StatusBarUtil.getStatusBarHeight(mContext);
+            }
 //            int statusBarHeight = StatusBarUtil.getStatusBarHeight(mContext);
             // 沉浸式初始化
             microPageWrap.setPadding(0, top, 0, 0);
@@ -769,6 +775,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 @Override
                 public void singleClick(View v) {
                     JumpDetail.jumpSearch(mContext);
+
+                    EventReportManager.onEvent(mContext, MobclickEvent.COURSE_SEARCH_BTN_CLICK);
                 }
             });
 //            microPageFresh.setEnableHeaderTranslationContent(false);
@@ -814,7 +822,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     @Override
     public void onResume() {
         super.onResume();
-        // TODO: 设置状态栏颜色
+        // 设置状态栏颜色
 //        if (!isMain) {
 //            StatusBarUtil.setStatusBarColor(getActivity(), getResources().getColor(R.color.recent_update_btn_pressed));
 //            isMain = true;

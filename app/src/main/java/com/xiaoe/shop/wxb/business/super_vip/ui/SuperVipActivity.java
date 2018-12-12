@@ -17,6 +17,8 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 
 import java.math.BigDecimal;
 
@@ -78,6 +80,8 @@ public class SuperVipActivity extends XiaoeActivity {
                         getString(R.string.super_members), (int) priceNum, expireAtStart + "-" + expireAtEnd);
                 SuperVipActivity.this.finish();
             }
+
+            EventReportManager.onEvent(mContext, MobclickEvent.MINE_SUPERMEMBERVIEW_PAYBTN_CLICK);
         });
         superVipBack.setOnClickListener(v -> onBackPressed());
     }

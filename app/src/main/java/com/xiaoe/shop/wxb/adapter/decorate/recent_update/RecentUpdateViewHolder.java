@@ -24,6 +24,8 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.LoginDialogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
@@ -111,6 +113,9 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
             recentUpdateSubBtn.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
                 public void singleClick(View v) {
+
+                    EventReportManager.onEvent(mContext, MobclickEvent.COURSE_WXB_EVERYDAY_ALL_CLICK);
+
                     if (currentBindComponent.isFormUser()) {
                         if(!currentBindComponent.isHasBuy()){
                             switch (currentBindComponent.getSubType()) {

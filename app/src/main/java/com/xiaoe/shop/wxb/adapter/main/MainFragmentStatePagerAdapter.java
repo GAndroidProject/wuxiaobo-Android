@@ -22,7 +22,7 @@ public class MainFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     private List<BaseFragment> list = new ArrayList<BaseFragment>();
     public MainFragmentStatePagerAdapter(FragmentManager fm, boolean needShowScholarship) {
         super(fm);
-        // TODO: 拿到微页面 id
+        // 拿到微页面 id
         // 首页微页面
         MicroPageFragment homePageFragment = MicroPageFragment.newInstance(MainActivity.MICRO_PAGE_MAIN);
         // 课程页微页面

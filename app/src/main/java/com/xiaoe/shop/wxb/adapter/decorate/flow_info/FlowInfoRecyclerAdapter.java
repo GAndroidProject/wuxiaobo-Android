@@ -83,23 +83,23 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         switch (itemType) {
             case DecorateEntityType.FLOW_INFO_IMG_TEXT: // 图文
                 FlowInfoImgTextViewHolder itViewHolder = (FlowInfoImgTextViewHolder) holder;
-                itViewHolder.initViewHolder(bindItem, bindItem.getItemType());
+                itViewHolder.initViewHolder(bindItem, bindItem.getItemType(), position);
                 break;
             case DecorateEntityType.FLOW_INFO_COLUMN: // 专栏
                 FlowInfoImgTextViewHolder columnViewHolder = (FlowInfoImgTextViewHolder) holder;
-                columnViewHolder.initViewHolder(bindItem, bindItem.getItemType());
+                columnViewHolder.initViewHolder(bindItem, bindItem.getItemType(), position);
                 break;
             case DecorateEntityType.FLOW_INFO_TOPIC: // 大专栏
                 FlowInfoImgTextViewHolder topicViewHolder = (FlowInfoImgTextViewHolder) holder;
-                topicViewHolder.initViewHolder(bindItem, bindItem.getItemType());
+                topicViewHolder.initViewHolder(bindItem, bindItem.getItemType(), position);
                 break;
             case DecorateEntityType.FLOW_INFO_AUDIO: // 音频
                 FlowInfoAudioViewHolder audioViewHolder = (FlowInfoAudioViewHolder) holder;
-                audioViewHolder.initViewHolder(bindItem);
+                audioViewHolder.initViewHolder(bindItem, position);
                 break;
             case DecorateEntityType.FLOW_INFO_VIDEO: // 视频
                 final FlowInfoVideoViewHolder videoViewHolder = (FlowInfoVideoViewHolder) holder;
-                videoViewHolder.initViewHolder(bindItem);
+                videoViewHolder.initViewHolder(bindItem, position);
                 break;
             default:
                 break;

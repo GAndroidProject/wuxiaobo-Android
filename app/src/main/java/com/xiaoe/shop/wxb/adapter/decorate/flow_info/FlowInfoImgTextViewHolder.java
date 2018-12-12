@@ -6,18 +6,21 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.internal.DebouncingOnClickListener;
-
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.FlowInfoItem;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
+
+import java.util.HashMap;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.internal.DebouncingOnClickListener;
 
 /**
  * 图文 ViewHolder
@@ -55,7 +58,7 @@ public class FlowInfoImgTextViewHolder extends BaseViewHolder {
      * @param bindItem 绑定 item
      * @param resourceType 资源类型
      */
-    public void initViewHolder(FlowInfoItem bindItem, String resourceType) {
+    public void initViewHolder(FlowInfoItem bindItem, String resourceType, int position) {
         if (SetImageUriUtil.isGif(bindItem.getItemImg())) {
             SetImageUriUtil.setGifURI(flowInfoBg, bindItem.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 250), Dp2Px2SpUtil.dp2px(mContext, 375));
         } else {
@@ -82,6 +85,10 @@ public class FlowInfoImgTextViewHolder extends BaseViewHolder {
                     @Override
                     public void doClick(View v) {
                         JumpDetail.jumpImageText(mContext, bindItem.getItemId(), "", "");
+
+                        HashMap<String, String> map = new HashMap<>(1);
+                        map.put(MobclickEvent.INDEX, position + "");
+                        EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
                     }
                 });
                 break;
@@ -90,6 +97,10 @@ public class FlowInfoImgTextViewHolder extends BaseViewHolder {
                     @Override
                     public void doClick(View v) {
                         JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemImg(), 6);
+
+                        HashMap<String, String> map = new HashMap<>(1);
+                        map.put(MobclickEvent.INDEX, position + "");
+                        EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
                     }
                 });
                 break;
@@ -98,6 +109,10 @@ public class FlowInfoImgTextViewHolder extends BaseViewHolder {
                     @Override
                     public void doClick(View v) {
                         JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemImg(), 8);
+
+                        HashMap<String, String> map = new HashMap<>(1);
+                        map.put(MobclickEvent.INDEX, position + "");
+                        EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
                     }
                 });
                 break;

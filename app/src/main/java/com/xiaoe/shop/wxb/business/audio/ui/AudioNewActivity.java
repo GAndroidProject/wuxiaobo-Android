@@ -57,6 +57,8 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.HideAudioPlayListEvent;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
@@ -340,9 +342,13 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 BigDecimal priceTop = new BigDecimal(amount);
                 BigDecimal priceBottom = new BigDecimal(100);
                 this.amount = priceTop.divide(priceBottom, 2, BigDecimal.ROUND_HALF_UP).toPlainString();
+
+                EventReportManager.onEvent(mContext, MobclickEvent.SCHOLARSHIP_GETBURSE_SUCCESS_COUNT);
             } else if (type == 2) { // 拿到积分
                 hasEarnMoney = false;
                 this.amount = String.valueOf(amount);
+
+                EventReportManager.onEvent(mContext, MobclickEvent.SCHOLARSHIP_GETGRADE_SUCCESS_COUNT);
             }
             showEarnDialog();
         } else if (status == 2) { // 处理中

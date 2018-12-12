@@ -46,6 +46,8 @@ import com.xiaoe.shop.wxb.business.mine.presenter.MoneyWrapRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.mine_learning.presenter.MineLearningPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
@@ -340,11 +342,17 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 if (mainActivity.isFormalUser) {
                     if (!CommonUserInfo.isIsSuperVip()) { // 不是超级会员
                         JumpDetail.jumpSuperVip(mContext);
+
+                        EventReportManager.onEvent(mContext, MobclickEvent.MINE_OPENMEMBERSHIP_BTN_CLICK);
                     } else { // 是超级会员
                         JumpDetail.jumpSuperVip(mContext, true);
+
+                        EventReportManager.onEvent(mContext, MobclickEvent.MINE_SUPERMEMBERVIEW_VIEW_COUNT);
                     }
                 } else {
                     touristDialog.showDialog();
+
+                    EventReportManager.onEvent(mContext, MobclickEvent.MINE_OPENMEMBERSHIP_BTN_CLICK);
                 }
             }
         });
@@ -417,6 +425,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                     } else {
                         touristDialog.showDialog();
                     }
+
+                    EventReportManager.onEvent(mContext, MobclickEvent.MINE_PURCHASED_COURSE_CLICK);
                 }
             });
         }
@@ -428,6 +438,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 } else {
                     touristDialog.showDialog();
                 }
+
+                EventReportManager.onEvent(mContext, MobclickEvent.MINE_PURCHASED_ALL_CLICK);
             }
         });
         mineLearningWrapView.setLearningListItemClickListener(this);
@@ -720,13 +732,17 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 } else {
                     touristDialog.showDialog();
                 }
+
+                EventReportManager.onEvent(mContext, MobclickEvent.MINE_FAV_BTN_CLICK);
                 break;
-            case 1: // 离线缓存
+            case 1: // 下载列表
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpOffLine(mContext);
                 } else {
                     touristDialog.showDialog();
                 }
+
+                EventReportManager.onEvent(mContext, MobclickEvent.MINE_DOWNLOADED_BTN_CLICK);
                 break;
             case 2: // 优惠券
                 if (mainActivity.isFormalUser) {
@@ -738,6 +754,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 } else {
                     touristDialog.showDialog();
                 }
+
+                EventReportManager.onEvent(mContext, MobclickEvent.MINE_DISCOUNTS_BTN_CLICK);
                 break;
             case 3: // 兑换码
                 if (mainActivity.isFormalUser) {
@@ -745,6 +763,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 } else {
                     touristDialog.showDialog();
                 }
+
+                EventReportManager.onEvent(mContext, MobclickEvent.MINE_REDEEM_BTN_CLICK);
                 break;
             default:
                 //TODO: 异常判断
