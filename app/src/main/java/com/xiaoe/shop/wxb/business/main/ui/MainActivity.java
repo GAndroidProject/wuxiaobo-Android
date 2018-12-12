@@ -55,6 +55,7 @@ import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 import com.xiaoe.shop.wxb.interfaces.OnBottomTabSelectListener;
 import com.xiaoe.shop.wxb.utils.OSUtils;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.BottomTabBar;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.ScrollViewPager;
@@ -528,7 +529,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         if (mainViewPager == null || isExit){
             finish();
             return;
-        }else    Toast(getString(R.string.again_back_pressed_exit));
+        } else {
+            ToastUtils.show(mContext, R.string.again_back_pressed_exit);
+        }
         isExit = true;
         mainViewPager.removeCallbacks(exitAppRunnable);
         mainViewPager.postDelayed(exitAppRunnable,1500);
