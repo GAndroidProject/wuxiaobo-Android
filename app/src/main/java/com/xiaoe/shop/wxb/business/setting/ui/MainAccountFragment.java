@@ -77,7 +77,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
         // 账号设置主页面假数据
         itemInfoList = new ArrayList<>();
         // TODO: 获取最新版本信息和缓存信息
-        SettingItemInfo account = new SettingItemInfo(getString(R.string.account_settings), "", "");
+        // SettingItemInfo account = new SettingItemInfo(getString(R.string.account_settings), "", "");
         SettingItemInfo message = new SettingItemInfo(getString(R.string.message_settings), "", "");
         // 获取缓存信息
         String cacheSize = "0K";
@@ -90,7 +90,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
         SettingItemInfo version = new SettingItemInfo(getString(R.string.find_a_new_version), "",
                 AppUpgradeHelper.getInstance().isHasUpgradeCurrentApp() ? Global.g().getVersionName() : getString(R.string.is_latest_version));
         SettingItemInfo us = new SettingItemInfo(getString(R.string.setting_about_us), "", "");
-        itemInfoList.add(account);
+        // itemInfoList.add(account);
         itemInfoList.add(message);
         itemInfoList.add(memory);
         itemInfoList.add(version);
@@ -133,7 +133,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
                         CommonUserInfo.setApiToken("");
                         CommonUserInfo.setIsSuperVip(false);
                         CommonUserInfo.setIsSuperVipAvailable(false);
-                        JumpDetail.jumpLogin(getActivity());
+                        JumpDetail.jumpLoginSplash(getActivity());
                         DownloadManager.getInstance().allPaushDownload();
                     }
 

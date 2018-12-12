@@ -62,17 +62,16 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".business.login.ui.LoginActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"
-            >
+        <!--<activity-->
+            <!--android:name=".business.login.ui.LoginActivity"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:launchMode="singleTask">-->
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
 
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
-        </activity>
+        <!--</activity>-->
         <activity
             android:name=".business.main.ui.MainActivity"
             android:launchMode="singleTask"
@@ -324,7 +323,7 @@
             android:value="developer-default" />
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="c2e812c8b8eca83779e32711" /> <!-- 值来自开发者平台取得的AppKey -->
+            android:value="5e3ca811dadd0242657df1b7" /> <!-- 值来自开发者平台取得的AppKey -->
         <!-- 测试：5e3ca811dadd0242657df1b7  正式：c2e812c8b8eca83779e32711 -->
         <!-- 极光推送相关配置 end -->
 
@@ -365,6 +364,17 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".business.login.ui.LoginNewActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.login.ui.LoginSplashActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
+        <activity
+            android:name=".business.login.ui.ProtocolActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

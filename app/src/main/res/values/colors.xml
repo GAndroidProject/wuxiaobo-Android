@@ -82,4 +82,7 @@
     <color name="scholarship_div_normal_end">#FDC200</color>
     <color name="scholarship_div_press_start">#EEC259</color>
     <color name="scholarship_div_press_end">#EAB400</color>
+    
+    <color name="login_we_chat_normal">#ff46BB36</color>
+    <color name="login_we_chat_press">#cc46BB36</color> <!--20% 透明度的绿色-->
 </resources>

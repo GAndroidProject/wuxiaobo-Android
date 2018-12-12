@@ -47,6 +47,7 @@ import butterknife.internal.DebouncingOnClickListener;
 /**
  * @author zak
  * @date 2018/10/19
+ * @deprecated 使用 LoginNewFragment
  */
 public class LoginPageFragment extends BaseFragment {
 

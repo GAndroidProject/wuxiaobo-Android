@@ -1,6 +1,9 @@
 package com.xiaoe.shop.wxb.widget;
 
 import android.text.TextUtils;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import android.annotation.SuppressLint;
@@ -88,6 +91,10 @@ public class CodeVerifyView extends LinearLayout implements TextWatcher, View.On
 
     public void setOnCodeFinishListener(OnCodeFinishListener onCodeFinishListener) {
         this.onCodeFinishListener = onCodeFinishListener;
+    }
+
+    public void setOnLongClickListener() {
+
     }
 
     public int getmEtNumber() {
@@ -206,6 +213,7 @@ public class CodeVerifyView extends LinearLayout implements TextWatcher, View.On
         editText.setTextColor(mEtTextColor);
         editText.setTextSize(Dp2Px2SpUtil.px2dp(mContext, mEtTextSize));
         editText.setMaxLines(1);
+        editText.setLongClickable(false);
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
         switch (mEtInputType) {
             case NUMBER:

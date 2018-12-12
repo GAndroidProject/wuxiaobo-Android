@@ -34,7 +34,9 @@ import com.xiaoe.shop.wxb.business.earning.ui.WithdrawalRecordActivity;
 import com.xiaoe.shop.wxb.business.earning.ui.WithdrawalResultActivity;
 import com.xiaoe.shop.wxb.business.historymessage.ui.HistoryMessageActivity;
 import com.xiaoe.shop.wxb.business.login.ui.LoginActivity;
+import com.xiaoe.shop.wxb.business.login.ui.LoginNewActivity;
 import com.xiaoe.shop.wxb.business.login.ui.LoginSplashActivity;
+import com.xiaoe.shop.wxb.business.login.ui.ProtocolActivity;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
 import com.xiaoe.shop.wxb.business.navigate_detail.ui.NavigateDetailActivity;
@@ -207,6 +209,19 @@ public class JumpDetail {
      */
     public static void jumpLoginSplash(Context context) {
         Intent intent = new Intent(context, LoginSplashActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到新的登录页面
+     * @param context   上下文
+     * @param mainTitle 登录页面标题
+     */
+    public static void jumpLoingNew(Context context, String mainTitle) {
+        Intent intent = new Intent(context, LoginNewActivity.class);
+
+        intent.putExtra("login_title", mainTitle);
+
         context.startActivity(intent);
     }
 
@@ -453,6 +468,12 @@ public class JumpDetail {
         Intent intent = new Intent(context, CourseMoreActivity.class);
 
         intent.putExtra("groupId", groupId);
+
+        context.startActivity(intent);
+    }
+
+    public static void jumpProtocol(Context context) {
+        Intent intent = new Intent(context, ProtocolActivity.class);
 
         context.startActivity(intent);
     }

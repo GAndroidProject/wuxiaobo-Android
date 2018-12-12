@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/login_wx_new"
+        android:layout_gravity="center"
+        android:layout_marginTop="112dp"
+        android:contentDescription="@string/login_wx_logo_new" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_bind_wx_wxb"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/main_title_color"
+        android:layout_marginTop="24dp"
+        android:layout_gravity="center"/>
+
+    <FrameLayout
+        android:id="@+id/login_bind_we_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/wx_login_selector"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_main_phone_we_chat"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:drawableStart="@mipmap/login_wechat"
+            android:drawablePadding="5dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_bind_wx_new"
+        android:textSize="14sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"/>
+
+</LinearLayout>

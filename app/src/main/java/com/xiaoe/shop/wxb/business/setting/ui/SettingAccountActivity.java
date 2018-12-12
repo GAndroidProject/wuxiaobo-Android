@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +59,7 @@ public class SettingAccountActivity extends XiaoeActivity {
 
     // 需要切换的 fragment tag
     protected static final String MAIN = "main"; // 设置主页
-    protected static final String ACCOUNT = "account"; // 账号设置
+    // protected static final String ACCOUNT = "account"; // 账号设置
     protected static final String MESSAGE = "message"; // 推送消息设置
     protected static final String CACHE = "cache"; // 清除缓存
     protected static final String VERSION = "version"; // 版本更新
@@ -110,8 +111,6 @@ public class SettingAccountActivity extends XiaoeActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-
-        accountToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         // 网络请求
         // SettingPresenter settingPresenter = new SettingPresenter(this);
@@ -217,15 +216,15 @@ public class SettingAccountActivity extends XiaoeActivity {
     // 设置主页的转换
     protected String int2Str(int position) {
         switch (position) {
-            case 0: // 账号设置
-                return ACCOUNT;
-            case 1: // 推送消息设置
+//            case 0: // 账号设置
+//                return ACCOUNT;
+            case 0: // 推送消息设置
                 return MESSAGE;
-            case 2: // 消除缓存
+            case 1: // 消除缓存
                 return CACHE;
-            case 3: // 版本更新
+            case 2: // 版本更新
                 return VERSION;
-            case 4: // 关于我们
+            case 3: // 关于我们
                 return ABOUT;
 //            case 5: // 意见反馈
 //                return SUGGESTION;
@@ -296,10 +295,10 @@ public class SettingAccountActivity extends XiaoeActivity {
         currentFragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (currentFragment == null) {
             switch (tag) {
-                case ACCOUNT: // 账号设置
-                    accountTitle.setText(getString(R.string.account_settings));
-                    currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_account);
-                    break;
+//                case ACCOUNT: // 账号设置
+//                    accountTitle.setText(getString(R.string.account_settings));
+//                    currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_account);
+//                    break;
                 case MESSAGE: // 推送消息设置
                     accountTitle.setText(getString(R.string.message_settings));
                     currentFragment = SettingAccountFragment.newInstance(R.layout.fragment_message);
@@ -344,9 +343,9 @@ public class SettingAccountActivity extends XiaoeActivity {
             }
         } else {
             switch (currentFragment.getTag()) {
-                case ACCOUNT: // 账号设置
-                    accountTitle.setText(getString(R.string.account_settings));
-                    break;
+//                case ACCOUNT: // 账号设置
+//                    accountTitle.setText(getString(R.string.account_settings));
+//                    break;
                 case MESSAGE: // 推送消息设置
                     accountTitle.setText(getString(R.string.message_settings));
                     break;
@@ -433,7 +432,7 @@ public class SettingAccountActivity extends XiaoeActivity {
 
     private void onBackAction(String fragmentTag) {
         switch (fragmentTag) {
-            case ACCOUNT:
+//            case ACCOUNT:
             case MESSAGE:
             case ABOUT:
 //                case SUGGESTION:
@@ -443,10 +442,10 @@ public class SettingAccountActivity extends XiaoeActivity {
                 break;
             case CURRENT_PHONE:
             case PWD_PHONE_CODE:
-            case PHONE_CODE:
-                accountTitle.setText(getString(R.string.account_settings));
-                replaceFragment(ACCOUNT);
-                break;
+//            case PHONE_CODE:
+//                accountTitle.setText(getString(R.string.account_settings));
+//                replaceFragment(ACCOUNT);
+//                break;
             case PWD_NEW:
                 accountTitle.setText(getString(R.string.login_set_pwd_title));
                 replaceFragment(PWD_PHONE_CODE);

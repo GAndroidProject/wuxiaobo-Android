@@ -51,6 +51,9 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import butterknife.internal.DebouncingOnClickListener;
 
+/**
+ * @deprecated 使用 LoginNewActivity
+ */
 public class LoginActivity extends XiaoeActivity {
 
     @BindView(R.id.login_header)

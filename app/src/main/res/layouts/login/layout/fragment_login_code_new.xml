@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/login_code_desc_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_code_desc"
+        android:textSize="14sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="42dp"/>
+
+    <com.xiaoe.shop.wxb.widget.CodeVerifyView
+        android:id="@+id/login_code_content_new"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:cv_inputType="number"
+        app:cv_number="4"
+        app:cv_text_color="@android:color/black"
+        app:cv_text_size="16sp"
+        app:cv_width="48dp"
+        app:cv_height="56dp"
+        app:cv_bg="@drawable/login_code_item_bg"/>
+
+    <TextView
+        android:id="@+id/login_code_tip_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/login_error"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="20dp"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/login_obtain_wrap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/login_register_code_obtain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_code_desc_title"
+            android:textSize="16sp"
+            android:textColor="@color/edit_cursor"/>
+
+        <TextView
+            android:id="@+id/login_register_code_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_code_desc_content"
+            android:textSize="16sp"
+            android:textColor="@color/secondary_title_color"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white"/>
+
+</LinearLayout>

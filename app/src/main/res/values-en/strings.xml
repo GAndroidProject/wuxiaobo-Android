@@ -475,4 +475,15 @@
     <string name="send_to_cancel">发送取消</string>
     <string name="send_rejected">发送被拒绝</string>
     <string name="scholarship_page_text">每天瓜分 %s%s%s 元现金</string>
+    <string name="login_splash_bg">登录页面背景图片</string>
+    <string name="login_splash_title">登录页面标题</string>
+    <string name="login_splash_phone">手机号登录</string>
+    <string name="login_protocol_tips">登录则视为同意%s《吴晓波频道服务协议》%s</string>
+    <string name="login_main_phone">输入手机号</string>
+    <string name="login_tip_new">未注册用户验证后自动登录</string>
+    <string name="login_wx_logo_new">新绑定微信logo</string>
+    <string name="login_bind_wx_wxb">“终于等到你，欢迎来到吴晓波频道”</string>
+    <string name="login_bind_wx_new">微信购买的课程，在APP也能听哦</string>
+    <string name="login_code_error_new">验证码错误，请重新输入</string>
+    <string name="login_code_timeout_new">验证码超时，请重新获取</string>
 </resources>

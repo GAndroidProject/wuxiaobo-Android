@@ -65,7 +65,8 @@ public class SplashActivity extends XiaoeActivity {
     private void initView() {
         // 加上网络请求的时间，减一秒
         ivGif.postDelayed(() -> {
-            JumpDetail.jumpLogin(this);
+//             JumpDetail.jumpLogin(this);
+            JumpDetail.jumpLoginSplash(this);
             finish();
             }, 2000);
     }

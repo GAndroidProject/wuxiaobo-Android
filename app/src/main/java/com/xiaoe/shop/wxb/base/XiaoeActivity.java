@@ -201,6 +201,13 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
         }
     }
 
+    protected void setStatusBarWithWhite() {
+        // 屏幕上方预留状态栏高度的 padding
+        StatusBarUtil.setRootViewFitsSystemWindows(this, true);
+//         设置透明状态栏
+        StatusBarUtil.setTranslucentStatus(this);
+    }
+
     protected void initStatusBar() {
         //设置深色文字图标风格
         if (!StatusBarUtil.setStatusBarDarkTheme(this, true)) {
