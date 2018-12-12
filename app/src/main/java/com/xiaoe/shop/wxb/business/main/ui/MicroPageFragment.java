@@ -24,10 +24,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
-import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.db.SQLiteUtil;
@@ -57,9 +55,7 @@ import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
 import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
-import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.youth.banner.Banner;
 
@@ -132,17 +128,19 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     boolean obtainDataInCache = false; // 从缓存中获取数据
     SparseArray<Banner> bannerArr;
     int totalScrollY = 0; // 垂直滑动总距离
+    /**
+     * 页面停留时长（开始时间）
+     */
+    private long pageDuration;
 
-    public float getAlpha() {
-        return alpha;
-    }
-
-    public static MicroPageFragment newInstance(String microPageId) {
-        MicroPageFragment microPageFragment = new MicroPageFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("microPageId", microPageId);
-        microPageFragment.setArguments(bundle);
-        return microPageFragment;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            // 获取微页面 id
+            microPageId = bundle.getString("microPageId");
+        }
     }
 
     @Nullable
@@ -171,13 +169,63 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            // 获取微页面 id
-            microPageId = bundle.getString("microPageId");
+    public void onResume() {
+        super.onResume();
+        // 设置状态栏颜色
+//        if (!isMain) {
+//            StatusBarUtil.setStatusBarColor(getActivity(), getResources().getColor(R.color.recent_update_btn_pressed));
+//            isMain = true;
+//        } else {
+//            StatusBarUtil.setStatusBarColor(getActivity(), getResources().getColor(R.color.white));
+//            isMain = false;
+//        }
+        pageDuration = System.currentTimeMillis();
+//        Log.e("EventReportManager", "onResume: pageDuration " + pageDuration);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
+            if (0 == mainActivity.getCurrentPosition()) {
+                eventReportDuration();
+            }
+        } else {
+            if (1 == mainActivity.getCurrentPosition()) {
+                eventReportDuration();
+            }
         }
+//        Log.e("EventReportManager", "onPause: ");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+    }
+
+    @Override
+    public void eventReportDuration() {
+        if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
+            EventReportManager.onEventValue(mContext, MobclickEvent.TODAY_PAGEVIEW_DURATION, (int) (System.currentTimeMillis() - pageDuration));
+        } else {
+            EventReportManager.onEventValue(mContext, MobclickEvent.COURSE_PAGEVIEW_DURATION, (int) (System.currentTimeMillis() - pageDuration));
+        }
+    }
+
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public static MicroPageFragment newInstance(String microPageId) {
+        MicroPageFragment microPageFragment = new MicroPageFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("microPageId", microPageId);
+        microPageFragment.setArguments(bundle);
+        return microPageFragment;
     }
 
     @Override
@@ -817,28 +865,6 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 Log.d(TAG, "onSharedElementsArrived: ");
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // 设置状态栏颜色
-//        if (!isMain) {
-//            StatusBarUtil.setStatusBarColor(getActivity(), getResources().getColor(R.color.recent_update_btn_pressed));
-//            isMain = true;
-//        } else {
-//            StatusBarUtil.setStatusBarColor(getActivity(), getResources().getColor(R.color.white));
-//            isMain = false;
-//        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        EventBus.getDefault().unregister(this);
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
     }
 
     /**

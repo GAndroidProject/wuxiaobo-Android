@@ -29,7 +29,6 @@ import com.xiaoe.common.entitys.UpdateMineMsgEvent;
 import com.xiaoe.common.interfaces.OnItemClickWithMoneyItemListener;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
-import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.EarningRequest;
 import com.xiaoe.network.requests.IRequest;
@@ -120,6 +119,10 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
      * 未读消息数
      */
     private int saveCount;
+    /**
+     * 页面停留时长
+     */
+    private long pageDuration;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -152,11 +155,17 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     public void onResume() {
         super.onResume();
         mainActivity.getUnreadMsg();
+        pageDuration = System.currentTimeMillis();
+//        Log.e("EventReportManager", "onResume: pageDuration " + pageDuration);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (3 == mainActivity.getCurrentPosition()) {
+            eventReportDuration();
+        }
+//        Log.e("EventReportManager", "onPause: ");
     }
 
     @Override
@@ -171,6 +180,11 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void eventReportDuration() {
+        EventReportManager.onEventValue(mContext, MobclickEvent.MINE_PAGEVIEW_DURATION, (int) (System.currentTimeMillis() - pageDuration));
     }
 
     @Override

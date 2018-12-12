@@ -310,4 +310,8 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
     public CustomDialog getDialog(){
         return dialog;
     }
+
+    public void eventReportDuration() {
+
+    }
 }

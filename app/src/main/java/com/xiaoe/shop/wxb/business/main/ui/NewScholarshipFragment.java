@@ -40,7 +40,6 @@ import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.entitys.ScholarshipRangeItem;
 import com.xiaoe.common.entitys.TaskDetailIdEvent;
 import com.xiaoe.common.utils.CacheDataUtil;
-import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.MeasureUtil;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -132,6 +131,10 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
     String amount; // 拿到的奖学金或者积分
     private boolean showDataByDB = false;
     FrameLayout.LayoutParams layoutParams;
+    /**
+     * 页面停留时长
+     */
+    private long pageDuration;
 
     @Nullable
     @Override
@@ -171,6 +174,35 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
         initListener();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        pageDuration = System.currentTimeMillis();
+//        Log.e("EventReportManager", "onResume: pageDuration " + pageDuration);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (2 == mainActivity.getCurrentPosition()) {
+            eventReportDuration();
+        }
+//        Log.e("EventReportManager", "onPause: ");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+    }
+
+    @Override
+    public void eventReportDuration() {
+        EventReportManager.onEventValue(mContext, MobclickEvent.SCHOLARSHIP_PAGEVIEW_DURATION, (int) (System.currentTimeMillis() - pageDuration));
+    }
+
     private void initListener() {
         scholarshipNewRefresh.setOnRefreshListener(this);
         scholarshipNewRule.setOnClickListener(this);
@@ -191,14 +223,6 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
                 scholarshipPresenter = new ScholarshipPresenter(this);
             }
             scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (unbinder != null) {
-            unbinder.unbind();
         }
     }
 

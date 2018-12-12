@@ -7,6 +7,7 @@ import android.util.Log;
 import com.umeng.analytics.MobclickAgent;
 import com.xiaoe.shop.wxb.utils.Utils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,9 +33,25 @@ public class EventReportManager {
 
     public static void onEvent(Context context, String eventID, @NonNull Map<String, String> map) {
         // 默认添加渠道号
-        map.put("channel", Utils.getChannel(context));
+        map.put(MobclickEvent.CHANNEL, Utils.getChannel(context));
         Log.d(TAG, "onEvent: eventID-> " + eventID + " , map-> " + map);
 
         MobclickAgent.onEvent(context, eventID, map);
+    }
+
+    /**
+     * 统计时长
+     *
+     * @param context
+     * @param eventID
+     * @param duration 开发者需要自己计算音乐播放时长
+     */
+    public static void onEventValue(Context context, String eventID, int duration) {
+        // 默认添加渠道号
+        Map<String, String> mapValue = new HashMap<>(1);
+        mapValue.put(MobclickEvent.CHANNEL, Utils.getChannel(context));
+        Log.d(TAG, "onEventValue: eventID-> " + eventID + " , duration-> " + duration + " , map-> " + mapValue);
+
+        MobclickAgent.onEventValue(context, eventID, mapValue, duration);
     }
 }

@@ -39,6 +39,7 @@ import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.IsSuperVipRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.main.MainFragmentStatePagerAdapter;
+import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
@@ -97,6 +98,14 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
     boolean isExit = false;
     Runnable exitAppRunnable = () -> isExit = false;
+    /**
+     * 当前页面索引
+     */
+    private int currentPosition = 0;
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,13 +226,16 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             }
             @Override
             public void onPageSelected(int position) {
-
+//                Log.e("EventReportManager", "onPageSelected: position " + position);
+                if (currentPosition != position) {
+                    ((BaseFragment) adapter.getItem(currentPosition)).eventReportDuration();
+                }
+                currentPosition = position;
             }
             @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
-
 
         miniAudioPlayController = (MiniAudioPlayControllerLayout) findViewById(R.id.mini_audio_play_controller);
         setMiniAudioPlayController(miniAudioPlayController);

@@ -64,6 +64,10 @@ public class MobclickEvent {
      * 自定义属性（item展示的标题）
      */
     public static final String TITLE = "title";
+    /**
+     * 自定义属性（channel 渠道号）
+     */
+    public static final String CHANNEL = "channel";
 
     /**
      * 一级菜单-今日点击监控
