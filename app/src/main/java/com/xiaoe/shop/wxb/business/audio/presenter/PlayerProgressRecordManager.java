@@ -10,6 +10,7 @@ import com.xiaoe.common.utils.SharedPreferencesUtil;
  * Author: hansyang
  * Description:
  */
+@Deprecated
 public class PlayerProgressRecordManager {
 
     static final String TAG = "PlayerProgressRecord";

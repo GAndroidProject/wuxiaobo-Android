@@ -43,6 +43,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public static boolean prepared = false;
     public static float mPlaySpeed = 1f;//播放倍数
     private static AudioFocusManager audioFocusManager;
+    private static boolean isSaveProgress = true;
 
     @SuppressLint("HandlerLeak")
     private static Handler mHandler = new Handler(){
@@ -115,7 +116,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         EventBus.getDefault().post(event);
         mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
 
-        if (audio != null && audio.getProgress() > 0)
+        if (audio != null && audio.getProgress() >= 0)
             mediaPlayer.seekTo(audio.getProgress());
     }
 
@@ -141,6 +142,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
             return;
         }
+        audio.setProgress(0);
         playNext(false);
     }
 
@@ -377,6 +379,10 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             return;
         }
         int currentPosition = getCurrentPosition();
+        if (isSaveProgress){
+            savePlayProgress(currentPosition);
+        }
+        isSaveProgress = !isSaveProgress;
         event.setState(AudioPlayEvent.PROGRESS);
         event.setProgress(currentPosition);
         EventBus.getDefault().post(event);
@@ -423,10 +429,12 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
         AudioNotifier.get().cancelAll();
+    }
 
-        int currentPosition = event.getProgress() - 5 * 1000;//保存播放进度向后退五秒
-        if (currentPosition > 0)
-            audio.setProgress(currentPosition);
+    private static void savePlayProgress(int progress) {
+        progress = progress - 5 * 1000;//保存播放进度向后退五秒
+        progress = progress < 0 ? 0 : progress;
+        audio.setProgress(progress);
         saveAudioDB();
     }
 }

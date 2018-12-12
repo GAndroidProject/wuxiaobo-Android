@@ -13,10 +13,11 @@ import com.xiaoe.common.entitys.CouponInfo;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
-import com.xiaoe.shop.wxb.business.audio.ui.AudioActivity;
+import com.xiaoe.shop.wxb.business.audio.presenter.PlayerProgressRecordManager;
 import com.xiaoe.shop.wxb.business.audio.ui.AudioNewActivity;
 import com.xiaoe.shop.wxb.business.bought_list.ui.BoughtListActivity;
 import com.xiaoe.shop.wxb.business.cdkey.ui.CdKeyActivity;
@@ -95,6 +96,14 @@ public class JumpDetail {
             AudioPlayUtil.getInstance().refreshAudio(playEntity);
             AudioPresenter audioPresenter = new AudioPresenter(null);
             audioPresenter.requestDetail(resId);
+            if (context instanceof XiaoeActivity){
+                try {
+                    ((XiaoeActivity)context).initAudioPlayControllerProgress();
+                    AudioMediaPlayer.mediaPlayer.reset();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
         }
         Intent intent = new Intent(context, AudioNewActivity.class);
         context.startActivity(intent);
