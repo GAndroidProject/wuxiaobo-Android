@@ -50,6 +50,8 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
             values.put(AudioPlayTable.getCreateAt(), tableEntity.getCreateAt());
         }
         values.put("try_play_url", tableEntity.getTryPlayUrl());
+        values.put(AudioPlayTable.getProgress(),tableEntity.getProgress());
+        values.put(AudioPlayTable.getMaxProgress(),tableEntity.getMaxProgress());
         values.put("is_try", tableEntity.getIsTry());
     }
 
@@ -97,6 +99,16 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
         int tryPlayUrlIndex = cursor.getColumnIndex("try_play_url");
         if(tryPlayUrlIndex >= 0){
             entity.setTryPlayUrl(cursor.getString(tryPlayUrlIndex));
+        }
+
+        int progressIndex = cursor.getColumnIndex(AudioPlayTable.getProgress());
+        if(progressIndex >= 0){
+            entity.setProgress(cursor.getInt(progressIndex));
+        }
+
+        int maxProgressIndex = cursor.getColumnIndex(AudioPlayTable.getMaxProgress());
+        if(maxProgressIndex >= 0){
+            entity.setMaxProgress(cursor.getInt(maxProgressIndex));
         }
 
         int isTryIndex = cursor.getColumnIndex("is_try");

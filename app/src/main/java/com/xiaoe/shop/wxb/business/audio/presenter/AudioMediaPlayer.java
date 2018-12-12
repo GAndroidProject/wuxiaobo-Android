@@ -36,7 +36,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         MediaPlayer.OnErrorListener {
     private static final String TAG = "AudioMediaPlayer";
     private static final int MSG_PLAY_PROGRESS = 80001;
-    private static MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
     private static AudioPlayEvent event;
     private static AudioPlayEntity audio = null;
     private static boolean isStop = true;//是否是停止（已经释放资源），
@@ -114,6 +114,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         changePlayerSpeed(mPlaySpeed);
         EventBus.getDefault().post(event);
         mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
+
+        if (audio != null && audio.getProgress() > 0)
+            mediaPlayer.seekTo(audio.getProgress());
     }
 
     @Override
@@ -248,7 +251,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
     public static int getDuration(){
         if(mediaPlayer != null && prepared){
-            return  mediaPlayer.getDuration();
+            int duration = mediaPlayer.getDuration();
+            audio.setMaxProgress(duration);
+            return duration;
         }
         return  -1;
     }
@@ -371,8 +376,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             //已经停止就不需要在轮循获取当前进度
             return;
         }
+        int currentPosition = getCurrentPosition();
         event.setState(AudioPlayEvent.PROGRESS);
-        event.setProgress(getCurrentPosition());
+        event.setProgress(currentPosition);
         EventBus.getDefault().post(event);
         mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS,500);
     }
@@ -389,7 +395,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         start();
     }
     private static void saveAudioDB(){
-
         audio.setState(0);
         audio.setCurrentPlayState(1);
         audio.setUpdateAt(DateFormat.currentTime());
@@ -418,5 +423,10 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
         AudioNotifier.get().cancelAll();
+
+        int currentPosition = event.getProgress() - 5 * 1000;//保存播放进度向后退五秒
+        if (currentPosition > 0)
+            audio.setProgress(currentPosition);
+        saveAudioDB();
     }
 }

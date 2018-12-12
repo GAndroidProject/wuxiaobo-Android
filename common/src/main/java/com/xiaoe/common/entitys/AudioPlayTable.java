@@ -17,6 +17,8 @@ public class AudioPlayTable {
     private static final String resourceId = "resource_id";
     private static final String columnId = "column_id";
     private static final String bigColumnId = "big_column_id";
+    private static final String progress = "progress";
+    private static final String maxProgress = "max_progress";
     private static final String title = "title";
     private static final String content = "content";
     private static final String playUrl = "play_url";
@@ -31,6 +33,8 @@ public class AudioPlayTable {
             resourceId+" "+TYPE_VARCHAR_64+" not null,"+
             columnId+" "+TYPE_VARCHAR_64+" default \"\","+
             bigColumnId+" "+TYPE_VARCHAR_64+" default \"\","+
+            progress+" "+TYPE_INTEGER+" default 0,"+
+            maxProgress+" "+TYPE_INTEGER+" default 0,"+
             title+" "+TYPE_VARCHAR_256+" default \"\","+
             content+" "+TYPE_TEXT+" default \"\","+
             playUrl+" "+TYPE_TEXT+" default \"\","+
@@ -92,5 +96,13 @@ public class AudioPlayTable {
 
     public static String getBigColumnId() {
         return bigColumnId;
+    }
+
+    public static String getProgress() {
+        return progress;
+    }
+
+    public static String getMaxProgress() {
+        return maxProgress;
     }
 }

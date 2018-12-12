@@ -217,6 +217,10 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
     @Override
     protected void onStart() {
         super.onStart();
+        initAudioPlayController();
+    }
+
+    private void initAudioPlayController() {
         if(isInit){
             isInit = false;
             if(this instanceof MainActivity){
@@ -232,11 +236,18 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
             miniAudioPlayController.setAudioTitle(AudioMediaPlayer.getAudio().getTitle());
             miniAudioPlayController.setAudioImage(AudioMediaPlayer.getAudio().getImgUrlCompressed());
             miniAudioPlayController.setColumnTitle(AudioMediaPlayer.getAudio().getProductsTitle());
+            if (AudioMediaPlayer.getCurrentPosition() > 0 && !AudioMediaPlayer.isPlaying())
+                miniAudioPlayController.setProgress(AudioMediaPlayer.getCurrentPosition());
             miniAudioPlayController.setMaxProgress(AudioMediaPlayer.getDuration());
             miniAudioPlayController.setPlayState(AudioMediaPlayer.isPlaying() ? AudioPlayEvent.PLAY : AudioPlayEvent.PAUSE);
         }else if(miniAudioPlayController != null){
             miniAudioPlayController.setVisibility(View.GONE);
         }
+    }
+
+    public void initAudioPlayControllerProgress(){
+        if (miniAudioPlayController != null)
+            miniAudioPlayController.setProgress(0);
     }
 
     @Override
@@ -297,6 +308,15 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
                 miniAudioPlayController.setAudioImage(playEntity.getImgUrlCompressed());
                 miniAudioPlayController.setColumnTitle(playEntity.getProductsTitle());
                 miniAudioPlayController.setVisibility(View.VISIBLE);
+                miniAudioPlayController.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (playEntity.getMaxProgress() > 0)
+                            miniAudioPlayController.setMaxProgress(playEntity.getMaxProgress());
+                        if (playEntity.getProgress() > 0)
+                            miniAudioPlayController.setProgress(playEntity.getProgress());
+                    }
+                },200);
             }else{
                 miniAudioPlayController.setVisibility(View.GONE);
             }

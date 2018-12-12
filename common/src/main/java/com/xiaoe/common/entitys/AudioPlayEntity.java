@@ -43,6 +43,8 @@ public class AudioPlayEntity {
     private String flowId;
     private boolean cache = false;
     private boolean isLocalResource = false;
+    private int progress;
+    private int maxProgress;
 
     public String getAppId() {
         return appId;
@@ -323,5 +325,21 @@ public class AudioPlayEntity {
 
     public void setLocalResource(boolean localResource) {
         isLocalResource = localResource;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public int getMaxProgress() {
+        return maxProgress;
+    }
+
+    public void setMaxProgress(int maxProgress) {
+        this.maxProgress = maxProgress;
     }
 }
