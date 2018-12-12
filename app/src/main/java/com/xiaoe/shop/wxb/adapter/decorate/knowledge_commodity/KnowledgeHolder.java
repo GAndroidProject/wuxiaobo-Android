@@ -15,8 +15,12 @@ class KnowledgeHolder {
 
     @BindView(R.id.knowledge_list_item_wrap)
     RelativeLayout itemWrap;
+    @BindView(R.id.knowledge_list_item)
+    RelativeLayout listItem;
     @BindView(R.id.knowledge_list_item_icon)
     SimpleDraweeView itemIcon;
+    @BindView(R.id.knowledge_list_item_icon2)
+    SimpleDraweeView itemIcon2;
     @BindView(R.id.knowledge_list_item_icon_bg)
     SimpleDraweeView itemIconBg;
     @BindView(R.id.knowledge_list_item_title)

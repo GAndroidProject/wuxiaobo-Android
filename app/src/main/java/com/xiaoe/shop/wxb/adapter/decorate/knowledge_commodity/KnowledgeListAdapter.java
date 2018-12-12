@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
-
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
@@ -22,7 +21,6 @@ import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
-
 import java.util.List;
 
 public class KnowledgeListAdapter extends BaseAdapter {
@@ -32,8 +30,6 @@ public class KnowledgeListAdapter extends BaseAdapter {
     private List<KnowledgeCommodityItem> mItemList;
     private Context mContext;
     private LayoutInflater mInflater;
-    private final int TYPE_AUDIO = 1;
-    private final int TYPE_OTHER = 2;
 
     public KnowledgeListAdapter(Context context, List<KnowledgeCommodityItem> itemList) {
         this.mContext = context;
@@ -44,19 +40,6 @@ public class KnowledgeListAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         return mItemList == null ? 0 : mItemList.size();
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return mItemList.size()< 2 ? 1 : 2;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        String type = convertItemType(mItemList.get(position).getSrcType());
-        if ("2".equals(type))
-            return TYPE_AUDIO;
-        return TYPE_OTHER;
     }
 
     @Override
@@ -71,31 +54,20 @@ public class KnowledgeListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        int type = getItemViewType(position);
-        KnowledgeHolder viewHolder = null,viewHolderAudio = null;
+        final KnowledgeHolder viewHolder;
         if (convertView == null) {
-            if (TYPE_AUDIO == type){
-                convertView = mInflater.inflate(R.layout.knowledge_audio_list_item, parent, false);
-                viewHolderAudio = new KnowledgeHolder(convertView);
-                convertView.setTag(viewHolderAudio);
-            }else {
-                convertView = mInflater.inflate(R.layout.knowledge_commodity_list_item, parent, false);
-                viewHolder = new KnowledgeHolder(convertView);
-                convertView.setTag(viewHolder);
-            }
+            convertView = mInflater.inflate(R.layout.knowledge_commodity_list_item, parent, false);
+            viewHolder = new KnowledgeHolder(convertView);
+            convertView.setTag(viewHolder);
         } else {
-            if (TYPE_AUDIO == type)
-                viewHolderAudio = (KnowledgeHolder) convertView.getTag();
-            else viewHolder = (KnowledgeHolder) convertView.getTag();
+            viewHolder = (KnowledgeHolder) convertView.getTag();
         }
-        if (TYPE_AUDIO == type)
-            updateView(position, viewHolderAudio,type);
-        else updateView(position, viewHolder,type);
+        updateView(position, viewHolder);
 
         return convertView;
     }
 
-    private void updateView(int position, KnowledgeHolder viewHolder,int type) {
+    private void updateView(int position, KnowledgeHolder viewHolder) {
         if (viewHolder == null)  return;
         // 如果是专栏的话需要有两行标题，其他单品就显示一行标题和一行描述
         String srcType = mItemList.get(position).getSrcType();
@@ -112,8 +84,10 @@ public class KnowledgeListAdapter extends BaseAdapter {
                 viewHolder.itemTitleColumn.setVisibility(View.GONE);
             }
         }
-        if (TYPE_AUDIO == type){
-            viewHolder.itemIconBg.setVisibility(View.VISIBLE);
+        boolean isAudio = "2".equals(convertItemType(mItemList.get(position).getSrcType()));
+        viewHolder.listItem.setVisibility(isAudio ? View.VISIBLE : View.GONE);
+        viewHolder.itemIcon.setVisibility(isAudio ? View.INVISIBLE : View.VISIBLE);
+        if (isAudio){
             SetImageUriUtil.setImgURI(viewHolder.itemIconBg, "res:///" +
                             R.mipmap.audio_list_bg , Dp2Px2SpUtil.dp2px(mContext, 160),
                     Dp2Px2SpUtil.dp2px(mContext, 120));
@@ -121,13 +95,12 @@ public class KnowledgeListAdapter extends BaseAdapter {
                     R.mipmap.audio_ring : mItemList.get(position).getItemImg();
             int imageWidthDp = 84;
             if (url.contains("res:///") || !SetImageUriUtil.isGif(url)) {// 本地图片
-                SetImageUriUtil.setImgURI(viewHolder.itemIcon, url, Dp2Px2SpUtil.dp2px(mContext, imageWidthDp),
+                SetImageUriUtil.setImgURI(viewHolder.itemIcon2, url, Dp2Px2SpUtil.dp2px(mContext, imageWidthDp),
                         Dp2Px2SpUtil.dp2px(mContext, imageWidthDp));
             } else {// 网络图片
-                SetImageUriUtil.setRoundAsCircle(viewHolder.itemIcon, Uri.parse(url));
+                SetImageUriUtil.setRoundAsCircle(viewHolder.itemIcon2, Uri.parse(url));
             }
         }else {
-            viewHolder.itemIconBg.setVisibility(View.GONE);
             viewHolder.itemIcon.setImageURI(mItemList.get(position).getItemImg());
         }
 
