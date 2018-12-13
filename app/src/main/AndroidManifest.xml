@@ -375,6 +375,9 @@
         <activity
             android:name=".business.login.ui.ProtocolActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".business.super_vip.ui.NewSuperVipActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

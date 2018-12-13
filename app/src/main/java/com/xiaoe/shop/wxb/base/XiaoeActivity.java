@@ -537,7 +537,7 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
             CommonUserInfo.setIsSuperVipAvailable(false);
             dialog.dismissDialog();
             // 点击重新登录，登录完之后要回到原来的页面
-            JumpDetail.jumpLogin(this);
+            JumpDetail.jumpLoginSplash(this);
             // 登录后需要回到原来的页面，所以不做 finish 操作
 //             finish();
             ActivityCollector.finishAll();
