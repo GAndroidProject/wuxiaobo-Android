@@ -1011,4 +1011,12 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         microPageAdapter = null;
         hp.requestMicroPageData(microPageId);
     }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            totalScrollY = 0;
+        }
+    }
 }
