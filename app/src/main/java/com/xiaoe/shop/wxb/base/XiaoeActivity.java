@@ -234,18 +234,21 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
                 getAudioRecord();
             }
         }
-        if(miniAudioPlayController != null && AudioMediaPlayer.getAudio() != null){
+        AudioPlayEntity audio = AudioMediaPlayer.getAudio();
+        if(miniAudioPlayController != null && audio != null){
             if(AudioPlayUtil.getInstance().isCloseMiniPlayer()){
                 miniAudioPlayController.setVisibility(View.GONE);
             }else{
                 miniAudioPlayController.setVisibility(View.VISIBLE);
             }
-            miniAudioPlayController.setAudioTitle(AudioMediaPlayer.getAudio().getTitle());
-            miniAudioPlayController.setAudioImage(AudioMediaPlayer.getAudio().getImgUrlCompressed());
-            miniAudioPlayController.setColumnTitle(AudioMediaPlayer.getAudio().getProductsTitle());
-            if (AudioMediaPlayer.getCurrentPosition() > 0 && !AudioMediaPlayer.isPlaying())
-                miniAudioPlayController.setProgress(AudioMediaPlayer.getCurrentPosition());
-            miniAudioPlayController.setMaxProgress(AudioMediaPlayer.getDuration());
+
+            miniAudioPlayController.setAudioTitle(audio.getTitle());
+            miniAudioPlayController.setAudioImage(audio.getImgUrlCompressed());
+            miniAudioPlayController.setColumnTitle(audio.getProductsTitle());
+            int currentPosition = audio.getProgress();
+            if (currentPosition > 0 && !AudioMediaPlayer.isPlaying())
+                miniAudioPlayController.setProgress(currentPosition);
+            miniAudioPlayController.setMaxProgress(audio.getMaxProgress());
             miniAudioPlayController.setPlayState(AudioMediaPlayer.isPlaying() ? AudioPlayEvent.PLAY : AudioPlayEvent.PAUSE);
         }else if(miniAudioPlayController != null){
             miniAudioPlayController.setVisibility(View.GONE);

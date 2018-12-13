@@ -242,6 +242,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public static void release(){
         if(mediaPlayer != null){
             mediaPlayer.stop();
+            mediaPlayer.reset();
             mediaPlayer.release();
             mPlaySpeed = 1.0f;
             mediaPlayer = null;
