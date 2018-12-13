@@ -58,12 +58,12 @@
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"/>
 
-                <com.xiaoe.shop.wxb.business.mine.ui.MineMoneyWrapView
-                    android:id="@+id/mine_money_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"/>
+                <!--<com.xiaoe.shop.wxb.business.mine.ui.MineMoneyWrapView-->
+                    <!--android:id="@+id/mine_money_view"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:paddingStart="20dp"-->
+                    <!--android:paddingEnd="20dp"/>-->
 
                 <com.xiaoe.shop.wxb.business.mine.ui.MineLearningWrapView
                     android:id="@+id/mine_learning_view"

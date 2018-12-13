@@ -48,10 +48,8 @@ public class SplashActivity extends XiaoeActivity {
         setStatusBar();
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        // 用户隐藏奖学金 tab （12.7 决定一直显示奖学金 tab）
-//        scholarshipPresenter = new ScholarshipPresenter(this, true);
-//        scholarshipPresenter.requestTaskList( false);
-        initView();
+        scholarshipPresenter = new ScholarshipPresenter(this, true);
+        scholarshipPresenter.requestTaskList( false);
         initData();
         SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
@@ -89,24 +87,20 @@ public class SplashActivity extends XiaoeActivity {
         });
     }
 
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
-
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        // 用于隐藏奖学金 tab（12.7 决定一直显示奖学金tab）
-//        if (success) {
-//            ScholarshipEntity.getInstance().setTaskExist(true);
-//        } else {
-//            ScholarshipEntity.getInstance().setTaskExist(false);
-//        }
+        if (success) {
+            ScholarshipEntity.getInstance().setTaskExist(true);
+        } else {
+            ScholarshipEntity.getInstance().setTaskExist(false);
+        }
         // 需要拿到结果后再进行跳转
-//        initView();
+        initView();
     }
 }

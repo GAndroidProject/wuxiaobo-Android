@@ -111,7 +111,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     List<LoginUser> loginUserList;
 
     private TouristDialog touristDialog;
-    private ScholarshipPresenter scholarshipPresenter;
+//    private ScholarshipPresenter scholarshipPresenter;
     private boolean hasEarnMoney;
     private String amount;
     Handler handler = new Handler();
@@ -328,14 +328,15 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         }else if(iRequest instanceof RemoveCollectionListRequest){
             removeCollectionRequest(jsonObject);
         } else if (iRequest instanceof ScholarshipSubmitRequest) { // 奖学金提交回调
-            JSONObject data = (JSONObject) jsonObject.get("data");
-            String taskDetailId = data.getString("task_detail_id");
-            ScholarshipEntity.getInstance().setTaskDetailId(taskDetailId);
-            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
+            // 第一版屏蔽奖学金相关接口
+//            JSONObject data = (JSONObject) jsonObject.get("data");
+//            String taskDetailId = data.getString("task_detail_id");
+//            ScholarshipEntity.getInstance().setTaskDetailId(taskDetailId);
+//            scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
         } else if (iRequest instanceof ScholarshipReceiveRequest) {
             // 获取成功之后查询领取结果接口
-            JSONObject result = (JSONObject) jsonObject.get("data");
-            obtainReceiveStatus(result);
+//            JSONObject result = (JSONObject) jsonObject.get("data");
+//            obtainReceiveStatus(result);
         }
     }
 
@@ -369,7 +370,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             runnable = new Runnable() {
                 @Override
                 public void run() {
-                    scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
+//                    scholarshipPresenter.queryReceiveResult(ScholarshipEntity.getInstance().getTaskId(), ScholarshipEntity.getInstance().getTaskDetailId());
                 }
             };
             handler.postDelayed(runnable, 3000);
@@ -671,18 +672,19 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
 
     @Subscribe
     public void onEventMainThread(HadSharedEvent hadSharedEvent) {
-        if (hadSharedEvent != null && hadSharedEvent.hadShared) {
-            if (CommonUserInfo.isIsSuperVip() || (!AudioMediaPlayer.getAudio().isFree() && AudioMediaPlayer.getAudio().getHasBuy() == 1)) { // 不是免费然后已经分享并且买了
-                if (scholarshipPresenter == null) {
-                    scholarshipPresenter = new ScholarshipPresenter(
-                            this,
-                            AudioMediaPlayer.getAudio().getResourceId(),
-                            "2",
-                            CommonUserInfo.isIsSuperVip());
-                }
-                scholarshipPresenter.requestTaskList(false);
-            }
-        }
+        // 第一期屏蔽奖学金相关接口
+//        if (hadSharedEvent != null && hadSharedEvent.hadShared) {
+//            if (CommonUserInfo.isIsSuperVip() || (!AudioMediaPlayer.getAudio().isFree() && AudioMediaPlayer.getAudio().getHasBuy() == 1)) { // 不是免费然后已经分享并且买了
+//                if (scholarshipPresenter == null) {
+//                    scholarshipPresenter = new ScholarshipPresenter(
+//                            this,
+//                            AudioMediaPlayer.getAudio().getResourceId(),
+//                            "2",
+//                            CommonUserInfo.isIsSuperVip());
+//                }
+//                scholarshipPresenter.requestTaskList(false);
+//            }
+//        }
     }
 
     @Override

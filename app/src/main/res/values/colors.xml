@@ -23,6 +23,7 @@
     <color name="secondary_button_text_color">#CBCED4</color><!--次级按钮颜色，未选中态-->
 	<color name="division_color">#dbdbdb</color><!--高亮标题颜色-->
     <color name="price_color">#BCA16B</color><!--价格颜色-->
+    <color name="price_color_with_alpha">#CCBCA16B</color>
     <color name="recent_list_color">#666666</color><!--列表item字体颜色-->
     <color name="knowledge_item_desc_color">#cccccc</color><!--知识商品列表样式描述字体颜色-->
     <color name="recent_update_btn_normal">#407FFB</color><!--最近更新按钮正常状态-->
@@ -85,4 +86,6 @@
     
     <color name="login_we_chat_normal">#ff46BB36</color>
     <color name="login_we_chat_press">#cc46BB36</color> <!--20% 透明度的绿色-->
+
+    <color name="vip_btn_text">#44210B</color>
 </resources>

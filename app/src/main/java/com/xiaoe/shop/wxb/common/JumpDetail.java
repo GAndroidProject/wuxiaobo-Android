@@ -45,6 +45,7 @@ import com.xiaoe.shop.wxb.business.search.ui.SearchActivity;
 import com.xiaoe.shop.wxb.business.search.ui.SearchMoreActivity;
 import com.xiaoe.shop.wxb.business.setting.ui.SettingAccountActivity;
 import com.xiaoe.shop.wxb.business.setting.ui.SettingPersonActivity;
+import com.xiaoe.shop.wxb.business.super_vip.ui.NewSuperVipActivity;
 import com.xiaoe.shop.wxb.business.super_vip.ui.SuperVipActivity;
 import com.xiaoe.shop.wxb.business.video.ui.VideoActivity;
 import com.xiaoe.shop.wxb.common.pay.ui.PayActivity;
@@ -329,7 +330,7 @@ public class JumpDetail {
      * @param context
      */
     public static void jumpSuperVip(Context context) {
-        Intent intent = new Intent(context, SuperVipActivity.class);
+        Intent intent = new Intent(context, NewSuperVipActivity.class);
         context.startActivity(intent);
     }
 
@@ -338,7 +339,7 @@ public class JumpDetail {
      * @param context
      */
     public static void jumpSuperVip(Context context, boolean hasBuy) {
-        Intent intent = new Intent(context, SuperVipActivity.class);
+        Intent intent = new Intent(context, NewSuperVipActivity.class);
 
         intent.putExtra("hasBuy", hasBuy);
 

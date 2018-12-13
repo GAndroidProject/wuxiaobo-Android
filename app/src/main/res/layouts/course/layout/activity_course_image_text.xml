@@ -87,7 +87,7 @@
     <com.xiaoe.shop.wxb.widget.CommonTitleView
         android:id="@+id/it_common_title_view"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         app:layout_collapseMode="pin"
         android:background="@color/white"
         android:visibility="gone"/>

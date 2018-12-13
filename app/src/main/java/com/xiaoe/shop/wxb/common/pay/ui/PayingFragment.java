@@ -3,13 +3,16 @@ package com.xiaoe.shop.wxb.common.pay.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.ImageViewCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import com.xiaoe.shop.wxb.R;
@@ -27,6 +30,7 @@ public class PayingFragment extends BaseFragment {
     private TextView btnSucceedPay;
     private View.OnClickListener onClickListener;
     private int couponCount;
+    private ImageView ivConfirmLogo;
 
     @Nullable
     @Override
@@ -45,7 +49,8 @@ public class PayingFragment extends BaseFragment {
 
     private void initView() {
         SimpleDraweeView itemImage = (SimpleDraweeView) mRootView.findViewById(R.id.item_image);
-        itemImage.setImageURI(mIntent.getStringExtra("image_url"));
+        String imgUrl = mIntent.getStringExtra("image_url");
+        itemImage.setImageURI(imgUrl);
         TextView title = (TextView) mRootView.findViewById(R.id.item_title);
         title.setText(mIntent.getStringExtra("title"));
         TextView resourcePrice = (TextView) mRootView.findViewById(R.id.item_count);
@@ -56,6 +61,14 @@ public class PayingFragment extends BaseFragment {
         btnSelectCoupon = (RelativeLayout) mRootView.findViewById(R.id.coupon_wrap);
         useConpon = (TextView) mRootView.findViewById(R.id.use_coupon_title);
         btnSucceedPay = (TextView) mRootView.findViewById(R.id.btn_succeed_pay);
+        ivConfirmLogo = (ImageView) mRootView.findViewById(R.id.pay_confirm_bg);
+        if (("res:///" + R.mipmap.vip_card).equals(imgUrl)) { // 购买超级会员
+            btnSucceedPay.setBackground(getResources().getDrawable(R.drawable.vip_high_button));
+            Glide.with(this).load(R.mipmap.vip_buy_confirm).into(ivConfirmLogo);
+        } else {
+            btnSucceedPay.setBackground(getResources().getDrawable(R.drawable.high_button));
+            Glide.with(this).load(R.mipmap.download_checking).into(ivConfirmLogo);
+        }
         setCanUseCouponCount(-1);
 
         AutofitTextView itemDesc = (AutofitTextView) mRootView.findViewById(R.id.item_desc);

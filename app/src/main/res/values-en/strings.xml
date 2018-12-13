@@ -278,7 +278,7 @@
     <string name="withdrawal_success_tip">预计1&#8211;3天到账</string>
     <string name="withdrawal_bottom_tip">查看到账明细：我的&#8211;奖学金&#8211;提现记录</string>
 
-    <string name="vip_btn_money">开通会员￥%1$s /年</string>
+    <string name="vip_btn_money">%1$s元开通超级会员</string>
 
     <string name="wait_text">等待</string>
 
@@ -486,4 +486,6 @@
     <string name="login_bind_wx_new">微信购买的课程，在APP也能听哦</string>
     <string name="login_code_error_new">验证码错误，请重新输入</string>
     <string name="login_code_timeout_new">验证码超时，请重新获取</string>
+    <string name="vip_has_buy_text">已开通VIP 立即畅听全场课程</string>
+    <string name="login_code_new_title">短信验证码</string>
 </resources>

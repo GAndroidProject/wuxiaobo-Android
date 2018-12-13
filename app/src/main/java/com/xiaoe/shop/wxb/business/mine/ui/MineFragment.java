@@ -81,8 +81,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     MineMsgView mineMsgView;
     @BindView(R.id.mine_vip_view)
     MineVipCard mineVipCard;
-    @BindView(R.id.mine_money_view)
-    MineMoneyWrapView mineMoneyWrapView;
+//    @BindView(R.id.mine_money_view)
+//    MineMoneyWrapView mineMoneyWrapView;
     @BindView(R.id.mine_learning_view)
     MineLearningWrapView mineLearningWrapView;
     @BindView(R.id.mine_loading)
@@ -90,7 +90,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
     MainActivity mainActivity;
 
-    EarningPresenter earningPresenter;
+    // 去掉奖学金与积分的请求接口
+//    EarningPresenter earningPresenter;
     MineLearningPresenter mineLearningPresenter;
 
     String balance;
@@ -196,17 +197,17 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     protected void onFragmentFirstVisible() {
         super.onFragmentFirstVisible();
-        if (earningPresenter == null) {
-            earningPresenter = new EarningPresenter(this);
-        }
+//        if (earningPresenter == null) {
+//            earningPresenter = new EarningPresenter(this);
+//        }
         if (mineLearningPresenter == null) {
             mineLearningPresenter = new MineLearningPresenter(this);
         }
         isScholarshipFinish = false;
         isIntegralFinish = false;
         isMineLearningFinish = false;
-        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+//        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+//        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
         mineLearningPresenter.requestLearningData(1, 1);
         if (!mainActivity.isFormalUser) {
 
@@ -256,7 +257,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         int top = Dp2Px2SpUtil.dp2px(mContext, -36);
         int right = Dp2Px2SpUtil.dp2px(mContext, 20);
         layoutParams.setMargins(left, top, right ,0);
-        mineMoneyWrapView.setLayoutParams(layoutParams);
+//        mineMoneyWrapView.setLayoutParams(layoutParams);
         // 金钱容器（未登录状态）
         List<MineMoneyItemInfo> tempList = new ArrayList<>();
         MineMoneyItemInfo item_1_temp = new MineMoneyItemInfo();
@@ -269,7 +270,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         tempList.add(item_2_temp);
         MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, tempList);
         moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
-        mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
+//        mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
         MineLearningListAdapter learningListAdapter = new MineLearningListAdapter(getActivity());
         mineLearningWrapView.setLearningListAdapter(learningListAdapter);
         mineLearningWrapView.setLearningContainerVisibility(View.GONE);
@@ -313,14 +314,14 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             int top = Dp2Px2SpUtil.dp2px(mContext, 16);
             int right = Dp2Px2SpUtil.dp2px(mContext, 0);
             layoutParams.setMargins(left,top,right,0);
-            mineMoneyWrapView.setLayoutParams(layoutParams);
+//            mineMoneyWrapView.setLayoutParams(layoutParams);
         } else { // 超级会员卡片不存在
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             int left = Dp2Px2SpUtil.dp2px(mContext, 0);
             int top = Dp2Px2SpUtil.dp2px(mContext, 0);
             int right = Dp2Px2SpUtil.dp2px(mContext, 0);
             layoutParams.setMargins(left,top,right,0);
-            mineMoneyWrapView.setLayoutParams(layoutParams);
+//            mineMoneyWrapView.setLayoutParams(layoutParams);
         }
         // 金钱容器
         if (itemInfoList == null) {
@@ -636,7 +637,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
     // 初始化页面数据
     private void initPageData() {
-        if (isIntegralFinish && isScholarshipFinish && isMineLearningFinish) { // 奖学金和积分和我正在学都请求完后再执行
+        // if (isIntegralFinish && isScholarshipFinish && isMineLearningFinish) { // 奖学金和积分和我正在学都请求完后再执行（去掉奖学金和积分的接口请求）
+        if (isMineLearningFinish) {
             if (itemInfoList != null && itemInfoList.size() > 0) {
                 itemInfoList.clear();
             }
@@ -649,7 +651,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             if (!hasDecorate) {
                 moneyWrapRecyclerAdapter = new MoneyWrapRecyclerAdapter(mContext, itemInfoList);
                 moneyWrapRecyclerAdapter.setOnItemClickWithMoneyItemListener(this);
-                mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
+//                mineMoneyWrapView.setMoneyRecyclerAdapter(moneyWrapRecyclerAdapter);
 
                 learningListAdapter = new MineLearningListAdapter(mContext);
                 mineLearningWrapView.setLearningListAdapter(learningListAdapter);
@@ -697,9 +699,9 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
             // 成功切换身份，重新请求接口，刷新界面
             initMineMsg();
-            if (earningPresenter == null) {
-                earningPresenter = new EarningPresenter(this);
-            }
+//            if (earningPresenter == null) {
+//                earningPresenter = new EarningPresenter(this);
+//            }
             if (mineLearningPresenter == null) {
                 mineLearningPresenter = new MineLearningPresenter(this);
             }
@@ -709,8 +711,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             isScholarshipFinish = false;
             isIntegralFinish = false;
             isMineLearningFinish = false;
-            earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-            earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+//            earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+//            earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
             mineLearningPresenter.requestLearningData(1, 1);
             superVipPresenter.requestSuperVip();
         }
@@ -836,14 +838,14 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-        if (earningPresenter == null) {
-            earningPresenter = new EarningPresenter(this);
-        }
+//        if (earningPresenter == null) {
+//            earningPresenter = new EarningPresenter(this);
+//        }
         if (mineLearningPresenter == null) {
             mineLearningPresenter = new MineLearningPresenter(this);
         }
-        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+//        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+//        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
         mineLearningPresenter.requestLearningData(1, 1);
         if (superVipPresenter == null) {
             superVipPresenter = new SuperVipPresenter(this);

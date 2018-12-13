@@ -146,7 +146,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         unbinder = ButterKnife.bind(this);
         EventBus.getDefault().register(this);
 
-        itWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+        itToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+        itBack.setPadding(Dp2Px2SpUtil.dp2px(this, 20), StatusBarUtil.getStatusBarHeight(this), 0, 0);
 
         toolbarHeight = Dp2Px2SpUtil.dp2px(this,100);
 

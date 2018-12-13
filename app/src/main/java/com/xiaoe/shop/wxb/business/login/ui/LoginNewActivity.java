@@ -157,9 +157,11 @@ public class LoginNewActivity extends XiaoeActivity {
                     super.onBackPressed();
                     break;
                 case LOGIN_VERIFY_CODE:
+                    loginTitle.setText(mainFragmentTitle);
                     replaceFragment(LOGIN_OBTAIN_CODE);
                     break;
                 case LOGIN_BIND_WX:
+                    loginTitle.setText(getString(R.string.login_code_new_title));
                     replaceFragment(LOGIN_OBTAIN_CODE);
                     break;
             }
@@ -177,12 +179,15 @@ public class LoginNewActivity extends XiaoeActivity {
         if (currentFragment == null) {
             switch (tag) {
                 case LOGIN_OBTAIN_CODE:
+                    loginTitle.setText(mainFragmentTitle);
                     currentFragment = LoginNewFragment.newInstance(R.layout.fragment_login_main_new);
                     break;
                 case LOGIN_VERIFY_CODE:
+                    loginTitle.setText(getString(R.string.login_code_new_title));
                     currentFragment = LoginNewFragment.newInstance(R.layout.fragment_login_code_new);
                     break;
                 case LOGIN_BIND_WX:
+                    loginTitle.setText(getString(R.string.login_we_chat_title));
                     currentFragment = LoginNewFragment.newInstance(R.layout.fragment_login_we_chat_new);
                     break;
                 default:

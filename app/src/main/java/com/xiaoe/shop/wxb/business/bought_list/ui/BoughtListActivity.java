@@ -19,6 +19,7 @@ import com.xiaoe.common.entitys.BoughtListItem;
 import com.xiaoe.common.entitys.HadSharedEvent;
 import com.xiaoe.common.entitys.TaskDetailIdEvent;
 import com.xiaoe.common.interfaces.OnItemClickWithBoughtItemListener;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.MeasureUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.IRequest;
@@ -28,6 +29,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.bought_list.presenter.BoughtListAdapter;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -65,10 +67,12 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBar();
         setContentView(R.layout.activity_bought_lsit);
         unbinder = ButterKnife.bind(this);
         intent = getIntent();
         taskId = intent.getStringExtra("taskId");
+        boughtListBack.setPadding(Dp2Px2SpUtil.dp2px(this, 20), StatusBarUtil.getStatusBarHeight(this), 0, 0);
         isSuperVip = intent.getBooleanExtra("isSuperVip", false);
         EventBus.getDefault().register(this);
         dataList = new ArrayList<>();
@@ -109,8 +113,16 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     try {
-                        JSONArray data = ((JSONArray) ((JSONObject) result.get("data")).get("audio"));
-                        initPageData(data);
+                        if (dataList.size() != 0) {
+                            dataList.clear();
+                        }
+                        JSONArray audioData = ((JSONArray) ((JSONObject) result.get("data")).get("audio"));
+                        JSONArray imgTextData = ((JSONArray) ((JSONObject) result.get("data")).get("imageText"));
+                        JSONArray videoData = ((JSONArray) ((JSONObject) result.get("data")).get("video"));
+                        initData(audioData);
+                        initData(imgTextData);
+                        initData(videoData);
+                        initPage();
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
@@ -157,11 +169,8 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
         }
     }
 
-    // 初始化页面数据
-    private void initPageData(JSONArray data) {
-        if (dataList.size() != 0) {
-            dataList.clear();
-        }
+    // 初始化数据
+    private void initData(JSONArray data) {
         for (Object item : data) {
             JSONObject itemJson = (JSONObject) item;
             String resourceId = itemJson.getString("resource_id");
@@ -179,13 +188,15 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
 
             dataList.add(boughtListItem);
         }
+    }
 
-        // 初始化 ListView
+    // 初始化页面
+    private void initPage() {
+        // 初始化 ListView，拿到的 dataList 是全部的 list，由于奖学金第一期屏蔽，TODO: 前端分页
         boughtListAdapter = new BoughtListAdapter(this, dataList);
         boughtListAdapter.setOnItemClickWithBoughtItemListener(this);
         boughtListContent.setAdapter(boughtListAdapter);
         MeasureUtil.setListViewHeightBasedOnChildren(boughtListContent);
-
     }
 
     @Override

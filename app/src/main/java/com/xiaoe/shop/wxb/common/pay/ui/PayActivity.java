@@ -370,7 +370,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             statusPagerView.setStateImage(R.mipmap.payment_success);
             statusPagerView.setStateText(getResources().getString(R.string.pay_succeed));
             statusPagerView.setBtnGoToText(getResources().getString(R.string.go_to_study));
-            if (TextUtils.isEmpty(productId)) { // 购买会员，发送需要更新的事件
+            if (!TextUtils.isEmpty(productId)) { // 购买会员，发送需要更新的事件
                 GetSuperMemberSuccessEvent getSuperMemberSuccessEvent = new GetSuperMemberSuccessEvent(true);
                 EventBus.getDefault().post(getSuperMemberSuccessEvent);
             }

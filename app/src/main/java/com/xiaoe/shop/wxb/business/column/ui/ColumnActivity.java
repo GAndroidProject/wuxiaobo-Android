@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -43,6 +44,7 @@ import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
@@ -115,7 +117,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initStatusBar();
+        setStatusBar();
         setContentView(R.layout.activity_column);
         mIntent = getIntent();
         loginUserList = getLoginUserList();
@@ -163,6 +165,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         columnMenuWarp = (RelativeLayout) findViewById(R.id.column_menu_warp);
         columnToolBar = (RelativeLayout) findViewById(R.id.column_tool_bar);
         columnToolBar.setBackgroundColor(Color.argb(0,255,255,255));
+        columnToolBar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
         toolBarheight = Dp2Px2SpUtil.dp2px(this,280);
         columnScrollView = (CustomScrollView) findViewById(R.id.column_scroll_view);
         columnScrollView.setScrollChanged(this);
