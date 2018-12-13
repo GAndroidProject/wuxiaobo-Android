@@ -30,7 +30,7 @@
             android:layout_height="14dp"
             android:layout_gravity="center_horizontal"
             android:scaleType="fitXY"
-            android:src="@mipmap/expandable_more"
+            android:src="@mipmap/detail_checkall"
             android:layout_marginBottom="4dp"
             />
         <TextView
