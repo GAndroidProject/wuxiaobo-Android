@@ -140,7 +140,7 @@ public class XiaoeApplication extends Application {
                 //↑↑↑↑↑↑↑友盟集成初始化↑↑↑↑↑↑↑
 
                 // 设置开启日志,发布时请关闭日志
-                JPushInterface.setDebugMode(true);
+                JPushInterface.setDebugMode(!isFormalCondition);
                 // 初始化 JPush
                 JPushInterface.init(mContext);
 

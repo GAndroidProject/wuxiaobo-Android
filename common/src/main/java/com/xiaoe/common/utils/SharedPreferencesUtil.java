@@ -27,6 +27,7 @@ public class SharedPreferencesUtil {
     public static final String KEY_SCHOLARSHIP_ID = "ScholarshipId";
     public static final String KEY_UNREAD_MSG_COUNT = "unread_msg_count";
     public static final String KEY_PLAYER_PROGRESS_RECORD = "key_player_progress_record";
+    public static final String KEY_RECORD_NOT_WIFI_PLAY_TAG = "recordNotWifiPlayTag";
 
     private SharedPreferencesUtil(Context context, String name) {
         sp = context.getSharedPreferences(name, Context.MODE_PRIVATE);

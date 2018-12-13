@@ -42,7 +42,7 @@ public class ExpandableLevel extends AbstractExpandableItem<ExpandableItem> impl
     private String bigColumnId;
     private List<MultiItemEntity> resource_list;
     private int childPage = 1;
-    private int childPageSize = 5;
+    private int childPageSize = 20;
 
     @Override
     public int getLevel() {

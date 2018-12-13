@@ -35,10 +35,7 @@
                     <com.xiaoe.shop.wxb.business.mine.ui.MineTitleView
                         android:id="@+id/mine_title_view"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp" />
+                        android:layout_height="wrap_content" />
 
                     <com.xiaoe.shop.wxb.business.mine.ui.MineMsgView
                         android:id="@+id/mine_msg_view"
@@ -46,7 +43,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="20dp"
                         android:paddingEnd="20dp"
-                        android:paddingTop="32dp"
+                        android:paddingTop="12dp"
                         android:paddingBottom="28dp"/>
 
                 </LinearLayout>
