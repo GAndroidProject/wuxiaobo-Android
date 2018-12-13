@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -281,6 +282,9 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             KnowledgeCommodityItem commodityItem = new KnowledgeCommodityItem();
             String resourceId = item.getString("id");
             String resourceType = convertInt2Str(type);
+            if (TextUtils.isEmpty(resourceType)) {
+                continue;
+            }
             String imgUrl = item.getString("img_url");
             String title = item.getString("title");
             String columnDesc = item.getString("summary");
@@ -492,7 +496,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
     }
 
     /**
-     * 资源类型转换 int - str
+     * 资源类型转换 int - str （暂不支持直播）
      * @param resourceType 资源类型
      * @return 资源类型的字符串形式
      */
@@ -511,7 +515,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             case 8: // 大专栏
                 return DecorateEntityType.TOPIC;
             default:
-                return null;
+                return "";
         }
     }
 }

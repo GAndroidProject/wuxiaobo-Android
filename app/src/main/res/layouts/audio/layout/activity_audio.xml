@@ -158,6 +158,7 @@
                     android:layout_height="40dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="75dp"
+                    android:visibility="gone"
                     android:background="@drawable/white_circle_shape"
                     />
                 <TextView

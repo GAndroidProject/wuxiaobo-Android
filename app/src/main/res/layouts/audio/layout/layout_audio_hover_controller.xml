@@ -23,6 +23,7 @@
         <View
             android:layout_width="12dp"
             android:layout_height="12dp"
+            android:visibility="gone"
             android:background="@drawable/white_circle_shape"
             android:layout_centerInParent="true"
             />

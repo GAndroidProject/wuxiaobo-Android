@@ -46,7 +46,6 @@
                     android:layout_centerHorizontal="true"
                     fresco:roundAsCircle="true"
                     fresco:actualImageScaleType="focusCrop"
-                    fresco:placeholderImage="@mipmap/detail_disk"
                     android:transitionName="@string/share_img"
                     fresco:roundedCornerRadius="95dp"
                     fresco:roundTopLeft="true"
@@ -58,6 +57,7 @@
                     android:layout_height="40dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="75dp"
+                    android:visibility="gone"
                     android:background="@drawable/white_circle_shape"/>
                 <TextView
                     android:id="@+id/audio_title"
