@@ -832,7 +832,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             case 8: // 大专栏
                 return DecorateEntityType.TOPIC;
             default:
-                return null;
+                return "";
         }
     }
 
@@ -865,42 +865,42 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
         SQLiteUtil sqLiteUtil = SQLiteUtil.init(getContext(), new CacheDataUtil());
         //积分
-        String integralSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
-                +"' and resource_id='"+Constants.INTEGRAL_ASSET_TYPE+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
-        List<CacheData> integralCacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, integralSQL, null);
-        if(integralCacheDataList != null && integralCacheDataList.size() > 0){
-            String content = integralCacheDataList.get(0).getContent();
-            JSONObject data = (JSONObject) JSONObject.parseObject(content).get("data");
-            int integral = data.getInteger("balance");
-            if (item_2 == null) {
-                item_2 = new MineMoneyItemInfo();
-                item_2.setItemTitle(String.valueOf(integral));
-                item_2.setItemDesc(getString(R.string.integral));
-            } else {
-                item_2.setItemTitle(String.valueOf(integral));
-            }
-            isIntegralFinish = true;
-            initPageData();
-        }
+//        String integralSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+//                +"' and resource_id='"+Constants.INTEGRAL_ASSET_TYPE+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
+//        List<CacheData> integralCacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, integralSQL, null);
+//        if(integralCacheDataList != null && integralCacheDataList.size() > 0){
+//            String content = integralCacheDataList.get(0).getContent();
+//            JSONObject data = (JSONObject) JSONObject.parseObject(content).get("data");
+//            int integral = data.getInteger("balance");
+//            if (item_2 == null) {
+//                item_2 = new MineMoneyItemInfo();
+//                item_2.setItemTitle(String.valueOf(integral));
+//                item_2.setItemDesc(getString(R.string.integral));
+//            } else {
+//                item_2.setItemTitle(String.valueOf(integral));
+//            }
+//            isIntegralFinish = true;
+//            initPageData();
+//        }
         //奖学金
-        String scholarshipSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
-                +"' and resource_id='"+Constants.SCHOLARSHIP_ASSET_TYPE+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
-        List<CacheData> scholarshipCacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, scholarshipSQL, null);
-        if(scholarshipCacheDataList != null && scholarshipCacheDataList.size() > 0){
-            String content = scholarshipCacheDataList.get(0).getContent();
-            JSONObject data = (JSONObject) JSONObject.parseObject(content).get("data");
-            int scholarship = data.getInteger("balance");
-            balance = String.format(getString(R.string.price_decimal), scholarship / 100f);
-            if (item_1 == null) {
-                item_1 = new MineMoneyItemInfo();
-                item_1.setItemTitle(balance);
-                item_1.setItemDesc(getString(R.string.scholarship_title));
-            } else {
-                item_1.setItemTitle(balance);
-            }
-            isScholarshipFinish = true;
-            initPageData();
-        }
+//        String scholarshipSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
+//                +"' and resource_id='"+Constants.SCHOLARSHIP_ASSET_TYPE+"' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
+//        List<CacheData> scholarshipCacheDataList =  sqLiteUtil.query(CacheDataUtil.TABLE_NAME, scholarshipSQL, null);
+//        if(scholarshipCacheDataList != null && scholarshipCacheDataList.size() > 0){
+//            String content = scholarshipCacheDataList.get(0).getContent();
+//            JSONObject data = (JSONObject) JSONObject.parseObject(content).get("data");
+//            int scholarship = data.getInteger("balance");
+//            balance = String.format(getString(R.string.price_decimal), scholarship / 100f);
+//            if (item_1 == null) {
+//                item_1 = new MineMoneyItemInfo();
+//                item_1.setItemTitle(balance);
+//                item_1.setItemDesc(getString(R.string.scholarship_title));
+//            } else {
+//                item_1.setItemTitle(balance);
+//            }
+//            isScholarshipFinish = true;
+//            initPageData();
+//        }
         //正在学习
         String learningSQL = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
                 +"' and resource_id='learning' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
@@ -946,12 +946,9 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             initPageData();
             mineRefresh.finishRefresh();
         }
-        if(integralCacheDataList != null && integralCacheDataList.size() > 0
-                && scholarshipCacheDataList != null && scholarshipCacheDataList.size() > 0
-                && learningCacheDataList != null && learningCacheDataList.size() > 0){
-            showDataByDB = true;
-        } else {
-            showDataByDB = false;
-        }
+//        if(integralCacheDataList != null && integralCacheDataList.size() > 0
+//                && scholarshipCacheDataList != null && scholarshipCacheDataList.size() > 0
+//                && learningCacheDataList != null && learningCacheDataList.size() > 0){
+        showDataByDB = learningCacheDataList != null && learningCacheDataList.size() > 0;
     }
 }

@@ -48,8 +48,10 @@ public class SplashActivity extends XiaoeActivity {
         setStatusBar();
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        scholarshipPresenter = new ScholarshipPresenter(this, true);
-        scholarshipPresenter.requestTaskList( false);
+//        scholarshipPresenter = new ScholarshipPresenter(this, true);
+//        scholarshipPresenter.requestTaskList( false);
+
+        initView();
         initData();
         SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
         SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
@@ -64,6 +66,7 @@ public class SplashActivity extends XiaoeActivity {
         // 加上网络请求的时间，减一秒
         ivGif.postDelayed(() -> {
 //             JumpDetail.jumpLogin(this);
+            ScholarshipEntity.getInstance().setTaskExist(true);
             JumpDetail.jumpLoginSplash(this);
             finish();
             }, 2000);
@@ -95,12 +98,13 @@ public class SplashActivity extends XiaoeActivity {
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
-        if (success) {
-            ScholarshipEntity.getInstance().setTaskExist(true);
-        } else {
-            ScholarshipEntity.getInstance().setTaskExist(false);
-        }
+        // 奖学金 tab 网络请求隐藏
+//        if (success) {
+//            ScholarshipEntity.getInstance().setTaskExist(true);
+//        } else {
+//            ScholarshipEntity.getInstance().setTaskExist(false);
+//        }
         // 需要拿到结果后再进行跳转
-        initView();
+//        initView();
     }
 }
