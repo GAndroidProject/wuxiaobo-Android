@@ -135,7 +135,8 @@ public class CourseMoreActivity extends XiaoeActivity {
             KnowledgeCommodityItem item = new KnowledgeCommodityItem();
             item.setItemTitle(listSubItemObj.getString("title"));
             item.setItemTitleColumn(listSubItemObj.getString("summary"));
-            item.setItemImg(listSubItemObj.getString("img_url"));
+            item.setItemImg(listSubItemObj.getString("img_url_compressed_larger"));
+//            item.setItemImg(listSubItemObj.getString("img_url"));
             String price = "￥" + listSubItemObj.getString("show_price");
             if (price.equals("￥")) { // 表示买了，所以没有价格
                 item.setItemPrice(null);
