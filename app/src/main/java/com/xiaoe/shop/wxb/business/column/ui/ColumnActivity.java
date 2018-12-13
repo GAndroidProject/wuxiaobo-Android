@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
@@ -22,6 +22,8 @@ import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.CacheData;
+import com.xiaoe.common.entitys.ExpandableItem;
+import com.xiaoe.common.entitys.ExpandableLevel;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -60,9 +62,10 @@ import java.util.List;
 
 public class ColumnActivity extends XiaoeActivity implements View.OnClickListener, OnCustomScrollChangedListener {
     private static final String TAG = "ColumnActivity";
-    public static int RESOURCE_TYPE_TOPIC = 8;//大专栏
-    public static int RESOURCE_TYPE_COLUMN = 6;//小专栏
-    public static int RESOURCE_TYPE_MEMBER = 5;//会员
+    public static final int RESOURCE_TYPE_TOPIC = 8;//大专栏
+    public static final int RESOURCE_TYPE_COLUMN = 6;//小专栏
+    public static final int RESOURCE_TYPE_MEMBER = 5;//会员
+    private final String TOPIC_LITTLE_REQUEST_TAG = "1001";//大专栏中请求小专栏
     private SimpleDraweeView columnImage;
     private TextView columnTitle;
     private TextView barTitle;
@@ -104,7 +107,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
 
-    boolean hasBuy;
+//    boolean hasBuy;
     String realSrcId;
     private MiniAudioPlayControllerLayout miniAudioPlayControllerLayout;//悬浮音频播放器
     private int resourceType;//8-大专栏，6-小专栏，5-会员
@@ -112,6 +115,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private String expireTime;
     private StatusPagerView statusPagerView;
     private boolean showDataByDB = false;
+    //记录是否已经请求专栏列表，因为获取缓存中详情数据后，同时会亲情一遍详情页，但详情页中会拉取专栏列表
+    private boolean requestColumnList = false;
+    //记录大专栏下小专栏列表，（小专栏、会员页面无效）
+    private List<MultiItemEntity> topicLittleColumnList;
+    //请求大专栏下第一个小专栏下资源列表，（小专栏、会员页面无效）
+    private boolean requestTopicFirstLittle = false;
 
 
     @Override
@@ -138,8 +147,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 }
             });
         }
-
-//        isBigColumn = mIntent.getBooleanExtra("isBigColumn", false);
         resourceType = mIntent.getIntExtra("resource_type", 0);
         resourceId = mIntent.getStringExtra("resource_id");
         EventBus.getDefault().register(this);
@@ -245,7 +252,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     @Override
     public void onBackPressed() {
-        if (hasBuy) {
+        if (isHasBuy) {
             UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
 //            updateLearningUtils.updateLearningProgress(realSrcId, isBigColumn ? 8 : 6, 10);
             updateLearningUtils.updateLearningProgress(realSrcId, resourceType, 10);
@@ -268,7 +275,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             return;
         }
         int code = jsonObject.getIntValue("code");
-        if(code != NetworkCodes.CODE_SUCCEED ){
+        if(code != NetworkCodes.CODE_SUCCEED && iRequest.getRequestTag() != TOPIC_LITTLE_REQUEST_TAG){
             if(iRequest instanceof ColumnListRequst || iRequest instanceof DetailRequest){
                 setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
             }
@@ -292,8 +299,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
             }
         }else if(iRequest instanceof ColumnListRequst){
-            JSONArray data = (JSONArray) dataObject;
-            columnListRequest(data);
+
+            if(TOPIC_LITTLE_REQUEST_TAG.equals(iRequest.getRequestTag())){
+                //请求大专栏下第一个小专栏下的资源列表
+                topicLittleColumnRequest(jsonObject);
+            }else{
+                JSONArray data = (JSONArray) dataObject;
+                columnListRequest(data);
+            }
         }else if(iRequest instanceof AddCollectionRequest){
             addCollectionRequest(jsonObject);
         }else if(iRequest instanceof RemoveCollectionListRequest){
@@ -368,38 +381,104 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     private void columnListRequest(JSONArray data) {
         if(resourceType == RESOURCE_TYPE_TOPIC){
-            ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
+//            ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
+            NewColumnDirectoryFragment fragment = (NewColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
-            if(refreshData || showDataByDB){
+            if(refreshData || showDataByDB || pageIndex == 1){
                 refreshData = false;
-                fragment.refreshData(columnPresenter.formatColumnEntity(data, resourceId, hasBuy ? 1 : 0));
+                topicLittleColumnList = columnPresenter.formatExpandableEntity(data, resourceId, isHasBuy ? 1 : 0);
+//                fragment.refreshData(columnPresenter.formatExpandableEntity(data, resourceId, hasBuy ? 1 : 0));
+                //请求第一个小专栏下资源
+                if(topicLittleColumnList.size() > 0){
+                    requestTopicFirstLittle = true;
+                    ExpandableLevel level = (ExpandableLevel) topicLittleColumnList.get(0);
+
+                    //比较播放中的专栏是否和点击的状态相同
+                    AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
+                    boolean resourceEquals = !TextUtils.isEmpty(level.getBigColumnId()) && audioPlayEntity != null
+                            && level.getBigColumnId().equals(audioPlayEntity.getBigColumnId())
+                            && level.getResource_id().equals(audioPlayEntity.getColumnId());
+                    if(resourceEquals && level.getChildPage() == 1 && audioPlayEntity != null && audioPlayEntity.getPlayColumnPage() > 1){
+                        level.setChildPageSize(level.getChildPageSize() * audioPlayEntity.getPlayColumnPage());
+                    }
+
+                    columnPresenter.requestColumnList(level.getResource_id(), "0", level.getChildPage(), level.getChildPageSize(), false, TOPIC_LITTLE_REQUEST_TAG);
+                }
             }else{
-                fragment.addData(columnPresenter.formatColumnEntity(data, resourceId, hasBuy ? 1 : 0));
+                fragment.addData(columnPresenter.formatExpandableEntity(data, resourceId, isHasBuy ? 1 : 0));
+            }
+            if(data.size() < pageSize && !requestTopicFirstLittle){
+                setLoadState(ListBottomLoadMoreView.STATE_ALL_FINISH);
+            }else if(!requestTopicFirstLittle){
+                setLoadState(ListBottomLoadMoreView.STATE_NOT_LOAD);
             }
         }else if(resourceType == RESOURCE_TYPE_MEMBER){
             MemberFragment fragment = (MemberFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
             if(refreshData || showDataByDB){
                 refreshData = false;
-                fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", hasBuy ? 1 : 0));
+                fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", isHasBuy ? 1 : 0));
             }else{
-                fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", hasBuy ? 1 : 0));
+                fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", isHasBuy ? 1 : 0));
+            }
+            if(data.size() < pageSize){
+                setLoadState(ListBottomLoadMoreView.STATE_ALL_FINISH);
+            }else{
+                setLoadState(ListBottomLoadMoreView.STATE_NOT_LOAD);
             }
         }else{
             LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
             if(refreshData || showDataByDB){
                 refreshData = false;
-                fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", hasBuy ? 1 : 0));
+                fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", isHasBuy ? 1 : 0));
             }else{
-                fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", hasBuy ? 1 : 0));
+                fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", isHasBuy ? 1 : 0));
+            }
+            if(data.size() < pageSize){
+                setLoadState(ListBottomLoadMoreView.STATE_ALL_FINISH);
+            }else{
+                setLoadState(ListBottomLoadMoreView.STATE_NOT_LOAD);
             }
         }
-        if(data.size() < pageSize){
+    }
+
+    /**
+     * 大专栏下第一个小专栏下的资源列表请求
+     * @param data
+     */
+    private void topicLittleColumnRequest(JSONObject data){
+        int code = data.getIntValue("code");
+
+        requestTopicFirstLittle = false;
+        if(topicLittleColumnList.size() < pageSize){
             setLoadState(ListBottomLoadMoreView.STATE_ALL_FINISH);
         }else{
             setLoadState(ListBottomLoadMoreView.STATE_NOT_LOAD);
         }
+        ExpandableLevel level = (ExpandableLevel) topicLittleColumnList.get(0);
+        NewColumnDirectoryFragment fragment = (NewColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
+        if(code != NetworkCodes.CODE_SUCCEED){
+            level.getSubItem(0).setLoadType(3);
+        }else{
+            List<ExpandableItem> expandableItems = columnPresenter.formatExpandableChildEntity(data.getJSONArray("data"), level.getTitle(), level.getResource_id(), level.getBigColumnId(), isHasBuy ? 1 : 0);
+            if(expandableItems.size() < level.getChildPageSize()){
+                //说明小专栏下列表资源已加载完
+                if(expandableItems.size()  > 0){
+                    expandableItems.get(expandableItems.size() - 1).setLastItem(true);
+                }else {
+                    ExpandableItem item = level.getSubItem(level.getSubItems().size() - 3);
+                    if(item.getItemType() == 1){
+                        item.setLastItem(true);
+                    }
+                }
+                level.getSubItems().remove(0);
+            }else{
+                level.getSubItem(0).setLoadType(0);
+            }
+            level.getSubItems().addAll(0, expandableItems);
+        }
+        fragment.refreshData(topicLittleColumnList);
     }
 
     private void detailRequest(JSONObject data, JSONObject productInfo, boolean available, boolean cache) {
@@ -431,11 +510,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             return;
         }
         summary = data.getString("summary");
-        hasBuy = available;
         getDialog().dismissDialog();
         if(refreshData){
             if(resourceType == RESOURCE_TYPE_TOPIC){
-                ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
+//                ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
+                NewColumnDirectoryFragment fragment = (NewColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
                 fragment.clearData();
             }else if(resourceType == RESOURCE_TYPE_MEMBER){
                 MemberFragment fragment = (MemberFragment) columnViewPagerAdapter.getItem(1);
@@ -519,7 +598,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(available && detailState != 2){
             //删除状态优秀级最高，available=true是除了删除状态显示删除页面外，其他的均可查看详情
             setPagerState(0);
-            columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
+            if(!requestColumnList){
+                requestColumnList = true;
+                String requestType = resourceType == RESOURCE_TYPE_TOPIC ? "6" : "0";//如果是大专栏则只请求小专栏
+                columnPresenter.requestColumnList(data.getString("resource_id"), requestType, pageIndex, pageSize, true, resourceType+"");
+            }
             return;
         }
         if(saleStatus == 1 || detailState == 1){
@@ -532,7 +615,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             setPagerState(NetworkCodes.CODE_GOODS_DELETE);
         }else {
             setPagerState(0);
-            columnPresenter.requestColumnList(data.getString("resource_id"), "0", pageIndex, pageSize);
+            if(!requestColumnList){
+                requestColumnList = true;
+                String requestType = resourceType == RESOURCE_TYPE_TOPIC ? "6" : "0";//如果是大专栏则只请求小专栏
+                columnPresenter.requestColumnList(data.getString("resource_id"), requestType, pageIndex, pageSize, true, resourceType+"");
+            }
         }
     }
 
@@ -643,7 +730,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         if(columnViewPager.getCurrentItem() == 1 && state == ListBottomLoadMoreView.STATE_NOT_LOAD){
             setLoadState(ListBottomLoadMoreView.STATE_LOADING);
             pageIndex++;
-            columnPresenter.requestColumnList(resourceId, "0", pageIndex, pageSize);
+            String requestType = resourceType == RESOURCE_TYPE_TOPIC ? "6" : "0";//如果是大专栏则只请求小专栏
+            columnPresenter.requestColumnList(resourceId, requestType, pageIndex, pageSize, false, resourceType+"");
         }
     }
     public void setLoadState(int state){
@@ -732,7 +820,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         String sqlList = "select * from "+CacheDataUtil.TABLE_NAME+" where app_id='"+Constants.getAppId()
                 +"' and resource_id='"+resourceId+"_list' and user_id='"+CommonUserInfo.getLoginUserIdOrAnonymousUserId()+"'";
         List<CacheData> cacheDataResourceList = sqLiteUtil.query(CacheDataUtil.TABLE_NAME, sqlList, null );
-        if(cacheDataResourceList != null && cacheDataResourceList.size() > 0){
+        if(cacheDataResourceList != null && cacheDataResourceList.size() > 0 && resourceType != RESOURCE_TYPE_TOPIC){
             JSONArray data = JSONObject.parseObject(cacheDataResourceList.get(0).getResourceList()).getJSONArray("data");
             columnListRequest( data);
         }

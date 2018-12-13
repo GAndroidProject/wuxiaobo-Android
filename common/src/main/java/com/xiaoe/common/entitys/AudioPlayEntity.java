@@ -45,6 +45,7 @@ public class AudioPlayEntity {
     private boolean isLocalResource = false;
     private int progress;
     private int maxProgress;
+    private int playColumnPage;//播放资源在大专栏下小专栏列表页数，只针对大专栏有效
 
     public String getAppId() {
         return appId;
@@ -341,5 +342,13 @@ public class AudioPlayEntity {
 
     public void setMaxProgress(int maxProgress) {
         this.maxProgress = maxProgress;
+    }
+
+    public int getPlayColumnPage() {
+        return playColumnPage;
+    }
+
+    public void setPlayColumnPage(int playColumnPage) {
+        this.playColumnPage = playColumnPage;
     }
 }

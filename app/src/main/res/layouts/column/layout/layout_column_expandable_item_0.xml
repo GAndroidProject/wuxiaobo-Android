@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/expandable_container"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:layout_marginTop="10dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:background="@drawable/border">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@id/wrap_all_play_btn"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:singleLine="true"
+        android:textStyle="bold"
+        android:textColor="@color/main_title_color"
+        android:textSize="16sp" />
+
+    <RelativeLayout
+        android:id="@+id/wrap_all_play_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        >
+        <LinearLayout
+            android:id="@+id/expand_down_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="@string/expand_down"
+                />
+            <ImageView
+                android:id="@+id/expand_down"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="4dp"
+                android:src="@mipmap/expand" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/play_all_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            android:gravity="center"
+            >
+            <ImageView
+                android:id="@+id/play_all_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/class_play"/>
+            <TextView
+                android:id="@+id/play_all_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/play_all"
+                android:textSize="14sp"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

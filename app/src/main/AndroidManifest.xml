@@ -119,7 +119,9 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".business.download.ui.DownloadActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
+            />
         <activity
             android:name=".business.download.ui.OffLineCacheActivity"
             android:screenOrientation="portrait"/>

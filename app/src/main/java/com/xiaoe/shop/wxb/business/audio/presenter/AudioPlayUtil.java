@@ -2,6 +2,8 @@ package com.xiaoe.shop.wxb.business.audio.presenter;
 
 import android.text.TextUtils;
 
+import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
@@ -45,11 +47,22 @@ public class AudioPlayUtil {
         }
         this.audioList.add(audio);
     }
-    public void addAudio(AudioPlayEntity audio, int index){
-        if(this.audioList == null){
-            audioList = new ArrayList<AudioPlayEntity>();
+    public void addAudio(List<AudioPlayEntity> audioList){
+        if(audioList != null && audioList.size() > 0){
+            this.audioList.addAll(audioList);
+            SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
+            for (AudioPlayEntity audioPlayEntity : audioList){
+                String querySQL = "select * from "+ AudioPlayTable.TABLE_NAME + " where app_id=? and user_id=? and resource_id=?";
+                List list = sqLiteUtil.query(AudioPlayTable.TABLE_NAME, querySQL, new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audioPlayEntity.getResourceId()});
+                if(list != null && list.size() > 0){
+                    String updateWhereSQL = "app_id=? and user_id=? and resource_id=?";
+                    sqLiteUtil.update(AudioPlayTable.TABLE_NAME, audioPlayEntity, updateWhereSQL, new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audioPlayEntity.getResourceId()});
+                }else{
+                    sqLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioPlayEntity);
+                }
+            }
+
         }
-        this.audioList.add(index, audio);
     }
 
     public void refreshAudio(AudioPlayEntity audio){

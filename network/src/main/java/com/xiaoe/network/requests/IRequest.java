@@ -37,6 +37,8 @@ public abstract class IRequest {
 
     private String cacheKey;
 
+    private String requestTag = "";//请求类型标识
+
     IRequest(String cmd, Class entityClass, IBizCallback iBizCallback){
         this.cmd = cmd;
         this.entityClass = entityClass;
@@ -215,5 +217,13 @@ public abstract class IRequest {
 
     public void setCacheKey(String cacheKey) {
         this.cacheKey = cacheKey;
+    }
+
+    public String getRequestTag() {
+        return requestTag;
+    }
+
+    public void setRequestTag(String requestTag) {
+        this.requestTag = requestTag;
     }
 }

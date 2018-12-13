@@ -6,9 +6,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.column.ui.ColumnActivity;
 import com.xiaoe.shop.wxb.business.column.ui.ColumnDetailFragment;
-import com.xiaoe.shop.wxb.business.column.ui.ColumnDirectoryFragment;
 import com.xiaoe.shop.wxb.business.column.ui.LittleColumnDirectoryFragment;
 import com.xiaoe.shop.wxb.business.column.ui.MemberFragment;
+import com.xiaoe.shop.wxb.business.column.ui.NewColumnDirectoryFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,8 @@ public class ColumnFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
         ColumnDetailFragment columnDetailFragment = new ColumnDetailFragment();
         list.add(columnDetailFragment);
         if(resourceType == ColumnActivity.RESOURCE_TYPE_TOPIC){
-            ColumnDirectoryFragment columnDirectoryFragment = new ColumnDirectoryFragment();
+//            ColumnDirectoryFragm columnDirectoryFragment = new ColumnDirectoryFragment();
+            NewColumnDirectoryFragment columnDirectoryFragment = new NewColumnDirectoryFragment();
             columnDirectoryFragment.setResourceId(resourceId);
             list.add(columnDirectoryFragment);
         }else if(resourceType == ColumnActivity.RESOURCE_TYPE_MEMBER){

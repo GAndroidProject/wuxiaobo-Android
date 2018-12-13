@@ -168,4 +168,12 @@ public class CommonRefreshHeader extends LinearLayout implements RefreshHeader {
 
         refreshImg.setController(draweeController);
     }
+
+    public TextView getRefreshContent() {
+        return refreshContent;
+    }
+
+    public SimpleDraweeView getRefreshImg() {
+        return refreshImg;
+    }
 }

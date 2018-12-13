@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="54dp"
+    android:id="@+id/expandable_load_layout"
+    android:orientation="vertical"
+    android:background="@drawable/border_expandable_left_right"
+    >
+    <RelativeLayout
+        android:id="@+id/expandable_load"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.xiaoe.common.widget.CommonRefreshHeader
+            android:id="@+id/load_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_expand_load_all"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="fitXY"
+            android:src="@mipmap/expandable_more"
+            android:layout_marginBottom="4dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/price_color"
+            android:text="@string/list_watch_more"
+            />
+    </LinearLayout>
+
+</LinearLayout>
