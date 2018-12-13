@@ -46,6 +46,7 @@
                     android:layout_centerHorizontal="true"
                     fresco:roundAsCircle="true"
                     fresco:actualImageScaleType="focusCrop"
+                    fresco:placeholderImage="@mipmap/detail_disk"
                     android:transitionName="@string/share_img"
                     fresco:roundedCornerRadius="95dp"
                     fresco:roundTopLeft="true"

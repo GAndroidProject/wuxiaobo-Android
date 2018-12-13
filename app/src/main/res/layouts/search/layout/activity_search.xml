@@ -16,39 +16,42 @@
         android:background="@mipmap/search_bg"
         android:paddingTop="38dp"
         android:paddingBottom="30dp">
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/search_tool_bar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
             android:background="@color/self_transparent">
-
-            <EditText
-                android:id="@+id/search_content_et"
-                android:layout_width="280dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/search_content_hint"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:textColorHint="@color/knowledge_item_desc_color"
-                android:textSize="16sp"
-                android:imeOptions="actionSearch"
-                android:gravity="center_vertical"
-                android:layout_marginStart="20dp"
-                android:inputType="text"/>
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/search_content_et"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/search_content_hint"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:textColorHint="@color/knowledge_item_desc_color"
+                    android:textSize="16sp"
+                    android:imeOptions="actionSearch"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="20dp"
+                    android:inputType="text"/>
 
-            <TextView
-                android:id="@+id/search_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel_text"
-                android:textSize="16sp"
-                android:padding="7dp"
-                android:textColor="@color/recent_list_color"
-                android:layout_gravity="end|center"
-                android:layout_marginEnd="13dp"/>
-
+                <TextView
+                    android:id="@+id/search_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel_text"
+                    android:textSize="16sp"
+                    android:padding="7dp"
+                    android:textColor="@color/recent_list_color"
+                    android:layout_gravity="end|center"
+                    android:layout_marginEnd="13dp"/>
+            </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
     </FrameLayout>

@@ -52,6 +52,7 @@
                 android:id="@+id/flow_info_audio_avatar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                fresco:placeholderImage="@mipmap/detail_disk"
                 fresco:roundedCornerRadius="97dp"
                 android:transitionName="@string/share_img"/>
 

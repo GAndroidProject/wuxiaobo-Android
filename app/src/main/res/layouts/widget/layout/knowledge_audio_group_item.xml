@@ -35,6 +35,7 @@
                 android:layout_width="84dp"
                 android:layout_height="84dp"
                 fresco:roundedCornerRadius="42dp"
+                fresco:placeholderImage="@mipmap/detail_disk"
                 android:layout_centerInParent="true"
                 android:transitionName="@string/share_img"/>
             <View
