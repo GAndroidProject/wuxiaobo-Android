@@ -115,6 +115,7 @@ public class LoginSplashActivity extends XiaoeActivity {
         super.onResume();
         String apiToken = CommonUserInfo.getApiToken();
         if (apiToken != null && !apiToken.equals("")) { // 有用户登录信息，直接去主页
+            finish();
             JumpDetail.jumpMain(this, true);
             return;
         }
@@ -124,6 +125,9 @@ public class LoginSplashActivity extends XiaoeActivity {
             loginPresenter.loginByWeChat(code);
             // code 如果有，都要清空
             SharedPreferencesUtil.putData("wx_code", ""); // 清空 code
+        }
+        if (getDialog().isShowing()) {
+            getDialog().dismissDialog();
         }
     }
 
@@ -260,6 +264,7 @@ public class LoginSplashActivity extends XiaoeActivity {
             getDialog().dismissDialog();
         }
         ToastUtils.show(mContext, getString(R.string.login_successfully));
+        finish();
         JumpDetail.jumpMain(this, true);
     }
 

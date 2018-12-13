@@ -33,6 +33,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.login.LoginPresenter;
+import com.xiaoe.shop.wxb.utils.ActivityCollector;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.ToastUtils;
@@ -116,6 +117,7 @@ public class LoginNewActivity extends XiaoeActivity {
             if (getDialog().isShowing()) {
                 getDialog().dismissDialog();
             }
+            ActivityCollector.finishAll();
             JumpDetail.jumpMain(this, true);
             return;
         }
@@ -292,8 +294,8 @@ public class LoginNewActivity extends XiaoeActivity {
      */
     private void handleBindCallback(JSONObject result) {
         int code = result.getInteger("code");
-        if (getDialog().isShowing()) {
-            getDialog().dismissDialog();
+        if (((LoginNewFragment)currentFragment).getDialog().isShowing()) {
+            ((LoginNewFragment)currentFragment).getDialog().dismissDialog();
         }
         if (code == NetworkCodes.CODE_SUCCEED) { // 注册成功
             JSONObject data = (JSONObject) result.get("data");
@@ -410,6 +412,9 @@ public class LoginNewActivity extends XiaoeActivity {
         }
         SharedPreferencesUtil.putData("accessToken", accessToken);
 
+        if (((LoginNewFragment)currentFragment).getDialog().isShowing()) {
+            ((LoginNewFragment)currentFragment).getDialog().dismissDialog();
+        }
         replaceFragment(LOGIN_BIND_WX);
     }
 
@@ -483,6 +488,7 @@ public class LoginNewActivity extends XiaoeActivity {
         if (getDialog().isShowing()) {
             getDialog().dismissDialog();
         }
+        ActivityCollector.finishAll();
         JumpDetail.jumpMain(this, true);
     }
 

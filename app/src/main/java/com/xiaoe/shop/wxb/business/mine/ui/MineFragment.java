@@ -589,6 +589,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_bought_course));
             mineLearningWrapView.setLearningMoreVisibility(View.GONE);
             isMineLearningFinish = true;
+            mineRefresh.finishRefresh();
+            initPageData();
             return;
         }
         JSONArray goodsList = (JSONArray) data.get("goods_list");

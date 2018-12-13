@@ -719,7 +719,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             if (i == 0) { // 第一个要显示我正在学
                 String flowInfoTitle;
                 if (yearStr != 0 && year == yearStr) {
-                    flowInfoTitle = titleTwo + " " + dateTag.getString(2);
+                    if (TextUtils.isEmpty(today)) { // 今日为空
+                        flowInfoTitle = titleTwo;
+                    } else {
+                        flowInfoTitle = titleTwo + " " + dateTag.getString(2);
+                    }
                 } else {
                     flowInfoTitle = dateTag.getString(1);
                 }
