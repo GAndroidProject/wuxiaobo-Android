@@ -116,7 +116,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         EventBus.getDefault().post(event);
         mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
 
-        if (audio != null && audio.getProgress() >= 0)
+        if (audio != null && audio.getProgress() > 0)
             mediaPlayer.seekTo(audio.getProgress());
     }
 

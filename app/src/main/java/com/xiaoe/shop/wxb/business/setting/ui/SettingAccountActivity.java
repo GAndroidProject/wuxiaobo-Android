@@ -490,7 +490,7 @@ public class SettingAccountActivity extends XiaoeActivity {
             if(msg.what == CLEAN_SUCCESS){
                 try {
                     MainAccountFragment mainAccountFragment = (MainAccountFragment) wrf.get().currentFragment;
-                    mainAccountFragment.itemInfoList.get(2).setItemContent(CacheManagerUtil.getTotalCacheSize(wrf.get().getApplicationContext()));
+                    mainAccountFragment.itemInfoList.get(1).setItemContent(CacheManagerUtil.getTotalCacheSize(wrf.get().getApplicationContext()));
                     mainAccountFragment.settingRecyclerAdapter.notifyDataSetChanged();
                     ToastUtils.show(XiaoeApplication.applicationContext, R.string.clear_success);
                 } catch (Exception e) {
