@@ -62,7 +62,7 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
                             R.mipmap.audio_list_bg , Dp2Px2SpUtil.dp2px(mContext, 160),
                     Dp2Px2SpUtil.dp2px(mContext, 120));
             String url = TextUtils.isEmpty(mItemList.get(position).getItemImg()) ? "res:///" +
-                    R.mipmap.audio_ring : mItemList.get(position).getItemImg();
+                    R.mipmap.detail_disk : mItemList.get(position).getItemImg();
             int imageWidthDp = 84;
             if (url.contains("res:///") || !SetImageUriUtil.isGif(url)) {// 本地图片
                 SetImageUriUtil.setImgURI(knowledgeItemViewHolder.itemIcon, url, Dp2Px2SpUtil.dp2px(mContext, imageWidthDp),

@@ -95,7 +95,7 @@ public class MineLearningWrapView extends LinearLayout {
         if (isAudio){
             SetImageUriUtil.setImgURI(learningItemAudioBgIcon, "res:///" +  R.mipmap.audio_list_bg ,
                     Dp2Px2SpUtil.dp2px(mContext, 160),Dp2Px2SpUtil.dp2px(mContext, 120));
-            String url = TextUtils.isEmpty(urlString) ? "res:///" + R.mipmap.audio_ring : urlString;
+            String url = TextUtils.isEmpty(urlString) ? "res:///" + R.mipmap.detail_disk : urlString;
             int imageWidthDp = 84;
             if (url.contains("res:///") || !SetImageUriUtil.isGif(url)) {// 本地图片
                 SetImageUriUtil.setImgURI(learningItemAudioIcon, url, Dp2Px2SpUtil.dp2px(mContext, imageWidthDp),

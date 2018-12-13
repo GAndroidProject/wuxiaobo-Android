@@ -67,7 +67,7 @@ public class FlowInfoAudioViewHolder extends BaseViewHolder {
         if (bindItem.getItemImg() != null) {
             url = bindItem.getItemImg();
         } else {
-            url = "res:///" + R.mipmap.audio_ring;
+            url = "res:///" + R.mipmap.detail_disk;
         }
         if (url.contains("res:///")) { // 本地图片
             SetImageUriUtil.setImgURI(flowInfoAvatar, url, Dp2Px2SpUtil.dp2px(mContext, 194), Dp2Px2SpUtil.dp2px(mContext, 194));
