@@ -216,6 +216,16 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         }
     }
 
+    @Override
+    public void refreshReportDuration() {
+        pageDuration = System.currentTimeMillis();
+//        if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
+//            Log.e("EventReportManager", "refresh 今日: pageDuration " + pageDuration);
+//        } else {
+//            Log.e("EventReportManager", "refresh 课程: pageDuration " + pageDuration);
+//        }
+    }
+
     public float getAlpha() {
         return alpha;
     }

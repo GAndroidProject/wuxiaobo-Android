@@ -203,6 +203,12 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
         EventReportManager.onEventValue(mContext, MobclickEvent.SCHOLARSHIP_PAGEVIEW_DURATION, (int) (System.currentTimeMillis() - pageDuration));
     }
 
+    @Override
+    public void refreshReportDuration() {
+        pageDuration = System.currentTimeMillis();
+//        Log.e("EventReportManager", "refresh 奖学金: pageDuration " + pageDuration);
+    }
+
     private void initListener() {
         scholarshipNewRefresh.setOnRefreshListener(this);
         scholarshipNewRule.setOnClickListener(this);

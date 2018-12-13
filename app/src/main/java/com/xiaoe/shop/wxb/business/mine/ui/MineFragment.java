@@ -188,6 +188,12 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     }
 
     @Override
+    public void refreshReportDuration() {
+        pageDuration = System.currentTimeMillis();
+//        Log.e("EventReportManager", "refresh 我的: pageDuration " + pageDuration);
+    }
+
+    @Override
     protected void onFragmentFirstVisible() {
         super.onFragmentFirstVisible();
         if (earningPresenter == null) {

@@ -227,6 +227,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             @Override
             public void onPageSelected(int position) {
 //                Log.e("EventReportManager", "onPageSelected: position " + position);
+                ((BaseFragment) adapter.getItem(position)).refreshReportDuration();
                 if (currentPosition != position) {
                     ((BaseFragment) adapter.getItem(currentPosition)).eventReportDuration();
                 }

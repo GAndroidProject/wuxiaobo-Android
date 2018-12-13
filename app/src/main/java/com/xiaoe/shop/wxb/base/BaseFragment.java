@@ -314,4 +314,8 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
     public void eventReportDuration() {
 
     }
+
+    public void refreshReportDuration() {
+
+    }
 }
