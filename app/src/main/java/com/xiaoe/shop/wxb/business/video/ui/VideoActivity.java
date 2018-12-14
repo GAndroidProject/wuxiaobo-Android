@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -28,7 +29,9 @@ import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
+import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
+import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
@@ -97,6 +100,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private boolean mIsDownload;
     private String columnId;
     private TextView bottomTip;
+    private String playNumStr;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -245,6 +249,13 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 // 上报学习进度(买了才上报)
                 UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
                 updateLearningUtils.updateLearningProgress(realSrcId, 3, 10);
+                LearningRecord lr = new LearningRecord();
+                lr.setLrId(realSrcId);
+                lr.setLrType(DecorateEntityType.VIDEO);
+                lr.setLrTitle(collectTitle);
+                lr.setLrImg(collectImgUrl);
+                lr.setLrDesc(playNumStr);
+                UpdateLearningUtils.saveLr2Local(this, lr);
             }
             super.onBackPressed();
         }
@@ -563,8 +574,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         int count = data.getIntValue("view_count");
         if(count > 0){
             playCount.setVisibility(View.VISIBLE);
-            playCount.setText(String.format(getString(R.string.learn_count), count));
+            playNumStr = String.format(getString(R.string.learn_count), count);
+            playCount.setText(playNumStr);
         }else{
+            playNumStr = "";
             playCount.setVisibility(View.GONE);
         }
         collectTitle = title;

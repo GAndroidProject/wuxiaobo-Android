@@ -408,6 +408,7 @@
     <string name="modify_successfully">修改成功</string>
     <string name="modification_failed">修改失败，请重试</string>
     <string name="updated_to_issue">已更新至%d期</string>
+    <string name="updated_to_issue_str">已更新至%s期</string>
     <string name="see_more">查看更多</string>
     <string name="learn_manage_wealth">学会管理自己的财富</string>
     <string name="format_yuan">%.2f元</string>

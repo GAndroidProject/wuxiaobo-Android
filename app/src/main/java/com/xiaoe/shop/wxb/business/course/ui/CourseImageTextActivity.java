@@ -23,9 +23,12 @@ import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
+import com.xiaoe.common.db.LrSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
+import com.xiaoe.common.entitys.DecorateEntityType;
+import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
@@ -136,6 +139,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     String shareUrl;
     String realSrcId; // 因为信息流的 id 的和实际的 id 不一样，而上报需要真实 id 所以需要一个真实 id
     private String columnId;
+    String purchaseStr; // 学习人数
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -334,6 +338,13 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         if (hasBuy) { // 买了才需要上报
             UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
             updateLearningUtils.updateLearningProgress(realSrcId, Integer.parseInt(resourceType), 10);
+            LearningRecord lr = new LearningRecord();
+            lr.setLrId(realSrcId);
+            lr.setLrType(DecorateEntityType.IMAGE_TEXT);
+            lr.setLrTitle(collectionTitle);
+            lr.setLrImg(collectionImgUrl);
+            lr.setLrDesc(purchaseStr);
+            UpdateLearningUtils.saveLr2Local(this, lr);
         }
         super.onBackPressed();
     }
@@ -498,10 +509,11 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         int purchaseCount = data.getInteger("view_count") == null ? 0 : data.getInteger("view_count");
         if (purchaseCount > 0 ) {
 
-            String purchaseStr = String.format(getString(R.string.learn_count_str), NumberFormat.viewCountToString(purchaseCount));
+            purchaseStr = String.format(getString(R.string.learn_count_str), NumberFormat.viewCountToString(purchaseCount));
             itDesc.setText(purchaseStr);
         } else {
             // 如果没有阅读量的话就将文本设置为空，并且将前面的点页隐藏
+            purchaseStr = "";
             itDesc.setText("");
             itDesc.setCompoundDrawables(null, null, null, null);
         }

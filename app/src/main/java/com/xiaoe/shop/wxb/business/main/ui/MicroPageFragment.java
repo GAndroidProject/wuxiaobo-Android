@@ -799,7 +799,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                newUpdateToolbar(dy);
+                newUpdateToolbar();
             }
         });
         microPageFresh.setOnRefreshListener(this);
@@ -934,13 +934,10 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
 
     /**
      * 监听 recyclerView 的滑动事件对 toolbar 进行显示与隐藏
-     * @param dy
      */
-    private void newUpdateToolbar(int dy) {
+    private void newUpdateToolbar() {
         if (!isMain) {
-            totalScrollY += dy;
-            alpha = (totalScrollY / (toolbarHeight * 1.0f)) * 255;
-            if (alpha > maxAlpha) {
+            if (getScrollYDistance() > maxAlpha) {
                 if (microPageToolbarTitle.getVisibility() != View.VISIBLE) {
                     microPageToolbarTitle.setVisibility(View.VISIBLE);
                     mStatusBarBlank.setVisibility(View.VISIBLE);
@@ -1021,6 +1018,21 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         super.onHiddenChanged(hidden);
         if (hidden) {
             totalScrollY = 0;
+            if (microPageToolbar != null) {
+                microPageToolbar.setVisibility(View.GONE);
+            }
         }
+    }
+
+    /**
+     * LinearLayoutManager 时获取 y 方向滑动距离
+     * @return 竖直方向滑动距离
+     */
+    public int getScrollYDistance() {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) microPageContent.getLayoutManager();
+        int position = layoutManager.findFirstVisibleItemPosition();
+        View firstVisibleChildView = layoutManager.findViewByPosition(position);
+        int itemHeight = firstVisibleChildView.getHeight();
+        return (position) * itemHeight - firstVisibleChildView.getTop();
     }
 }

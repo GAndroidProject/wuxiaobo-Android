@@ -9,6 +9,7 @@ import com.xiaoe.common.entitys.LoginUserEntity;
 import java.util.Arrays;
 import java.util.List;
 
+// 登录数据处理
 public class LoginSQLiteCallback implements ISQLiteCallBack {
 
     public static final String TABLE_NAME_USER = "user_table"; // 用户表（成功绑定手机的）

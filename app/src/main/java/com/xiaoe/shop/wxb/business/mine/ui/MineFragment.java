@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +19,13 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
+import com.xiaoe.common.db.LrSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.GetSuperMemberSuccessEvent;
+import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.entitys.MineMoneyItemInfo;
 import com.xiaoe.common.entitys.UpdateMineMsgEvent;
@@ -107,8 +110,6 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     MineEquityListAdapter mineEquityListAdapter; // 权益适配器
 
     TouristDialog touristDialog;
-    String mineLearningId;
-    String mineLearningType;
     boolean hasDecorate;
 
     MoneyWrapRecyclerAdapter moneyWrapRecyclerAdapter; // 金钱适配器
@@ -124,6 +125,12 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
      * 页面停留时长
      */
     private long pageDuration;
+
+    String mineLearningId; // 我正在学资源 id
+    String mineLearningType; // 我正在学资源类型
+    String mineLearningTitle; // 我正在学标题
+    String mineLearningDesc; // 我正在学描述
+    String mineLearningImgUrl; // 我正在学图片链接
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -200,15 +207,11 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 //        if (earningPresenter == null) {
 //            earningPresenter = new EarningPresenter(this);
 //        }
-        if (mineLearningPresenter == null) {
-            mineLearningPresenter = new MineLearningPresenter(this);
-        }
         isScholarshipFinish = false;
         isIntegralFinish = false;
         isMineLearningFinish = false;
 //        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
 //        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-        mineLearningPresenter.requestLearningData(1, 1);
         if (!mainActivity.isFormalUser) {
 
             touristDialog = new TouristDialog(getActivity());
@@ -235,6 +238,27 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             List<LoginUser> loginMsg = getLoginUserList();
+
+            SQLiteUtil sqLiteUtil = SQLiteUtil.init(getActivity(), new LrSQLiteCallback());
+            if (!sqLiteUtil.tabIsExist(LrSQLiteCallback.TABLE_NAME_LR)) {
+                sqLiteUtil.execSQL(LrSQLiteCallback.TABLE_SCHEMA_LR);
+            }
+            List<LearningRecord> lrList =  sqLiteUtil.query(LrSQLiteCallback.TABLE_NAME_LR, "select * from " + LrSQLiteCallback.TABLE_NAME_LR, null);
+            if (lrList.size() == 1) {
+                LearningRecord lr = lrList.get(0);
+                mineLearningId = lr.getLrId();
+                mineLearningType = lr.getLrType();
+                mineLearningTitle = lr.getLrTitle();
+                mineLearningDesc = lr.getLrDesc();
+                mineLearningImgUrl = lr.getLrImg();
+            } else {
+                if (mineLearningPresenter == null) {
+                    mineLearningPresenter = new MineLearningPresenter(this);
+                }
+                mineLearningPresenter.requestLearningData(1, 1);
+            }
+            Log.d(TAG, "setUserVisibleHint: --- " + mineLearningId);
+
             if (loginMsg.size() == 1) {
                 initMineMsg();
                 initData();
@@ -328,9 +352,20 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             itemInfoList = new ArrayList<>();
         }
         // 我正在学
-        if (!mineLearningWrapView.getLearningLoginDesc().equals(getResources().getString(R.string.none_bought_course))) {
+        if (!TextUtils.isEmpty(mineLearningId)) {
             mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
+            mineLearningWrapView.setLearningContainerVisibility(View.VISIBLE);
+            mineLearningWrapView.setLearningMoreVisibility(View.VISIBLE);
+            mineLearningWrapView.setLearningTitle(mineLearningTitle);
+            mineLearningWrapView.setLearningIconURI(mineLearningImgUrl, mineLearningType);
+            mineLearningWrapView.setLearningUpdate(mineLearningDesc);
+        } else {
+            mineLearningWrapView.setLearningLoginDescVisibility(View.VISIBLE);
+            mineLearningWrapView.setLearningLoginDesc(getString(R.string.none_learning_course));
+            mineLearningWrapView.setLearningContainerVisibility(View.GONE);
+            mineLearningWrapView.setLearningMoreVisibility(View.GONE);
         }
+        initPageData();
     }
 
     private void initListener() {
@@ -415,10 +450,11 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 //                Toast.makeText(mContext, "点击更多权益", Toast.LENGTH_SHORT).show();
 //            }
 //        });
-        if (mineLearningWrapView.getLearningContainerVisibility() == View.VISIBLE) { // 可见就设置点击事件
-            mineLearningWrapView.setLearningContainerClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
-                @Override
-                public void singleClick(View v) {
+
+        mineLearningWrapView.setLearningContainerClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (mineLearningWrapView.getLearningContainerVisibility() == View.VISIBLE) { // 可见就设置点击事件
                     if (mainActivity.isFormalUser) {
                         // TODO: 跳转详情页
                         switch (mineLearningType) {
@@ -446,11 +482,10 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                     } else {
                         touristDialog.showDialog();
                     }
-
                     EventReportManager.onEvent(mContext, MobclickEvent.MINE_PURCHASED_COURSE_CLICK);
                 }
-            });
-        }
+            }
+        });
         mineLearningWrapView.setLearningMoreClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
             public void singleClick(View v) {
@@ -494,7 +529,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             } else if (iRequest instanceof MineLearningRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    updateMineLearning(result);
+                     updateMineLearning(result);
                 } else {
                     Log.d(TAG, "onMainThreadResponse: 请求我正在学失败");
                     mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
@@ -508,7 +543,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             // iRequest 为空是登录被挤情况
             mineRefresh.finishRefresh();
             if (iRequest != null) {
-                mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
+                mineLoading.setLoadingFinish();
             }
         }
     }
@@ -615,6 +650,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             mineLearningWrapView.setLearningUpdate(String.format(getString(R.string.updated_to_issue), updateCount));
         }
         mineLearningWrapView.setLearningMoreVisibility(View.VISIBLE);
+        mineLearningWrapView.setLearningLoginDescVisibility(View.GONE);
+        mineLearningWrapView.setLearningContainerVisibility(View.VISIBLE);
         isMineLearningFinish = true;
         initPageData();
         mineRefresh.finishRefresh();
@@ -640,7 +677,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     // 初始化页面数据
     private void initPageData() {
         // if (isIntegralFinish && isScholarshipFinish && isMineLearningFinish) { // 奖学金和积分和我正在学都请求完后再执行（去掉奖学金和积分的接口请求）
-        if (isMineLearningFinish) {
+//        if (isMineLearningFinish) {
             if (itemInfoList != null && itemInfoList.size() > 0) {
                 itemInfoList.clear();
             }
@@ -664,7 +701,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             }
 
             mineLoading.setLoadingFinish();
-        }
+//        }
     }
 
     // 初始化我的信息
@@ -704,9 +741,6 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 //            if (earningPresenter == null) {
 //                earningPresenter = new EarningPresenter(this);
 //            }
-            if (mineLearningPresenter == null) {
-                mineLearningPresenter = new MineLearningPresenter(this);
-            }
             if (superVipPresenter == null) {
                 superVipPresenter = new SuperVipPresenter(this);
             }
@@ -715,7 +749,6 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             isMineLearningFinish = false;
 //            earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
 //            earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-            mineLearningPresenter.requestLearningData(1, 1);
             superVipPresenter.requestSuperVip();
         }
     }
@@ -843,12 +876,12 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 //        if (earningPresenter == null) {
 //            earningPresenter = new EarningPresenter(this);
 //        }
-        if (mineLearningPresenter == null) {
-            mineLearningPresenter = new MineLearningPresenter(this);
-        }
+//        if (mineLearningPresenter == null) {
+//            mineLearningPresenter = new MineLearningPresenter(this);
+//        }
 //        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
 //        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-        mineLearningPresenter.requestLearningData(1, 1);
+//        mineLearningPresenter.requestLearningData(1, 1);
         if (superVipPresenter == null) {
             superVipPresenter = new SuperVipPresenter(this);
         }
@@ -944,6 +977,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 mineLearningWrapView.setLearningUpdate(String.format(getString(R.string.updated_to_issue), updateCount));
             }
             mineLearningWrapView.setLearningMoreVisibility(View.VISIBLE);
+            mineLearningWrapView.setLearningContainerVisibility(View.VISIBLE);
             isMineLearningFinish = true;
             initPageData();
             mineRefresh.finishRefresh();

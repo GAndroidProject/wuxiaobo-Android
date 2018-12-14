@@ -225,6 +225,13 @@ public class LoginNewActivity extends XiaoeActivity {
             }
         } else {
             Log.d(TAG, "onMainThreadResponse: 请求失败..");
+            if (getDialog().isShowing()) {
+                getDialog().dismissDialog();
+            }
+            if (((LoginNewFragment) currentFragment).getDialog().isShowing()) {
+                ((LoginNewFragment) currentFragment).getDialog().dismissDialog();
+            }
+            ToastUtils.show(this, getString(R.string.network_error_text));
         }
     }
 
@@ -285,6 +292,8 @@ public class LoginNewActivity extends XiaoeActivity {
             Log.d(TAG, "onMainThreadResponse: 字段格式无效");
         } else if (code == NetworkCodes.CODE_PERSON_NOT_FOUND) {
             Log.d(TAG, "onMainThreadResponse: 当前用户不存在");
+        } else if (code == NetworkCodes.CODE_NOT_LOAING) { // 未登录状态
+            Log.d(TAG, "handlePersonMsgCallback: 返回 2009 啦...");
         }
     }
 
@@ -332,6 +341,9 @@ public class LoginNewActivity extends XiaoeActivity {
             JSONObject data = (JSONObject) result.get("data");
             obtainLimitUserInfo(data);
             return;
+        } else if (code == NetworkCodes.CODE_SUCCEED) {
+            JSONObject data = (JSONObject) result.get("data");
+            initUserInfo(data);
         } else if (code == NetworkCodes.CODE_PARAMS_ERROR) { // 参数错误
             Log.d(TAG, "onMainThreadResponse: register --- " + msg);
         } else if (code == NetworkCodes.CODE_REGISTER_FAIL) { // 注册失败

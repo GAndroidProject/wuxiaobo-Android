@@ -15,6 +15,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -37,7 +38,9 @@ import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
+import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.HadSharedEvent;
+import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -119,6 +122,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
     Dialog dialog;
     private boolean mIsDownload = false;
 //    private SimpleDraweeView audioAdvertiseImg;
+    private String playNumStr;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -294,6 +298,13 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
             // 上报学习进度（买了才上报）
             UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
             updateLearningUtils.updateLearningProgress(AudioMediaPlayer.getAudio().getResourceId(), 2, 10);
+            LearningRecord lr = new LearningRecord();
+            lr.setLrId(AudioMediaPlayer.getAudio().getResourceId());
+            lr.setLrType(DecorateEntityType.AUDIO);
+            lr.setLrTitle(AudioMediaPlayer.getAudio().getTitle());
+            lr.setLrImg(AudioMediaPlayer.getAudio().getImgUrl());
+            lr.setLrDesc(playNumStr);
+            UpdateLearningUtils.saveLr2Local(this, lr);
         }
         super.onBackPressed();
         overridePendingTransition(R.anim.no_anim,R.anim.slide_bottom_out);
@@ -782,8 +793,10 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         int count = playEntity.getPlayCount();
         if(count > 0){
             playNum.setVisibility(View.VISIBLE);
-            playNum.setText(String.format(getString(R.string.learn_count), count));
+            playNumStr = String.format(getString(R.string.learn_count), count);
+            playNum.setText(playNumStr);
         }else{
+            playNumStr = "";
             playNum.setVisibility(View.GONE);
         }
         String imageUrl = playEntity.getImgUrl();

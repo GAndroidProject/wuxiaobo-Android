@@ -43,6 +43,7 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
     public RecyclerView groupRecyclerView;
 
     private List<RecyclerView> knowledgeGroupRecyclerList;
+    private boolean localDecorate = true;
 
     public KnowledgeGroupViewHolder(View itemView) {
         super(itemView);
@@ -92,9 +93,10 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
         if (!knowledgeGroupRecyclerList.contains(groupRecyclerView)) { // 防止重复添加
             knowledgeGroupRecyclerList.add(groupRecyclerView);
         }
-        if (currentBindComponent.isNeedDecorate()) {
+        if (currentBindComponent.isNeedDecorate() && localDecorate) {
             groupRecyclerView.addItemDecoration(new KnowledgeGroupRecyclerItemDecoration(Dp2Px2SpUtil.dp2px(mContext, 16), 2));
             currentBindComponent.setNeedDecorate(false);
+            localDecorate = false;
         }
         if (knowledgeGroupRecyclerAdapterArr.get(currentBindPos) == null) {
             knowledgeGroupRecyclerAdapter = new KnowledgeGroupRecyclerAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());;

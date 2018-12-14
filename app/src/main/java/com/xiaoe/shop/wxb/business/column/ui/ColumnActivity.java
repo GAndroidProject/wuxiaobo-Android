@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,8 +23,10 @@ import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.CacheData;
+import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.ExpandableItem;
 import com.xiaoe.common.entitys.ExpandableLevel;
+import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -122,6 +125,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private List<MultiItemEntity> topicLittleColumnList;
     //请求大专栏下第一个小专栏下资源列表，（小专栏、会员页面无效）
     private boolean requestTopicFirstLittle = false;
+    private String playNumStr = "";
 
 
     @Override
@@ -261,8 +265,29 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     @Override
     public void onBackPressed() {
         if (isHasBuy) {
+            Log.d(TAG, "onBackPressed: hasBuy ------- ");
             UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
             updateLearningUtils.updateLearningProgress(realSrcId, resourceType, 10);
+            LearningRecord lr = new LearningRecord();
+            //	1-会员，2-大专栏，3-专栏
+            lr.setLrId(realSrcId);
+            switch (resourceType) {
+                case 5: // 会员
+                    lr.setLrType(DecorateEntityType.MEMBER);
+                    break;
+                case 6: // 专栏
+                    lr.setLrType(DecorateEntityType.COLUMN);
+                    break;
+                case 8: // 大专栏
+                    lr.setLrType(DecorateEntityType.TOPIC);
+                    break;
+                default:
+                    break;
+            }
+            lr.setLrTitle(collectTitle);
+            lr.setLrImg(collectImgUrl);
+            lr.setLrDesc(playNumStr);
+            UpdateLearningUtils.saveLr2Local(this, lr);
         }
         super.onBackPressed();
     }
@@ -589,8 +614,10 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         int purchaseCount = data.getIntValue("purchase_count");
         if(purchaseCount > 0){
             buyCount.setVisibility(View.VISIBLE);
-            buyCount.setText(String.format(getString(R.string.people_learn), NumberFormat.viewCountToString(mContext, purchaseCount)));
+            playNumStr = String.format(getString(R.string.people_learn), NumberFormat.viewCountToString(mContext, purchaseCount));
+            buyCount.setText(playNumStr);
         }else {
+            playNumStr = "";
             buyCount.setVisibility(View.GONE);
         }
         if(!TextUtils.isEmpty(data.getString("expire_time"))){

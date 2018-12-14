@@ -36,7 +36,9 @@ import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
+import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.HadSharedEvent;
+import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -120,6 +122,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     private TextView mStatusBarBlank;
     private Dialog mPlaySpeedDialog;
     private View mPlaySpeedDialogView;
+    private String playNumStr;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -285,6 +288,13 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
             // 上报学习进度（买了才上报）
             UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
             updateLearningUtils.updateLearningProgress(AudioMediaPlayer.getAudio().getResourceId(), 2, 10);
+            LearningRecord lr = new LearningRecord();
+            lr.setLrId(AudioMediaPlayer.getAudio().getResourceId());
+            lr.setLrType(DecorateEntityType.AUDIO);
+            lr.setLrTitle(AudioMediaPlayer.getAudio().getTitle());
+            lr.setLrImg(AudioMediaPlayer.getAudio().getImgUrl());
+            lr.setLrDesc(playNumStr);
+            UpdateLearningUtils.saveLr2Local(this, lr);
         }
         super.onBackPressed();
         overridePendingTransition(R.anim.no_anim,R.anim.slide_bottom_out);
@@ -795,8 +805,10 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         int count = playEntity.getPlayCount();
         if(count > 0){
             playNum.setVisibility(View.VISIBLE);
+            playNumStr = String.format(getString(R.string.learn_count), count);
             playNum.setText(String.format(getString(R.string.learn_count), count));
         }else{
+            playNumStr = "";
             playNum.setVisibility(View.GONE);
         }
         String imageUrl = playEntity.getImgUrl();

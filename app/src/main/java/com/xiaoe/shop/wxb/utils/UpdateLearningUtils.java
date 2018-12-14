@@ -1,11 +1,19 @@
 package com.xiaoe.shop.wxb.utils;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.db.LrSQLiteCallback;
+import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.UpdateMineLearningRequest;
+
+import java.util.List;
 
 public class UpdateLearningUtils implements IBizCallback {
 
@@ -32,5 +40,23 @@ public class UpdateLearningUtils implements IBizCallback {
         updateMineLearningRequest.addDataParam("spend_time", 0);
 
         NetworkEngine.getInstance().sendRequest(updateMineLearningRequest);
+    }
+
+    /**
+     * 将学习记录保存到本地
+     * @param context
+     * @param lr
+     */
+    public static void saveLr2Local(Context context, LearningRecord lr) {
+        SQLiteUtil sqLiteUtil = SQLiteUtil.init(context, new LrSQLiteCallback());
+        if (!sqLiteUtil.tabIsExist(LrSQLiteCallback.TABLE_NAME_LR)) {
+            sqLiteUtil.execSQL(LrSQLiteCallback.TABLE_SCHEMA_LR);
+        }
+        List<LearningRecord> lrList = sqLiteUtil.query(LrSQLiteCallback.TABLE_NAME_LR, "select * from " + LrSQLiteCallback.TABLE_NAME_LR, null);
+        Log.d("setUserVisibleHint", "saveLr2Local: --- " + lrList.size());
+        if (lrList.size() > 0) {
+            sqLiteUtil.execSQL("delete from " + LrSQLiteCallback.TABLE_NAME_LR);
+        }
+        sqLiteUtil.insert(LrSQLiteCallback.TABLE_NAME_LR, lr);
     }
 }
