@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'walle'
+apply plugin: 'bugly'
+
+bugly {
+    appId = '2dcaaeb46a' // 注册时分配的App ID
+    appKey = '245390de-f3b3-4647-bbd3-a7f7aeb41fd7' // 注册时分配的App Key
+    debug = true
+}
 
 walle {
     // 指定渠道包的输出路径
