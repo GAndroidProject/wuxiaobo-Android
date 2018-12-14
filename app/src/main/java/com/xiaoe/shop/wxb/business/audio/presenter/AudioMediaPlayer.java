@@ -23,6 +23,7 @@ import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
 import com.xiaoe.common.utils.DateFormat;
+import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 
@@ -430,6 +431,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
         AudioNotifier.get().cancelAll();
+        SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
+        SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_RECORD_NOT_WIFI_PLAY_TAG, false);
     }
 
     private static void savePlayProgress(int progress) {

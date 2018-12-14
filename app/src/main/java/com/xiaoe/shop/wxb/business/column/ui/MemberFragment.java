@@ -12,10 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ColumnDirectoryEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
@@ -246,6 +244,17 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
                     AudioPlayUtil.getInstance().setFromTag("Column");
                     AudioPlayUtil.getInstance().setSingleAudio(false);
                 }
+
+                //比较播放中的专栏是否和点击的状态相同
+                AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
+                boolean resourceEquals = !TextUtils.isEmpty(resourceId) && audioPlayEntity != null
+                        && resourceId.equals(audioPlayEntity.getColumnId());
+                if(resourceEquals && AudioMediaPlayer.isPlaying()){
+                    //点击全部暂停
+                    AudioMediaPlayer.play();
+                    return;
+                }
+
                 isAddPlayList = true;
                 AudioMediaPlayer.stop();
                 AudioPlayEntity playEntity = playList.get(0);

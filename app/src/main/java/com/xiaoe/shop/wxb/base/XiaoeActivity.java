@@ -52,8 +52,6 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioSQLiteUtil;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
-import com.xiaoe.shop.wxb.business.column.ui.ColumnActivity;
-import com.xiaoe.shop.wxb.business.download.ui.OffLineCacheActivity;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.JumpDetail;
@@ -238,26 +236,24 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
             }
         }
 
-        if (this instanceof ColumnActivity || this instanceof OffLineCacheActivity) {
-            AudioPlayEntity audio = AudioMediaPlayer.getAudio();
-            if (miniAudioPlayController != null && audio != null) {
-                if (AudioPlayUtil.getInstance().isCloseMiniPlayer()) {
-                    miniAudioPlayController.setVisibility(View.GONE);
-                } else {
-                    miniAudioPlayController.setVisibility(View.VISIBLE);
-                }
-
-                miniAudioPlayController.setAudioTitle(audio.getTitle());
-                miniAudioPlayController.setAudioImage(audio.getImgUrlCompressed());
-                miniAudioPlayController.setColumnTitle(audio.getProductsTitle());
-                int currentPosition = audio.getProgress();
-                if (currentPosition > 0 && !AudioMediaPlayer.isPlaying())
-                    miniAudioPlayController.setProgress(currentPosition);
-                miniAudioPlayController.setMaxProgress(audio.getMaxProgress());
-                miniAudioPlayController.setPlayState(AudioMediaPlayer.isPlaying() ? AudioPlayEvent.PLAY : AudioPlayEvent.PAUSE);
-            } else if (miniAudioPlayController != null) {
+        AudioPlayEntity audio = AudioMediaPlayer.getAudio();
+        if (miniAudioPlayController != null && audio != null) {
+            if (AudioPlayUtil.getInstance().isCloseMiniPlayer()) {
                 miniAudioPlayController.setVisibility(View.GONE);
+            } else {
+                miniAudioPlayController.setVisibility(View.VISIBLE);
             }
+
+            miniAudioPlayController.setAudioTitle(audio.getTitle());
+            miniAudioPlayController.setAudioImage(audio.getImgUrlCompressed());
+            miniAudioPlayController.setColumnTitle(audio.getProductsTitle());
+            int currentPosition = audio.getProgress();
+            if (currentPosition > 0 && !AudioMediaPlayer.isPlaying())
+                miniAudioPlayController.setProgress(currentPosition);
+            miniAudioPlayController.setMaxProgress(audio.getMaxProgress());
+            miniAudioPlayController.setPlayState(AudioMediaPlayer.isPlaying() ? AudioPlayEvent.PLAY : AudioPlayEvent.PAUSE);
+        } else if (miniAudioPlayController != null) {
+            miniAudioPlayController.setVisibility(View.GONE);
         }
     }
 

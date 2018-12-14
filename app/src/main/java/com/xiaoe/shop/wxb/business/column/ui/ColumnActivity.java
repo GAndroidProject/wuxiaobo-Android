@@ -381,13 +381,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
     private void columnListRequest(JSONArray data) {
         if(resourceType == RESOURCE_TYPE_TOPIC){
-//            ColumnDirectoryFragment fragment = (ColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             NewColumnDirectoryFragment fragment = (NewColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
             if(refreshData || showDataByDB || pageIndex == 1){
                 refreshData = false;
                 topicLittleColumnList = columnPresenter.formatExpandableEntity(data, resourceId, isHasBuy ? 1 : 0);
-//                fragment.refreshData(columnPresenter.formatExpandableEntity(data, resourceId, hasBuy ? 1 : 0));
                 //请求第一个小专栏下资源
                 if(topicLittleColumnList.size() > 0){
                     requestTopicFirstLittle = true;
