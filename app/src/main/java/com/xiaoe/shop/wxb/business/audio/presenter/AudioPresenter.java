@@ -89,18 +89,6 @@ public class AudioPresenter implements IBizCallback {
         JSONObject resourceInfo = null;
         if(available){
             resourceInfo = data;
-            JSONObject shareInfo = resourceInfo.getJSONObject("share_info");
-            if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
-                String shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
-                if(TextUtils.isEmpty(playEntity.getColumnId())){
-                    playEntity.setShareUrl(shareUrl);
-                }else{
-                    JSONObject shareJSON = Base64Util.base64ToJSON(shareUrl.substring(shareUrl.lastIndexOf("/")+1));
-                    shareJSON.put("product_id", playEntity.getColumnId());
-                    shareUrl = shareUrl.substring(0, shareUrl.lastIndexOf("/") + 1) + Base64Util.jsonToBase64(shareJSON);
-                    playEntity.setShareUrl(shareUrl);
-                }
-            }
             int hasFavorite = ((JSONObject) resourceInfo.get("favorites_info")).getInteger("is_favorite");
             playEntity.setHasFavorite(hasFavorite);
         }else{
@@ -109,6 +97,20 @@ public class AudioPresenter implements IBizCallback {
             playEntity.setHasFavorite(hasFavorite);
             playEntity.setPrice(resourceInfo.getIntValue("price"));
         }
+
+        JSONObject shareInfo = data.getJSONObject("share_info");
+        if(shareInfo != null && shareInfo.getJSONObject("wx") != null){
+            String shareUrl = shareInfo.getJSONObject("wx").getString("share_url");
+            if(TextUtils.isEmpty(playEntity.getColumnId())){
+                playEntity.setShareUrl(shareUrl);
+            }else{
+                JSONObject shareJSON = Base64Util.base64ToJSON(shareUrl.substring(shareUrl.lastIndexOf("/")+1));
+                shareJSON.put("product_id", playEntity.getColumnId());
+                shareUrl = shareUrl.substring(0, shareUrl.lastIndexOf("/") + 1) + Base64Util.jsonToBase64(shareJSON);
+                playEntity.setShareUrl(shareUrl);
+            }
+        }
+
         playEntity.setCurrentPlayState(1);
         playEntity.setTitle(resourceInfo.getString("title"));
 
