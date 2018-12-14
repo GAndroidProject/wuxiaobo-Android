@@ -203,6 +203,9 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
 
         //倍速按钮
         btnSpeedPlay = (TextView) findViewById(R.id.audio_speed_play);
+        String phoneBrand = Global.getPhoneBrand().toUpperCase();
+        if (isNotSupportSpeedChangePhone(phoneBrand))
+            btnSpeedPlay.setVisibility(View.GONE);
         btnSpeedPlay.setOnClickListener(this);
         updateSpeedPlayButtonView(AudioMediaPlayer.mPlaySpeed);
         //音频播放控制器
@@ -477,7 +480,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         String phoneBrand = Global.getPhoneBrand().toUpperCase();
                         //华为手机Android8.0倍速播放限制
-                        if(Build.VERSION.SDK_INT >= 26 && (Constants.PHONE_HONOR.equals(phoneBrand) || Constants.PHONE_HUAWEI.equals(phoneBrand))){
+                        if(isNotSupportSpeedChangePhone(phoneBrand)){
                             toastCustom(getString(R.string.speed_play_not_support));
                             return;
                         }
@@ -512,6 +515,10 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    private boolean isNotSupportSpeedChangePhone(String phoneBrand) {
+        return Build.VERSION.SDK_INT >= 26 && (Constants.PHONE_HONOR.equals(phoneBrand) || Constants.PHONE_HUAWEI.equals(phoneBrand));
     }
 
     private void showPlaySpeedDialog() {
