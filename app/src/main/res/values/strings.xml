@@ -486,4 +486,6 @@
     <string name="login_code_timeout_new">验证码超时，请重新获取</string>
     <string name="vip_has_buy_text">已开通VIP 立即畅听全场课程</string>
     <string name="login_code_new_title">短信验证码</string>
+    <string name="please_wechat_open">请在微信中打开该链接</string>
+    <string name="clip_wechat_url">暂不支持该链接跳转，您可以点击下方复制链接，在微信环境中打开。\n%s</string>
 </resources>

@@ -1,6 +1,10 @@
 package com.xiaoe.shop.wxb.common.web;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -10,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
@@ -18,12 +23,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.xiaoe.common.app.Global;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.xiaoe.shop.wxb.common.web.BridgeWebView.CUSTOM_ERROR_PAGE;
 
@@ -49,6 +58,10 @@ public class BrowserActivity extends XiaoeActivity {
 
     private String url;
     private String title;
+    /**
+     * 剪贴板
+     */
+    private ClipboardManager clipboardManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +110,25 @@ public class BrowserActivity extends XiaoeActivity {
     }
 
     private void init() {
+        clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
+        switch (WebJumpHelper.getInstance().getUrlType(mContext, url)) {
+            case WECHAT_OPEN:
+                // 弹窗提示
+                remindDialog(url);
+                return;
+            case APP_JUMP_OPEN:
+                finish();
+                break;
+            case DIRECTLY_OPEN:
+                break;
+            case BROWSER_OPEN:
+                finish();
+                break;
+            default:
+                break;
+        }
+
         mWebView.setWebViewClient(new BridgeWebViewClient() {
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
@@ -144,6 +176,44 @@ public class BrowserActivity extends XiaoeActivity {
             startActivity(intent);
         });
         mWebView.loadUrl(url);
+    }
+
+    private void remindDialog(String url) {
+        ClipData clipData = ClipData.newPlainText(null, url);
+        getDialog().setTitle(getString(R.string.please_wechat_open));
+        getDialog().getTitleView().setTextSize(20);
+        getDialog().setConfirmText(getString(R.string.withdrawal_grant_confirm));
+        getDialog().getTitleView().setTextColor(getResources().getColor(R.color.main_title_color));
+        getDialog().getTitleView().setGravity(Gravity.START);
+        getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(this, 20), 0, 0, 0);
+        getDialog().setHintMessage(getString(R.string.clip_wechat_url), url);
+        getDialog().setCancelable(false);
+        getDialog().setOnCustomDialogListener(new OnCustomDialogListener() {
+            @Override
+            public void onClickCancel(View view, int tag) {
+                finish();
+            }
+
+            @Override
+            public void onClickConfirm(View view, int tag) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    ComponentName componentName = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI");
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setComponent(componentName);
+                    clipboardManager.setPrimaryClip(clipData);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    ToastUtils.show(mContext, R.string.weChat_not_installed);
+                }
+            }
+
+            @Override
+            public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
+            }
+        });
+        getDialog().showDialog(0);
     }
 
     public boolean loadUrl(String url) {

@@ -98,7 +98,7 @@ public class JgPushReceiver extends BroadcastReceiver {
             case 4:
                 break;
             case 5:
-                BrowserActivity.openUrl(context, jgPushReceiverEntity.getAction_params().getWebsite_url(), "外部链接");
+                BrowserActivity.openUrl(context, jgPushReceiverEntity.getAction_params().getWebsite_url(), "");
                 break;
             case 6:
 //                if ("8".equals(jgPushReceiverEntity.getAction_params().getResource_type())) {

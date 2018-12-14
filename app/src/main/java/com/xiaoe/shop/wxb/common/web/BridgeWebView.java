@@ -31,7 +31,7 @@ public class BridgeWebView extends WebView {
 
     public static final String CUSTOM_ERROR_PAGE = "file:///android_asset/error.html";
 
-    private static final String TAG = BridgeWebView.class.getSimpleName();
+    private static final String TAG = "BridgeWebView";
 
     private String mReloadUrl;
 
@@ -62,6 +62,7 @@ public class BridgeWebView extends WebView {
         addJavascriptInterface(this, "TboxInterface");
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     void settings() {
         WebSettings setting = getSettings();
         setting.setJavaScriptEnabled(true);
