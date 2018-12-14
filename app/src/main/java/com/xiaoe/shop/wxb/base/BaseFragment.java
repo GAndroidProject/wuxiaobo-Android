@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.db.LoginSQLiteCallback;
+import com.xiaoe.common.db.LrSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -288,6 +289,8 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
         if(tag == DIALOG_TAG_LOADING){
             SQLiteUtil sqLiteUtil = SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
             sqLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+            SQLiteUtil lrUtil = SQLiteUtil.init(getActivity(), new LrSQLiteCallback());
+            lrUtil.deleteFrom(LrSQLiteCallback.TABLE_NAME_LR);
             CommonUserInfo.getInstance().clearUserInfo();
             CommonUserInfo.getInstance().clearLoginUserInfo();
             CommonUserInfo.setApiToken("");
@@ -295,7 +298,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
             CommonUserInfo.setIsSuperVipAvailable(false);
             getDialog().dismissDialog();
             // 点击重新登录，登录完之后要回到原来的页面
-            JumpDetail.jumpLogin(getContext());
+            JumpDetail.jumpLoginSplash(getContext());
             // 登录后需要回到原来的页面，所以不做 finish 操作
             // getActivity().finish();
             ActivityCollector.finishAll();

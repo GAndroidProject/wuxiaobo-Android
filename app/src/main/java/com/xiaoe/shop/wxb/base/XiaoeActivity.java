@@ -32,6 +32,7 @@ import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.db.LoginSQLiteCallback;
+import com.xiaoe.common.db.LrSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
@@ -535,6 +536,8 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
         if(tag == DIALOG_TAG_LOADING){
             SQLiteUtil liteUtil = SQLiteUtil.init(this,  new LoginSQLiteCallback());
             liteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+            SQLiteUtil lrUtil = SQLiteUtil.init(this, new LrSQLiteCallback());
+            lrUtil.deleteFrom(LrSQLiteCallback.TABLE_NAME_LR);
             CommonUserInfo.getInstance().clearUserInfo();
             CommonUserInfo.getInstance().clearLoginUserInfo();
             CommonUserInfo.setApiToken("");

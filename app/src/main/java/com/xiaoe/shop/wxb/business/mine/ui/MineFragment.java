@@ -27,6 +27,7 @@ import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.GetSuperMemberSuccessEvent;
 import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.entitys.LrEntity;
 import com.xiaoe.common.entitys.MineMoneyItemInfo;
 import com.xiaoe.common.entitys.UpdateMineMsgEvent;
 import com.xiaoe.common.interfaces.OnItemClickWithMoneyItemListener;
@@ -53,6 +54,7 @@ import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
@@ -257,7 +259,6 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 }
                 mineLearningPresenter.requestLearningData(1, 1);
             }
-            Log.d(TAG, "setUserVisibleHint: --- " + mineLearningId);
 
             if (loginMsg.size() == 1) {
                 initMineMsg();
@@ -655,6 +656,13 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         isMineLearningFinish = true;
         initPageData();
         mineRefresh.finishRefresh();
+        LearningRecord lr = new LearningRecord();
+        lr.setLrId(listItem.getString("resource_id"));
+        lr.setLrType(convertInt2Str(listItem.getInteger("resource_type")));
+        lr.setLrTitle(item.getString("title"));
+        lr.setLrImg(item.getString("img_url"));
+        lr.setLrDesc(String.format(getString(R.string.updated_to_issue), updateCount));
+        UpdateLearningUtils.saveLr2Local(getActivity(), lr);
     }
 
     // 获取超级会员购买信息

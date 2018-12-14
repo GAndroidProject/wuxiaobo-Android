@@ -15,6 +15,7 @@ import android.widget.Button;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.db.LoginSQLiteCallback;
+import com.xiaoe.common.db.LrSQLiteCallback;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.SettingItemInfo;
 import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
@@ -128,6 +129,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
                         AudioMediaPlayer.stop();
                         AudioPlayUtil.getInstance().setCloseMiniPlayer(true);
                         SQLiteUtil.init(getActivity(), new LoginSQLiteCallback()).deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+                        SQLiteUtil.init(getActivity(), new LrSQLiteCallback()).deleteFrom(LrSQLiteCallback.TABLE_NAME_LR);
                         CommonUserInfo.getInstance().clearUserInfo();
                         ActivityCollector.finishAll();
                         CommonUserInfo.setApiToken("");
