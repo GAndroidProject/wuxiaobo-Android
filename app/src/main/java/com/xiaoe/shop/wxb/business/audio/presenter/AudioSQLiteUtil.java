@@ -50,7 +50,9 @@ public class AudioSQLiteUtil implements ISQLiteCallBack {
             values.put(AudioPlayTable.getCreateAt(), tableEntity.getCreateAt());
         }
         values.put("try_play_url", tableEntity.getTryPlayUrl());
-        values.put(AudioPlayTable.getProgress(),tableEntity.getProgress());
+        int progress = tableEntity.getProgress() - 5 * 1000;//保存播放进度向后退五秒
+        progress = progress < 0 ? 0 : progress;
+        values.put(AudioPlayTable.getProgress(),progress);
         values.put(AudioPlayTable.getMaxProgress(),tableEntity.getMaxProgress());
         values.put("is_try", tableEntity.getIsTry());
     }

@@ -436,8 +436,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     private static void savePlayProgress(int progress) {
-        progress = progress - 5 * 1000;//保存播放进度向后退五秒
-        progress = progress < 0 ? 0 : progress;
         audio.setProgress(progress);
         saveAudioDB();
     }
