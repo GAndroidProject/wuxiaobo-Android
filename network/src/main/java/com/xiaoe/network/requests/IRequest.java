@@ -1,5 +1,7 @@
 package com.xiaoe.network.requests;
 
+import android.text.TextUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
@@ -156,7 +158,7 @@ public abstract class IRequest {
         }else{
             jsonObject.put("user_id", CommonUserInfo.getUserId());
         }
-        if (CommonUserInfo.getApiToken() == null) { // 若未有 api_token，则去数据库中取
+        if (TextUtils.isEmpty(CommonUserInfo.getApiToken())) { // 若未有 api_token，则去数据库中取
             jsonObject.put("api_token", CommonUserInfo.getInstance().getApiTokenByDB());
         } else {
             jsonObject.put("api_token", CommonUserInfo.getApiToken());
