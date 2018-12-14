@@ -30,7 +30,7 @@ public class Constants {
     private static final String WX_SECRET_FORMAL = "deaf2b8bf7b5d3c07fe39f4b376abaf5";
 
     //Bugly测试环境
-    private static final String TEST_BUGLY_ID = "417b763f59";
+    private static final String TEST_BUGLY_ID = "2dcaaeb46a";
     //Bugly正式环境
     private static final String FORMAL_BUGLY_ID = "2dcaaeb46a";
 

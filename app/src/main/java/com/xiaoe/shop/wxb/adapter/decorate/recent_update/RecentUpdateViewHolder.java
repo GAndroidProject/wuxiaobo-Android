@@ -1,21 +1,15 @@
 package com.xiaoe.shop.wxb.adapter.decorate.recent_update;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -30,7 +24,8 @@ import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.LoginDialogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 
-import java.util.Map;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * 最近更新 ViewHolder
@@ -49,6 +44,8 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
     Button recentUpdateSubBtn;
     @BindView(R.id.btn_recent_update_icon)
     ImageView recentUpdateBtnIcon;
+    @BindView(R.id.btn_recent_update_wrap)
+    LinearLayout btnRecentUpdateWrap;
 
     private Context mContext;
     private RecentUpdateListAdapter recentUpdateListAdapter;
@@ -108,7 +105,9 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
         MeasureUtil.setListViewHeightBasedOnChildren(recentUpdateListView);
         if (currentBindComponent.isHideTitle()) { // 隐藏收听全部按钮
             recentUpdateSubBtn.setVisibility(View.GONE);
+            btnRecentUpdateWrap.setVisibility(View.GONE);
         } else {
+            btnRecentUpdateWrap.setVisibility(View.VISIBLE);
             recentUpdateSubBtn.setVisibility(View.VISIBLE);
             recentUpdateSubBtn.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
