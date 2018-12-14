@@ -954,6 +954,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 mStatusBarBlank.setVisibility(View.GONE);
                 microPageToolbarSearch.setVisibility(View.GONE);
             }
+            if (getScrollYDistance() > Dp2Px2SpUtil.dp2px(mContext, 120)) {
+                microPageTitleBg.setVisibility(View.GONE);
+            } else {
+                microPageTitleBg.setVisibility(View.VISIBLE);
+            }
         } else {
             mStatusBarBlank.setVisibility(View.GONE);
         }
