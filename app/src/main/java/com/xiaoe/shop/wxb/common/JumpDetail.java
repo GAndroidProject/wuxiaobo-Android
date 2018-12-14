@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.AudioPlayEntity;
@@ -17,7 +16,6 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
-import com.xiaoe.shop.wxb.business.audio.presenter.PlayerProgressRecordManager;
 import com.xiaoe.shop.wxb.business.audio.ui.AudioNewActivity;
 import com.xiaoe.shop.wxb.business.bought_list.ui.BoughtListActivity;
 import com.xiaoe.shop.wxb.business.cdkey.ui.CdKeyActivity;
@@ -46,7 +44,6 @@ import com.xiaoe.shop.wxb.business.search.ui.SearchMoreActivity;
 import com.xiaoe.shop.wxb.business.setting.ui.SettingAccountActivity;
 import com.xiaoe.shop.wxb.business.setting.ui.SettingPersonActivity;
 import com.xiaoe.shop.wxb.business.super_vip.ui.NewSuperVipActivity;
-import com.xiaoe.shop.wxb.business.super_vip.ui.SuperVipActivity;
 import com.xiaoe.shop.wxb.business.video.ui.VideoActivity;
 import com.xiaoe.shop.wxb.common.pay.ui.PayActivity;
 
@@ -117,7 +114,7 @@ public class JumpDetail {
      * @param context
      * @param resId
      * @param imageUrl
-     * @param resourceType 5 -- 会员，6 -- 专栏； 8 -- 大专栏
+     * @param resourceType 5 -- 会员，6 -- 专栏； 8 -- 大专栏，3 -- 不是点击商品进入，可能是消息列表，或者解析超链接
      */
     public static void jumpColumn(Context context, String resId,String imageUrl, int resourceType){
         Intent intent = new Intent(context, ColumnActivity.class);

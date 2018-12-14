@@ -33,6 +33,7 @@ import com.xiaoe.network.requests.AddCollectionRequest;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.DetailRequest;
 import com.xiaoe.network.requests.IRequest;
+import com.xiaoe.network.requests.QueryProductTypeRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.column.ColumnFragmentStatePagerAdapter;
@@ -149,10 +150,18 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         resourceType = mIntent.getIntExtra("resource_type", 0);
         resourceId = mIntent.getStringExtra("resource_id");
+        columnPresenter = new ColumnPresenter(this);
         EventBus.getDefault().register(this);
+
         initView();
-        initData();
-        initTitle();
+        if(resourceType == 3){
+            //resourceType=3可能是通过一些链接或消息类型进入，需要通过接口查询获取准确的resourceType
+            //拿到准确的resourceTyp后才初始化数据
+            columnPresenter.productTypeRequest(resourceId);
+        }else{
+            initData();
+            initTitle();
+        }
     }
 
     // 沉浸式初始化
@@ -162,7 +171,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void initData() {
-        columnPresenter = new ColumnPresenter(this);
         setDataByDB();
         columnPresenter.requestDetail(resourceId, resourceType+"");
         collectionUtils = new CollectionUtils(this);
@@ -254,7 +262,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     public void onBackPressed() {
         if (isHasBuy) {
             UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-//            updateLearningUtils.updateLearningProgress(realSrcId, isBigColumn ? 8 : 6, 10);
             updateLearningUtils.updateLearningProgress(realSrcId, resourceType, 10);
         }
         super.onBackPressed();
@@ -275,11 +282,11 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             return;
         }
         int code = jsonObject.getIntValue("code");
-        if(code != NetworkCodes.CODE_SUCCEED && iRequest.getRequestTag() != TOPIC_LITTLE_REQUEST_TAG){
+        if(code != NetworkCodes.CODE_SUCCEED && !TOPIC_LITTLE_REQUEST_TAG.equals(iRequest.getRequestTag())){
             if(iRequest instanceof ColumnListRequst || iRequest instanceof DetailRequest){
                 setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
             }
-            if(iRequest instanceof DetailRequest){
+            if(iRequest instanceof DetailRequest || iRequest instanceof QueryProductTypeRequest){
                 if(code == NetworkCodes.CODE_GOODS_DELETE){
                     setPagerState(NetworkCodes.CODE_GOODS_DELETE);
                 }else{
@@ -311,6 +318,22 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             addCollectionRequest(jsonObject);
         }else if(iRequest instanceof RemoveCollectionListRequest){
             removeCollectionRequest(jsonObject);
+        }else if(iRequest instanceof QueryProductTypeRequest){
+            JSONObject data = (JSONObject) dataObject;
+            int type = data.getIntValue("type");
+            //	1-会员，2-大专栏，3-专栏
+            if(type == 1){
+                resourceType = 5;
+            }else if(type == 2){
+                resourceType = 8;
+            }else if(type == 3){
+                resourceType = 6;
+            }else{
+                setPagerState(1);
+                return;
+            }
+            initData();
+            initTitle();
         }
     }
 

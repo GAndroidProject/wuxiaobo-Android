@@ -12,6 +12,7 @@ import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.DetailRequest;
 import com.xiaoe.network.requests.IRequest;
+import com.xiaoe.network.requests.QueryProductTypeRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -212,5 +213,11 @@ public class ColumnPresenter implements IBizCallback {
     public static ColumnSecondDirectoryEntity ExpandableItem2ColumnSecondDirectoryEntity(ExpandableItem expandableItem){
         String json =  JSONObject.toJSONString(expandableItem);
         return JSONObject.parseObject(json, ColumnSecondDirectoryEntity.class);
+    }
+
+    public void productTypeRequest(String productId){
+        QueryProductTypeRequest productTypeRequest = new QueryProductTypeRequest(this);
+        productTypeRequest.addRequestParam("product_id", productId);
+        productTypeRequest.sendRequest();
     }
 }

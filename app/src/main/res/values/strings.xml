@@ -467,7 +467,7 @@
     <string name="coupons_available">有%d张可用优惠券</string>
     <string name="reply_people">回复 %s：</string>
     <string name="let_me_say_something">我来说两句</string>
-    <string name="full_yuan_used">满%f元使用</string>
+    <string name="full_yuan_used">满%.2f元使用</string>
     <string name="send_successfully">发送成功</string>
     <string name="send_to_cancel">发送取消</string>
     <string name="send_rejected">发送被拒绝</string>
