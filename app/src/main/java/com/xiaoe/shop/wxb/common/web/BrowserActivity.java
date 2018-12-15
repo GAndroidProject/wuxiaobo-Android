@@ -19,6 +19,7 @@ import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -98,7 +99,10 @@ public class BrowserActivity extends XiaoeActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-        accountToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+//        accountToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
+        FrameLayout.LayoutParams toolbarParams = (FrameLayout.LayoutParams) accountToolbar.getLayoutParams();
+        toolbarParams.height = Dp2Px2SpUtil.dp2px(this, 44);
+        accountToolbar.setLayoutParams(toolbarParams);
     }
 
     private void getIntentValue() {
