@@ -132,6 +132,10 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
      * 页面停留时长（开始时间）
      */
     private long pageDuration;
+    /**
+     * 在主页面中的索引位置
+     */
+    private int tabIndex;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -140,6 +144,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         if (bundle != null) {
             // 获取微页面 id
             microPageId = bundle.getString("microPageId");
+            tabIndex = bundle.getInt("tabIndex");
         }
     }
 
@@ -187,11 +192,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     public void onPause() {
         super.onPause();
         if (microPageId.equals(MainActivity.MICRO_PAGE_MAIN)) {
-            if (0 == mainActivity.getCurrentPosition()) {
+            if (tabIndex == mainActivity.getCurrentPosition()) {
                 eventReportDuration();
             }
         } else {
-            if (1 == mainActivity.getCurrentPosition()) {
+            if (tabIndex == mainActivity.getCurrentPosition()) {
                 eventReportDuration();
             }
         }
@@ -230,12 +235,13 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         return alpha;
     }
 
-    public static MicroPageFragment newInstance(String microPageId) {
-        MicroPageFragment microPageFragment = new MicroPageFragment();
+    public static MicroPageFragment newInstance(String microPageId, int tabIndex) {
+        MicroPageFragment fragment = new MicroPageFragment();
         Bundle bundle = new Bundle();
         bundle.putString("microPageId", microPageId);
-        microPageFragment.setArguments(bundle);
-        return microPageFragment;
+        bundle.putInt("tabIndex", tabIndex);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override

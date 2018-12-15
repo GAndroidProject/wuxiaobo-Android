@@ -24,6 +24,10 @@ public class BottomTabBar extends FrameLayout implements View.OnClickListener {
     private LinearLayout bottomTabBar;
     private OnBottomTabSelectListener bottomTabSelectListener;
     private List<BottomBarButton> bottomBarButtonList;
+    /**
+     * 底部导航栏名称
+     */
+    private List<String> buttonNames;
 
     public BottomTabBar(@NonNull Context context) {
         super(context);
@@ -65,9 +69,11 @@ public class BottomTabBar extends FrameLayout implements View.OnClickListener {
     public void addTabButtonIconByUrl(int count, List<String> buttonNames, List<String> buttonIcons){
 
     }
-    public void addTabButton(int count, List<String> buttonNames, List<Integer> buttonIcons, List<Integer> buttonCheckedIcons, int textColor, int textCheckedColor){
+    public void addTabButton(@NonNull List<String> buttonNames, List<Integer> buttonIcons, List<Integer> buttonCheckedIcons, int textColor, int textCheckedColor){
+        this.buttonNames = buttonNames;
+
         int[] ids = {R.id.bottom_bar_button_1,R.id.bottom_bar_button_2,R.id.bottom_bar_button_3,R.id.bottom_bar_button_4};
-        for (int i = 0; i < count; i++){
+        for (int i = 0; i < buttonNames.size(); i++){
             BottomBarButton bottomBarButton = new BottomBarButton(mContext);
 
             bottomBarButton.setId(ids[i]);
@@ -99,31 +105,45 @@ public class BottomTabBar extends FrameLayout implements View.OnClickListener {
             case R.id.bottom_bar_button_1:
                 if(bottomTabSelectListener != null){
                     setCheckedButton(0);
-                    EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_TODAY_CLICK);
+                    eventReport(0);
                 }
                 break;
             case R.id.bottom_bar_button_2:
                 if(bottomTabSelectListener != null){
                     setCheckedButton(1);
-                    EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_COURSE_CLICK);
+                    eventReport(1);
                 }
                 break;
             case R.id.bottom_bar_button_3:
                 if(bottomTabSelectListener != null){
                     setCheckedButton(2);
-                    EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_SCHOLARSHIP_CLICK);
+                    eventReport(2);
                 }
                 break;
             case R.id.bottom_bar_button_4:
                 if(bottomTabSelectListener != null){
                     setCheckedButton(3);
-                    EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_MINE_CLICK);
+                    eventReport(3);
                 }
                 break;
             default:
                 break;
         }
     }
+
+    private void eventReport(int index) {
+        String tabName = buttonNames.get(index);
+        if (tabName.equals(mContext.getString(R.string.tab_today))) {
+            EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_TODAY_CLICK);
+        } else if (tabName.equals(mContext.getString(R.string.micro_fragment_title))) {
+            EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_COURSE_CLICK);
+        } else if (tabName.equals(mContext.getString(R.string.scholarship_title))) {
+            EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_SCHOLARSHIP_CLICK);
+        } else if (tabName.equals(mContext.getString(R.string.tab_mine))) {
+            EventReportManager.onEvent(mContext, MobclickEvent.TABBAR_MINE_CLICK);
+        }
+    }
+
     public void setCheckedButton(int index){
         for (int i = 0; i < bottomTabBar.getChildCount(); i++){
             if(index == i){

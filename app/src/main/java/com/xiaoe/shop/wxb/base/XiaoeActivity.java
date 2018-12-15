@@ -273,11 +273,11 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
     @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPause(this);
         if(dialog.getDialogTag() == ShareDialog.SHARE_DIALOG_TAG){
             dialog.dismissDialog();
         }
         isFrontActivity = false;
-        MobclickAgent.onPause(this);
     }
 
     private void getAudioRecord() {

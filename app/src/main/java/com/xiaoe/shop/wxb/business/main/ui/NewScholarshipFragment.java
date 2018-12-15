@@ -135,6 +135,19 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
      * 页面停留时长
      */
     private long pageDuration;
+    /**
+     * 在主页面中的索引位置
+     */
+    private int tabIndex;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            tabIndex = bundle.getInt("tabIndex");
+        }
+    }
 
     @Nullable
     @Override
@@ -184,7 +197,7 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
     @Override
     public void onPause() {
         super.onPause();
-        if (2 == mainActivity.getCurrentPosition()) {
+        if (tabIndex == mainActivity.getCurrentPosition()) {
             eventReportDuration();
         }
 //        Log.e("EventReportManager", "onPause: ");
@@ -216,6 +229,14 @@ public class NewScholarshipFragment extends BaseFragment implements OnRefreshLis
         scholarshipNewRealRange.setOnClickListener(this);
         scholarshipNewAllRange.setOnClickListener(this);
         scholarshipNewScroller.setScrollChanged(this);
+    }
+
+    public static NewScholarshipFragment newInstance(int tabIndex) {
+        NewScholarshipFragment fragment = new NewScholarshipFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("tabIndex", tabIndex);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override

@@ -101,7 +101,7 @@ public class WebJumpHelper {
                 String jsonString = new String(base64Array);
                 ContentPageBean contentPageBean = JSON.parseObject(jsonString, ContentPageBean.class);
 
-                Log.d(TAG, "getUrlType: base64 " + base64 + "\njsonString " + jsonString);
+//                Log.d(TAG, "getUrlType: \nbase64-> " + base64 + "\njsonString " + jsonString);
                 Log.d(TAG, "getUrlType: " + contentPageBean);
 
                 return jumpDetail(contentPageBean);

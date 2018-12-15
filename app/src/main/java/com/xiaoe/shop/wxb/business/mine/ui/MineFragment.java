@@ -127,6 +127,10 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
      * 页面停留时长
      */
     private long pageDuration;
+    /**
+     * 在主页面中的索引位置
+     */
+    private int tabIndex;
 
     String mineLearningId; // 我正在学资源 id
     String mineLearningType; // 我正在学资源类型
@@ -137,6 +141,10 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            tabIndex = bundle.getInt("tabIndex");
+        }
         EventBus.getDefault().register(this);
         // 网络请求数据代码
 //        MinePresenter minePresenter = new MinePresenter(this);
@@ -172,7 +180,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void onPause() {
         super.onPause();
-        if (3 == mainActivity.getCurrentPosition()) {
+        if (tabIndex == mainActivity.getCurrentPosition()) {
             eventReportDuration();
         }
 //        Log.e("EventReportManager", "onPause: ");
@@ -201,6 +209,14 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     public void refreshReportDuration() {
         pageDuration = System.currentTimeMillis();
 //        Log.e("EventReportManager", "refresh 我的: pageDuration " + pageDuration);
+    }
+
+    public static MineFragment newInstance(int tabIndex) {
+        MineFragment fragment = new MineFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("tabIndex", tabIndex);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override

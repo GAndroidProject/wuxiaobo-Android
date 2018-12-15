@@ -48,6 +48,8 @@ import com.xiaoe.shop.wxb.business.main.presenter.MessagePushPresenter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
+import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
+import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.common.jpush.ExampleUtil;
 import com.xiaoe.shop.wxb.common.jpush.LocalBroadcastManager;
 import com.xiaoe.shop.wxb.common.jpush.entity.JgPushSaveInfo;
@@ -102,10 +104,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
      * 当前页面索引
      */
     private int currentPosition = 0;
-
-    public int getCurrentPosition() {
-        return currentPosition;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +160,54 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         couponHandlePresenter.requestSendCoupon();
     }
 
+    @Override
+    protected void onResume() {
+        isForeground = true;
+        super.onResume();
+        Log.d(TAG,"onResume");
+//        if(!isApplyPermission){
+            Log.d(TAG, "onResume: --------");
+        //申请权限
+            requestPermission(getUnauthorizedPermission(firstShow),getHideUnauthorizedPermission());
+            firstShow = false;
+//        }
+    }
+
+    @Override
+    protected void onPause() {
+        isForeground = false;
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+        if(!AudioMediaPlayer.isStop()){
+            if(!AudioMediaPlayer.isPlaying()){
+                AudioMediaPlayer.release();
+                if (OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName())){
+                    if(audioPlayServiceIntent!= null){
+                        stopService(audioPlayServiceIntent);
+                    }
+                }
+            }
+        }else{
+            if (OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName()))
+                if(audioPlayServiceIntent!= null){
+                    stopService(audioPlayServiceIntent);
+                }
+
+        }
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        AppUpgradeHelper.getInstance().unregisterEventBus();
+//        DownloadFileConfig.getInstance().dbClose();
+    }
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
     private void initView() {
         RelativeLayout mainActivityRootView = (RelativeLayout) findViewById(R.id.main_activity_root_view);
         mainActivityRootView.setBackgroundColor(Color.parseColor(Global.g().getGlobalColor()));
@@ -194,11 +240,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             buttonIcons.add(R.mipmap.scholarship_default);
         }
         buttonIcons.add(R.mipmap.profile_default);
-        if (!needShowScholarship) {
-            bottomTabBar.addTabButton(3, buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
-        } else {
-            bottomTabBar.addTabButton(4, buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
-        }
+        bottomTabBar.addTabButton(buttonNames, buttonIcons, buttonCheckedIcons, getResources().getColor(R.color.secondary_button_text_color), getResources().getColor(R.color.high_title_color));
 
         mainViewPager = (ScrollViewPager) findViewById(R.id.main_view_pager);
         mainViewPager.setScroll(false);
@@ -326,51 +368,6 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
             default:
                 break;
         }
-    }
-
-    @Override
-    protected void onResume() {
-        isForeground = true;
-        super.onResume();
-        Log.d(TAG,"onResume");
-//        if(!isApplyPermission){
-            Log.d(TAG, "onResume: --------");
-        //申请权限
-            requestPermission(getUnauthorizedPermission(firstShow),getHideUnauthorizedPermission());
-            firstShow = false;
-//        }
-    }
-
-
-    @Override
-    protected void onPause() {
-        isForeground = false;
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-        if(!AudioMediaPlayer.isStop()){
-            if(!AudioMediaPlayer.isPlaying()){
-                AudioMediaPlayer.release();
-                if (OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName())){
-                    if(audioPlayServiceIntent!= null){
-                        stopService(audioPlayServiceIntent);
-                    }
-                }
-            }
-        }else{
-            if (OSUtils.isServiceRunning(this,AudioMediaPlayer.class.getName()))
-                if(audioPlayServiceIntent!= null){
-                    stopService(audioPlayServiceIntent);
-                }
-
-        }
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        AppUpgradeHelper.getInstance().unregisterEventBus();
-//        DownloadFileConfig.getInstance().dbClose();
     }
 
     @Override
@@ -533,8 +530,10 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
     }
 
     public void getUnreadMsg() {
-        settingPresenter.requestUnreadMessage();
-        isGetUnreadMsg = true;
+        if (!isGetUnreadMsg) {
+            settingPresenter.requestUnreadMessage();
+            isGetUnreadMsg = true;
+        }
     }
 
     @Override
