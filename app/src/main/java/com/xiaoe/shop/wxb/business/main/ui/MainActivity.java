@@ -317,7 +317,9 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         boolean needChange = intent.getBooleanExtra("needChange", false);
         int tabIndex = intent.getIntExtra("tabIndex", 0);
         if (needChange) {
-            // 如果需要改变，就去到奖学金页面
+            if (!needShowScholarship && tabIndex >= 3) {
+                tabIndex = 2;
+            }
             replaceFragment(tabIndex);
         }
         Log.d(TAG, "onNewIntent: needChange " + needChange + " tabIndex " + tabIndex);
