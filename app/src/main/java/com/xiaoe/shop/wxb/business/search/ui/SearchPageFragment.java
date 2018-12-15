@@ -435,7 +435,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         searchResultRecycler.setLayoutManager(layoutManager);
-        decorateRecyclerAdapter = new DecorateRecyclerAdapter(mContext, itemComponentList);
+        decorateRecyclerAdapter = new DecorateRecyclerAdapter(mContext, itemComponentList,true);
         searchResultRecycler.setAdapter(decorateRecyclerAdapter);
         decorateRecyclerAdapter.notifyDataSetChanged();
         searchActivity.hasDecorate = true;

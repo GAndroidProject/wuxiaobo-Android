@@ -235,7 +235,7 @@ public class SearchMoreActivity extends XiaoeActivity {
         linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         searchMoreRecycler.setLayoutManager(linearLayoutManager);
-        decorateRecyclerAdapter = new DecorateRecyclerAdapter(this, pageList);
+        decorateRecyclerAdapter = new DecorateRecyclerAdapter(this, pageList,true);
         searchMoreRecycler.setAdapter(decorateRecyclerAdapter);
         decorateRecyclerAdapter.notifyDataSetChanged();
         hasDecorate = true;

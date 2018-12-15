@@ -60,9 +60,17 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     // 知识商品分组形式的 recycler
     private List<RecyclerView> knowledgeGroupRecyclerList;
 
+    boolean isSearch = false;
+
     public DecorateRecyclerAdapter(Context context, List<ComponentInfo> componentList) {
         this.mContext = context;
         this.mComponentList = componentList;
+    }
+
+    public DecorateRecyclerAdapter(Context context, List<ComponentInfo> componentList,boolean isSearch) {
+        this.mContext = context;
+        this.mComponentList = componentList;
+        this.isSearch = isSearch;
     }
 
     @Override
@@ -165,6 +173,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 break;
             case DecorateEntityType.KNOWLEDGE_LIST:
                 KnowledgeListViewHolder knowledgeListViewHolder = (KnowledgeListViewHolder) holder;
+                knowledgeListViewHolder.setSearch(isSearch);
                 knowledgeListViewHolder.initViewHolder(currentBindComponent, currentBindPos, knowledgeListAdapterArr);
                 break;
             case DecorateEntityType.KNOWLEDGE_GROUP:

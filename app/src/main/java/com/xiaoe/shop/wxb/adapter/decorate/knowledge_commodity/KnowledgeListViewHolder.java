@@ -38,6 +38,12 @@ public class KnowledgeListViewHolder extends BaseViewHolder {
     @BindView(R.id.knowledge_list_list_view)
     public ListView knowledgeListView;
 
+    boolean isSearch = false;
+
+    public void setSearch(boolean search) {
+        isSearch = search;
+    }
+
     public KnowledgeListViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
@@ -51,7 +57,7 @@ public class KnowledgeListViewHolder extends BaseViewHolder {
 
     public void initViewHolder(ComponentInfo currentBindComponent, int currentBindPos, SparseArray<KnowledgeListAdapter> knowledgeListAdapterArr) {
         KnowledgeListAdapter knowledgeListAdapter;
-        if (knowledgeListAdapterArr.get(currentBindPos) == null) {
+        if (knowledgeListAdapterArr.get(currentBindPos) == null || isSearch) {
             knowledgeListAdapter = new KnowledgeListAdapter(mContext, currentBindComponent.getKnowledgeCommodityItemList());
             knowledgeListAdapterArr.put(currentBindPos, knowledgeListAdapter);
         } else {
