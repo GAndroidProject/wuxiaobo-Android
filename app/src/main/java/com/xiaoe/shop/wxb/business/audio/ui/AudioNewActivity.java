@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -238,15 +237,6 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         btnAudioComment.setOnClickListener(this);
         //图文内容详细显示
         detailContent = (WebView) findViewById(R.id.audio_detail_content);
-        WebSettings webSettings= detailContent.getSettings();
-        webSettings.setLoadWithOverviewMode(true);
-        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        webSettings.setTextZoom(100);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setJavaScriptEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webSettings.setMixedContentMode(WebSettings.LOAD_NO_CACHE);
-        }
         detailContent.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String s) {
