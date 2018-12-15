@@ -145,9 +145,12 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     }
 
     public void refreshData(List<ColumnSecondDirectoryEntity> list){
-        directoryAdapter.refreshData(list);
-        playList.clear();
-        setAudioPlayList(list);
+        if(directoryAdapter != null){
+            directoryAdapter.refreshData(list);
+            playList.clear();
+            setAudioPlayList(list);
+        }
+
     }
 
     public void clearData(){

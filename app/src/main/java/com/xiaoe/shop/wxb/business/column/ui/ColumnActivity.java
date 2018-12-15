@@ -162,7 +162,14 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             //resourceType=3可能是通过一些链接或消息类型进入，需要通过接口查询获取准确的resourceType
             //拿到准确的resourceTyp后才初始化数据
             columnPresenter.productTypeRequest(resourceId);
+
         }else{
+            columnViewPager = (ScrollViewPager) findViewById(R.id.column_view_pager);
+            columnViewPager.setNeedMeasure(true);
+            columnViewPagerAdapter = new ColumnFragmentStatePagerAdapter(getSupportFragmentManager(),resourceType, resourceId);
+            columnViewPager.setScroll(false);
+            columnViewPager.setAdapter(columnViewPagerAdapter);
+            columnViewPager.setOffscreenPageLimit(2);
             initData();
             initTitle();
         }
@@ -207,12 +214,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
 
         memberExpireTime = (TextView) findViewById(R.id.member_expire_time);
 
-        columnViewPager = (ScrollViewPager) findViewById(R.id.column_view_pager);
-        columnViewPager.setNeedMeasure(true);
-        columnViewPagerAdapter = new ColumnFragmentStatePagerAdapter(getSupportFragmentManager(),resourceType, resourceId);
-        columnViewPager.setScroll(false);
-        columnViewPager.setAdapter(columnViewPagerAdapter);
-        columnViewPager.setOffscreenPageLimit(2);
+//        columnViewPager = (ScrollViewPager) findViewById(R.id.column_view_pager);
+//        columnViewPager.setNeedMeasure(true);
+//        columnViewPagerAdapter = new ColumnFragmentStatePagerAdapter(getSupportFragmentManager(),resourceType, resourceId);
+//        columnViewPager.setScroll(false);
+//        columnViewPager.setAdapter(columnViewPagerAdapter);
+//        columnViewPager.setOffscreenPageLimit(2);
         //加载更多
         loadMoreView = (ListBottomLoadMoreView) findViewById(R.id.btn_bottom_load_more);
         mBottomEndView = findViewById(R.id.bottom_end);
@@ -313,6 +320,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             }
             if(iRequest instanceof DetailRequest || iRequest instanceof QueryProductTypeRequest){
                 if(code == NetworkCodes.CODE_GOODS_DELETE){
+                    columnViewPager = (ScrollViewPager) findViewById(R.id.column_view_pager);
+                    columnViewPager.setNeedMeasure(true);
+                    columnViewPagerAdapter = new ColumnFragmentStatePagerAdapter(getSupportFragmentManager(),resourceType, resourceId);
+                    columnViewPager.setScroll(false);
+                    columnViewPager.setAdapter(columnViewPagerAdapter);
+                    columnViewPager.setOffscreenPageLimit(2);
                     setPagerState(NetworkCodes.CODE_GOODS_DELETE);
                 }else{
                     setPagerState(1);

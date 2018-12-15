@@ -36,6 +36,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ColumnDirectoryFragment extends BaseFragment implements View.OnClickListener, OnClickListPlayListener {
     private static final String TAG = "ColumnDirectoryFragment";
     private View rootView;
