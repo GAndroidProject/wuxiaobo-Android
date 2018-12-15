@@ -320,12 +320,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             }
             if(iRequest instanceof DetailRequest || iRequest instanceof QueryProductTypeRequest){
                 if(code == NetworkCodes.CODE_GOODS_DELETE){
-                    columnViewPager = (ScrollViewPager) findViewById(R.id.column_view_pager);
-                    columnViewPager.setNeedMeasure(true);
-                    columnViewPagerAdapter = new ColumnFragmentStatePagerAdapter(getSupportFragmentManager(),resourceType, resourceId);
-                    columnViewPager.setScroll(false);
-                    columnViewPager.setAdapter(columnViewPagerAdapter);
-                    columnViewPager.setOffscreenPageLimit(2);
                     setPagerState(NetworkCodes.CODE_GOODS_DELETE);
                 }else{
                     setPagerState(1);
@@ -370,6 +364,12 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 setPagerState(1);
                 return;
             }
+            columnViewPager = (ScrollViewPager) findViewById(R.id.column_view_pager);
+            columnViewPager.setNeedMeasure(true);
+            columnViewPagerAdapter = new ColumnFragmentStatePagerAdapter(getSupportFragmentManager(),resourceType, resourceId);
+            columnViewPager.setScroll(false);
+            columnViewPager.setAdapter(columnViewPagerAdapter);
+            columnViewPager.setOffscreenPageLimit(2);
             initData();
             initTitle();
         }
