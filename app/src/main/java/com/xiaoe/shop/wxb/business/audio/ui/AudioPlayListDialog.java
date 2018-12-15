@@ -61,6 +61,7 @@ public class AudioPlayListDialog implements View.OnClickListener {
         }
         window.setWindowAnimations(R.style.ActionSheetDialogAnimation);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(null);
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setGravity(Gravity.BOTTOM);
         dialog.setContentView(rootView);

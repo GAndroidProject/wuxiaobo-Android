@@ -79,6 +79,7 @@
         <activity
             android:name=".business.course.ui.CourseImageTextActivity"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:launchMode="singleTop"/>
         <activity
             android:name=".business.audio.ui.AudioActivity"
@@ -91,7 +92,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:screenOrientation="portrait"
-            android:hardwareAccelerated="false"
+            android:hardwareAccelerated="true"
             android:launchMode="singleTop"/>
         <activity
             android:name=".business.video.ui.VideoActivity"
@@ -101,6 +102,7 @@
             android:launchMode="singleTop"/>
         <activity
             android:name=".business.column.ui.ColumnActivity"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"/>
 
         <service android:name=".business.audio.presenter.AudioMediaPlayer" />

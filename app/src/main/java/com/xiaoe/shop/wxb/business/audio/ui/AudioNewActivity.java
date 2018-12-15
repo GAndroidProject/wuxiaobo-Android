@@ -556,6 +556,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         }
         window.setWindowAnimations(R.style.ActionSheetDialogAnimation);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(null);
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setGravity(Gravity.BOTTOM);
         mPlaySpeedDialog.setContentView(mPlaySpeedDialogView);
