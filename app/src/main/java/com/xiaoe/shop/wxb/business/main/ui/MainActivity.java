@@ -48,8 +48,6 @@ import com.xiaoe.shop.wxb.business.main.presenter.MessagePushPresenter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.business.super_vip.presenter.SuperVipPresenter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
-import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
-import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.common.jpush.ExampleUtil;
 import com.xiaoe.shop.wxb.common.jpush.LocalBroadcastManager;
 import com.xiaoe.shop.wxb.common.jpush.entity.JgPushSaveInfo;
@@ -104,6 +102,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
      * 当前页面索引
      */
     private int currentPosition = 0;
+    private MainFragmentStatePagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,7 +243,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         mainViewPager = (ScrollViewPager) findViewById(R.id.main_view_pager);
         mainViewPager.setScroll(false);
-        MainFragmentStatePagerAdapter adapter = new MainFragmentStatePagerAdapter(getSupportFragmentManager(), needShowScholarship);
+        adapter = new MainFragmentStatePagerAdapter(getSupportFragmentManager(), needShowScholarship);
         mainViewPager.setAdapter(adapter);
         mainViewPager.setOffscreenPageLimit(3);
         mainViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -317,8 +316,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         boolean needChange = intent.getBooleanExtra("needChange", false);
         int tabIndex = intent.getIntExtra("tabIndex", 0);
         if (needChange) {
-            if (!needShowScholarship && tabIndex >= 3) {
-                tabIndex = 2;
+            if (!needShowScholarship && tabIndex >= adapter.getCount()) {
+                tabIndex = adapter.getCount() - 1;
             }
             replaceFragment(tabIndex);
         }
