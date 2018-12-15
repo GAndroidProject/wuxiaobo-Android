@@ -46,6 +46,7 @@ import com.xiaoe.shop.wxb.business.setting.ui.SettingPersonActivity;
 import com.xiaoe.shop.wxb.business.super_vip.ui.NewSuperVipActivity;
 import com.xiaoe.shop.wxb.business.video.ui.VideoActivity;
 import com.xiaoe.shop.wxb.common.pay.ui.PayActivity;
+import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 
 import java.io.File;
 
@@ -479,9 +480,25 @@ public class JumpDetail {
         context.startActivity(intent);
     }
 
+    /**
+     * 跳转服务协议
+     *
+     * @param context
+     */
     public static void jumpProtocol(Context context) {
         Intent intent = new Intent(context, ProtocolActivity.class);
 
         context.startActivity(intent);
+    }
+
+    /**
+     * 跳转app内部浏览器
+     *
+     * @param context
+     * @param url
+     * @param title
+     */
+    public static void jumpAppBrowser(Context context, String url, String title) {
+        BrowserActivity.openUrl(context, url, title);
     }
 }

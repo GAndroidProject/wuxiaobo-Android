@@ -246,7 +246,7 @@ public class HistoryMessageActivity extends XiaoeActivity {
                 JumpDetail.jumpVideo(mContext, listBean.getSkip_target(), "", false, "");
                 break;
             case 5:
-                BrowserActivity.openUrl(mContext, listBean.getSkip_target(), "");
+                JumpDetail.jumpAppBrowser(mContext, listBean.getSkip_target(), "");
                 break;
             case 6:
                 JumpDetail.jumpColumn(mContext, listBean.getSkip_target(), "", listBean.getSub_skip_type());
