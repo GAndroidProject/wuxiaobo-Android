@@ -75,14 +75,6 @@ public class BrowserActivity extends XiaoeActivity {
         init();
     }
 
-    private void initActionBar() {
-        // 状态栏颜色字体(白底黑字)修改 Android6.0+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
-        accountToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -93,6 +85,20 @@ public class BrowserActivity extends XiaoeActivity {
     public void onPause() {
         super.onPause();
         mWebView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mWebView.destroy();
+    }
+
+    private void initActionBar() {
+        // 状态栏颜色字体(白底黑字)修改 Android6.0+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StatusBarUtil.setStatusBarColor(getWindow(), Color.parseColor(Global.g().getGlobalColor()), View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        accountToolbar.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
     }
 
     private void getIntentValue() {
@@ -204,6 +210,8 @@ public class BrowserActivity extends XiaoeActivity {
                     intent.setComponent(componentName);
                     clipboardManager.setPrimaryClip(clipData);
                     startActivity(intent);
+
+                    finish();
                 } catch (Exception e) {
                     ToastUtils.show(mContext, R.string.weChat_not_installed);
                 }
