@@ -93,7 +93,7 @@
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTask"/>
         <activity
             android:name=".business.video.ui.VideoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"

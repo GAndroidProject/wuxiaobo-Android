@@ -87,6 +87,7 @@
     <string name="cannot_download">购买资源后可下载</string>
 
     <string name="not_wifi_net_pause_download">当前不是WIFI环境，已暂停下载</string>
+    <string name="not_wifi_net_download_hint">当前无WiFi，是否确认下载。</string>
     <string name="not_wifi_net_play_hint">非wifi环境下，继续播放将产生手机流量，是否继续</string>
     <string name="yes_text">是</string>
     <string name="no_text">否</string>

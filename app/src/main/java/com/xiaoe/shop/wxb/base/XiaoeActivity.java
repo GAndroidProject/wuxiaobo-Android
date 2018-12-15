@@ -634,11 +634,7 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
     public void onNetworkChangeListener(String netType) {
         SharedPreferencesUtil.getInstance(this, SharedPreferencesUtil.FILE_NAME);
         boolean recordNotWifiPlayTag = (boolean) SharedPreferencesUtil.getData(SharedPreferencesUtil.KEY_RECORD_NOT_WIFI_PLAY_TAG, false);
-        if(!NetUtils.NETWORK_TYPE_WIFI.equals(netType) && DownloadManager.getInstance().isHasDownloadTask()){
-            //如果不是wifi环境，且有下载任务则暂停下载任务
-            DownloadManager.getInstance().allPaushDownload();
-            Toast(getString(R.string.not_wifi_net_pause_download));
-        }else if(!NetUtils.NETWORK_TYPE_WIFI.equals(netType) && AudioMediaPlayer.isPlaying() && isFrontActivity && !recordNotWifiPlayTag){
+        if(!NetUtils.NETWORK_TYPE_WIFI.equals(netType) && AudioMediaPlayer.isPlaying() && isFrontActivity && !recordNotWifiPlayTag){
             AudioMediaPlayer.play();
             dialog.setMessageVisibility(View.GONE);
             dialog.getTitleView().setGravity(Gravity.START);

@@ -126,6 +126,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
             CommonUserInfo.setShopId(user.getShopId());
         }
         dialog = new CustomDialog(getContext());
+        dialog.setOnCustomDialogListener(this);
         initVariable();
     }
 
@@ -191,7 +192,6 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
                             dialog.setHideCancelButton(true);
                             dialog.setTitle(getString(R.string.login_invalid));
                             dialog.setConfirmText(getString(R.string.btn_again_login));
-                            dialog.setOnCustomDialogListener(BaseFragment.this);
                             dialog.showDialog(DIALOG_TAG_LOADING);
                             // 往回传 null 关闭加载中
                             onMainThreadResponse(null, false, entity);

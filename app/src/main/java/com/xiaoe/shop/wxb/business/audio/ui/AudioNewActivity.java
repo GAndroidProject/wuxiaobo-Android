@@ -17,17 +17,21 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
@@ -42,6 +46,7 @@ import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -61,6 +66,7 @@ import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
 import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
+import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.HideAudioPlayListEvent;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
@@ -76,8 +82,10 @@ import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -230,6 +238,22 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         btnAudioComment.setOnClickListener(this);
         //图文内容详细显示
         detailContent = (WebView) findViewById(R.id.audio_detail_content);
+        WebSettings webSettings= detailContent.getSettings();
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        webSettings.setTextZoom(100);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setJavaScriptEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSettings.setMixedContentMode(WebSettings.LOAD_NO_CACHE);
+        }
+        detailContent.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView webView, String s) {
+                BrowserActivity.openUrl(mContext, s, "");
+                return true;
+            }
+        });
         //底部购买按钮
         commonBuyView = (CommonBuyView) findViewById(R.id.common_buy_view);
         commonBuyView.setOnVipBtnClickListener(this);
@@ -571,19 +595,48 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         if(TextUtils.isEmpty(audioPlayEntity.getPlayUrl()) || (audioPlayEntity.getIsTry() == 1 && audioPlayEntity.getHasBuy() == 0)){
             toastCustom(getString(R.string.cannot_download));
         }else{
-            boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), audioPlayEntity.getResourceId());
-            if(!isDownload){
-                ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
-                download.setApp_id(CommonUserInfo.getShopId());
-                download.setResource_id(audioPlayEntity.getResourceId());
-                download.setTitle(audioPlayEntity.getTitle());
-                download.setResource_type(2);
-                download.setImg_url(audioPlayEntity.getImgUrl());
-                download.setAudio_url(audioPlayEntity.getPlayUrl());
-                DownloadManager.getInstance().addDownload(null, null, download);
+            if(!NetUtils.NETWORK_TYPE_WIFI.equals(NetUtils.getNetworkType(this))){
+                getDialog().setMessageVisibility(View.GONE);
+                getDialog().getTitleView().setGravity(Gravity.START);
+                getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(this, 22), 0, Dp2Px2SpUtil.dp2px(this, 22), 0 );
+                getDialog().getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                getDialog().setCancelable(false);
+                getDialog().setHideCancelButton(false);
+                getDialog().setTitle(getString(R.string.not_wifi_net_download_hint));
+                getDialog().setConfirmText(getString(R.string.confirm_title));
+                getDialog().setCancelText(getString(R.string.cancel_title));
+                getDialog().showDialog(CustomDialog.NOT_WIFI_NET_DOWNLOAD_TAG);
+            }else{
+                downloadAudio();
             }
-            toastCustom(getString(R.string.add_download_list));
-            setDownloadState(true);
+        }
+    }
+
+    /**
+     * 下载音频
+     */
+    private void downloadAudio(){
+        AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
+        boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), audioPlayEntity.getResourceId());
+        if(!isDownload){
+            ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
+            download.setApp_id(CommonUserInfo.getShopId());
+            download.setResource_id(audioPlayEntity.getResourceId());
+            download.setTitle(audioPlayEntity.getTitle());
+            download.setResource_type(2);
+            download.setImg_url(audioPlayEntity.getImgUrl());
+            download.setAudio_url(audioPlayEntity.getPlayUrl());
+            DownloadManager.getInstance().addDownload(null, null, download);
+        }
+        toastCustom(getString(R.string.add_download_list));
+        setDownloadState(true);
+    }
+
+    @Override
+    public void onClickConfirm(View view, int tag) {
+        super.onClickConfirm(view, tag);
+        if(CustomDialog.NOT_WIFI_NET_DOWNLOAD_TAG == tag){
+            downloadAudio();
         }
     }
 

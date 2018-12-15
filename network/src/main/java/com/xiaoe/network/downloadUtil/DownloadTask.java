@@ -147,6 +147,7 @@ public class DownloadTask{
 //                    currentDownloadState = MSG_REQUEST_FAILURE;
                     mDownloadInfo.setDownloadState(2);
                     downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
+                    mListner.onDownloadError(mDownloadInfo, MSG_PAUSE);
                 }
             });
         } catch (IOException e) {
@@ -155,6 +156,7 @@ public class DownloadTask{
 //            currentDownloadState = MSG_REQUEST_FAILURE;
             mDownloadInfo.setDownloadState(2);
             downloadSQLiteUtil.updateDownloadInfo(mDownloadInfo);
+            mListner.onDownloadError(mDownloadInfo, MSG_PAUSE);
         }
     }
 

@@ -31,10 +31,10 @@ public class CustomDialog implements DialogInterface.OnDismissListener, DialogIn
     private static final String TAG = "HintDialog";
 
     public static final int PAGER_LOAD_TAG = 7000;//页面加载状态
-
     public static final int NOT_WIFI_PLAY_TAG = 7010;//非WiFi 环境播放
-
     public static final int REQUEST_PERMISSIONS_TAG = 7011;
+    public static final int NOT_WIFI_NET_DOWNLOAD_TAG= 7012;//非WiFi 点击下载
+    public static final int NOT_WIFI_NET_DOWNLOAD_ITEM_TAG= 7013;//非WiFi 点击下载
 
     private Context mContext;
     private View rootView;

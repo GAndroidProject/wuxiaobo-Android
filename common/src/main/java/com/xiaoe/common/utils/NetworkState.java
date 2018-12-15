@@ -49,9 +49,21 @@ public class NetworkState {
         if(TextUtils.isEmpty(htmltext)){
             return "";
         }
-        String style = "<style type='text/css'>img { max-width: 100%; width: 100%; height: auto; } section {max-width: 100%; width: 100%; }</style>";
+        String style = "<style type=\"text/css\"> img {" +
+                "height: auto;"+
+                "width:100%;" +//限定图片宽度填充屏幕
+                "height:auto;}" +//限定图片高度自动
+                " section {" +
+                "max-width: 100%;"+
+                "width: 100%;}"+
+                "body {" +
+                "word-wrap:break-word;"+//允许自动换行(汉字网页应该不需要这一属性,这个用来强制英文单词换行,类似于word/wps中的西文换行)
+                "}" +
+                "</style>";
+
         try {
-            String doc = style+htmltext;
+//            String doc = "<html><header>" + style +"</header>"+htmltext+"</html>";
+            String doc = style +htmltext;
             //下面代码找到对应的img标签，然后更改样式
 //            Document doc= Jsoup.parse(htmltext);
 //            Elements elements=doc.getElementsByTag("img");

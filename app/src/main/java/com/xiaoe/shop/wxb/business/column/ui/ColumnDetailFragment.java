@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
+import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 
 public class ColumnDetailFragment extends BaseFragment {
     private static final String TAG = "ColumnDetailFragment";
@@ -28,6 +30,13 @@ public class ColumnDetailFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         webView = (WebView) rootView.findViewById(R.id.column_detail_web_view);
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView webView, String s) {
+                BrowserActivity.openUrl(ColumnDetailFragment.this.getContext(), s, "");
+                return true;
+            }
+        });
         if(!isSetDetail){
             webView.loadDataWithBaseURL(null, NetworkState.getNewContent(contentDetail), "text/html", "UFT-8", null);
         }

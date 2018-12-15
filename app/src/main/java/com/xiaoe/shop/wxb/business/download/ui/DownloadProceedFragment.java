@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +20,14 @@ import android.widget.Toast;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.DownloadTableInfo;
 import com.xiaoe.common.interfaces.OnDownloadListener;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.download.DownloadProceedChildListAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.interfaces.OnDownloadListListener;
+import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
 import java.util.List;
@@ -43,6 +46,7 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     private RelativeLayout bottomButton;
     private StatusPagerView statePager;
     private OffLineCacheActivity cacheActivity;
+    private DownloadTableInfo startDownload;
 
     @Nullable
     @Override
@@ -170,15 +174,38 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
                 }
             }
         }else{
-            for (DownloadTableInfo download : adapter.getData()){
-                if(download.getDownloadState() == 2){
-                    DownloadManager.getInstance().start(download);
+            if(!NetUtils.NETWORK_TYPE_WIFI.equals(NetUtils.getNetworkType(getContext()))){
+                hintNotWIFIDownload(CustomDialog.NOT_WIFI_NET_DOWNLOAD_TAG);
+            }else{
+                for (DownloadTableInfo download : adapter.getData()){
+                    if(download.getDownloadState() == 2){
+                        startDownload(download);
+                    }
                 }
             }
         }
         runClickAllDownload = false;
         isAllDownload = !isAllDownload;
         setAllDownloadButton(isAllDownload);
+    }
+    private void hintNotWIFIDownload(int tag){
+        getDialog().setMessageVisibility(View.GONE);
+        getDialog().getTitleView().setGravity(Gravity.START);
+        getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(getContext(), 22), 0, Dp2Px2SpUtil.dp2px(getContext(), 22), 0 );
+        getDialog().getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        getDialog().setCancelable(false);
+        getDialog().setHideCancelButton(false);
+        getDialog().setTitle(getString(R.string.not_wifi_net_download_hint));
+        getDialog().setConfirmText(getString(R.string.confirm_title));
+        getDialog().setCancelText(getString(R.string.cancel_title));
+        getDialog().showDialog(tag);
+    }
+    /**
+     * 开始下载
+     * @param download
+     */
+    private void startDownload(DownloadTableInfo download){
+        DownloadManager.getInstance().start(download);
     }
 
     private void allDelete() {
@@ -188,17 +215,37 @@ public class DownloadProceedFragment extends BaseFragment implements View.OnClic
     }
 
     @Override
+    public void onClickConfirm(View view, int tag) {
+        super.onClickConfirm(view, tag);
+        if(CustomDialog.NOT_WIFI_NET_DOWNLOAD_TAG == tag){
+            for (DownloadTableInfo download : adapter.getData()){
+                if(download.getDownloadState() == 2){
+                    startDownload(download);
+                }
+            }
+        }else if(CustomDialog.NOT_WIFI_NET_DOWNLOAD_ITEM_TAG == tag && startDownload != null){
+            DownloadManager.getInstance().start(startDownload);
+            startDownload = null;
+        }
+    }
+
+    @Override
     public void downloadItem(DownloadTableInfo download, int position, int type) {
         if(type == 0){
-            if(NetUtils.NETWORK_TYPE_NO_NETWORK.equals(NetUtils.getNetworkType(getContext())) || NetUtils.NETWORK_TYPE_UNKONW_NETWORK.equals(NetUtils.getNetworkType(getContext()))){
-                Toast.makeText(getContext(), getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
-                return;
-            }
             //开始、暂停
             if(download.getDownloadState() == 0 || download.getDownloadState() == 1){
                 DownloadManager.getInstance().pause(download);
             }else if(download.getDownloadState() == 2){
-                DownloadManager.getInstance().start(download);
+                if(NetUtils.NETWORK_TYPE_NO_NETWORK.equals(NetUtils.getNetworkType(getContext())) || NetUtils.NETWORK_TYPE_UNKONW_NETWORK.equals(NetUtils.getNetworkType(getContext()))){
+                    Toast.makeText(getContext(), getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(!NetUtils.NETWORK_TYPE_WIFI.equals(NetUtils.getNetworkType(getContext()))){
+                    startDownload = download;
+                    hintNotWIFIDownload(CustomDialog.NOT_WIFI_NET_DOWNLOAD_ITEM_TAG);
+                }else{
+                    DownloadManager.getInstance().start(download);
+                }
             }
         }else if(type == 1){
             //删除

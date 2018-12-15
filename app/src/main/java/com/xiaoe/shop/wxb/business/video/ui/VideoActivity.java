@@ -7,10 +7,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,7 +23,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.DraweeTransition;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
 import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
@@ -36,6 +37,7 @@ import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
+import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
@@ -49,12 +51,13 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.video.presenter.VideoPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
-import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
+import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
@@ -197,6 +200,13 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         statusPagerView.setHintStateVisibility(View.GONE);
         //webView显示图文
         videoContentWebView = (WebView) findViewById(R.id.video_web_view);
+        videoContentWebView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView webView, String s) {
+                BrowserActivity.openUrl(mContext, s, "");
+                return true;
+            }
+        });
         //收藏按钮
         btnCollect = (ImageView) findViewById(R.id.btn_collect);
         btnCollect.setOnClickListener(this);
@@ -293,13 +303,6 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             case R.id.btn_share:
                 umShare(collectTitle, TextUtils.isEmpty(collectImgUrlCompressed) ? collectImgUrl : collectImgUrlCompressed, shareUrl, "");
                 break;
-//            case R.id.video_advertise_img:
-//                if (loginUserList.size() == 1) {
-//                    JumpDetail.jumpMainTab(this, true, true, 2);
-//                } else {
-//                    JumpDetail.jumpMainTab(this, false, true, 2);
-//                }
-//                break;
             case R.id.btn_back:
                 finish();
                 break;
@@ -417,20 +420,20 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 if(mIsDownload){
                     return;
                 }
-                boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), mResourceId);
-                mIsDownload = isDownload;
-                if(!isDownload){
-                    ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
-                    download.setApp_id(CommonUserInfo.getShopId());
-                    download.setResource_id(mResourceId);
-                    download.setTitle(collectTitle);
-                    download.setResource_type(3);
-                    download.setImg_url(collectImgUrl);
-                    download.setVideo_url(mVideoUrl);
-                    DownloadManager.getInstance().addDownload(null, null, download);
+                if(!NetUtils.NETWORK_TYPE_WIFI.equals(NetUtils.getNetworkType(this))){
+                    getDialog().setMessageVisibility(View.GONE);
+                    getDialog().getTitleView().setGravity(Gravity.START);
+                    getDialog().getTitleView().setPadding(Dp2Px2SpUtil.dp2px(this, 22), 0, Dp2Px2SpUtil.dp2px(this, 22), 0 );
+                    getDialog().getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                    getDialog().setCancelable(false);
+                    getDialog().setHideCancelButton(false);
+                    getDialog().setTitle(getString(R.string.not_wifi_net_download_hint));
+                    getDialog().setConfirmText(getString(R.string.confirm_title));
+                    getDialog().setCancelText(getString(R.string.cancel_title));
+                    getDialog().showDialog(CustomDialog.NOT_WIFI_NET_DOWNLOAD_TAG);
+                }else{
+                    downloadVideo();
                 }
-                playControllerView.setDownloadState(1);
-                toastCustom(getString(R.string.add_download_list));
             } else {
                 touristDialog.showDialog();
             }
@@ -439,6 +442,33 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }
     }
 
+    @Override
+    public void onClickConfirm(View view, int tag) {
+        super.onClickConfirm(view, tag);
+        if(CustomDialog.NOT_WIFI_NET_DOWNLOAD_TAG == tag){
+            downloadVideo();
+        }
+    }
+
+    /**
+     * 下载视频
+     */
+    private void downloadVideo(){
+        boolean isDownload = DownloadManager.getInstance().isDownload(CommonUserInfo.getShopId(), mResourceId);
+        mIsDownload = isDownload;
+        if(!isDownload){
+            ColumnSecondDirectoryEntity download = new ColumnSecondDirectoryEntity();
+            download.setApp_id(CommonUserInfo.getShopId());
+            download.setResource_id(mResourceId);
+            download.setTitle(collectTitle);
+            download.setResource_type(3);
+            download.setImg_url(collectImgUrl);
+            download.setVideo_url(mVideoUrl);
+            DownloadManager.getInstance().addDownload(null, null, download);
+        }
+        playControllerView.setDownloadState(1);
+        toastCustom(getString(R.string.add_download_list));
+    }
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
