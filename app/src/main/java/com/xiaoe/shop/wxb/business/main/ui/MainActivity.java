@@ -423,6 +423,8 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
                         Log.d(TAG, "onMainThreadResponse: 店铺无优惠券功能");
                     } else if (code == NetworkCodes.CODE_USER_NO_COUPON) {
                         Log.d(TAG, "onMainThreadResponse: 用户无待领优惠券");
+                        // 此时也需要调用下是否有未读消息
+                        couponHandlePresenter.requestUnReadCouponMsg();
                     } else {
                         Log.d(TAG, "onMainThreadResponse: 发放优惠券未知错误");
                     }
