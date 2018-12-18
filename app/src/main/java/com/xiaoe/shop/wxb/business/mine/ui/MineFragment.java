@@ -677,7 +677,15 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         lr.setLrType(convertInt2Str(listItem.getInteger("resource_type")));
         lr.setLrTitle(item.getString("title"));
         lr.setLrImg(item.getString("img_url"));
-        lr.setLrDesc(String.format(getString(R.string.updated_to_issue), updateCount));
+        if (updateCount > 0) {
+            if (listItem.getInteger("resource_type") == 1 || listItem.getInteger("resource_type") == 2 || listItem.getInteger("resource_type") == 3) {
+                lr.setLrDesc(String.format(getString(R.string.learn_count), updateCount));
+            } else if ( listItem.getInteger("resource_type") == 5 || listItem.getInteger("resource_type") == 6 || listItem.getInteger("resource_type") == 8) {
+                lr.setLrDesc(String.format(getString(R.string.updated_to_issue), updateCount));
+            }
+        } else {
+            lr.setLrDesc("");
+        }
         UpdateLearningUtils.saveLr2Local(getActivity(), lr);
     }
 
