@@ -3,6 +3,7 @@ package com.xiaoe.shop.wxb.business.video.ui;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -55,6 +56,27 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private TimerTask mTimerTask;
     private boolean isTouchSeekBar;
     private ImageView btnDownload;
+    private PowerManager.WakeLock mWakeLock;
+
+    public void setWakeLock(PowerManager.WakeLock wakeLock) {
+        mWakeLock = wakeLock;
+    }
+
+    /**
+     * 请求WakeLock
+     */
+    private void acquireWakeLock(){
+        if (mWakeLock != null && !mWakeLock.isHeld())
+            mWakeLock.acquire();
+    }
+
+    /**
+     *禁止/释放WakeLock
+     */
+    private void releaseWakeLock(){
+        if (mWakeLock != null && mWakeLock.isHeld())
+            mWakeLock.release();
+    }
 
     public VideoPlayControllerView(@NonNull Context context) {
         this(context,null);
@@ -198,6 +220,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     }
 
     public void release(){
+        releaseWakeLock();
         if(mVideoPlayer != null){
             mVideoPlayer.release();
         }
@@ -265,15 +288,18 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private void setPlayState(int state){
         if(state == VideoPlayConstant.VIDEO_STATE_LOADING){
             //加载
+            acquireWakeLock();
             btnPlay.setImageResource(R.mipmap.icon_play_video_loading);
             btnPlay.setVisibility(VISIBLE);
         }else if(state == VideoPlayConstant.VIDEO_STATE_PLAY){
             //播放
+            acquireWakeLock();
 //            btnPlay.setImageResource(R.mipmap.audiolist_stop);
             btnPlay.setVisibility(GONE);
             btnProgressPlay.setImageResource(R.mipmap.icon_video_stop);
             controlDelayAutoDismiss(1);
         }else if(state == VideoPlayConstant.VIDEO_STATE_PAUSE){
+            releaseWakeLock();
             //停止
             btnPlay.setImageResource(R.mipmap.icon_video_play_big);
             btnPlay.setVisibility(VISIBLE);

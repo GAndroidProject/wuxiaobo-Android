@@ -335,6 +335,7 @@
     <string name="resource_stay_putaway">该课程待上架，快去别处看看吧</string>
 
     <string name="network_error_text">网络异常</string>
+    <string name="service_error_text">服务异常</string>
     <string name="Jump_not_text">暂不支持跳转</string>
     <string name="knowed_text">知道了</string>
     <string name="price_decimal">%.2f</string>

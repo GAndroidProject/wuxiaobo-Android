@@ -1,10 +1,13 @@
 package com.xiaoe.shop.wxb.business.video.ui;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -182,6 +185,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         playControllerView = (VideoPlayControllerView) findViewById(R.id.video_play_controller);
         playControllerView.setPlayProgressWidgetVisibility(View.GONE);
         playControllerView.setOnClickVideoBackListener(this);
+        PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
+        @SuppressLint("InvalidWakeLockTag")
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Lock");
+        playControllerView.setWakeLock(wakeLock);
 //        playControllerView.setPreviewImage(videoImageUrl);
 
         videoContentDetail = (ScrollView) findViewById(R.id.video_content_detail);

@@ -301,31 +301,26 @@ public class CdKeyActivity extends XiaoeActivity {
     private void handleData(boolean success, Object entity) {
         if (success && entity != null){
             Log.d(TAG, "onMainThreadResponse: " + success + "-- entity = " + entity.toString());
-            try{
-                ExchangeSuccessInfo result = JSON.parseObject(entity.toString(),ExchangeSuccessInfo.class);
-                if (result == null)   return;
-                if(result.getCode() == NetworkCodes.CODE_SUCCEED){//兑换成功
-                    if (cdContent != null)  cdContent.setText("");//重置输入框内容
-                    OSUtils.hideKeyboard(this,cdContent);
-                    ExchangeSuccessInfo.Data data = result.data;
-                    if (data != null){
-                        List<ExchangeSuccessInfo.GoodsDataBean> goods = data.getGoods_data();
-                        List<ExchangeSuccessInfo.CouponDataBean> coupons = data.getCoupon_data();
-                        showSuccessDialog(goods,coupons);
-                    }
-                }else {
-                    String msg = result.getMsg();
-                    if (!TextUtils.isEmpty(msg)) {
-                        if (msg.indexOf("hint") > 0){
-                            msg = msg.substring(0,msg.indexOf("hint"));
-                        }
-                        showErrorMsg(msg);
-//                        Toast(msg);
-                    }
+            ExchangeSuccessInfo result = JSON.parseObject(entity.toString(),ExchangeSuccessInfo.class);
+            if (result == null)   return;
+            if(result.getCode() == NetworkCodes.CODE_SUCCEED){//兑换成功
+                if (cdContent != null)  cdContent.setText("");//重置输入框内容
+                OSUtils.hideKeyboard(this,cdContent);
+                ExchangeSuccessInfo.Data data = result.data;
+                if (data != null){
+                    List<ExchangeSuccessInfo.GoodsDataBean> goods = data.getGoods_data();
+                    List<ExchangeSuccessInfo.CouponDataBean> coupons = data.getCoupon_data();
+                    showSuccessDialog(goods,coupons);
                 }
-            }catch (Exception e){
-                e.printStackTrace();
-                Toast(getString(R.string.cd_key_fail_msg));
+            }else {
+                String msg = result.getMsg();
+                if (!TextUtils.isEmpty(msg)) {
+                    if (msg.indexOf("hint") > 0){
+                        msg = msg.substring(0,msg.indexOf("hint"));
+                    }
+                    showErrorMsg(msg);
+//                        Toast(msg);
+                }
             }
         }else {
             Toast(getString(R.string.cd_key_fail_msg));
