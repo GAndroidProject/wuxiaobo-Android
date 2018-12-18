@@ -33,14 +33,14 @@ public class SettingPresenter implements IBizCallback {
      * @param needAllMsg 是否需要全部信息，true -- 拿到全部信息，否则拿到微信昵称和头像
      */
     public void requestPersonData(String apiToken, boolean needAllMsg) {
-        SettingPseronMsgRequest settingPseronMsgRequest = new SettingPseronMsgRequest(this);
+        SettingPseronMsgRequest settingPersonMsgRequest = new SettingPseronMsgRequest(this);
 
         String msgType = needAllMsg ? "2" : "1";
-//        settingPseronMsgRequest.addHeaderParam("app-id", Constants.getWXAppId());
-        settingPseronMsgRequest.addRequestParam("api_token", apiToken);
-        settingPseronMsgRequest.addRequestParam("message_type", msgType);
+//        settingPersonMsgRequest.addHeaderParam("app-id", Constants.getWXAppId());
+//        settingPersonMsgRequest.addRequestParam("api_token", apiToken);
+        settingPersonMsgRequest.addRequestParam("message_type", msgType);
 
-        NetworkEngine.getInstance().sendRequest(settingPseronMsgRequest);
+        NetworkEngine.getInstance().sendRequest(settingPersonMsgRequest);
     }
 
     // 修改微信昵称

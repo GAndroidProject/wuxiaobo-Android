@@ -288,9 +288,9 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
     public void onClickConfirm(View view, int tag) {
         if(tag == DIALOG_TAG_LOADING){
             SQLiteUtil sqLiteUtil = SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
-            sqLiteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+            sqLiteUtil.execSQL("delete from " + LoginSQLiteCallback.TABLE_NAME_USER);
             SQLiteUtil lrUtil = SQLiteUtil.init(getActivity(), new LrSQLiteCallback());
-            lrUtil.deleteFrom(LrSQLiteCallback.TABLE_NAME_LR);
+            lrUtil.execSQL("delete from " + LrSQLiteCallback.TABLE_NAME_LR);
             CommonUserInfo.getInstance().clearUserInfo();
             CommonUserInfo.getInstance().clearLoginUserInfo();
             CommonUserInfo.setApiToken("");

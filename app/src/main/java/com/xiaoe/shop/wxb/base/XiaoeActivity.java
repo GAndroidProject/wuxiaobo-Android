@@ -545,9 +545,9 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
     public void onClickConfirm(View view, int tag) {
         if(tag == DIALOG_TAG_LOADING){
             SQLiteUtil liteUtil = SQLiteUtil.init(this,  new LoginSQLiteCallback());
-            liteUtil.deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
+            liteUtil.execSQL("delete from " + LoginSQLiteCallback.TABLE_NAME_USER);
             SQLiteUtil lrUtil = SQLiteUtil.init(this, new LrSQLiteCallback());
-            lrUtil.deleteFrom(LrSQLiteCallback.TABLE_NAME_LR);
+            lrUtil.execSQL("delete from " + LrSQLiteCallback.TABLE_NAME_LR);
             CommonUserInfo.getInstance().clearUserInfo();
             CommonUserInfo.getInstance().clearLoginUserInfo();
             CommonUserInfo.setApiToken("");

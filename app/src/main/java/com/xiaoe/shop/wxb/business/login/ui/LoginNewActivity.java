@@ -113,7 +113,7 @@ public class LoginNewActivity extends XiaoeActivity {
     protected void onResume() {
         super.onResume();
         String apiToken = CommonUserInfo.getApiToken();
-        if (apiToken != null && !apiToken.equals("")) { // 有用户登录信息，直接去主页
+        if (!TextUtils.isEmpty(apiToken)) { // 有用户登录信息，直接去主页
             if (getDialog().isShowing()) {
                 getDialog().dismissDialog();
             }

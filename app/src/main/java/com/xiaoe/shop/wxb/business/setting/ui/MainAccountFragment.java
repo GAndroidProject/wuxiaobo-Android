@@ -128,9 +128,12 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
                         getDialog().dismissDialog();
                         AudioMediaPlayer.stop();
                         AudioPlayUtil.getInstance().setCloseMiniPlayer(true);
-                        SQLiteUtil.init(getActivity(), new LoginSQLiteCallback()).deleteFrom(LoginSQLiteCallback.TABLE_NAME_USER);
-                        SQLiteUtil.init(getActivity(), new LrSQLiteCallback()).deleteFrom(LrSQLiteCallback.TABLE_NAME_LR);
+                        SQLiteUtil loginUtil = SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
+                        loginUtil.execSQL("delete from " + LoginSQLiteCallback.TABLE_NAME_USER);
+                        SQLiteUtil lrUtil = SQLiteUtil.init(getActivity(), new LrSQLiteCallback());
+                        lrUtil.execSQL("delete from " + LrSQLiteCallback.TABLE_NAME_LR);
                         CommonUserInfo.getInstance().clearUserInfo();
+                        CommonUserInfo.getInstance().clearLoginUserInfo();
                         ActivityCollector.finishAll();
                         CommonUserInfo.setApiToken("");
                         CommonUserInfo.setIsSuperVip(false);
