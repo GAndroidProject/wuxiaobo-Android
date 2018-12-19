@@ -908,12 +908,12 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 //        if (earningPresenter == null) {
 //            earningPresenter = new EarningPresenter(this);
 //        }
-//        if (mineLearningPresenter == null) {
-//            mineLearningPresenter = new MineLearningPresenter(this);
-//        }
+        if (mineLearningPresenter == null) {
+            mineLearningPresenter = new MineLearningPresenter(this);
+        }
 //        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
 //        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-//        mineLearningPresenter.requestLearningData(1, 1);
+        mineLearningPresenter.requestLearningData(1, 1);
         if (superVipPresenter == null) {
             superVipPresenter = new SuperVipPresenter(this);
         }

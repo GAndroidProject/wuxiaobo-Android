@@ -446,6 +446,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             fragment.setHasBuy(isHasBuy);
             if(refreshData || showDataByDB || pageIndex == 1){
                 refreshData = false;
+                showDataByDB = false;
                 topicLittleColumnList = columnPresenter.formatExpandableEntity(data, resourceId, isHasBuy ? 1 : 0);
                 //请求第一个小专栏下资源
                 if(topicLittleColumnList.size() > 0){
@@ -474,8 +475,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else if(resourceType == RESOURCE_TYPE_MEMBER){
             MemberFragment fragment = (MemberFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
-            if(refreshData || showDataByDB){
+            if(refreshData || showDataByDB || pageIndex == 1){
                 refreshData = false;
+                showDataByDB = false;
                 fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", isHasBuy ? 1 : 0));
             }else{
                 fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", isHasBuy ? 1 : 0));
@@ -488,8 +490,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }else{
             LittleColumnDirectoryFragment fragment = (LittleColumnDirectoryFragment) columnViewPagerAdapter.getItem(1);
             fragment.setHasBuy(isHasBuy);
-            if(refreshData || showDataByDB){
+            if(refreshData || showDataByDB || pageIndex == 1){
                 refreshData = false;
+                showDataByDB = false;
                 fragment.refreshData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", isHasBuy ? 1 : 0));
             }else{
                 fragment.addData(columnPresenter.formatSingleResourceEntity(data, collectTitle, resourceId, "", isHasBuy ? 1 : 0));
