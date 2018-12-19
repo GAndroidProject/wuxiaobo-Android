@@ -250,7 +250,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 }
                 String learningType = convertInt2Str(learningInfo.getInteger("goods_type"));
                 String learningTitle = learningInfo.getString("title");
-                String learningImg = learningInfo.getString("img_url");
+                String learningImg = learningInfo.getString("img_url_compressed_larger");
                 String learningOrg = learningInfo.getString("org_summary");
                 int updateCount = learningInfo.getInteger("periodical_count") == null ? 0 : learningInfo.getInteger("periodical_count");
                 String updateStr = "";
@@ -273,7 +273,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 String collectionId = infoItem.getString("content_id");
                 String collectionType = convertInt2Str(infoItem.getInteger("content_type"));
                 String collectionTitle = collectionInfo.getString("title");
-                String collectionImg = collectionInfo.getString("img_url");
+                String collectionImg = infoMsg.getString("img_url_compressed_larger");
                 int collectionPrice = infoMsg.getInteger("price") == null ? 0 : infoMsg.getInteger("price");
                 String priceStr = String.format(getString(R.string.price_decimal), collectionPrice / 100f);
                 int updateCount = infoMsg.getInteger("periodical_count") == null ? 0 : infoMsg.getInteger("periodical_count");

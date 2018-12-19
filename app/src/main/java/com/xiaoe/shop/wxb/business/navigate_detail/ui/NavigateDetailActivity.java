@@ -36,6 +36,7 @@ import com.xiaoe.shop.wxb.business.navigate_detail.presenter.NavigateDetailPrese
 import com.xiaoe.shop.wxb.business.search.ui.SearchActivity;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
 import java.util.ArrayList;
@@ -205,7 +206,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
             navigateRefresh.finishLoadMore();
             if (dataList.size() > 0) {
                 navigateLoading.setLoadingFinish();
-                Toast.makeText(this, getString(R.string.network_error_text), Toast.LENGTH_SHORT).show();
+                ToastUtils.show(this, getString(R.string.network_error_text));
             } else {
                 navigateLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.request_fail), R.mipmap.error_page);
             }
@@ -326,7 +327,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
             KnowledgeCommodityItem item = new KnowledgeCommodityItem();
             item.setItemTitle(listSubItemObj.getString("title"));
             item.setItemTitleColumn(listSubItemObj.getString("summary"));
-            item.setItemImg(listSubItemObj.getString("img_url"));
+            item.setItemImg(listSubItemObj.getString("img_url_compressed_larger"));
             String price = "￥" + listSubItemObj.getString("show_price");
             if (price.equals("￥")) { // 表示买了，所以没有价格
                 item.setItemPrice(null);
