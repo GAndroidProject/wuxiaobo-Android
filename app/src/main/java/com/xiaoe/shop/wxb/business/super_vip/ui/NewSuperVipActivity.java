@@ -91,6 +91,8 @@ public class NewSuperVipActivity extends XiaoeActivity {
                     }
                 }
                 break;
+            default:
+                break;
         }
     }
 
