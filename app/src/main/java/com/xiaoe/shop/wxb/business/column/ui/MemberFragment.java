@@ -145,6 +145,9 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
     }
 
     public void refreshData(List<ColumnSecondDirectoryEntity> list){
+        if (directoryAdapter == null) {
+            directoryAdapter = new TreeChildRecyclerAdapter(getContext(), this);
+        }
         directoryAdapter.refreshData(list);
     }
 
