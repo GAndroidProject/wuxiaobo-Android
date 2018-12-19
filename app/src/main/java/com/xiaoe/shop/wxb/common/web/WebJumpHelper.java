@@ -121,8 +121,7 @@ public class WebJumpHelper {
          */
         switch (Integer.parseInt(contentPageBean.getType())) {
             case 2:
-                skipAction(contentPageBean);
-                return UrlType.APP_JUMP_OPEN;
+                return skipAction(contentPageBean);
             case 3:
                 JumpDetail.jumpColumn(mContext, contentPageBean.product_id, "", 3);
                 return UrlType.APP_JUMP_OPEN;
@@ -132,7 +131,7 @@ public class WebJumpHelper {
         return UrlType.WECHAT_OPEN;
     }
 
-    private void skipAction(ContentPageBean contentPageBean) {
+    private UrlType skipAction(ContentPageBean contentPageBean) {
         /*
          * resource_type：1-图文，2-音频，3-视频，4-直播，5-报名，7-社群，16-小鹅打卡，20-电子书，21-实物商品
          */
@@ -149,9 +148,10 @@ public class WebJumpHelper {
                 JumpDetail.jumpVideo(mContext, contentPageBean.getResource_id(), "", false, "");
                 break;
             default:
-                ToastUtils.show(mContext, R.string.Jump_not_text);
-                break;
+//                ToastUtils.show(mContext, R.string.Jump_not_text);
+                return UrlType.WECHAT_OPEN;
         }
+        return UrlType.APP_JUMP_OPEN;
     }
 
     private static boolean isXiaoeDomain(String url) {
