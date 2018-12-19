@@ -7,10 +7,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,6 +24,8 @@ public class ProtocolActivity extends XiaoeActivity {
 
     Unbinder unbinder;
 
+    @BindView(R.id.protocol_wrap)
+    LinearLayout protocolWrap;
     @BindView(R.id.protocol_content)
     WebView protocolContent;
 
@@ -28,9 +33,10 @@ public class ProtocolActivity extends XiaoeActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setStatusBar();
         setContentView(R.layout.activity_protocol);
         unbinder = ButterKnife.bind(this);
-
+        protocolWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
         initView();
     }
 
