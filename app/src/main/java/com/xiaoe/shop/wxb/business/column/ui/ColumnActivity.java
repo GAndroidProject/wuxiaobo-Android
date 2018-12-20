@@ -628,12 +628,17 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         barTitle.setText(title);
         columnImage.setImageURI(collectImgUrl);
         int purchaseCount = data.getIntValue("purchase_count");
+        int periodicalCount = data.getInteger("periodical_count") == null ? 0 : data.getInteger("periodical_count");
+        if (periodicalCount > 0) {
+            playNumStr = String.format(getString(R.string.stages_text), periodicalCount);
+        } else {
+            playNumStr = "";
+        }
         if(purchaseCount > 0){
             buyCount.setVisibility(View.VISIBLE);
-            playNumStr = String.format(getString(R.string.people_learn), NumberFormat.viewCountToString(mContext, purchaseCount));
-            buyCount.setText(playNumStr);
+            String learnStr = String.format(getString(R.string.people_learn), NumberFormat.viewCountToString(mContext, purchaseCount));
+            buyCount.setText(learnStr);
         }else {
-            playNumStr = "";
             buyCount.setVisibility(View.GONE);
         }
         if(!TextUtils.isEmpty(data.getString("expire_time"))){
