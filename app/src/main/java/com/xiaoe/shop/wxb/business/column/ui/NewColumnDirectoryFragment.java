@@ -182,9 +182,11 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
                         if(expandableItems.size()  > 0){
                             expandableItems.get(expandableItems.size() - 1).setLastItem(true);
                         }else {
-                            ExpandableItem item = level.getSubItem(level.getSubItems().size() - 3);
-                            if(item.getItemType() == 1){
-                                item.setLastItem(true);
+                            if (level.getSubItems().size() > 2) {
+                                ExpandableItem item = level.getSubItem(level.getSubItems().size() - 3);
+                                if (item.getItemType() == 1) {
+                                    item.setLastItem(true);
+                                }
                             }
                         }
                         if(isExpanded){
