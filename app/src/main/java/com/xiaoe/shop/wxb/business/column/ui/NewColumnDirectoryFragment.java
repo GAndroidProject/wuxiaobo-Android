@@ -182,6 +182,7 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
                         if(expandableItems.size()  > 0){
                             expandableItems.get(expandableItems.size() - 1).setLastItem(true);
                         }else {
+                            // 因为写死了两个 item 用于表示 loading 和 展开，所以需要判断初始的长度大于 2，否则无数据时会报错
                             if (level.getSubItems().size() > 2) {
                                 ExpandableItem item = level.getSubItem(level.getSubItems().size() - 3);
                                 if (item.getItemType() == 1) {

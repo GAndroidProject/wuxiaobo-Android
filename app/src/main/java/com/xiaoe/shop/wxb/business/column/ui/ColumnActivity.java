@@ -804,6 +804,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             loadMoreView.setVisibility(View.GONE);
         }else{
             loadMoreView.setVisibility(View.VISIBLE);
+            if (btnContentDetail != null && !btnContentDetail.isEnabled()) { // 选中状态
+                loadMoreView.setVisibility(View.GONE);
+            }
         }
         columnScrollView.setLoadState(state);
     }
