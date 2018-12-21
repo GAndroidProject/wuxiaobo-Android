@@ -14,8 +14,4 @@ public class GetUnreadMessageRequest extends IRequest {
     public GetUnreadMessageRequest(IBizCallback iBizCallback) {
         super(NetworkEngine.API_THIRD_BASE_URL + "xe.user.message_count.get/1.0.0", iBizCallback);
     }
-
-    public void sendRequest() {
-        NetworkEngine.getInstance().sendRequest(this);
-    }
 }

@@ -14,8 +14,4 @@ public class SetPushStateRequest extends IRequest {
     public SetPushStateRequest(IBizCallback iBizCallback) {
         super(NetworkEngine.LOGIN_BASE_URL + "xe.set.user.message.state/1.0.0", iBizCallback);
     }
-
-    public void sendRequest() {
-        NetworkEngine.getInstance().sendRequest(this);
-    }
 }

@@ -14,8 +14,4 @@ public class BindJgPushRequest extends IRequest {
     public BindJgPushRequest(IBizCallback iBizCallback) {
         super(NetworkEngine.LOGIN_BASE_URL + "xe.set.device.token/1.0.0", iBizCallback);
     }
-
-    public void sendRequest() {
-        NetworkEngine.getInstance().sendRequest(this);
-    }
 }
