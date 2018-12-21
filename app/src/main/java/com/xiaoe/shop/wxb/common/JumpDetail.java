@@ -46,6 +46,7 @@ import com.xiaoe.shop.wxb.business.setting.ui.SettingPersonActivity;
 import com.xiaoe.shop.wxb.business.super_vip.ui.NewSuperVipActivity;
 import com.xiaoe.shop.wxb.business.video.ui.VideoActivity;
 import com.xiaoe.shop.wxb.common.pay.ui.PayActivity;
+import com.xiaoe.shop.wxb.common.releaseversion.ui.ReleaseVersionActivity;
 import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 
 import java.io.File;
@@ -500,5 +501,10 @@ public class JumpDetail {
      */
     public static void jumpAppBrowser(Context context, String url, String title) {
         BrowserActivity.openUrl(context, url, title);
+    }
+
+    public static void jumpReleaseVersion(Context context) {
+        Intent intent = new Intent(context, ReleaseVersionActivity.class);
+        context.startActivity(intent);
     }
 }

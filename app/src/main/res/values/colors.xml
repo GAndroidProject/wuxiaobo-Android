@@ -88,4 +88,5 @@
     <color name="login_we_chat_press">#cc46BB36</color> <!--20% 透明度的绿色-->
 
     <color name="vip_btn_text">#44210B</color>
+    <color name="rippleColor">#868584</color>
 </resources>

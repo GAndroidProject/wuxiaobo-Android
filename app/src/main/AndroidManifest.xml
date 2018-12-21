@@ -383,6 +383,9 @@
         <activity
             android:name=".business.super_vip.ui.NewSuperVipActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".common.releaseversion.ui.ReleaseVersionActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

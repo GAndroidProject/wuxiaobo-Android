@@ -118,4 +118,18 @@
         <!--<item>@drawable/anim_logo_103</item>-->
         <!--<item>@drawable/anim_logo_104</item>-->
     </array>
+    <array name="release_environment">
+        <item>测试环境</item>
+        <item>内灰环境</item>
+        <item>外灰环境</item>
+    </array>
+    <array name="release_type">
+        <item>iOS</item>
+        <item>Android</item>
+    </array>
+    <array name="release_update_mode">
+        <item>弹窗提示</item>
+        <item>强制更新</item>
+        <item>红点提示</item>
+    </array>
 </resources>

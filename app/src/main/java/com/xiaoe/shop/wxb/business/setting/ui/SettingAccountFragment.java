@@ -300,6 +300,13 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         aboutContent = (RecyclerView) viewWrap.findViewById(R.id.about_content);
         // 关于布局假数据
         aboutLogo.setImageURI("res:///" + R.mipmap.logo);
+        aboutLogo.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                JumpDetail.jumpReleaseVersion(mContext);
+                return true;
+            }
+        });
         itemList = new ArrayList<>();
         SettingItemInfo connectUs = new SettingItemInfo(getString(R.string.connect_us), "", "wxbpd@meihaoplus.shop");
         SettingItemInfo service = new SettingItemInfo(getString(R.string.self_service_title), "" ,"");

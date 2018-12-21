@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="20dp"
+            android:text="发布版本更新页面（仅发布人员操作）" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/sp_release_environment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/release_environment" />
+
+            <Spinner
+                android:id="@+id/sp_release_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/release_type" />
+
+            <Spinner
+                android:id="@+id/sp_release_update_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/release_update_mode" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="店铺 id" />
+
+            <EditText
+                android:id="@+id/et_shop_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="请输入店铺 id" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="版本名称（格式如：1.0.0）" />
+
+            <EditText
+                android:id="@+id/et_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="请输入版本名称" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="新版本下载地址" />
+
+            <EditText
+                android:id="@+id/et_download_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="请输入新版本下载地址" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="审核版本名称（如果当前没有审核版本号的话，传空值）" />
+
+            <EditText
+                android:id="@+id/et_audit_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="请输入审核版本名称" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="版本更新说明" />
+
+            <com.xiaoe.shop.wxb.widget.LinearLayoutForListView
+                android:id="@+id/lv_version_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:text="发布" />
+    </LinearLayout>
+</ScrollView>
