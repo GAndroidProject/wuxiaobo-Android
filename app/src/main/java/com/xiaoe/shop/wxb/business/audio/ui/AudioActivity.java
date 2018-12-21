@@ -21,7 +21,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -63,6 +65,7 @@ import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
 import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
+import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.HideAudioPlayListEvent;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
@@ -230,6 +233,14 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         btnAudioComment.setOnClickListener(this);
         //图文内容详细显示
         detailContent = (WebView) findViewById(R.id.audio_detail_content);
+        initWebView(detailContent);
+        detailContent.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView webView, String s) {
+                BrowserActivity.openUrl(mContext, s, "");
+                return true;
+            }
+        });
         //底部购买按钮
         commonBuyView = (CommonBuyView) findViewById(R.id.common_buy_view);
         commonBuyView.setOnVipBtnClickListener(this);

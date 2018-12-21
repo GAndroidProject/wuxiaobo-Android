@@ -12,6 +12,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -320,5 +323,18 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
 
     public void refreshReportDuration() {
 
+    }
+
+    protected void initWebView(WebView webView) {
+        webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY); // 隐藏滚动条
+        webView.getSettings().setJavaScriptEnabled(true); // 开启 js 支持
+        webView.getSettings().setLoadsImagesAutomatically(true);// 设置可以自动加载图片
+        webView.getSettings().setDomStorageEnabled(true);// 设置可以使用localStorage
+        webView.getSettings().setUseWideViewPort(false); // 关键点
+        webView.getSettings().setLoadWithOverviewMode(false); // 设置超出的内容全部显示在 webView 中
+        webView.getSettings().setAllowFileAccess(true); // 允许访问文件
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE); // 不加载缓存内容
+        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
     }
 }
