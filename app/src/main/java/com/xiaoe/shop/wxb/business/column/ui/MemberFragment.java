@@ -202,6 +202,7 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
             intent.putExtra("bundle_dataJSON", dataJSON);
             intent.putExtra("from_type", "LittleColumnDirectoryFragment");
             intent.putExtra("resourceId", resourceId);
+            intent.putExtra("resourceType", ColumnActivity.RESOURCE_TYPE_MEMBER + "");
             startActivity(intent);
         } else {
             touristDialog.showDialog();

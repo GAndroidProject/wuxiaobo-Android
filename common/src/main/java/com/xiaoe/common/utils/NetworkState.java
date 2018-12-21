@@ -59,7 +59,10 @@ public class NetworkState {
                 "body {" +
                 "word-wrap:break-word;"+//允许自动换行(汉字网页应该不需要这一属性,这个用来强制英文单词换行,类似于word/wps中的西文换行)
                 "}" +
-                "</style>";
+                "</style>" +
+                "<style type=\"text/css\">iframe {display: block;max-width:100%;\n" +  //视频适应屏幕
+                "margin:10px;}</style>" +
+                "<style type=\"text/css\"> p { word-break:break-all; } </style>";
 
         try {
 //            String doc = "<html><header>" + style +"</header>"+htmltext+"</html>";

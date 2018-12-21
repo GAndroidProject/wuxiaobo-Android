@@ -100,7 +100,8 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:hardwareAccelerated="true"/>
         <activity
             android:name=".business.column.ui.ColumnActivity"
             android:hardwareAccelerated="true"

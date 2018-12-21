@@ -207,6 +207,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         statusPagerView.setHintStateVisibility(View.GONE);
         //webView显示图文
         videoContentWebView = (WebView) findViewById(R.id.video_web_view);
+        initWebView(videoContentWebView);
         videoContentWebView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String s) {

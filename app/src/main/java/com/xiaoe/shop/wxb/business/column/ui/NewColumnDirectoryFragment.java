@@ -307,6 +307,7 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
             intent.putExtra("bundle_dataJSON", dataJSON);
             intent.putExtra("from_type", "ColumnDirectoryFragment");
             intent.putExtra("resourceId", resourceId);
+            intent.putExtra("resourceType", ColumnActivity.RESOURCE_TYPE_TOPIC + "");
             startActivity(intent);
         } else {
             touristDialog.showDialog();
