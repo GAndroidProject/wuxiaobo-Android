@@ -33,16 +33,21 @@ import okhttp3.ResponseBody;
 public class NetworkEngine {
 
     private static final String TAG = "NetworkEngine";
-    public final static String BASE_URL_FORMAL = "https://app-server.xiaoeknow.com";
-    public final static String BASE_URL_TEST = "http://app-server.inside.xiaoeknow.com";
-    //测试环境url http://demo.h5.inside.xiaoe-tech.com/openapp/login
-//    private final static String TEST_API_THIRD_URL = "http://app-server.inside.xiaoeknow.com/third/xiaoe_request/";
-    //正式环境url http://api.inside.xiaoe-tech.com
-//    private final static String FORMAL_API_THIRD_BASE_URL = BASE_URL+"/third/xiaoe_request/";
-    public final static String API_THIRD_BASE_URL = (XiaoeApplication.isFormalCondition() ? BASE_URL_FORMAL : BASE_URL_TEST)+"/third/xiaoe_request/";
-    public final static String LOGIN_BASE_URL = (XiaoeApplication.isFormalCondition() ? BASE_URL_FORMAL : BASE_URL_TEST)+"/api/"; // 登录接口 url
+
+    private final static String BASE_URL_FORMAL = "https://app-server.xiaoeknow.com";
+    private final static String BASE_URL_TEST = "http://app-server.inside.xiaoeknow.com";
+
+    /**
+     * 统一分发接口
+     */
+    public final static String API_THIRD_BASE_URL = (XiaoeApplication.isFormalCondition() ? BASE_URL_FORMAL : BASE_URL_TEST) + "/third/xiaoe_request/";
+    /**
+     * 登录接口 url
+     */
+    public final static String LOGIN_BASE_URL = (XiaoeApplication.isFormalCondition() ? BASE_URL_FORMAL : BASE_URL_TEST) + "/api/";
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
     private final SQLiteUtil cacheSQLiteUtil;
 
     public enum HttpMethod {
@@ -84,19 +89,12 @@ public class NetworkEngine {
         cacheSQLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
     }
 
-    public void sendRequest(final IRequest iRequest) {
-//        CommonUserInfo userInfo = StatusKeepUtil.getUserInfo();
-//        if (userInfo == null) {
-//            if (!(iRequest instanceof LoginRequest)) {
-//                iRequest.onResponse(false, "not login");
-//                return;
-//            }
-//        }
+    public void sendRequest(final IRequest iRequest, final boolean isSimple) {
         if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
             ThreadPoolUtils.runTaskOnThread(new Runnable() {
                 @Override
                 public void run() {
-                    POST(iRequest.getCmd(), iRequest);
+                    POST(iRequest.getCmd(), iRequest, isSimple);
                 }
             });
         } else {
@@ -106,12 +104,12 @@ public class NetworkEngine {
         }
     }
 
-    public void sendRequestByGet(final IRequest iRequest) {
+    public void sendRequestByGet(final IRequest iRequest, final boolean isSimple) {
         if (NetUtils.hasNetwork(XiaoeApplication.applicationContext) && NetUtils.hasDataConnection(XiaoeApplication.applicationContext)) {
             ThreadPoolUtils.runTaskOnThread(new Runnable() {
                 @Override
                 public void run() {
-                    GET(iRequest.getCmd(), iRequest);
+                    GET(iRequest.getCmd(), iRequest, isSimple);
                 }
             });
         } else {
@@ -121,16 +119,16 @@ public class NetworkEngine {
         }
     }
 
-    private void POST(String url, IRequest iRequest) {
-        request(HttpMethod.HTTP_POST,url,iRequest);
+    private void POST(String url, IRequest iRequest, boolean isSimple) {
+        request(HttpMethod.HTTP_POST, url, iRequest, isSimple);
     }
 
-    private void GET(String url, IRequest iRequest) {
-        request(HttpMethod.HTTP_GET,url,iRequest);
+    private void GET(String url, IRequest iRequest, boolean isSimple) {
+        request(HttpMethod.HTTP_GET, url, iRequest, isSimple);
     }
 
-    private void request(HttpMethod httpMethod,String url, IRequest iRequest) {
-        String formBodyString = iRequest.getWrapedFormBody();
+    private void request(HttpMethod httpMethod,String url, IRequest iRequest, boolean isSimple) {
+        String formBodyString = isSimple ? iRequest.getWrapedFormBodySimple() : iRequest.getWrapedFormBody();
         if (formBodyString == null || TextUtils.isEmpty(formBodyString)) {
             iRequest.onResponse(false, "param error");
             return;
@@ -165,7 +163,7 @@ public class NetworkEngine {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call call, Response response) {
                 IRequest mRequest = (IRequest) (call.request().tag());
                 ResponseBody body = response.body();
                 if (body == null) {

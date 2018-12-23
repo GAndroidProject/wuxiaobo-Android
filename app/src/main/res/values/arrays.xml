@@ -124,8 +124,8 @@
         <item>外灰环境</item>
     </array>
     <array name="release_type">
-        <item>iOS</item>
         <item>Android</item>
+        <item>iOS</item>
     </array>
     <array name="release_update_mode">
         <item>弹窗提示</item>

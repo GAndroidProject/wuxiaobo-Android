@@ -1,7 +1,5 @@
 package com.xiaoe.shop.wxb.business.navigate_detail.presenter;
 
-import com.xiaoe.common.app.CommonUserInfo;
-import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.CommodityGroupRequest;
@@ -10,7 +8,7 @@ import com.xiaoe.network.requests.IRequest;
 public class NavigateDetailPresenter implements IBizCallback {
 
     private INetworkResponse inr;
-    String cmd;
+    private String cmd;
 
     public NavigateDetailPresenter(INetworkResponse inr) {
         this.inr = inr;
@@ -38,6 +36,6 @@ public class NavigateDetailPresenter implements IBizCallback {
         commodityGroupRequest.addDataParam("agent_type", 1);
         commodityGroupRequest.addDataParam("agent_version", "1");
 
-        NetworkEngine.getInstance().sendRequest(commodityGroupRequest);
+        commodityGroupRequest.sendRequest();
     }
 }

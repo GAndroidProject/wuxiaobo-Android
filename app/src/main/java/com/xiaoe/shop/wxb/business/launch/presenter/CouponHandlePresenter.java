@@ -23,14 +23,14 @@ public class CouponHandlePresenter implements IBizCallback {
     public void requestUnReadCouponMsg() {
         CouponHandleRequest couponHandleRequest = new CouponHandleRequest(NetworkEngine.API_THIRD_BASE_URL + "xe.user.coupon.unread/1.0.0", this);
 
-        NetworkEngine.getInstance().sendRequest(couponHandleRequest);
+        couponHandleRequest.sendRequest();
     }
 
     // 请求发送优惠券
     public void requestSendCoupon() {
         CouponHandleRequest couponHandleRequest = new CouponHandleRequest(NetworkEngine.API_THIRD_BASE_URL + "xe.user.coupon.grant/1.0.0", this);
 
-        NetworkEngine.getInstance().sendRequest(couponHandleRequest);
+        couponHandleRequest.sendRequest();
     }
 
 }

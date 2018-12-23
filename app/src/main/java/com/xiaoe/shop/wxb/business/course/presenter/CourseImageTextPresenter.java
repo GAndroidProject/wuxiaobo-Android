@@ -28,7 +28,7 @@ public class CourseImageTextPresenter implements IBizCallback {
         courseITBeforeBuyRequest.addDataParam("resource_id", resourceId);
         courseITBeforeBuyRequest.addDataParam("resource_type", resourceType);
 
-        NetworkEngine.getInstance().sendRequest(courseITBeforeBuyRequest);
+        courseITBeforeBuyRequest.sendRequest();
     }
 
     // 请求购买后的信息
@@ -38,7 +38,7 @@ public class CourseImageTextPresenter implements IBizCallback {
         courseITAfterBuyRequest.addDataParam("resource_id", resourceId);
         courseITAfterBuyRequest.addDataParam("resource_type", resourceType);
 
-        NetworkEngine.getInstance().sendRequest(courseITAfterBuyRequest);
+        courseITAfterBuyRequest.sendRequest();
     }
 
     // 请求资源详情页信息（包含购买前和购买后）
@@ -50,6 +50,6 @@ public class CourseImageTextPresenter implements IBizCallback {
         courseITDetailRequest.setNeedCache(true);
         courseITDetailRequest.setCacheKey(resourceId);
 
-        NetworkEngine.getInstance().sendRequest(courseITDetailRequest);
+        courseITDetailRequest.sendRequest();
     }
 }

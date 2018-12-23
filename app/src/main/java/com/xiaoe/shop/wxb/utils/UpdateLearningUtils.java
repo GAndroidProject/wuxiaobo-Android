@@ -39,7 +39,7 @@ public class UpdateLearningUtils implements IBizCallback {
         updateMineLearningRequest.addDataParam("org_learn_progress", "0");
         updateMineLearningRequest.addDataParam("spend_time", 0);
 
-        NetworkEngine.getInstance().sendRequest(updateMineLearningRequest);
+        updateMineLearningRequest.sendRequest();
     }
 
     /**

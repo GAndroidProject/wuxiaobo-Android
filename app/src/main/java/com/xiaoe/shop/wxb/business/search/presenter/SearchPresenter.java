@@ -37,7 +37,8 @@ public class SearchPresenter implements IBizCallback {
         searchRequest.addDataParam("keyword", keyWord);
         searchRequest.addDataParam("page", 1);
         searchRequest.addDataParam("page_size", 10);
-        NetworkEngine.getInstance().sendRequest(searchRequest);
+
+        searchRequest.sendRequest();
     }
 
     /**
@@ -48,7 +49,8 @@ public class SearchPresenter implements IBizCallback {
         searchRequest.addDataParam("keyword", keyWord);
         searchRequest.addDataParam("page", pageIndex);
         searchRequest.addDataParam("page_size", pageSize);
-        NetworkEngine.getInstance().sendRequest(searchRequest);
+
+        searchRequest.sendRequest();
     }
 
     /**
@@ -68,6 +70,6 @@ public class SearchPresenter implements IBizCallback {
         searchRequest.addDataParam("request_id", requestId);
         searchRequest.addDataParam("type", type);
 
-        NetworkEngine.getInstance().sendRequest(searchRequest);
+        searchRequest.sendRequest();
     }
 }

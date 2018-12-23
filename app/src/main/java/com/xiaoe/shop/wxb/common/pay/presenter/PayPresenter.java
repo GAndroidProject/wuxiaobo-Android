@@ -75,6 +75,6 @@ public class PayPresenter implements IBizCallback {
     public void paySuperVip() {
         PaySuperVipRequest paySuperVipRequest = new PaySuperVipRequest(this);
 
-        NetworkEngine.getInstance().sendRequest(paySuperVipRequest);
+        paySuperVipRequest.sendRequest();
     }
 }

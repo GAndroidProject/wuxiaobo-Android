@@ -26,6 +26,7 @@ public class CdKeyPresenter implements IBizCallback {
     public void requestData(String code) {
         CdKeyRequest cdKeyRequest = new CdKeyRequest(null, this);
         cdKeyRequest.addRequestParam("code", code);
-        NetworkEngine.getInstance().sendRequest(cdKeyRequest);
+
+        cdKeyRequest.sendRequest();
     }
 }

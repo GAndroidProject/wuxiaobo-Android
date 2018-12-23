@@ -179,8 +179,8 @@
     <string name="course_image_text_page_bottom">页面是有限的，潜力是无限的</string>
     <string name="course_image_text_back">image_text_back</string>
 
-    <string name="loading_text">加载中...</string>
-    <string name="exchanging_text">兑换中...</string>
+    <string name="loading_text">加载中…</string>
+    <string name="exchanging_text">兑换中…</string>
     <string name="click_load_more_text">点击加载更多</string>
     <string name="load_all_text">已加载全部</string>
 
@@ -322,7 +322,7 @@
     <string name="withdrawal_grant_confirm">复制链接</string>
 
     <string name="refresh_logo">刷新logo</string>
-    <string name="refresh_content">加载中...</string>
+    <string name="refresh_content">加载中…</string>
     <string name="replay_comment_text">回复了你的评论</string>
     <string name="zan_comment_text">赞了你的评论</string>
 
@@ -418,7 +418,7 @@
     <string name="learn_manage_wealth">学会管理自己的财富</string>
     <string name="format_yuan">%.2f元</string>
     <string name="come_again_tomorrow">明日再来</string>
-    <string name="in_the_split">瓜分中...</string>
+    <string name="in_the_split">瓜分中…</string>
     <string name="set_the_nickname">请设置昵称</string>
     <string name="free_admission">全场免费学</string>
     <string name="free_friends_and_relatives">亲友一起听</string>
@@ -493,4 +493,5 @@
     <string name="login_code_new_title">短信验证码</string>
     <string name="please_wechat_open">请在微信中打开该链接</string>
     <string name="clip_wechat_url">暂不支持该链接跳转，您可以点击下方复制链接，在微信环境中打开。\n%s</string>
+    <string name="add_delete">add|delete</string>
 </resources>

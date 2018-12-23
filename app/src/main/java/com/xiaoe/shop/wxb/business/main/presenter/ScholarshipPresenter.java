@@ -1,5 +1,6 @@
 package com.xiaoe.shop.wxb.business.main.presenter;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
@@ -58,7 +59,7 @@ public class ScholarshipPresenter implements IBizCallback {
         if (iRequest instanceof ScholarshipTaskListRequest) { // 接收任务列表的请求
             JSONObject result = (JSONObject) entity;
             if (result == null) { // 为空的话页隐藏奖学金 tab
-                inr.onResponse(iRequest, false, entity);
+                inr.onResponse(iRequest, false, null);
                 return;
             }
             JSONArray data = (JSONArray) result.get("data");
@@ -90,17 +91,18 @@ public class ScholarshipPresenter implements IBizCallback {
     }
 
     // 获取排行榜
-    public void requestRange(String taskId) {
+    private void requestRange(String taskId) {
         ScholarshipRequest scholarshipRequest = new ScholarshipRequest(this);
 
         scholarshipRequest.addRequestParam("task_id", taskId);
         scholarshipRequest.setNeedCache(true);
         scholarshipRequest.setCacheKey(taskId+"_ranking");
-        NetworkEngine.getInstance().sendRequest(scholarshipRequest);
+
+        scholarshipRequest.sendRequest();
     }
 
     // 获取任务状态
-    public void requestTaskStatues(String taskId) {
+    private void requestTaskStatues(String taskId) {
         ScholarshipTaskStateRequest scholarshipTaskStateRequest = new ScholarshipTaskStateRequest(this);
 
         scholarshipTaskStateRequest.addRequestParam("task_id", taskId);
@@ -108,14 +110,14 @@ public class ScholarshipPresenter implements IBizCallback {
         scholarshipTaskStateRequest.setNeedCache(true);
         scholarshipTaskStateRequest.setCacheKey(taskId+"_state");
 
-        NetworkEngine.getInstance().sendRequest(scholarshipTaskStateRequest);
+        scholarshipTaskStateRequest.sendRequest();
     }
 
     // 获取已购列表，目前只需要音频
     public void requestBoughtList() {
         ScholarshipBoughtListRequest scholarshipBoughtListRequest = new ScholarshipBoughtListRequest(this);
 
-        NetworkEngine.getInstance().sendRequest(scholarshipBoughtListRequest);
+        scholarshipBoughtListRequest.sendRequest();
     }
 
     // 请求提交任务
@@ -132,7 +134,7 @@ public class ScholarshipPresenter implements IBizCallback {
         int isMember = isSuperVip ? 1 : 0;
         scholarshipSubmitRequest.addRequestParam("is_members", isMember);
 
-        NetworkEngine.getInstance().sendRequest(scholarshipSubmitRequest);
+        scholarshipSubmitRequest.sendRequest();
     }
 
     // 查询领取结果
@@ -142,7 +144,7 @@ public class ScholarshipPresenter implements IBizCallback {
         scholarshipReceiveRequest.addRequestParam("task_id", taskId);
         scholarshipReceiveRequest.addRequestParam("task_detail_id", taskDetailId);
 
-        NetworkEngine.getInstance().sendRequest(scholarshipReceiveRequest);
+        scholarshipReceiveRequest.sendRequest();
     }
 
     // 获取 taskId
@@ -159,7 +161,7 @@ public class ScholarshipPresenter implements IBizCallback {
             }
             String taskId = itemJson.getString("task_id");
             int taskTotalMoney = itemJson.getInteger("reward_amount") == null ? 0 : itemJson.getInteger("reward_amount");
-            String totalMoney = String.format("%.0f", taskTotalMoney / 100f);
+            @SuppressLint("DefaultLocale") String totalMoney = String.format("%.0f", taskTotalMoney / 100f);
             NetworkEngine.getInstance().saveCacheData(taskId+"_money", totalMoney, null);
             SharedPreferencesUtil.getInstance(XiaoeApplication.getmContext(), SharedPreferencesUtil.FILE_NAME);
             SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_SCHOLARSHIP_ID, taskId);

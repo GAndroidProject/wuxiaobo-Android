@@ -112,10 +112,9 @@ public class LoginPresenter implements IBizCallback {
     public void checkRegister(String phoneNum) {
         LoginCheckRegisterRequest loginCheckRegisterRequest = new LoginCheckRegisterRequest(this);
 
-//        loginCheckRegisterRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginCheckRegisterRequest.addRequestParam("phone", phoneNum);
 
-        NetworkEngine.getInstance().sendRequest(loginCheckRegisterRequest);
+        loginCheckRegisterRequest.sendRequest();
     }
 
     /**
@@ -126,10 +125,9 @@ public class LoginPresenter implements IBizCallback {
     public void obtainPhoneCode(String phoneNum) {
         LoginPhoneCodeRequest loginPhoneCodeRequest = new LoginPhoneCodeRequest(this);
 
-//        loginPhoneCodeRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginPhoneCodeRequest.addRequestParam("phone", phoneNum);
 
-        NetworkEngine.getInstance().sendRequest(loginPhoneCodeRequest);
+        loginPhoneCodeRequest.sendRequest();
     }
 
     /**
@@ -141,11 +139,10 @@ public class LoginPresenter implements IBizCallback {
     public void verifyCode(String phoneNum, String code) {
         LoginCodeVerifyRequest loginCodeVerifyRequest = new LoginCodeVerifyRequest(this);
 
-//        loginCodeVerifyRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginCodeVerifyRequest.addRequestParam("phone", phoneNum);
         loginCodeVerifyRequest.addRequestParam("sms_code", code);
 
-        NetworkEngine.getInstance().sendRequest(loginCodeVerifyRequest);
+        loginCodeVerifyRequest.sendRequest();
     }
 
     /**
@@ -157,11 +154,10 @@ public class LoginPresenter implements IBizCallback {
     public void verifyNewCode(String phoneNum, String code) {
         LoginNewCodeVerifyRequest loginNewCodeVerifyRequest = new LoginNewCodeVerifyRequest(this);
 
-//        loginNewCodeVerifyRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginNewCodeVerifyRequest.addRequestParam("phone", phoneNum);
         loginNewCodeVerifyRequest.addRequestParam("sms_code", code);
 
-        NetworkEngine.getInstance().sendRequest(loginNewCodeVerifyRequest);
+        loginNewCodeVerifyRequest.sendRequest();
     }
 
     /**
@@ -173,11 +169,10 @@ public class LoginPresenter implements IBizCallback {
     public void verifyRegisterCode(String phoneNum, String code) {
         LoginRegisterCodeVerifyRequest loginRegisterCodeVerifyRequest = new LoginRegisterCodeVerifyRequest(this);
 
-//        loginRegisterCodeVerifyRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginRegisterCodeVerifyRequest.addRequestParam("phone", phoneNum);
         loginRegisterCodeVerifyRequest.addRequestParam("sms_code", code);
 
-        NetworkEngine.getInstance().sendRequest(loginRegisterCodeVerifyRequest);
+        loginRegisterCodeVerifyRequest.sendRequest();
     }
 
     /**
@@ -189,11 +184,10 @@ public class LoginPresenter implements IBizCallback {
     public void verifyFindPwdCode(String phoneNum, String code) {
         LoginFindPwdCodeVerifyRequest loginFindPwdCodeVerifyRequest = new LoginFindPwdCodeVerifyRequest(this);
 
-//        loginFindPwdCodeVerifyRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginFindPwdCodeVerifyRequest.addRequestParam("phone", phoneNum);
         loginFindPwdCodeVerifyRequest.addRequestParam("sms_code", code);
 
-        NetworkEngine.getInstance().sendRequest(loginFindPwdCodeVerifyRequest);
+        loginFindPwdCodeVerifyRequest.sendRequest();
     }
 
     /**
@@ -206,12 +200,11 @@ public class LoginPresenter implements IBizCallback {
     public void doRegister(String phoneNum, String passWord, String smsCode) {
         LoginDoRegisterRequest loginDoRegisterRequest = new LoginDoRegisterRequest(this);
 
-//        loginDoRegisterRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginDoRegisterRequest.addRequestParam("phone", phoneNum);
         loginDoRegisterRequest.addRequestParam("password", passWord);
         loginDoRegisterRequest.addRequestParam("sms_code", smsCode);
 
-        NetworkEngine.getInstance().sendRequest(loginDoRegisterRequest);
+        loginDoRegisterRequest.sendRequest();
     }
 
     /**
@@ -224,12 +217,11 @@ public class LoginPresenter implements IBizCallback {
     public void bindPhone(String accessToken, String phoneNum, String smsCode) {
         LoginBindRequest loginBindRequest = new LoginBindRequest(this);
 
-//        loginBindRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginBindRequest.addRequestParam("access_token", accessToken);
         loginBindRequest.addRequestParam("phone", phoneNum);
         loginBindRequest.addRequestParam("sms_code", smsCode);
 
-        NetworkEngine.getInstance().sendRequest(loginBindRequest);
+        loginBindRequest.sendRequest();
     }
 
     /**
@@ -241,11 +233,10 @@ public class LoginPresenter implements IBizCallback {
     public void bindWeChat(String accessToken, String code) {
         LoginBindRequest loginBindRequest = new LoginBindRequest(this);
 
-//        loginBindRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginBindRequest.addRequestParam("access_token", accessToken);
         loginBindRequest.addRequestParam("code", code);
 
-        NetworkEngine.getInstance().sendRequest(loginBindRequest);
+        loginBindRequest.sendRequest();
     }
 
     /**
@@ -256,10 +247,9 @@ public class LoginPresenter implements IBizCallback {
     public void loginByWeChat(String code) {
         LoginRequest loginRequest = new LoginRequest(this);
 
-//        loginRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginRequest.addRequestParam("code", code);
 
-        NetworkEngine.getInstance().sendRequest(loginRequest);
+        loginRequest.sendRequest();
     }
 
     /**
@@ -271,11 +261,10 @@ public class LoginPresenter implements IBizCallback {
     public void loginByPassword(String phoneNum, String password) {
         LoginRequest loginRequest = new LoginRequest(this);
 
-//        loginRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginRequest.addRequestParam("phone", phoneNum);
         loginRequest.addRequestParam("password", MD5Utils.encrypt(password));
 
-        NetworkEngine.getInstance().sendRequest(loginRequest);
+        loginRequest.sendRequest();
     }
 
     /**
@@ -287,11 +276,10 @@ public class LoginPresenter implements IBizCallback {
     public void loginBySmsCode(String phoneNum, String smsCode) {
         LoginRequest loginRequest = new LoginRequest(this);
 
-//        loginRequest.addHeaderParam("app-id", Constants.getWXAppId());
         loginRequest.addRequestParam("phone", phoneNum);
         loginRequest.addRequestParam("sms_code", smsCode);
 
-        NetworkEngine.getInstance().sendRequest(loginRequest);
+        loginRequest.sendRequest();
     }
 
     /**
@@ -304,12 +292,11 @@ public class LoginPresenter implements IBizCallback {
     public void resetPasswordBySms(String phoneNum, String smsCode, String password) {
         ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest(this);
 
-//        resetPasswordRequest.addHeaderParam("app-id", Constants.getWXAppId());
         resetPasswordRequest.addRequestParam("phone", phoneNum);
         resetPasswordRequest.addRequestParam("sms_code", smsCode);
         resetPasswordRequest.addRequestParam("new_password", MD5Utils.encrypt(password));
 
-        NetworkEngine.getInstance().sendRequest(resetPasswordRequest);
+        resetPasswordRequest.sendRequest();
     }
 
     /**
@@ -323,21 +310,18 @@ public class LoginPresenter implements IBizCallback {
     public void updatePhone(String apiToken, String smsCode, String newPhone, String newSmsCode) {
         UpdatePhoneRequest updatePhoneRequest = new UpdatePhoneRequest(this);
 
-//        updatePhoneRequest.addHeaderParam("app-id", Constants.getWXAppId());
         updatePhoneRequest.addRequestParam("api_token", apiToken);
         updatePhoneRequest.addRequestParam("sms_code", smsCode);
         updatePhoneRequest.addRequestParam("new_phone", newPhone);
         updatePhoneRequest.addRequestParam("new_sms_code", newSmsCode);
 
-        NetworkEngine.getInstance().sendRequest(updatePhoneRequest);
+        updatePhoneRequest.sendRequest();
     }
 
     // 游客登录模式请求店铺 id
     public void requestTouristsShopId() {
         TouristsShopIdRequest touristsShopIdRequest = new TouristsShopIdRequest(this);
 
-//        touristsShopIdRequest.addHeaderParam("app-id", Constants.getWXAppId());
-
-        NetworkEngine.getInstance().sendRequest(touristsShopIdRequest);
+        touristsShopIdRequest.sendRequest();
     }
 }

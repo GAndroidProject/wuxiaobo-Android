@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public abstract class IRequest {
 
-    private String cmd = "";
+    private String cmd;
     private DeviceInfo clientInfo = Global.g().getDeviceInfo();
     private String buildVersion = Global.g().getVersionName();
 
@@ -82,7 +82,7 @@ public abstract class IRequest {
      *
      * @param form
      */
-    public void addRequestParam(Map<String, String> form) {
+    public void addRequestParam(Map<String, Object> form) {
         formBody.putAll(form);
     }
 
@@ -179,12 +179,26 @@ public abstract class IRequest {
         return jsonObject.toJSONString();
     }
 
+    public String getWrapedFormBodySimple() {
+        JSONObject jsonObject = new JSONObject();
+
+        for (Map.Entry<String, Object> entry : formBody.entrySet()) {
+            jsonObject.put(entry.getKey(), entry.getValue());
+        }
+
+        return jsonObject.toJSONString();
+    }
+
     public void onResponse(boolean success, Object entityObj) {
         iBizCallback.onResponse(this, success, entityObj);
     }
 
     public void sendRequest() {
-        NetworkEngine.getInstance().sendRequest(this);
+        NetworkEngine.getInstance().sendRequest(this, false);
+    }
+
+    public void sendRequestSimple() {
+        NetworkEngine.getInstance().sendRequest(this, true);
     }
 
     private Class entityClass;

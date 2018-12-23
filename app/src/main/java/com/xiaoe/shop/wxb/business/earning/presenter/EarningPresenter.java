@@ -1,6 +1,5 @@
 package com.xiaoe.shop.wxb.business.earning.presenter;
 
-import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.EarningRequest;
@@ -9,7 +8,7 @@ import com.xiaoe.network.requests.WithdrawRequest;
 
 public class EarningPresenter implements IBizCallback {
 
-    private INetworkResponse inr = null;
+    private INetworkResponse inr;
 
     public EarningPresenter(INetworkResponse inr) {
         this.inr = inr;
@@ -40,7 +39,7 @@ public class EarningPresenter implements IBizCallback {
         earningRequest.setNeedCache(true);
         earningRequest.setCacheKey(assetType);
 
-        NetworkEngine.getInstance().sendRequest(earningRequest);
+        earningRequest.sendRequest();
     }
 
     /**
@@ -58,6 +57,6 @@ public class EarningPresenter implements IBizCallback {
         withdrawRequest.addRequestParam("desc", "提现");
         withdrawRequest.addRequestParam("client_ip", ip);
 
-        NetworkEngine.getInstance().sendRequest(withdrawRequest);
+        withdrawRequest.sendRequest();
     }
 }

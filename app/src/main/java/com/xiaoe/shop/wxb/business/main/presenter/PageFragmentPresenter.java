@@ -33,6 +33,6 @@ public class PageFragmentPresenter implements IBizCallback {
         pageFragmentRequest.setNeedCache(true);
         pageFragmentRequest.setCacheKey(microPageId);
 
-        NetworkEngine.getInstance().sendRequest(pageFragmentRequest);
+        pageFragmentRequest.sendRequest();
     }
 }

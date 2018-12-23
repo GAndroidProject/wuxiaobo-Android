@@ -29,6 +29,6 @@ public class MineLearningPresenter implements IBizCallback {
         mineLearningRequest.setNeedCache(true);
         mineLearningRequest.setCacheKey("learning");
 
-        NetworkEngine.getInstance().sendRequest(mineLearningRequest);
+        mineLearningRequest.sendRequest();
     }
 }

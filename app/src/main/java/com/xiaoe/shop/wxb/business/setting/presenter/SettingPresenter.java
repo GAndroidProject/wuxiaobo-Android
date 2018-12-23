@@ -36,44 +36,39 @@ public class SettingPresenter implements IBizCallback {
         SettingPseronMsgRequest settingPersonMsgRequest = new SettingPseronMsgRequest(this);
 
         String msgType = needAllMsg ? "2" : "1";
-//        settingPersonMsgRequest.addHeaderParam("app-id", Constants.getWXAppId());
-//        settingPersonMsgRequest.addRequestParam("api_token", apiToken);
         settingPersonMsgRequest.addRequestParam("message_type", msgType);
 
-        NetworkEngine.getInstance().sendRequest(settingPersonMsgRequest);
+        settingPersonMsgRequest.sendRequest();
     }
 
     // 修改微信昵称
     public void updateWxNickname(String apiToken, String wxNickname) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(this);
 
-//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("wx_nickname", wxNickname);
 
-        NetworkEngine.getInstance().sendRequest(settingPersonItemRequest);
+        settingPersonItemRequest.sendRequest();
     }
 
     // 修改真实姓名
     public void updateName(String apiToken, String wxName) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest( this);
 
-//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("wx_name", wxName);
 
-        NetworkEngine.getInstance().sendRequest(settingPersonItemRequest);
+        settingPersonItemRequest.sendRequest();
     }
 
     // 更新生日
     public void updateBirth(String apiToken, String birth) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest( this);
 
-//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("birth", birth);
 
-        NetworkEngine.getInstance().sendRequest(settingPersonItemRequest);
+        settingPersonItemRequest.sendRequest();
     }
 
     // 更新性别
@@ -81,56 +76,51 @@ public class SettingPresenter implements IBizCallback {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(this);
 
         String wxGender = gender.equals(XiaoeApplication.applicationContext.getString(R.string.action_sheet_man)) ? "1" : "2";
-//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("wx_gender", wxGender);
 
-        NetworkEngine.getInstance().sendRequest(settingPersonItemRequest);
+        settingPersonItemRequest.sendRequest();
     }
 
     // 更新地址
     public void updateAddress(String apiToken, String address) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest( this);
 
-//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("address", address);
 
-        NetworkEngine.getInstance().sendRequest(settingPersonItemRequest);
+        settingPersonItemRequest.sendRequest();
     }
 
     // 更新职位
     public void updateJob(String apiToken, String job) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest( this);
 
-//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("job", job);
 
-        NetworkEngine.getInstance().sendRequest(settingPersonItemRequest);
+        settingPersonItemRequest.sendRequest();
     }
 
     // 更新公司
     public void updateCompany(String apiToken, String company) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(this);
 
-//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("api_token", apiToken);
         settingPersonItemRequest.addRequestParam("company", company);
 
-        NetworkEngine.getInstance().sendRequest(settingPersonItemRequest);
+        settingPersonItemRequest.sendRequest();
     }
 
     // 更新手机号
     public void updatePhone(String apiToken, String smsCode, String newPhone) {
         SettingPersonItemRequest settingPersonItemRequest = new SettingPersonItemRequest(this);
 
-//        settingPersonItemRequest.addHeaderParam("app-id", Constants.getWXAppId());
         settingPersonItemRequest.addRequestParam("apiToken", apiToken);
         settingPersonItemRequest.addRequestParam("sms_code", smsCode);
         settingPersonItemRequest.addRequestParam("new_phone", newPhone);
 
-        NetworkEngine.getInstance().sendRequest(settingPersonItemRequest);
+        settingPersonItemRequest.sendRequest();
     }
 
     /**

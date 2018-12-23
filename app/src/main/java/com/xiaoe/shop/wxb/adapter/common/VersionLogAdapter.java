@@ -70,6 +70,7 @@ public class VersionLogAdapter extends BaseAdapter {
         }
 
         if (position + 1 == lists.size()) {
+            holder.et_item_vote.requestFocus();
             holder.iv_delete_item_vote.setImageResource(R.drawable.icon_add_item_vote);
         } else {
             holder.iv_delete_item_vote.setImageResource(R.drawable.icon_delete_item_vote);
@@ -104,22 +105,19 @@ public class VersionLogAdapter extends BaseAdapter {
                     msg.what = 3;
                     handler.sendMessage(msg);
 
-                    Log.e(TAG, "afterTextChanged: " + position + " voteItem content:" + s);
+                    Log.d(TAG, "afterTextChanged: " + position + " voteItem content:" + s);
                 }
             }
         });
-        holder.rv_delete_item_vote.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-            @Override
-            public void onComplete(RippleView rippleView) {
-                Message msg = new Message();
-                msg.arg1 = position;
-                if (position + 1 == lists.size()) {
-                    msg.what = 1;
-                } else {
-                    msg.what = 2;
-                }
-                handler.sendMessage(msg);
+        holder.rv_delete_item_vote.setOnRippleCompleteListener(rippleView -> {
+            Message msg = new Message();
+            msg.arg1 = position;
+            if (position + 1 == lists.size()) {
+                msg.what = 1;
+            } else {
+                msg.what = 2;
             }
+            handler.sendMessage(msg);
         });
 
         return convertView;

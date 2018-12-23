@@ -55,7 +55,8 @@ public class CollectionUtils implements IBizCallback {
         CheckCollectionRequest checkCollectionRequest = new CheckCollectionRequest(this);
         checkCollectionRequest.addDataParam("content_id", resourceId);
         checkCollectionRequest.addDataParam("content_type", Integer.parseInt(resourceType));
-        NetworkEngine.getInstance().sendRequest(checkCollectionRequest);
+
+        checkCollectionRequest.sendRequest();
     }
 
     /**
@@ -70,7 +71,8 @@ public class CollectionUtils implements IBizCallback {
         addCollectionRequest.addDataParam("content_type", Integer.parseInt(resourceType));
         addCollectionRequest.addDataParam("content", collectionContent);
         addCollectionRequest.addDataParam("type", 1);
-        NetworkEngine.getInstance().sendRequest(addCollectionRequest);
+
+        addCollectionRequest.sendRequest();
     }
 
     /**
@@ -83,11 +85,12 @@ public class CollectionUtils implements IBizCallback {
         jsonObject.put("content_id", resourceId);
         jsonObject.put("content_type", Integer.parseInt(resourceType));
         jsonObject.put("type", 1);
-        List<JSONObject> delList = new ArrayList<JSONObject>();
+        List<JSONObject> delList = new ArrayList<>();
         delList.add(jsonObject);
         RemoveCollectionListRequest removeCollectionRequest = new RemoveCollectionListRequest( this);
         removeCollectionRequest.addDataParam("del_list", delList);
-        NetworkEngine.getInstance().sendRequest(removeCollectionRequest);
+
+        removeCollectionRequest.sendRequest();
     }
 
 
@@ -100,7 +103,8 @@ public class CollectionUtils implements IBizCallback {
         CollectionListRequest collectionListRequest = new CollectionListRequest(this);
         collectionListRequest.addDataParam("page", pageIndex);
         collectionListRequest.addDataParam("page_size", pageSize);
-        NetworkEngine.getInstance().sendRequest(collectionListRequest);
+
+        collectionListRequest.sendRequest();
     }
 
     /**
@@ -110,6 +114,7 @@ public class CollectionUtils implements IBizCallback {
     public void requestRemoveAllCollection(JSONObject delList) {
         RemoveCollectioinByObjRequest removeCollectioinByObjRequest = new RemoveCollectioinByObjRequest(this);
         removeCollectioinByObjRequest.addDataParam("del_list", delList);
-        NetworkEngine.getInstance().sendRequest(removeCollectioinByObjRequest);
+
+        removeCollectioinByObjRequest.sendRequest();
     }
 }

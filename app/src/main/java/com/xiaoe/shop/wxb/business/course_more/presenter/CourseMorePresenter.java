@@ -34,6 +34,7 @@ public class CourseMorePresenter implements IBizCallback {
         commodityGroupRequest.addDataParam("agent_type", 1);
         commodityGroupRequest.addDataParam("agent_version", "1");
         commodityGroupRequest.addDataParam("last_id", lastId);
-        NetworkEngine.getInstance().sendRequest(commodityGroupRequest);
+
+        commodityGroupRequest.sendRequest();
     }
 }
