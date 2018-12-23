@@ -613,6 +613,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             return;
         } else {
             itOrgContent.setVisibility(View.VISIBLE);
+            initWebView(itOrgContent);
             itOrgContent.setWebViewClient(new WebViewClient(){
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView webView, String s) {

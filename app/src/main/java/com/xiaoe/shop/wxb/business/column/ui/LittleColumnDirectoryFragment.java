@@ -204,6 +204,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             intent.putExtra("bundle_dataJSON", dataJSON);
             intent.putExtra("from_type", "LittleColumnDirectoryFragment");
             intent.putExtra("resourceId", resourceId);
+            intent.putExtra("resourceType", ColumnActivity.RESOURCE_TYPE_COLUMN + "");
             startActivity(intent);
         } else {
             touristDialog.showDialog();

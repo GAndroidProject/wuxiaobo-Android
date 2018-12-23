@@ -237,6 +237,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         btnAudioComment.setOnClickListener(this);
         //图文内容详细显示
         detailContent = (WebView) findViewById(R.id.audio_detail_content);
+        initWebView(detailContent);
         detailContent.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String s) {

@@ -41,7 +41,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0.6" // 测试：1.0.0.016d   内灰：1.0.10f   吴晓波：1.0.5
+        versionName "1.0.7" // 测试：1.0.0.016d   内灰：1.0.10f   吴晓波：1.0.5
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 //        ndk { abiFilters "armeabi","x86"}
         ndk {
