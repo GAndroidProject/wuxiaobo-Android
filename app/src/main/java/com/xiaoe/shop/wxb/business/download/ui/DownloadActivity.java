@@ -29,7 +29,7 @@ public class DownloadActivity extends XiaoeActivity implements View.OnClickListe
     }
 
     private void initViews() {
-        DownloadDirectoryFragment currentFragment = new DownloadDirectoryFragment();
+        NewDownloadDirectoryFragment currentFragment = new NewDownloadDirectoryFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.show_select_download_fragment, currentFragment, "show_select_download_fragment").commit();
 
         btnBack = (ImageView) findViewById(R.id.btn_back);
