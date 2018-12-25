@@ -16,6 +16,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
+import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
 import com.xiaoe.shop.wxb.business.audio.ui.AudioNewActivity;
 import com.xiaoe.shop.wxb.business.bought_list.ui.BoughtListActivity;
 import com.xiaoe.shop.wxb.business.cdkey.ui.CdKeyActivity;
@@ -51,6 +52,8 @@ import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 
 import java.io.File;
 
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
+
 public class JumpDetail {
     private static final String TAG = "JumpDetail";
 
@@ -69,6 +72,9 @@ public class JumpDetail {
             flowId = playEntity.getFlowId();
         }
         if(!(resourceId.equals(resId) || (!TextUtils.isEmpty(flowId) && flowId.equals(resId))) || AudioPlayUtil.getInstance().isCloseMiniPlayer()){
+            if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+            }
             AudioMediaPlayer.stop();
 
             playEntity = new AudioPlayEntity();

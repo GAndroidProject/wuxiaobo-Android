@@ -52,6 +52,7 @@ import com.xiaoe.network.requests.RemoveCollectionListRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
+import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
 import com.xiaoe.shop.wxb.business.video.presenter.VideoPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.web.BrowserActivity;
@@ -69,6 +70,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.util.List;
+
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
 
 public class VideoActivity extends XiaoeActivity implements View.OnClickListener, OnClickVideoButtonListener {
     private static final String TAG = "VideoActivity";
@@ -410,6 +413,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        MediaPlayerCountDownHelper.INSTANCE.onViewDestroy();
+        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+            MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+        }
         playControllerView.release();
         EventBus.getDefault().unregister(this);
         UMShareAPI.get(this).release();

@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -20,14 +22,21 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.business.audio.presenter.CountDownTimerTool;
+import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
 import com.xiaoe.shop.wxb.business.video.presenter.VideoPlayer;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
-
 import org.greenrobot.eventbus.EventBus;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_30;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_60;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CLOSE;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_TIME;
 
 public class VideoPlayControllerView extends FrameLayout implements View.OnClickListener,SeekBar.OnSeekBarChangeListener, MediaPlayer.OnPreparedListener {
     private static final String TAG = "VideoPlayControllerView";
@@ -51,12 +60,16 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private boolean isFullScreen = false;
     private VideoPlayEvent videoPlayEvent;
     private RelativeLayout playProgressWidget;
+    private MediaPlayer mMediaPlayer;
 
     private Timer mTimer;
     private TimerTask mTimerTask;
     private boolean isTouchSeekBar;
     private ImageView btnDownload;
     private PowerManager.WakeLock mWakeLock;
+
+    private View mCountDownView;
+    private List<TextView> mCountDownTexts;
 
     public void setWakeLock(PowerManager.WakeLock wakeLock) {
         mWakeLock = wakeLock;
@@ -122,7 +135,76 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
         btnDownload = (ImageView) findViewById(R.id.btn_download);
         btnDownload.setOnClickListener(this);
+        findViewById(R.id.btn_countdown).setOnClickListener(this);
+
+        mCountDownView = rootView.findViewById(R.id.count_down_view);
+        mCountDownView.setOnClickListener(this);
+        if (mCountDownTexts == null) {
+            if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+            }
+            mCountDownTexts = new ArrayList<>();
+            mCountDownTexts.add((TextView) rootView.findViewById(R.id.video_countdown_text_1));
+            mCountDownTexts.add((TextView) rootView.findViewById(R.id.video_countdown_text_2));
+            mCountDownTexts.add((TextView) rootView.findViewById(R.id.video_countdown_text_3));
+            mCountDownTexts.add((TextView) rootView.findViewById(R.id.video_countdown_text_4));
+        }
+
+        for (int i = 0; i < mCountDownTexts.size(); i++) {
+            mCountDownTexts.get(i).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()){
+                        case R.id.video_countdown_text_1:
+                            countDown(COUNT_DOWN_STATE_CLOSE, 0);
+                            break;
+                        case R.id.video_countdown_text_2:
+                            countDown(COUNT_DOWN_STATE_CURRENT, 0);
+                            break;
+                        case R.id.video_countdown_text_3:
+                            countDown(COUNT_DOWN_STATE_TIME, COUNT_DOWN_DURATION_30);
+                            break;
+                        case R.id.video_countdown_text_4:
+                            countDown(COUNT_DOWN_STATE_TIME, COUNT_DOWN_DURATION_60);
+                            break;
+                    }
+                }
+            });
+        }
+
     }
+
+    private void countDown(int state, int duration) {
+        if (mCountDownView != null && VISIBLE == mCountDownView.getVisibility())
+            mCountDownView.setVisibility(GONE);
+        switch (state){
+            case COUNT_DOWN_STATE_CURRENT:
+                MediaPlayerCountDownHelper.INSTANCE.choiceCurrentPlayFinished();
+                break;
+            case COUNT_DOWN_STATE_TIME:
+                MediaPlayerCountDownHelper.INSTANCE.startCountDown(duration,null);
+                break;
+            case COUNT_DOWN_STATE_CLOSE:
+            default:
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+                break;
+        }
+    }
+
+    CountDownTimerTool.CountDownCallBack mCountDownCallBack = new CountDownTimerTool.CountDownCallBack() {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (mCountDownView != null && VISIBLE == mCountDownView.getVisibility()){
+                updateCountDownText();
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            pause();
+            updateCountDownText();
+        }
+    };
 
     public void setPreviewImage(String imageUrl){
         previewImage.setImageURI(Uri.parse(imageUrl));
@@ -161,8 +243,39 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                     clickVideoBackListener.onVideoButton(v, VideoPlayConstant.VIDEO_STATE_DOWNLOAD);
                 }
                 break;
+            case R.id.btn_countdown:
+                mCountDownView.setVisibility(VISIBLE);
+                updateCountDownText();
+
+                MediaPlayerCountDownHelper.INSTANCE.setCountDownCallBack(mCountDownCallBack);
+                break;
+            case R.id.count_down_view:
+                mCountDownView.setVisibility(GONE);
+                break;
             default:
                 break;
+        }
+    }
+
+    private void updateCountDownText() {
+        if (mCountDownTexts == null || mCountDownTexts.isEmpty())   return;
+        int position = MediaPlayerCountDownHelper.INSTANCE.getMVideoSelectedPosition();
+        for (int i = 0; i < mCountDownTexts.size(); i++) {
+            TextView textView = mCountDownTexts.get(i);
+            int color = i == position ? ContextCompat.getColor(mContext,R.color.mine_super_vip_bg) :
+                    ContextCompat.getColor(mContext,R.color.white);
+            textView.setTextColor(color);
+            String text = "";
+            if (2 == i){
+                text = 2 == position ? MediaPlayerCountDownHelper.INSTANCE.getCountText(
+                        CountDownTimerTool.INSTANCE.getMMillisUntilFinished()) :
+                        mContext.getString(R.string.video_count_down_item_3);
+            }else if (3 == i){
+                text = 3 == position ? MediaPlayerCountDownHelper.INSTANCE.getCountText(
+                        CountDownTimerTool.INSTANCE.getMMillisUntilFinished()) :
+                        mContext.getString(R.string.video_count_down_item_4);
+            }
+            if (!TextUtils.isEmpty(text))   textView.setText(text);
         }
     }
 
@@ -245,6 +358,14 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         EventBus.getDefault().post(videoPlayEvent);
 
         initPlayListener();
+
+        //视频倍速播放调试代码
+//        mMediaPlayer = mp;
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+//            PlaybackParams playbackParams = mp.getPlaybackParams();
+//            playbackParams.setSpeed(2.0f);
+//            mp.setPlaybackParams(playbackParams);
+//        }
     }
 
     private void initPlayListener() {

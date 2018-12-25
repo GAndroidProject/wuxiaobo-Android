@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -26,6 +27,7 @@ import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -61,6 +63,8 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
+import com.xiaoe.shop.wxb.business.audio.presenter.CountDownTimerTool;
+import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
@@ -86,7 +90,16 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_10;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_20;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_30;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_60;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CLOSE;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_TIME;
 
 public class AudioNewActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener,
         OnCustomScrollChangedListener {
@@ -99,6 +112,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     private TextView audioTitle;
     private TextView playNum;
     private TextView btnSpeedPlay;
+    private TextView btnCountDownPlay;
     private AudioPlayControllerView audioPlayController;
     private ObjectAnimator diskRotate;
     private WebView detailContent;
@@ -127,9 +141,11 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     private View audioTitleBar;
     private TextView barTitle;
     private TextView mStatusBarBlank;
-    private Dialog mPlaySpeedDialog;
-    private View mPlaySpeedDialogView;
+    private Dialog mPlaySpeedDialog,mCountDownPlayDialog;
+    private View mPlaySpeedDialogView,mCountDownPlayDialogView;
     private String playNumStr;
+    private List<CheckBox> mCheckBoxes;
+    private List<TextView> mCountDownTexts;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -164,6 +180,19 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         getDialog().showLoadDialog(false);
         initViews();
         initDatas();
+        AudioMediaPlayer.setCountDownCallBack(new CountDownTimerTool.CountDownCallBack() {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                updateCountDownPlayButtonView(false);
+            }
+
+            @Override
+            public void onFinish() {
+                updateCountDownPlayButtonView(false);
+                updateCountDownCheckBox();
+                updateCountDownText();
+            }
+        });
     }
 
     @Override
@@ -218,6 +247,11 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
             btnSpeedPlay.setVisibility(View.GONE);
         btnSpeedPlay.setOnClickListener(this);
         updateSpeedPlayButtonView(AudioMediaPlayer.mPlaySpeed);
+        //定时
+        btnCountDownPlay = (TextView) findViewById(R.id.audio_count_down);
+        btnCountDownPlay.setOnClickListener(this);
+        updateCountDownPlayButtonView();
+
         //音频播放控制器
         audioPlayController = (AudioPlayControllerView) findViewById(R.id.audio_play_controller);
 
@@ -500,6 +534,27 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                     umShare(audioPlayEntity.getTitle(), imgUrl, audioPlayEntity.getShareUrl(), "");
                 }
                 break;
+            case R.id.audio_count_down:
+                showCountDownPlayDialog();
+                break;
+            case R.id.btn_count_down_1:
+                countDown(COUNT_DOWN_STATE_CLOSE,0,0);
+                break;
+            case R.id.btn_count_down_2:
+                countDown(COUNT_DOWN_STATE_CURRENT,0,1);
+                break;
+            case R.id.btn_count_down_3:
+                countDown(COUNT_DOWN_STATE_TIME,COUNT_DOWN_DURATION_10,2);
+                break;
+            case R.id.btn_count_down_4:
+                countDown(COUNT_DOWN_STATE_TIME,COUNT_DOWN_DURATION_20,3);
+                break;
+            case R.id.btn_count_down_5:
+                countDown(COUNT_DOWN_STATE_TIME,COUNT_DOWN_DURATION_30,4);
+                break;
+            case R.id.btn_count_down_6:
+                countDown(COUNT_DOWN_STATE_TIME,COUNT_DOWN_DURATION_60,5);
+                break;
             case R.id.audio_speed_play:
                 if (AudioMediaPlayer.prepared) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -542,6 +597,13 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         }
     }
 
+    private void countDown(int state,int duration,int position) {
+        if (position == MediaPlayerCountDownHelper.INSTANCE.getMAudioSelectedPosition())
+            return;
+        AudioMediaPlayer.startCountDown(state,duration);
+        updateCountDownPlayButtonView();
+    }
+
     private boolean isNotSupportSpeedChangePhone(String phoneBrand) {
         return Build.VERSION.SDK_INT >= 26 && (Constants.PHONE_HONOR.equals(phoneBrand) || Constants.PHONE_HUAWEI.equals(phoneBrand));
     }
@@ -575,6 +637,84 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         window.getDecorView().setPadding(0, 0, 0, 0);
         window.setGravity(Gravity.BOTTOM);
         mPlaySpeedDialog.setContentView(mPlaySpeedDialogView);
+    }
+
+    private void showCountDownPlayDialog() {
+        if (mCountDownPlayDialog == null){
+            AlertDialog.Builder countDownPlayBuilder = new AlertDialog.Builder(this);
+
+            mCountDownPlayDialog = countDownPlayBuilder.create();
+            mCountDownPlayDialogView = LayoutInflater.from(this).inflate(R.layout.layout_audio_countdown_menu, null, false);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_1).setOnClickListener(AudioNewActivity.this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_2).setOnClickListener(AudioNewActivity.this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_3).setOnClickListener(AudioNewActivity.this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_4).setOnClickListener(AudioNewActivity.this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_5).setOnClickListener(AudioNewActivity.this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_6).setOnClickListener(AudioNewActivity.this);
+            mCheckBoxes = new ArrayList<>();
+            mCheckBoxes.add((CheckBox) mCountDownPlayDialogView.findViewById(R.id.checkbox1));
+            mCheckBoxes.add((CheckBox) mCountDownPlayDialogView.findViewById(R.id.checkbox2));
+            mCheckBoxes.add((CheckBox) mCountDownPlayDialogView.findViewById(R.id.checkbox3));
+            mCheckBoxes.add((CheckBox) mCountDownPlayDialogView.findViewById(R.id.checkbox4));
+            mCheckBoxes.add((CheckBox) mCountDownPlayDialogView.findViewById(R.id.checkbox5));
+            mCheckBoxes.add((CheckBox) mCountDownPlayDialogView.findViewById(R.id.checkbox6));
+            mCountDownTexts = new ArrayList<>();
+            mCountDownTexts.add((TextView) mCountDownPlayDialogView.findViewById(R.id.text_count_down_1));
+            mCountDownTexts.add((TextView) mCountDownPlayDialogView.findViewById(R.id.text_count_down_2));
+            mCountDownTexts.add((TextView) mCountDownPlayDialogView.findViewById(R.id.text_count_down_3));
+            mCountDownTexts.add((TextView) mCountDownPlayDialogView.findViewById(R.id.text_count_down_4));
+            mCountDownTexts.add((TextView) mCountDownPlayDialogView.findViewById(R.id.text_count_down_5));
+            mCountDownTexts.add((TextView) mCountDownPlayDialogView.findViewById(R.id.text_count_down_6));
+            mCountDownPlayDialogView.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickEvent() {
+                @Override
+                public void singleClick(View v) {
+                    if (mCountDownPlayDialog != null && mCountDownPlayDialog.isShowing())
+                        mCountDownPlayDialog.dismiss();
+                }
+            });
+        }
+        updateCountDownCheckBox();
+        updateCountDownText();
+        mCountDownPlayDialog.show();
+        Window window = mCountDownPlayDialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        window.setWindowAnimations(R.style.ActionSheetDialogAnimation);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(null);
+        window.getDecorView().setPadding(0, 0, 0, 0);
+        window.setGravity(Gravity.BOTTOM);
+        mCountDownPlayDialog.setContentView(mCountDownPlayDialogView);
+    }
+
+    private void updateCountDownText() {
+        for (int i = 0; i < mCountDownTexts.size(); i++) {
+            TextView textView = mCountDownTexts.get(i);
+            if (textView != null){
+                int color = i == MediaPlayerCountDownHelper.INSTANCE.getMAudioSelectedPosition() ?
+                        ContextCompat.getColor(this,R.color.high_title_color) :
+                        ContextCompat.getColor(this,R.color.main_title_color);
+                textView.setTextColor(color);
+//                if (0 == i){//文案随选择项不一样变化(后来需求不需要变化)
+//                    String text = COUNT_DOWN_STATE_TIME == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState() ?
+//                            getString(R.string.audio_count_down_item_1_close) : getString(R.string.audio_count_down_item_1);
+//                    textView.setText(text);
+//                }
+            }
+        }
+    }
+
+    private void updateCountDownCheckBox() {
+        if (mCheckBoxes == null)    return;
+        for (int i = 0; i < mCheckBoxes.size(); i++) {
+            CheckBox checkBox = mCheckBoxes.get(i);
+            if (checkBox != null) {
+                checkBox.setClickable(false);
+                checkBox.setEnabled(false);
+                checkBox.setChecked(i == MediaPlayerCountDownHelper.INSTANCE.getMAudioSelectedPosition());
+            }
+        }
     }
 
     private void clickDownload() {
@@ -640,6 +780,33 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
             return;
         }
         updateSpeedPlayButtonView(speed);
+    }
+
+    private void updateCountDownPlayButtonView(){
+        updateCountDownPlayButtonView(true);
+    }
+
+    private void updateCountDownPlayButtonView(boolean isDismissDialog) {
+        if (isDestroyed() || btnCountDownPlay == null)  return;
+
+        if (isDismissDialog && mCountDownPlayDialog != null && mCountDownPlayDialog.isShowing())
+            mCountDownPlayDialog.dismiss();
+        String text = getString(R.string.audio_count_down);
+        int state = MediaPlayerCountDownHelper.INSTANCE.getMCurrentState();
+        switch (state){
+            case COUNT_DOWN_STATE_TIME:
+                text = MediaPlayerCountDownHelper.INSTANCE.getCountText(CountDownTimerTool.INSTANCE
+                        .getMMillisUntilFinished());
+                break;
+            case COUNT_DOWN_STATE_CURRENT:
+                text = getString(R.string.audio_count_down_current);
+                break;
+            case COUNT_DOWN_STATE_CLOSE:
+            default:
+                break;
+        }
+        btnCountDownPlay.setPadding(0,0,Dp2Px2SpUtil.dp2px(this,COUNT_DOWN_STATE_TIME == state ? 5 : 10),0);
+        btnCountDownPlay.setText(text);
     }
 
     private void updateSpeedPlayButtonView(float speed) {
@@ -764,6 +931,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         if (!hasCollect)
             EventBus.getDefault().post(new MyCollectListRefreshEvent(true,AudioMediaPlayer
                     .getAudio() == null ? "" : AudioMediaPlayer.getAudio().getResourceId()));
+        AudioMediaPlayer.setCountDownCallBack(null);
     }
 
     @Override
