@@ -89,4 +89,6 @@
 
     <color name="vip_btn_text">#44210B</color>
     <color name="rippleColor">#868584</color>
+
+    <color name="download_item_bg">#FBFBFD</color>
 </resources>

@@ -85,6 +85,10 @@
 
 #↓↓↓↓↓↓↓实体类↓↓↓↓↓↓↓
 -keep public class com.xiaoe.common.entitys.**{*;}
+# 版本更新模块
+-keep public class com.xiaoe.shop.wxb.business.upgrade.**{*;}
+# 极光推送
+-keep public class com.xiaoe.shop.wxb.common.jpush.**{*;}
 #↑↑↑↑↑↑↑实体类↑↑↑↑↑↑↑
 
 

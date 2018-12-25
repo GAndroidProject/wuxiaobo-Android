@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/single_title"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:text="我的财富计划"
+    android:textSize="16sp"
+    android:textColor="@color/main_title_color"
+    android:gravity="center_vertical"
+    android:drawableStart="@mipmap/download_checking"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:drawablePadding="20dp"
+    android:maxLines="1"
+    android:maxWidth="220dp"
+    android:ellipsize="end"
+    android:background="@color/download_item_bg"/>
