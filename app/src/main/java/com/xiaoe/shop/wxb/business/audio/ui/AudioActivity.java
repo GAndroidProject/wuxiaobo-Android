@@ -87,6 +87,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Deprecated
 public class AudioActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener {
     private static final String TAG = "AudioActivity";
     private SimpleDraweeView audioBG;
