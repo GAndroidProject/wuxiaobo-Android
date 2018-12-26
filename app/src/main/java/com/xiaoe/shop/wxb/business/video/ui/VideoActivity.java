@@ -413,6 +413,9 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         playControllerView.release();
         EventBus.getDefault().unregister(this);
         UMShareAPI.get(this).release();
+        if (videoContentWebView != null) {
+            videoContentWebView.destroy();
+        }
     }
 
     @Override
