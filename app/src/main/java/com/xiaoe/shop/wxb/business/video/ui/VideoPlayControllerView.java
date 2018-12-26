@@ -3,6 +3,7 @@ package com.xiaoe.shop.wxb.business.video.ui;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.xiaoe.common.utils.DateFormat;
@@ -60,7 +62,6 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private boolean isFullScreen = false;
     private VideoPlayEvent videoPlayEvent;
     private RelativeLayout playProgressWidget;
-    private MediaPlayer mMediaPlayer;
 
     private Timer mTimer;
     private TimerTask mTimerTask;
@@ -68,8 +69,10 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private ImageView btnDownload;
     private PowerManager.WakeLock mWakeLock;
 
-    private View mCountDownView;
-    private List<TextView> mCountDownTexts;
+    private View mCountDownView,mSpeedPlayView;
+    private List<TextView> mCountDownTexts,mSpeedPlayTexts;
+    private float mSpeedPlay = 1.0f;
+    private int mSpeedPlayPosition = 0;
 
     public void setWakeLock(PowerManager.WakeLock wakeLock) {
         mWakeLock = wakeLock;
@@ -136,6 +139,21 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         btnDownload = (ImageView) findViewById(R.id.btn_download);
         btnDownload.setOnClickListener(this);
         findViewById(R.id.btn_countdown).setOnClickListener(this);
+        findViewById(R.id.btn_speed).setOnClickListener(this);
+
+        mSpeedPlayView = rootView.findViewById(R.id.speed_play_view);
+        mSpeedPlayView.setOnClickListener(this);
+        if (mSpeedPlayTexts == null){
+            mSpeedPlayTexts = new ArrayList<>();
+            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_1));
+            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_2));
+            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_3));
+            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_4));
+        }
+        for (int i = 0; i < mSpeedPlayTexts.size(); i++) {
+            mSpeedPlayTexts.get(i).setOnClickListener(this);
+        }
+        updateSpeedPlayTexts();
 
         mCountDownView = rootView.findViewById(R.id.count_down_view);
         mCountDownView.setOnClickListener(this);
@@ -243,6 +261,14 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                     clickVideoBackListener.onVideoButton(v, VideoPlayConstant.VIDEO_STATE_DOWNLOAD);
                 }
                 break;
+            case R.id.btn_speed:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    mSpeedPlayView.setVisibility(VISIBLE);
+                    updateSpeedPlayTexts();
+                }else  Toast.makeText(mContext,mContext.getString(R.string.speed_play_not_support),
+                        Toast.LENGTH_SHORT).show();
+
+                break;
             case R.id.btn_countdown:
                 mCountDownView.setVisibility(VISIBLE);
                 updateCountDownText();
@@ -252,8 +278,52 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             case R.id.count_down_view:
                 mCountDownView.setVisibility(GONE);
                 break;
+            case R.id.speed_play_view:
+                mSpeedPlayView.setVisibility(GONE);
+                break;
+            case R.id.btn_speed_play_1:
+                mSpeedPlay = 1.0f;
+                mSpeedPlayPosition = 0;
+                changeSpeedPlay();
+                break;
+            case R.id.btn_speed_play_2:
+                mSpeedPlay = 1.25f;
+                mSpeedPlayPosition = 1;
+                changeSpeedPlay();
+                break;
+            case R.id.btn_speed_play_3:
+                mSpeedPlay = 1.5f;
+                mSpeedPlayPosition = 2;
+                changeSpeedPlay();
+                break;
+            case R.id.btn_speed_play_4:
+                mSpeedPlay = 2.0f;
+                mSpeedPlayPosition = 3;
+                changeSpeedPlay();
+                break;
             default:
                 break;
+        }
+    }
+
+    private void changeSpeedPlay() {
+        if (mSpeedPlayView != null && VISIBLE == mSpeedPlayView.getVisibility())
+            mSpeedPlayView.setVisibility(GONE);
+        if (mVideoPlayer == null || !isPrepareMedia)   return;
+        boolean isChange = mVideoPlayer.changeSpeedPlay(mSpeedPlay);
+        if (!isChange) {
+            Toast.makeText(mContext,mContext.getString(R.string.speed_play_fail),Toast.LENGTH_SHORT).show();
+            return;
+        }
+        updateSpeedPlayTexts();
+    }
+
+    private void updateSpeedPlayTexts() {
+        if (mSpeedPlayTexts == null)    return;
+        for (int i = 0; i < mSpeedPlayTexts.size(); i++) {
+            int color = i == mSpeedPlayPosition ? ContextCompat.getColor(mContext,R.color.mine_super_vip_bg) :
+                    ContextCompat.getColor(mContext,R.color.white);
+            mSpeedPlayTexts.get(i).setTextColor(color);
         }
     }
 
@@ -357,13 +427,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
         initPlayListener();
 
-        //视频倍速播放调试代码
-//        mMediaPlayer = mp;
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-//            PlaybackParams playbackParams = mp.getPlaybackParams();
-//            playbackParams.setSpeed(2.0f);
-//            mp.setPlaybackParams(playbackParams);
-//        }
+        mVideoPlayer.changeSpeedPlay(mSpeedPlay);
     }
 
     private void initPlayListener() {

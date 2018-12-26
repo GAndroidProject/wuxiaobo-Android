@@ -507,4 +507,9 @@
     <string name="recently_in_learning">最近在学</string>
     <string name="purchase_records">购买记录</string>
     <string name="my_already_bought">我的已购</string>
+    <string name="video_speed_play">倍速播放</string>
+    <string name="video_speed_play_1">1.0倍速</string>
+    <string name="video_speed_play_2">1.25倍速</string>
+    <string name="video_speed_play_3">1.5倍速</string>
+    <string name="video_speed_play_4">2倍速</string>
 </resources>
