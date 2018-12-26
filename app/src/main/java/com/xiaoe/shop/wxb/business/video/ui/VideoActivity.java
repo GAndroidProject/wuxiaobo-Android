@@ -54,7 +54,6 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.video.presenter.VideoPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
@@ -211,7 +210,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         videoContentWebView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String s) {
-                BrowserActivity.openUrl(mContext, s, "");
+                JumpDetail.jumpAppBrowser(mContext, s, "");
                 return true;
             }
         });

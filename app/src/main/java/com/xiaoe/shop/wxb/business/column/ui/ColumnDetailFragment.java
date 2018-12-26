@@ -11,7 +11,7 @@ import android.webkit.WebViewClient;
 import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
-import com.xiaoe.shop.wxb.common.web.BrowserActivity;
+import com.xiaoe.shop.wxb.common.JumpDetail;
 
 public class ColumnDetailFragment extends BaseFragment {
     private static final String TAG = "ColumnDetailFragment";
@@ -34,7 +34,7 @@ public class ColumnDetailFragment extends BaseFragment {
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String s) {
-                BrowserActivity.openUrl(ColumnDetailFragment.this.getContext(), s, "");
+                JumpDetail.jumpAppBrowser(ColumnDetailFragment.this.getContext(), s, "");
                 return true;
             }
         });

@@ -65,7 +65,6 @@ import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
 import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
-import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.HideAudioPlayListEvent;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
@@ -241,7 +240,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         detailContent.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String s) {
-                BrowserActivity.openUrl(mContext, s, "");
+                JumpDetail.jumpAppBrowser(mContext, s, "");
                 return true;
             }
         });
