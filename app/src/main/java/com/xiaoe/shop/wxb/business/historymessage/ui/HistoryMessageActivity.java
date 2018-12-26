@@ -30,7 +30,6 @@ import com.xiaoe.shop.wxb.adapter.historymessage.HistoryMessageAdapter;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.historymessage.presenter.HistoryMessagePresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.EmptyView;
