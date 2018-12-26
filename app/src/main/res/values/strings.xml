@@ -13,7 +13,7 @@
     <string name="speed_play_3">1.5倍速</string>
     <string name="speed_play_4">2.0倍速</string>
     <string name="audio_count_down">定时</string>
-    <string name="audio_count_down_current">当前</string>
+    <string name="audio_count_down_current">播完</string>
     <string name="video_count_down_title">定时关闭</string>
     <string name="audio_count_down_item_1">不开启</string>
     <string name="audio_count_down_item_1_close">关闭倒计时</string>
@@ -504,4 +504,7 @@
     <string name="please_wechat_open">请在微信中打开该链接</string>
     <string name="clip_wechat_url">暂不支持该链接跳转，您可以点击下方复制链接，在微信环境中打开。\n%s</string>
     <string name="add_delete">add|delete</string>
+    <string name="recently_in_learning">最近在学</string>
+    <string name="purchase_records">购买记录</string>
+    <string name="my_already_bought">我的已购</string>
 </resources>

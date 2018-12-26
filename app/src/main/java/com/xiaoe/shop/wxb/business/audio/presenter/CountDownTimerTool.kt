@@ -8,30 +8,24 @@ import com.xiaoe.shop.wxb.utils.LogUtils
  * Author: hans yang
  * Description: 倒计时工具
  */
-object CountDownTimerTool{
+class CountDownTimerTool{
 
     private val any = Any()
 
     var mMillisUntilFinished : Long = -1
 
-    private const val DEFAULT_TIME_INTERVAL = 1000L
+    private val defaultInterval = 1000L
 
     private var mCountDownTimer : CountDownTimer ?= null
     var mCountDownCallBack : CountDownCallBack ?= null
 
-    fun countDown(time: Int,callBack : CountDownCallBack ?= null){
+    fun countDown(time: Int,callBack: CountDownCallBack ?= null,interval: Long = defaultInterval){
         release()
         mCountDownCallBack = callBack
-        mCountDownTimer = object : CountDownTimer((time * 60 * 1000).toLong(), DEFAULT_TIME_INTERVAL){
+        mCountDownTimer = object : CountDownTimer((time * 60 * 1000).toLong(), interval){
 
             override fun onFinish() {
-                with(MediaPlayerCountDownHelper){
-                    mCurrentState = COUNT_DOWN_STATE_CLOSE
-                    mAudioSelectedPosition = 0
-                    mVideoSelectedPosition = 0
-                }
                 mCountDownCallBack?.onFinish()
-                release()
             }
 
             override fun onTick(millisUntilFinished: Long) {

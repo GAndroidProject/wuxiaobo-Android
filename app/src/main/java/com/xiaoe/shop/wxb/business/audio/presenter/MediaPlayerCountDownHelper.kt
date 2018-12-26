@@ -1,5 +1,7 @@
 package com.xiaoe.shop.wxb.business.audio.presenter
 
+import com.xiaoe.shop.wxb.business.audio.presenter.CountDownTimerTool.CountDownCallBack
+
 /**
  * Date: 2018/12/24 15:28
  * Author: hans yang
@@ -16,21 +18,27 @@ object MediaPlayerCountDownHelper{
     const val COUNT_DOWN_DURATION_30 = 3
     const val COUNT_DOWN_DURATION_60 = 6
 
-    var mCurrentTime = -1
+    private var mCurrentTime = -1
     var mCurrentState = COUNT_DOWN_STATE_CLOSE
     var mAudioSelectedPosition = 0
     var mVideoSelectedPosition = 0
+    var mCountDownCallBack : CountDownCallBack ?= null
 
-//    fun startCountDown(time : Int){
-//        mCurrentTime = time
-//        CountDownTimerTool.countDown(time)
-//    }
+    private val mCountDownTimerTool : CountDownTimerTool by lazy {
+        CountDownTimerTool()
+    }
 
-    fun startCountDown(duration : Int,callBack : CountDownTimerTool.CountDownCallBack?= null){
-        setSelectedPosition(duration)
-        mCurrentState = COUNT_DOWN_STATE_TIME
-        mCurrentTime = duration
-        CountDownTimerTool.countDown(duration,callBack)
+    private val countDownCallBack: CountDownCallBack by lazy {
+        object : CountDownCallBack{
+            override fun onTick(millisUntilFinished: Long) {
+                mCountDownCallBack?.onTick(millisUntilFinished)
+            }
+
+            override fun onFinish() {
+                closeCountDownTimer()
+                mCountDownCallBack?.onFinish()
+            }
+        }
     }
 
     private fun setSelectedPosition(duration: Int) {
@@ -54,29 +62,39 @@ object MediaPlayerCountDownHelper{
         }
     }
 
-    fun setCountDownCallBack(callBack : CountDownTimerTool.CountDownCallBack){
-        CountDownTimerTool.mCountDownCallBack = callBack
+    fun startCountDown(duration : Int,callBack : CountDownCallBack?= null){
+        setSelectedPosition(duration)
+        mCountDownCallBack = callBack
+
+        mCurrentState = COUNT_DOWN_STATE_TIME
+        mCurrentTime = duration
+
+        mCountDownTimerTool.countDown(duration,countDownCallBack)
     }
 
     fun choiceCurrentPlayFinished(){
         mAudioSelectedPosition = 1
         mVideoSelectedPosition = 1
         mCurrentState = COUNT_DOWN_STATE_CURRENT
-        CountDownTimerTool.release()
+        mCountDownTimerTool.release()
     }
 
     fun closeCountDownTimer(){
         mAudioSelectedPosition = 0
         mVideoSelectedPosition = 0
         mCurrentState = COUNT_DOWN_STATE_CLOSE
-        CountDownTimerTool.release()
+        mCountDownTimerTool.release()
     }
 
     fun onViewDestroy(){
-        CountDownTimerTool.mCountDownCallBack = null
+        mCountDownCallBack = null
     }
 
-    fun getCountText(time : Long) : String{
+    fun getCountText() : String{
+        return getCountText(mCountDownTimerTool.mMillisUntilFinished)
+    }
+
+    private fun getCountText(time : Long) : String{
         var text = ""
         if (time >= 0){
             text = "%s:%s"

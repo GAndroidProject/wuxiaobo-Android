@@ -53,8 +53,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     public static void setCountDownCallBack(CountDownTimerTool.CountDownCallBack countDownCallBack) {
         mCountDownCallBack = countDownCallBack;
-        if (countDownCallBack != null && CountDownTimerTool.INSTANCE.getMCountDownCallBack() == null){
-            MediaPlayerCountDownHelper.INSTANCE.setCountDownCallBack(countDownCallBack);
+        if (countDownCallBack != null && MediaPlayerCountDownHelper.INSTANCE.getMCountDownCallBack() == null){
+            MediaPlayerCountDownHelper.INSTANCE.setMCountDownCallBack(countDownCallBack);
         }
     }
 
@@ -145,7 +145,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         changePlayerSpeed(mPlaySpeed);
         EventBus.getDefault().post(event);
         mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
-        MediaPlayerCountDownHelper.INSTANCE.setCountDownCallBack(countDownCallBack);
+        MediaPlayerCountDownHelper.INSTANCE.setMCountDownCallBack(countDownCallBack);
 
         if (audio != null && audio.getProgress() > 0)
             mediaPlayer.seekTo(audio.getProgress());

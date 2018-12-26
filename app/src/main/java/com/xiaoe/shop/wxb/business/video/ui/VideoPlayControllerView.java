@@ -247,7 +247,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                 mCountDownView.setVisibility(VISIBLE);
                 updateCountDownText();
 
-                MediaPlayerCountDownHelper.INSTANCE.setCountDownCallBack(mCountDownCallBack);
+                MediaPlayerCountDownHelper.INSTANCE.setMCountDownCallBack(mCountDownCallBack);
                 break;
             case R.id.count_down_view:
                 mCountDownView.setVisibility(GONE);
@@ -267,12 +267,10 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             textView.setTextColor(color);
             String text = "";
             if (2 == i){
-                text = 2 == position ? MediaPlayerCountDownHelper.INSTANCE.getCountText(
-                        CountDownTimerTool.INSTANCE.getMMillisUntilFinished()) :
+                text = 2 == position ? MediaPlayerCountDownHelper.INSTANCE.getCountText() :
                         mContext.getString(R.string.video_count_down_item_3);
             }else if (3 == i){
-                text = 3 == position ? MediaPlayerCountDownHelper.INSTANCE.getCountText(
-                        CountDownTimerTool.INSTANCE.getMMillisUntilFinished()) :
+                text = 3 == position ? MediaPlayerCountDownHelper.INSTANCE.getCountText() :
                         mContext.getString(R.string.video_count_down_item_4);
             }
             if (!TextUtils.isEmpty(text))   textView.setText(text);

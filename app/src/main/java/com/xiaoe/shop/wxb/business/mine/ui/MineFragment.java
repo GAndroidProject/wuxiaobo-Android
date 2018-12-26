@@ -815,7 +815,15 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
-            case 0: // 我的收藏
+            case 0: // 我的已购
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpMyBought(mContext);
+                } else {
+                    touristDialog.showDialog();
+                }
+//                EventReportManager.onEvent(mContext, MobclickEvent.MINE_FAV_BTN_CLICK);
+                break;
+            case 1: // 我的收藏
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpMineLearning(mContext, getString(R.string.myCollect));
                 } else {
@@ -824,7 +832,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
                 EventReportManager.onEvent(mContext, MobclickEvent.MINE_FAV_BTN_CLICK);
                 break;
-            case 1: // 下载列表
+            case 2: // 下载列表
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpOffLine(mContext);
                 } else {
@@ -833,7 +841,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
                 EventReportManager.onEvent(mContext, MobclickEvent.MINE_DOWNLOADED_BTN_CLICK);
                 break;
-            case 2: // 优惠券
+            case 3: // 优惠券
                 if (mainActivity.isFormalUser) {
                     if (CommonUserInfo.getInstance().isHasUnreadMsg()) {
                         CommonUserInfo.getInstance().setHasUnreadMsg(false);
@@ -846,7 +854,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
                 EventReportManager.onEvent(mContext, MobclickEvent.MINE_DISCOUNTS_BTN_CLICK);
                 break;
-            case 3: // 兑换码
+            case 4: // 兑换码
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpCdKey(mContext);
                 } else {

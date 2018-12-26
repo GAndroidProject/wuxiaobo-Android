@@ -598,8 +598,8 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     }
 
     private void countDown(int state,int duration,int position) {
-        if (position == MediaPlayerCountDownHelper.INSTANCE.getMAudioSelectedPosition())
-            return;
+//        if (position == MediaPlayerCountDownHelper.INSTANCE.getMAudioSelectedPosition())//不能选择已经选中的项
+//            return;
         AudioMediaPlayer.startCountDown(state,duration);
         updateCountDownPlayButtonView();
     }
@@ -795,8 +795,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         int state = MediaPlayerCountDownHelper.INSTANCE.getMCurrentState();
         switch (state){
             case COUNT_DOWN_STATE_TIME:
-                text = MediaPlayerCountDownHelper.INSTANCE.getCountText(CountDownTimerTool.INSTANCE
-                        .getMMillisUntilFinished());
+                text = MediaPlayerCountDownHelper.INSTANCE.getCountText();
                 break;
             case COUNT_DOWN_STATE_CURRENT:
                 text = getString(R.string.audio_count_down_current);
