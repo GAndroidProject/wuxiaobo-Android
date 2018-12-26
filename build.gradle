@@ -20,6 +20,11 @@ allprojects {
     repositories {
         google()
         jcenter()
+
+        // 添加下面的内容
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
