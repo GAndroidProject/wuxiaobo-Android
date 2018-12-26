@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.view.ViewPager
 import com.xiaoe.shop.wxb.R
 import com.xiaoe.shop.wxb.base.XiaoeActivity
 import com.xiaoe.shop.wxb.utils.StatusBarUtil
@@ -35,10 +36,24 @@ class MyBoughtListActivity : XiaoeActivity() {
             onBackPressed()
         }
 
+        learningSelect.isEnabled = false
         with(viewPager){
             adapter = ViewPagerAdapter(supportFragmentManager,mFragments,mTitles)
             offscreenPageLimit = mTitles.size
-            setScroll(true)
+            setScroll(false)
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    learningSelect.isEnabled = 0 != position
+                    boughtSelect.isEnabled = 1 != position
+                }
+            })
+
         }
 
         tabLayout.setViewPager(viewPager,mTitles.toTypedArray())

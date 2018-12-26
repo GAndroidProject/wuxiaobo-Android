@@ -29,18 +29,41 @@
                 android:layout_height="match_parent"
                 tl:tl_indicator_anim_enable="true"
                 tl:tl_tab_space_equal="true"
-                tl:tl_indicator_color="@color/high_title_color"
+                tl:tl_indicator_color="@color/white"
                 tl:tl_indicator_height="3dp"
                 tl:tl_indicator_width="80dp"
                 tl:tl_textBold="BOTH"
                 tl:tl_textSelectColor="@color/high_title_color"
                 tl:tl_textUnselectColor="@color/secondary_title_color"
                 tl:tl_textsize="14sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/audio_page_bg_color" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
+                <View
+                    android:id="@+id/learningSelect"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="3dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="40dp"
+                    android:background="@drawable/cache_tab_select"/>
+                <View
+                    android:id="@+id/boughtSelect"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="3dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="40dp"
+                    android:background="@drawable/cache_tab_select"/>
+            </LinearLayout>
         </RelativeLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/audio_page_bg_color" />
 
         <com.xiaoe.shop.wxb.widget.ScrollViewPager
             android:id="@+id/viewPager"

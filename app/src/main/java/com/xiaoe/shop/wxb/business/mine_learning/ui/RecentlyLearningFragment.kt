@@ -205,7 +205,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
         if (pageList.size > 0 && isRefresh) { // 有数据并且在刷新
             isRefresh = false
             pageList.clear()
-            recentlyLearningList.removeItemDecoration(spacesItemDecoration)
+//            recentlyLearningList.removeItemDecoration(spacesItemDecoration)
         }
         pageList.add(knowledgeList)
         if (!hasDecorate) {
@@ -220,10 +220,11 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                     Dp2Px2SpUtil.dp2px(activity, -16f),
                     Dp2Px2SpUtil.dp2px(activity, 0f),
                     Dp2Px2SpUtil.dp2px(activity, 0f))
+            recentlyLearningList.addItemDecoration(spacesItemDecoration)
             hasDecorate = true
         } else {
             if (pageList.size == 2) { // 第二个开始添加 decoration，只添加一次
-                recentlyLearningList.addItemDecoration(spacesItemDecoration)
+//                recentlyLearningList.addItemDecoration(spacesItemDecoration)
             }
             if (pageList.size >= 2) { // 刷新新增数据的那一个 item
                 decorateRecyclerAdapter.notifyItemChanged(pageList.size - 1)
