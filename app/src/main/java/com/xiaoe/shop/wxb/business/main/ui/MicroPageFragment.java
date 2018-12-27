@@ -69,6 +69,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import butterknife.internal.DebouncingOnClickListener;
 
 public class MicroPageFragment extends BaseFragment implements OnRefreshListener {
 
@@ -884,6 +885,13 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             public void onSharedElementsArrived(List<String> sharedElementNames, List<View> sharedElements, OnSharedElementsReadyListener listener) {
                 super.onSharedElementsArrived(sharedElementNames, sharedElements, listener);
                 Log.d(TAG, "onSharedElementsArrived: ");
+            }
+        });
+
+        microPageLoading.setOnClickListener(new DebouncingOnClickListener() {
+            @Override
+            public void doClick(View v) {
+                Log.d(TAG, "doClick: do nothing");
             }
         });
     }
