@@ -20,9 +20,12 @@ class CountDownTimerTool{
     var mCountDownCallBack : CountDownCallBack ?= null
 
     fun countDown(time: Int,callBack: CountDownCallBack ?= null,interval: Long = defaultInterval){
+        countDown((time * 60 * 1000).toLong(),callBack,interval)
+    }
+    fun countDown(millisTime: Long,callBack: CountDownCallBack ?= null,interval: Long = defaultInterval){
         release()
         mCountDownCallBack = callBack
-        mCountDownTimer = object : CountDownTimer((time * 60 * 1000).toLong(), interval){
+        mCountDownTimer = object : CountDownTimer(millisTime, interval){
 
             override fun onFinish() {
                 mCountDownCallBack?.onFinish()

@@ -39,7 +39,7 @@
                 android:layout_height="match_parent"
                 android:layout_toLeftOf="@+id/btn_countdown"
                 android:padding="10dp"
-                android:src="@mipmap/icon_video_time"
+                android:src="@mipmap/icon_video_speed"
                 tools:ignore="ContentDescription" />
             <ImageView
                 android:id="@+id/btn_countdown"
@@ -215,7 +215,7 @@
             android:gravity="center"
             android:textSize="15sp"
             android:textStyle="bold"
-            android:drawableLeft="@mipmap/icon_video_time"
+            android:drawableLeft="@mipmap/icon_video_speed"
             android:drawablePadding="5dp"/>
         <LinearLayout
             android:layout_width="match_parent"

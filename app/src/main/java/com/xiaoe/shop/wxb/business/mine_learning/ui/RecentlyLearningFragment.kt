@@ -65,7 +65,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
 
     // 初始化页面数据
     private fun initPage() {
-        pageList = ArrayList()
+        pageList = ArrayList<ComponentInfo>()
         with(learningLoading){
             visibility = View.VISIBLE
             setLoadingState(View.VISIBLE)

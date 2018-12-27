@@ -4,9 +4,13 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.os.Build;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceHolder;
+
+import com.xiaoe.shop.wxb.business.audio.presenter.CountDownTimerTool;
+import com.xiaoe.shop.wxb.utils.LogUtils;
 
 /**
  * Created by Administrator on 2017/7/20.
@@ -19,6 +23,7 @@ public class VideoPlayer{
     private String mSourcePath;
     private SurfaceHolder mSurfaceHolder;
     private boolean mSurfaceViewCreated = false;
+    private CountDownTimerTool mCountDownTimerTool;
 
     public VideoPlayer(){
         mediaPlayer = new MediaPlayer();
@@ -86,7 +91,7 @@ public class VideoPlayer{
     public boolean changeSpeedPlay(float speed){
         // this checks on API 23 and up
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
+            if (speed != mPlaySpeed) {
                 try {
                     PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
                     playbackParams.setSpeed(speed);
@@ -95,6 +100,22 @@ public class VideoPlayer{
                     } else {
                         mediaPlayer.setPlaybackParams(playbackParams);
                         mediaPlayer.pause();
+//                        if (mCountDownTimerTool == null){
+//                            mCountDownTimerTool = new CountDownTimerTool();
+//                        }
+//                        mCountDownTimerTool.countDown(500L, new CountDownTimerTool.CountDownCallBack() {
+//                            @Override
+//                            public void onTick(long millisUntilFinished) {
+//                                LogUtils.d("millisUntilFinished = " + millisUntilFinished);
+//                                if (mediaPlayer != null)
+//                                    mediaPlayer.pause();
+//                            }
+//
+//                            @Override
+//                            public void onFinish() {
+//
+//                            }
+//                        }, 10);
                     }
                     mPlaySpeed = speed;
                 }catch (Exception e){
@@ -146,6 +167,8 @@ public class VideoPlayer{
     }
     //释放资源
     public void release(){
+        if (mCountDownTimerTool != null)
+            mCountDownTimerTool.release();
         if(mediaPlayer != null){
             mediaPlayer.stop();
             mediaPlayer.release();
