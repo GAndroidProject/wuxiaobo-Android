@@ -6,9 +6,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.ViewPager
 import butterknife.internal.Utils.listOf
-import com.bumptech.glide.Glide.with
 import com.xiaoe.shop.wxb.R
-import com.xiaoe.shop.wxb.R.id.*
 import com.xiaoe.shop.wxb.base.XiaoeActivity
 import com.xiaoe.shop.wxb.utils.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_my_bought.*
@@ -56,7 +54,6 @@ class MyBoughtListActivity : XiaoeActivity() {
                     boughtSelect.isEnabled = 1 != position
                 }
             })
-
         }
 
         tabLayout.setViewPager(viewPager,mTitles.toTypedArray())
