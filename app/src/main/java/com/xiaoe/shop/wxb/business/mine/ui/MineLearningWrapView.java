@@ -117,7 +117,7 @@ public class MineLearningWrapView extends LinearLayout {
     }
 
     public void setLearningContainerVisibility(int visibility) {
-//        learningContainer.setVisibility(visibility);
+        learningContainer.setVisibility(visibility);
     }
 
     public int getLearningContainerVisibility() {
