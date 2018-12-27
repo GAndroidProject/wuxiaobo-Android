@@ -314,6 +314,11 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         if (!isChange) {
             Toast.makeText(mContext,mContext.getString(R.string.speed_play_fail),Toast.LENGTH_SHORT).show();
             return;
+        }else {
+            if (!mVideoPlayer.isPlaying()){
+                clickPlayView();
+            }
+            setPlayState(VideoPlayConstant.VIDEO_STATE_PLAY);
         }
         updateSpeedPlayTexts();
     }

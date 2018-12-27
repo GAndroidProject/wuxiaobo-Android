@@ -23,7 +23,6 @@ public class VideoPlayer{
     private String mSourcePath;
     private SurfaceHolder mSurfaceHolder;
     private boolean mSurfaceViewCreated = false;
-    private CountDownTimerTool mCountDownTimerTool;
 
     public VideoPlayer(){
         mediaPlayer = new MediaPlayer();
@@ -99,23 +98,6 @@ public class VideoPlayer{
                         mediaPlayer.setPlaybackParams(playbackParams);
                     } else {
                         mediaPlayer.setPlaybackParams(playbackParams);
-                        mediaPlayer.pause();
-//                        if (mCountDownTimerTool == null){
-//                            mCountDownTimerTool = new CountDownTimerTool();
-//                        }
-//                        mCountDownTimerTool.countDown(500L, new CountDownTimerTool.CountDownCallBack() {
-//                            @Override
-//                            public void onTick(long millisUntilFinished) {
-//                                LogUtils.d("millisUntilFinished = " + millisUntilFinished);
-//                                if (mediaPlayer != null)
-//                                    mediaPlayer.pause();
-//                            }
-//
-//                            @Override
-//                            public void onFinish() {
-//
-//                            }
-//                        }, 10);
                     }
                     mPlaySpeed = speed;
                 }catch (Exception e){
@@ -167,8 +149,6 @@ public class VideoPlayer{
     }
     //释放资源
     public void release(){
-        if (mCountDownTimerTool != null)
-            mCountDownTimerTool.release();
         if(mediaPlayer != null){
             mediaPlayer.stop();
             mediaPlayer.release();
