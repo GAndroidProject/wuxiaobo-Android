@@ -20,14 +20,14 @@ walle {
 
 android {
     signingConfigs {
-        release {
+        debug {
             //吴晓波签名文件
             storeFile file("../../shopwxb.jks")
             storePassword RELEASE_STORE_PASSWORD_WXB
             keyAlias RELEASE_KEY_ALIAS_WXB
             keyPassword RELEASE_KEY_PASSWORD_WXB
         }
-        debug {
+        release {
             //吴晓波签名文件
             storeFile file("../../shopwxb.jks")
             storePassword RELEASE_STORE_PASSWORD_WXB
@@ -54,6 +54,7 @@ android {
     }
     buildTypes {
         debug {
+            applicationIdSuffix ".debug"
             //启用代码混淆
             minifyEnabled false
             shrinkResources false // 去掉不用资源
