@@ -73,6 +73,26 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private List<TextView> mCountDownTexts,mSpeedPlayTexts;
     private float mSpeedPlay = 1.0f;
     private int mSpeedPlayPosition = 1;
+    private IPlayNext mIPlayNext;
+
+    public void retSet() {
+        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+            MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+        }
+        mSpeedPlay = 1.0f;
+        mSpeedPlayPosition = 1;
+        updateSpeedPlayTexts();
+        updateCountDownText();
+        pause();
+    }
+
+    public void setIPlayNext(IPlayNext IPlayNext) {
+        mIPlayNext = IPlayNext;
+    }
+
+    public interface IPlayNext{
+        void onNext(boolean isAuto);
+    }
 
     public void setWakeLock(PowerManager.WakeLock wakeLock) {
         mWakeLock = wakeLock;
@@ -120,6 +140,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
         btnProgressPlay = (ImageView) findViewById(R.id.id_video_progress_play);
         btnProgressPlay.setOnClickListener(this);
+        findViewById(R.id.id_video_play_next).setOnClickListener(this);
         btnFullScreen = (ImageView) findViewById(R.id.id_full_screen_play);
         btnFullScreen.setOnClickListener(this);
         currentPlayTime = (TextView) findViewById(R.id.id_current_play_time);
@@ -253,6 +274,9 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             case R.id.id_btn_playVideo:
             case R.id.id_video_progress_play:
                 clickPlayView();
+                break;
+            case R.id.id_video_play_next:
+                if (mIPlayNext != null)   mIPlayNext.onNext(false);
                 break;
             case R.id.id_full_screen_play:
                 clickFullScreen();
@@ -446,6 +470,12 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             @Override
             public void onCompletion(MediaPlayer mp) {
                 setPlayState(VideoPlayConstant.VIDEO_STATE_PAUSE);
+                if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+                    MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+                }else {
+                    if (mIPlayNext != null)   mIPlayNext.onNext(true);
+                }
+
             }
         });
         if (mTimer == null){

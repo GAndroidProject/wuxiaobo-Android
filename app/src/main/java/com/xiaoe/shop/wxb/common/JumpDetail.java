@@ -140,15 +140,30 @@ public class JumpDetail {
      * @param context
      * @param resId
      */
-    public static void jumpVideo(Context context, String resId, String videoImageUrl, boolean localResource, String columnId){
+    public static void jumpVideo(Context context, String resId, String videoImageUrl,
+                                 boolean localResource, String columnId,String requestNextVideoResId,int index){
         Intent intent = new Intent(context, VideoActivity.class);
         intent.putExtra("resourceId", resId);
         if(!TextUtils.isEmpty(videoImageUrl)){
             intent.putExtra("videoImageUrl", videoImageUrl);
         }
+        if (index > 0)
+            intent.putExtra("videoIndex", index);
+        if (!TextUtils.isEmpty(requestNextVideoResId))
+            intent.putExtra("requestNextVideoResId",requestNextVideoResId);
         intent.putExtra("local_resource", localResource);
         intent.putExtra("columnId", columnId);
         context.startActivity(intent);
+    }
+
+    /**
+     * 跳转视频详情
+     * @param context
+     * @param resId
+     */
+    public static void jumpVideo(Context context, String resId, String videoImageUrl,
+                                 boolean localResource, String columnId){
+        jumpVideo(context,resId,videoImageUrl,localResource,columnId,"",-1);
     }
     public static void jumpImageText(Context context, String resId, String imageUrl, String columnId){
         Intent intent = new Intent(context, CourseImageTextActivity.class);

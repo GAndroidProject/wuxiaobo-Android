@@ -1,5 +1,6 @@
 package com.xiaoe.shop.wxb.business.column.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -51,6 +52,7 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
     private boolean isAddPlayList = false;
     private boolean isHasBuy = false;
     private String resourceId;
+    private String realSrcId;
 
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
@@ -349,7 +351,20 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
                 JumpDetail.jumpAudio(getContext(), resourceId, 1);
             }else if(resourceType == 3){
                 //视频
-                JumpDetail.jumpVideo(getContext(), resourceId, "",false, "");
+                int index = 0;
+                List<ColumnSecondDirectoryEntity> list= directoryAdapter.getData();
+                for (int i = 0; i < list.size(); i++) {
+                    if (3 == list.get(i).getResource_type()){
+                        index++;
+                        if (resourceId == list.get(i).getResource_id())
+                            break;
+                    }
+                }
+                Activity activity = getActivity();
+                if (activity != null && activity instanceof ColumnActivity)
+                    realSrcId = ((ColumnActivity)activity).realSrcId;
+                JumpDetail.jumpVideo(getContext(), resourceId, "",false,
+                        "",realSrcId,index);
             }else{
                 toastCustom(getString(R.string.unknown_course));
             }
@@ -396,4 +411,5 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
     }
+
 }

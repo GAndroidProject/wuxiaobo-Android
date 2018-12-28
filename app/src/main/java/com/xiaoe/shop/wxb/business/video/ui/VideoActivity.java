@@ -46,6 +46,7 @@ import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.requests.AddCollectionRequest;
+import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.DetailRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
@@ -53,12 +54,14 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
+import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter;
 import com.xiaoe.shop.wxb.business.video.presenter.VideoPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
+import com.xiaoe.shop.wxb.utils.LogUtils;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
@@ -73,7 +76,8 @@ import java.util.List;
 
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
 
-public class VideoActivity extends XiaoeActivity implements View.OnClickListener, OnClickVideoButtonListener {
+public class VideoActivity extends XiaoeActivity implements View.OnClickListener, OnClickVideoButtonListener,
+        VideoPlayControllerView.IPlayNext {
     private static final String TAG = "VideoActivity";
     private TextView playCount;
     private VideoPlayControllerView playControllerView;
@@ -110,6 +114,12 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     private String columnId;
     private TextView bottomTip;
     private String playNumStr;
+    private boolean isEnableNext = true;
+    private boolean isAutoPlayNext = false;
+    private int playNextIndex = -1;
+    private String requestNextVideoResId;
+    private ColumnPresenter mColumnPresenter;
+    final String REQUEST_TAG = "VideoActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,6 +159,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         mIntent = getIntent();
         mResourceId = mIntent.getStringExtra("resourceId");
         columnId = mIntent.getStringExtra("columnId");
+        playNextIndex = mIntent.getIntExtra("videoIndex",-1);
+        requestNextVideoResId = mIntent.getStringExtra("requestNextVideoResId");
         initViews();
         initDatas();
     }
@@ -186,6 +198,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 //        String videoImageUrl = mIntent.getStringExtra("videoImageUrl");
 
         playControllerView = (VideoPlayControllerView) findViewById(R.id.video_play_controller);
+        playControllerView.setIPlayNext(this);
         playControllerView.setPlayProgressWidgetVisibility(View.GONE);
         playControllerView.setOnClickVideoBackListener(this);
         PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -502,6 +515,25 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             addCollectionRequest(jsonObject);
         }else if(iRequest instanceof RemoveCollectionListRequest){
             removeCollectionRequest(jsonObject);
+        }else if (iRequest instanceof ColumnListRequst
+                && REQUEST_TAG.equals(iRequest.getRequestTag())){
+            isEnableNext = true;
+            if (!success || jsonObject == null){
+                toastCustom(getString(R.string.network_error_text));
+                return;
+            }
+            JSONArray data = jsonObject.getJSONArray("data");
+            if (data == null || data.size() == 0){
+                playNextIndex = -1;
+                if (!isAutoPlayNext)
+                    toastCustom(getString(R.string.already_was_last_video));
+                return;
+            }
+            if (playControllerView != null) {
+                playControllerView.retSet();
+            }
+            mResourceId = ((JSONObject)data.get(0)).getString("resource_id");
+            initDatas();
         }
 
     }
@@ -776,6 +808,25 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                     playControllerView.setPlayUrl(mLocalVideoUrl);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onNext(boolean isAuto) {
+        if (isEnableNext){
+            setHasToast(true);
+            isAutoPlayNext = isAuto;
+            LogUtils.d("onNext = " + playNextIndex);
+            if (playNextIndex < 1 || TextUtils.isEmpty(requestNextVideoResId)){
+                toastCustom(getString(R.string.already_was_last_video));
+                return;
+            }
+
+            if (mColumnPresenter == null)
+                mColumnPresenter = new ColumnPresenter(this);
+            mColumnPresenter.requestColumnList(requestNextVideoResId,"3",++playNextIndex,
+                    1,false,REQUEST_TAG);
+            isEnableNext = false;
         }
     }
 }

@@ -116,6 +116,9 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
 
     private boolean hasToast;
 
+    public void setHasToast(boolean hasToast) {
+        this.hasToast = hasToast;
+    }
 
     class XeHandler extends Handler {
 
