@@ -505,6 +505,7 @@
     <string name="clip_wechat_url">暂不支持该链接跳转，您可以点击下方复制链接，在微信环境中打开。\n%s</string>
     <string name="add_delete">add|delete</string>
     <string name="video_speed_play">倍速播放</string>
+    <string name="video_speed_play_0">0.75倍速</string>
     <string name="video_speed_play_1">1.0倍速</string>
     <string name="video_speed_play_2">1.25倍速</string>
     <string name="video_speed_play_3">1.5倍速</string>

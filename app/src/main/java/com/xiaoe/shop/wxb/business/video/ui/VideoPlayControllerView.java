@@ -72,7 +72,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private View mCountDownView,mSpeedPlayView;
     private List<TextView> mCountDownTexts,mSpeedPlayTexts;
     private float mSpeedPlay = 1.0f;
-    private int mSpeedPlayPosition = 0;
+    private int mSpeedPlayPosition = 1;
 
     public void setWakeLock(PowerManager.WakeLock wakeLock) {
         mWakeLock = wakeLock;
@@ -145,6 +145,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         mSpeedPlayView.setOnClickListener(this);
         if (mSpeedPlayTexts == null){
             mSpeedPlayTexts = new ArrayList<>();
+            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_0));
             mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_1));
             mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_2));
             mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_3));
@@ -281,24 +282,29 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             case R.id.speed_play_view:
                 mSpeedPlayView.setVisibility(GONE);
                 break;
+            case R.id.btn_speed_play_0:
+                mSpeedPlay = 0.75f;
+                mSpeedPlayPosition = 0;
+                changeSpeedPlay();
+                break;
             case R.id.btn_speed_play_1:
                 mSpeedPlay = 1.0f;
-                mSpeedPlayPosition = 0;
+                mSpeedPlayPosition = 1;
                 changeSpeedPlay();
                 break;
             case R.id.btn_speed_play_2:
                 mSpeedPlay = 1.25f;
-                mSpeedPlayPosition = 1;
+                mSpeedPlayPosition = 2;
                 changeSpeedPlay();
                 break;
             case R.id.btn_speed_play_3:
                 mSpeedPlay = 1.5f;
-                mSpeedPlayPosition = 2;
+                mSpeedPlayPosition = 3;
                 changeSpeedPlay();
                 break;
             case R.id.btn_speed_play_4:
                 mSpeedPlay = 2.0f;
-                mSpeedPlayPosition = 3;
+                mSpeedPlayPosition = 4;
                 changeSpeedPlay();
                 break;
             default:
@@ -326,7 +332,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private void updateSpeedPlayTexts() {
         if (mSpeedPlayTexts == null)    return;
         for (int i = 0; i < mSpeedPlayTexts.size(); i++) {
-            int color = i == mSpeedPlayPosition ? ContextCompat.getColor(mContext,R.color.mine_super_vip_bg) :
+            int color = i == mSpeedPlayPosition ? ContextCompat.getColor(mContext,R.color.scholarship_btn_press) :
                     ContextCompat.getColor(mContext,R.color.white);
             mSpeedPlayTexts.get(i).setTextColor(color);
         }
@@ -337,7 +343,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         int position = MediaPlayerCountDownHelper.INSTANCE.getMVideoSelectedPosition();
         for (int i = 0; i < mCountDownTexts.size(); i++) {
             TextView textView = mCountDownTexts.get(i);
-            int color = i == position ? ContextCompat.getColor(mContext,R.color.mine_super_vip_bg) :
+            int color = i == position ? ContextCompat.getColor(mContext,R.color.scholarship_btn_press) :
                     ContextCompat.getColor(mContext,R.color.white);
             textView.setTextColor(color);
             String text = "";
