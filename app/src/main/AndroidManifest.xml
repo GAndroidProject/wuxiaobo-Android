@@ -329,7 +329,7 @@
             android:value="developer-default" />
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="c2e812c8b8eca83779e32711" /> <!-- 值来自开发者平台取得的AppKey -->
+            android:value="5e3ca811dadd0242657df1b7" /> <!-- 值来自开发者平台取得的AppKey -->
         <!-- 测试：5e3ca811dadd0242657df1b7  正式：c2e812c8b8eca83779e32711 -->
         <!-- 极光推送相关配置 end -->
 
