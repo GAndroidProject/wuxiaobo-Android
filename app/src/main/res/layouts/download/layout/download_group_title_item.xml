@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/group_title_wrap"
     android:layout_width="match_parent"
-    android:layout_height="56dp">
+    android:layout_height="56dp"
+    android:background="@color/download_item_bg">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/download_item_bg">
 
         <TextView
             android:id="@+id/group_title_head"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:text="我的财富计划"
             android:textSize="16sp"
             android:textColor="@color/main_title_color"
             android:gravity="center_vertical"
-            android:drawableStart="@mipmap/download_checking"
             android:paddingStart="20dp"
             android:paddingEnd="10dp"
             android:drawablePadding="20dp"
             android:maxLines="1"
             android:maxWidth="220dp"
-            android:ellipsize="end"
-            android:background="@color/download_item_bg"/>
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/group_title_tail"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="展开"
+            android:text="@string/expand_down"
             android:textSize="16sp"
             android:textColor="@color/secondary_title_color"
             android:gravity="center_vertical"
@@ -43,10 +43,26 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/group_title_expand_line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginStart="56dp"
         android:layout_marginEnd="20dp"
+        android:layout_gravity="bottom"
+        android:background="@color/line"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/group_title_top_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_gravity="top"
+        android:background="@color/line"/>
+
+    <View
+        android:id="@+id/group_title_bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
         android:layout_gravity="bottom"
         android:background="@color/line"/>
 

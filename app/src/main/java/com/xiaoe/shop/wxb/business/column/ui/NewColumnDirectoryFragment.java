@@ -132,6 +132,9 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
         setData(list);
     }
     public void setData(List<MultiItemEntity> list){
+        if (directoryAdapter == null) {
+            directoryAdapter = new ExpandableItemAdapter(new ArrayList<MultiItemEntity>());
+        }
         directoryAdapter.setNewData(list);
         if(list.size() > 0){
             directoryAdapter.expand(0);
@@ -308,6 +311,7 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
             intent.putExtra("from_type", "ColumnDirectoryFragment");
             intent.putExtra("resourceId", resourceId);
             intent.putExtra("resourceType", ColumnActivity.RESOURCE_TYPE_TOPIC + "");
+            intent.putExtra("down_title", ((ColumnActivity)getActivity()).title);
             startActivity(intent);
         } else {
             touristDialog.showDialog();

@@ -13,6 +13,7 @@ import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.DetailRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.QueryProductTypeRequest;
+import com.xiaoe.shop.wxb.adapter.download.DownLoadListAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -219,5 +220,39 @@ public class ColumnPresenter implements IBizCallback {
         QueryProductTypeRequest productTypeRequest = new QueryProductTypeRequest(this);
         productTypeRequest.addRequestParam("product_id", productId);
         productTypeRequest.sendRequest();
+    }
+
+    /**
+     * 格式化一级目录数据
+     * @param jsonArray
+     */
+    public List<MultiItemEntity> formatDownloadExpandableEntity(JSONArray jsonArray, String bigColumnId, int hasBuy){
+        List<MultiItemEntity> directoryEntityList = new ArrayList<MultiItemEntity>();
+        for (Object object : jsonArray) {
+            ExpandableLevel directoryEntity = new ExpandableLevel();
+
+            JSONObject jsonObject = (JSONObject) object;
+            directoryEntity.setApp_id(jsonObject.getString("app_id"));
+            directoryEntity.setTitle(jsonObject.getString("title"));
+            String columnId = jsonObject.getString("resource_id");
+            directoryEntity.setImg_url(jsonObject.getString("img_url"));
+            directoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
+            directoryEntity.setResource_id(columnId);
+            directoryEntity.setBigColumnId(bigColumnId);
+            directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
+
+            //添加一条空数据，作为“加载状态”条目
+            ExpandableItem loadSecondDirectoryEntity = new ExpandableItem();
+            loadSecondDirectoryEntity.setItemType(DownLoadListAdapter.LOAD_STATE);
+            loadSecondDirectoryEntity.setLoadType(DownLoadListAdapter.LOADING);
+            directoryEntity.addSubItem(loadSecondDirectoryEntity);
+            //添加一条空数据，作为“收起”条目
+            ExpandableItem emptySecondDirectoryEntity = new ExpandableItem();
+            emptySecondDirectoryEntity.setItemType(DownLoadListAdapter.GROUP_BOTTOM_ITEM);
+            directoryEntity.addSubItem(emptySecondDirectoryEntity);
+
+            directoryEntityList.add(directoryEntity);
+        }
+        return directoryEntityList;
     }
 }

@@ -1,37 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:id="@+id/group_item_wrap"
     android:layout_width="match_parent"
-    android:layout_height="56dp">
+    android:layout_height="50dp">
 
-    <TextView
-        android:id="@+id/group_item_head"
-        android:layout_width="0dp"
-        android:layout_weight="1"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="我的财富计划"
-        android:textSize="16sp"
-        android:textColor="@color/main_title_color"
-        android:gravity="center_vertical"
-        android:drawableStart="@mipmap/download_checking"
-        android:paddingStart="20dp"
-        android:paddingEnd="10dp"
-        android:drawablePadding="20dp"
-        android:maxLines="1"
-        android:maxWidth="220dp"
-        android:ellipsize="end"
-        android:background="@color/download_item_bg"/>
+        android:orientation="horizontal"
+        android:background="@color/download_item_bg">
 
-    <TextView
-        android:id="@+id/group_item_tail"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="14:25"
-        android:textSize="16sp"
-        android:textColor="@color/secondary_title_color"
-        android:gravity="center_vertical"
-        android:paddingStart="10dp"
-        android:paddingEnd="20dp"/>
+        <TextView
+            android:id="@+id/group_item_head"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:textColor="@color/main_title_color"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
+            android:drawablePadding="20dp"
+            android:maxLines="1"
+            android:maxWidth="220dp"
+            android:ellipsize="end"/>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/group_item_tail"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:textColor="@color/secondary_title_color"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+            android:paddingEnd="20dp"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/group_item_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/gap_line"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="56dp"
+        android:layout_marginEnd="20dp"/>
+
+</FrameLayout>
