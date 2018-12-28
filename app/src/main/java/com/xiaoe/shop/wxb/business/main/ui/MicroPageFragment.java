@@ -915,7 +915,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             case 8: // 大专栏
                 return DecorateEntityType.TOPIC;
             default:
-                return null;
+                return "";
         }
     }
 
