@@ -352,7 +352,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         // this checks on API 23 and up
         if (!prepared)    return false;
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
+            if (speed != mPlaySpeed) {
                 try {
                     PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
                     playbackParams.setSpeed(speed);
