@@ -302,7 +302,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         aboutLogo.setOnLongClickListener(view -> {
             /*
              18617196749 手机号对应的 user_id
-                测试店铺 u_5c0fbbf841a53_4eft67YBuY
+                测试店铺 u_5c24b9f9f1a70_OTi2DLOGgi
                 内灰店铺 u_5c009673850be_62rUbYbm2Z
                 正式店铺 u_5c0e38b389ac6_leVlkHeLvG
              18565619738 手机号对应的 user_id
@@ -310,7 +310,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                 内灰店铺 u_5c013a63a2294_ilSRumsY8z
                 正式店铺 u_5c0fba587bee5_EN5X4q0Xgp
              */
-            if ("u_5c0fbbf841a53_4eft67YBuY".equals(CommonUserInfo.getUserId())
+            if ("u_5c24b9f9f1a70_OTi2DLOGgi".equals(CommonUserInfo.getUserId())
                     || "u_5c009673850be_62rUbYbm2Z".equals(CommonUserInfo.getUserId())
                     || "u_5c0e38b389ac6_leVlkHeLvG".equals(CommonUserInfo.getUserId())
                     || "u_5befc8636389e_XBObtpS9Vf".equals(CommonUserInfo.getUserId())
