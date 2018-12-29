@@ -356,7 +356,7 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
                 JSONObject jsonObject = (JSONObject) entity;
                 if (success && entity != null) {
                     try {
-                        if (jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING) {
+                        if (jsonObject.getInteger("code") == NetworkCodes.CODE_NOT_LOAING) {
                             if (!dialog.isShowing()) {
                                 dialog.getTitleView().setGravity(Gravity.START);
                                 dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0);

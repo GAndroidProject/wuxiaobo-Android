@@ -184,7 +184,7 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
                 JSONObject jsonObject = (JSONObject) entity;
                 if (success && entity != null) {
                     try {
-                        if (jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING) {
+                        if (jsonObject.getInteger("code") == NetworkCodes.CODE_NOT_LOAING) {
                             if (!dialog.isShowing() && !((XiaoeActivity) getActivity()).getDialog().isShowing()) {
                                 dialog.setCancelable(false);
                                 dialog.setHideCancelButton(true);
