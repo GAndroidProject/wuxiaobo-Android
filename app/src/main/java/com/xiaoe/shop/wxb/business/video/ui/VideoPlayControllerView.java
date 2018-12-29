@@ -265,8 +265,9 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                                 @Override
                                 public void run() {
                                     int currentPosition = mVideoPlayer.getCurrentPosition();
-                                    if (!isTouchSeekBar)
+                                    if (!isTouchSeekBar && currentPosition > -1) {
                                         setProgress(currentPosition);
+                                    }
                                 }
                             });
                         }
