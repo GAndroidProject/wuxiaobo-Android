@@ -183,24 +183,29 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
             public void run() {
                 JSONObject jsonObject = (JSONObject) entity;
                 if (success && entity != null) {
-                    if(jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING){
-                        if(!dialog.isShowing() && !((XiaoeActivity) getActivity()).getDialog().isShowing()){
-                            dialog.setCancelable(false);
-                            dialog.setHideCancelButton(true);
-                            dialog.getTitleView().setGravity(Gravity.START);
-                            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(getContext(), 22), 0, Dp2Px2SpUtil.dp2px(getContext(), 22), 0 );
-                            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                            dialog.setMessageVisibility(View.GONE);
-                            dialog.setCancelable(false);
-                            dialog.setHideCancelButton(true);
-                            dialog.setTitle(getString(R.string.login_invalid));
-                            dialog.setConfirmText(getString(R.string.btn_again_login));
-                            dialog.showDialog(DIALOG_TAG_LOADING);
-                            // 往回传 null 关闭加载中
-                            onMainThreadResponse(null, false, entity);
+                    try {
+                        if (jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING) {
+                            if (!dialog.isShowing() && !((XiaoeActivity) getActivity()).getDialog().isShowing()) {
+                                dialog.setCancelable(false);
+                                dialog.setHideCancelButton(true);
+                                dialog.getTitleView().setGravity(Gravity.START);
+                                dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(getContext(), 22), 0, Dp2Px2SpUtil.dp2px(getContext(), 22), 0);
+                                dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                                dialog.setMessageVisibility(View.GONE);
+                                dialog.setCancelable(false);
+                                dialog.setHideCancelButton(true);
+                                dialog.setTitle(getString(R.string.login_invalid));
+                                dialog.setConfirmText(getString(R.string.btn_again_login));
+                                dialog.showDialog(DIALOG_TAG_LOADING);
+                                // 往回传 null 关闭加载中
+                                doResponseSuccess(null, false, entity);
+                            }
+                        } else {
+                            doResponseSuccess(iRequest, true, entity);
                         }
-                    }else{
-                        onMainThreadResponse(iRequest, true, entity);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ToastUtils.show(getContext(), getString(R.string.service_error_text));
                     }
                 } else {
                     if (jsonObject != null) {
@@ -210,10 +215,20 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
                             ToastUtils.show(getContext(), getString(R.string.network_error_text));
                         }
                     }
-                    onMainThreadResponse(iRequest, false, entity);
+                    doResponseSuccess(iRequest, false, entity);
                 }
             }
         });
+    }
+
+    private void doResponseSuccess(IRequest iRequest, boolean success, Object entity) {
+        //防止由于请求后，处理返回数据崩溃的异常
+        try {
+            onMainThreadResponse(iRequest, success, entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastUtils.show(getContext(), getString(R.string.service_error_text));
+        }
     }
 
     @Override
