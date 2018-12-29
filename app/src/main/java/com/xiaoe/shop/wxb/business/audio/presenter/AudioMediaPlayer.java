@@ -26,6 +26,7 @@ import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -165,8 +166,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
         if (0 == audio.getHasBuy() && 0 == audio.getIsTry()){
             //如果未购买时并且也没有试听
-            Context context = XiaoeApplication.getmContext();
-            Toast.makeText(context,context.getString(R.string.listen_after_purchase),Toast.LENGTH_SHORT).show();
+            ToastUtils.show(XiaoeApplication.applicationContext, XiaoeApplication.applicationContext.getString(R.string.listen_after_purchase));
             return;
         }
         audio.setPlay(true);
@@ -174,8 +174,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         mediaPlayer.reset();
         try {
             mediaPlayer.setDataSource(audio.getPlayUrl());
-        } catch (IOException e) {
-//            e.printStackTrace();
+        } catch (IOException ignored) {
         }
         mediaPlayer.prepareAsync();
         event.setState(AudioPlayEvent.LOADING);

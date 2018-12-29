@@ -91,6 +91,17 @@
 -keep public class com.xiaoe.shop.wxb.common.jpush.**{*;}
 #↑↑↑↑↑↑↑实体类↑↑↑↑↑↑↑
 
+# webView处理，项目中没有使用到webView忽略即可
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+    public *;
+}
+-keepclassmembers class * extends android.webkit.webViewClient {
+    public void *(android.webkit.WebView, java.lang.String, android.graphics.Bitmap);
+    public boolean *(android.webkit.WebView, java.lang.String);
+}
+-keepclassmembers class * extends android.webkit.webViewClient {
+    public void *(android.webkit.webView, jav.lang.String);
+}
 
 -dontwarn com.google.android.maps.**
 -dontwarn android.webkit.WebView
@@ -217,6 +228,9 @@
 #↑↑↑↑↑↑↑↑com.pnikosis.materialishprogress↑↑↑↑↑↑↑↑
 
 #↓↓↓↓↓↓↓↓butterknife↓↓↓↓↓↓↓↓
+-keep public class * implements butterknife.Unbinder {
+    public <init>(**, android.view.View);
+}
 -keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**
 -keep class **$$ViewBinder { *; }
@@ -474,5 +488,8 @@
 -keep public class * extends com.chad.library.adapter.base.BaseViewHolder
 -keepclassmembers public class * extends com.chad.library.adapter.base.BaseViewHolder {
            <init>(android.view.View);
+}
+-keepclassmembers class $ extends com.chad.library.adapter.base.BaseViewHolder {
+(...);
 }
 #↑↑↑↑↑↑↑↑BaseRecyclerViewAdapterHelper↑↑↑↑↑↑↑↑

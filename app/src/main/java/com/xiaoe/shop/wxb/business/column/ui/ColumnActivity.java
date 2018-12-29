@@ -761,6 +761,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void setColumnViewPager(int index){
+        if (columnViewPager == null) {
+            return;
+        }
         if(index == 0){
             columnViewPager.setCurrentItem(0);
             btnContentDetail.setEnabled(false);
