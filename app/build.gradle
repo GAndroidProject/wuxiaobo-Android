@@ -54,7 +54,7 @@ android {
     }
     buildTypes {
         debug {
-            applicationIdSuffix ".debug"
+//            applicationIdSuffix ".debug"
             //启用代码混淆
             minifyEnabled false
             shrinkResources false // 去掉不用资源
