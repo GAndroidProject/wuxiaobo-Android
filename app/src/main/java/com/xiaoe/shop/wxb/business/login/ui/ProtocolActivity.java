@@ -22,8 +22,6 @@ import butterknife.Unbinder;
 
 public class ProtocolActivity extends XiaoeActivity {
 
-    Unbinder unbinder;
-
     @BindView(R.id.protocol_wrap)
     LinearLayout protocolWrap;
     @BindView(R.id.protocol_content)
@@ -32,10 +30,9 @@ public class ProtocolActivity extends XiaoeActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setStatusBar();
         setContentView(R.layout.activity_protocol);
-        unbinder = ButterKnife.bind(this);
+        ButterKnife.bind(this);
         protocolWrap.setPadding(0, StatusBarUtil.getStatusBarHeight(this), 0, 0);
         initView();
     }
@@ -51,8 +48,8 @@ public class ProtocolActivity extends XiaoeActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (unbinder != null) {
-            unbinder.unbind();
+        if (protocolContent != null) {
+            protocolContent.destroy();
         }
     }
 
@@ -61,6 +58,8 @@ public class ProtocolActivity extends XiaoeActivity {
         switch (view.getId()) {
             case R.id.protocol_back:
                 onBackPressed();
+                break;
+            default:
                 break;
         }
     }

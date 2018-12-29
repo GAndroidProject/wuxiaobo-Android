@@ -118,12 +118,14 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         intent = getIntent();
 
-        isFormalUser = intent.getBooleanExtra("isFormalUser", false);
+        // 若没有经过登录页进入到主页会默认为游客，但游客模式先不上因此先简单处理，将该值默认设置为 true
+        // isFormalUser = intent.getBooleanExtra("isFormalUser", false);
+//        if (!isFormalUser) {
+        // 非正式用户，需要手动设置店铺 id 和默认登录 userId
+//            CommonUserInfo.setUserId(Constants.ANONYMOUS_USER_ID);
+//        }
 
-        if (!isFormalUser) {
-            // 非正式用户，需要手动设置店铺 id 和默认登录 userId
-            CommonUserInfo.setUserId(Constants.ANONYMOUS_USER_ID);
-        }
+        isFormalUser = true;
 
         superVipPresenter = new SuperVipPresenter(this);
         superVipPresenter.requestSuperVip();
