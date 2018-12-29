@@ -489,7 +489,4 @@
 -keepclassmembers public class * extends com.chad.library.adapter.base.BaseViewHolder {
            <init>(android.view.View);
 }
--keepclassmembers class $ extends com.chad.library.adapter.base.BaseViewHolder {
-(...);
-}
 #↑↑↑↑↑↑↑↑BaseRecyclerViewAdapterHelper↑↑↑↑↑↑↑↑
