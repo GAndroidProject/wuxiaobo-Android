@@ -26,7 +26,7 @@ import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.business.audio.ui.AudioActivity;
+import com.xiaoe.shop.wxb.business.audio.ui.AudioNewActivity;
 
 
 /**
@@ -90,7 +90,7 @@ public class AudioNotifier {
     }
 
     private Notification buildNotification(Context context, AudioPlayEntity music, boolean isPlaying,Bitmap bitmap) {
-        Intent intent = new Intent(context, AudioActivity.class);
+        Intent intent = new Intent(context, AudioNewActivity.class);
 //        intent.putExtra(Extras.EXTRA_NOTIFICATION, true);
         intent.setAction(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

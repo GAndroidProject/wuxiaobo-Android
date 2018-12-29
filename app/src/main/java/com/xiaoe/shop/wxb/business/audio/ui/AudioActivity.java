@@ -61,11 +61,9 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
-import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
 import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
-import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.events.HideAudioPlayListEvent;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
@@ -87,6 +85,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Deprecated
 public class AudioActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener {
     private static final String TAG = "AudioActivity";
     private SimpleDraweeView audioBG;
@@ -237,7 +236,7 @@ public class AudioActivity extends XiaoeActivity implements View.OnClickListener
         detailContent.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String s) {
-                BrowserActivity.openUrl(mContext, s, "");
+                JumpDetail.jumpAppBrowser(mContext, s, "");
                 return true;
             }
         });

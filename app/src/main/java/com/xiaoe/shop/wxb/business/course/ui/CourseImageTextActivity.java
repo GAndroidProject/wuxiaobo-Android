@@ -44,7 +44,6 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.course.presenter.CourseImageTextPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
@@ -617,7 +616,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             itOrgContent.setWebViewClient(new WebViewClient(){
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView webView, String s) {
-                    BrowserActivity.openUrl(mContext, s, "");
+                    JumpDetail.jumpAppBrowser(mContext, s, "");
                     return true;
                 }
             });

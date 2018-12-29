@@ -25,10 +25,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.suke.widget.SwitchButton;
+import com.xiaoe.common.app.CommonUserInfo;
+import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.SettingItemInfo;
 import com.xiaoe.common.interfaces.OnItemClickWithSettingItemInfoListener;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -40,7 +40,6 @@ import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingTimeCount;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
-import com.xiaoe.shop.wxb.utils.FileUtils;
 import com.xiaoe.shop.wxb.utils.JudgeUtil;
 import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CodeVerifyView;
@@ -196,7 +195,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         itemList = new ArrayList<>();
         accountRecycler = (RecyclerView) viewWrap.findViewById(R.id.account_content);
         SettingItemInfo changePwd = new SettingItemInfo(getString(R.string.change_password), "", "");
-        SettingItemInfo changePhone = new SettingItemInfo(getString(R.string.change_phone_number), "" ,settingAccountActivity.localPhone);
+        SettingItemInfo changePhone = new SettingItemInfo(getString(R.string.change_phone_number), "", settingAccountActivity.localPhone);
         String tip = settingAccountActivity.apiToken == null ? getString(R.string.not_bound) : getString(R.string.is_binding);
         SettingItemInfo bindWeChat = new SettingItemInfo(getString(R.string.login_we_chat_title), "", tip);
         itemList.add(changePwd);
@@ -227,7 +226,7 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
                     settingAccountActivity.settingPresenter.setPushState(2);
                 }
             }
-            Log.d(TAG, "initMessageFragment: isFromUser "+ isFromUser);
+            Log.d(TAG, "initMessageFragment: isFromUser " + isFromUser);
         });
         updateMessageFragment(true);
     }
@@ -300,16 +299,30 @@ public class SettingAccountFragment extends BaseFragment implements OnItemClickW
         aboutContent = (RecyclerView) viewWrap.findViewById(R.id.about_content);
         // 关于布局假数据
         aboutLogo.setImageURI("res:///" + R.mipmap.logo);
-        aboutLogo.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
+        aboutLogo.setOnLongClickListener(view -> {
+            /*
+             18617196749 手机号对应的 user_id
+                测试店铺 u_5c0fbbf841a53_4eft67YBuY
+                内灰店铺 u_5c009673850be_62rUbYbm2Z
+                正式店铺 u_5c0e38b389ac6_leVlkHeLvG
+             18565619738 手机号对应的 user_id
+                测试店铺 u_5befc8636389e_XBObtpS9Vf
+                内灰店铺 u_5c013a63a2294_ilSRumsY8z
+                正式店铺 u_5c0fba587bee5_EN5X4q0Xgp
+             */
+            if ("u_5c0fbbf841a53_4eft67YBuY".equals(CommonUserInfo.getUserId())
+                    || "u_5c009673850be_62rUbYbm2Z".equals(CommonUserInfo.getUserId())
+                    || "u_5c0e38b389ac6_leVlkHeLvG".equals(CommonUserInfo.getUserId())
+                    || "u_5befc8636389e_XBObtpS9Vf".equals(CommonUserInfo.getUserId())
+                    || "u_5c013a63a2294_ilSRumsY8z".equals(CommonUserInfo.getUserId())
+                    || "u_5c0fba587bee5_EN5X4q0Xgp".equals(CommonUserInfo.getUserId())) {
                 JumpDetail.jumpReleaseVersion(mContext);
-                return true;
             }
+            return true;
         });
         itemList = new ArrayList<>();
         SettingItemInfo connectUs = new SettingItemInfo(getString(R.string.connect_us), "", "wxbpd@meihaoplus.shop");
-        SettingItemInfo service = new SettingItemInfo(getString(R.string.self_service_title), "" ,"");
+        SettingItemInfo service = new SettingItemInfo(getString(R.string.self_service_title), "", "");
         itemList.add(connectUs);
         itemList.add(service);
         SettingRecyclerAdapter settingRecyclerAdapter = new SettingRecyclerAdapter(getActivity(), itemList);
