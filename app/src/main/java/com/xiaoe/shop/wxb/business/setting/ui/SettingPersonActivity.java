@@ -37,7 +37,7 @@ import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.NetworkStateResult;
+import com.xiaoe.common.entitys.NetworkStateResult;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.SettingPersonItemRequest;
 import com.xiaoe.network.requests.SettingPseronMsgRequest;

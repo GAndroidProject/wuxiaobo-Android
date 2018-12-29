@@ -8,6 +8,7 @@ import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
+import com.xiaoe.common.entitys.NetworkStateResult;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.network.requests.ColumnListRequst;
