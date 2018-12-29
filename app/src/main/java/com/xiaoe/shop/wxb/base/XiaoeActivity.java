@@ -44,7 +44,7 @@ import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.NetworkStateResult;
+import com.xiaoe.common.entitys.NetworkStateResult;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
