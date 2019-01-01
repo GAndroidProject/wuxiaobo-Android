@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -68,6 +69,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import butterknife.internal.DebouncingOnClickListener;
 
 public class MineFragment extends BaseFragment implements AdapterView.OnItemClickListener, OnItemClickWithMoneyItemListener, OnRefreshListener {
 
@@ -92,6 +94,10 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     MineLearningWrapView mineLearningWrapView;
     @BindView(R.id.mine_loading)
     StatusPagerView mineLoading;
+    @BindView(R.id.mine_bo_bi_wrap)
+    LinearLayout mineBoBiWrap;
+    @BindView(R.id.mine_bo_bi_amount)
+    TextView mineBoBiAmount;
 
     MainActivity mainActivity;
 
@@ -520,6 +526,16 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             @Override
             public void singleClick(View v) {
                 if (!mainActivity.isFormalUser) {
+                    touristDialog.showDialog();
+                }
+            }
+        });
+        mineBoBiWrap.setOnClickListener(new DebouncingOnClickListener() {
+            @Override
+            public void doClick(View v) {
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpBobi(mContext);
+                } else {
                     touristDialog.showDialog();
                 }
             }

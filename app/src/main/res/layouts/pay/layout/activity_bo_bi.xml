@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smartrefresh.layout.SmartRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/boBiRefresh"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".common.pay.ui.BoBiActivity">
+
+    <com.xiaoe.common.widget.CommonRefreshHeader
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/scholarship_bg_start"
+        android:paddingTop="20dp"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.xiaoe.shop.wxb.widget.CustomScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <include
+                        layout="@layout/bo_bi_balance_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <include
+                        layout="@layout/bo_bi_top_up_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"/>
+
+                    <include
+                        layout="@layout/bo_bi_tip_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="28dp"
+                        android:layout_marginBottom="70dp"/>
+
+                </LinearLayout>
+
+        </com.xiaoe.shop.wxb.widget.CustomScrollView>
+
+        <include
+            android:id="@+id/paySelectorView"
+            layout="@layout/pay_selector_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

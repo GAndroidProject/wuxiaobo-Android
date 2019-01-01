@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bo_bi_head_bg"
+    android:paddingTop="20dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    tools:context=".common.pay.ui.BoBiActivity">
+
+    <include
+        layout="@layout/common_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bo_bi_balance_title"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="28dp" />
+
+    <TextView
+        android:id="@+id/boBiBalanceContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="980.00 波豆"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="56dp"/>
+
+</LinearLayout>

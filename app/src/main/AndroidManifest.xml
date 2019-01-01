@@ -7,7 +7,7 @@
         android:name="com.xiaoe.shop.wxb.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.xiaoe.shop.wxb.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
@@ -40,7 +40,6 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".business.launch.ui.SplashActivity"
             android:screenOrientation="portrait"
@@ -50,7 +49,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -63,103 +61,102 @@
             </intent-filter>
         </activity>
 
-        <!--<activity-->
-            <!--android:name=".business.login.ui.LoginActivity"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:launchMode="singleTask">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+        <!-- <activity -->
+        <!-- android:name=".business.login.ui.LoginActivity" -->
+        <!-- android:screenOrientation="portrait" -->
+        <!-- android:launchMode="singleTask"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
+
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
         <activity
             android:name=".business.main.ui.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".business.course.ui.CourseImageTextActivity"
-            android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.audio.ui.AudioActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".business.audio.ui.AudioNewActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".business.video.ui.VideoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
+            android:hardwareAccelerated="true"
             android:launchMode="singleTop"
-            android:hardwareAccelerated="true"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".business.column.ui.ColumnActivity"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <service android:name=".business.audio.presenter.AudioMediaPlayer" />
 
         <activity
             android:name=".business.mine_learning.ui.MineLearningActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.setting.ui.SettingPersonActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.setting.ui.SettingPersonItemActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.setting.ui.SettingAccountActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.download.ui.DownloadActivity"
-            android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
-            />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.download.ui.OffLineCacheActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.column.ui.CacheColumnActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.search.ui.SearchActivity"
-            android:windowSoftInputMode="adjustPan|stateVisible"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateVisible" />
         <activity
             android:name=".business.course_more.ui.CourseMoreActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.coupon.ui.CouponActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.comment.ui.CommentActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|touchscreen"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.navigate_detail.ui.NavigateDetailActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.cdkey.ui.CdKeyActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".common.pay.ui.PayActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.coupon.ui.CouponDetailActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <!-- 微信sdk start -->
         <activity
             android:name=".wxapi.WXEntryActivity"
@@ -173,8 +170,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent">
-        </activity>
+            android:theme="@android:style/Theme.Translucent"></activity>
         <!-- 微信sdk end -->
 
         <receiver android:name=".business.audio.presenter.StatusBarReceiver">
@@ -182,7 +178,6 @@
                 <action android:name="me.wcy.music.STATUS_BAR_ACTIONS" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".business.upgrade.InstallApkBroadcast">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
@@ -248,8 +243,7 @@
                 android:resource="@xml/rc_file_path" />
         </provider>
 
-
-        <!-- since 3.0.9 Required SDK 核心功能-->
+        <!-- since 3.0.9 Required SDK 核心功能 -->
         <provider
             android:name="cn.jpush.android.service.DataProvider"
             android:authorities="com.xiaoe.shop.wxb.DataProvider"
@@ -335,34 +329,34 @@
 
         <activity
             android:name=".business.bought_list.ui.BoughtListActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.earning.ui.ScholarshipActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.earning.ui.IntegralActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.earning.ui.IntegralNewActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.earning.ui.WithdrawalRecordActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.earning.ui.WithdrawalActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.earning.ui.WithdrawalResultActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.historymessage.ui.HistoryMessageActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity android:name=".common.web.BrowserActivity" />
         <activity
             android:name=".business.search.ui.SearchMoreActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
-        <!--网络变化广播-->
+        <!-- 网络变化广播 -->
         <receiver android:name=".common.NetBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
@@ -373,20 +367,24 @@
 
         <activity
             android:name=".business.login.ui.LoginNewActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.login.ui.LoginSplashActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.login.ui.ProtocolActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".business.super_vip.ui.NewSuperVipActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".common.releaseversion.ui.ReleaseVersionActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".common.pay.ui.BoBiActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".common.pay.ui.AccountDetailActivity"></activity>
     </application>
 
 </manifest>
