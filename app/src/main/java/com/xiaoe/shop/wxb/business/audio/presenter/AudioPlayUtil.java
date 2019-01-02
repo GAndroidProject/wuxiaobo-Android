@@ -47,23 +47,23 @@ public class AudioPlayUtil {
         }
         this.audioList.add(audio);
     }
-    public void addAudio(List<AudioPlayEntity> audioList){
-        if(audioList != null && audioList.size() > 0){
-            this.audioList.addAll(audioList);
-            SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
-            for (AudioPlayEntity audioPlayEntity : audioList){
-                String querySQL = "select * from "+ AudioPlayTable.TABLE_NAME + " where app_id=? and user_id=? and resource_id=?";
-                List list = sqLiteUtil.query(AudioPlayTable.TABLE_NAME, querySQL, new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audioPlayEntity.getResourceId()});
-                if(list != null && list.size() > 0){
-                    String updateWhereSQL = "app_id=? and user_id=? and resource_id=?";
-                    sqLiteUtil.update(AudioPlayTable.TABLE_NAME, audioPlayEntity, updateWhereSQL, new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audioPlayEntity.getResourceId()});
-                }else{
-                    sqLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioPlayEntity);
-                }
-            }
-
-        }
-    }
+//    public void addAudio(List<AudioPlayEntity> audioList){
+//        if(audioList != null && audioList.size() > 0){
+//            this.audioList.addAll(audioList);
+//            SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
+//            for (AudioPlayEntity audioPlayEntity : audioList){
+//                String querySQL = "select * from "+ AudioPlayTable.TABLE_NAME + " where app_id=? and user_id=? and resource_id=?";
+//                List list = sqLiteUtil.query(AudioPlayTable.TABLE_NAME, querySQL, new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audioPlayEntity.getResourceId()});
+//                if(list != null && list.size() > 0){
+//                    String updateWhereSQL = "app_id=? and user_id=? and resource_id=?";
+//                    sqLiteUtil.update(AudioPlayTable.TABLE_NAME, audioPlayEntity, updateWhereSQL, new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audioPlayEntity.getResourceId()});
+//                }else{
+//                    sqLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioPlayEntity);
+//                }
+//            }
+//
+//        }
+//    }
 
     public void refreshAudio(AudioPlayEntity audio){
         if(this.audioList == null){

@@ -211,8 +211,8 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
                             && level.getBigColumnId().equals(AudioMediaPlayer.getAudio().getBigColumnId())
                             && level.getResource_id().equals(AudioMediaPlayer.getAudio().getColumnId());
                     if(resourceEquals){
-                        List<AudioPlayEntity> playList = getAudioPlayList(expandableItems, AudioPlayUtil.getInstance().getAudioList().size());
-                        AudioPlayUtil.getInstance().addAudio(playList);
+//                        List<AudioPlayEntity> playList = getAudioPlayList(expandableItems, AudioPlayUtil.getInstance().getAudioList().size());
+//                        AudioPlayUtil.getInstance().addAudio(playList);
                     }
                     break;
                 }

@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.UMShareAPI;
@@ -53,6 +54,7 @@ import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.requests.AddCollectionRequest;
+import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
 import com.xiaoe.network.requests.ScholarshipReceiveRequest;
@@ -65,6 +67,7 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
 import com.xiaoe.shop.wxb.business.audio.presenter.CountDownTimerTool;
 import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
+import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter;
 import com.xiaoe.shop.wxb.business.main.presenter.ScholarshipPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.datareport.EventReportManager;
@@ -146,6 +149,8 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     private String playNumStr;
     private List<CheckBox> mCheckBoxes;
     private List<TextView> mCountDownTexts;
+    private ColumnPresenter mColumnPresenter;
+    final String REQUEST_TAG = "AudioNewActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -264,7 +269,27 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
             btnPlayList.setVisibility(View.GONE);
         }else {
             btnPlayList.setVisibility(View.VISIBLE);
-            audioPlayList.addPlayData(AudioPlayUtil.getInstance().getAudioList());
+//            audioPlayList.addPlayData(AudioPlayUtil.getInstance().getAudioList());
+            mColumnPresenter = new ColumnPresenter(this);
+            final String columnId = AudioMediaPlayer.getAudio().getColumnId();
+            final String audioType = "2";
+            audioPlayList.setLoadAudioListDataCallBack(new AudioPlayListDialog.LoadAudioListDataCallBack() {
+                @Override
+                public void onRefresh(int pageSize) {
+                    if (mColumnPresenter != null){
+                        mColumnPresenter.requestColumnList(columnId,audioType,1,
+                                pageSize,true,REQUEST_TAG);
+                    }
+                }
+
+                @Override
+                public void onLoadMoreData(int page, int pageSize) {
+                    if (mColumnPresenter != null){
+                        mColumnPresenter.requestColumnList(columnId,audioType,page,
+                                pageSize,true,REQUEST_TAG);
+                    }
+                }
+            });
         }
 
         ImageView btnAudioComment = (ImageView) findViewById(R.id.btn_audio_comment);
@@ -366,6 +391,26 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     @Override
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
+        if (isDestroyed())  return;
+        if (iRequest instanceof ColumnListRequst){
+            if (mColumnPresenter != null && audioPlayList != null){
+                JSONObject jsonObject = (JSONObject) entity;
+                if (!success || jsonObject == null){
+                    audioPlayList.addPlayListData(null);
+                    Toast(getString(R.string.network_error_text));
+                    return;
+                }
+                Object dataObject = jsonObject.get("data");
+                JSONArray data = null;
+                if (dataObject != null){
+                    data = (JSONArray) dataObject;
+                }
+                AudioPlayEntity audio = AudioMediaPlayer.getAudio();
+                audioPlayList.addData(mColumnPresenter.formatSingleResourceEntity(data, audio == null ?
+                                "" : audio.getTitle(), audio == null ? "" : audio.getResourceId(),
+                        "", audio == null ? 0 : audio.getHasBuy()),audio == null ? 0 : audio.getHasBuy());
+            }
+        }
         if(entity == null || !success){
             return;
         }
@@ -689,6 +734,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     }
 
     private void updateCountDownText() {
+        if (mCountDownTexts == null)    return;
         for (int i = 0; i < mCountDownTexts.size(); i++) {
             TextView textView = mCountDownTexts.get(i);
             if (textView != null){
