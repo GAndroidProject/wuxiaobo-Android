@@ -281,7 +281,7 @@ public class SearchMoreActivity extends XiaoeActivity {
             case 8: // 大专栏
                 return DecorateEntityType.TOPIC;
             default:
-                return null;
+                return "";
         }
     }
 

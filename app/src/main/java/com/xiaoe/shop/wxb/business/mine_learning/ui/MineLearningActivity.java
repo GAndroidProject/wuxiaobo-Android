@@ -351,7 +351,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
             case 5: // 会员
                 return DecorateEntityType.MEMBER;
             default:
-                return null;
+                return "";
         }
     }
 

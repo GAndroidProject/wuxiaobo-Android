@@ -418,7 +418,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             case 8: // 大专栏
                 return DecorateEntityType.TOPIC;
             default:
-                return null;
+                return "";
         }
     }
 }
