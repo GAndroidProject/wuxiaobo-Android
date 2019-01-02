@@ -80,6 +80,7 @@ import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickMoreMenuListener;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
+import com.xiaoe.shop.wxb.utils.LogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
@@ -270,6 +271,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         }else {
             btnPlayList.setVisibility(View.VISIBLE);
 //            audioPlayList.addPlayData(AudioPlayUtil.getInstance().getAudioList());
+//            audioPlayList.addPlayListData(AudioPlayUtil.getInstance().getAudioList());
             mColumnPresenter = new ColumnPresenter(this);
             final String columnId = AudioMediaPlayer.getAudio().getColumnId();
             final String audioType = "2";
@@ -277,6 +279,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 @Override
                 public void onRefresh(int pageSize) {
                     if (mColumnPresenter != null){
+                        LogUtils.d("onRefresh columnId = " + columnId);
                         mColumnPresenter.requestColumnList(columnId,audioType,1,
                                 pageSize,true,REQUEST_TAG);
                     }
