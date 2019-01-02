@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.business.audio.ui;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,9 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -42,6 +46,7 @@ public class AudioPlayListDialog implements View.OnClickListener {
     private LoadAudioListDataCallBack mLoadAudioListDataCallBack;
     private int page = 1;
     private final int PAGE_SIZE = 10;
+    private SmartRefreshLayout mRefreshLayout;
 
     public void setLoadAudioListDataCallBack(LoadAudioListDataCallBack loadAudioListDataCallBack) {
         mLoadAudioListDataCallBack = loadAudioListDataCallBack;
@@ -57,6 +62,24 @@ public class AudioPlayListDialog implements View.OnClickListener {
 
         layoutAudioPlayList = (RelativeLayout) rootView.findViewById(R.id.layout_audio_play_list);
         layoutAudioPlayList.setOnClickListener(this);
+        mRefreshLayout = (SmartRefreshLayout) rootView.findViewById(R.id.audio_refresh);
+        mRefreshLayout.setEnableLoadMoreWhenContentNotFull(false);
+        mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                if (mLoadAudioListDataCallBack != null){
+                    mLoadAudioListDataCallBack.onLoadMoreData(page,PAGE_SIZE);
+                }
+            }
+
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                if (mLoadAudioListDataCallBack != null) {
+                    page = 1;
+                    mLoadAudioListDataCallBack.onRefresh(PAGE_SIZE);
+                }
+            }
+        });
 
         //取消按钮
         btnCancel = (TextView) rootView.findViewById(R.id.btn_cancel_play_list);
@@ -73,25 +96,8 @@ public class AudioPlayListDialog implements View.OnClickListener {
 //        playListRecyclerView.setAdapter(playListAdapter);
         mAudioPlayListNewAdapter =new AudioPlayListNewAdapter(R.layout.layout_audio_play_list_item);
         StatusPagerView statusPagerView = new StatusPagerView(context);
-        statusPagerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mLoadAudioListDataCallBack != null) {
-                    page = 1;
-                    mLoadAudioListDataCallBack.onRefresh(PAGE_SIZE);
-                }
-            }
-        });
         statusPagerView.setPagerState(StatusPagerView.FAIL, context.getString(R.string.request_fail), StatusPagerView.DETAIL_NONE);
         mAudioPlayListNewAdapter.setEmptyView(statusPagerView);
-        mAudioPlayListNewAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener(){
-            @Override
-            public void onLoadMoreRequested() {
-                if (mLoadAudioListDataCallBack != null){
-                    mLoadAudioListDataCallBack.onLoadMoreData(page,PAGE_SIZE);
-                }
-            }
-        },playListRecyclerView);
         mAudioPlayListNewAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -169,21 +175,24 @@ public class AudioPlayListDialog implements View.OnClickListener {
 
     public void addPlayListData(List<AudioPlayEntity> list){
         if (list != null){
+            mRefreshLayout.finishRefresh();
             if (1 == page) {
                 mAudioPlayListNewAdapter.setNewData(list);
-                if (list.size() < 7)
-                    mAudioPlayListNewAdapter.setEnableLoadMore(false);
+                mRefreshLayout.setEnableLoadMore(list.size() > 6);
             }else {
-                mAudioPlayListNewAdapter.removeAllFooterView();
                 mAudioPlayListNewAdapter.addData(list);
+                if (list.size() < PAGE_SIZE){
+                    mRefreshLayout.finishLoadMoreWithNoMoreData();
+                    mRefreshLayout.setEnableLoadMore(false);
+                }else{
+                    mRefreshLayout.finishLoadMore();
+                }
             }
-            if (list.size() < PAGE_SIZE)    mAudioPlayListNewAdapter.loadMoreEnd(true);
-            else   mAudioPlayListNewAdapter.loadMoreComplete();
             page++;
             AudioPlayUtil.getInstance().setAudioList(mAudioPlayListNewAdapter.getData());
         }else if (page > 1){
-            mAudioPlayListNewAdapter.removeAllFooterView();
-            mAudioPlayListNewAdapter.loadMoreFail();
+            mRefreshLayout.finishRefresh();
+            mRefreshLayout.finishLoadMore();
         }
     }
 
