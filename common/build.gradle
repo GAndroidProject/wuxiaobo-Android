@@ -24,10 +24,15 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:25.4.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    api 'com.android.support:appcompat-v7:25.4.0'
+    api 'com.android.support:design:25.4.0'
+    api 'com.android.support:recyclerview-v7:25.4.0'
+    api 'com.android.support.constraint:constraint-layout:1.1.3'
+
     api 'com.google.code.gson:gson:2.8.2'
     api 'com.alibaba:fastjson:1.2.31'
     api 'com.facebook.fresco:fresco:1.10.0'
@@ -55,6 +60,8 @@ dependencies {
     api 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-14'
     //没有使用特殊Header，可以不加这行
     api 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-14'
-
+    // 列表适配器
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34'
+    // 分包
+    api 'com.android.support:multidex:1.0.3'
 }

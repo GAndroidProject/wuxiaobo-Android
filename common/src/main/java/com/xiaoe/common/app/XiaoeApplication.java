@@ -1,10 +1,11 @@
 package com.xiaoe.common.app;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -31,7 +32,7 @@ import cn.jpush.android.api.JPushInterface;
  * @author Administrator
  * @date 2017/7/17
  */
-public class XiaoeApplication extends Application {
+public class XiaoeApplication extends MultiDexApplication {
 
     private static final String TAG = "XiaoeApplication";
     @SuppressLint("StaticFieldLeak")
@@ -54,6 +55,12 @@ public class XiaoeApplication extends Application {
                 return new CommonRefreshHeader(mContext);
             }
         });
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     @Override
