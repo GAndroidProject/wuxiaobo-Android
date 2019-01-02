@@ -17,6 +17,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoe.common.app.CommonUserInfo;
@@ -197,10 +198,10 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
                             dialog.setConfirmText(getString(R.string.btn_again_login));
                             dialog.showDialog(DIALOG_TAG_LOADING);
                             // 往回传 null 关闭加载中
-                            onMainThreadResponse(null, false, entity);
+                            doResponseSuccess(null,false,entity);
                         }
                     }else{
-                        onMainThreadResponse(iRequest, true, entity);
+                        doResponseSuccess(iRequest,true, entity);
                     }
                 } else {
                     if (jsonObject != null) {
@@ -210,10 +211,20 @@ public class BaseFragment extends Fragment implements INetworkResponse, OnCustom
                             ToastUtils.show(getContext(), getString(R.string.network_error_text));
                         }
                     }
-                    onMainThreadResponse(iRequest, false, entity);
+                    doResponseSuccess(iRequest, false, entity);
                 }
             }
         });
+    }
+
+    private void doResponseSuccess(IRequest iRequest, boolean success,Object entity) {
+        //防止由于请求后，处理返回数据崩溃的异常
+        try {
+            onMainThreadResponse(iRequest, success, entity);
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(getActivity(),getString(R.string.service_error_text),Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

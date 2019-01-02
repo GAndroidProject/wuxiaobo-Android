@@ -25,7 +25,7 @@ class MyBoughtListActivity : XiaoeActivity() {
     }
     private val mFragments = listOf<Fragment>(
             RecentlyLearningFragment(),
-            RecentlyLearningFragment())
+            BoughtRecordFragment())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
