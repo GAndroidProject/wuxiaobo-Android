@@ -151,7 +151,7 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
         mBoughtPresenter.requestRecordData(++pageIndex, pageSize)
     }
 
-    class MyAdapter(context: Context): BaseMultiItemQuickAdapter<AllDataItem,
+    class MyAdapter(val context: Context): BaseMultiItemQuickAdapter<AllDataItem,
             BaseViewHolder>(null){
 
         init {
@@ -168,9 +168,12 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
                             getView<SimpleDraweeView>(R.id.itemIcon).setImageURI(item!!.imgUrl)
                             setText(R.id.itemTitle,purchaseName)
                             val desc = getView<TextView>(R.id.itemDesc)
+
                             when(resourceType){
-                                5 -> desc.text = "有效期至${expireAt.split(" ")[0]}"
-                                8 -> desc.text = "已更新${resourceType}期"
+                                5 -> desc.text = String.format(context.getString(R.string.valid_until2),
+                                        expireAt?.split(" ")[0])
+                                8 -> desc.text = String.format(context.getString(R.string.stages_text),
+                                        resourceType)
                             }
                         }
                         type_audio ->{

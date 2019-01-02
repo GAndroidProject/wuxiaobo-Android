@@ -393,6 +393,7 @@
     <string name="people_learn">%s人学习</string>
     <string name="ten_thousand">万</string>
     <string name="valid_until">有效期至：%s</string>
+    <string name="valid_until2">有效期至%s</string>
     <string name="courses_not_purchased">未购买课程</string>
     <string name="unknown_course">未知课程</string>
     <string name="no_audio_playback">无可播放音频</string>
