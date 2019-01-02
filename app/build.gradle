@@ -18,30 +18,19 @@ walle {
     channelFile = new File("${project.getProjectDir()}/channel")
 }
 
+// 获取local.properties的内容
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
-    signingConfigs {
-        debug {
-            //吴晓波签名文件
-            storeFile file("../../shopwxb.jks")
-            storePassword RELEASE_STORE_PASSWORD_WXB
-            keyAlias RELEASE_KEY_ALIAS_WXB
-            keyPassword RELEASE_KEY_PASSWORD_WXB
-        }
-        release {
-            //吴晓波签名文件
-            storeFile file("../../shopwxb.jks")
-            storePassword RELEASE_STORE_PASSWORD_WXB
-            keyAlias RELEASE_KEY_ALIAS_WXB
-            keyPassword RELEASE_KEY_PASSWORD_WXB
-        }
-    }
     compileSdkVersion 25
+
     defaultConfig {
         applicationId "com.xiaoe.shop.wxb"
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 4
-        versionName "1.0.10.t" // 测试：1.0.16d   内灰：1.0.10f   吴晓波：1.0.9
+        versionName "1.0.10" // 测试：1.0.16d   内灰：1.0.10f   吴晓波：1.0.9
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 //        ndk { abiFilters "armeabi","x86"}
         ndk {
@@ -52,21 +41,51 @@ android {
         }
 //        multiDexEnabled true
     }
+    signingConfigs {
+        config {
+            storeFile file(properties.getProperty("keystroe_storeFile"))
+            storePassword properties.getProperty("keystroe_storePassword")
+            keyAlias properties.getProperty("keystroe_keyAlias")
+            keyPassword properties.getProperty("keystroe_keyPassword")
+        }
+    }
     buildTypes {
         debug {
+            // debug模式下，显示log
+//            buildConfigField("boolean", "LOG_DEBUG", "true")
+
 //            applicationIdSuffix ".debug"
+            // 为版本名添加后缀
+            versionNameSuffix "-debug"
+
             //启用代码混淆
             minifyEnabled false
-            shrinkResources false // 去掉不用资源
+            // 不开启ZipAlign优化
+            zipAlignEnabled false
+            // 去掉不用资源
+            shrinkResources false
+
             //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            // 使用config签名
+            signingConfig signingConfigs.config
         }
         release {
+            // release模式下，不显示log
+//            buildConfigField("boolean", "LOG_DEBUG", "false")
+
+            // 为版本名添加后缀
+//            versionNameSuffix "-relase"
+
             minifyEnabled true
-            shrinkResources true // 去掉不用资源
+            // 开启ZipAlign优化
+            zipAlignEnabled true
+            // 去掉不用资源
+            shrinkResources true
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            // 使用config签名
+            signingConfig signingConfigs.config
         }
     }
     sourceSets {
