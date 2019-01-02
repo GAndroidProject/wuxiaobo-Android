@@ -400,6 +400,9 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             JSONObject item = listData.get(i);
             String resourceId = item.getString("id");
             String resourceType = convertInt2Str((int) item.get("resource_type"));
+            if (TextUtils.isEmpty(resourceType)) {
+                continue;
+            }
             String imgUrl = item.getString("img_url");
             String title = item.getString("title");
             String columnDesc = item.getString("summary");
