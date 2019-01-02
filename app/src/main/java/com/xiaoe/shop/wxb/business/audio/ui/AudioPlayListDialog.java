@@ -47,6 +47,8 @@ public class AudioPlayListDialog implements View.OnClickListener {
     private int page = 1;
     private final int PAGE_SIZE = 10;
     private SmartRefreshLayout mRefreshLayout;
+    private StatusPagerView mStatusPagerView;
+    private Context mContext;
 
     public void setLoadAudioListDataCallBack(LoadAudioListDataCallBack loadAudioListDataCallBack) {
         mLoadAudioListDataCallBack = loadAudioListDataCallBack;
@@ -57,6 +59,7 @@ public class AudioPlayListDialog implements View.OnClickListener {
     }
 
     public AudioPlayListDialog(Context context) {
+        mContext = context;
         rootView = LayoutInflater.from(context).inflate(R.layout.layout_audio_play_list2, null, false);
         padding = Dp2Px2SpUtil.dp2px(context, 20);
 
@@ -95,9 +98,9 @@ public class AudioPlayListDialog implements View.OnClickListener {
 //        playListAdapter = new AudioPlayListAdapter(context);
 //        playListRecyclerView.setAdapter(playListAdapter);
         mAudioPlayListNewAdapter =new AudioPlayListNewAdapter(R.layout.layout_audio_play_list_item);
-        StatusPagerView statusPagerView = new StatusPagerView(context);
-        statusPagerView.setPagerState(StatusPagerView.FAIL, context.getString(R.string.request_fail), StatusPagerView.DETAIL_NONE);
-        mAudioPlayListNewAdapter.setEmptyView(statusPagerView);
+        mStatusPagerView = new StatusPagerView(context);
+        mStatusPagerView.setLoadingState(View.VISIBLE);
+        mAudioPlayListNewAdapter.setEmptyView(mStatusPagerView);
         mAudioPlayListNewAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -174,6 +177,9 @@ public class AudioPlayListDialog implements View.OnClickListener {
     }
 
     public void addPlayListData(List<AudioPlayEntity> list){
+        if (1 == page && (list == null || 0 == list.size()))
+            mStatusPagerView.setPagerState(StatusPagerView.FAIL, mContext.getString(
+                    R.string.request_fail), StatusPagerView.DETAIL_NONE);
         if (list != null){
             mRefreshLayout.finishRefresh();
             if (1 == page) {
@@ -193,7 +199,8 @@ public class AudioPlayListDialog implements View.OnClickListener {
         }else if (page > 1){
             mRefreshLayout.finishRefresh();
             mRefreshLayout.finishLoadMore();
-        }
+        }else if (1 == page)
+            mRefreshLayout.finishRefresh();
     }
 
     public void notifyDataSetChanged(){
