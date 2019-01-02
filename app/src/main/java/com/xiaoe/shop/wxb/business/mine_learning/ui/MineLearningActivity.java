@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -248,6 +249,9 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                     continue;
                 }
                 String learningType = convertInt2Str(learningInfo.getInteger("goods_type"));
+                if (TextUtils.isEmpty(learningType)) {
+                    continue;
+                }
                 String learningTitle = learningInfo.getString("title");
                 String learningImg = learningInfo.getString("img_url_compressed_larger");
                 String learningOrg = learningInfo.getString("org_summary");
@@ -271,6 +275,9 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 JSONObject collectionInfo = (JSONObject) infoItem.get("org_content");
                 String collectionId = infoItem.getString("content_id");
                 String collectionType = convertInt2Str(infoItem.getInteger("content_type"));
+                if (TextUtils.isEmpty(collectionType)) {
+                    continue;
+                }
                 String collectionTitle = collectionInfo.getString("title");
                 String collectionImg = infoMsg.getString("img_url_compressed_larger");
                 int collectionPrice = infoMsg.getInteger("price") == null ? 0 : infoMsg.getInteger("price");
@@ -351,7 +358,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
             case 5: // 会员
                 return DecorateEntityType.MEMBER;
             default:
-                return null;
+                return "";
         }
     }
 

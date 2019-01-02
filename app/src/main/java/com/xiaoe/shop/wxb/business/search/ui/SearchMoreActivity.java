@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -194,6 +195,9 @@ public class SearchMoreActivity extends XiaoeActivity {
             float price = jsonItem.getFloat("price");
             String resourceId = jsonItem.getString("id");
             String resourceType = convertInt2Str(type);
+            if (TextUtils.isEmpty(resourceType)) {
+                continue;
+            }
             String summary = jsonItem.getString("summary");
             String priceStr;
             if (price == 0) {
@@ -281,7 +285,7 @@ public class SearchMoreActivity extends XiaoeActivity {
             case 8: // 大专栏
                 return DecorateEntityType.TOPIC;
             default:
-                return null;
+                return "";
         }
     }
 
