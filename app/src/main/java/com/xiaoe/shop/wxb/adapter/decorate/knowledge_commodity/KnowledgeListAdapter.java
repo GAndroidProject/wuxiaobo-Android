@@ -68,7 +68,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
     }
 
     private void updateView(int position, KnowledgeHolder viewHolder) {
-        if (viewHolder == null)  return;
+        if (viewHolder == null || mItemList.get(position) == null)  return;
         // 如果是专栏的话需要有两行标题，其他单品就显示一行标题和一行描述
         String srcType = mItemList.get(position).getSrcType();
         if (srcType != null) { // 写的数据的时候并没有添加 srcType 先兼容，课程页用了真数据之后删掉

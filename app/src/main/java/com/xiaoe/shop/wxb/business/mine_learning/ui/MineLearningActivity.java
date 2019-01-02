@@ -221,7 +221,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
     private void initPageData(JSONObject data) {
         JSONArray goodsList = (JSONArray) data.get("goods_list");
         List<KnowledgeCommodityItem> itemList = new ArrayList<>();
-        if (goodsList == null) {
+        if (goodsList == null || goodsList.size() == 0) {
             // 收藏列表为空，显示为空的页面
             learningRefresh.finishRefresh();
             if (pageList.size() == 0) {

@@ -112,8 +112,12 @@ public class VideoPlayer{
     }
     //获取当前位置(播放时间)
     public int getCurrentPosition(){
-        if(mediaPlayer != null){
-            return mediaPlayer.getCurrentPosition();
+        try {
+            if (mediaPlayer != null) {
+                return mediaPlayer.getCurrentPosition();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return -1;
     }

@@ -355,23 +355,28 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
             public void run() {
                 JSONObject jsonObject = (JSONObject) entity;
                 if (success && entity != null) {
-                    if(jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING){
-                        if(!dialog.isShowing()){
-                            dialog.getTitleView().setGravity(Gravity.START);
-                            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0 );
-                            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                            dialog.setMessageVisibility(View.GONE);
-                            dialog.setTitleVisibility(View.VISIBLE);
-                            dialog.setCancelable(false);
-                            dialog.setHideCancelButton(true);
-                            dialog.setTitle(getString(R.string.login_invalid));
-                            dialog.setConfirmText(getString(R.string.btn_again_login));
-                            dialog.showDialog(DIALOG_TAG_LOADING);
-                            // 往回传 null 关闭加载中
-                            doResponseSuccess(null,false,entity);
+                    try {
+                        if (jsonObject.getInteger("code") == NetworkCodes.CODE_NOT_LOAING) {
+                            if (!dialog.isShowing()) {
+                                dialog.getTitleView().setGravity(Gravity.START);
+                                dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0);
+                                dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                                dialog.setMessageVisibility(View.GONE);
+                                dialog.setTitleVisibility(View.VISIBLE);
+                                dialog.setCancelable(false);
+                                dialog.setHideCancelButton(true);
+                                dialog.setTitle(getString(R.string.login_invalid));
+                                dialog.setConfirmText(getString(R.string.btn_again_login));
+                                dialog.showDialog(DIALOG_TAG_LOADING);
+                                // 往回传 null 关闭加载中
+                                doResponseSuccess(null, false, entity);
+                            }
+                        } else {
+                            doResponseSuccess(iRequest, true, entity);
                         }
-                    }else{
-                        doResponseSuccess(iRequest,true, entity);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast(getString(R.string.service_error_text));
                     }
                 } else {
                     if (jsonObject != null) {
