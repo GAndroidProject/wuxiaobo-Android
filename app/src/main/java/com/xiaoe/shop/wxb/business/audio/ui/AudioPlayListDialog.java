@@ -215,8 +215,11 @@ public class AudioPlayListDialog implements View.OnClickListener {
         }else if (page > 1){
             mRefreshLayout.finishRefresh();
             mRefreshLayout.finishLoadMore();
-        }else if (1 == page)
+        }else if (1 == page) {
             mRefreshLayout.finishRefresh();
+            page = AudioMediaPlayer.mCurrentPage;
+            page++;
+        }
     }
 
     public void notifyDataSetChanged(){
