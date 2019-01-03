@@ -14,7 +14,7 @@ import java.util.List;
 
 public class AudioPlayUtil {
     private static final String TAG = "AudioPlayUtil";
-    private List<AudioPlayEntity> audioList;
+    private List<AudioPlayEntity> audioList,audioListNew;
     private static AudioPlayUtil audioPlayUtil = null;
     private boolean singleAudio = true; // 是否是单品音频，专栏列表中资源一个音频不属于单品，
     private String fromTag = "";
@@ -35,10 +35,22 @@ public class AudioPlayUtil {
         return audioList;
     }
 
+    public List<AudioPlayEntity> getAudioListNew() {
+        if (audioListNew == null)
+            audioListNew = new ArrayList<AudioPlayEntity>();
+        return audioListNew;
+    }
+
     public void setAudioList(List<AudioPlayEntity> audioList) {
         this.audioList = audioList;
         deleteCache();
         addCache();
+    }
+
+    public void setAudioList2(List<AudioPlayEntity> audioList) {
+        this.audioListNew = audioList;
+        if (audioList != null && audioList.size() > 0)
+            AudioMediaPlayer.mCurrentColumnId = audioList.get(0).getColumnId();
     }
 
     public void addAudio(AudioPlayEntity audio){

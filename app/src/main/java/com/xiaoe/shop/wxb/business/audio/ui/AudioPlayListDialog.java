@@ -44,15 +44,19 @@ public class AudioPlayListDialog implements View.OnClickListener {
     private TextView productsTitle;
     private AlertDialog dialog;
     private LoadAudioListDataCallBack mLoadAudioListDataCallBack;
-    private int page = 1;
+    private int page = -1;
     private final int PAGE_SIZE = 10;
     private SmartRefreshLayout mRefreshLayout;
     private StatusPagerView mStatusPagerView;
     private Context mContext;
 
+    public void setPage(int page) {
+        this.page = page;
+    }
+
     public void setLoadAudioListDataCallBack(LoadAudioListDataCallBack loadAudioListDataCallBack) {
         mLoadAudioListDataCallBack = loadAudioListDataCallBack;
-        if (loadAudioListDataCallBack != null) {
+        if (loadAudioListDataCallBack != null && -1 == page) {
             page = 1;
             loadAudioListDataCallBack.onRefresh(PAGE_SIZE);
         }
@@ -177,6 +181,10 @@ public class AudioPlayListDialog implements View.OnClickListener {
     }
 
     public void addPlayListData(List<AudioPlayEntity> list){
+        addPlayListData(list,false);
+    }
+
+    public void addPlayListData(List<AudioPlayEntity> list,boolean isCache){
         if (1 == page && (list == null || 0 == list.size()))
             mStatusPagerView.setPagerState(StatusPagerView.FAIL, mContext.getString(
                     R.string.request_fail), StatusPagerView.DETAIL_NONE);
@@ -185,6 +193,9 @@ public class AudioPlayListDialog implements View.OnClickListener {
             if (1 == page) {
                 mAudioPlayListNewAdapter.setNewData(list);
                 mRefreshLayout.setEnableLoadMore(list.size() > 6);
+                if (isCache && !AudioMediaPlayer.isHasMoreData) {
+                    mRefreshLayout.setEnableLoadMore(false);
+                }else   AudioMediaPlayer.isHasMoreData = list.size() > 6;
             }else {
                 mAudioPlayListNewAdapter.addData(list);
                 if (list.size() < PAGE_SIZE){
@@ -193,9 +204,14 @@ public class AudioPlayListDialog implements View.OnClickListener {
                 }else{
                     mRefreshLayout.finishLoadMore();
                 }
+                if (isCache && !AudioMediaPlayer.isHasMoreData) {
+                    mRefreshLayout.setEnableLoadMore(false);
+                }else   AudioMediaPlayer.isHasMoreData = list.size() >= PAGE_SIZE;
             }
+            AudioMediaPlayer.mCurrentPage = page;
             page++;
             AudioPlayUtil.getInstance().setAudioList(mAudioPlayListNewAdapter.getData());
+            AudioPlayUtil.getInstance().setAudioList2(mAudioPlayListNewAdapter.getData());
         }else if (page > 1){
             mRefreshLayout.finishRefresh();
             mRefreshLayout.finishLoadMore();

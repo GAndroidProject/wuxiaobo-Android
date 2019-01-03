@@ -50,6 +50,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     private static AudioFocusManager audioFocusManager;
     private static boolean isSaveProgress = true;
     private static CountDownTimerTool.CountDownCallBack mCountDownCallBack;
+    public static String mCurrentColumnId = "";
+    public static int mCurrentPage = -1;
+    public static boolean isHasMoreData = true;
 
     public static void setCountDownCallBack(CountDownTimerTool.CountDownCallBack countDownCallBack) {
         mCountDownCallBack = countDownCallBack;

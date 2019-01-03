@@ -274,6 +274,13 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
 //            audioPlayList.addPlayListData(AudioPlayUtil.getInstance().getAudioList());
             mColumnPresenter = new ColumnPresenter(this);
             final String columnId = AudioMediaPlayer.getAudio().getColumnId();
+            String playingColumnId = AudioMediaPlayer.mCurrentColumnId;
+            if (!TextUtils.isEmpty(playingColumnId) && columnId == playingColumnId && AudioMediaPlayer.mCurrentPage > 0
+                    && AudioPlayUtil.getInstance().getAudioListNew().size() > 0){
+                audioPlayList.setPage(AudioMediaPlayer.mCurrentPage);
+                audioPlayList.addPlayListData(AudioPlayUtil.getInstance().getAudioListNew(),true);
+            }else   AudioMediaPlayer.mCurrentPage = -1;
+
             final String audioType = "2";
             audioPlayList.setLoadAudioListDataCallBack(new AudioPlayListDialog.LoadAudioListDataCallBack() {
                 @Override
@@ -410,7 +417,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 }
                 AudioPlayEntity audio = AudioMediaPlayer.getAudio();
                 audioPlayList.addData(mColumnPresenter.formatSingleResourceEntity(data, audio == null ?
-                                "" : audio.getTitle(), audio == null ? "" : audio.getResourceId(),
+                                "" : audio.getTitle(), audio == null ? "" : audio.getColumnId(),
                         "", audio == null ? 0 : audio.getHasBuy()),audio == null ? 0 : audio.getHasBuy());
             }
         }
