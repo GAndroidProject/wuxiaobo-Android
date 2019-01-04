@@ -15,7 +15,6 @@ import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.tencent.smtt.sdk.QbSdk;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
@@ -128,16 +127,6 @@ public class XiaoeApplication extends MultiDexApplication {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //腾讯x5内核初始化
-                QbSdk.initX5Environment(mContext, new QbSdk.PreInitCallback() {
-                    @Override
-                    public void onCoreInitFinished() {
-                    }
-
-                    @Override
-                    public void onViewInitFinished(boolean b) {
-                    }
-                });
                 //↓↓↓↓↓↓↓友盟集成初始化↓↓↓↓↓↓↓
                 UMConfigure.setLogEnabled(true);
                 UMConfigure.init(mContext, Constants.getUMAppId() ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"");
