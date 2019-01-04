@@ -54,6 +54,7 @@ public class Constants {
     // 奖学金和积分相关信息
     public static final String SCHOLARSHIP_ASSET_TYPE = "profit"; // 奖学金
     public static final String INTEGRAL_ASSET_TYPE = "credit";    // 积分
+    public static final String BOUGHT_ASSET_TYPE = "goods";    // 已购记录
     public static final int NEED_FLOW = 1;
     public static final int NO_NEED_FLOW = 0;
     public static final int WITHDRAWAL_FLOW_TYPE = 0;   // 提现流水

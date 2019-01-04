@@ -1,8 +1,8 @@
 package com.xiaoe.common.entitys
 
 import com.chad.library.adapter.base.entity.MultiItemEntity
-import com.xiaoe.common.entitys.ItemType.Companion.type_audio
-import com.xiaoe.common.entitys.ItemType.Companion.type_default
+import com.xiaoe.common.entitys.ItemType.ITEM_TYPE_AUDIO
+import com.xiaoe.common.entitys.ItemType.ITEM_TYPE_DEFAULT
 
 /**
  * Date: 2018/12/27 19:27
@@ -11,5 +11,5 @@ import com.xiaoe.common.entitys.ItemType.Companion.type_default
  */
 
 data class RecentlyLearning(val name : String) : MultiItemEntity {
-    override fun getItemType() = if (name.length < 3)   type_default else type_audio
+    override fun getItemType() = if (name.length < 3)   ITEM_TYPE_DEFAULT else ITEM_TYPE_AUDIO
 }

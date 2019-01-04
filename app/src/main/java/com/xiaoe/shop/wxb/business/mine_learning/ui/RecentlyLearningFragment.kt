@@ -13,8 +13,8 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
 import com.xiaoe.common.entitys.ComponentInfo
-import com.xiaoe.common.entitys.ItemType.Companion.type_audio
-import com.xiaoe.common.entitys.ItemType.Companion.type_default
+import com.xiaoe.common.entitys.ItemType.ITEM_TYPE_AUDIO
+import com.xiaoe.common.entitys.ItemType.ITEM_TYPE_DEFAULT
 import com.xiaoe.common.entitys.RecentlyLearning
 import com.xiaoe.common.utils.Dp2Px2SpUtil
 import com.xiaoe.network.requests.IRequest
@@ -46,7 +46,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
     var isLoadMore: Boolean = false
 
     private val mAdapter : MyAdapter by lazy {
-        MyAdapter(activity)
+        MyAdapter(activity!!)
     }
 
     private val mSpacesItemDecoration: SpacesItemDecoration by lazy {
@@ -112,19 +112,19 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
             BaseViewHolder>(null){
 
         init {
-            addItemType(type_default,R.layout.recently_learning_list_item)
-            addItemType(type_audio,R.layout.audio_learning_list_item)
+            addItemType(ITEM_TYPE_DEFAULT,R.layout.recently_learning_list_item)
+            addItemType(ITEM_TYPE_AUDIO,R.layout.audio_learning_list_item)
         }
 
         override fun convert(helper: BaseViewHolder?, item: RecentlyLearning?) {
             helper?.apply {
                 item?.apply {
                     when(itemViewType){
-                        type_default ->{
+                        ITEM_TYPE_DEFAULT ->{
                             setText(R.id.itemTitle,name)
                             setText(R.id.itemContent,name)
                             setText(R.id.itemDesc,name) }
-                        type_audio ->{
+                        ITEM_TYPE_AUDIO ->{
                             SetImageUriUtil.setImgURI(helper!!.getView(R.id.itemIcoBbg),
                                     "res:///" + R.mipmap.audio_list_bg, Dp2Px2SpUtil.dp2px(mContext, 160f),
                                     Dp2Px2SpUtil.dp2px(mContext, 120f))

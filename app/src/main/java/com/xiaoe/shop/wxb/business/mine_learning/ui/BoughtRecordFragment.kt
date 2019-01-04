@@ -9,25 +9,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.alibaba.fastjson.JSON
+import android.widget.Toast
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.facebook.drawee.view.SimpleDraweeView
+import com.google.gson.Gson
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
-import com.xiaoe.common.entitys.AllDataItem
+import com.xiaoe.common.app.Constants
 import com.xiaoe.common.entitys.BoughtRecord
-import com.xiaoe.common.entitys.ItemType.Companion.type_audio
-import com.xiaoe.common.entitys.ItemType.Companion.type_default
+import com.xiaoe.common.entitys.DataItem
+import com.xiaoe.common.entitys.ItemType.ITEM_TYPE_AUDIO
+import com.xiaoe.common.entitys.ItemType.ITEM_TYPE_DEFAULT
 import com.xiaoe.common.utils.Dp2Px2SpUtil
-import com.xiaoe.network.requests.BoughtRecordRequest
+import com.xiaoe.network.requests.EarningRequest
 import com.xiaoe.network.requests.IRequest
 import com.xiaoe.shop.wxb.R
 import com.xiaoe.shop.wxb.base.BaseFragment
-import com.xiaoe.shop.wxb.business.mine_learning.presenter.MyBoughtPresenter
+import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter
 import com.xiaoe.shop.wxb.business.search.presenter.SpacesItemDecoration
+import com.xiaoe.shop.wxb.utils.LogUtils
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil
+import com.xiaoe.shop.wxb.utils.jumpKnowledgeDetail
 import com.xiaoe.shop.wxb.widget.StatusPagerView
 import kotlinx.android.synthetic.main.fragment_recently_learning.*
 import java.lang.Exception
@@ -50,8 +54,8 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
         StatusPagerView(activity)
     }
 
-    private val mBoughtPresenter : MyBoughtPresenter by lazy {
-        MyBoughtPresenter(this)
+    private val mEarningPresenter : EarningPresenter by lazy {
+        EarningPresenter(this)
     }
 
     private val mSpacesItemDecoration: SpacesItemDecoration by lazy {
@@ -84,7 +88,8 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
         mStatusPagerView.setLoadingState(View.VISIBLE)
         mAdapter.emptyView = mStatusPagerView
 
-        mBoughtPresenter.requestRecordData(pageIndex, pageSize)
+        mEarningPresenter.requestLaundryList(Constants.BOUGHT_ASSET_TYPE, Constants.NEED_FLOW,
+                Constants.EARNING_FLOW_TYPE,pageIndex, pageSize)
     }
 
     private fun initListener() {
@@ -92,6 +97,10 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
             setOnRefreshListener(this@BoughtRecordFragment)
             setOnLoadMoreListener(this@BoughtRecordFragment)
             setEnableLoadMoreWhenContentNotFull(false)
+        }
+        mAdapter.setOnItemClickListener { adapter, _, position ->
+            val data = adapter.getItem(position) as DataItem
+            jumpKnowledgeDetail(activity,data.resourceType,data.resourceId,data.imgUrl)
         }
     }
 
@@ -104,27 +113,57 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
 
     private fun handleData(success: Boolean, entity: Any?, iRequest: IRequest?) {
         if (success && entity != null) {
-            if (iRequest is BoughtRecordRequest) {
+            if (iRequest is EarningRequest) {
                 try {
-                    val result = JSON.parseObject(entity!!.toString(), BoughtRecord::class.java)
-                    if (result?.data == null || result.data!!.allData == null)   result
-
                     mStatusPagerView.setPagerState(StatusPagerView.FAIL,
                             getString(R.string.no_learning_content),R.mipmap.collection_none)
+                    val result = Gson().fromJson<BoughtRecord>(entity!!.toString(), BoughtRecord::class.java)
+                    if (result?.data == null)   return
+                    result.data!!
+                            .filter { 4 == it.resourceType }
+                            .forEach {
+                                result.data!!.remove(it)
+                                LogUtils.d("filter 去掉直播的数据")
+                            }
+
                     learningRefresh.finishRefresh()
-                    when(pageIndex){
-                        1 ->{
-                            mAdapter.setNewData(result.data?.allData)
-                            learningRefresh.setEnableLoadMore(result.data?.allData?.size!! >= pageSize)
-                        }else ->{
-                            mAdapter.addData(result.data?.allData!!)
-                            if (result.data?.allData?.size!! >= pageSize) {
+                    when{
+                        0 == result.code && 1 == pageIndex -> {
+                            mAdapter.setNewData(result.data)
+                            learningRefresh.setEnableLoadMore(result.data?.size!! >= pageSize) }
+                        0 == result.code ->{
+                            mAdapter.addData(result.data!!)
+                            if (result.data!!.size!! >= pageSize) {
                                 learningRefresh.finishLoadMore()
                             }else{
                                 learningRefresh.finishLoadMoreWithNoMoreData()
-                            }
+                            } }
+                        4001 == result.code|| 4002 == result.code ->{
+                            Toast.makeText(activity,result!!.msg,Toast.LENGTH_SHORT).show()
                         }
                     }
+
+                    //与上面when语句等效
+//                    when(result.code){
+//                        0 ->{
+//                            when(pageIndex){
+//                                1 ->{
+//                                    mAdapter.setNewData(result.data)
+//                                    learningRefresh.setEnableLoadMore(result.data?.size!! >= pageSize)
+//                                }else ->{
+//                                mAdapter.addData(result.data!!)
+//                                if (result.data!!.size!! >= pageSize) {
+//                                    learningRefresh.finishLoadMore()
+//                                }else{
+//                                    learningRefresh.finishLoadMoreWithNoMoreData()
+//                                }
+//                            }
+//                            }
+//                        }
+//                        4001,4002 ->{
+//                            Toast.makeText(activity,result!!.msg,Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
                 }catch (e : Exception){
                     e.printStackTrace()
                     doRequestFail()
@@ -144,49 +183,51 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
         pageIndex = 1
-        mBoughtPresenter.requestRecordData(pageIndex, pageSize)
+        mEarningPresenter.requestLaundryList(Constants.BOUGHT_ASSET_TYPE, Constants.NEED_FLOW,
+                Constants.EARNING_FLOW_TYPE,pageIndex, pageSize)
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
-        mBoughtPresenter.requestRecordData(++pageIndex, pageSize)
+        mEarningPresenter.requestLaundryList(Constants.BOUGHT_ASSET_TYPE, Constants.NEED_FLOW,
+                Constants.EARNING_FLOW_TYPE,++pageIndex, pageSize)
     }
 
-    class MyAdapter(val context: Context): BaseMultiItemQuickAdapter<AllDataItem,
+    class MyAdapter(val context: Context): BaseMultiItemQuickAdapter<DataItem,
             BaseViewHolder>(null){
 
         init {
-            addItemType(type_default,R.layout.recently_learning_list_item)
-            addItemType(type_audio,R.layout.audio_learning_list_item)
+            addItemType(ITEM_TYPE_DEFAULT,R.layout.recently_learning_list_item)
+            addItemType(ITEM_TYPE_AUDIO,R.layout.audio_learning_list_item)
         }
 
-        override fun convert(helper: BaseViewHolder?, item: AllDataItem?) {
+        override fun convert(helper: BaseViewHolder?, item: DataItem?) {
             helper?.apply {
                 item?.apply {
                     when(itemViewType){
-                        type_default ->{
-                            setGone(R.id.learningProgress,true)
+                        ITEM_TYPE_DEFAULT ->{
+                            setGone(R.id.learningProgress,false)
                             getView<SimpleDraweeView>(R.id.itemIcon).setImageURI(item!!.imgUrl)
                             setText(R.id.itemTitle,purchaseName)
                             val desc = getView<TextView>(R.id.itemDesc)
 
-                            when(resourceType){
-                                5 -> desc.text = String.format(context.getString(R.string.valid_until2),
+                            when(purchasedGoodsType){
+                                3 -> desc.text = String.format(context.getString(R.string.valid_until2),
                                         expireAt?.split(" ")[0])
-                                8 -> desc.text = String.format(context.getString(R.string.stages_text),
-                                        resourceType)
+                                1,2 -> desc.text = String.format(context.getString(R.string.stages_text),
+                                        purchasedGoodsDisplay)
                             }
                         }
-                        type_audio ->{
+                        ITEM_TYPE_AUDIO ->{
                             SetImageUriUtil.setImgURI(helper!!.getView(R.id.itemIcoBbg),
-                                    "res:///" + R.mipmap.audio_list_bg, Dp2Px2SpUtil.dp2px(mContext, 160f),
-                                    Dp2Px2SpUtil.dp2px(mContext, 120f))
+                                    "res:///" + R.mipmap.audio_list_bg, Dp2Px2SpUtil.dp2px(mContext,
+                                    160f),Dp2Px2SpUtil.dp2px(mContext, 120f))
                             val url = if (TextUtils.isEmpty(imgUrl)) "res:///" + R.mipmap.detail_disk
                                       else imgUrl
                             val imageWidthDp = 84f
                             val itemIcon = helper!!.getView<SimpleDraweeView>(R.id.itemIcon)
                             if (url.contains("res:///") || !SetImageUriUtil.isGif(url)) {// 本地图片
-                                SetImageUriUtil.setImgURI(itemIcon, url, Dp2Px2SpUtil.dp2px(mContext, imageWidthDp),
-                                        Dp2Px2SpUtil.dp2px(mContext, imageWidthDp))
+                                SetImageUriUtil.setImgURI(itemIcon, url, Dp2Px2SpUtil.dp2px(mContext,
+                                        imageWidthDp),Dp2Px2SpUtil.dp2px(mContext, imageWidthDp))
                             } else {// 网络图片
                                 SetImageUriUtil.setRoundAsCircle(itemIcon, Uri.parse(url))
                             }
@@ -196,29 +237,5 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
                 }
             }
         }
-
     }
-
-//    /**
-//     * 资源类型转换 int - str
-//     * @param resourceType 资源类型
-//     * @return 资源类型的字符串形式
-//     */
-//    private fun convertInt2Str(resourceType: Int): String? {
-//        return when (resourceType) {
-//            1 // 图文
-//            -> DecorateEntityType.IMAGE_TEXT
-//            2 // 音频
-//            -> DecorateEntityType.AUDIO
-//            3 // 视频
-//            -> DecorateEntityType.VIDEO
-//            6 // 专栏
-//            -> DecorateEntityType.COLUMN
-//            8 // 大专栏
-//            -> DecorateEntityType.TOPIC
-//            5 // 会员
-//            -> DecorateEntityType.MEMBER
-//            else -> null
-//        }
-//    }
 }
