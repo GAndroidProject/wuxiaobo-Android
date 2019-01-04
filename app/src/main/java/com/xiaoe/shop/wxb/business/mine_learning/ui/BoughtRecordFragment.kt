@@ -213,7 +213,7 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
                             when(purchasedGoodsType){
                                 3 -> desc.text = String.format(context.getString(R.string.valid_until2),
                                         expireAt?.split(" ")[0])
-                                1,2 -> desc.text = String.format(context.getString(R.string.stages_text),
+                                1,2 -> desc.text = String.format(context.getString(R.string.stages_text_str),
                                         purchasedGoodsDisplay)
                             }
                         }

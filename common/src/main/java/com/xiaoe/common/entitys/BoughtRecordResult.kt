@@ -10,7 +10,7 @@ data class DataItem(@SerializedName("resource_type")
                     @SerializedName("created_at")
                     val createdAt: String = "",
                     @SerializedName("purchased_goods_display")
-                    val purchasedGoodsDisplay: Int = 0,
+                    val purchasedGoodsDisplay: String = "",
                     @SerializedName("payment_type")
                     val paymentType: Int = 0,
                     @SerializedName("updated_at")
