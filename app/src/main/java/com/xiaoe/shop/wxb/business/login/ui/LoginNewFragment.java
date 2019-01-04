@@ -94,6 +94,9 @@ public class LoginNewFragment extends BaseFragment {
                 loginTimeCount.cancel();
                 loginTimeCount = null;
             }
+            if (codeContent != null) {
+                codeContent.clearAllEditText();
+            }
         } else {
             if (getDialog().isShowing()) {
                 getDialog().dismissDialog();
