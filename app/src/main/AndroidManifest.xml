@@ -63,16 +63,6 @@
             </intent-filter>
         </activity>
 
-        <!--<activity-->
-            <!--android:name=".business.login.ui.LoginActivity"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:launchMode="singleTask">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
         <activity
             android:name=".business.main.ui.MainActivity"
             android:launchMode="singleTask"
@@ -189,6 +179,16 @@
             </intent-filter>
         </receiver>
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/rc_file_path" />
+        </provider>
+
         <activity android:name=".business.super_vip.ui.SuperVipActivity" />
 
         <!-- 极光推送相关配置 start -->
@@ -236,17 +236,6 @@
                 <action android:name="cn.jpush.android.intent.PUSH_TIME" />
             </intent-filter>
         </service>
-        <!-- since 3.0.9 Required SDK 核心功能 -->
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.FileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/rc_file_path" />
-        </provider>
-
 
         <!-- since 3.0.9 Required SDK 核心功能-->
         <provider
