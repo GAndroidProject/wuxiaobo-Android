@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.google.gson.Gson
 import com.scwang.smartrefresh.layout.api.RefreshLayout
@@ -25,7 +24,6 @@ import com.xiaoe.common.utils.Dp2Px2SpUtil
 import com.xiaoe.common.utils.NetUtils
 import com.xiaoe.network.NetworkCodes
 import com.xiaoe.network.downloadUtil.DownloadManager
-import com.xiaoe.network.requests.ColumnListRequst
 import com.xiaoe.network.requests.DownloadListRequest
 import com.xiaoe.network.requests.IRequest
 import com.xiaoe.shop.wxb.R
@@ -77,11 +75,13 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     private var showDataByDB: Boolean = false
     private lateinit var downloadSingleAdapter: DownLoadListAdapter
     private lateinit var downloadGroupAdapter: DownLoadListAdapter
-    private lateinit var downloadList: MutableList<CommonDownloadBean>
+    private lateinit var downloadSingleList: MutableList<CommonDownloadBean>
+    private lateinit var downloadGroupList: MutableList<CommonDownloadBean>
     private var totalSelectedCount: Int = 0 // 全部选择的 item 数
     private var totalCount: Int = 0 // 某一个专栏下的全部课程数
     private var allSelectEnable: Boolean = true // 全选按钮可用
-    private var lastId: String = "" // 最后一条 id
+    private var lastSingleId: String = "" // 最后一条单品 id
+    private var lastGroupId: String = "" // 最后一条专科 id
     private var canMainLoadMore: Boolean = true // 主页能否加载更多
     private var canSecondLoadMore: Boolean = true // 副页能够加载更多
 
@@ -117,22 +117,24 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         when (resourceType) {
             downloadTopic -> {
 //                columnPresenter.requestColumnList(resourceId, downloadColumn, pageIndex, pageSize, true, resourceType)
-                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastId, requestGroupTag)
-                columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeSingle, lastId, requestSingleTag)
+                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
+                columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
             downloadMember -> {
 //                columnPresenter.requestColumnList(resourceId, downloadAll, pageIndex, pageSize, true, resourceType)
-                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastId, requestGroupTag)
-                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeSingle, lastId, requestSingleTag)
+                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
+                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
             downloadColumn -> {
 //                columnPresenter.requestColumnList(resourceId, downloadAll, pageIndex, pageSize, true, resourceType)
-                columnPresenter.requestDownloadList(resourceId, downloadColumn.toInt(), pageSize, downloadTypeSingle, lastId, requestSingleTag)
+                columnPresenter.requestDownloadList(resourceId, downloadColumn.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
             else -> toastCustom("资源类型有误..")
         }
-        downloadList = mutableListOf()
+        downloadSingleList = mutableListOf()
         downloadSingleAdapter = DownLoadListAdapter(context)
+        downloadGroupList = mutableListOf()
+        downloadGroupAdapter = DownLoadListAdapter(context)
     }
 
     /**
@@ -194,7 +196,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         allSelectBtn.setOnClickListener {
             if (Objects.requireNonNull<Drawable.ConstantState>(allSelectBtn.compoundDrawables[0].constantState) == Objects.requireNonNull<Drawable>(context.getDrawable(R.mipmap.download_tocheck)).constantState) {
                 allSelectBtn.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_checking), null, null, null)
-                for (item in downloadList) {
+                for (item in downloadSingleList) {
                     if (!item.isSelected) {
                         item.isSelected = true
                         totalSelectedCount++
@@ -203,7 +205,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 downloadSingleAdapter.notifyDataSetChanged()
             } else {
                 allSelectBtn.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_tocheck), null, null, null)
-                for (item in downloadList) {
+                for (item in downloadSingleList) {
                     if (item.isSelected) {
                         item.isSelected = false
                         totalSelectedCount--
@@ -284,15 +286,15 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
      * @param dataArr   源数据
      * @param resultArr 结果数据
      */
-    private fun filterData(dataArr: JSONArray, resultArr: JSONArray) {
-        for (item in dataArr) {
-            val itemObj = item as JSONObject
-            val tempResourceType = if (itemObj.getInteger("resource_type") == null) -1 else itemObj.getInteger("resource_type")
-            if (tempResourceType != -1 && tempResourceType != 1 && tempResourceType != 4 && tempResourceType != 20) { // 非音、视频单品
-                resultArr.add(item)
-            }
-        }
-    }
+//    private fun filterData(dataArr: JSONArray, resultArr: JSONArray) {
+//        for (item in dataArr) {
+//            val itemObj = item as JSONObject
+//            val tempResourceType = if (itemObj.getInteger("resource_type") == null) -1 else itemObj.getInteger("resource_type")
+//            if (tempResourceType != -1 && tempResourceType != 1 && tempResourceType != 4 && tempResourceType != 20) { // 非音、视频单品
+//                resultArr.add(item)
+//            }
+//        }
+//    }
 
     /**
      * 初始化单品
@@ -300,9 +302,9 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
 //    private fun initSingle(resultArr: JSONArray) {
 //        for (result in resultArr) {
 //            val commonDownloadBean = Gson().fromJson(result.toString(), CommonDownloadBean:: class.java)
-//            downloadList.add(commonDownloadBean)
+//            downloadSingleList.add(commonDownloadBean)
 //        }
-//        downloadSingleAdapter = DownLoadListAdapter(context, DownLoadListAdapter.SINGLE_TYPE, downloadList)
+//        downloadSingleAdapter = DownLoadListAdapter(context, DownLoadListAdapter.SINGLE_TYPE, downloadSingleList)
 //        downloadSingleAdapter.setOnItemClickWithCdbItemListener(this)
 //        downloadContent.adapter = downloadSingleAdapter
 //    }
@@ -310,14 +312,14 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     /**
      * 初始化非单品
      */
-    private fun initGroup(resultArr: JSONArray) {
-        for (result in resultArr) {
-            val commonDownloadBean = Gson().fromJson(result.toString(), CommonDownloadBean:: class.java)
-            downloadList.add(commonDownloadBean)
-        }
-        downloadGroupAdapter = DownLoadListAdapter(context, DownLoadListAdapter.GROUP_TYPE, downloadList)
-        downloadSecondContent.adapter = downloadGroupAdapter
-    }
+//    private fun initGroup(resultArr: JSONArray) {
+//        for (result in resultArr) {
+//            val commonDownloadBean = Gson().fromJson(result.toString(), CommonDownloadBean:: class.java)
+//            downloadSingleList.add(commonDownloadBean)
+//        }
+//        downloadGroupAdapter = DownLoadListAdapter(context, DownLoadListAdapter.GROUP_TYPE, downloadSingleList)
+//        downloadSecondContent.adapter = downloadGroupAdapter
+//    }
 
     /**
      * 初始化专栏数据
@@ -325,7 +327,32 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
      * @param entity 返回的数据对象
      */
     private fun initDownloadGroupData(entity: Any) {
-
+        val result = Gson().fromJson(entity.toString(), NewDownloadBean::class.java)
+        val firstDownloadBean = CommonDownloadBean()
+        firstDownloadBean.title = getString(R.string.all_text)
+        firstDownloadBean.periodicalCount = 0
+        firstDownloadBean.resourceId = resourceId
+        firstDownloadBean.resourceType = resourceType.toInt()
+        firstDownloadBean.isSelected = true
+        downloadGroupList.add(firstDownloadBean)
+        for (item in result.data.list!!) {
+            val commonDownloadBean = CommonDownloadBean()
+            commonDownloadBean.title = item.title
+            commonDownloadBean.periodicalCount = item.periodicalCount
+            commonDownloadBean.resourceId = item.goodsId
+            commonDownloadBean.resourceType = item.goodsType
+            firstDownloadBean.isSelected = false
+            downloadGroupList.add(commonDownloadBean)
+        }
+        lastGroupId = result.data.list!![result.data.list!!.size - 1].goodsId
+        if (result.data.list!!.size < pageSize) {
+            canSecondLoadMore = false
+            downloadSecondRefresh.setEnableLoadMore(false)
+        }
+        downloadGroupAdapter.setInitType(DownLoadListAdapter.GROUP_TYPE)
+        downloadGroupAdapter.setNewData(downloadGroupList)
+        downloadGroupAdapter.setOnItemClickWithCdbItemListener(this)
+        downloadSecondContent.adapter = downloadGroupAdapter
     }
 
     /**
@@ -334,8 +361,8 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
      * @param entity 返回的数据对象
      */
     private fun initDownloadSingleData(entity: Any) {
-        if (downloadList.size > 0) {
-            downloadList.clear()
+        if (downloadSingleList.size > 0) {
+            downloadSingleList.clear()
         }
         val result = Gson().fromJson(entity.toString(), NewDownloadBean::class.java)
         for (item in result.data.list!!) {
@@ -353,42 +380,46 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 commonDownloadBean.videoUrl = item.downloadUrl
                 commonDownloadBean.videoLength = item.length
             }
-            downloadList.add(commonDownloadBean)
+            downloadSingleList.add(commonDownloadBean)
         }
-        lastId = result.data.list!![result.data.list!!.size - 1].goodsId
+        lastSingleId = result.data.list!![result.data.list!!.size - 1].goodsId
         if (result.data.list!!.size < pageSize) {
             canMainLoadMore = false
             downloadRefresh.setEnableLoadMore(false)
         }
         downloadSingleAdapter.setInitType(DownLoadListAdapter.SINGLE_TYPE)
-        downloadSingleAdapter.setNewData(downloadList)
+        downloadSingleAdapter.setNewData(downloadSingleList)
         downloadSingleAdapter.setOnItemClickWithCdbItemListener(this)
         downloadContent.adapter = downloadSingleAdapter
     }
 
-    override fun onCommonDownloadBeanItemClick(view: View?, commonDownloadBean: CommonDownloadBean) {
+    override fun onCommonDownloadBeanItemClick(view: View?, initType: Int, commonDownloadBean: CommonDownloadBean) {
         val textView = view?.findViewById(R.id.singleItemContent) as TextView
-        if (commonDownloadBean.isEnable) {
-            if (Objects.requireNonNull<Drawable.ConstantState>(textView.compoundDrawables[0].constantState) == Objects.requireNonNull<Drawable>(context.getDrawable(R.mipmap.download_tocheck)).constantState) {
-                textView.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_checking), null, null, null)
-                commonDownloadBean.isSelected = true
-                totalSelectedCount++
-            } else {
-                textView.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_tocheck), null, null, null)
-                commonDownloadBean.isSelected = false
-                totalSelectedCount--
+        if (initType == DownLoadListAdapter.SINGLE_TYPE) {
+            if (commonDownloadBean.isEnable) {
+                if (Objects.requireNonNull<Drawable.ConstantState>(textView.compoundDrawables[0].constantState) == Objects.requireNonNull<Drawable>(context.getDrawable(R.mipmap.download_tocheck)).constantState) {
+                    textView.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_checking), null, null, null)
+                    commonDownloadBean.isSelected = true
+                    totalSelectedCount++
+                } else {
+                    textView.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_tocheck), null, null, null)
+                    commonDownloadBean.isSelected = false
+                    totalSelectedCount--
+                }
+                if (totalSelectedCount == 0) {
+                    selectCountDesc.text = ""
+                } else {
+                    selectCountDesc.text = String.format(context.getString(R.string.the_selected_count), totalSelectedCount)
+                }
             }
-            if (totalSelectedCount == 0) {
-                selectCountDesc.text = ""
-            } else {
-                selectCountDesc.text = String.format(context.getString(R.string.the_selected_count), totalSelectedCount)
-            }
+        } else if (initType == DownLoadListAdapter.GROUP_TYPE) {
+            // TODO: 专栏的 item 点击回调
         }
     }
 
     private fun clickDownload() {
         var download = false
-        for (item in downloadList) {
+        for (item in downloadSingleList) {
             if (item.isSelected) {
                 download = true
             }
@@ -415,7 +446,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
 
     private fun downloadResource() {
         //全选是否可选
-        allSelectEnable = totalSelectedCount != downloadList.size
+        allSelectEnable = totalSelectedCount != downloadSingleList.size
         if (!allSelectEnable) {
             allSelectBtn.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_alreadychecked), null, null, null)
             allSelectBtn.isEnabled = false
@@ -425,7 +456,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         selectCountDesc.text = String.format(getString(R.string.the_selected_count), 0)
         allSelectBtn.isEnabled = allSelectEnable
         downloadSubmit.isEnabled = allSelectEnable
-        for (item in downloadList) {
+        for (item in downloadSingleList) {
             if (item.isSelected) {
                 item.isEnable = false
                 formatDownloadBean(item)

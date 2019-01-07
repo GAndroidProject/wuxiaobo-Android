@@ -13,6 +13,8 @@ import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 
+import butterknife.internal.DebouncingOnClickListener;
+
 /**
  * @author: zak
  * @date: 2019/1/3
@@ -43,7 +45,7 @@ public class DownloadListItemViewHolder extends BaseViewHolder {
 
     public void initViewHolder(CommonDownloadBean commonDownloadBean, OnItemClickWithCdbItemListener onItemClickWithCdbItemListener) {
         if (mInitType == DownLoadListAdapter.GROUP_TYPE) {
-            initGroupItem(commonDownloadBean);
+            initGroupItem(commonDownloadBean, onItemClickWithCdbItemListener);
         } else if (mInitType == DownLoadListAdapter.SINGLE_TYPE) {
             initSingleItem(commonDownloadBean, onItemClickWithCdbItemListener);
         } else {
@@ -54,7 +56,7 @@ public class DownloadListItemViewHolder extends BaseViewHolder {
     /**
      * 初始化非单品的 item
      */
-    private void initGroupItem(CommonDownloadBean commonDownloadBean) {
+    private void initGroupItem(CommonDownloadBean commonDownloadBean, OnItemClickWithCdbItemListener onItemClickWithCdbItemListener) {
         groupWrap = (FrameLayout) mItemView.findViewById(R.id.groupWrap);
         groupHead = (TextView) mItemView.findViewById(R.id.groupItemTitle);
         groupCount = (TextView) mItemView.findViewById(R.id.groupItemCount);
@@ -62,18 +64,25 @@ public class DownloadListItemViewHolder extends BaseViewHolder {
         groupBottomLine = mItemView.findViewById(R.id.groupItemLine);
 
         groupHead.setText(commonDownloadBean.getTitle());
-        groupCount.setText(String.format(mContext.getString(R.string.download_count), 20));
-        groupCheck.setVisibility(View.GONE);
+
+        if (commonDownloadBean.getPeriodicalCount() > 0) {
+            groupCount.setText(String.format(mContext.getString(R.string.download_count), commonDownloadBean.getPeriodicalCount()));
+        } else {
+            groupCount.setText("");
+        }
+
+        if (commonDownloadBean.isSelected()) {
+            groupCheck.setVisibility(View.VISIBLE);
+        } else {
+            groupCheck.setVisibility(View.GONE);
+        }
+
         groupBottomLine.setVisibility(View.VISIBLE);
 
-        groupWrap.setOnClickListener(new View.OnClickListener() {
+        groupWrap.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (groupCheck.getVisibility() == View.VISIBLE) {
-                    groupCheck.setVisibility(View.GONE);
-                } else {
-                    groupCheck.setVisibility(View.VISIBLE);
-                }
+            public void doClick(View v) {
+                onItemClickWithCdbItemListener.onCommonDownloadBeanItemClick(v, mInitType, commonDownloadBean);
             }
         });
     }
@@ -110,10 +119,10 @@ public class DownloadListItemViewHolder extends BaseViewHolder {
         }
 
 
-        singleWrap.setOnClickListener(new View.OnClickListener() {
+        singleWrap.setOnClickListener(new DebouncingOnClickListener() {
             @Override
-            public void onClick(View v) {
-                onItemClickWithCdbItemListener.onCommonDownloadBeanItemClick(v, commonDownloadBean);
+            public void doClick(View v) {
+                onItemClickWithCdbItemListener.onCommonDownloadBeanItemClick(v, mInitType, commonDownloadBean);
             }
         });
     }
