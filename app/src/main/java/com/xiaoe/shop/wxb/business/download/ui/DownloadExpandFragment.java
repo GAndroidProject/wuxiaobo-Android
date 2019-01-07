@@ -24,18 +24,16 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.entitys.AudioPlayEntity;
-import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.entitys.ExpandableItem;
 import com.xiaoe.common.entitys.ExpandableLevel;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.adapter.download.DownLoadListAdapter;
+import com.xiaoe.shop.wxb.adapter.download.DownLoadExpandAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter;
-import com.xiaoe.shop.wxb.interfaces.OnClickListPlayListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +45,15 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
+ * 折叠形式下载列表，已废弃（使用 DownloadListFragment）
+ *
  * @author: zak
  * @date: 2018/12/20
+ * @deprecated
  */
-public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoadMoreListener, BaseQuickAdapter.OnItemChildClickListener {
+public class DownloadExpandFragment extends BaseFragment implements OnLoadMoreListener, BaseQuickAdapter.OnItemChildClickListener {
 
-    private static final String TAG = "NewDownloadFragment";
+    private static final String TAG = "DownloadExpandFragment";
 
     private static final String DOWNLOAD_ALL = "0";     // 拉取全部类型
     private static final String DOWNLOAD_MEMBER = "5";  // 拉取会员
@@ -85,14 +86,14 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
     private List<MultiItemEntity> ColumnList;
     private boolean refreshData = false;
     private boolean showDataByDB = false;
-    private DownLoadListAdapter downLoadListAdapter;
+    private DownLoadExpandAdapter downLoadExpandAdapter;
     private String downTitle = "";
     private int totalSelectedCount;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.fragment_download_directory_new, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_download_expand, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
         columnPresenter = new ColumnPresenter(this);
         return mRootView;
@@ -118,9 +119,9 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
 
         downloadRecyclerViewNew.setLayoutManager(manager);
         downloadRecyclerViewNew.setNestedScrollingEnabled(false);
-        downLoadListAdapter = new DownLoadListAdapter(getActivity(), new ArrayList<MultiItemEntity>());
-        downLoadListAdapter.setOnItemChildClickListener(this);
-        downloadRecyclerViewNew.setAdapter(downLoadListAdapter);
+        downLoadExpandAdapter = new DownLoadExpandAdapter(getActivity(), new ArrayList<MultiItemEntity>());
+        downLoadExpandAdapter.setOnItemChildClickListener(this);
+        downloadRecyclerViewNew.setAdapter(downLoadExpandAdapter);
     }
 
     private void initData() {
@@ -170,7 +171,7 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.all_select_txt_new:
-                List<MultiItemEntity> multiItemEntities = downLoadListAdapter.getData();
+                List<MultiItemEntity> multiItemEntities = downLoadExpandAdapter.getData();
                 if (Objects.equals(allSelectTextNew.getCompoundDrawables()[0].getConstantState(), Objects.requireNonNull(getContext().getDrawable(R.mipmap.download_checking)).getConstantState())) {
                     allSelectTextNew.setCompoundDrawablesWithIntrinsicBounds(getContext().getDrawable(R.mipmap.download_tocheck), null, null, null);
                     notifyAllItem(multiItemEntities, false);
@@ -209,7 +210,7 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
                         }
                     }
                 }
-                downLoadListAdapter.notifyDataSetChanged();
+                downLoadExpandAdapter.notifyDataSetChanged();
             }
         }
         if (totalSelectedCount == 0) {
@@ -277,7 +278,7 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
         generateColumnListIfNeed();
         ExpandableLevel level = (ExpandableLevel) ColumnList.get(0);
         if(code != NetworkCodes.CODE_SUCCEED){
-            level.getSubItem(0).setLoadType(DownLoadListAdapter.LOAD_FAIL);
+            level.getSubItem(0).setLoadType(DownLoadExpandAdapter.LOAD_FAIL);
         }else{
             List<ExpandableItem> expandableItems = columnPresenter.formatExpandableChildEntity(data.getJSONArray("data"), level.getTitle(), level.getResource_id(), level.getBigColumnId(), 1);
             level.setExpand(true);
@@ -293,7 +294,7 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
                 }
                 level.getSubItems().remove(0);
             }else{
-                level.getSubItem(0).setLoadType(DownLoadListAdapter.NO_LOAD);
+                level.getSubItem(0).setLoadType(DownLoadExpandAdapter.NO_LOAD);
             }
             for (ExpandableItem item : expandableItems) {
                 if (item.getResource_type() == 1) {
@@ -363,8 +364,8 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
     }
 
     public void addDownloadListData(List<MultiItemEntity> list) {
-        if (downLoadListAdapter != null) {
-            downLoadListAdapter.addData(list);
+        if (downLoadExpandAdapter != null) {
+            downLoadExpandAdapter.addData(list);
         }
     }
 
@@ -373,9 +374,9 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
     }
 
     public void setDownloadListData(List<MultiItemEntity> list) {
-        downLoadListAdapter.setNewData(list);
+        downLoadExpandAdapter.setNewData(list);
         if (list.size() > 0) {
-            downLoadListAdapter.expand(0);
+            downLoadExpandAdapter.expand(0);
         }
     }
 
@@ -383,8 +384,8 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
         int id = view.getId();
         // position 为点击的位置；pos 为头布局所在的真实位置
-        int pos = downLoadListAdapter.getParentPosition(downLoadListAdapter.getData().get(position));
-        ExpandableLevel level = (ExpandableLevel) downLoadListAdapter.getItem(pos);
+        int pos = downLoadExpandAdapter.getParentPosition(downLoadExpandAdapter.getData().get(position));
+        ExpandableLevel level = (ExpandableLevel) downLoadExpandAdapter.getItem(pos);
         switch (id) {
             case R.id.group_bottom_wrap:
                 collapseByPos(level, pos);
@@ -399,7 +400,7 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
                 handleItemSelect(view, level, position, pos);
                 break;
             case R.id.btn_expand_load_all:
-                clickLoadMore(position, (ExpandableItem) downLoadListAdapter.getData().get(position));
+                clickLoadMore(position, (ExpandableItem) downLoadExpandAdapter.getData().get(position));
                 break;
         }
     }
@@ -411,7 +412,7 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
      * @param pos 折叠头布局的下标
      */
     private void collapseByPos(ExpandableLevel level, int pos) {
-        downLoadListAdapter.collapse(pos);
+        downLoadExpandAdapter.collapse(pos);
         if (level != null) {
             level.setExpand(false);
         }
@@ -425,7 +426,7 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
     private void expandIfNeed(ExpandableLevel level, int position) {
         int itemType = level != null ? level.getSubItem(0).getItemType() : 0;
         if (level != null && !level.isExpanded()) {
-            downLoadListAdapter.expand(position);
+            downLoadExpandAdapter.expand(position);
             level.setExpand(true);
         }
         if (itemType == 3) {
@@ -499,8 +500,8 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
             allSelectTextNew.setCompoundDrawablesWithIntrinsicBounds(getContext().getDrawable(R.mipmap.download_checking), null, null, null);
         }
         if (level.isExpand()) { // 打开了
-            downLoadListAdapter.collapse(pos, false);
-            downLoadListAdapter.expand(pos, false);
+            downLoadExpandAdapter.collapse(pos, false);
+            downLoadExpandAdapter.expand(pos, false);
         }
     }
 
@@ -580,8 +581,8 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
             }
         }
         level.setSelect(allSelect);
-        downLoadListAdapter.collapse(realPos, false);
-        downLoadListAdapter.expand(realPos, false);
+        downLoadExpandAdapter.collapse(realPos, false);
+        downLoadExpandAdapter.expand(realPos, false);
     }
 
     /**
@@ -590,13 +591,13 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
      * @param expandableItem 点击的 item
      */
     private void clickLoadMore(int position, ExpandableItem expandableItem) {
-        int parentPosition = downLoadListAdapter.getParentPosition(expandableItem);
-        ExpandableLevel level = (ExpandableLevel) downLoadListAdapter.getItem(parentPosition);
+        int parentPosition = downLoadExpandAdapter.getParentPosition(expandableItem);
+        ExpandableLevel level = (ExpandableLevel) downLoadExpandAdapter.getItem(parentPosition);
         if(level  == null){
             return;
         }
-        expandableItem.setLoadType(DownLoadListAdapter.LOADING);
-        downLoadListAdapter.notifyItemChanged(position);
+        expandableItem.setLoadType(DownLoadExpandAdapter.LOADING);
+        downLoadExpandAdapter.notifyItemChanged(position);
 
         int page = level.getChildPage() + 1;
         level.setChildPage(page);
@@ -604,16 +605,16 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
     }
 
     private void clickFailRefresh(int position, ExpandableItem expandableItem) {
-        expandableItem.setLoadType(DownLoadListAdapter.LOADING);
-        downLoadListAdapter.notifyItemChanged(position);
+        expandableItem.setLoadType(DownLoadExpandAdapter.LOADING);
+        downLoadExpandAdapter.notifyItemChanged(position);
 
-        int parentPosition = downLoadListAdapter.getParentPosition(expandableItem);
-        ExpandableLevel level = (ExpandableLevel) downLoadListAdapter.getItem(parentPosition);
+        int parentPosition = downLoadExpandAdapter.getParentPosition(expandableItem);
+        ExpandableLevel level = (ExpandableLevel) downLoadExpandAdapter.getItem(parentPosition);
         if(level  == null){
             return;
         }
-        expandableItem.setLoadType(DownLoadListAdapter.LOADING);
-        downLoadListAdapter.notifyItemChanged(position);
+        expandableItem.setLoadType(DownLoadExpandAdapter.LOADING);
+        downLoadExpandAdapter.notifyItemChanged(position);
 
         //比较播放中的专栏是否和点击的状态相同
         AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
@@ -637,7 +638,7 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
      */
     private synchronized void listLoadSucceed(JSONArray data, String requestTag) {
         int position = -1;
-        for (MultiItemEntity entity : downLoadListAdapter.getData()){
+        for (MultiItemEntity entity : downLoadExpandAdapter.getData()){
             position++;
             if(entity instanceof ExpandableLevel){
                 ExpandableLevel level = (ExpandableLevel) entity;
@@ -668,17 +669,17 @@ public class NewDownloadDirectoryFragment extends BaseFragment implements OnLoad
                             }
                         }
                         if(isExpanded){
-                            downLoadListAdapter.remove(position + insertedPosition + 1);
+                            downLoadExpandAdapter.remove(position + insertedPosition + 1);
                         }else{
                             level.removeSubItem(level.getSubItems().size() - 2);
                         }
                     }else {
-                        level.getSubItem(level.getSubItems().size() - 2).setLoadType(DownLoadListAdapter.NO_LOAD);
+                        level.getSubItem(level.getSubItems().size() - 2).setLoadType(DownLoadExpandAdapter.NO_LOAD);
                     }
 
                     if(isExpanded){
-                        downLoadListAdapter.addData(position + insertedPosition+1, expandableItems);
-                        downLoadListAdapter.notifyDataSetChanged();
+                        downLoadExpandAdapter.addData(position + insertedPosition+1, expandableItems);
+                        downLoadExpandAdapter.notifyDataSetChanged();
                     }
                     break;
                 }

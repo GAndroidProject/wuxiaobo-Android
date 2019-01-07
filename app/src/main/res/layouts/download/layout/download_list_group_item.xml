@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/groupWrap"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/groupItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的财富计划"
+            android:textSize="16sp"
+            android:textColor="@color/main_title_color"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:maxWidth="220dp"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/groupItemCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="共30节课"
+            android:textSize="12sp"
+            android:textColor="@color/secondary_title_color"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:minWidth="4dp"/>
+
+        <ImageView
+            android:id="@+id/groupItemIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/download_group_item_icon"
+            android:src="@mipmap/download_check"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/groupItemLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@drawable/imaginary_line"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="20dp"/>
+
+</FrameLayout>

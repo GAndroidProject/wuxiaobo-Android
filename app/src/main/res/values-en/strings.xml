@@ -494,4 +494,7 @@
     <string name="please_wechat_open">请在微信中打开该链接</string>
     <string name="clip_wechat_url">暂不支持该链接跳转，您可以点击下方复制链接，在微信环境中打开。\n%s</string>
     <string name="add_delete">add|delete</string>
+    <string name="download_count">共%d节课</string>
+    <string name="all_text">全部</string>
+    <string name="download_group_item_icon">下载列表非单品选中图标</string>
 </resources>

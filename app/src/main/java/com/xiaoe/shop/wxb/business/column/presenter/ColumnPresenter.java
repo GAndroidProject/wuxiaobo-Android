@@ -11,9 +11,10 @@ import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.DetailRequest;
+import com.xiaoe.network.requests.DownloadListRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.QueryProductTypeRequest;
-import com.xiaoe.shop.wxb.adapter.download.DownLoadListAdapter;
+import com.xiaoe.shop.wxb.adapter.download.DownLoadExpandAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -243,16 +244,36 @@ public class ColumnPresenter implements IBizCallback {
 
             //添加一条空数据，作为“加载状态”条目
             ExpandableItem loadSecondDirectoryEntity = new ExpandableItem();
-            loadSecondDirectoryEntity.setItemType(DownLoadListAdapter.LOAD_STATE);
-            loadSecondDirectoryEntity.setLoadType(DownLoadListAdapter.LOADING);
+            loadSecondDirectoryEntity.setItemType(DownLoadExpandAdapter.LOAD_STATE);
+            loadSecondDirectoryEntity.setLoadType(DownLoadExpandAdapter.LOADING);
             directoryEntity.addSubItem(loadSecondDirectoryEntity);
             //添加一条空数据，作为“收起”条目
             ExpandableItem emptySecondDirectoryEntity = new ExpandableItem();
-            emptySecondDirectoryEntity.setItemType(DownLoadListAdapter.GROUP_BOTTOM_ITEM);
+            emptySecondDirectoryEntity.setItemType(DownLoadExpandAdapter.GROUP_BOTTOM_ITEM);
             directoryEntity.addSubItem(emptySecondDirectoryEntity);
 
             directoryEntityList.add(directoryEntity);
         }
         return directoryEntityList;
+    }
+
+    /**
+     * 请求下载列表数据
+     *
+     * @param goodsId      商品 id
+     * @param goodsType    商品类型
+     * @param downloadType 下载类型
+     * @param lastId       最后一个 id（用于分页请求）
+     */
+    public void requestDownloadList(String goodsId, int goodsType, int[] downloadType, String lastId) {
+        DownloadListRequest downloadListRequest = new DownloadListRequest(this);
+
+        downloadListRequest.addDataParam("goods_id", goodsId);
+        downloadListRequest.addDataParam("goods_type", goodsType);
+        downloadListRequest.addDataParam("download_type", downloadType);
+        downloadListRequest.addDataParam("last_id", lastId);
+        downloadListRequest.addDataParam("page_size", 5);
+
+        downloadListRequest.sendRequest();
     }
 }
