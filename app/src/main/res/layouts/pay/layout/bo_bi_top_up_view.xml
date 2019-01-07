@@ -25,7 +25,8 @@
         android:nestedScrollingEnabled="false"
         android:scrollbars="none"
         android:overScrollMode="never"
-        android:layout_marginTop="26dp"/>
+        android:layout_marginTop="26dp"
+        android:minHeight="136dp"/>
 
     <TextView
         android:id="@+id/boBiTopUpSubmit"

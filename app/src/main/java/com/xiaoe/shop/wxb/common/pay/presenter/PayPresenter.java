@@ -7,12 +7,14 @@ import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.xiaoe.common.app.Constants;
-import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.PayOrderRequest;
 import com.xiaoe.network.requests.PaySuperVipRequest;
+import com.xiaoe.network.requests.PrepaidBuyRequest;
+import com.xiaoe.network.requests.PrepaidRequest;
+import com.xiaoe.network.requests.TopUpListRequest;
 
 public class PayPresenter implements IBizCallback {
     private static final String TAG = "PayPresenter";
@@ -76,5 +78,38 @@ public class PayPresenter implements IBizCallback {
         PaySuperVipRequest paySuperVipRequest = new PaySuperVipRequest(this);
 
         paySuperVipRequest.sendRequest();
+    }
+
+    /**
+     * 获取可充值列表
+     */
+    public void getTopUpList() {
+        TopUpListRequest topUpListRequest = new TopUpListRequest(this);
+
+        topUpListRequest.sendRequest();
+    }
+
+    /**
+     * 波币预支付下单信息请求
+     */
+    public void prepaidMsg(String productId) {
+        PrepaidRequest prepaidRequest = new PrepaidRequest(this);
+
+        prepaidRequest.addRequestParam("product_id", productId);
+        prepaidRequest.addRequestParam("wallet_type", 2); // 安卓波币充值默认值
+
+        prepaidRequest.sendRequest();
+    }
+
+    /**
+     * 波币第三方支付预支付信息
+     */
+    public void prepaidBuyMsg(String orderId, int payWay) {
+        PrepaidBuyRequest prepaidBuyRequest = new PrepaidBuyRequest(this);
+
+        prepaidBuyRequest.addRequestParam("pre_order_id", orderId);
+        prepaidBuyRequest.addRequestParam("pay_way", payWay);
+
+        prepaidBuyRequest.sendRequest();
     }
 }
