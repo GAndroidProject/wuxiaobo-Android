@@ -136,7 +136,7 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
                     // TODO: 请求波币余额接口
                 }
             } else {
-                SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100)
+//                SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100)
             }
             dialog.dismissDialog()
         }
