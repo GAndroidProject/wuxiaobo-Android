@@ -19,7 +19,7 @@ import java.util.List;
  * @author: zak
  * @date: 2019/1/3
  */
-public class DownloadListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
+public class DownLoadListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     public static final int GROUP_TYPE = 4001;
     public static final int SINGLE_TYPE = 4002;
@@ -31,14 +31,14 @@ public class DownloadListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private FrameLayout.LayoutParams layoutParams;
     private OnItemClickWithCdbItemListener onItemClickWithCdbItemListener;
 
-    public DownloadListAdapter(Context context) {
+    public DownLoadListAdapter(Context context) {
         this.mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
         mDownloadGroupBeanList = new ArrayList<>();
         layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    public DownloadListAdapter(Context context, int initType, List<CommonDownloadBean> downloadGroupBeanList) {
+    public DownLoadListAdapter(Context context, int initType, List<CommonDownloadBean> downloadGroupBeanList) {
         this.mContext = context;
         this.mInitType = initType;
         this.mDownloadGroupBeanList = downloadGroupBeanList;

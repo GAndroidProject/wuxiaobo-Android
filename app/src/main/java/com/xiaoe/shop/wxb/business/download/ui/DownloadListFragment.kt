@@ -29,7 +29,7 @@ import com.xiaoe.network.requests.ColumnListRequst
 import com.xiaoe.network.requests.DownloadListRequest
 import com.xiaoe.network.requests.IRequest
 import com.xiaoe.shop.wxb.R
-import com.xiaoe.shop.wxb.adapter.download.DownloadListAdapter
+import com.xiaoe.shop.wxb.adapter.download.DownLoadListAdapter
 
 import com.xiaoe.shop.wxb.base.BaseFragment
 import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter
@@ -57,7 +57,11 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     private val downloadTopic = "8"   // 拉取大专栏
     private val downloadAudio = 2   // 下载音频
     private val downloadVideo = 3   // 下载视频
-    private val downloadType: IntArray = intArrayOf(downloadAudio, downloadVideo) // 下载的类型：2 - 音频，3 - 视频
+    private val downloadGroup = 6   // 下载专栏
+    private val downloadTypeSingle: IntArray = intArrayOf(downloadAudio, downloadVideo) // 下载的类型：2 - 音频，3 - 视频
+    private val downloadTypeGroup: IntArray = intArrayOf(downloadGroup) // 下载的专栏
+    private val requestSingleTag = "single" // 请求单品的 tag
+    private val requestGroupTag = "group"   // 请求专栏的 tag
 
     private var mRootView: View? = null
     private lateinit var columnPresenter: ColumnPresenter
@@ -67,13 +71,13 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     private lateinit var resourceType: String
     private lateinit var downTitle: String
     private var pageIndex: Int = 1
-    private var pageSize: Int = 20
+    private var pageSize: Int = 5
     private var isMainContent: Boolean = true
     private var refreshData: Boolean = false
     private var showDataByDB: Boolean = false
-    private lateinit var downloadSingleAdapter: DownloadListAdapter
-    private lateinit var downloadGroupAdapter: DownloadListAdapter
-    private lateinit var downloadAdapter: DownloadListAdapter
+    private lateinit var downloadSingleAdapter: DownLoadListAdapter
+    private lateinit var downloadGroupAdapter: DownLoadListAdapter
+    private lateinit var downloadAdapter: DownLoadListAdapter
     private lateinit var downloadList: MutableList<CommonDownloadBean>
     private var totalSelectedCount: Int = 0 // 全部选择的 item 数
     private var totalCount: Int = 0 // 某一个专栏下的全部课程数
@@ -112,22 +116,24 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         }
         // 大专栏和会员需要请求专栏列表和全部数据
         when (resourceType) {
+            downloadTopic -> {
+//                columnPresenter.requestColumnList(resourceId, downloadColumn, pageIndex, pageSize, true, resourceType)
+                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastId, requestGroupTag)
+                columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeSingle, lastId, requestSingleTag)
+            }
             downloadMember -> {
-                columnPresenter.requestColumnList(resourceId, downloadAll, pageIndex, pageSize, true, resourceType)
-                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), downloadType, lastId)
+//                columnPresenter.requestColumnList(resourceId, downloadAll, pageIndex, pageSize, true, resourceType)
+                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastId, requestGroupTag)
+                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeSingle, lastId, requestSingleTag)
             }
             downloadColumn -> {
 //                columnPresenter.requestColumnList(resourceId, downloadAll, pageIndex, pageSize, true, resourceType)
-                columnPresenter.requestDownloadList(resourceId, downloadColumn.toInt(), downloadType, lastId)
-            }
-            downloadTopic -> {
-                columnPresenter.requestColumnList(resourceId, downloadColumn, pageIndex, pageSize, true, resourceType)
-                columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), downloadType, lastId)
+                columnPresenter.requestDownloadList(resourceId, downloadColumn.toInt(), pageSize, downloadTypeSingle, lastId, requestSingleTag)
             }
             else -> toastCustom("资源类型有误..")
         }
         downloadList = mutableListOf()
-        downloadAdapter = DownloadListAdapter(context)
+        downloadAdapter = DownLoadListAdapter(context)
     }
 
     /**
@@ -226,7 +232,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             downloadRefresh -> {
                 toastCustom("上拉主内容")
                 downloadRefresh.finishLoadMore()
-                columnPresenter.requestDownloadList(resourceId, resourceType.toInt(), downloadType, "")
+                columnPresenter.requestDownloadList(resourceId, resourceType.toInt(), pageSize, downloadTypeSingle, "", requestSingleTag)
             }
             downloadSecondRefresh -> {
                 toastCustom("上拉副内容")
@@ -266,36 +272,12 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 Log.d(TAG, "onMainThreadResponse: 下载列表加载失败了..")
                 return
             }
-            initDownloadData(entity)
+            if (iRequest.requestTag == requestSingleTag) { // 请求单品的数据
+                initDownloadData(entity)
+            } else if (iRequest.requestTag == requestGroupTag) { // 请求专栏的数据
+                // TODO: 初始化专栏的数据
+            }
         }
-    }
-
-    // 专栏列表初始化（大专栏的情况）
-    private fun columnListRequest(data: JSONArray) {
-//        when (resourceType) {
-//            downloadTopic -> if (refreshData || showDataByDB || pageIndex == 1) {
-//                refreshData = false
-//                showDataByDB = false
-//                ColumnList = columnPresenter.formatDownloadExpandableEntity(data, resourceId, 1)
-//                //请求第一个小专栏下资源
-//                if (ColumnList.size > 0) {
-//                    val level = ColumnList.get(0) as ExpandableLevel
-//
-//                    //比较播放中的专栏是否和点击的状态相同
-//                    val audioPlayEntity = AudioMediaPlayer.getAudio()
-//                    val resourceEquals = (!TextUtils.isEmpty(level.bigColumnId) && audioPlayEntity != null
-//                            && level.bigColumnId == audioPlayEntity.bigColumnId
-//                            && level.resource_id == audioPlayEntity.columnId)
-//                    if (resourceEquals && level.childPage == 1 && audioPlayEntity != null && audioPlayEntity.playColumnPage > 1) {
-//                        level.childPageSize = level.childPageSize * audioPlayEntity.playColumnPage
-//                    }
-//                    level.isExpand = true
-//                    columnPresenter.requestColumnList(level.resource_id, "0", level.childPage, level.childPageSize, false, TOPIC_LITTLE_REQUEST_TAG)
-//                }
-//            } else {
-//                addDownloadListData(columnPresenter.formatDownloadExpandableEntity(data, resourceId, 1))
-//            }
-//        }
     }
 
     /**
@@ -321,7 +303,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             val commonDownloadBean = Gson().fromJson(result.toString(), CommonDownloadBean:: class.java)
             downloadList.add(commonDownloadBean)
         }
-        downloadSingleAdapter = DownloadListAdapter(context, DownloadListAdapter.SINGLE_TYPE, downloadList)
+        downloadSingleAdapter = DownLoadListAdapter(context, DownLoadListAdapter.SINGLE_TYPE, downloadList)
         downloadSingleAdapter.setOnItemClickWithCdbItemListener(this)
         downloadContent.adapter = downloadSingleAdapter
     }
@@ -334,7 +316,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             val commonDownloadBean = Gson().fromJson(result.toString(), CommonDownloadBean:: class.java)
             downloadList.add(commonDownloadBean)
         }
-        downloadGroupAdapter = DownloadListAdapter(context, DownloadListAdapter.GROUP_TYPE, downloadList)
+        downloadGroupAdapter = DownLoadListAdapter(context, DownLoadListAdapter.GROUP_TYPE, downloadList)
         downloadSecondContent.adapter = downloadGroupAdapter
     }
 
@@ -368,7 +350,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             canMainLoadMore = false
             downloadRefresh.setEnableLoadMore(false)
         }
-        downloadAdapter.setInitType(DownloadListAdapter.SINGLE_TYPE)
+        downloadAdapter.setInitType(DownLoadListAdapter.SINGLE_TYPE)
         downloadAdapter.setNewData(downloadList)
         downloadAdapter.setOnItemClickWithCdbItemListener(this)
         downloadContent.adapter = downloadAdapter

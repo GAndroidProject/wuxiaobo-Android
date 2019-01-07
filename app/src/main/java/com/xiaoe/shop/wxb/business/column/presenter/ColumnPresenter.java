@@ -262,17 +262,20 @@ public class ColumnPresenter implements IBizCallback {
      *
      * @param goodsId      商品 id
      * @param goodsType    商品类型
+     * @param pageSize     每页大小
      * @param downloadType 下载类型
      * @param lastId       最后一个 id（用于分页请求）
+     * @param requestTag   请求的 tag
      */
-    public void requestDownloadList(String goodsId, int goodsType, int[] downloadType, String lastId) {
+    public void requestDownloadList(String goodsId, int goodsType, int pageSize, int[] downloadType, String lastId, String requestTag) {
         DownloadListRequest downloadListRequest = new DownloadListRequest(this);
 
         downloadListRequest.addDataParam("goods_id", goodsId);
         downloadListRequest.addDataParam("goods_type", goodsType);
         downloadListRequest.addDataParam("download_type", downloadType);
         downloadListRequest.addDataParam("last_id", lastId);
-        downloadListRequest.addDataParam("page_size", 5);
+        downloadListRequest.addDataParam("page_size", pageSize);
+        downloadListRequest.setRequestTag(requestTag);
 
         downloadListRequest.sendRequest();
     }

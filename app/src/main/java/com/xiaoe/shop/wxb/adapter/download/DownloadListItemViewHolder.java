@@ -13,8 +13,6 @@ import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 
-import java.util.Objects;
-
 /**
  * @author: zak
  * @date: 2019/1/3
@@ -44,9 +42,9 @@ public class DownloadListItemViewHolder extends BaseViewHolder {
     }
 
     public void initViewHolder(CommonDownloadBean commonDownloadBean, OnItemClickWithCdbItemListener onItemClickWithCdbItemListener) {
-        if (mInitType == DownloadListAdapter.GROUP_TYPE) {
+        if (mInitType == DownLoadListAdapter.GROUP_TYPE) {
             initGroupItem(commonDownloadBean);
-        } else if (mInitType == DownloadListAdapter.SINGLE_TYPE) {
+        } else if (mInitType == DownLoadListAdapter.SINGLE_TYPE) {
             initSingleItem(commonDownloadBean, onItemClickWithCdbItemListener);
         } else {
             throw new IllegalArgumentException("类型错误！请使用单品或非单品类型。");
