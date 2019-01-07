@@ -136,6 +136,8 @@ public class LoginNewActivity extends XiaoeActivity {
         if (unbinder != null) {
             unbinder.unbind();
         }
+        // 活动销毁的时候也要清一下，保证 accessToken 是新的
+        SharedPreferencesUtil.putData("accessToken", "");
     }
 
     @OnClick(R.id.login_back_new)
@@ -249,22 +251,18 @@ public class LoginNewActivity extends XiaoeActivity {
             }
             toggleSoftKeyboard();
             if (hasRegister) { // 已经注册了
-                loginPresenter.loginBySmsCode(phoneNum, smsCode);
+                if (isLoginPhone) {
+                    loginPresenter.loginBySmsCode(phoneNum, smsCode);
+                } else { // 已注册但不是登录流程，就走绑定手机号
+                    doBindPhone();
+                }
             } else {
                 if (isLoginPhone) { // 验证码登录，但未注册，执行注册操作
                     String pwd = String.valueOf(System.currentTimeMillis()).substring(0, 8);
                     toggleSoftKeyboard();
                     loginPresenter.doRegister(phoneNum, pwd, smsCode);
                 } else { // 微信登录，但未注册，执行绑定手机号操作
-                    String accessToken = SharedPreferencesUtil.getData("accessToken", "").toString();
-                    if (!TextUtils.isEmpty(accessToken)) {
-                        loginPresenter.bindPhone(accessToken, phoneNum, smsCode);
-                        // 用完就清空
-                        SharedPreferencesUtil.putData("accessToken", "");
-                        toggleSoftKeyboard();
-                    } else {
-                        Log.d(TAG, "onComplete: 微信登录绑定手机异常...");
-                    }
+                    doBindPhone();
                 }
             }
         } else if (code == NetworkCodes.CODE_LOGIN_FAIL) {
@@ -274,6 +272,19 @@ public class LoginNewActivity extends XiaoeActivity {
             }
             JudgeUtil.showCodeErrorView(this, getString(R.string.login_code_error_new), ((LoginNewFragment)currentFragment).codeTip, ((LoginNewFragment) currentFragment).codeObtainWrap);
             this.smsCode = "";
+        }
+    }
+
+    /**
+     * 执行绑定手机的操作
+     */
+    private void doBindPhone() {
+        String accessToken = SharedPreferencesUtil.getData("accessToken", "").toString();
+        if (!TextUtils.isEmpty(accessToken)) {
+            loginPresenter.bindPhone(accessToken, phoneNum, smsCode);
+            toggleSoftKeyboard();
+        } else {
+            Log.d(TAG, "onComplete: 微信登录绑定手机异常...");
         }
     }
 
@@ -309,6 +320,8 @@ public class LoginNewActivity extends XiaoeActivity {
         if (code == NetworkCodes.CODE_SUCCEED) { // 注册成功
             JSONObject data = (JSONObject) result.get("data");
             initUserInfo(data);
+            // 用完就清空
+            SharedPreferencesUtil.putData("accessToken", "");
         } else if (code == NetworkCodes.CODE_PHONE_CODE_ERROR) {
             Log.d(TAG, "onMainThreadResponse: 验证码错误...");
             if (((LoginNewFragment)currentFragment).codeTip != null && ((LoginNewFragment) currentFragment).codeObtainWrap != null) {
@@ -327,6 +340,10 @@ public class LoginNewActivity extends XiaoeActivity {
         } else if (code == NetworkCodes.CODE_WX_HAD_BIND) {
             Log.d(TAG, "onMainThreadResponse: 微信号已被绑定");
             ToastUtils.show(mContext, R.string.wechat_id_is_bound);
+        } else if (code == NetworkCodes.CODE_WX_NEED_LOGIN) {
+            Log.d(TAG, "handleBindCallback: 微信授权失效，请重新登录");
+            ToastUtils.show(mContext, R.string.wx_need_login);
+            this.finish();
         }
     }
 

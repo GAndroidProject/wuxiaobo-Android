@@ -42,6 +42,7 @@ public class NetworkCodes {
     public static final int CODE_LIMIT_USER = 3001; // 受限用户
     public static final int CODE_PHONE_HAD_BIND = 1101; // 手机号已被绑定
     public static final int CODE_WX_HAD_BIND = 1102; // 微信号已被绑定
+    public static final int CODE_WX_NEED_LOGIN = 1103; // 需要重新登录微信
 
     public static final int CODE_OBTAIN_LEARNING_FAIL = 3042; // 获取学习记录失败
 
