@@ -131,6 +131,12 @@
 -keep class * extends cn.jpush.android.helpers.JPushMessageReceiver { *; }
 -dontwarn cn.jiguang.**
 -keep class cn.jiguang.** { *; }
+
+# 2.0.5 ~ 2.1.7 版本有引入 gson 和 protobuf，增加排除混淆的配置。（2.1.8 版本不需配置）
+#==================gson && protobuf==========================
+-dontwarn com.google.**
+#-keep class com.google.gson.** {*;}
+-keep class com.google.protobuf.** {*;}
 #↑↑↑↑↑↑↑极光↑↑↑↑↑↑↑
 
 #↓↓↓↓↓↓↓bugly↓↓↓↓↓↓↓↓

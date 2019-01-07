@@ -20,56 +20,151 @@ walle {
     channelFile = new File("${project.getProjectDir()}/channel")
 }
 
+// 获取local.properties的内容
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
-    signingConfigs {
-        release {
-            //吴晓波签名文件
-            storeFile file("../../shopwxb.jks")
-            storePassword RELEASE_STORE_PASSWORD_WXB
-            keyAlias RELEASE_KEY_ALIAS_WXB
-            keyPassword RELEASE_KEY_PASSWORD_WXB
-        }
-        debug {
-            //吴晓波签名文件
-            storeFile file("../../shopwxb.jks")
-            storePassword RELEASE_STORE_PASSWORD_WXB
-            keyAlias RELEASE_KEY_ALIAS_WXB
-            keyPassword RELEASE_KEY_PASSWORD_WXB
-        }
-    }
     compileSdkVersion 25
+
     defaultConfig {
         applicationId "com.xiaoe.shop.wxb"
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 5
-        versionName "1.1.0.t" // 测试：1.0.16d   内灰：1.0.10f   吴晓波：1.0.6
+        versionName "1.1.0" // 测试：1.0.16d   内灰：1.0.10f   吴晓波：1.0.11
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
 //        ndk { abiFilters "armeabi","x86"}
         ndk {
             // 选择要添加的对应 cpu 类型的 .so 库。
             //由于使用了腾讯x5内核渲染webView，请不要添加任何64位的架构
             abiFilters 'armeabi', "x86", "armeabi-v7a"
+//            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
             // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
         }
-//        multiDexEnabled true
+
+        manifestPlaceholders = [
+                // 外部跳转标识符
+                hostName  : "xiaoeknow.com",
+                schemeName: "wuxiaoboshop",
+        ]
+
+        packagingOptions {
+            doNotStrip '*/mips/*.so'
+            doNotStrip '*/mips64/*.so'
+        }
+
+        multiDexEnabled true
+    }
+    signingConfigs {
+        config {
+            storeFile file(properties.getProperty("keystroe_storeFile"))
+            storePassword properties.getProperty("keystroe_storePassword")
+            keyAlias properties.getProperty("keystroe_keyAlias")
+            keyPassword properties.getProperty("keystroe_keyPassword")
+        }
     }
     buildTypes {
         debug {
+            // debug模式下，显示log
+//            buildConfigField("boolean", "LOG_DEBUG", "true")
+
+            applicationIdSuffix ".debug"
+            // 为版本名添加后缀
+            versionNameSuffix "-debug"
+
             //启用代码混淆
             minifyEnabled false
-            shrinkResources false // 去掉不用资源
+            // 不开启ZipAlign优化
+            zipAlignEnabled false
+            // 去掉不用资源
+            shrinkResources false
+
             //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            // 使用config签名
+            signingConfig signingConfigs.config
+
+            manifestPlaceholders = [
+                    // 极光
+                    JPUSH_PKGNAME: defaultConfig.applicationId + applicationIdSuffix,
+                    JPUSH_CHANNEL: "developer-default-debug", // 暂时填写默认值即可.
+                    // 测试、内灰：f9e2c6c613da002d752e247f  正式：c2e812c8b8eca83779e32711
+                    JPUSH_APPKEY : "f9e2c6c613da002d752e247f", // JPush 上注册的包名对应的 Appkey.
+                    // 友盟
+                    UMENG_APPKEY_VALUE: "5bdac3fbf1f556303b0000ad",
+                    UMENG_CHANNEL_VALUE: "umeng-debug",
+            ]
         }
         release {
+            // release模式下，不显示log
+//            buildConfigField("boolean", "LOG_DEBUG", "false")
+
+            // 为版本名添加后缀
+//            versionNameSuffix "-relase"
+
             minifyEnabled true
-            shrinkResources true // 去掉不用资源
+            // 开启ZipAlign优化
+            zipAlignEnabled true
+            // 去掉不用资源
+            shrinkResources true
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            // 使用config签名
+            signingConfig signingConfigs.config
+
+            manifestPlaceholders = [
+                    // 极光
+                    JPUSH_PKGNAME: defaultConfig.applicationId,
+                    JPUSH_CHANNEL: "developer-default-release", // 暂时填写默认值即可.
+                    // 测试、内灰：f9e2c6c613da002d752e247f  正式：c2e812c8b8eca83779e32711
+                    JPUSH_APPKEY : "c2e812c8b8eca83779e32711", // JPush 上注册的包名对应的 Appkey.
+                    // 友盟
+                    UMENG_APPKEY_VALUE: "5bfb6135f1f55634ab000419",
+                    UMENG_CHANNEL_VALUE: "umeng-release",
+            ]
+
+            // 修改输出文件名称
+            // AS 2.3时用的代码：
+//            applicationVariants.all { variant ->
+//                variant.outputs.each { output ->
+//                    def outputFile = output.outputFile
+//                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+//                        // 输出apk名称为appname-1.0-release-xxxx-xx-xx.apk
+//                        def fileName = "app-${defaultConfig.versionName}-release-${releaseTime()}.apk"
+//                        output.outputFile = new File(outputFile.parent, fileName)
+//                    }
+//                }
+//            }
+//            android.applicationVariants.all { variant ->
+//                variant.outputs.all {
+//                    outputFileName = "app-${variant.productFlavors[0].name}_v${variant.versionName}-${variant.versionCode}-release-${releaseTime()}.apk"
+//                }
+//            }
         }
     }
+
+//    productFlavors {
+//        guanwang {}
+//        xiaomi {}
+//        android360 {}
+//        huawei {}
+//        yingyongbao {}
+//        vivo {}
+////        googleplay {}
+////        wandoujia {}
+////        baidu {}
+////        android360 {}
+////        uc {}
+////        umeng {}
+////        meizu {}
+//        // 批量配置
+//        productFlavors.all { flavor ->
+//            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+//        }
+//    }
+
     sourceSets {
         main {
             res.srcDirs =
@@ -128,6 +223,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    dexOptions {
+        javaMaxHeapSize "1g"
+        preDexLibraries = false
+        // 配置multidex参数
+        additionalParameters = [
+                '--multi-dex',// 多dex分包
+                '--set-max-idx-number=30000',// 每个包内方法数上限
+                '--main-dex-list=' + projectDir + '/main-dex-rule', // 打包到主classes.dex的文件列表
+                '--minimal-main-dex'
+        ]
+    }
 }
 
 dependencies {
@@ -152,8 +258,6 @@ dependencies {
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
     //圆圈loading
     implementation 'com.pnikosis:materialish-progress:1.7'
-    //分包
-    //    compile 'com.android.support:multidex:1.0.3'
     // 底部时间选择器
     implementation 'com.contrarywind:Android-PickerView:4.1.6'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
@@ -161,4 +265,9 @@ dependencies {
     implementation 'com.meituan.android.walle:library:1.1.6'
     implementation 'org.jetbrains:annotations:15.0'
     implementation project(':swipebacklayout')
+}
+
+static def releaseTime() {
+    Date date = new Date()
+    return date.format("yyyyMMddHHmm", TimeZone.getDefault())
 }
