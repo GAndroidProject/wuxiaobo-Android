@@ -92,16 +92,18 @@ public class ChildViewHolder extends BaseViewHolder {
         }
 
 		if(resourceEquals){
-			int hightColor = mContext.getResources().getColor(R.color.high_title_color);
-			text.setTextColor(hightColor);
-			playLength.setTextColor(hightColor);
+			int color;
 			if(AudioMediaPlayer.isPlaying() || playEntity.isPlaying()){
 				playEntity.setPlaying(true);
 				playIcon.setImageResource(R.mipmap.audiolist_playing);
+				color = mContext.getResources().getColor(R.color.high_title_color);
 			}else{
 				playEntity.setPlaying(false);
 				playIcon.setImageResource(R.mipmap.class_play);
+				color = mContext.getResources().getColor(R.color.main_title_color);
 			}
+			text.setTextColor(color);
+			playLength.setTextColor(color);
 		}else{
 			text.setTextColor(mContext.getResources().getColor(R.color.main_title_color));
 			playLength.setTextColor(mContext.getResources().getColor(R.color.secondary_title_color));

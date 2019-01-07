@@ -149,6 +149,12 @@ public class MemberFragment extends BaseFragment implements View.OnClickListener
             directoryAdapter = new TreeChildRecyclerAdapter(getContext(), this);
         }
         directoryAdapter.refreshData(list);
+        if (playList.size() > 0) {
+            playList.clear();
+            setAudioPlayList(list);
+        } else {
+            setAudioPlayList(list);
+        }
     }
 
     public void clearData(){
