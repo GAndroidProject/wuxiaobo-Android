@@ -101,8 +101,8 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
     MainActivity mainActivity;
 
-    // 去掉奖学金与积分的请求接口
-//    EarningPresenter earningPresenter;
+    // 去掉奖学金与积分的请求接口（重新放开，用于请求账户波豆余额）
+    EarningPresenter earningPresenter;
     MineLearningPresenter mineLearningPresenter;
 
     String balance;
@@ -228,14 +228,15 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     protected void onFragmentFirstVisible() {
         super.onFragmentFirstVisible();
-//        if (earningPresenter == null) {
-//            earningPresenter = new EarningPresenter(this);
-//        }
+        if (earningPresenter == null) {
+            earningPresenter = new EarningPresenter(this);
+        }
         isScholarshipFinish = false;
         isIntegralFinish = false;
         isMineLearningFinish = false;
 //        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
 //        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+        earningPresenter.requestAccountBalance();
         if (!mainActivity.isFormalUser) {
 
             touristDialog = new TouristDialog(getActivity());
@@ -557,8 +558,12 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                     mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof EarningRequest) {
-                String assetType = (String) iRequest.getFormBody().get("asset_type");
-                updateMoney(result, assetType);
+                if (iRequest.getRequestTag().equals(EarningPresenter.BALANCE_TAG)) {
+                    updateBalance(result);
+                } else {
+                    String assetType = (String) iRequest.getFormBody().get("asset_type");
+                    updateMoney(result, assetType);
+                }
             } else if (iRequest instanceof MineLearningRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
@@ -598,6 +603,17 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             }
         }
         mineRefresh.finishRefresh();
+    }
+
+    /**
+     * 更新波豆余额
+     * @param result 返回数据对象
+     */
+    private void updateBalance(JSONObject result) {
+        JSONObject data = (JSONObject) result.get("data");
+        JSONObject balance = (JSONObject) data.get("balance");
+        String realBalance = String.format("%1.2f",((float) balance.getInteger("2")) / 100);
+        mineBoBiAmount.setText(realBalance);
     }
 
     // 更新奖学金和积分
@@ -786,18 +802,22 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
             // 成功切换身份，重新请求接口，刷新界面
             initMineMsg();
-//            if (earningPresenter == null) {
-//                earningPresenter = new EarningPresenter(this);
-//            }
             if (superVipPresenter == null) {
                 superVipPresenter = new SuperVipPresenter(this);
             }
             isScholarshipFinish = false;
             isIntegralFinish = false;
             isMineLearningFinish = false;
+            superVipPresenter.requestSuperVip();
+        }
+        if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isHasBalanceChange()) {
+            // 2019.1.07 身份发生改变事件增加了余额改变字段，若放开奖学金后，需要使用这个字段对奖学金和积分进行刷新
+            if (earningPresenter == null) {
+                earningPresenter = new EarningPresenter(this);
+            }
 //            earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
 //            earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-            superVipPresenter.requestSuperVip();
+            earningPresenter.requestAccountBalance();
         }
     }
 
@@ -921,14 +941,15 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-//        if (earningPresenter == null) {
-//            earningPresenter = new EarningPresenter(this);
-//        }
+        if (earningPresenter == null) {
+            earningPresenter = new EarningPresenter(this);
+        }
         if (mineLearningPresenter == null) {
             mineLearningPresenter = new MineLearningPresenter(this);
         }
 //        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
 //        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+        earningPresenter.requestAccountBalance();
         mineLearningPresenter.requestLearningData(1, 1);
         if (superVipPresenter == null) {
             superVipPresenter = new SuperVipPresenter(this);

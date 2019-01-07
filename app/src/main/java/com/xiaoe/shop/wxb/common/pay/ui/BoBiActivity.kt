@@ -1,32 +1,32 @@
 package com.xiaoe.shop.wxb.common.pay.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
+import android.text.Html
 import android.view.View
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.google.gson.Gson
-import com.xiaoe.common.entitys.AmountItemEntity
-import com.xiaoe.common.entitys.AmountDataItem
-import com.xiaoe.common.entitys.PrepaidBuyEntity
-import com.xiaoe.common.entitys.PrepaidEntity
+import com.scwang.smartrefresh.layout.api.RefreshLayout
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener
+import com.xiaoe.common.entitys.*
 import com.xiaoe.common.interfaces.OnItemClickWithAmountListener
 import com.xiaoe.common.utils.Dp2Px2SpUtil
 import com.xiaoe.common.utils.SharedPreferencesUtil
 import com.xiaoe.network.NetworkCodes
-import com.xiaoe.network.requests.IRequest
-import com.xiaoe.network.requests.PrepaidBuyRequest
-import com.xiaoe.network.requests.PrepaidRequest
-import com.xiaoe.network.requests.TopUpListRequest
+import com.xiaoe.network.requests.*
 import com.xiaoe.shop.wxb.R
 
 import com.xiaoe.shop.wxb.base.XiaoeActivity
+import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter
 import com.xiaoe.shop.wxb.business.search.presenter.SpacesItemDecoration
 import com.xiaoe.shop.wxb.common.JumpDetail
 import com.xiaoe.shop.wxb.common.pay.presenter.AmountAdapter
 import com.xiaoe.shop.wxb.common.pay.presenter.PayPresenter
 import kotlinx.android.synthetic.main.activity_bo_bi.*
+import kotlinx.android.synthetic.main.bo_bi_balance_view.*
 import kotlinx.android.synthetic.main.bo_bi_tip_view.*
 import kotlinx.android.synthetic.main.bo_bi_top_up_view.*
 import kotlinx.android.synthetic.main.common_title_view.*
@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.pay_ali_item.*
 import kotlinx.android.synthetic.main.pay_selector_view.*
 import kotlinx.android.synthetic.main.pay_title_view.*
 import kotlinx.android.synthetic.main.pay_we_chat_item.*
+import org.greenrobot.eventbus.EventBus
 import java.lang.Exception
 
 
@@ -41,7 +42,7 @@ import java.lang.Exception
  * @author: zak
  * @date: 2018/12/28
  */
-class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
+class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener, OnRefreshListener {
 
     private val payByWeChat: Int = 0
     private val payByAliPay: Int = 1
@@ -50,6 +51,7 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
     private lateinit var amountAdapter: AmountAdapter
     private lateinit var decorate: SpacesItemDecoration
     private lateinit var payPresenter: PayPresenter
+    private lateinit var earningPresenter: EarningPresenter
     private val topUpList:MutableList<AmountDataItem> = mutableListOf()
     private var selectMoney: Int = 0
     private var productId: String = ""
@@ -62,7 +64,9 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
         setContentView(R.layout.activity_bo_bi)
 
         payPresenter = PayPresenter(this, this)
+        earningPresenter = EarningPresenter(this)
         payPresenter.getTopUpList()
+        earningPresenter.requestAccountBalance()
 
         initData()
         initView()
@@ -77,6 +81,9 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
     }
 
     private fun initView() {
+        boBiRefresh.setOnRefreshListener(this)
+        boBiRefresh.setEnableLoadMore(false)
+
         title_back.setOnClickListener { onBackPressed() }
 
         title_end.setOnClickListener { JumpDetail.jumpAccountDetail(this) }
@@ -85,6 +92,7 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
             confirmMoney.text = String.format(getString(R.string.confirm_money), selectMoney)
             payPresenter.prepaidMsg(productId)
             paySelectorView.visibility = View.VISIBLE
+            confirmPay.isClickable = false
         }
 
         payBg.setOnClickListener { paySelectorView.visibility = View.GONE }
@@ -110,13 +118,15 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
         }
 
         confirmPay.setOnClickListener {
-            val payWay: Int = if (weChatItemIcon.drawable.constantState == ContextCompat.getDrawable(this, R.mipmap.download_checking).constantState) {
-                payByWeChat
-            } else {
-                payByAliPay
-            }
-            if (payWay != -1) {
-                payPresenter.prepaidBuyMsg(preOrderId, payWay)
+            if (!isPaying) {
+                val payWay: Int = if (weChatItemIcon.drawable.constantState == ContextCompat.getDrawable(this, R.mipmap.download_checking).constantState) {
+                    payByWeChat
+                } else {
+                    payByAliPay
+                }
+                if (payWay != -1) {
+                    payPresenter.prepaidBuyMsg(preOrderId, payWay)
+                }
             }
         }
     }
@@ -133,10 +143,13 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
             if (code == 0) { // 支付成功回调
                 if (paySelectorView.visibility == View.VISIBLE) {
                     paySelectorView.visibility = View.GONE
-                    // TODO: 请求波币余额接口
                 }
+                earningPresenter.requestAccountBalance()
+                val changeLoginIdentityEvent = ChangeLoginIdentityEvent()
+                changeLoginIdentityEvent.isHasBalanceChange = true
+                EventBus.getDefault().post(changeLoginIdentityEvent)
             } else {
-//                SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100)
+                SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100)
             }
             dialog.dismissDialog()
         }
@@ -146,6 +159,10 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
         selectMoney = amountDataItem?.price ?: 6
         productId = amountDataItem?.productId!!
         amountAdapter.refreshItemStyle(position)
+    }
+
+    override fun onRefresh(refreshLayout: RefreshLayout) {
+        earningPresenter.requestAccountBalance()
     }
 
     override fun onBackPressed() {
@@ -181,6 +198,7 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
                 val result = Gson().fromJson(entity.toString(), PrepaidEntity::class.java)
                 if (result.code == NetworkCodes.CODE_SUCCEED) {
                     preOrderId = result.data.orderId
+                    confirmPay.isClickable = true
                 } else {
                     // TODO: 获取预支付订单失败
                 }
@@ -207,6 +225,22 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
                 e.printStackTrace()
                 val jsonObject = entity as JSONObject
                 Toast(jsonObject["msg"].toString())
+            }
+            // 获取账户波豆余额
+            is EarningRequest -> try {
+                boBiRefresh.finishRefresh()
+                val result = Gson().fromJson(entity.toString(), BalanceEntity::class.java)
+                val balanceStart = "<font color='#FFFFFF'><big>"
+                val balanceEnd = "</big></font>"
+                val balance = String.format("%1.2f", result.data.balance.getInteger("2").toFloat() / 100)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    boBiBalanceContent.text = Html.fromHtml(String.format(getString(R.string.balance_str), balanceStart, balance, balanceEnd), Html.FROM_HTML_MODE_COMPACT)
+                } else {
+                    boBiBalanceContent.text = Html.fromHtml(String.format(getString(R.string.balance_str), balanceStart, balance, balanceEnd))
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }

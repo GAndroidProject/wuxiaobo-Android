@@ -34,7 +34,6 @@
         android:id="@+id/mine_bo_bi_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="90.10"
         android:textSize="14sp"
         android:textColor="@color/scholarship_bg_start"/>
 

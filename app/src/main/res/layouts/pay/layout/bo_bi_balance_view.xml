@@ -29,7 +29,6 @@
         android:id="@+id/boBiBalanceContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="980.00 波豆"
         android:textSize="18sp"
         android:textColor="@color/white"
         android:layout_marginTop="4dp"

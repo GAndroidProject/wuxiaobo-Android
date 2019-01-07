@@ -505,4 +505,5 @@
     <string name="confirm_money">￥ %d</string>
     <string name="confirm_ali_icon_desc">支付宝支付图标</string>
     <string name="confirm_we_chat_pay_icon">微信支付图标</string>
+    <string name="balance_str">%s%s%s 波豆</string>
 </resources>
