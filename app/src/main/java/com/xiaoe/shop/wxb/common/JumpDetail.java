@@ -16,6 +16,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
+import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
 import com.xiaoe.shop.wxb.business.audio.ui.AudioNewActivity;
 import com.xiaoe.shop.wxb.business.bought_list.ui.BoughtListActivity;
 import com.xiaoe.shop.wxb.business.cdkey.ui.CdKeyActivity;
@@ -51,6 +52,8 @@ import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 
 import java.io.File;
 
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
+
 public class JumpDetail {
     private static final String TAG = "JumpDetail";
 
@@ -69,6 +72,9 @@ public class JumpDetail {
             flowId = playEntity.getFlowId();
         }
         if(!(resourceId.equals(resId) || (!TextUtils.isEmpty(flowId) && flowId.equals(resId))) || AudioPlayUtil.getInstance().isCloseMiniPlayer()){
+            if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+            }
             AudioMediaPlayer.stop();
 
             playEntity = new AudioPlayEntity();
@@ -134,15 +140,30 @@ public class JumpDetail {
      * @param context
      * @param resId
      */
-    public static void jumpVideo(Context context, String resId, String videoImageUrl, boolean localResource, String columnId){
+    public static void jumpVideo(Context context, String resId, String videoImageUrl,
+                                 boolean localResource, String columnId,String requestNextVideoResId,int index){
         Intent intent = new Intent(context, VideoActivity.class);
         intent.putExtra("resourceId", resId);
         if(!TextUtils.isEmpty(videoImageUrl)){
             intent.putExtra("videoImageUrl", videoImageUrl);
         }
+        if (index > 0)
+            intent.putExtra("videoIndex", index);
+        if (!TextUtils.isEmpty(requestNextVideoResId))
+            intent.putExtra("requestNextVideoResId",requestNextVideoResId);
         intent.putExtra("local_resource", localResource);
         intent.putExtra("columnId", columnId);
         context.startActivity(intent);
+    }
+
+    /**
+     * 跳转视频详情
+     * @param context
+     * @param resId
+     */
+    public static void jumpVideo(Context context, String resId, String videoImageUrl,
+                                 boolean localResource, String columnId){
+        jumpVideo(context,resId,videoImageUrl,localResource,columnId,"",-1);
     }
     public static void jumpImageText(Context context, String resId, String imageUrl, String columnId){
         Intent intent = new Intent(context, CourseImageTextActivity.class);

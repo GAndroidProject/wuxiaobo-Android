@@ -3,9 +3,12 @@ package com.xiaoe.shop.wxb.business.video.ui;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -15,19 +18,27 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.business.audio.presenter.CountDownTimerTool;
+import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
 import com.xiaoe.shop.wxb.business.video.presenter.VideoPlayer;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
-
 import org.greenrobot.eventbus.EventBus;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_30;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_60;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CLOSE;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_TIME;
 
 public class VideoPlayControllerView extends FrameLayout implements View.OnClickListener,SeekBar.OnSeekBarChangeListener, MediaPlayer.OnPreparedListener {
     private static final String TAG = "VideoPlayControllerView";
@@ -57,6 +68,31 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private boolean isTouchSeekBar;
     private ImageView btnDownload;
     private PowerManager.WakeLock mWakeLock;
+
+    private View mCountDownView,mSpeedPlayView;
+    private List<TextView> mCountDownTexts,mSpeedPlayTexts;
+    private float mSpeedPlay = 1.0f;
+    private int mSpeedPlayPosition = 1;
+    private IPlayNext mIPlayNext;
+
+    public void retSet() {
+        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+            MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+        }
+        mSpeedPlay = 1.0f;
+        mSpeedPlayPosition = 1;
+        updateSpeedPlayTexts();
+        updateCountDownText();
+        pause();
+    }
+
+    public void setIPlayNext(IPlayNext IPlayNext) {
+        mIPlayNext = IPlayNext;
+    }
+
+    public interface IPlayNext{
+        void onNext(boolean isAuto);
+    }
 
     public void setWakeLock(PowerManager.WakeLock wakeLock) {
         mWakeLock = wakeLock;
@@ -104,6 +140,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
         btnProgressPlay = (ImageView) findViewById(R.id.id_video_progress_play);
         btnProgressPlay.setOnClickListener(this);
+        findViewById(R.id.id_video_play_next).setOnClickListener(this);
         btnFullScreen = (ImageView) findViewById(R.id.id_full_screen_play);
         btnFullScreen.setOnClickListener(this);
         currentPlayTime = (TextView) findViewById(R.id.id_current_play_time);
@@ -122,7 +159,92 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
         btnDownload = (ImageView) findViewById(R.id.btn_download);
         btnDownload.setOnClickListener(this);
+        findViewById(R.id.btn_countdown).setOnClickListener(this);
+        findViewById(R.id.btn_speed).setOnClickListener(this);
+
+        mSpeedPlayView = rootView.findViewById(R.id.speed_play_view);
+        mSpeedPlayView.setOnClickListener(this);
+        if (mSpeedPlayTexts == null){
+            mSpeedPlayTexts = new ArrayList<>();
+            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_0));
+            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_1));
+            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_2));
+            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_3));
+            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_4));
+        }
+        for (int i = 0; i < mSpeedPlayTexts.size(); i++) {
+            mSpeedPlayTexts.get(i).setOnClickListener(this);
+        }
+        updateSpeedPlayTexts();
+
+        mCountDownView = rootView.findViewById(R.id.count_down_view);
+        mCountDownView.setOnClickListener(this);
+        if (mCountDownTexts == null) {
+            if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+            }
+            mCountDownTexts = new ArrayList<>();
+            mCountDownTexts.add((TextView) rootView.findViewById(R.id.video_countdown_text_1));
+            mCountDownTexts.add((TextView) rootView.findViewById(R.id.video_countdown_text_2));
+            mCountDownTexts.add((TextView) rootView.findViewById(R.id.video_countdown_text_3));
+            mCountDownTexts.add((TextView) rootView.findViewById(R.id.video_countdown_text_4));
+        }
+
+        for (int i = 0; i < mCountDownTexts.size(); i++) {
+            mCountDownTexts.get(i).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()){
+                        case R.id.video_countdown_text_1:
+                            countDown(COUNT_DOWN_STATE_CLOSE, 0);
+                            break;
+                        case R.id.video_countdown_text_2:
+                            countDown(COUNT_DOWN_STATE_CURRENT, 0);
+                            break;
+                        case R.id.video_countdown_text_3:
+                            countDown(COUNT_DOWN_STATE_TIME, COUNT_DOWN_DURATION_30);
+                            break;
+                        case R.id.video_countdown_text_4:
+                            countDown(COUNT_DOWN_STATE_TIME, COUNT_DOWN_DURATION_60);
+                            break;
+                    }
+                }
+            });
+        }
+
     }
+
+    private void countDown(int state, int duration) {
+        if (mCountDownView != null && VISIBLE == mCountDownView.getVisibility())
+            mCountDownView.setVisibility(GONE);
+        switch (state){
+            case COUNT_DOWN_STATE_CURRENT:
+                MediaPlayerCountDownHelper.INSTANCE.choiceCurrentPlayFinished();
+                break;
+            case COUNT_DOWN_STATE_TIME:
+                MediaPlayerCountDownHelper.INSTANCE.startCountDown(duration,null);
+                break;
+            case COUNT_DOWN_STATE_CLOSE:
+            default:
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+                break;
+        }
+    }
+
+    CountDownTimerTool.CountDownCallBack mCountDownCallBack = new CountDownTimerTool.CountDownCallBack() {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (mCountDownView != null && VISIBLE == mCountDownView.getVisibility()){
+                updateCountDownText();
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            pause();
+            updateCountDownText();
+        }
+    };
 
     public void setPreviewImage(String imageUrl){
         previewImage.setImageURI(Uri.parse(imageUrl));
@@ -153,6 +275,9 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             case R.id.id_video_progress_play:
                 clickPlayView();
                 break;
+            case R.id.id_video_play_next:
+                if (mIPlayNext != null)   mIPlayNext.onNext(false);
+                break;
             case R.id.id_full_screen_play:
                 clickFullScreen();
                 break;
@@ -161,8 +286,99 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                     clickVideoBackListener.onVideoButton(v, VideoPlayConstant.VIDEO_STATE_DOWNLOAD);
                 }
                 break;
+            case R.id.btn_speed:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    mSpeedPlayView.setVisibility(VISIBLE);
+                    updateSpeedPlayTexts();
+                }else  Toast.makeText(mContext,mContext.getString(R.string.speed_play_not_support),
+                        Toast.LENGTH_SHORT).show();
+
+                break;
+            case R.id.btn_countdown:
+                mCountDownView.setVisibility(VISIBLE);
+                updateCountDownText();
+
+                MediaPlayerCountDownHelper.INSTANCE.setMCountDownCallBack(mCountDownCallBack);
+                break;
+            case R.id.count_down_view:
+                mCountDownView.setVisibility(GONE);
+                break;
+            case R.id.speed_play_view:
+                mSpeedPlayView.setVisibility(GONE);
+                break;
+            case R.id.btn_speed_play_0:
+                mSpeedPlay = 0.75f;
+                mSpeedPlayPosition = 0;
+                changeSpeedPlay();
+                break;
+            case R.id.btn_speed_play_1:
+                mSpeedPlay = 1.0f;
+                mSpeedPlayPosition = 1;
+                changeSpeedPlay();
+                break;
+            case R.id.btn_speed_play_2:
+                mSpeedPlay = 1.25f;
+                mSpeedPlayPosition = 2;
+                changeSpeedPlay();
+                break;
+            case R.id.btn_speed_play_3:
+                mSpeedPlay = 1.5f;
+                mSpeedPlayPosition = 3;
+                changeSpeedPlay();
+                break;
+            case R.id.btn_speed_play_4:
+                mSpeedPlay = 2.0f;
+                mSpeedPlayPosition = 4;
+                changeSpeedPlay();
+                break;
             default:
                 break;
+        }
+    }
+
+    private void changeSpeedPlay() {
+        if (mSpeedPlayView != null && VISIBLE == mSpeedPlayView.getVisibility())
+            mSpeedPlayView.setVisibility(GONE);
+        if (mVideoPlayer == null || !isPrepareMedia)   return;
+        boolean isChange = mVideoPlayer.changeSpeedPlay(mSpeedPlay);
+        if (!isChange) {
+            Toast.makeText(mContext,mContext.getString(R.string.speed_play_fail),Toast.LENGTH_SHORT).show();
+            return;
+        }else {
+            if (!mVideoPlayer.isPlaying()){
+                clickPlayView();
+            }
+            setPlayState(VideoPlayConstant.VIDEO_STATE_PLAY);
+        }
+        updateSpeedPlayTexts();
+    }
+
+    private void updateSpeedPlayTexts() {
+        if (mSpeedPlayTexts == null)    return;
+        for (int i = 0; i < mSpeedPlayTexts.size(); i++) {
+            int color = i == mSpeedPlayPosition ? ContextCompat.getColor(mContext,R.color.scholarship_btn_press) :
+                    ContextCompat.getColor(mContext,R.color.white);
+            mSpeedPlayTexts.get(i).setTextColor(color);
+        }
+    }
+
+    private void updateCountDownText() {
+        if (mCountDownTexts == null || mCountDownTexts.isEmpty())   return;
+        int position = MediaPlayerCountDownHelper.INSTANCE.getMVideoSelectedPosition();
+        for (int i = 0; i < mCountDownTexts.size(); i++) {
+            TextView textView = mCountDownTexts.get(i);
+            int color = i == position ? ContextCompat.getColor(mContext,R.color.scholarship_btn_press) :
+                    ContextCompat.getColor(mContext,R.color.white);
+            textView.setTextColor(color);
+            String text = "";
+            if (2 == i){
+                text = 2 == position ? MediaPlayerCountDownHelper.INSTANCE.getCountText() :
+                        mContext.getString(R.string.video_count_down_item_3);
+            }else if (3 == i){
+                text = 3 == position ? MediaPlayerCountDownHelper.INSTANCE.getCountText() :
+                        mContext.getString(R.string.video_count_down_item_4);
+            }
+            if (!TextUtils.isEmpty(text))   textView.setText(text);
         }
     }
 
@@ -245,6 +461,8 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         EventBus.getDefault().post(videoPlayEvent);
 
         initPlayListener();
+
+        mVideoPlayer.changeSpeedPlay(mSpeedPlay);
     }
 
     private void initPlayListener() {
@@ -252,6 +470,12 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             @Override
             public void onCompletion(MediaPlayer mp) {
                 setPlayState(VideoPlayConstant.VIDEO_STATE_PAUSE);
+                if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+                    MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+                }else {
+                    if (mIPlayNext != null)   mIPlayNext.onNext(true);
+                }
+
             }
         });
         if (mTimer == null){

@@ -112,7 +112,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     TouristDialog touristDialog;
 
 //    boolean hasBuy;
-    String realSrcId;
+    public String realSrcId;
     private MiniAudioPlayControllerLayout miniAudioPlayControllerLayout;//悬浮音频播放器
     private int resourceType;//8-大专栏，6-小专栏，5-会员
     private TextView memberExpireTime;

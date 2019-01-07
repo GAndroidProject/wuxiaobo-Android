@@ -14,7 +14,7 @@ import java.util.List;
 
 public class AudioPlayUtil {
     private static final String TAG = "AudioPlayUtil";
-    private List<AudioPlayEntity> audioList;
+    private List<AudioPlayEntity> audioList,audioListNew;
     private static AudioPlayUtil audioPlayUtil = null;
     private boolean singleAudio = true; // 是否是单品音频，专栏列表中资源一个音频不属于单品，
     private String fromTag = "";
@@ -35,10 +35,22 @@ public class AudioPlayUtil {
         return audioList;
     }
 
+    public List<AudioPlayEntity> getAudioListNew() {
+        if (audioListNew == null)
+            audioListNew = new ArrayList<AudioPlayEntity>();
+        return audioListNew;
+    }
+
     public void setAudioList(List<AudioPlayEntity> audioList) {
         this.audioList = audioList;
         deleteCache();
         addCache();
+    }
+
+    public void setAudioList2(List<AudioPlayEntity> audioList) {
+        this.audioListNew = audioList;
+        if (audioList != null && audioList.size() > 0)
+            AudioMediaPlayer.mCurrentColumnId = audioList.get(0).getColumnId();
     }
 
     public void addAudio(AudioPlayEntity audio){
@@ -47,23 +59,23 @@ public class AudioPlayUtil {
         }
         this.audioList.add(audio);
     }
-    public void addAudio(List<AudioPlayEntity> audioList){
-        if(audioList != null && audioList.size() > 0){
-            this.audioList.addAll(audioList);
-            SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
-            for (AudioPlayEntity audioPlayEntity : audioList){
-                String querySQL = "select * from "+ AudioPlayTable.TABLE_NAME + " where app_id=? and user_id=? and resource_id=?";
-                List list = sqLiteUtil.query(AudioPlayTable.TABLE_NAME, querySQL, new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audioPlayEntity.getResourceId()});
-                if(list != null && list.size() > 0){
-                    String updateWhereSQL = "app_id=? and user_id=? and resource_id=?";
-                    sqLiteUtil.update(AudioPlayTable.TABLE_NAME, audioPlayEntity, updateWhereSQL, new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audioPlayEntity.getResourceId()});
-                }else{
-                    sqLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioPlayEntity);
-                }
-            }
-
-        }
-    }
+//    public void addAudio(List<AudioPlayEntity> audioList){
+//        if(audioList != null && audioList.size() > 0){
+//            this.audioList.addAll(audioList);
+//            SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new AudioSQLiteUtil());
+//            for (AudioPlayEntity audioPlayEntity : audioList){
+//                String querySQL = "select * from "+ AudioPlayTable.TABLE_NAME + " where app_id=? and user_id=? and resource_id=?";
+//                List list = sqLiteUtil.query(AudioPlayTable.TABLE_NAME, querySQL, new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audioPlayEntity.getResourceId()});
+//                if(list != null && list.size() > 0){
+//                    String updateWhereSQL = "app_id=? and user_id=? and resource_id=?";
+//                    sqLiteUtil.update(AudioPlayTable.TABLE_NAME, audioPlayEntity, updateWhereSQL, new String[]{Constants.getAppId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId(), audioPlayEntity.getResourceId()});
+//                }else{
+//                    sqLiteUtil.insert(AudioPlayTable.TABLE_NAME, audioPlayEntity);
+//                }
+//            }
+//
+//        }
+//    }
 
     public void refreshAudio(AudioPlayEntity audio){
         if(this.audioList == null){

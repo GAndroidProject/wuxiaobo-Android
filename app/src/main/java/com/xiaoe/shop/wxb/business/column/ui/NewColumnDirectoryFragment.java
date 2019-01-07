@@ -1,5 +1,6 @@
 package com.xiaoe.shop.wxb.business.column.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -59,6 +60,7 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
     private List<MultiItemEntity> tempList;
     private boolean isAddList = false;
     private String resourceId;
+    private String realSrcId;
     private ColumnPresenter mColumnPresenter;
     private int recordPlayPage = 1;//记录播放资源所在小专栏中属于哪一页的数据
 
@@ -209,8 +211,8 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
                             && level.getBigColumnId().equals(AudioMediaPlayer.getAudio().getBigColumnId())
                             && level.getResource_id().equals(AudioMediaPlayer.getAudio().getColumnId());
                     if(resourceEquals){
-                        List<AudioPlayEntity> playList = getAudioPlayList(expandableItems, AudioPlayUtil.getInstance().getAudioList().size());
-                        AudioPlayUtil.getInstance().addAudio(playList);
+//                        List<AudioPlayEntity> playList = getAudioPlayList(expandableItems, AudioPlayUtil.getInstance().getAudioList().size());
+//                        AudioPlayUtil.getInstance().addAudio(playList);
                     }
                     break;
                 }
@@ -482,7 +484,21 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
                 JumpDetail.jumpAudio(getContext(), resourceId, 1);
             }else if(resourceType == 3){
                 //视频
-                JumpDetail.jumpVideo(getContext(), resourceId, "",false, itemData.getColumnId());
+                int parentPosition= directoryAdapter.getParentPosition(itemData);
+                ExpandableLevel level = (ExpandableLevel) directoryAdapter.getData().get(parentPosition);
+                int index = 0;
+                for (int i = 0; i < level.getSubItems().size(); i++) {
+                    if (3 == level.getSubItems().get(i).getResource_type()){
+                        index++;
+                        if (resourceId == level.getSubItems().get(i).getResource_id())
+                            break;
+                    }
+                }
+                Activity activity = getActivity();
+                if (activity != null && activity instanceof ColumnActivity)
+                    realSrcId = ((ColumnActivity)activity).realSrcId;
+                JumpDetail.jumpVideo(getContext(), resourceId, "",false,
+                        itemData.getColumnId(),realSrcId,index);
             }else{
                 toastCustom(getString(R.string.unknown_course));
             }
@@ -640,4 +656,5 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
     }
+
 }

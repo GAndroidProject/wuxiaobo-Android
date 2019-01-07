@@ -75,13 +75,20 @@ public class TasksCompletedView extends View {
         mXCenter = getWidth() / 2;
         mYCenter = getHeight() / 2;
 
-        if (mProgress > 0 ) {
+        if (mProgress > 0 && mTotalProgress != 0) {
             RectF oval = new RectF();
             oval.left = (mXCenter - mRingRadius);
             oval.top = (mYCenter - mRingRadius);
             oval.right = mRingRadius * 2 + (mXCenter - mRingRadius);
             oval.bottom = mRingRadius * 2 + (mYCenter - mRingRadius);
-            canvas.drawArc(oval, -90, ((float)mProgress / mTotalProgress) * 360, false, mRingPaint); //
+
+            try {
+                canvas.drawArc(oval, -90, ((float) mProgress / mTotalProgress) * 360,
+                        false, mRingPaint); //
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
     }
     public void setMaxProgress(int totalProgress){

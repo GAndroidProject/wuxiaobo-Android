@@ -33,9 +33,13 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.util.List;
 
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CLOSE;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_TIME;
+
 public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnErrorListener {
+        MediaPlayer.OnErrorListener{
     private static final String TAG = "AudioMediaPlayer";
     private static final int MSG_PLAY_PROGRESS = 80001;
     public static MediaPlayer mediaPlayer;
@@ -46,6 +50,34 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public static float mPlaySpeed = 1f;//播放倍数
     private static AudioFocusManager audioFocusManager;
     private static boolean isSaveProgress = true;
+    private static CountDownTimerTool.CountDownCallBack mCountDownCallBack;
+    public static String mCurrentColumnId = "";
+    public static int mCurrentPage = -1;
+    public static boolean isHasMoreData = true;
+
+    public static void setCountDownCallBack(CountDownTimerTool.CountDownCallBack countDownCallBack) {
+        mCountDownCallBack = countDownCallBack;
+        if (countDownCallBack != null && MediaPlayerCountDownHelper.INSTANCE.getMCountDownCallBack() == null){
+            MediaPlayerCountDownHelper.INSTANCE.setMCountDownCallBack(countDownCallBack);
+        }
+    }
+
+    private static CountDownTimerTool.CountDownCallBack countDownCallBack =
+            new CountDownTimerTool.CountDownCallBack() {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (mCountDownCallBack != null)
+                mCountDownCallBack.onTick(millisUntilFinished);
+        }
+
+        @Override
+        public void onFinish() {
+            if (mCountDownCallBack != null)
+                mCountDownCallBack.onFinish();
+            if (isPlaying())
+                play();
+        }
+    };
 
     @SuppressLint("HandlerLeak")
     private static Handler mHandler = new Handler(){
@@ -117,6 +149,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         changePlayerSpeed(mPlaySpeed);
         EventBus.getDefault().post(event);
         mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
+        MediaPlayerCountDownHelper.INSTANCE.setMCountDownCallBack(countDownCallBack);
 
         if (audio != null && audio.getProgress() > 0)
             mediaPlayer.seekTo(audio.getProgress());
@@ -139,6 +172,11 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         event.setState(AudioPlayEvent.STOP);
         EventBus.getDefault().post(event);
         isStop = true;
+        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState() && isPlaying()){
+            MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+            play();
+            return;
+        }
         if(audio.getIsTry() == 1){
             //如果是试听，播放
             Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
@@ -246,6 +284,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             mediaPlayer.release();
             mPlaySpeed = 1.0f;
             mediaPlayer = null;
+            MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+
         }
         prepared = false;
         event.setState(AudioPlayEvent.STOP);
@@ -348,6 +388,26 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     }
 
+    public static boolean startCountDown(int state,int duration){
+        switch (state){
+            case COUNT_DOWN_STATE_TIME:
+                MediaPlayerCountDownHelper.INSTANCE.startCountDown(duration,countDownCallBack);
+                break;
+            case COUNT_DOWN_STATE_CURRENT:
+                MediaPlayerCountDownHelper.INSTANCE.choiceCurrentPlayFinished();
+                break;
+            case COUNT_DOWN_STATE_CLOSE:
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+            default:
+                break;
+        }
+        return true;
+    }
+
+    public static boolean startCountDown(int state){
+        return startCountDown(state,0);
+    }
+
     public static boolean changePlayerSpeed(float speed) {
         // this checks on API 23 and up
         if (!prepared)    return false;
@@ -438,4 +498,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         audio.setProgress(progress);
         saveAudioDB();
     }
+
+
 }

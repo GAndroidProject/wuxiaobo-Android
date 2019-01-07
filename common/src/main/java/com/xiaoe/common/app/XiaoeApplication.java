@@ -66,7 +66,7 @@ public class XiaoeApplication extends Application {
         if (!TextUtils.isEmpty(packageName) && !packageName.equals(processName))//修复application会创建多次，初始化数据多次
             return;
         Global.g().setApplication(this);
-        isFormalCondition = true;
+        isFormalCondition = false;
         mContext = getApplicationContext();
         applicationContext = getApplicationContext();
         applicationHandler = new Handler(applicationContext.getMainLooper());
