@@ -131,7 +131,10 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener {
             isPaying = false
             val code = getWXPayCode(true)
             if (code == 0) { // 支付成功回调
-
+                if (paySelectorView.visibility == View.VISIBLE) {
+                    paySelectorView.visibility = View.GONE
+                    // TODO: 请求波币余额接口
+                }
             } else {
                 SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100)
             }
