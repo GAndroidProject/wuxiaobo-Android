@@ -77,7 +77,6 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     private var showDataByDB: Boolean = false
     private lateinit var downloadSingleAdapter: DownLoadListAdapter
     private lateinit var downloadGroupAdapter: DownLoadListAdapter
-    private lateinit var downloadAdapter: DownLoadListAdapter
     private lateinit var downloadList: MutableList<CommonDownloadBean>
     private var totalSelectedCount: Int = 0 // 全部选择的 item 数
     private var totalCount: Int = 0 // 某一个专栏下的全部课程数
@@ -133,7 +132,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             else -> toastCustom("资源类型有误..")
         }
         downloadList = mutableListOf()
-        downloadAdapter = DownLoadListAdapter(context)
+        downloadSingleAdapter = DownLoadListAdapter(context)
     }
 
     /**
@@ -250,7 +249,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         }
         val code = result.getInteger("code")
         allSelectBtn.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(context, R.mipmap.download_tocheck), null, null, null)
-        if (iRequest is ColumnListRequst) {
+        /*if (iRequest is ColumnListRequst) {
             if (code != NetworkCodes.CODE_SUCCEED) {
                 // TODO: 列表加载失败
                 Log.d(TAG, "onMainThreadResponse: 列表加载失败了..")
@@ -267,15 +266,15 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                     initGroup(resultArr)
                 }
             }
-        } else if (iRequest is DownloadListRequest) {
+        } else*/ if (iRequest is DownloadListRequest) {
             if (code != NetworkCodes.CODE_SUCCEED) {
                 Log.d(TAG, "onMainThreadResponse: 下载列表加载失败了..")
                 return
             }
             if (iRequest.requestTag == requestSingleTag) { // 请求单品的数据
-                initDownloadData(entity)
+                initDownloadSingleData(entity)
             } else if (iRequest.requestTag == requestGroupTag) { // 请求专栏的数据
-                // TODO: 初始化专栏的数据
+                initDownloadGroupData(entity)
             }
         }
     }
@@ -298,15 +297,15 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     /**
      * 初始化单品
      */
-    private fun initSingle(resultArr: JSONArray) {
-        for (result in resultArr) {
-            val commonDownloadBean = Gson().fromJson(result.toString(), CommonDownloadBean:: class.java)
-            downloadList.add(commonDownloadBean)
-        }
-        downloadSingleAdapter = DownLoadListAdapter(context, DownLoadListAdapter.SINGLE_TYPE, downloadList)
-        downloadSingleAdapter.setOnItemClickWithCdbItemListener(this)
-        downloadContent.adapter = downloadSingleAdapter
-    }
+//    private fun initSingle(resultArr: JSONArray) {
+//        for (result in resultArr) {
+//            val commonDownloadBean = Gson().fromJson(result.toString(), CommonDownloadBean:: class.java)
+//            downloadList.add(commonDownloadBean)
+//        }
+//        downloadSingleAdapter = DownLoadListAdapter(context, DownLoadListAdapter.SINGLE_TYPE, downloadList)
+//        downloadSingleAdapter.setOnItemClickWithCdbItemListener(this)
+//        downloadContent.adapter = downloadSingleAdapter
+//    }
 
     /**
      * 初始化非单品
@@ -321,9 +320,20 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     }
 
     /**
-     * 初始化下载数据
+     * 初始化专栏数据
+     *
+     * @param entity 返回的数据对象
      */
-    private fun initDownloadData(entity: Any) {
+    private fun initDownloadGroupData(entity: Any) {
+
+    }
+
+    /**
+     * 初始化下载数据
+     *
+     * @param entity 返回的数据对象
+     */
+    private fun initDownloadSingleData(entity: Any) {
         if (downloadList.size > 0) {
             downloadList.clear()
         }
@@ -350,10 +360,10 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             canMainLoadMore = false
             downloadRefresh.setEnableLoadMore(false)
         }
-        downloadAdapter.setInitType(DownLoadListAdapter.SINGLE_TYPE)
-        downloadAdapter.setNewData(downloadList)
-        downloadAdapter.setOnItemClickWithCdbItemListener(this)
-        downloadContent.adapter = downloadAdapter
+        downloadSingleAdapter.setInitType(DownLoadListAdapter.SINGLE_TYPE)
+        downloadSingleAdapter.setNewData(downloadList)
+        downloadSingleAdapter.setOnItemClickWithCdbItemListener(this)
+        downloadContent.adapter = downloadSingleAdapter
     }
 
     override fun onCommonDownloadBeanItemClick(view: View?, commonDownloadBean: CommonDownloadBean) {
