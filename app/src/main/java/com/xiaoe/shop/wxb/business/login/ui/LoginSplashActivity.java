@@ -98,7 +98,7 @@ public class LoginSplashActivity extends XiaoeActivity {
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int screenWidth = dm.widthPixels;
         int screenHeight = dm.heightPixels;
-        imageView.setImageBitmap(BitmapCut.ImageCropWithRect(bitmap, new Rect(0,0,screenWidth,screenHeight)));
+        imageView.setImageBitmap(BitmapCut.handleLoginImage(bitmap, new Rect(0 ,0,screenWidth,screenHeight)));
     }
 
     private void initView() {

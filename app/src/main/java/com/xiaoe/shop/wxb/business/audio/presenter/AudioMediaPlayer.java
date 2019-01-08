@@ -212,9 +212,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         mediaPlayer.reset();
         try {
             mediaPlayer.setDataSource(audio.getPlayUrl());
-        } catch (IOException ignored) {
+            mediaPlayer.prepareAsync();
+        } catch (IOException | IllegalStateException ignored) {
         }
-        mediaPlayer.prepareAsync();
         event.setState(AudioPlayEvent.LOADING);
         EventBus.getDefault().post(event);
         isStop = false;
