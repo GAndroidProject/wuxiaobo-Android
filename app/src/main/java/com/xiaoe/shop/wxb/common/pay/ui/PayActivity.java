@@ -26,6 +26,7 @@ import com.xiaoe.shop.wxb.business.coupon.presenter.CouponPresenter;
 import com.xiaoe.shop.wxb.business.coupon.ui.CouponFragment;
 import com.xiaoe.shop.wxb.business.coupon.ui.EmptyCouponFragment;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.pay.presenter.PayPresenter;
 import com.xiaoe.shop.wxb.interfaces.OnSelectCouponListener;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
@@ -225,13 +226,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
                 clickBack();
                 break;
             case R.id.confirmBuy:
-                if (payingFragment.isBoBiPayWay()) {
-                    toastCustom("波币支付");
-                } else if (payingFragment.isWeChatPayWay()) {
-                    buyResource();
-                } else if (payingFragment.isAliPayWay()) {
-                    toastCustom("支付宝支付");
-                }
+                buyResource();
                 break;
             case R.id.btn_go_to:
                 if (!TextUtils.isEmpty(productId)) { // 买超级会员就跳到个人中心
@@ -250,6 +245,13 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             return;
         }
         paying = true;
+        // 默认微信支付
+        int payWay = PayPresenter.PAY_WAY_DEFAULT;
+        if (payingFragment.isAliPayWay()) {
+            payWay = PayPresenter.PAY_WAY_ALI;
+        } else if (payingFragment.isBoBiPayWay()) {
+            payWay = PayPresenter.PAY_WAY_VIRTUAL;
+        }
         getDialog().showLoadDialog(false);
 //        int paymentType = (resourceType == 8 || resourceType == 6) ? 3 : 2;
         int paymentType;
@@ -262,16 +264,16 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         }
         if (!TextUtils.isEmpty(productId)) { // productId 不为空表示为超级会员的购买
             if (useCouponInfo != null) {
-                payOrder(resourceId, productId, resourceType, paymentType, useCouponInfo.getCu_id());
+                payOrder(resourceId, productId, payWay, resourceType, paymentType, useCouponInfo.getCu_id());
             } else {
-                payOrder(resourceId, productId, resourceType, paymentType, null);
+                payOrder(resourceId, productId, payWay, resourceType, paymentType, null);
             }
             return;
         }
         if(useCouponInfo != null){
-            payOrder(resourceId, resourceType, paymentType, useCouponInfo.getCu_id());
+            payOrder(resourceId, resourceType, payWay, paymentType, useCouponInfo.getCu_id());
         }else{
-            payOrder(resourceId, resourceType, paymentType, null);
+            payOrder(resourceId, resourceType, payWay, paymentType, null);
         }
     }
 

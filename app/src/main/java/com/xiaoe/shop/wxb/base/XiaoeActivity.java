@@ -515,18 +515,18 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
         return code;
     }
     //购买资源（下单）
-    public void payOrder(String resourceId, int resourceType, int paymentType, String couponId) {
+    public void payOrder(String resourceId, int resourceType, int payWay, int paymentType, String couponId) {
         if(payPresenter == null){
             payPresenter = new PayPresenter(this, this);
         }
-        payPresenter.payOrder(paymentType, resourceType, resourceId, resourceId, couponId);
+        payPresenter.payOrder(paymentType, resourceType, payWay, resourceId, resourceId, couponId);
     }
     // 购买超级会员（下单）
-    public void payOrder(String resourceId, String productId, int resourceType, int paymentType, String couponId) {
+    public void payOrder(String resourceId, String productId, int payWay, int resourceType, int paymentType, String couponId) {
         if (payPresenter == null) {
             payPresenter = new PayPresenter(this, this);
         }
-        payPresenter.payOrder(paymentType, resourceType, resourceId, productId, couponId);
+        payPresenter.payOrder(paymentType, resourceType, payWay, resourceId, productId, couponId);
     }
     //拉起微信支付
     public void pullWXPay(String appid, String partnerid, String prepayid, String noncestr, String timestamp, String packageValue, String sign){

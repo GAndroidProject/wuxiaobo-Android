@@ -18,6 +18,11 @@ import com.xiaoe.network.requests.TopUpListRequest;
 
 public class PayPresenter implements IBizCallback {
     private static final String TAG = "PayPresenter";
+
+    public static final int PAY_WAY_DEFAULT = 0; // 默认为微信支付
+    public static final int PAY_WAY_ALI = 1;     // 支付宝支付
+    public static final int PAY_WAY_VIRTUAL = 3; // 波豆支付
+
     private INetworkResponse iNetworkResponse;
     private IWXAPI wxapi;
     public PayPresenter(Context context, INetworkResponse iNetworkResponse) {
@@ -33,12 +38,13 @@ public class PayPresenter implements IBizCallback {
 
     /**
      * 下单支付
-     * @param paymentType
-     * @param resourceType
-     * @param resourceId
-     * @param productId
+     * @param paymentType  付费类型
+     * @param resourceType 资源类型
+     * @param payWay       支付方式
+     * @param resourceId   资源id
+     * @param productId    购买超级会员时才需要传，其他资源使用 resourceId
      */
-    public void payOrder(int paymentType, int resourceType, String resourceId, String productId, String couponId){
+    public void payOrder(int paymentType, int resourceType, int payWay, String resourceId, String productId, String couponId){
         PayOrderRequest payOrderRequest = new PayOrderRequest(this);
         payOrderRequest.addBUZDataParam("user_account_type", "0");
         payOrderRequest.addBUZDataParam("force_collection", "0");
@@ -46,6 +52,7 @@ public class PayPresenter implements IBizCallback {
         payOrderRequest.addBUZDataParam("resource_type", ""+resourceType);
         payOrderRequest.addBUZDataParam("resource_id", ""+resourceId);
         payOrderRequest.addBUZDataParam("product_id", ""+productId);
+        payOrderRequest.addBUZDataParam("pay_way", payWay);
         if(!TextUtils.isEmpty(couponId)){
             payOrderRequest.addBUZDataParam("cu_id", couponId);
         }
