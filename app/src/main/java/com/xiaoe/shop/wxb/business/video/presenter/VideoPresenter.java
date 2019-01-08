@@ -3,7 +3,7 @@ package com.xiaoe.shop.wxb.business.video.presenter;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.ContentRequest;
-import com.xiaoe.network.requests.DetailRequest;
+import com.xiaoe.network.requests.CourseDetailRequest;
 import com.xiaoe.network.requests.IRequest;
 
 public class VideoPresenter implements IBizCallback {
@@ -23,17 +23,18 @@ public class VideoPresenter implements IBizCallback {
      * 获取购买前商品详情
      */
     public void requestDetail(String resourceId){
-        DetailRequest detailRequest = new DetailRequest( this);
-        detailRequest.addDataParam("goods_id",resourceId);
-        detailRequest.addDataParam("goods_type",3);
-        detailRequest.setNeedCache(true);
-        detailRequest.setCacheKey(resourceId);
-        detailRequest.sendRequest();
+        CourseDetailRequest courseDetailRequest = new CourseDetailRequest( this);
+        courseDetailRequest.addDataParam("goods_id",resourceId);
+        courseDetailRequest.addDataParam("goods_type",3);
+        courseDetailRequest.setNeedCache(true);
+        courseDetailRequest.setCacheKey(resourceId);
+        courseDetailRequest.sendRequest();
     }
 
     /**
      * 获取购买后的资源内容
      */
+    @Deprecated
     public void requestContent(String resourceId){
         ContentRequest contentRequest = new ContentRequest( this);
         contentRequest.addRequestParam("resource_id",resourceId);

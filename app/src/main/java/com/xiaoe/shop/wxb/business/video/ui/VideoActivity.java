@@ -47,7 +47,7 @@ import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.requests.AddCollectionRequest;
 import com.xiaoe.network.requests.ColumnListRequst;
-import com.xiaoe.network.requests.DetailRequest;
+import com.xiaoe.network.requests.CourseDetailRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
 import com.xiaoe.shop.wxb.R;
@@ -506,12 +506,12 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             return;
         }
 
-        if(entity == null && iRequest instanceof DetailRequest && !showCacheData){
+        if(entity == null && iRequest instanceof CourseDetailRequest && !showCacheData){
             setPagerState(1);
             return;
         }
         JSONObject jsonObject = (JSONObject) entity;
-        if(iRequest instanceof DetailRequest){
+        if(iRequest instanceof CourseDetailRequest){
             detailRequest(jsonObject, false);
         }else if(iRequest instanceof AddCollectionRequest){
             addCollectionRequest(jsonObject);

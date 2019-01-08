@@ -16,7 +16,7 @@ import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.ContentRequest;
-import com.xiaoe.network.requests.DetailRequest;
+import com.xiaoe.network.requests.CourseDetailRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
@@ -36,7 +36,7 @@ public class AudioPresenter implements IBizCallback {
     @Override
     public void onResponse(final IRequest iRequest, final boolean success, final Object entity) {
         if (entity == null)   return;//修复报空指针
-        if(iRequest instanceof DetailRequest){
+        if(iRequest instanceof CourseDetailRequest){
             setAudioDetail(success, (JSONObject) entity, (String) iRequest.getDataParams().get("goods_id"), false);
         }else if(iRequest instanceof ContentRequest){
             setAudioContent(success, (JSONObject)entity);
@@ -236,12 +236,12 @@ public class AudioPresenter implements IBizCallback {
             JSONObject data = JSONObject.parseObject(cacheDataList.get(0).getContent());
             setAudioDetail(true, data, resourceId, true);
         }
-        DetailRequest detailRequest = new DetailRequest( this);
-        detailRequest.addDataParam("goods_id",resourceId);
-        detailRequest.addDataParam("goods_type",2);
-        detailRequest.setNeedCache(true);
-        detailRequest.setCacheKey(resourceId);
-        detailRequest.sendRequest();
+        CourseDetailRequest courseDetailRequest = new CourseDetailRequest( this);
+        courseDetailRequest.addDataParam("goods_id",resourceId);
+        courseDetailRequest.addDataParam("goods_type",2);
+        courseDetailRequest.setNeedCache(true);
+        courseDetailRequest.setCacheKey(resourceId);
+        courseDetailRequest.sendRequest();
     }
 
 }
