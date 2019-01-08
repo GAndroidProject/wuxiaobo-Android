@@ -1,7 +1,10 @@
 package com.xiaoe.shop.wxb.business.login.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -32,6 +36,7 @@ import com.xiaoe.network.requests.LoginRequest;
 import com.xiaoe.network.requests.SettingPseronMsgRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.business.login.presenter.BitmapCut;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.login.LoginPresenter;
@@ -46,6 +51,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static com.umeng.socialize.utils.ContextUtil.getContext;
 
 public class LoginSplashActivity extends XiaoeActivity {
 
@@ -84,6 +91,14 @@ public class LoginSplashActivity extends XiaoeActivity {
 
         loginPresenter = new LoginPresenter(this, this);
         settingPresenter = new SettingPresenter(this);
+
+        ImageView imageView = (ImageView) findViewById(R.id.login_splash_bg);
+        Bitmap  bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.mipmap.login_bg);
+        // 获取屏幕宽高
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int screenWidth = dm.widthPixels;
+        int screenHeight = dm.heightPixels;
+        imageView.setImageBitmap(BitmapCut.ImageCropWithRect(bitmap, new Rect(0,0,screenWidth,screenHeight)));
     }
 
     private void initView() {
