@@ -55,7 +55,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
     private boolean isAdd = false;
     private int payPrice;
     private String resourceId;
-    private PayingFragment payingFragment;
+    private NewPayingFragment payingFragment;
     private List<CouponInfo> validCoupon;
     private CouponInfo useCouponInfo;
     private int resourceType;
@@ -95,7 +95,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         statusPagerView.setLoadingState(View.VISIBLE);
         statusPagerView.setBtnGoToOnClickListener(this);
 
-        showFragment(PayingFragment.class);
+        showFragment(NewPayingFragment.class);
         mCouponPresenter.requestResourceUseCoupon(resourceId ,payPrice);
     }
 
@@ -189,8 +189,8 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
     }
 
     private BaseFragment createMainFragment(Class theClass){
-        if(theClass == PayingFragment.class){
-            payingFragment = new PayingFragment();
+        if(theClass == NewPayingFragment.class){
+            payingFragment = new NewPayingFragment();
             payingFragment.setBtnSucceedPayClickListener(this);
             return payingFragment;
         }else if(theClass == CouponFragment.class){
@@ -218,14 +218,20 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.coupon_wrap:
+            case R.id.payingCouponWrap:
                 clickUseCoupon();
                 break;
             case R.id.pay_back:
                 clickBack();
                 break;
-            case R.id.btn_succeed_pay:
-                buyResource();
+            case R.id.confirmBuy:
+                if (payingFragment.isBoBiPayWay()) {
+                    toastCustom("波币支付");
+                } else if (payingFragment.isWeChatPayWay()) {
+                    buyResource();
+                } else if (payingFragment.isAliPayWay()) {
+                    toastCustom("支付宝支付");
+                }
                 break;
             case R.id.btn_go_to:
                 if (!TextUtils.isEmpty(productId)) { // 买超级会员就跳到个人中心
@@ -313,7 +319,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             payTitle.setText(getResources().getString(R.string.paying));
             statusPagerView.setVisibility(View.GONE);
             selectCouponPager = false;
-            showFragment(PayingFragment.class);
+            showFragment(NewPayingFragment.class);
             return;
         }
         finish();

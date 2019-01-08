@@ -88,8 +88,15 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener, OnRefreshLi
 
         title_end.setOnClickListener { JumpDetail.jumpAccountDetail(this) }
 
+        val selectMoneyStart = "<font color='#BCA16B'><big>"
+        val selectMoneyEnd = "</big></font>"
+
         boBiTopUpSubmit.setOnClickListener {
-            confirmMoney.text = String.format(getString(R.string.confirm_money), selectMoney)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                confirmMoney.text = Html.fromHtml(String.format(getString(R.string.confirm_money), selectMoneyStart, selectMoney, selectMoneyEnd), Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                confirmMoney.text = Html.fromHtml(String.format(getString(R.string.confirm_money), selectMoneyStart, selectMoney, selectMoneyEnd))
+            }
             payPresenter.prepaidMsg(productId)
             paySelectorView.visibility = View.VISIBLE
             confirmPay.isClickable = false

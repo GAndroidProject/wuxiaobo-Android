@@ -8,5 +8,5 @@
         android:id="@+id/mine_money_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/white_corner_bg"/>
+        android:background="@drawable/white_corner_bg_10"/>
 </FrameLayout>

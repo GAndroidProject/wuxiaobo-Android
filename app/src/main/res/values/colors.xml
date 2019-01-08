@@ -90,4 +90,6 @@
 
     <color name="vip_btn_text">#44210B</color>
     <color name="rippleColor">#868584</color>
+
+    <color name="top_up_bg">#1A1E59F6</color>
 </resources>
