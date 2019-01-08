@@ -16,6 +16,7 @@ import com.xiaoe.network.requests.IRequest
 import com.xiaoe.shop.wxb.R
 import com.xiaoe.shop.wxb.base.BaseFragment
 import com.xiaoe.shop.wxb.business.earning.presenter.EarningPresenter
+import com.xiaoe.shop.wxb.common.JumpDetail
 import kotlinx.android.synthetic.main.fragment_paying_new.*
 import kotlinx.android.synthetic.main.paying_coupon_item.*
 import kotlinx.android.synthetic.main.paying_way_bo_bi_item.*
@@ -137,6 +138,10 @@ class NewPayingFragment : BaseFragment() {
             }
             payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
             payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
+        }
+
+        payingBoBiTopUp.setOnClickListener {
+            JumpDetail.jumpBobi(context)
         }
 
         if (onClickListener == null) {
