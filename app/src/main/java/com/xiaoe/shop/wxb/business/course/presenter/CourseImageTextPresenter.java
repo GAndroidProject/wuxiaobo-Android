@@ -48,6 +48,7 @@ public class CourseImageTextPresenter implements IBizCallback {
 
         courseDetailRequest.addDataParam("goods_id", resourceId);
         courseDetailRequest.addDataParam("goods_type", resourceType);
+        courseDetailRequest.addDataParam("agent_type",2);
         courseDetailRequest.setNeedCache(true);
         courseDetailRequest.setCacheKey(resourceId);
 

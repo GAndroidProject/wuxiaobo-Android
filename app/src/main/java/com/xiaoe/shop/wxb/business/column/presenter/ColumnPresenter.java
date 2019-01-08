@@ -38,6 +38,7 @@ public class ColumnPresenter implements IBizCallback {
         CourseDetailRequest courseDetailRequest = new CourseDetailRequest( this);
         courseDetailRequest.addDataParam("goods_id",resourceId);
         courseDetailRequest.addDataParam("goods_type",Integer.parseInt(resourceType));
+        courseDetailRequest.addDataParam("agent_type",2);
         courseDetailRequest.setNeedCache(true);
         courseDetailRequest.setCacheKey(resourceId);
         courseDetailRequest.sendRequest();

@@ -26,6 +26,7 @@ public class VideoPresenter implements IBizCallback {
         CourseDetailRequest courseDetailRequest = new CourseDetailRequest( this);
         courseDetailRequest.addDataParam("goods_id",resourceId);
         courseDetailRequest.addDataParam("goods_type",3);
+        courseDetailRequest.addDataParam("agent_type",2);
         courseDetailRequest.setNeedCache(true);
         courseDetailRequest.setCacheKey(resourceId);
         courseDetailRequest.sendRequest();
