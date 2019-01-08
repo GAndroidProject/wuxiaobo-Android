@@ -97,6 +97,9 @@ public class LoginNewFragment extends BaseFragment {
             if (codeContent != null) {
                 codeContent.clearAllEditText();
             }
+            if (loginSubmit != null) {
+                loginSubmit.setEnabled(true);
+            }
         } else {
             if (getDialog().isShowing()) {
                 getDialog().dismissDialog();
@@ -153,6 +156,7 @@ public class LoginNewFragment extends BaseFragment {
     protected TextView codeTip;
     protected LinearLayout codeObtainWrap;
     protected TextView codeHeader;
+    protected Button loginSubmit;
 
     private void initLoginCodeFragment() {
         codeContent = (CodeVerifyView) viewWrap.findViewById(R.id.login_code_content_new);
@@ -199,7 +203,7 @@ public class LoginNewFragment extends BaseFragment {
     private void initLoginMainFragment() {
         EditText loginInput = (EditText) viewWrap.findViewById(R.id.login_input);
         TextView loginErrorTip = (TextView) viewWrap.findViewById(R.id.login_error_tip_new);
-        Button loginSubmit = (Button) viewWrap.findViewById(R.id.login_submit_new);
+        loginSubmit = (Button) viewWrap.findViewById(R.id.login_submit_new);
         TextView loginTip = (TextView) viewWrap.findViewById(R.id.login_tip_new);
 
         loginErrorTip.setVisibility(View.GONE);
@@ -251,6 +255,7 @@ public class LoginNewFragment extends BaseFragment {
         loginSubmit.setOnClickListener(new DebouncingOnClickListener() {
             @Override
             public void doClick(View v) {
+                loginSubmit.setEnabled(false);
                 loginNewActivity.phoneNum = loginInput.getText().toString();
                 // 老接口
                 loginNewActivity.loginPresenter.checkRegister(loginNewActivity.phoneNum);
