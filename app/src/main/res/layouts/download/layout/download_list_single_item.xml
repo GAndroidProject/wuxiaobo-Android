@@ -27,7 +27,8 @@
             android:paddingStart="20dp"
             android:paddingEnd="2dp"
             android:maxLines="1"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            android:maxWidth="214dp"/>
 
         <View
             android:layout_width="0dp"

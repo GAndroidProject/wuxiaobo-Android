@@ -35,6 +35,11 @@
 
         </LinearLayout>
 
+        <com.xiaoe.shop.wxb.widget.StatusPagerView
+            android:id="@+id/downloadLoading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <LinearLayout
             android:id="@+id/downloadSecondWrap"
             android:layout_width="match_parent"

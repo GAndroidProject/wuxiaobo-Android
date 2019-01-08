@@ -32,6 +32,7 @@ import com.xiaoe.shop.wxb.adapter.download.DownLoadListAdapter
 import com.xiaoe.shop.wxb.base.BaseFragment
 import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter
 import com.xiaoe.shop.wxb.widget.CustomDialog
+import com.xiaoe.shop.wxb.widget.StatusPagerView
 import kotlinx.android.synthetic.main.download_list_bottom.*
 import kotlinx.android.synthetic.main.download_list_content.*
 import kotlinx.android.synthetic.main.download_list_header.*
@@ -84,6 +85,9 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     private var lastGroupId: String = "" // 最后一条专科 id
     private var canMainLoadMore: Boolean = true // 主页能否加载更多
     private var canSecondLoadMore: Boolean = true // 副页能够加载更多
+    private var hasSubColumn: Boolean = false // 是否有子专栏
+    private var isMainLoadMore: Boolean = false // 主页是否加载更多数据
+    private var hasSecondInit: Boolean = false // 副页是否初始化过数据
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mRootView = inflater?.inflate(R.layout.fragment_download_list, container, false)
@@ -117,24 +121,34 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         when (resourceType) {
             downloadTopic -> {
 //                columnPresenter.requestColumnList(resourceId, downloadColumn, pageIndex, pageSize, true, resourceType)
-                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
+                isMainLoadMore = false
+                columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
                 columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
             downloadMember -> {
 //                columnPresenter.requestColumnList(resourceId, downloadAll, pageIndex, pageSize, true, resourceType)
+                isMainLoadMore = false
                 columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
                 columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
             downloadColumn -> {
 //                columnPresenter.requestColumnList(resourceId, downloadAll, pageIndex, pageSize, true, resourceType)
+                isMainLoadMore = false
                 columnPresenter.requestDownloadList(resourceId, downloadColumn.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
             else -> toastCustom("资源类型有误..")
         }
         downloadSingleList = mutableListOf()
         downloadSingleAdapter = DownLoadListAdapter(context)
+        downloadSingleAdapter.setInitType(DownLoadListAdapter.SINGLE_TYPE)
+        downloadSingleAdapter.setOnItemClickWithCdbItemListener(this)
+        downloadContent.adapter = downloadSingleAdapter
+
         downloadGroupList = mutableListOf()
         downloadGroupAdapter = DownLoadListAdapter(context)
+        downloadGroupAdapter.setInitType(DownLoadListAdapter.GROUP_TYPE)
+        downloadGroupAdapter.setOnItemClickWithCdbItemListener(this)
+        downloadSecondContent.adapter = downloadGroupAdapter
     }
 
     /**
@@ -147,6 +161,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             downloadTitleName.setPadding(0, 0, 0, 0)
             downloadTitleName.background = null
             downloadTitleName.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+            hasSubColumn = false
         } else { // 大专栏、会员有全部的选择
             downloadTitleName.text = getString(R.string.all_text)
             downloadTitleName.setPadding(
@@ -156,6 +171,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                     Dp2Px2SpUtil.dp2px(context, 8f))
             downloadTitleName.background = ContextCompat.getDrawable(context, R.drawable.download_title_bg)
             downloadTitleName.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(context, R.mipmap.title_detail), null)
+            hasSubColumn = true
         }
 
         // 先将总的数量置为空字符串
@@ -175,7 +191,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     private fun initListener() {
         downloadTitleName.setOnClickListener {
             // 不是专栏的话可展开，进行展开操作
-            if (resourceType != downloadColumn) {
+            if (resourceType != downloadColumn && hasSubColumn) {
                 if (downloadSecondWrap.visibility == View.VISIBLE) {
                     downloadSecondWrap.visibility = View.GONE
                 } else {
@@ -231,13 +247,11 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         when (refreshLayout) {
             downloadRefresh -> {
-                toastCustom("上拉主内容")
-                downloadRefresh.finishLoadMore()
-                columnPresenter.requestDownloadList(resourceId, resourceType.toInt(), pageSize, downloadTypeSingle, "", requestSingleTag)
+                isMainLoadMore = true
+                columnPresenter.requestDownloadList(resourceId, resourceType.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
             downloadSecondRefresh -> {
-                toastCustom("上拉副内容")
-                downloadSecondRefresh.finishLoadMore()
+                columnPresenter.requestDownloadList(resourceId, resourceType.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
             }
             else -> toastCustom("上拉未知错误")
         }
@@ -251,28 +265,17 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         }
         val code = result.getInteger("code")
         allSelectBtn.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(context, R.mipmap.download_tocheck), null, null, null)
-        /*if (iRequest is ColumnListRequst) {
-            if (code != NetworkCodes.CODE_SUCCEED) {
-                // TODO: 列表加载失败
-                Log.d(TAG, "onMainThreadResponse: 列表加载失败了..")
-                return
-            }
-            val data = result["data"]
-            val dataArr = data as JSONArray
-            val resultArr = JSONArray()
-            if (resourceType == iRequest.requestTag) {
-                filterData(dataArr, resultArr)
-                if (resourceType == downloadColumn) {
-                    initSingle(resultArr)
-                } else {
-                    initGroup(resultArr)
-                }
-            }
-        } else*/ if (iRequest is DownloadListRequest) {
+        downloadRefresh.finishLoadMore()
+        downloadSecondRefresh.finishLoadMore()
+        if (iRequest is DownloadListRequest) {
             if (code != NetworkCodes.CODE_SUCCEED) {
                 Log.d(TAG, "onMainThreadResponse: 下载列表加载失败了..")
+                downloadSingleList.clear()
+                downloadSingleAdapter.notifyDataSetChanged()
+                downloadLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.service_error_text), R.mipmap.ic_network_error)
                 return
             }
+            downloadLoading.setLoadingFinish()
             if (iRequest.requestTag == requestSingleTag) { // 请求单品的数据
                 initDownloadSingleData(entity)
             } else if (iRequest.requestTag == requestGroupTag) { // 请求专栏的数据
@@ -282,77 +285,47 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     }
 
     /**
-     * 过滤无用数据
-     * @param dataArr   源数据
-     * @param resultArr 结果数据
-     */
-//    private fun filterData(dataArr: JSONArray, resultArr: JSONArray) {
-//        for (item in dataArr) {
-//            val itemObj = item as JSONObject
-//            val tempResourceType = if (itemObj.getInteger("resource_type") == null) -1 else itemObj.getInteger("resource_type")
-//            if (tempResourceType != -1 && tempResourceType != 1 && tempResourceType != 4 && tempResourceType != 20) { // 非音、视频单品
-//                resultArr.add(item)
-//            }
-//        }
-//    }
-
-    /**
-     * 初始化单品
-     */
-//    private fun initSingle(resultArr: JSONArray) {
-//        for (result in resultArr) {
-//            val commonDownloadBean = Gson().fromJson(result.toString(), CommonDownloadBean:: class.java)
-//            downloadSingleList.add(commonDownloadBean)
-//        }
-//        downloadSingleAdapter = DownLoadListAdapter(context, DownLoadListAdapter.SINGLE_TYPE, downloadSingleList)
-//        downloadSingleAdapter.setOnItemClickWithCdbItemListener(this)
-//        downloadContent.adapter = downloadSingleAdapter
-//    }
-
-    /**
-     * 初始化非单品
-     */
-//    private fun initGroup(resultArr: JSONArray) {
-//        for (result in resultArr) {
-//            val commonDownloadBean = Gson().fromJson(result.toString(), CommonDownloadBean:: class.java)
-//            downloadSingleList.add(commonDownloadBean)
-//        }
-//        downloadGroupAdapter = DownLoadListAdapter(context, DownLoadListAdapter.GROUP_TYPE, downloadSingleList)
-//        downloadSecondContent.adapter = downloadGroupAdapter
-//    }
-
-    /**
      * 初始化专栏数据
      *
      * @param entity 返回的数据对象
      */
     private fun initDownloadGroupData(entity: Any) {
         val result = Gson().fromJson(entity.toString(), NewDownloadBean::class.java)
-        val firstDownloadBean = CommonDownloadBean()
-        firstDownloadBean.title = getString(R.string.all_text)
-        firstDownloadBean.periodicalCount = 0
-        firstDownloadBean.resourceId = resourceId
-        firstDownloadBean.resourceType = resourceType.toInt()
-        firstDownloadBean.isSelected = true
-        downloadGroupList.add(firstDownloadBean)
-        for (item in result.data.list!!) {
-            val commonDownloadBean = CommonDownloadBean()
-            commonDownloadBean.title = item.title
-            commonDownloadBean.periodicalCount = item.periodicalCount
-            commonDownloadBean.resourceId = item.goodsId
-            commonDownloadBean.resourceType = item.goodsType
-            firstDownloadBean.isSelected = false
-            downloadGroupList.add(commonDownloadBean)
+        if (!hasSecondInit) {
+            hasSecondInit = true
+            val firstDownloadBean = CommonDownloadBean()
+            firstDownloadBean.title = getString(R.string.all_text)
+            firstDownloadBean.periodicalCount = result.data.goodsInfo.periodicalCount
+            firstDownloadBean.resourceId = resourceId
+            firstDownloadBean.resourceType = resourceType.toInt()
+            firstDownloadBean.isSelected = true
+            downloadGroupList.add(firstDownloadBean)
         }
-        lastGroupId = result.data.list!![result.data.list!!.size - 1].goodsId
-        if (result.data.list!!.size < pageSize) {
-            canSecondLoadMore = false
-            downloadSecondRefresh.setEnableLoadMore(false)
+        downloadTitleCount.text = String.format(getString(R.string.download_count), result.data.goodsInfo.periodicalCount)
+        if (result.data.list == null) { // 没有子专栏的情况，直接显示其父级的信息
+            downloadTitleName.text = downTitle
+            downloadTitleName.setPadding(0, 0, 0, 0)
+            downloadTitleName.background = null
+            downloadTitleName.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+            hasSubColumn = false
+        } else {
+            for (item in result.data.list!!) {
+                val commonDownloadBean = CommonDownloadBean()
+                commonDownloadBean.title = item.title
+                commonDownloadBean.periodicalCount = item.periodicalCount
+                commonDownloadBean.resourceId = item.goodsId
+                commonDownloadBean.resourceType = item.goodsType
+                commonDownloadBean.isSelected = false
+                downloadGroupList.add(commonDownloadBean)
+            }
+            lastGroupId = result.data.list!![result.data.list!!.size - 1].goodsId
+            if (result.data.list!!.size < pageSize) {
+                canSecondLoadMore = false
+                downloadSecondRefresh.setEnableLoadMore(false)
+            }
         }
-        downloadGroupAdapter.setInitType(DownLoadListAdapter.GROUP_TYPE)
         downloadGroupAdapter.setNewData(downloadGroupList)
-        downloadGroupAdapter.setOnItemClickWithCdbItemListener(this)
-        downloadSecondContent.adapter = downloadGroupAdapter
+        downloadGroupAdapter.notifyDataSetChanged()
     }
 
     /**
@@ -361,7 +334,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
      * @param entity 返回的数据对象
      */
     private fun initDownloadSingleData(entity: Any) {
-        if (downloadSingleList.size > 0) {
+        if (downloadSingleList.size > 0 && !isMainLoadMore) {
             downloadSingleList.clear()
         }
         val result = Gson().fromJson(entity.toString(), NewDownloadBean::class.java)
@@ -373,6 +346,9 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             commonDownloadBean.title = item.title
             commonDownloadBean.isSelected = false
             commonDownloadBean.isEnable = true
+            commonDownloadBean.imgUrl = item.imgUrl
+            commonDownloadBean.parentId = item.productInfo.goodsId
+            commonDownloadBean.parentType = item.productInfo.goodsType
             if (item.goodsType == downloadAudio) {
                 commonDownloadBean.audioUrl = item.downloadUrl
                 commonDownloadBean.audioLength = item.length
@@ -386,16 +362,16 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         if (result.data.list!!.size < pageSize) {
             canMainLoadMore = false
             downloadRefresh.setEnableLoadMore(false)
+        } else {
+            downloadRefresh.setEnableLoadMore(true)
         }
-        downloadSingleAdapter.setInitType(DownLoadListAdapter.SINGLE_TYPE)
         downloadSingleAdapter.setNewData(downloadSingleList)
-        downloadSingleAdapter.setOnItemClickWithCdbItemListener(this)
-        downloadContent.adapter = downloadSingleAdapter
+        downloadSingleAdapter.notifyDataSetChanged()
     }
 
     override fun onCommonDownloadBeanItemClick(view: View?, initType: Int, commonDownloadBean: CommonDownloadBean) {
-        val textView = view?.findViewById(R.id.singleItemContent) as TextView
         if (initType == DownLoadListAdapter.SINGLE_TYPE) {
+            val textView = view?.findViewById(R.id.singleItemContent) as TextView
             if (commonDownloadBean.isEnable) {
                 if (Objects.requireNonNull<Drawable.ConstantState>(textView.compoundDrawables[0].constantState) == Objects.requireNonNull<Drawable>(context.getDrawable(R.mipmap.download_tocheck)).constantState) {
                     textView.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_checking), null, null, null)
@@ -403,6 +379,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                     totalSelectedCount++
                 } else {
                     textView.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_tocheck), null, null, null)
+                    allSelectBtn.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_tocheck), null, null, null)
                     commonDownloadBean.isSelected = false
                     totalSelectedCount--
                 }
@@ -413,10 +390,26 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 }
             }
         } else if (initType == DownLoadListAdapter.GROUP_TYPE) {
-            // TODO: 专栏的 item 点击回调
+            if (!commonDownloadBean.isSelected) {
+                commonDownloadBean.isSelected = true
+            }
+            for (item in downloadGroupList) {
+                if (item.isSelected && item != commonDownloadBean) {
+                    item.isSelected = false
+                }
+            }
+            lastSingleId = ""
+            isMainLoadMore = false
+            columnPresenter.requestDownloadList(commonDownloadBean.resourceId, commonDownloadBean.resourceType, pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
+            downloadTitleName.text = commonDownloadBean.title
+            downloadGroupAdapter.notifyDataSetChanged()
+            downloadSecondWrap.visibility = View.GONE
         }
     }
 
+    /**
+     * 点击下载
+     */
     private fun clickDownload() {
         var download = false
         for (item in downloadSingleList) {
@@ -444,6 +437,9 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         }
     }
 
+    /**
+     * 下载资源
+     */
     private fun downloadResource() {
         //全选是否可选
         allSelectEnable = totalSelectedCount != downloadSingleList.size
@@ -485,9 +481,9 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         downloadItem.video_url = item.videoUrl
         downloadItem.isTry = 0
         downloadItem.isHasBuy = 1
-        downloadItem.columnId = resourceId
         downloadItem.columnTitle = downTitle
-        downloadItem.bigColumnId = ""
+        downloadItem.parentId = item.parentId
+        downloadItem.parentType = item.parentType
 
         DownloadManager.getInstance().addDownload(null, null, downloadItem)
     }
