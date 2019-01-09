@@ -33,6 +33,7 @@ import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.OnCustomDialogListener;
 import com.xiaoe.shop.wxb.utils.ActivityCollector;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,6 +128,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
                     public void onClickConfirm(View view, int tag) {
                         getDialog().dismissDialog();
                         AudioMediaPlayer.stop();
+                        UploadLearnProgressManager.INSTANCE.clearData();
                         AudioPlayUtil.getInstance().setCloseMiniPlayer(true);
                         SQLiteUtil loginUtil = SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
                         loginUtil.execSQL("delete from " + LoginSQLiteCallback.TABLE_NAME_USER);

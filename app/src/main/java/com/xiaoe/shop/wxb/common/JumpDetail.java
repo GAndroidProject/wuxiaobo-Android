@@ -39,6 +39,7 @@ import com.xiaoe.shop.wxb.business.login.ui.LoginSplashActivity;
 import com.xiaoe.shop.wxb.business.login.ui.ProtocolActivity;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
+import com.xiaoe.shop.wxb.business.mine_learning.ui.MyBoughtListActivity;
 import com.xiaoe.shop.wxb.business.navigate_detail.ui.NavigateDetailActivity;
 import com.xiaoe.shop.wxb.business.search.ui.SearchActivity;
 import com.xiaoe.shop.wxb.business.search.ui.SearchMoreActivity;
@@ -375,6 +376,15 @@ public class JumpDetail {
     public static void jumpMineLearning(Context context, String pageTitle) {
         Intent intent = new Intent(context, MineLearningActivity.class);
         intent.putExtra("pageTitle", pageTitle);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到我的已购
+     * @param context
+     */
+    public static void jumpMyBought(Context context) {
+        Intent intent = new Intent(context, MyBoughtListActivity.class);
         context.startActivity(intent);
     }
 

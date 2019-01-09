@@ -97,6 +97,10 @@
             android:name=".business.mine_learning.ui.MineLearningActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".business.mine_learning.ui.MyBoughtListActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".business.setting.ui.SettingPersonActivity"
             android:screenOrientation="portrait"/>
         <activity
