@@ -30,6 +30,7 @@ import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.entitys.ResourceType;
 import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -42,6 +43,7 @@ import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.course.presenter.CourseImageTextPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
@@ -51,6 +53,7 @@ import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CommonTitleView;
 import com.xiaoe.shop.wxb.widget.PushScrollView;
@@ -166,6 +169,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         imgUrl = transitionIntent.getStringExtra("imgUrl");
         resourceId = transitionIntent.getStringExtra("resourceId");
         columnId = transitionIntent.getStringExtra("columnId");
+//        UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(columnId));
         resourceType = "1"; // 图文的资源类型为 1
         loginList = getLoginUserList();
 
@@ -336,15 +340,22 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     public void onBackPressed() {
         // 获取学习进度
         if (hasBuy) { // 买了才需要上报
-            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-            updateLearningUtils.updateLearningProgress(realSrcId, Integer.parseInt(resourceType), 10);
-            LearningRecord lr = new LearningRecord();
-            lr.setLrId(realSrcId);
-            lr.setLrType(DecorateEntityType.IMAGE_TEXT);
-            lr.setLrTitle(collectionTitle);
-            lr.setLrImg(collectionImgUrl);
-            lr.setLrDesc(purchaseStr);
-            UpdateLearningUtils.saveLr2Local(this, lr);
+//            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+//            updateLearningUtils.updateLearningProgress(realSrcId, Integer.parseInt(resourceType), 10);
+//            LearningRecord lr = new LearningRecord();
+//            lr.setLrId(realSrcId);
+//            lr.setLrType(DecorateEntityType.IMAGE_TEXT);
+//            lr.setLrTitle(collectionTitle);
+//            lr.setLrImg(collectionImgUrl);
+//            lr.setLrDesc(purchaseStr);
+//            UpdateLearningUtils.saveLr2Local(this, lr);
+            if (UploadLearnProgressManager.INSTANCE.isSingleBuy()){
+                UploadLearnProgressManager.INSTANCE.addSingleItemData(realSrcId,
+                        ResourceType.TYPE_TEXT,100,0,true);
+            }else if (!TextUtils.isEmpty(UploadLearnProgressManager.INSTANCE.getMCurrentColumnId())){
+                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData
+                        (UploadLearnProgressManager.INSTANCE.getMCurrentColumnId(),realSrcId, ResourceType.TYPE_TEXT,100,0);
+            }
         }
         super.onBackPressed();
     }

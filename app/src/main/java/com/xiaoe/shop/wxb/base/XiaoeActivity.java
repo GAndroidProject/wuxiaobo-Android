@@ -523,18 +523,18 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
         return code;
     }
     //购买资源（下单）
-    public void payOrder(String resourceId, int resourceType, int paymentType, String couponId) {
+    public void payOrder(String resourceId, int resourceType, int payWay, int paymentType, String couponId) {
         if(payPresenter == null){
             payPresenter = new PayPresenter(this, this);
         }
-        payPresenter.payOrder(paymentType, resourceType, resourceId, resourceId, couponId);
+        payPresenter.payOrder(paymentType, resourceType, payWay, resourceId, resourceId, couponId);
     }
     // 购买超级会员（下单）
-    public void payOrder(String resourceId, String productId, int resourceType, int paymentType, String couponId) {
+    public void payOrder(String resourceId, String productId, int payWay, int resourceType, int paymentType, String couponId) {
         if (payPresenter == null) {
             payPresenter = new PayPresenter(this, this);
         }
-        payPresenter.payOrder(paymentType, resourceType, resourceId, productId, couponId);
+        payPresenter.payOrder(paymentType, resourceType, payWay, resourceId, productId, couponId);
     }
     //拉起微信支付
     public void pullWXPay(String appid, String partnerid, String prepayid, String noncestr, String timestamp, String packageValue, String sign){
@@ -555,9 +555,13 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
     public void onClickConfirm(View view, int tag) {
         if(tag == DIALOG_TAG_LOADING){
             SQLiteUtil liteUtil = SQLiteUtil.init(this,  new LoginSQLiteCallback());
-            liteUtil.execSQL("delete from " + LoginSQLiteCallback.TABLE_NAME_USER);
+            if(liteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)){
+                liteUtil.execSQL("delete from " + LoginSQLiteCallback.TABLE_NAME_USER);
+            }
             SQLiteUtil lrUtil = SQLiteUtil.init(this, new LrSQLiteCallback());
-            lrUtil.execSQL("delete from " + LrSQLiteCallback.TABLE_NAME_LR);
+            if (lrUtil.tabIsExist(LrSQLiteCallback.TABLE_NAME_LR)) {
+                lrUtil.execSQL("delete from " + LrSQLiteCallback.TABLE_NAME_LR);
+            }
             CommonUserInfo.getInstance().clearUserInfo();
             CommonUserInfo.getInstance().clearLoginUserInfo();
             CommonUserInfo.setApiToken("");

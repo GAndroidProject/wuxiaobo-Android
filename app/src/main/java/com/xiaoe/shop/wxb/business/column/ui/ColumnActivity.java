@@ -51,7 +51,7 @@ import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
@@ -107,6 +107,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private String shareUrl = "";
     private String summary = "";
     private int price = 0;
+    protected String title;
 
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
@@ -131,6 +132,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UploadLearnProgressManager.INSTANCE.setSingleBuy(false);
         setStatusBar();
         setContentView(R.layout.activity_column);
         mIntent = getIntent();
@@ -154,6 +156,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         resourceType = mIntent.getIntExtra("resource_type", 0);
         resourceId = mIntent.getStringExtra("resource_id");
+        UploadLearnProgressManager.INSTANCE.addColumnData(resourceId,resourceType);
+        UploadLearnProgressManager.INSTANCE.setMCurrentColumnId(resourceId);
         columnPresenter = new ColumnPresenter(this);
         EventBus.getDefault().register(this);
 
@@ -273,28 +277,29 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     public void onBackPressed() {
         if (isHasBuy) {
             Log.d(TAG, "onBackPressed: hasBuy ------- ");
-            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-            updateLearningUtils.updateLearningProgress(realSrcId, resourceType, 10);
-            LearningRecord lr = new LearningRecord();
-            //	1-会员，2-大专栏，3-专栏
-            lr.setLrId(realSrcId);
-            switch (resourceType) {
-                case 5: // 会员
-                    lr.setLrType(DecorateEntityType.MEMBER);
-                    break;
-                case 6: // 专栏
-                    lr.setLrType(DecorateEntityType.COLUMN);
-                    break;
-                case 8: // 大专栏
-                    lr.setLrType(DecorateEntityType.TOPIC);
-                    break;
-                default:
-                    break;
-            }
-            lr.setLrTitle(collectTitle);
-            lr.setLrImg(collectImgUrl);
-            lr.setLrDesc(playNumStr);
-            UpdateLearningUtils.saveLr2Local(this, lr);
+//            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+//            updateLearningUtils.updateLearningProgress(realSrcId, resourceType, 10);
+//            LearningRecord lr = new LearningRecord();
+//            //	1-会员，2-大专栏，3-专栏
+//            lr.setLrId(realSrcId);
+//            switch (resourceType) {
+//                case 5: // 会员
+//                    lr.setLrType(DecorateEntityType.MEMBER);
+//                    break;
+//                case 6: // 专栏
+//                    lr.setLrType(DecorateEntityType.COLUMN);
+//                    break;
+//                case 8: // 大专栏
+//                    lr.setLrType(DecorateEntityType.TOPIC);
+//                    break;
+//                default:
+//                    break;
+//            }
+//            lr.setLrTitle(collectTitle);
+//            lr.setLrImg(collectImgUrl);
+//            lr.setLrDesc(playNumStr);
+//            UpdateLearningUtils.saveLr2Local(this, lr);
+            UploadLearnProgressManager.INSTANCE.uploadLearningData(realSrcId);
         }
         super.onBackPressed();
     }
@@ -616,7 +621,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             isHasBuy = false;
             collectPrice = ""+price;
         }
-        String title = data.getString("title");
+        title = data.getString("title");
         //收藏内容
         collectTitle = title;
         collectImgUrl = data.getString("img_url");
@@ -839,6 +844,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        UploadLearnProgressManager.INSTANCE.setSingleBuy(true);
+        UploadLearnProgressManager.INSTANCE.setMCurrentColumnId("");
         EventBus.getDefault().unregister(this);
         UMShareAPI.get(this).release();
         if (!hasCollect) {

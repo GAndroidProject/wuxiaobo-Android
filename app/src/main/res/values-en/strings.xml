@@ -409,6 +409,7 @@
     <string name="people_learn">%s人学习</string>
     <string name="ten_thousand">万</string>
     <string name="valid_until">有效期至：%s</string>
+    <string name="valid_until2">有效期至%s</string>
     <string name="courses_not_purchased">未购买课程</string>
     <string name="unknown_course">未知课程</string>
     <string name="no_audio_playback">无可播放音频</string>
@@ -507,6 +508,14 @@
     <string name="please_wechat_open">请在微信中打开该链接</string>
     <string name="clip_wechat_url">暂不支持该链接跳转，您可以点击下方复制链接，在微信环境中打开。\n%s</string>
     <string name="add_delete">add|delete</string>
+
+    <string name="recently_in_learning">最近在学</string>
+    <string name="purchase_records">购买记录</string>
+    <string name="my_already_bought">我的已购</string>
+    <string name="learned_finish">已学完</string>
+    <string name="membership_due">已到期 点击续费</string>
+    <string name="learned_sessinos_and_total">已学习%d期 / 共%d期</string>
+    <string name="no_bought_record_content">暂无购买记录的内容，快去首页逛逛吧</string>
     <string name="wx_need_login">微信授权失效，请重新登录</string>
     <string name="video_speed_play">倍速播放</string>
     <string name="video_speed_play_0">0.75倍速</string>
@@ -515,4 +524,21 @@
     <string name="video_speed_play_3">1.5倍速</string>
     <string name="video_speed_play_4">2倍速</string>
     <string name="already_was_last_video">已经是最后一集了</string>
+    <string name="download_count">共%d节课</string>
+    <string name="all_text">全部</string>
+    <string name="download_group_item_icon">下载列表非单品选中图标</string>
+    <string name="bo_bi_balance_title">账户余额</string>
+    <string name="bo_bi_top_up_title">充值</string>
+    <string name="bo_bi_tip_title">常见问题</string>
+    <string name="bo_bi_top_up_amount">1. 充值金额：%s</string>
+    <string name="bo_bi_tip_rate">2. 1波豆=1元</string>
+    <string name="bo_bi_amount">波比余额</string>
+    <string name="bo_bi_item_title">%d波豆</string>
+    <string name="bo_bi_item_content">%d元</string>
+    <string name="bo_bi_content_desc">账户明细</string>
+    <string name="confirm_pay">确认支付</string>
+    <string name="ali_pay_title">支付宝支付</string>
+    <string name="confirm_money">￥ 198</string>
+    <string name="confirm_ali_icon_desc">支付宝支付图标</string>
+    <string name="confirm_we_chat_pay_icon">微信支付图标</string>
 </resources>

@@ -62,6 +62,14 @@
                     <!--android:paddingStart="20dp"-->
                     <!--android:paddingEnd="20dp"/>-->
 
+                <include
+                    layout="@layout/mine_bo_bi_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="62dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="28dp"/>
+
                 <com.xiaoe.shop.wxb.business.mine.ui.MineLearningWrapView
                     android:id="@+id/mine_learning_view"
                     android:layout_width="match_parent"

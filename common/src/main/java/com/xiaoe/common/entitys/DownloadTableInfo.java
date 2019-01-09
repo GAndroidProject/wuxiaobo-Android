@@ -5,7 +5,13 @@ public class DownloadTableInfo {
     private String appId ;
     private String id;
     private String resourceId ;//不可为空
+    /**
+     * @deprecated 废弃，使用 parentId 标识下载的单品的父级 id
+     */
     private String columnId;
+    /**
+     * @deprecated 废弃，使用 parentId 标识西在的单品的父级 id
+     */
     private String bigColumnId ;
     private long progress;//下载进度
     private long totalSize;//文件大小
@@ -21,6 +27,8 @@ public class DownloadTableInfo {
     private int resourceType;
     private String createAt;
     private String updateAt;
+    private String parentId; // 父级资源 id
+    private int parentType;  // 父级资源类型
 
     public String getTableName() {
         return tableName;
@@ -180,5 +188,21 @@ public class DownloadTableInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public int getParentType() {
+        return parentType;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public void setParentType(int parentType) {
+        this.parentType = parentType;
     }
 }

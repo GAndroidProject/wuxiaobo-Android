@@ -97,6 +97,10 @@
             android:name=".business.mine_learning.ui.MineLearningActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".business.mine_learning.ui.MyBoughtListActivity"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".business.setting.ui.SettingPersonActivity"
             android:screenOrientation="portrait"/>
         <activity
@@ -246,6 +250,10 @@
         <activity
             android:name=".common.releaseversion.ui.ReleaseVersionActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".common.pay.ui.BoBiActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".common.pay.ui.AccountDetailActivity"></activity>
     </application>
 
 </manifest>
