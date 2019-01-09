@@ -44,6 +44,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     private static final String TAG = "AudioMediaPlayer";
     private static final int MSG_PLAY_PROGRESS = 80001;
     public static MediaPlayer mediaPlayer;
+    public static String mCurrentColumnId;
     private static AudioPlayEvent event;
     private static AudioPlayEntity audio = null;
     private static boolean isStop = true;//是否是停止（已经释放资源），
@@ -52,7 +53,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     private static AudioFocusManager audioFocusManager;
     private static boolean isSaveProgress = true;
     private static CountDownTimerTool.CountDownCallBack mCountDownCallBack;
-    public static String mCurrentColumnId = "";
     public static int mCurrentPage = -1;
     public static boolean isHasMoreData = true;
 
@@ -79,14 +79,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
                 play();
         }
     };
-
-    public static void setmCurrentColumnId(String mCurrentColumnId) {
-        AudioMediaPlayer.mCurrentColumnId = mCurrentColumnId;
-    }
-
-    public static String getmCurrentColumnId() {
-        return mCurrentColumnId;
-    }
 
     @SuppressLint("HandlerLeak")
     private static Handler mHandler = new Handler(){
@@ -477,8 +469,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             if (audio != null && 1 == audio.getHasBuy()){
                 int progress = getProgress(playEntity);
                 UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(UploadLearnProgressManager
-                                .INSTANCE.isSingleBuy() ? "" : mCurrentColumnId,playEntity.getResourceId(),
-                        ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
+                                .INSTANCE.isSingleBuy() ? "" : UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()
+                        ,playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
             }
         }catch (Exception e){
             e.printStackTrace();

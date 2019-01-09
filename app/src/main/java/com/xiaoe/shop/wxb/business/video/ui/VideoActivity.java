@@ -33,11 +33,8 @@ import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.CacheData;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
-import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
-import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
-import com.xiaoe.common.entitys.ResourceType;
 import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -61,9 +58,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
-import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.utils.LogUtils;
-import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -540,6 +535,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 playControllerView.retSet();
             }
             mResourceId = ((JSONObject)data.get(0)).getString("resource_id");
+            if (playControllerView != null)
+                playControllerView.setRealSrcId(mResourceId);
             initDatas();
         }
 

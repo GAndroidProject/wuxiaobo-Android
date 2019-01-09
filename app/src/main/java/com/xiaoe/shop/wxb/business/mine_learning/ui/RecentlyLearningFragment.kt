@@ -34,6 +34,7 @@ import com.xiaoe.shop.wxb.business.search.presenter.SpacesItemDecoration
 import com.xiaoe.shop.wxb.utils.LogUtils
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil
 import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager.parseUploadHistory
 import com.xiaoe.shop.wxb.utils.jumpKnowledgeDetail
 import com.xiaoe.shop.wxb.widget.StatusPagerView
 import kotlinx.android.synthetic.main.fragment_recently_learning.*
@@ -123,6 +124,11 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                     val code = obj.getInteger("code") as Int
                     val dataArray = obj.getJSONArray("data") as JSONArray
                     if (0 == code && (dataArray == null || 0 == dataArray.size)){
+                        if (pageIndex > 1){
+                            learningRefresh.finishRefresh()
+                            learningRefresh.finishLoadMoreWithNoMoreData()
+                            learningRefresh.setEnableLoadMore(false)
+                        }
                         return
                     }else  loadData(entity)
                 }catch (e : Exception){
@@ -290,13 +296,19 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
 
         private fun updateLearnProgress(baseViewHolder: BaseViewHolder, goodsListItem: GoodsListItem, descString: String): String {
             var descString1 = descString
-            baseViewHolder.setGone(R.id.learningProgress, true)
-            val progress = UploadLearnProgressManager.
-                    parseUploadHistory(goodsListItem.orgLearnProgress).size * 100 / goodsListItem.info?.periodicalCount
-            baseViewHolder.setProgress(R.id.learningProgress, progress)
-            descString1 = String.format(context.getString(R.string.learned_sessinos_and_total),
-                    UploadLearnProgressManager.parseUploadHistory(goodsListItem.orgLearnProgress).size
-                    , goodsListItem.info?.periodicalCount)
+
+            val hadLearnedCount = parseUploadHistory(goodsListItem.orgLearnProgress).size
+            var visible = true
+            descString1 = if (hadLearnedCount >= goodsListItem.info?.periodicalCount){
+                visible = false
+                context.getString(R.string.learned_finish)
+            }else{
+                val progress = hadLearnedCount * 100 / goodsListItem.info?.periodicalCount
+                baseViewHolder.setProgress(R.id.learningProgress, progress)
+                String.format(context.getString(R.string.learned_sessinos_and_total),
+                        hadLearnedCount, goodsListItem.info?.periodicalCount)
+            }
+            baseViewHolder.setGone(R.id.learningProgress, visible)
             return descString1
         }
     }

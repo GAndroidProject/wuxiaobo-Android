@@ -18,6 +18,7 @@ import java.lang.Exception
 object UploadLearnProgressManager : IBizCallback {
 
     var isSingleBuy = true
+    var mCurrentColumnId = ""
 
     private const val mTag = "UploadLearnProgress"
 
@@ -37,7 +38,7 @@ object UploadLearnProgressManager : IBizCallback {
         if (TextUtils.isEmpty(columnId)){
             addSingleItemData(resourceId,resourceType,progress,playTime)
         }else if (!TextUtils.isEmpty(resourceId) && mUploadLearnData[columnId] != null){
-            LogUtils.d("$mTag--addColumnSingleItemData--progress = $progress---playTime = $playTime")
+            LogUtils.d("$mTag--addColumnSingleItemData--columnId = $columnId---progress = $progress---playTime = $playTime")
             val data = History(resourceType, progress)
             var historyData = mUploadLearnHistoryData[columnId]
             if (historyData == null) {

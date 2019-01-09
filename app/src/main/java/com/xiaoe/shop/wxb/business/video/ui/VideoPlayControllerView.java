@@ -497,8 +497,8 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             if (UploadLearnProgressManager.INSTANCE.isSingleBuy()) {
                 UploadLearnProgressManager.INSTANCE.addSingleItemData(realSrcId, ResourceType.TYPE_VIDEO,
                         progress, totalTime, true);
-            } else if (!TextUtils.isEmpty(AudioMediaPlayer.getmCurrentColumnId())){
-                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(AudioMediaPlayer.getmCurrentColumnId(), realSrcId,
+            } else if (!TextUtils.isEmpty(UploadLearnProgressManager.INSTANCE.getMCurrentColumnId())){
+                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(UploadLearnProgressManager.INSTANCE.getMCurrentColumnId(), realSrcId,
                         ResourceType.TYPE_VIDEO, progress, totalTime);
             }
         }catch (Exception e){
@@ -508,7 +508,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
     private void uploadSingleBuyVideoProgress(){
         try {
-            if (playSeekBar == null || mVideoPlayer == null || !TextUtils.isEmpty(AudioMediaPlayer.getmCurrentColumnId()))
+            if (playSeekBar == null || mVideoPlayer == null || !TextUtils.isEmpty(UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()))
                 return;
             int progress = playSeekBar.getProgress();
             int totalTime = mVideoPlayer.getDuration() / 1000;
