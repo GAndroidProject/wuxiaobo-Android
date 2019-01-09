@@ -79,7 +79,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
                 play();
         }
     };
-    private static String mCurrentColumnId = "";
 
     public static void setmCurrentColumnId(String mCurrentColumnId) {
         AudioMediaPlayer.mCurrentColumnId = mCurrentColumnId;
