@@ -98,35 +98,35 @@ android {
             ]
         }
 
-        beta{
-            debuggable false
-            jniDebuggable false
-
-            applicationIdSuffix ".beta"
-            versionNameSuffix "-beta"
-
-            minifyEnabled true
-            zipAlignEnabled true
-            shrinkResources true
-
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
-
-            buildConfigField 'String', 'TYPE', '"BETA"'
-
-            manifestPlaceholders = [
-                    // 极光
-                    JPUSH_PKGNAME: defaultConfig.applicationId + applicationIdSuffix,
-                    JPUSH_CHANNEL: "developer-default-beta",
-                    JPUSH_APPKEY : "f9e2c6c613da002d752e247f",
-                    // 友盟
-                    UMENG_APPKEY_VALUE: "5bdac3fbf1f556303b0000ad",
-                    UMENG_CHANNEL_VALUE: "umeng-beta",
-            ]
-
-            // 关键代码，release、debug为library中已有buildType
-            matchingFallbacks = ['release', 'debug']
-        }
+//        beta{
+//            debuggable false
+//            jniDebuggable false
+//
+//            applicationIdSuffix ".beta"
+//            versionNameSuffix "-beta"
+//
+//            minifyEnabled true
+//            zipAlignEnabled true
+//            shrinkResources true
+//
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.config
+//
+//            buildConfigField 'String', 'TYPE', '"BETA"'
+//
+//            manifestPlaceholders = [
+//                    // 极光
+//                    JPUSH_PKGNAME: defaultConfig.applicationId + applicationIdSuffix,
+//                    JPUSH_CHANNEL: "developer-default-beta",
+//                    JPUSH_APPKEY : "f9e2c6c613da002d752e247f",
+//                    // 友盟
+//                    UMENG_APPKEY_VALUE: "5bdac3fbf1f556303b0000ad",
+//                    UMENG_CHANNEL_VALUE: "umeng-beta",
+//            ]
+//
+//            // 关键代码，release、debug为library中已有buildType
+//            matchingFallbacks = ['release', 'debug']
+//        }
 
         release {
             debuggable false
