@@ -57,4 +57,6 @@ dependencies {
     api 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-14'
 
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34'
+    // 美团多渠道打包
+    api 'com.meituan.android.walle:library:1.1.6'
 }
