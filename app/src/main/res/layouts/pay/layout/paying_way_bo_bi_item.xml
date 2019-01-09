@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/payingBoBiWrap"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/logo"
+            android:contentDescription="@string/paying_way_bo_bi_desc" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/paying_bo_bi_title"
+            android:textSize="14sp"
+            android:textColor="@color/main_title_color"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/payingBoBiBalance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/secondary_title_color"/>
+
+        <TextView
+            android:id="@+id/payingBoBiTopUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bo_bi_top_up_title"
+            android:textStyle="bold"
+            android:textColor="@color/high_title_color"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/top_up_bg"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/payingBoBiSelect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/download_tocheck"
+            android:layout_marginStart="12dp"
+            android:contentDescription="@string/paying_bo_bi_select_desc" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/imaginary_line"
+        android:layout_gravity="bottom"/>
+
+</FrameLayout>

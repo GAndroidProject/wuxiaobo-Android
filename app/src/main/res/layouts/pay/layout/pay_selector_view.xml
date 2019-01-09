@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/paySelectorView"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".common.pay.ui.BoBiActivity">
+
+    <View
+        android:id="@+id/payBg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/transparent_black"/>
+
+    <include
+        layout="@layout/pay_title_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/payAliItem"
+        layout="@layout/pay_ali_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include
+        android:id="@+id/payWeChatItem"
+        layout="@layout/pay_we_chat_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/confirmPay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/confirm_pay"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:background="@drawable/high_button"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:gravity="center"/>
+
+</LinearLayout>

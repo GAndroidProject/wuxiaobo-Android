@@ -32,6 +32,7 @@ public class UpdateLearningUtils implements IBizCallback {
     public void updateLearningProgress(String resourceId, int resourceType, int progress) {
         UpdateMineLearningRequest updateMineLearningRequest = new UpdateMineLearningRequest(this);
 
+        updateMineLearningRequest.addDataParam("agent_type", 2);
         updateMineLearningRequest.addDataParam("resource_id", resourceId);
         updateMineLearningRequest.addDataParam("resource_type", resourceType);
         updateMineLearningRequest.addDataParam("learn_progress", progress);

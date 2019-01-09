@@ -174,10 +174,14 @@ public class AudioPresenter implements IBizCallback {
                 playEntity.setTryPlayUrl(tryAudioUrl);
                 playEntity.setIsTry(1);
             }
-            resourceState(resourceInfo, available, playEntity);
-            playEntity.setCode(0);
-            playEntity.setContent(resourceInfo.getString("preview_content"));
-            playAudio(false);
+            try {
+                resourceState(resourceInfo, available, playEntity);
+                playEntity.setCode(0);
+                playEntity.setContent(resourceInfo.getString("preview_content"));
+                playAudio(false);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
     /**

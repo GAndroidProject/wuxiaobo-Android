@@ -45,8 +45,19 @@ public class ColumnSecondDirectoryEntity implements Serializable {
     private int isHasBuy = 0;
 
     private String columnTitle = "";
+    /**
+     * @deprecated 废弃，使用 parentId 标识西在的单品的父级 id
+     */
     private String columnId = "";
+    /**
+     * @deprecated 废弃，使用 parentId 标识西在的单品的父级 id
+     */
     private String bigColumnId = "";
+
+    // 父级资源 id
+    private String parentId = "";
+    // 父级资源类型
+    private int parentType = 0;
 
 
     public int getPageIndex() {
@@ -255,5 +266,21 @@ public class ColumnSecondDirectoryEntity implements Serializable {
 
     public void setIsHasBuy(int isHasBuy) {
         this.isHasBuy = isHasBuy;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public int getParentType() {
+        return parentType;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public void setParentType(int parentType) {
+        this.parentType = parentType;
     }
 }

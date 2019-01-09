@@ -9,6 +9,7 @@ import com.xiaoe.network.requests.WithdrawRequest;
 public class EarningPresenter implements IBizCallback {
 
     private INetworkResponse inr;
+    public static final String BALANCE_TAG = "balance_tag";
 
     public EarningPresenter(INetworkResponse inr) {
         this.inr = inr;
@@ -38,6 +39,19 @@ public class EarningPresenter implements IBizCallback {
 
         earningRequest.setNeedCache(true);
         earningRequest.setCacheKey(assetType);
+
+        earningRequest.sendRequest();
+    }
+
+    /**
+     * 获取账户余额
+     */
+    public void requestAccountBalance() {
+        EarningRequest earningRequest = new EarningRequest(this);
+
+        earningRequest.addRequestParam("asset_type", "balance");
+        earningRequest.addRequestParam("wallect_type", 2);
+        earningRequest.setRequestTag(BALANCE_TAG);
 
         earningRequest.sendRequest();
     }

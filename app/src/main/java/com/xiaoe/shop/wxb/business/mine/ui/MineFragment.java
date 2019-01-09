@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -68,6 +69,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import butterknife.internal.DebouncingOnClickListener;
 
 public class MineFragment extends BaseFragment implements AdapterView.OnItemClickListener, OnItemClickWithMoneyItemListener, OnRefreshListener {
 
@@ -92,11 +94,15 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     MineLearningWrapView mineLearningWrapView;
     @BindView(R.id.mine_loading)
     StatusPagerView mineLoading;
+    @BindView(R.id.mine_bo_bi_wrap)
+    LinearLayout mineBoBiWrap;
+    @BindView(R.id.mine_bo_bi_amount)
+    TextView mineBoBiAmount;
 
     MainActivity mainActivity;
 
-    // 去掉奖学金与积分的请求接口
-//    EarningPresenter earningPresenter;
+    // 去掉奖学金与积分的请求接口（重新放开，用于请求账户波豆余额）
+    EarningPresenter earningPresenter;
     MineLearningPresenter mineLearningPresenter;
 
     String balance;
@@ -222,14 +228,15 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     protected void onFragmentFirstVisible() {
         super.onFragmentFirstVisible();
-//        if (earningPresenter == null) {
-//            earningPresenter = new EarningPresenter(this);
-//        }
+        if (earningPresenter == null) {
+            earningPresenter = new EarningPresenter(this);
+        }
         isScholarshipFinish = false;
         isIntegralFinish = false;
         isMineLearningFinish = false;
 //        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
 //        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+        earningPresenter.requestAccountBalance();
         if (!mainActivity.isFormalUser) {
 
             touristDialog = new TouristDialog(getActivity());
@@ -524,6 +531,16 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                 }
             }
         });
+        mineBoBiWrap.setOnClickListener(new DebouncingOnClickListener() {
+            @Override
+            public void doClick(View v) {
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpBobi(mContext);
+                } else {
+                    touristDialog.showDialog();
+                }
+            }
+        });
     }
 
     @Override
@@ -541,8 +558,12 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
                     mineLoading.setPagerState(StatusPagerView.FAIL, StatusPagerView.FAIL_CONTENT, R.mipmap.error_page);
                 }
             } else if (iRequest instanceof EarningRequest) {
-                String assetType = (String) iRequest.getFormBody().get("asset_type");
-                updateMoney(result, assetType);
+                if (iRequest.getRequestTag().equals(EarningPresenter.BALANCE_TAG)) {
+                    updateBalance(result);
+                } else {
+                    String assetType = (String) iRequest.getFormBody().get("asset_type");
+                    updateMoney(result, assetType);
+                }
             } else if (iRequest instanceof MineLearningRequest) {
                 int code = result.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
@@ -582,6 +603,17 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
             }
         }
         mineRefresh.finishRefresh();
+    }
+
+    /**
+     * 更新波豆余额
+     * @param result 返回数据对象
+     */
+    private void updateBalance(JSONObject result) {
+        JSONObject data = (JSONObject) result.get("data");
+        JSONObject balance = (JSONObject) data.get("balance");
+        String realBalance = String.format("%1.2f",((float) balance.getInteger("2")) / 100);
+        mineBoBiAmount.setText(realBalance);
     }
 
     // 更新奖学金和积分
@@ -770,18 +802,22 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
         if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isChangeSuccess()) {
             // 成功切换身份，重新请求接口，刷新界面
             initMineMsg();
-//            if (earningPresenter == null) {
-//                earningPresenter = new EarningPresenter(this);
-//            }
             if (superVipPresenter == null) {
                 superVipPresenter = new SuperVipPresenter(this);
             }
             isScholarshipFinish = false;
             isIntegralFinish = false;
             isMineLearningFinish = false;
+            superVipPresenter.requestSuperVip();
+        }
+        if (changeLoginIdentityEvent != null && changeLoginIdentityEvent.isHasBalanceChange()) {
+            // 2019.1.07 身份发生改变事件增加了余额改变字段，若放开奖学金后，需要使用这个字段对奖学金和积分进行刷新
+            if (earningPresenter == null) {
+                earningPresenter = new EarningPresenter(this);
+            }
 //            earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
 //            earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
-            superVipPresenter.requestSuperVip();
+            earningPresenter.requestAccountBalance();
         }
     }
 
@@ -815,7 +851,15 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
-            case 0: // 我的收藏
+            case 0: // 我的已购
+                if (mainActivity.isFormalUser) {
+                    JumpDetail.jumpMyBought(mContext);
+                } else {
+                    touristDialog.showDialog();
+                }
+//                EventReportManager.onEvent(mContext, MobclickEvent.MINE_FAV_BTN_CLICK);
+                break;
+            case 1: // 我的收藏
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpMineLearning(mContext, getString(R.string.myCollect));
                 } else {
@@ -824,7 +868,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
                 EventReportManager.onEvent(mContext, MobclickEvent.MINE_FAV_BTN_CLICK);
                 break;
-            case 1: // 下载列表
+            case 2: // 下载列表
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpOffLine(mContext);
                 } else {
@@ -833,7 +877,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
                 EventReportManager.onEvent(mContext, MobclickEvent.MINE_DOWNLOADED_BTN_CLICK);
                 break;
-            case 2: // 优惠券
+            case 3: // 优惠券
                 if (mainActivity.isFormalUser) {
                     if (CommonUserInfo.getInstance().isHasUnreadMsg()) {
                         CommonUserInfo.getInstance().setHasUnreadMsg(false);
@@ -846,7 +890,7 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
                 EventReportManager.onEvent(mContext, MobclickEvent.MINE_DISCOUNTS_BTN_CLICK);
                 break;
-            case 3: // 兑换码
+            case 4: // 兑换码
                 if (mainActivity.isFormalUser) {
                     JumpDetail.jumpCdKey(mContext);
                 } else {
@@ -905,14 +949,15 @@ public class MineFragment extends BaseFragment implements AdapterView.OnItemClic
 
     @Override
     public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-//        if (earningPresenter == null) {
-//            earningPresenter = new EarningPresenter(this);
-//        }
+        if (earningPresenter == null) {
+            earningPresenter = new EarningPresenter(this);
+        }
         if (mineLearningPresenter == null) {
             mineLearningPresenter = new MineLearningPresenter(this);
         }
 //        earningPresenter.requestLaundryList(Constants.SCHOLARSHIP_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
 //        earningPresenter.requestLaundryList(Constants.INTEGRAL_ASSET_TYPE, Constants.NO_NEED_FLOW, Constants.EARNING_FLOW_TYPE, 1, 1);
+        earningPresenter.requestAccountBalance();
         mineLearningPresenter.requestLearningData(1, 1);
         if (superVipPresenter == null) {
             superVipPresenter = new SuperVipPresenter(this);
