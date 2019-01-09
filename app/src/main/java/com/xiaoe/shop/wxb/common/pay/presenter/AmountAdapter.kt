@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.xiaoe.common.entitys.AmountDataItem
 import com.xiaoe.common.entitys.AmountItemEntity
 import com.xiaoe.common.interfaces.OnItemClickWithAmountListener
 import com.xiaoe.common.utils.Dp2Px2SpUtil
@@ -21,10 +22,10 @@ import org.jetbrains.anko.find
  * @author: zak
  * @date: 2018/12/28
  */
-class AmountAdapter(context: Context, dataList: MutableList<AmountItemEntity>) : RecyclerView.Adapter<BaseViewHolder>() {
+class AmountAdapter(context: Context, dataList: MutableList<AmountDataItem>) : RecyclerView.Adapter<BaseViewHolder>() {
 
     private var mContext: Context = context
-    private var amountList: MutableList<AmountItemEntity> = dataList
+    private var amountList: MutableList<AmountDataItem> = dataList
     private lateinit var onItemClickWithAmountListener: OnItemClickWithAmountListener
     private var itemArr: MutableMap<Int, AmountItemViewHolder> = mutableMapOf()
 
@@ -46,8 +47,8 @@ class AmountAdapter(context: Context, dataList: MutableList<AmountItemEntity>) :
                     boBiContent.setTextColor(ContextCompat.getColor(mContext, R.color.white))
                 }
                 boBiItemWrap.setOnClickListener { onItemClickWithAmountListener.onAmountItemClick(view, amountList[position], position) }
-                boBiTitle.text = String.format(mContext.resources.getString(R.string.bo_bi_item_title), amount)
-                boBiContent.text = String.format(mContext.resources.getString(R.string.bo_bi_item_content), money)
+                boBiTitle.text = String.format(mContext.resources.getString(R.string.bo_bi_item_title), balance)
+                boBiContent.text = String.format(mContext.resources.getString(R.string.bo_bi_item_content), price)
             }
         }
     }

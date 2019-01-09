@@ -53,7 +53,6 @@
         </com.xiaoe.shop.wxb.widget.CustomScrollView>
 
         <include
-            android:id="@+id/paySelectorView"
             layout="@layout/pay_selector_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
