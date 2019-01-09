@@ -245,12 +245,13 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             return;
         }
         paying = true;
-        // 默认微信支付
-        int payWay = PayPresenter.PAY_WAY_DEFAULT;
-        if (payingFragment.isAliPayWay()) {
+        int payWay;
+        if (payingFragment.isAliPayWay()) { // 支付宝支付
             payWay = PayPresenter.PAY_WAY_ALI;
-        } else if (payingFragment.isBoBiPayWay()) {
+        } else if (payingFragment.isBoBiPayWay()) { // 波币支付
             payWay = PayPresenter.PAY_WAY_VIRTUAL;
+        } else { // 微信支付
+            payWay = PayPresenter.PAY_WAY_DEFAULT;
         }
         getDialog().showLoadDialog(false);
 //        int paymentType = (resourceType == 8 || resourceType == 6) ? 3 : 2;
