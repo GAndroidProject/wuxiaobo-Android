@@ -246,6 +246,10 @@
         <activity
             android:name=".common.releaseversion.ui.ReleaseVersionActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".common.pay.ui.BoBiActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".common.pay.ui.AccountDetailActivity"></activity>
     </application>
 
 </manifest>

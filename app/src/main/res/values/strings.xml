@@ -515,4 +515,18 @@
     <string name="download_count">共%d节课</string>
     <string name="all_text">全部</string>
     <string name="download_group_item_icon">下载列表非单品选中图标</string>
+    <string name="bo_bi_balance_title">账户余额</string>
+    <string name="bo_bi_top_up_title">充值</string>
+    <string name="bo_bi_tip_title">常见问题</string>
+    <string name="bo_bi_top_up_amount">1. 充值金额：%s</string>
+    <string name="bo_bi_tip_rate">2. 1波豆=1元</string>
+    <string name="bo_bi_amount">波比余额</string>
+    <string name="bo_bi_item_title">%d波豆</string>
+    <string name="bo_bi_item_content">%d元</string>
+    <string name="bo_bi_content_desc">账户明细</string>
+    <string name="confirm_pay">确认支付</string>
+    <string name="ali_pay_title">支付宝支付</string>
+    <string name="confirm_money">￥ %d</string>
+    <string name="confirm_ali_icon_desc">支付宝支付图标</string>
+    <string name="confirm_we_chat_pay_icon">微信支付图标</string>
 </resources>

@@ -46,6 +46,8 @@ import com.xiaoe.shop.wxb.business.setting.ui.SettingAccountActivity;
 import com.xiaoe.shop.wxb.business.setting.ui.SettingPersonActivity;
 import com.xiaoe.shop.wxb.business.super_vip.ui.NewSuperVipActivity;
 import com.xiaoe.shop.wxb.business.video.ui.VideoActivity;
+import com.xiaoe.shop.wxb.common.pay.ui.AccountDetailActivity;
+import com.xiaoe.shop.wxb.common.pay.ui.BoBiActivity;
 import com.xiaoe.shop.wxb.common.pay.ui.PayActivity;
 import com.xiaoe.shop.wxb.common.releaseversion.ui.ReleaseVersionActivity;
 import com.xiaoe.shop.wxb.common.web.BrowserActivity;
@@ -526,6 +528,24 @@ public class JumpDetail {
 
     public static void jumpReleaseVersion(Context context) {
         Intent intent = new Intent(context, ReleaseVersionActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到波豆余额页面
+     * @param context context
+     */
+    public static void jumpBobi(Context context) {
+        Intent intent = new Intent(context, BoBiActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到账户余额
+     * @param context 上下文
+     */
+    public static void jumpAccountDetail(Context context) {
+        Intent intent = new Intent(context, AccountDetailActivity.class);
         context.startActivity(intent);
     }
 }
