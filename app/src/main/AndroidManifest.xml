@@ -333,6 +333,10 @@
         <!-- 测试：5e3ca811dadd0242657df1b7  正式：c2e812c8b8eca83779e32711 -->
         <!-- 极光推送相关配置 end -->
 
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="guanwang" />
+
         <activity
             android:name=".business.bought_list.ui.BoughtListActivity"
             android:screenOrientation="portrait"/>
