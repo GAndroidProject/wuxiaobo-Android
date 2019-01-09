@@ -94,4 +94,6 @@
 
     <color name="download_item_bg">#FBFBFD</color>
     <color name="download_title_bg">#EAEAF0</color>
+
+    <color name="top_up_bg">#1A1E59F6</color>
 </resources>
