@@ -239,6 +239,10 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         downloadSubmit.setOnClickListener {
             clickDownload()
         }
+
+        downloadLoading.setOnClickListener {
+            // do nothing 用于阻绝点击
+        }
     }
 
     /**
@@ -273,13 +277,20 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 downloadSingleList.clear()
                 downloadSingleAdapter.notifyDataSetChanged()
                 downloadLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.service_error_text), R.mipmap.ic_network_error)
+                downloadRefresh.setEnableLoadMore(false)
+                downloadTitleCount.text = ""
                 return
             }
             downloadLoading.setLoadingFinish()
-            if (iRequest.requestTag == requestSingleTag) { // 请求单品的数据
-                initDownloadSingleData(entity)
-            } else if (iRequest.requestTag == requestGroupTag) { // 请求专栏的数据
-                initDownloadGroupData(entity)
+            try {
+                if (iRequest.requestTag == requestSingleTag) { // 请求单品的数据
+                    initDownloadSingleData(entity)
+                } else if (iRequest.requestTag == requestGroupTag) { // 请求专栏的数据
+                    initDownloadGroupData(entity)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.d("DownloadListFragment", "转换回调数据为本地 bean 发生错误！！")
             }
         }
     }
@@ -308,7 +319,11 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             downloadTitleName.background = null
             downloadTitleName.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
             hasSubColumn = false
+            downloadSecondRefresh.setEnableLoadMore(false)
         } else {
+            if (downloadGroupList.size > 0 && result.data.list!!.isNotEmpty()) {
+                downloadGroupList[downloadGroupList.size - 1].isLastItem = false
+            }
             for (item in result.data.list!!) {
                 val commonDownloadBean = CommonDownloadBean()
                 commonDownloadBean.title = item.title
@@ -319,9 +334,12 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 downloadGroupList.add(commonDownloadBean)
             }
             lastGroupId = result.data.list!![result.data.list!!.size - 1].goodsId
+            downloadGroupList[downloadGroupList.size - 1].isLastItem = true
             if (result.data.list!!.size < pageSize) {
                 canSecondLoadMore = false
                 downloadSecondRefresh.setEnableLoadMore(false)
+            } else {
+                downloadSecondRefresh.setEnableLoadMore(true)
             }
         }
         downloadGroupAdapter.setNewData(downloadGroupList)
@@ -334,39 +352,48 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
      * @param entity 返回的数据对象
      */
     private fun initDownloadSingleData(entity: Any) {
-        if (downloadSingleList.size > 0 && !isMainLoadMore) {
-            downloadSingleList.clear()
+        if (downloadSingleList.size > 0) {
+            if (!isMainLoadMore) {
+                downloadSingleList.clear()
+            } else {
+                downloadSingleList[downloadSingleList.size - 1].isLastItem = false
+            }
         }
         val result = Gson().fromJson(entity.toString(), NewDownloadBean::class.java)
-        for (item in result.data.list!!) {
-            val commonDownloadBean = CommonDownloadBean()
-            commonDownloadBean.appId = Constants.getAppId()
-            commonDownloadBean.resourceId = item.goodsId
-            commonDownloadBean.resourceType = item.goodsType
-            commonDownloadBean.title = item.title
-            commonDownloadBean.isSelected = false
-            commonDownloadBean.isEnable = true
-            commonDownloadBean.imgUrl = item.imgUrl
-            commonDownloadBean.parentId = item.productInfo.goodsId
-            commonDownloadBean.parentType = item.productInfo.goodsType
-            if (item.goodsType == downloadAudio) {
-                commonDownloadBean.audioUrl = item.downloadUrl
-                commonDownloadBean.audioLength = item.length
-            } else if (item.goodsType == downloadVideo) {
-                commonDownloadBean.videoUrl = item.downloadUrl
-                commonDownloadBean.videoLength = item.length
-            }
-            downloadSingleList.add(commonDownloadBean)
-        }
-        lastSingleId = result.data.list!![result.data.list!!.size - 1].goodsId
-        if (result.data.list!!.size < pageSize) {
-            canMainLoadMore = false
-            downloadRefresh.setEnableLoadMore(false)
+        if (result.data.list == null) {
+            // TODO: 没有单品的情况下，页面的显示
         } else {
-            downloadRefresh.setEnableLoadMore(true)
+            for (item in result.data.list!!) {
+                val commonDownloadBean = CommonDownloadBean()
+                commonDownloadBean.appId = Constants.getAppId()
+                commonDownloadBean.resourceId = item.goodsId
+                commonDownloadBean.resourceType = item.goodsType
+                commonDownloadBean.title = item.title
+                commonDownloadBean.isSelected = false
+                commonDownloadBean.isEnable = true
+                commonDownloadBean.imgUrl = item.imgUrl
+                commonDownloadBean.parentId = item.productInfo.goodsId
+                commonDownloadBean.parentType = item.productInfo.goodsType
+                if (item.goodsType == downloadAudio) {
+                    commonDownloadBean.audioUrl = item.downloadUrl
+                    commonDownloadBean.audioLength = item.length
+                } else if (item.goodsType == downloadVideo) {
+                    commonDownloadBean.videoUrl = item.downloadUrl
+                    commonDownloadBean.videoLength = item.length
+                }
+                downloadSingleList.add(commonDownloadBean)
+            }
+            lastSingleId = result.data.list!![result.data.list!!.size - 1].goodsId
+            downloadSingleList[downloadSingleList.size - 1].isLastItem = true
+            if (result.data.list!!.size < pageSize) {
+                canMainLoadMore = false
+                downloadRefresh.setEnableLoadMore(false)
+            } else {
+                downloadRefresh.setEnableLoadMore(true)
+            }
+            downloadSingleAdapter.setNewData(downloadSingleList)
+            downloadSingleAdapter.notifyDataSetChanged()
         }
-        downloadSingleAdapter.setNewData(downloadSingleList)
-        downloadSingleAdapter.notifyDataSetChanged()
     }
 
     override fun onCommonDownloadBeanItemClick(view: View?, initType: Int, commonDownloadBean: CommonDownloadBean) {
@@ -388,6 +415,11 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 } else {
                     selectCountDesc.text = String.format(context.getString(R.string.the_selected_count), totalSelectedCount)
                 }
+                if (totalSelectedCount == downloadSingleList.size) {
+                    allSelectBtn.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_checking), null, null, null)
+                } else {
+                    allSelectBtn.setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.mipmap.download_tocheck), null, null, null)
+                }
             }
         } else if (initType == DownLoadListAdapter.GROUP_TYPE) {
             if (!commonDownloadBean.isSelected) {
@@ -402,6 +434,11 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             isMainLoadMore = false
             columnPresenter.requestDownloadList(commonDownloadBean.resourceId, commonDownloadBean.resourceType, pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             downloadTitleName.text = commonDownloadBean.title
+            if (commonDownloadBean.periodicalCount == 0) {
+                downloadTitleCount.text = ""
+            } else {
+                downloadTitleCount.text = String.format(getString(R.string.download_count), commonDownloadBean.periodicalCount)
+            }
             downloadGroupAdapter.notifyDataSetChanged()
             downloadSecondWrap.visibility = View.GONE
         }

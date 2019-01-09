@@ -48,4 +48,5 @@ data class CommonDownloadBean(@SerializedName("img_url_compress")
                               var isEnable: Boolean = true,
                               var periodicalCount: Int = 0,
                               var parentId: String = "",
-                              var parentType: Int = 0)
+                              var parentType: Int = 0,
+                              var isLastItem: Boolean = false)

@@ -77,7 +77,11 @@ public class DownloadListItemViewHolder extends BaseViewHolder {
             groupCheck.setVisibility(View.GONE);
         }
 
-        groupBottomLine.setVisibility(View.VISIBLE);
+        if (commonDownloadBean.isLastItem()) {
+            groupBottomLine.setVisibility(View.GONE);
+        } else {
+            groupBottomLine.setVisibility(View.VISIBLE);
+        }
 
         groupWrap.setOnClickListener(new DebouncingOnClickListener() {
             @Override
@@ -102,7 +106,6 @@ public class DownloadListItemViewHolder extends BaseViewHolder {
         } else if (commonDownloadBean.getResourceType() == 3) { // 视频
             singleLength.setText(DateFormat.longToString(commonDownloadBean.getVideoLength() * 1000));
         }
-        singleBottomLine.setVisibility(View.VISIBLE);
 
         if (commonDownloadBean.isSelected()) {
             singleHead.setCompoundDrawablesWithIntrinsicBounds(mContext.getDrawable(R.mipmap.download_checking), null, null, null);
@@ -116,6 +119,12 @@ public class DownloadListItemViewHolder extends BaseViewHolder {
 
         if (!commonDownloadBean.isEnable()) {
             singleHead.setCompoundDrawablesWithIntrinsicBounds(mContext.getDrawable(R.mipmap.download_alreadychecked), null, null, null);
+        }
+
+        if (commonDownloadBean.isLastItem()) {
+            singleBottomLine.setVisibility(View.GONE);
+        } else {
+            singleBottomLine.setVisibility(View.VISIBLE);
         }
 
 
