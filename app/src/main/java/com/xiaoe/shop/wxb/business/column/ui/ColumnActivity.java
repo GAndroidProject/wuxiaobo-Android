@@ -107,6 +107,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private String shareUrl = "";
     private String summary = "";
     private int price = 0;
+    protected String title;
 
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
@@ -616,7 +617,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             isHasBuy = false;
             collectPrice = ""+price;
         }
-        String title = data.getString("title");
+        title = data.getString("title");
         //收藏内容
         collectTitle = title;
         collectImgUrl = data.getString("img_url");

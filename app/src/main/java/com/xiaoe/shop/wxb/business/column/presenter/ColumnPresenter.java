@@ -11,8 +11,10 @@ import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.ColumnListRequst;
 import com.xiaoe.network.requests.DetailRequest;
+import com.xiaoe.network.requests.DownloadListRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.QueryProductTypeRequest;
+import com.xiaoe.shop.wxb.adapter.download.DownLoadExpandAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -219,5 +221,62 @@ public class ColumnPresenter implements IBizCallback {
         QueryProductTypeRequest productTypeRequest = new QueryProductTypeRequest(this);
         productTypeRequest.addRequestParam("product_id", productId);
         productTypeRequest.sendRequest();
+    }
+
+    /**
+     * 格式化一级目录数据
+     * @param jsonArray
+     */
+    public List<MultiItemEntity> formatDownloadExpandableEntity(JSONArray jsonArray, String bigColumnId, int hasBuy){
+        List<MultiItemEntity> directoryEntityList = new ArrayList<MultiItemEntity>();
+        for (Object object : jsonArray) {
+            ExpandableLevel directoryEntity = new ExpandableLevel();
+
+            JSONObject jsonObject = (JSONObject) object;
+            directoryEntity.setApp_id(jsonObject.getString("app_id"));
+            directoryEntity.setTitle(jsonObject.getString("title"));
+            String columnId = jsonObject.getString("resource_id");
+            directoryEntity.setImg_url(jsonObject.getString("img_url"));
+            directoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
+            directoryEntity.setResource_id(columnId);
+            directoryEntity.setBigColumnId(bigColumnId);
+            directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
+
+            //添加一条空数据，作为“加载状态”条目
+            ExpandableItem loadSecondDirectoryEntity = new ExpandableItem();
+            loadSecondDirectoryEntity.setItemType(DownLoadExpandAdapter.LOAD_STATE);
+            loadSecondDirectoryEntity.setLoadType(DownLoadExpandAdapter.LOADING);
+            directoryEntity.addSubItem(loadSecondDirectoryEntity);
+            //添加一条空数据，作为“收起”条目
+            ExpandableItem emptySecondDirectoryEntity = new ExpandableItem();
+            emptySecondDirectoryEntity.setItemType(DownLoadExpandAdapter.GROUP_BOTTOM_ITEM);
+            directoryEntity.addSubItem(emptySecondDirectoryEntity);
+
+            directoryEntityList.add(directoryEntity);
+        }
+        return directoryEntityList;
+    }
+
+    /**
+     * 请求下载列表数据
+     *
+     * @param goodsId      商品 id
+     * @param goodsType    商品类型
+     * @param pageSize     每页大小
+     * @param downloadType 下载类型
+     * @param lastId       最后一个 id（用于分页请求）
+     * @param requestTag   请求的 tag
+     */
+    public void requestDownloadList(String goodsId, int goodsType, int pageSize, int[] downloadType, String lastId, String requestTag) {
+        DownloadListRequest downloadListRequest = new DownloadListRequest(this);
+
+        downloadListRequest.addDataParam("goods_id", goodsId);
+        downloadListRequest.addDataParam("goods_type", goodsType);
+        downloadListRequest.addDataParam("download_type", downloadType);
+        downloadListRequest.addDataParam("last_id", lastId);
+        downloadListRequest.addDataParam("page_size", pageSize);
+        downloadListRequest.setRequestTag(requestTag);
+
+        downloadListRequest.sendRequest();
     }
 }
