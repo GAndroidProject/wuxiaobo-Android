@@ -137,7 +137,7 @@ public class MineLearningWrapView extends LinearLayout {
     }
 
     public void setLearningLoginDescVisibility(int visibility) {
-        learningLoginDesc.setVisibility(visibility);
+//        learningLoginDesc.setVisibility(visibility);
     }
 
     public int getLearningLoginDescVisibility() {

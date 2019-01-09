@@ -228,5 +228,10 @@ object UploadLearnProgressManager : IBizCallback {
         return data
     }
 
+    fun clearData(){
+        mUploadLearnData.clear()
+        mUploadLearnHistoryData.clear()
+    }
+
 }
 
