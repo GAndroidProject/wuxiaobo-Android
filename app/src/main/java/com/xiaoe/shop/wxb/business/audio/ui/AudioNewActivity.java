@@ -39,9 +39,7 @@ import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.Global;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
-import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.HadSharedEvent;
-import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
 import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -74,7 +72,6 @@ import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
@@ -298,18 +295,19 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     public void onBackPressed() {
         setViewAnim(audioRing, 1, 0, 1, 0, 1, 0);
         setViewAnim(btnPageClose, 1, 0, 1, 0, 1, 0);
-        if (AudioMediaPlayer.getAudio() != null && AudioMediaPlayer.getAudio().getHasBuy() == 1) {
-            // 上报学习进度（买了才上报）
-            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-            updateLearningUtils.updateLearningProgress(AudioMediaPlayer.getAudio().getResourceId(), 2, 10);
-            LearningRecord lr = new LearningRecord();
-            lr.setLrId(AudioMediaPlayer.getAudio().getResourceId());
-            lr.setLrType(DecorateEntityType.AUDIO);
-            lr.setLrTitle(AudioMediaPlayer.getAudio().getTitle());
-            lr.setLrImg(AudioMediaPlayer.getAudio().getImgUrl());
-            lr.setLrDesc(playNumStr);
-            UpdateLearningUtils.saveLr2Local(this, lr);
-        }
+
+//        if (AudioMediaPlayer.getAudio() != null && AudioMediaPlayer.getAudio().getHasBuy() == 1) {
+//             //上报学习进度（买了才上报）
+//            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+//            updateLearningUtils.updateLearningProgress(AudioMediaPlayer.getAudio().getResourceId(), 2, 10);
+//            LearningRecord lr = new LearningRecord();
+//            lr.setLrId(AudioMediaPlayer.getAudio().getResourceId());
+//            lr.setLrType(DecorateEntityType.AUDIO);
+//            lr.setLrTitle(AudioMediaPlayer.getAudio().getTitle());
+//            lr.setLrImg(AudioMediaPlayer.getAudio().getImgUrl());
+//            lr.setLrDesc(playNumStr);
+//            UpdateLearningUtils.saveLr2Local(this, lr);
+//        }
         super.onBackPressed();
         overridePendingTransition(R.anim.no_anim,R.anim.slide_bottom_out);
     }
@@ -725,6 +723,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 break;
             case AudioPlayEvent.REFRESH_PAGER:
                 refreshPager();
+
                 break;
             case AudioPlayEvent.NEXT:
             case AudioPlayEvent.LAST:

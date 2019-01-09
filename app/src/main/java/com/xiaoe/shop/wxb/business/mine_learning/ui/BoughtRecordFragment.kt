@@ -42,7 +42,7 @@ import java.lang.Exception
  * Description:
  */
 class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener {
-    private val mTag = "RecentlyLearning"
+    private val mTag = "BoughtRecord"
     var pageIndex = 1
     val pageSize = 10
 
@@ -116,7 +116,7 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
             if (iRequest is EarningRequest) {
                 try {
                     mStatusPagerView.setPagerState(StatusPagerView.FAIL,
-                            getString(R.string.no_learning_content),R.mipmap.collection_none)
+                            getString(R.string.no_bought_record_content),R.mipmap.collection_none)
                     val result = Gson().fromJson<BoughtRecord>(entity!!.toString(), BoughtRecord::class.java)
                     if (result?.data == null)   return
                     result.data!!
@@ -137,6 +137,7 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
                                 learningRefresh.finishLoadMore()
                             }else{
                                 learningRefresh.finishLoadMoreWithNoMoreData()
+                                learningRefresh.setEnableLoadMore(false)
                             } }
                         4001 == result.code|| 4002 == result.code ->{
                             Toast.makeText(activity,result!!.msg,Toast.LENGTH_SHORT).show()
@@ -205,17 +206,21 @@ class BoughtRecordFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListen
                 item?.apply {
                     when(itemViewType){
                         ITEM_TYPE_DEFAULT ->{
-                            setGone(R.id.learningProgress,false)
-                            getView<SimpleDraweeView>(R.id.itemIcon).setImageURI(item!!.imgUrl)
+//                            getView<SimpleDraweeView>(R.id.itemIcon).setImageURI(imgUrl)
+                            val itemIcon = getView<SimpleDraweeView>(R.id.itemIcon)
+                            SetImageUriUtil.setImgURI(itemIcon, imgUrl,
+                                    Dp2Px2SpUtil.dp2px(mContext, 144f),
+                                    Dp2Px2SpUtil.dp2px(mContext, 108f))
                             setText(R.id.itemTitle,purchaseName)
-                            val desc = getView<TextView>(R.id.itemDesc)
 
+                            var descString = ""
                             when(purchasedGoodsType){
-                                3 -> desc.text = String.format(context.getString(R.string.valid_until2),
+                                3 -> descString = String.format(context.getString(R.string.valid_until2),
                                         expireAt?.split(" ")[0])
-                                1,2 -> desc.text = String.format(context.getString(R.string.stages_text_str),
+                                1,2 -> descString = String.format(context.getString(R.string.stages_text_str),
                                         purchasedGoodsDisplay)
                             }
+                            setText(R.id.itemDesc,descString)
                         }
                         ITEM_TYPE_AUDIO ->{
                             SetImageUriUtil.setImgURI(helper!!.getView(R.id.itemIcoBbg),

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -17,12 +18,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.xiaoe.common.entitys.ResourceType;
 import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.R;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.video.presenter.VideoPlayer;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -57,6 +61,21 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private boolean isTouchSeekBar;
     private ImageView btnDownload;
     private PowerManager.WakeLock mWakeLock;
+    private boolean hasBuy;
+    private String columnId;
+    private String realSrcId;
+
+    public void setRealSrcId(String realSrcId) {
+        this.realSrcId = realSrcId;
+    }
+
+    public void setColumnId(String columnId) {
+        this.columnId = columnId;
+    }
+
+    public void setHasBuy(boolean hasBuy) {
+        this.hasBuy = hasBuy;
+    }
 
     public void setWakeLock(PowerManager.WakeLock wakeLock) {
         mWakeLock = wakeLock;
@@ -243,8 +262,44 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
         videoPlayEvent.setState(VideoPlayConstant.VIDEO_STATE_PLAY);
         EventBus.getDefault().post(videoPlayEvent);
+        uploadVideoProgress();
 
         initPlayListener();
+    }
+
+    private void uploadVideoProgress(){
+        try {
+            if (playSeekBar == null || mVideoPlayer == null)
+                return;
+            int progress = playSeekBar.getProgress();
+            int totalTime = mVideoPlayer.getDuration() / 1000;
+            if (totalTime < 1) return;
+            progress = progress / 10 /totalTime;
+            if (UploadLearnProgressManager.INSTANCE.isSingleBuy()) {
+                UploadLearnProgressManager.INSTANCE.addSingleItemData(realSrcId, ResourceType.TYPE_VIDEO,
+                        progress, totalTime, true);
+            } else if (!TextUtils.isEmpty(AudioMediaPlayer.getmCurrentColumnId())){
+                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(AudioMediaPlayer.getmCurrentColumnId(), realSrcId,
+                        ResourceType.TYPE_VIDEO, progress, totalTime);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void uploadSingleBuyVideoProgress(){
+        try {
+            if (playSeekBar == null || mVideoPlayer == null || !TextUtils.isEmpty(AudioMediaPlayer.getmCurrentColumnId()))
+                return;
+            int progress = playSeekBar.getProgress();
+            int totalTime = mVideoPlayer.getDuration() / 1000;
+            if (totalTime < 1)   return;
+            progress = progress / 10 /totalTime;
+            UploadLearnProgressManager.INSTANCE.addSingleItemData(realSrcId,ResourceType.TYPE_VIDEO,
+                    progress,totalTime,true);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void initPlayListener() {
@@ -306,6 +361,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             btnPlay.setVisibility(VISIBLE);
             btnProgressPlay.setImageResource(R.mipmap.icon_video_play);
             controlDelayAutoDismiss(1);
+            uploadSingleBuyVideoProgress();
         }
     }
 

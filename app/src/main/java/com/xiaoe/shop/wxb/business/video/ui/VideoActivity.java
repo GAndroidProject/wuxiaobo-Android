@@ -37,6 +37,7 @@ import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.DownloadResourceTableInfo;
 import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.entitys.ResourceType;
 import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -57,7 +58,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
-import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -145,6 +146,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         mIntent = getIntent();
         mResourceId = mIntent.getStringExtra("resourceId");
         columnId = mIntent.getStringExtra("columnId");
+//        UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(columnId));
         initViews();
         initDatas();
     }
@@ -182,6 +184,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 //        String videoImageUrl = mIntent.getStringExtra("videoImageUrl");
 
         playControllerView = (VideoPlayControllerView) findViewById(R.id.video_play_controller);
+        playControllerView.setColumnId(columnId);
+        playControllerView.setRealSrcId(mResourceId);
         playControllerView.setPlayProgressWidgetVisibility(View.GONE);
         playControllerView.setOnClickVideoBackListener(this);
         PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -263,16 +267,16 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             setPlayScreen(VideoPlayConstant.VIDEO_LITTLE_SCREEN);
         }else{
             if (hasBuy) {
-                // 上报学习进度(买了才上报)
-                UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-                updateLearningUtils.updateLearningProgress(realSrcId, 3, 10);
-                LearningRecord lr = new LearningRecord();
-                lr.setLrId(realSrcId);
-                lr.setLrType(DecorateEntityType.VIDEO);
-                lr.setLrTitle(collectTitle);
-                lr.setLrImg(collectImgUrl);
-                lr.setLrDesc(playNumStr);
-                UpdateLearningUtils.saveLr2Local(this, lr);
+//                // 上报学习进度(买了才上报)
+//                UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+//                updateLearningUtils.updateLearningProgress(realSrcId, 3, 10);
+//                LearningRecord lr = new LearningRecord();
+//                lr.setLrId(realSrcId);
+//                lr.setLrType(DecorateEntityType.VIDEO);
+//                lr.setLrTitle(collectTitle);
+//                lr.setLrImg(collectImgUrl);
+//                lr.setLrDesc(playNumStr);
+//                UpdateLearningUtils.saveLr2Local(this, lr);
             }
             super.onBackPressed();
         }
@@ -608,6 +612,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
     private void setContent(JSONObject data, boolean available, boolean cache) {
         hasBuy = available;
+        if (playControllerView != null)
+            playControllerView.setHasBuy(hasBuy);
         mResourceId = data.getString("resource_id");
         String title = data.getString("title");
         videoTitle.setText(title);

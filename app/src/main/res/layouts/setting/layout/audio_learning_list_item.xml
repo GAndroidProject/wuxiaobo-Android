@@ -3,16 +3,16 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="108dp"
     android:background="@drawable/corners_bg_with_border">
     <RelativeLayout
         android:id="@+id/itemIconView"
-        android:layout_width="160dp"
-        android:layout_height="120dp">
+        android:layout_width="144dp"
+        android:layout_height="match_parent">
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/itemIcoBbg"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             fresco:roundedCornerRadius="@dimen/corner_border_radius_size"
             fresco:roundingBorderWidth="0.5dp"
@@ -44,14 +44,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/itemIconView"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="14dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginTop="10dp">
         <TextView
             android:id="@+id/itemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textColor="@color/main_title_color"
             android:maxLines="2"
             android:ellipsize="end"/>
@@ -60,7 +60,7 @@
             android:id="@+id/itemContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textColor="@color/secondary_title_color"
             android:maxLines="1"
             android:ellipsize="end"
@@ -75,7 +75,7 @@
         android:layout_alignStart="@+id/item"
         android:textColor="@color/knowledge_item_desc_color"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginEnd="10dp"
         android:ellipsize="end"
         android:maxLines="1"/>

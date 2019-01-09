@@ -499,4 +499,8 @@
     <string name="recently_in_learning">最近在学</string>
     <string name="purchase_records">购买记录</string>
     <string name="my_already_bought">我的已购</string>
+    <string name="learned_finish">已学完</string>
+    <string name="membership_due">已到期 点击续费</string>
+    <string name="learned_sessinos_and_total">已学习%d期 / 共%d期</string>
+    <string name="no_bought_record_content">暂无购买记录的内容，快去首页逛逛吧</string>
 </resources>
