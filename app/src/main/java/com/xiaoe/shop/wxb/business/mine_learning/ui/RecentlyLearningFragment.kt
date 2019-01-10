@@ -49,6 +49,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
     var pageIndex = 1
     val pageSize = 10
     var isCanRefresh = false
+    var isRequesting = false
 
     private val mAdapter: MyAdapter by lazy {
         MyAdapter(activity)
@@ -69,9 +70,9 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
     @Subscribe
     fun onEventMainThread(event : LearnRecordIsRefresh){
         if (!isCanRefresh)  return
-        if (event != null && event.isRefresh){
+        if (event != null && event.isRefresh && !isRequesting){
             pageIndex = 1
-            mBoughtPresenter.requestLearningData(pageIndex, pageSize)
+            requestData()
         }
     }
 
@@ -110,7 +111,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
         mStatusPagerView.setLoadingState(View.VISIBLE)
         mAdapter.emptyView = mStatusPagerView
 
-        mBoughtPresenter.requestLearningData(pageIndex, pageSize)
+        requestData()
     }
 
     private fun initListener() {
@@ -148,6 +149,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
     private fun handleData(success: Boolean, entity: Any?, iRequest: IRequest?) {
         if (success && entity != null) {
             if (iRequest is RecentlyLearningRequest) {
+                isRequesting = false
                 mStatusPagerView.setPagerState(StatusPagerView.FAIL,
                         getString(R.string.no_learning_content), R.mipmap.collection_none)
                 try {//没有数据的时候data返回数组类型，但是有数据又返回object类型
@@ -189,7 +191,6 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
             learningRefresh.finishRefresh()
             when {
                 0 == result.code && 1 == pageIndex -> {
-                    mAdapter.data?.clear()
                     mAdapter.setNewData(data)
                     learningRefresh.setEnableLoadMore(data!!.size!! >= pageSize)
                     if (data!!.size!! >= pageSize)
@@ -224,10 +225,15 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
         pageIndex = 1
-        mBoughtPresenter.requestLearningData(pageIndex, pageSize)
+        requestData()
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
+        requestData()
+    }
+
+    private fun requestData() {
+        isRequesting = true
         mBoughtPresenter.requestLearningData(pageIndex, pageSize)
     }
 

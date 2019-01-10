@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,9 @@ import com.xiaoe.shop.wxb.adapter.download.FinishDownloadListAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.interfaces.IonSlidingViewClickListener;
+import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
+import com.xiaoe.shop.wxb.utils.LogUtils;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
 import java.util.List;
@@ -28,6 +32,13 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
     private RecyclerView finishDownloadRecyclerView;
     private FinishDownloadListAdapter finishDownloadListAdapter;
     private StatusPagerView statePager;
+    String topParentId = "";
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LearnRecordPageProgressManager.INSTANCE.setAtFinishDownloadFragment(true);
+    }
 
     @Nullable
     @Override
@@ -86,14 +97,54 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
             if(download == null){
                 return;
             }else if(download.getResourceType() == 1){
+                handleParentData(download);
                 //音频
                 JumpDetail.jumpAudio(getContext(), download.getResourceId(), 1);
             }else if(download.getResourceType() == 2){
+                handleParentData(download);
                 //视频
                 JumpDetail.jumpVideo(getContext(), download.getResourceId(), null, true, "");
             }
         }
     }
+
+    private void handleParentData(DownloadResourceTableInfo download) {
+
+        int topType = 0;
+        if (!TextUtils.isEmpty(download.getTopParentId()) && download.getTopParentType() > 0){
+            topParentId = download.getTopParentId();
+            topType = download.getTopParentType();
+        }else if (!TextUtils.isEmpty(download.getParentId()) && download.getParentType() > 0){
+            topParentId = download.getTopParentId();
+            topType = download.getParentType();
+        }
+        LogUtils.d("handleParentData -- topParentId = " + topParentId);
+        if (!TextUtils.isEmpty(topParentId)){
+            UploadLearnProgressManager.INSTANCE.addColumnData(topParentId,topType);
+        }
+        UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(topParentId));
+        UploadLearnProgressManager.INSTANCE.setMCurrentColumnId(topParentId);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        uploadData();
+    }
+
+    private void uploadData() {
+        if (!TextUtils.isEmpty(topParentId)){
+            UploadLearnProgressManager.INSTANCE.uploadLearningData(topParentId);
+            topParentId = "";
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        uploadData();
+    }
+
     @Override
     public void onDeleteBtnClick(View view, int position) {
         DownloadResourceTableInfo remove = finishDownloadListAdapter.removeData(position);
@@ -109,6 +160,14 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
     public void onDestroyView() {
         super.onDestroyView();
         DownloadManager.getInstance().removeOnDownloadListener(TAG);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LearnRecordPageProgressManager.INSTANCE.setAtFinishDownloadFragment(false);
+        UploadLearnProgressManager.INSTANCE.setSingleBuy(true);
+        UploadLearnProgressManager.INSTANCE.setMCurrentColumnId("");
     }
 
     @Override

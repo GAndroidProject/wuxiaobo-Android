@@ -164,7 +164,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             mediaPlayer.seekTo(LearnRecordPageProgressManager.INSTANCE.getAudioProgress());
             LearnRecordPageProgressManager.INSTANCE.setAudioProgress(0);
         }else {
-            if (audio != null)  UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(audio.getColumnId()));
+//            if (audio != null)  UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(audio.getColumnId()));
             uploadAudioProgress();
         }
     }
@@ -376,22 +376,26 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     public static void playNext(boolean isShowLastOneToast) {
-        List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
-        int indexNext = audio.getIndex() + 1;
-        if(indexNext >= playList.size()){
-            if (isShowLastOneToast)
-                Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
-            return;
+        try{
+            List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
+            int indexNext = audio.getIndex() + 1;
+            if(indexNext >= playList.size()){
+                if (isShowLastOneToast)
+                    Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
+                return;
+            }
+            audio.setPlay(false);
+            stop();
+            AudioPlayEntity nextAudio = playList.get(indexNext);
+            setAudio(nextAudio, true);
+            if(nextAudio.getCode() != 0){
+                new AudioPresenter(null).requestDetail(nextAudio.getResourceId());
+            }
+            event.setState(AudioPlayEvent.NEXT);
+            EventBus.getDefault().post(event);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        audio.setPlay(false);
-        stop();
-        AudioPlayEntity nextAudio = playList.get(indexNext);
-        setAudio(nextAudio, true);
-        if(nextAudio.getCode() != 0){
-            new AudioPresenter(null).requestDetail(nextAudio.getResourceId());
-        }
-        event.setState(AudioPlayEvent.NEXT);
-        EventBus.getDefault().post(event);
     }
 
     public static void playLast() {
@@ -480,8 +484,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
             if (audio != null && 1 == audio.getHasBuy()){
                 int progress = getProgress(playEntity);
-                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(UploadLearnProgressManager
-                                .INSTANCE.isSingleBuy() ? "" : UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()
+                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(TextUtils.isEmpty(audio.getColumnId())
+                                ? "" : UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()
                         ,playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
             }
         }catch (Exception e){

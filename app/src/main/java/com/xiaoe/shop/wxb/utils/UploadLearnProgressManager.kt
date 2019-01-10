@@ -264,6 +264,8 @@ object LearnRecordPageProgressManager{
     var audioProgress = 0
     var videoProgress = 0
 
+    var isAtFinishDownloadFragment = false
+
 }
 
 
