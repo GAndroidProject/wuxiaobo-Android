@@ -276,9 +276,8 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                 ResourceType.TYPE_MEMBER ->{// 会员
                                     descString =context.getString(R.string.membership_due)
                                     if (1 != info.isExpire){
-                                        setGone(R.id.itemContent,true)
                                         descString = updateLearnProgress(helper!!, item!!, descString)
-                                    }
+                                    }else  setGone(R.id.itemContent,true)
                                     setText(R.id.itemContent,String.format(context
                                             .getString(R.string.stages_text), info.periodicalCount))
                                 }
