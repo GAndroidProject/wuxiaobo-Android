@@ -836,7 +836,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             setHasToast(true);
             isAutoPlayNext = isAuto;
             LogUtils.d("onNext = " + playNextIndex);
-            if (playNextIndex < 1 || TextUtils.isEmpty(requestNextVideoResId)){
+            if (!isAutoPlayNext && (playNextIndex < 1 || TextUtils.isEmpty(requestNextVideoResId))){
                 toastCustom(getString(R.string.already_was_last_video));
                 return;
             }
