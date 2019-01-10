@@ -57,6 +57,7 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener, OnRefreshLi
     private var productId: String = ""
     private var preOrderId: String = ""
     private var isPaying: Boolean = false
+    private var payWay: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,7 +127,7 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener, OnRefreshLi
 
         confirmPay.setOnClickListener {
             if (!isPaying) {
-                val payWay: Int = if (weChatItemIcon.drawable.constantState == ContextCompat.getDrawable(this, R.mipmap.download_checking).constantState) {
+                payWay = if (weChatItemIcon.drawable.constantState == ContextCompat.getDrawable(this, R.mipmap.download_checking).constantState) {
                     payByWeChat
                 } else {
                     payByAliPay
@@ -216,15 +217,19 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener, OnRefreshLi
             is PrepaidBuyRequest -> try {
                 val result = Gson().fromJson(entity.toString(), PrepaidBuyEntity::class.java)
                 if (result.code == NetworkCodes.CODE_SUCCEED) {
-                    val payConfig = result.data.payConfig
-                    isPaying = true
-                    pullWXPay(payConfig.appid,
-                            payConfig.partnerid,
-                            payConfig.prepayid,
-                            payConfig.noncestr,
-                            payConfig.timestamp.toString(),
-                            payConfig.packageName,
-                            payConfig.sign)
+                    if (payWay == payByWeChat) {
+                        val payConfig = result.data.payConfig
+                        isPaying = true
+                        pullWXPay(payConfig.appid,
+                                payConfig.partnerid,
+                                payConfig.prepayid,
+                                payConfig.noncestr,
+                                payConfig.timestamp.toString(),
+                                payConfig.packageName,
+                                payConfig.sign)
+                    } else if (payWay == payByAliPay) {
+                        Toast("支付宝回来了")
+                    }
                 } else {
                     // TODO: 获取三方支付订单失败
                 }
@@ -263,8 +268,8 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener, OnRefreshLi
         boBiTopUpSubmit.isEnabled = true
 
         // 初始化第一个加个
-        selectMoney = topUpList[0].balance
-        productId = topUpList[0].productId
+        selectMoney = topUpList[2].balance
+        productId = topUpList[2].productId
         var totalMoney = ""
         for (item in topUpList) {
             totalMoney += item.balance.toString() + ", "

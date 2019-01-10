@@ -29,6 +29,8 @@ public class DownloadTableInfo {
     private String updateAt;
     private String parentId; // 父级资源 id
     private int parentType;  // 父级资源类型
+    private String topParentId; // 顶级资源 id
+    private int topParentType; // 顶级资源类型
 
     public String getTableName() {
         return tableName;
@@ -200,6 +202,23 @@ public class DownloadTableInfo {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public void setTopParentId(String topParentId) {
+        this.topParentId = topParentId;
+    }
+
+    public void setTopParentType(int topParentType) {
+        this.topParentType = topParentType;
+    }
+
+    public String getTopParentId() {
+
+        return topParentId;
+    }
+
+    public int getTopParentType() {
+        return topParentType;
     }
 
     public void setParentType(int parentType) {

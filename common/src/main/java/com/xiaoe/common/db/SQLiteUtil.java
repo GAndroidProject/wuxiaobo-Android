@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class SQLiteUtil extends SQLiteOpenHelper {
 
     private final String TAG = "SQLiteUtil";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     private static final  String DATABASE_NAME = "xiaoeshop.db";
     private static SQLiteUtil INSTANCE;
     private java.util.concurrent.Semaphore semaphoreTransaction = new java.util.concurrent.Semaphore(1);
@@ -187,6 +187,54 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
         //根据数据版本号更新做不同的操作
         if(newVersion > oldVersion && newVersion == AudioPlayTable.DATABASE_VERSION){
             //列如，对音频表新增字段操作
+        }
+        if (oldVersion == 1) { // 数据库版本为 1 的数据版本
+            try {
+                sqLiteDatabase.beginTransaction();
+                // 将表名改为临时表
+                String downloadResource = "ALTER TABLE download_resource RENAME TO download_resource_temp";
+                sqLiteDatabase.execSQL(downloadResource);
+
+                // 创建新表
+                // 新下载资源表创建
+                String createNewDRTable = "CREATE TABLE download_resource (" +
+                        "app_id VARCHAR(64) not null, " +
+                        "user_id VARCHAR(64) not null, " +
+                        "resource_id VARCHAR(64) not null, " +
+                        "parent_id VARCHAR(64) default \"\", " +
+                        "parent_type INTEGER default 0, " +
+                        "top_parent_id VARCHAR(64) default \"\", " +
+                        "top_parent_type INTEGER default 0, " +
+                        "title TEXT default \"\", " +
+                        "descs TEXT default \"\", " +
+                        "img_url TEXT default \"\", " +
+                        "resource_type INTEGER default 0, " +//1-音频，2-视频，3-专栏，4-大专栏
+                        "depth INTEGER default 0, " +//深度，大专栏-2，小专栏-1，单品-0
+                        "create_at DATETIME default '0000-00-00 00:00:00', " +
+                        "update_at DATETIME default '0000-00-00 00:00:00', " +
+                        "primary key (app_id, user_id, resource_id))";
+                sqLiteDatabase.execSQL(createNewDRTable);
+
+                Cursor cursor = sqLiteDatabase.rawQuery("select * from download_resource_temp", null);
+
+                if (cursor.moveToFirst()) {
+                    // 有数据则导入数据
+                    String insertDRSql = "INSERT INTO download_resource (app_id,user_id,resource_id) " +
+                            "SELECT app_id,user_id,resource_id from download_resource_temp";
+                    sqLiteDatabase.execSQL(insertDRSql);
+                    cursor.close();
+                }
+
+                // 删除临时表
+                String deleteDRSql = "DROP TABLE download_resource_temp";
+                sqLiteDatabase.execSQL(deleteDRSql);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (sqLiteDatabase != null) {
+                    sqLiteDatabase.endTransaction();
+                }
+            }
         }
     }
 

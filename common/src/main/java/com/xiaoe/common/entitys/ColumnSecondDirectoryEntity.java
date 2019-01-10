@@ -58,7 +58,10 @@ public class ColumnSecondDirectoryEntity implements Serializable {
     private String parentId = "";
     // 父级资源类型
     private int parentType = 0;
-
+    // 顶级资源 id
+    private String topParentId = "";
+    // 顶级资源类型
+    private int topParentType = 0;
 
     public int getPageIndex() {
         return pageIndex;
@@ -278,6 +281,23 @@ public class ColumnSecondDirectoryEntity implements Serializable {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public void setTopParentId(String topParentId) {
+        this.topParentId = topParentId;
+    }
+
+    public void setTopParentType(int topParentType) {
+        this.topParentType = topParentType;
+    }
+
+    public String getTopParentId() {
+
+        return topParentId;
+    }
+
+    public int getTopParentType() {
+        return topParentType;
     }
 
     public void setParentType(int parentType) {

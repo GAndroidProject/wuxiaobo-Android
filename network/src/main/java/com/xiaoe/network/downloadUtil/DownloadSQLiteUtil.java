@@ -179,6 +179,64 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
         for(Map.Entry<String ,ISQLiteCallBack> entry : sqlCallBack.entrySet() ){
 //            entry.getValue().onUpgrade(sqLiteDatabase, oldVersion, newVersion);
         }
+        if (oldVersion == 1) { // 数据库版本为 1 的数据版本
+            try {
+                sqLiteDatabase.beginTransaction();
+                // 将表名改为临时表
+                String downloadFile = "ALTER TABLE download_file RENAME TO download_file_temp";
+                sqLiteDatabase.execSQL(downloadFile);
+
+                // 创建新表
+                // 新下载文件表创建
+                String createNewDFTable = "CREATE TABLE download_file (" +
+                        "app_id VARCHAR(64) not null, " +
+                        "user_id VARCHAR(64) not null, " +
+                        "resource_id VARCHAR(64) not null, " +
+                        "id VARCHAR(512) not null, " +
+                        "column_id VARCHAR(64) default null, " +
+                        "big_column_id VARCHAR(64) default null, " +
+                        "parent_id VARCHAR(64) default \"\", " +
+                        "parent_type INTEGER default 0, " +
+                        "top_parent_id VARCHAR(64) default \"\"," +
+                        "top_parent_type INTEGER default 0," +
+                        "progress Long default 0," +
+                        "file_type INTEGER default 0," +
+                        "total_size Long default 0," +
+                        "local_file_path VARCHAR(512) default \"\"," +
+                        "file_name VARCHAR(512) default \"\"," +
+                        "file_download_url VARCHAR(512) default \"\"," +
+                        "download_state INTEGER default 0," +
+                        "title TEXT default \"\", " +
+                        "descs TEXT default \"\", " +
+                        "img_url TEXT default \"\", " +
+                        "resource_type INTEGER default 0, " +//1-音频，2-视频，3-专栏，4-大专栏
+                        "create_at DATETIME default '0000-00-00 00:00:00'," +
+                        "update_at DATETIME default '0000-00-00 00:00:00'," +
+                        "primary key (app_id, user_id, id))";
+                sqLiteDatabase.execSQL(createNewDFTable);
+
+                Cursor cursor = sqLiteDatabase.rawQuery("select * from download_file_temp", null);
+
+                if (cursor.moveToFirst()) {
+                    // 有数据则导入数据
+                    String insertDFSql = "INSERT INTO download_file (app_id,user_id,resource_id,id) " +
+                            "SELECT app_id,user_id,resource_id,id from download_file_temp";
+                    sqLiteDatabase.execSQL(insertDFSql);
+                    cursor.close();
+                }
+
+                // 删除临时表
+                String deleteDFSql = "DROP TABLE download_file_temp";
+                sqLiteDatabase.execSQL(deleteDFSql);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (sqLiteDatabase != null) {
+                    sqLiteDatabase.endTransaction();
+                }
+            }
+        }
     }
 
     public boolean tabIsExist(String tabName){

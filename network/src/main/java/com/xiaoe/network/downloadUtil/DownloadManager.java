@@ -333,6 +333,8 @@ public class DownloadManager implements DownloadListner {
             downloadTableInfo.setImgUrl(resource.getImg_url());
             downloadTableInfo.setParentId(resource.getParentId());
             downloadTableInfo.setParentType(resource.getParentType());
+            downloadTableInfo.setTopParentId(resource.getTopParentId());
+            downloadTableInfo.setTopParentType(resource.getTopParentType());
             downloadTableInfo.setLocalFilePath(Global.g().getDefaultDirectory()+md5Code);
             if(resource.getResource_type() == 2){
                 String audioUrl = resource.getAudio_url();
@@ -397,6 +399,10 @@ public class DownloadManager implements DownloadListner {
             resourceInfo.setDepth(0);
             resourceInfo.setCreateAt(DateFormat.currentTime());
             resourceInfo.setUpdateAt(DateFormat.currentTime());
+            resourceInfo.setParentId(resource.getParentId());
+            resourceInfo.setParentType(resource.getParentType());
+            resourceInfo.setTopParentId(resource.getTopParentId());
+            resourceInfo.setTopParentType(resource.getTopParentType());
             resSQLiteUtil.insert(DownloadResourceTable.TABLE_NAME, resourceInfo);
         }
 

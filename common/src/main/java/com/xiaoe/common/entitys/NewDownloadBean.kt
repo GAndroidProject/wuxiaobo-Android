@@ -40,7 +40,9 @@ data class GoodsInfo(@SerializedName("summary")
                      @SerializedName("content")
                      val content: String = "",
                      @SerializedName("view_count")
-                     val viewCount: Int = 0)
+                     val viewCount: Int = 0,
+                     @SerializedName("download_count")
+                     val downloadCount: Int = 0)
 
 
 data class NewDownloadBean(@SerializedName("msg")
@@ -82,6 +84,8 @@ data class DownloadListItem(@SerializedName("summary")
                             @SerializedName("goods_type")
                             val goodsType: Int = 0,
                             @SerializedName("view_count")
-                            val viewCount: Int = 0)
+                            val viewCount: Int = 0,
+                            @SerializedName("download_count")
+                            val downloadCount: Int = 0)
 
 

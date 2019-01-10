@@ -42,6 +42,7 @@ class NewPayingFragment : BaseFragment() {
     var isAliPayWay: Boolean = false
     private val moneyStart = "<font color='#BCA16B'><big>"
     private val moneyEnd = "</big></font>"
+    private var balance: Int = 0 // 服务器返回波豆的价格
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return if (inflater != null) {
@@ -195,6 +196,22 @@ class NewPayingFragment : BaseFragment() {
         if (showPrice < 0) {
             showPrice = 0
         }
+        // 波豆比优惠后的价格多，默认选中波豆支付
+        if (balance >= showPrice) {
+            isBoBiPayWay = true
+            isAliPayWay = false
+            isWeChatPayWay = false
+            payingBoBiSelect.visibility = View.VISIBLE
+            payingAliSelect.visibility = View.GONE
+            payingWeChatSelect.visibility = View.GONE
+        } else { // 否则默认微信支付
+            isBoBiPayWay = false
+            isAliPayWay = false
+            isWeChatPayWay = true
+            payingBoBiSelect.visibility = View.GONE
+            payingAliSelect.visibility = View.GONE
+            payingWeChatSelect.visibility = View.VISIBLE
+        }
         val moneyText = "¥" + showPrice / 100f
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             payingMoney.text = Html.fromHtml(String.format(getString(R.string.paying_account), moneyStart, moneyText, moneyEnd), Html.FROM_HTML_MODE_COMPACT)
@@ -208,7 +225,7 @@ class NewPayingFragment : BaseFragment() {
         when (iRequest) {
             is EarningRequest -> try {
                 val result = Gson().fromJson(entity.toString(), BalanceEntity::class.java)
-                val balance = result.data.balance.getInteger("2")
+                balance = result.data.balance.getInteger("2")
                 val balanceStr = String.format("%1.2f", balance.toFloat() / 100)
                 if (balance >= resPrice) { // 波豆余额大等于资源价格，可以购买，所以显示选中 icon
                     payingBoBiSelect.visibility = View.VISIBLE
@@ -216,6 +233,7 @@ class NewPayingFragment : BaseFragment() {
                 } else {
                     payingBoBiSelect.visibility = View.GONE
                     payingBoBiTopUp.visibility = View.VISIBLE
+                    payingWeChatSelect.visibility = View.VISIBLE
                 }
                 payingBoBiBalance.text = String.format(getString(R.string.paying_bo_bi_balance), balanceStr)
             } catch (e: Exception) {

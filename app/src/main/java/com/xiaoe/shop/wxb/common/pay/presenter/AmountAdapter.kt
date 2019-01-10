@@ -41,7 +41,7 @@ class AmountAdapter(context: Context, dataList: MutableList<AmountDataItem>) : R
                 if (!itemArr.containsKey(realPos) && !itemArr.containsValue(holder)) {
                     itemArr[realPos] = holder
                 }
-                if (position == 0) {
+                if (realPos == 2) {
                     boBiItemWrap.background = ContextCompat.getDrawable(mContext, R.drawable.bo_bi_item_full_bg)
                     boBiTitle.setTextColor(ContextCompat.getColor(mContext, R.color.white))
                     boBiContent.setTextColor(ContextCompat.getColor(mContext, R.color.white))

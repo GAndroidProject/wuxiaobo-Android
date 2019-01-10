@@ -2,6 +2,7 @@ package com.xiaoe.shop.wxb.business.earning.presenter;
 
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
+import com.xiaoe.network.requests.AccountDetailRequest;
 import com.xiaoe.network.requests.EarningRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.WithdrawRequest;
@@ -72,5 +73,20 @@ public class EarningPresenter implements IBizCallback {
         withdrawRequest.addRequestParam("client_ip", ip);
 
         withdrawRequest.sendRequest();
+    }
+
+    /**
+     * 请求账户明细
+     * @param pageIndex 页码
+     * @param pageSize  每页大小
+     */
+    public void requestAccountDetail(int pageIndex, int pageSize) {
+        AccountDetailRequest accountDetailRequest = new AccountDetailRequest(this);
+
+        accountDetailRequest.addRequestParam("wallet_type", 2);
+        accountDetailRequest.addRequestParam("page_index", pageIndex);
+        accountDetailRequest.addRequestParam("page_size", pageSize);
+
+        accountDetailRequest.sendRequest();
     }
 }

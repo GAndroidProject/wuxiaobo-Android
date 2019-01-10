@@ -23,6 +23,15 @@ public class DownloadResourceTableInfo {
     private String fileUrl;//网络地址
     private DownloadTableInfo resource;
 
+    // 父级资源 id
+    private String parentId = "";
+    // 父级资源类型
+    private int parentType = 0;
+    // 顶级资源 id
+    private String topParentId = "";
+    // 顶级资源类型
+    private int topParentType = 0;
+
     public String getAppId() {
         return appId;
     }
@@ -154,6 +163,39 @@ public class DownloadResourceTableInfo {
 
     public String getCreateAt() {
         return createAt;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public void setParentType(int parentType) {
+        this.parentType = parentType;
+    }
+
+    public void setTopParentId(String topParentId) {
+        this.topParentId = topParentId;
+    }
+
+    public void setTopParentType(int topParentType) {
+        this.topParentType = topParentType;
+    }
+
+    public String getParentId() {
+
+        return parentId;
+    }
+
+    public int getParentType() {
+        return parentType;
+    }
+
+    public String getTopParentId() {
+        return topParentId;
+    }
+
+    public int getTopParentType() {
+        return topParentType;
     }
 
     public void setCreateAt(String createAt) {

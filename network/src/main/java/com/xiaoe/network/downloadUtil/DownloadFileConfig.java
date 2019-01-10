@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * 下载文件数据库操作类
  * Created by Administrator on 2018/1/3.
  */
 
@@ -23,6 +24,10 @@ public class DownloadFileConfig implements ISQLiteCallBack {
     public static final String RESOURCE_ID = "resource_id";//不可为空
     public static final String COLUMN_ID = "column_id";
     public static final String BIG_COLUMN_ID = "big_column_id";
+    public static final String PARENT_ID = "parent_id";
+    public static final String PARENT_TYPE = "parent_type";
+    public static final String TOP_PARENT_ID = "top_parent_id";
+    public static final String TOP_PARENT_TYPE = "top_parent_type";
     public static final String PROGRESS = "progress";//下载进度
     public static final String TOTAL_SIZE = "total_size";//文件大小
     public static final String LOCAL_FILE_PATH = "local_file_path";//下载本地文件目录路径
@@ -31,7 +36,7 @@ public class DownloadFileConfig implements ISQLiteCallBack {
     public static final String FILE_NAME= "file_name";
     public static final String FILE_DOWNLOAD_URL = "file_download_url";
     public static final String TITLE = "title";
-    public static final String DESC = "desc";
+    public static final String DESC = "descs";
     public static final String IMG_URL = "img_url";
     public static final String RESOURCE_TYPE = "resource_type";
     public static final String CREATE_AT = "create_at";
@@ -45,6 +50,10 @@ public class DownloadFileConfig implements ISQLiteCallBack {
             ID+" VARCHAR(512) not null,"+
             COLUMN_ID+" VARCHAR(64) default null,"+
             BIG_COLUMN_ID+" VARCHAR(64) default null,"+
+            PARENT_ID + " VARCHAR(64) default \"\"," +
+            PARENT_TYPE + " INTEGER default 0," +
+            TOP_PARENT_ID + " VARCHAR(64) default \"\"," +
+            TOP_PARENT_TYPE + " INTEGER default 0," +
             PROGRESS+" Long default 0,"+
             FILE_TYPE+" INTEGER default 0,"+
             TOTAL_SIZE+" Long default 0,"+
@@ -102,6 +111,10 @@ public class DownloadFileConfig implements ISQLiteCallBack {
         values.put(RESOURCE_ID, downloadTableInfo.getResourceId());
         values.put(COLUMN_ID, downloadTableInfo.getColumnId());
         values.put(BIG_COLUMN_ID, downloadTableInfo.getBigColumnId());
+        values.put(PARENT_ID, downloadTableInfo.getParentId());
+        values.put(PARENT_TYPE, downloadTableInfo.getParentType());
+        values.put(TOP_PARENT_ID, downloadTableInfo.getTopParentId());
+        values.put(TOP_PARENT_TYPE, downloadTableInfo.getTopParentType());
         values.put(PROGRESS, downloadTableInfo.getProgress());
         values.put(TOTAL_SIZE, downloadTableInfo.getTotalSize());
         values.put(LOCAL_FILE_PATH, downloadTableInfo.getLocalFilePath());
@@ -144,6 +157,18 @@ public class DownloadFileConfig implements ISQLiteCallBack {
 
         int bigColumnIdIndex = cursor.getColumnIndex(BIG_COLUMN_ID);
         downloadTableInfo.setBigColumnId(cursor.getString(bigColumnIdIndex));
+
+        int parentIdIndex = cursor.getColumnIndex(PARENT_ID);
+        downloadTableInfo.setParentId(cursor.getString(parentIdIndex));
+
+        int parentTypeIndex = cursor.getColumnIndex(PARENT_TYPE);
+        downloadTableInfo.setParentType(cursor.getInt(parentTypeIndex));
+
+        int topParentIdIndex = cursor.getColumnIndex(TOP_PARENT_ID);
+        downloadTableInfo.setTopParentId(cursor.getString(topParentIdIndex));
+
+        int topParentTypeIndex = cursor.getColumnIndex(TOP_PARENT_TYPE);
+        downloadTableInfo.setTopParentType(cursor.getInt(topParentTypeIndex));
 
         int progressIndex = cursor.getColumnIndex(PROGRESS);
         downloadTableInfo.setProgress(cursor.getInt(progressIndex));

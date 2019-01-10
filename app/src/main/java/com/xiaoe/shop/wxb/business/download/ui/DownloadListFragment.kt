@@ -70,7 +70,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     private lateinit var resourceType: String
     private lateinit var downTitle: String
     private var pageIndex: Int = 1
-    private var pageSize: Int = 5
+    private var pageSize: Int = 20
     private var isMainContent: Boolean = true
     private var refreshData: Boolean = false
     private var showDataByDB: Boolean = false
@@ -79,7 +79,6 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     private lateinit var downloadSingleList: MutableList<CommonDownloadBean>
     private lateinit var downloadGroupList: MutableList<CommonDownloadBean>
     private var totalSelectedCount: Int = 0 // 全部选择的 item 数
-    private var totalCount: Int = 0 // 某一个专栏下的全部课程数
     private var allSelectEnable: Boolean = true // 全选按钮可用
     private var lastSingleId: String = "" // 最后一条单品 id
     private var lastGroupId: String = "" // 最后一条专科 id
@@ -120,19 +119,16 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         // 大专栏和会员需要请求专栏列表和全部数据
         when (resourceType) {
             downloadTopic -> {
-//                columnPresenter.requestColumnList(resourceId, downloadColumn, pageIndex, pageSize, true, resourceType)
                 isMainLoadMore = false
                 columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
                 columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
             downloadMember -> {
-//                columnPresenter.requestColumnList(resourceId, downloadAll, pageIndex, pageSize, true, resourceType)
                 isMainLoadMore = false
                 columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
                 columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
             downloadColumn -> {
-//                columnPresenter.requestColumnList(resourceId, downloadAll, pageIndex, pageSize, true, resourceType)
                 isMainLoadMore = false
                 columnPresenter.requestDownloadList(resourceId, downloadColumn.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
@@ -155,7 +151,6 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
      * 初始化 View
      */
     fun initView() {
-
         if (resourceType == downloadColumn) { // 资源类型为专栏，则不需要展开全部的按钮
             downloadTitleName.text = downTitle
             downloadTitleName.setPadding(0, 0, 0, 0)
@@ -306,13 +301,13 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             hasSecondInit = true
             val firstDownloadBean = CommonDownloadBean()
             firstDownloadBean.title = getString(R.string.all_text)
-            firstDownloadBean.periodicalCount = result.data.goodsInfo.periodicalCount
+            firstDownloadBean.periodicalCount = result.data.goodsInfo.downloadCount
             firstDownloadBean.resourceId = resourceId
             firstDownloadBean.resourceType = resourceType.toInt()
             firstDownloadBean.isSelected = true
             downloadGroupList.add(firstDownloadBean)
         }
-        downloadTitleCount.text = String.format(getString(R.string.download_count), result.data.goodsInfo.periodicalCount)
+        downloadTitleCount.text = String.format(getString(R.string.download_count), result.data.goodsInfo.downloadCount)
         if (result.data.list == null) { // 没有子专栏的情况，直接显示其父级的信息
             downloadTitleName.text = downTitle
             downloadTitleName.setPadding(0, 0, 0, 0)
@@ -327,7 +322,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
             for (item in result.data.list!!) {
                 val commonDownloadBean = CommonDownloadBean()
                 commonDownloadBean.title = item.title
-                commonDownloadBean.periodicalCount = item.periodicalCount
+                commonDownloadBean.periodicalCount = item.downloadCount
                 commonDownloadBean.resourceId = item.goodsId
                 commonDownloadBean.resourceType = item.goodsType
                 commonDownloadBean.isSelected = false
@@ -374,6 +369,8 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 commonDownloadBean.imgUrl = item.imgUrl
                 commonDownloadBean.parentId = item.productInfo.goodsId
                 commonDownloadBean.parentType = item.productInfo.goodsType
+                commonDownloadBean.topParentId = result.data.goodsInfo.goodsId
+                commonDownloadBean.topParentType = result.data.goodsInfo.goodsType
                 if (item.goodsType == downloadAudio) {
                     commonDownloadBean.audioUrl = item.downloadUrl
                     commonDownloadBean.audioLength = item.length
@@ -396,6 +393,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         }
     }
 
+    // 点击每个 item
     override fun onCommonDownloadBeanItemClick(view: View?, initType: Int, commonDownloadBean: CommonDownloadBean) {
         if (initType == DownLoadListAdapter.SINGLE_TYPE) {
             val textView = view?.findViewById(R.id.singleItemContent) as TextView
@@ -486,7 +484,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         } else {
             allSelectBtn.isEnabled = true
         }
-        selectCountDesc.text = String.format(getString(R.string.the_selected_count), 0)
+        selectCountDesc.text = ""
         allSelectBtn.isEnabled = allSelectEnable
         downloadSubmit.isEnabled = allSelectEnable
         for (item in downloadSingleList) {
@@ -521,6 +519,8 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         downloadItem.columnTitle = downTitle
         downloadItem.parentId = item.parentId
         downloadItem.parentType = item.parentType
+        downloadItem.topParentId = item.topParentId
+        downloadItem.topParentType = item.topParentType
 
         DownloadManager.getInstance().addDownload(null, null, downloadItem)
     }
