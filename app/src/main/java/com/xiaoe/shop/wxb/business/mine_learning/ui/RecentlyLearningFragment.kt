@@ -156,9 +156,11 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                     val dataArray = obj.getJSONArray("data") as JSONArray
                     if (0 == code && (dataArray == null || 0 == dataArray.size)){
                         if (pageIndex > 1){
-                            learningRefresh.finishRefresh()
-                            learningRefresh.finishLoadMoreWithNoMoreData()
-                            learningRefresh.setEnableLoadMore(false)
+                            learningRefresh?.apply {
+                                finishRefresh()
+                                finishLoadMoreWithNoMoreData()
+                                setEnableLoadMore(false)
+                            }
                         }
                         return
                     }else  loadData(entity)
@@ -187,8 +189,11 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
             learningRefresh.finishRefresh()
             when {
                 0 == result.code && 1 == pageIndex -> {
+                    mAdapter.data?.clear()
                     mAdapter.setNewData(data)
                     learningRefresh.setEnableLoadMore(data!!.size!! >= pageSize)
+                    if (data!!.size!! >= pageSize)
+                        learningRefresh.setNoMoreData(false)
                 }
                 0 == result.code -> {
                     mAdapter.addData(data!!)
