@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 
 import java.util.List;
 
+import com.xiaoe.common.entitys.AeDataItem;
 import com.xiaoe.common.entitys.WrItem;
 import com.xiaoe.shop.wxb.R;
 
