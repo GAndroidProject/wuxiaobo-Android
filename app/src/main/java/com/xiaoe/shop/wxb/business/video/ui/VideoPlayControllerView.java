@@ -32,6 +32,7 @@ import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.video.presenter.VideoPlayer;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
+import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
 import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -479,7 +480,13 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
         videoPlayEvent.setState(VideoPlayConstant.VIDEO_STATE_PLAY);
         EventBus.getDefault().post(videoPlayEvent);
-        uploadVideoProgress();
+
+        if (LearnRecordPageProgressManager.INSTANCE.getVideoProgress() > 0){
+            mVideoPlayer.seekTo(LearnRecordPageProgressManager.INSTANCE.getVideoProgress());
+            LearnRecordPageProgressManager.INSTANCE.setVideoProgress(0);
+        }else {
+            uploadVideoProgress();
+        }
 
         initPlayListener();
 
@@ -506,7 +513,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         }
     }
 
-    private void uploadSingleBuyVideoProgress(){
+    public void uploadSingleBuyVideoProgress(){
         try {
             if (playSeekBar == null || mVideoPlayer == null || !TextUtils.isEmpty(UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()))
                 return;

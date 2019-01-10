@@ -1,5 +1,6 @@
 package com.xiaoe.shop.wxb.utils
 
+import android.os.Handler
 import android.text.TextUtils
 import com.google.gson.Gson
 import com.xiaoe.common.app.Global
@@ -8,6 +9,7 @@ import com.xiaoe.network.network_interface.IBizCallback
 import com.xiaoe.network.requests.GetSingleRecordRequest
 import com.xiaoe.network.requests.IRequest
 import com.xiaoe.network.requests.UpdateMineLearningRequest
+import org.greenrobot.eventbus.EventBus
 import java.lang.Exception
 
 /**
@@ -17,10 +19,15 @@ import java.lang.Exception
  */
 object UploadLearnProgressManager : IBizCallback {
 
+    private const val mTag = "UploadLearnProgress"
+
+    var isRefreshLearnRecord = false//是否刷新最近在学页面
     var isSingleBuy = true
     var mCurrentColumnId = ""
 
-    private const val mTag = "UploadLearnProgress"
+    private val mHandler by lazy {
+        Handler()
+    }
 
     private val mUploadLearnData by lazy {
         HashMap<String, UploadDataParam>()
@@ -103,6 +110,8 @@ object UploadLearnProgressManager : IBizCallback {
                             is UpdateMineLearningRequest ->{
                                 mUploadLearnHistoryData.remove(tag)
                                 val uploadData = mUploadLearnData.remove(tag)
+                                isRefreshLearnRecord = true
+                                postEventRefreshLearnRecordPage()
                                 LogUtils.d("$mTag--onResponse-success  tag = $tag----mUploadLearnData.size = " +
                                         "${mUploadLearnData.size}----mUploadLearnHistoryData.size = " +
                                         "${mUploadLearnHistoryData.size}---isSingleBuy = ${uploadData?.isSingleItem}")
@@ -234,5 +243,27 @@ object UploadLearnProgressManager : IBizCallback {
         mUploadLearnHistoryData.clear()
     }
 
+    private val mRunnable by lazy {
+        Runnable {
+            if (isRefreshLearnRecord){
+                EventBus.getDefault().post(LearnRecordIsRefresh(true))
+                isRefreshLearnRecord = false
+            }
+        }
+    }
+
+    private fun postEventRefreshLearnRecordPage(){
+        mHandler.removeCallbacks(mRunnable)
+        mHandler.postDelayed(mRunnable,500)
+    }
+
 }
+
+object LearnRecordPageProgressManager{
+
+    var audioProgress = 0
+    var videoProgress = 0
+
+}
+
 

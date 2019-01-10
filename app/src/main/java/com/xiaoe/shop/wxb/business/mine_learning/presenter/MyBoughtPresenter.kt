@@ -4,6 +4,7 @@ import com.xiaoe.network.network_interface.IBizCallback
 import com.xiaoe.network.network_interface.INetworkResponse
 import com.xiaoe.network.requests.IRequest
 import com.xiaoe.network.requests.RecentlyLearningRequest
+import com.xiaoe.shop.wxb.utils.LogUtils
 
 class MyBoughtPresenter(private val inr: INetworkResponse) : IBizCallback {
 
@@ -13,6 +14,7 @@ class MyBoughtPresenter(private val inr: INetworkResponse) : IBizCallback {
 
     // 获取正在学习列表
     fun requestLearningData(pageIndex: Int, pageSize: Int) {
+        LogUtils.d("requestLearningData")
         val recentlyLearningRequest = RecentlyLearningRequest(this)
 
         recentlyLearningRequest.addDataParam("page_size", pageSize)

@@ -58,6 +58,7 @@ import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
+import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
 import com.xiaoe.shop.wxb.utils.LogUtils;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
@@ -426,9 +427,11 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         MediaPlayerCountDownHelper.INSTANCE.onViewDestroy();
+        LearnRecordPageProgressManager.INSTANCE.setVideoProgress(0);
         if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
             MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
         }
+        playControllerView.uploadSingleBuyVideoProgress();
         playControllerView.release();
         EventBus.getDefault().unregister(this);
         UMShareAPI.get(this).release();

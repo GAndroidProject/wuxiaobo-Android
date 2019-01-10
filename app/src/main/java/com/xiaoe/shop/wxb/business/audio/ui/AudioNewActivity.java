@@ -79,6 +79,7 @@ import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickMoreMenuListener;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
+import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
 import com.xiaoe.shop.wxb.utils.LogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
@@ -1009,6 +1010,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AudioMediaPlayer.uploadSingleBuyAudioProgress();
         EventBus.getDefault().unregister(this);
         if(detailContent != null){
             detailContent.destroy();
