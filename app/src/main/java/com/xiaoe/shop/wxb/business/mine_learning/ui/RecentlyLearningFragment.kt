@@ -240,6 +240,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                     when (itemViewType) {
                         ITEM_TYPE_DEFAULT -> {
                             setGone(R.id.learningProgress,false)
+                            setGone(R.id.itemContent,false)
                             setText(R.id.itemTitle, info?.title)
 //                            getView<SimpleDraweeView>(R.id.itemIcon).setImageURI(info?.imgUrl)
                             val itemIcon = getView<SimpleDraweeView>(R.id.itemIcon)
@@ -275,6 +276,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                 ResourceType.TYPE_MEMBER ->{// 会员
                                     descString =context.getString(R.string.membership_due)
                                     if (1 != info.isExpire){
+                                        setGone(R.id.itemContent,true)
                                         descString = updateLearnProgress(helper!!, item!!, descString)
                                     }
                                     setText(R.id.itemContent,String.format(context
