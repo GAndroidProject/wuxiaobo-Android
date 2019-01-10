@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -347,8 +348,14 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
      * @param entity 返回的数据对象
      */
     private fun initDownloadSingleData(entity: Any) {
+        var tempTopParentId = ""
+        var tempTopParentType = -1
         if (downloadSingleList.size > 0) {
             if (!isMainLoadMore) {
+                if (downloadSingleList[0].topParentType == downloadMember.toInt() || downloadSingleList[0].topParentType == downloadTopic.toInt()) { // 顶级是会员或大专栏，记录一下
+                    tempTopParentId = downloadSingleList[0].topParentId
+                    tempTopParentType = downloadSingleList[0].topParentType
+                }
                 downloadSingleList.clear()
             } else {
                 downloadSingleList[downloadSingleList.size - 1].isLastItem = false
@@ -369,8 +376,13 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 commonDownloadBean.imgUrl = item.imgUrl
                 commonDownloadBean.parentId = item.productInfo.goodsId
                 commonDownloadBean.parentType = item.productInfo.goodsType
-                commonDownloadBean.topParentId = result.data.goodsInfo.goodsId
-                commonDownloadBean.topParentType = result.data.goodsInfo.goodsType
+                if (tempTopParentId != "" && tempTopParentType != -1) {
+                    commonDownloadBean.topParentId = tempTopParentId
+                    commonDownloadBean.topParentType = tempTopParentType
+                } else {
+                    commonDownloadBean.topParentId = result.data.goodsInfo.goodsId
+                    commonDownloadBean.topParentType = result.data.goodsInfo.goodsType
+                }
                 if (item.goodsType == downloadAudio) {
                     commonDownloadBean.audioUrl = item.downloadUrl
                     commonDownloadBean.audioLength = item.length
