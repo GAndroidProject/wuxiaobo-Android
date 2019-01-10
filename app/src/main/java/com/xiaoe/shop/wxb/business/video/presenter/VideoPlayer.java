@@ -2,9 +2,15 @@ package com.xiaoe.shop.wxb.business.video.presenter;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
+import android.os.Build;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceHolder;
+
+import com.xiaoe.shop.wxb.business.audio.presenter.CountDownTimerTool;
+import com.xiaoe.shop.wxb.utils.LogUtils;
 
 /**
  * Created by Administrator on 2017/7/20.
@@ -13,6 +19,7 @@ import android.view.SurfaceHolder;
 public class VideoPlayer{
     private static final String TAG = "VideoPlayer";
     private MediaPlayer mediaPlayer;
+    public static float mPlaySpeed = 1f;//播放倍数
     private String mSourcePath;
     private SurfaceHolder mSurfaceHolder;
     private boolean mSurfaceViewCreated = false;
@@ -80,6 +87,29 @@ public class VideoPlayer{
         }
     }
 
+    public boolean changeSpeedPlay(float speed){
+        // this checks on API 23 and up
+        if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (speed != mPlaySpeed) {
+                try {
+                    PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
+                    playbackParams.setSpeed(speed);
+                    if (isPlaying()) {
+                        mediaPlayer.setPlaybackParams(playbackParams);
+                    } else {
+                        mediaPlayer.setPlaybackParams(playbackParams);
+                    }
+                    mPlaySpeed = speed;
+                }catch (Exception e){
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     public boolean isPlaying(){
         return mediaPlayer.isPlaying();
     }
@@ -112,8 +142,12 @@ public class VideoPlayer{
     }
     //获取当前位置(播放时间)
     public int getCurrentPosition(){
-        if(mediaPlayer != null){
-            return mediaPlayer.getCurrentPosition();
+        try {
+            if (mediaPlayer != null) {
+                return mediaPlayer.getCurrentPosition();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return -1;
     }

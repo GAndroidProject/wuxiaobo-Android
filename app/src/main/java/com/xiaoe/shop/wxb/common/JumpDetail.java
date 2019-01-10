@@ -16,6 +16,7 @@ import com.xiaoe.shop.wxb.base.XiaoeActivity;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
+import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
 import com.xiaoe.shop.wxb.business.audio.ui.AudioNewActivity;
 import com.xiaoe.shop.wxb.business.bought_list.ui.BoughtListActivity;
 import com.xiaoe.shop.wxb.business.cdkey.ui.CdKeyActivity;
@@ -38,6 +39,7 @@ import com.xiaoe.shop.wxb.business.login.ui.LoginSplashActivity;
 import com.xiaoe.shop.wxb.business.login.ui.ProtocolActivity;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.business.mine_learning.ui.MineLearningActivity;
+import com.xiaoe.shop.wxb.business.mine_learning.ui.MyBoughtListActivity;
 import com.xiaoe.shop.wxb.business.navigate_detail.ui.NavigateDetailActivity;
 import com.xiaoe.shop.wxb.business.search.ui.SearchActivity;
 import com.xiaoe.shop.wxb.business.search.ui.SearchMoreActivity;
@@ -45,11 +47,15 @@ import com.xiaoe.shop.wxb.business.setting.ui.SettingAccountActivity;
 import com.xiaoe.shop.wxb.business.setting.ui.SettingPersonActivity;
 import com.xiaoe.shop.wxb.business.super_vip.ui.NewSuperVipActivity;
 import com.xiaoe.shop.wxb.business.video.ui.VideoActivity;
+import com.xiaoe.shop.wxb.common.pay.ui.AccountDetailActivity;
+import com.xiaoe.shop.wxb.common.pay.ui.BoBiActivity;
 import com.xiaoe.shop.wxb.common.pay.ui.PayActivity;
 import com.xiaoe.shop.wxb.common.releaseversion.ui.ReleaseVersionActivity;
 import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 
 import java.io.File;
+
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
 
 public class JumpDetail {
     private static final String TAG = "JumpDetail";
@@ -69,6 +75,9 @@ public class JumpDetail {
             flowId = playEntity.getFlowId();
         }
         if(!(resourceId.equals(resId) || (!TextUtils.isEmpty(flowId) && flowId.equals(resId))) || AudioPlayUtil.getInstance().isCloseMiniPlayer()){
+            if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+            }
             AudioMediaPlayer.stop();
 
             playEntity = new AudioPlayEntity();
@@ -134,15 +143,30 @@ public class JumpDetail {
      * @param context
      * @param resId
      */
-    public static void jumpVideo(Context context, String resId, String videoImageUrl, boolean localResource, String columnId){
+    public static void jumpVideo(Context context, String resId, String videoImageUrl,
+                                 boolean localResource, String columnId,String requestNextVideoResId,int index){
         Intent intent = new Intent(context, VideoActivity.class);
         intent.putExtra("resourceId", resId);
         if(!TextUtils.isEmpty(videoImageUrl)){
             intent.putExtra("videoImageUrl", videoImageUrl);
         }
+        if (index > 0)
+            intent.putExtra("videoIndex", index);
+        if (!TextUtils.isEmpty(requestNextVideoResId))
+            intent.putExtra("requestNextVideoResId",requestNextVideoResId);
         intent.putExtra("local_resource", localResource);
         intent.putExtra("columnId", columnId);
         context.startActivity(intent);
+    }
+
+    /**
+     * 跳转视频详情
+     * @param context
+     * @param resId
+     */
+    public static void jumpVideo(Context context, String resId, String videoImageUrl,
+                                 boolean localResource, String columnId){
+        jumpVideo(context,resId,videoImageUrl,localResource,columnId,"",-1);
     }
     public static void jumpImageText(Context context, String resId, String imageUrl, String columnId){
         Intent intent = new Intent(context, CourseImageTextActivity.class);
@@ -356,6 +380,15 @@ public class JumpDetail {
     }
 
     /**
+     * 跳转到我的已购
+     * @param context
+     */
+    public static void jumpMyBought(Context context) {
+        Intent intent = new Intent(context, MyBoughtListActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
      * 跳转到已购列表页面
      * @param context
      */
@@ -505,6 +538,24 @@ public class JumpDetail {
 
     public static void jumpReleaseVersion(Context context) {
         Intent intent = new Intent(context, ReleaseVersionActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到波豆余额页面
+     * @param context context
+     */
+    public static void jumpBobi(Context context) {
+        Intent intent = new Intent(context, BoBiActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转到账户余额
+     * @param context 上下文
+     */
+    public static void jumpAccountDetail(Context context) {
+        Intent intent = new Intent(context, AccountDetailActivity.class);
         context.startActivity(intent);
     }
 }

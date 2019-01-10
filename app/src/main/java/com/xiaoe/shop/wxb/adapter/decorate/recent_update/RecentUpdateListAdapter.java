@@ -324,6 +324,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                     && playEntity.getResourceId().equals(resourceId)){
                 playEntity.setPlaying(true);
                 playEntity.setPlay(true);
+//                playEntity.setColumnId(columnId);
                 AudioMediaPlayer.setAudio(playEntity, true);
                 new AudioPresenter(null).requestDetail(playEntity.getResourceId());
                 break;
@@ -418,7 +419,7 @@ public class RecentUpdateListAdapter extends BaseAdapter {
             case 8: // 大专栏
                 return DecorateEntityType.TOPIC;
             default:
-                return null;
+                return "";
         }
     }
 }

@@ -1,10 +1,11 @@
 package com.xiaoe.common.app;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -14,7 +15,6 @@ import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.tencent.smtt.sdk.QbSdk;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
@@ -31,7 +31,7 @@ import cn.jpush.android.api.JPushInterface;
  * @author Administrator
  * @date 2017/7/17
  */
-public class XiaoeApplication extends Application {
+public class XiaoeApplication extends MultiDexApplication {
 
     private static final String TAG = "XiaoeApplication";
     @SuppressLint("StaticFieldLeak")
@@ -57,16 +57,24 @@ public class XiaoeApplication extends Application {
     }
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         // 获取当前包名
         String packageName = getPackageName();
         // 获取当前进程名
         String processName = getProcessName(android.os.Process.myPid());
-        if (!TextUtils.isEmpty(packageName) && !packageName.equals(processName))//修复application会创建多次，初始化数据多次
+        // 修复application会创建多次，初始化数据多次
+        if (!TextUtils.isEmpty(packageName) && !packageName.equals(processName)) {
             return;
+        }
         Global.g().setApplication(this);
-        isFormalCondition = true;
+        isFormalCondition = false;
         mContext = getApplicationContext();
         applicationContext = getApplicationContext();
         applicationHandler = new Handler(applicationContext.getMainLooper());
@@ -119,16 +127,6 @@ public class XiaoeApplication extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //腾讯x5内核初始化
-                QbSdk.initX5Environment(mContext, new QbSdk.PreInitCallback() {
-                    @Override
-                    public void onCoreInitFinished() {
-                    }
-
-                    @Override
-                    public void onViewInitFinished(boolean b) {
-                    }
-                });
                 //↓↓↓↓↓↓↓友盟集成初始化↓↓↓↓↓↓↓
                 UMConfigure.setLogEnabled(true);
                 UMConfigure.init(mContext, Constants.getUMAppId() ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"");

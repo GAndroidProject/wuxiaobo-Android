@@ -50,9 +50,8 @@ public class NetworkState {
             return "";
         }
         String style = "<style type=\"text/css\"> img {" +
-                "height: auto;"+
-                "width:100%;" +//限定图片宽度填充屏幕
-                "height:auto;}" +//限定图片高度自动
+                "height: auto;"+//限定图片高度自动
+                "width: 100%;}" +//限定图片宽度填充屏幕
                 " section {" +
                 "max-width: 100%;"+
                 "width: 100%;}"+
@@ -63,10 +62,9 @@ public class NetworkState {
                 "<style type=\"text/css\">iframe {display: block;max-width:100%;\n" +  //视频适应屏幕
                 "margin:10px;}</style>" +
                 "<style type=\"text/css\"> p { word-break:break-all; } </style>";
-
+        String orgContent = htmltext.replaceAll("(<img.*?)style=\".*?\"", "$1");
         try {
 //            String doc = "<html><header>" + style +"</header>"+htmltext+"</html>";
-            String doc = style +htmltext;
             //下面代码找到对应的img标签，然后更改样式
 //            Document doc= Jsoup.parse(htmltext);
 //            Elements elements=doc.getElementsByTag("img");
@@ -78,7 +76,7 @@ public class NetworkState {
 //            for (Element element : elements) {
 //                element.attr("style","");
 //            }
-            return doc.toString();
+            return style + orgContent;
         } catch (Exception e) {
             return htmltext;
         }

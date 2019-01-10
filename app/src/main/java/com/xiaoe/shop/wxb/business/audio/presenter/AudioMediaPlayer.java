@@ -2,7 +2,6 @@ package com.xiaoe.shop.wxb.business.audio.presenter;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -22,22 +21,32 @@ import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
+import com.xiaoe.common.entitys.ResourceType;
 import com.xiaoe.common.utils.DateFormat;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
+import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
+import com.xiaoe.shop.wxb.utils.ToastUtils;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.List;
 
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CLOSE;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
+import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_TIME;
+import static com.xiaoe.shop.wxb.business.audio.ui.AudioPlayListDialog.DEFAULT_LAST_ID;
+
 public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnErrorListener {
+        MediaPlayer.OnErrorListener{
     private static final String TAG = "AudioMediaPlayer";
     private static final int MSG_PLAY_PROGRESS = 80001;
     public static MediaPlayer mediaPlayer;
+    public static String mCurrentColumnId;
     private static AudioPlayEvent event;
     private static AudioPlayEntity audio = null;
     private static boolean isStop = true;//是否是停止（已经释放资源），
@@ -45,6 +54,35 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public static float mPlaySpeed = 1f;//播放倍数
     private static AudioFocusManager audioFocusManager;
     private static boolean isSaveProgress = true;
+    private static CountDownTimerTool.CountDownCallBack mCountDownCallBack;
+//    public static int mCurrentPage = -1;
+    public static String lastId = DEFAULT_LAST_ID;
+    public static boolean isHasMoreData = true;
+    static boolean isCompletion = false;
+
+    public static void setCountDownCallBack(CountDownTimerTool.CountDownCallBack countDownCallBack) {
+        mCountDownCallBack = countDownCallBack;
+        if (countDownCallBack != null && MediaPlayerCountDownHelper.INSTANCE.getMCountDownCallBack() == null){
+            MediaPlayerCountDownHelper.INSTANCE.setMCountDownCallBack(countDownCallBack);
+        }
+    }
+
+    private static CountDownTimerTool.CountDownCallBack countDownCallBack =
+            new CountDownTimerTool.CountDownCallBack() {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (mCountDownCallBack != null)
+                mCountDownCallBack.onTick(millisUntilFinished);
+        }
+
+        @Override
+        public void onFinish() {
+            if (mCountDownCallBack != null)
+                mCountDownCallBack.onFinish();
+            if (isPlaying())
+                play();
+        }
+    };
 
     @SuppressLint("HandlerLeak")
     private static Handler mHandler = new Handler(){
@@ -103,12 +141,13 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         event = new AudioPlayEvent();
         isStop = true;
         prepared = false;
+        isCompletion = false;
     }
 
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        Log.d(TAG, "onPrepared: ");
+        Log.d(TAG, "onPrepared: ColumnId = " + audio.getColumnId());
         prepared = true;
         mediaPlayer.start();
         audioFocusManager.requestAudioFocus();
@@ -116,9 +155,18 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         changePlayerSpeed(mPlaySpeed);
         EventBus.getDefault().post(event);
         mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
+        MediaPlayerCountDownHelper.INSTANCE.setMCountDownCallBack(countDownCallBack);
+
 
         if (audio != null && audio.getProgress() > 0)
             mediaPlayer.seekTo(audio.getProgress());
+        else if (LearnRecordPageProgressManager.INSTANCE.getAudioProgress() > 0){
+            mediaPlayer.seekTo(LearnRecordPageProgressManager.INSTANCE.getAudioProgress());
+            LearnRecordPageProgressManager.INSTANCE.setAudioProgress(0);
+        }else {
+            if (audio != null)  UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(audio.getColumnId()));
+            uploadAudioProgress();
+        }
     }
 
     @Override
@@ -135,9 +183,14 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.d(TAG, "onCompletion: ");
-        event.setState(AudioPlayEvent.STOP);
-        EventBus.getDefault().post(event);
+        this.isCompletion = true;
+        postStopToEventBus();
         isStop = true;
+        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState() && isPlaying()){
+            MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+            play();
+            return;
+        }
         if(audio.getIsTry() == 1){
             //如果是试听，播放
             Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
@@ -147,11 +200,16 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         playNext(false);
     }
 
+    private static void postStopToEventBus() {
+        uploadSingleBuyAudioProgress();
+        event.setState(AudioPlayEvent.STOP);
+        EventBus.getDefault().post(event);
+    }
+
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Log.d(TAG, "onError: ");
-        event.setState(AudioPlayEvent.STOP);
-        EventBus.getDefault().post(event);
+        postStopToEventBus();
         return false;
     }
 
@@ -165,19 +223,18 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
         if (0 == audio.getHasBuy() && 0 == audio.getIsTry()){
             //如果未购买时并且也没有试听
-            Context context = XiaoeApplication.getmContext();
-            Toast.makeText(context,context.getString(R.string.listen_after_purchase),Toast.LENGTH_SHORT).show();
+            ToastUtils.show(XiaoeApplication.applicationContext, XiaoeApplication.applicationContext.getString(R.string.listen_after_purchase));
             return;
         }
         audio.setPlay(true);
         prepared = false;
+        isCompletion = false;
         mediaPlayer.reset();
         try {
             mediaPlayer.setDataSource(audio.getPlayUrl());
-        } catch (IOException e) {
-//            e.printStackTrace();
+            mediaPlayer.prepareAsync();
+        } catch (IOException | IllegalStateException ignored) {
         }
-        mediaPlayer.prepareAsync();
         event.setState(AudioPlayEvent.LOADING);
         EventBus.getDefault().post(event);
         isStop = false;
@@ -201,8 +258,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         if(mediaPlayer.isPlaying()){
             audioFocusManager.abandonAudioFocus();
             mediaPlayer.pause();
-            event.setState(AudioPlayEvent.PAUSE);
-            AudioNotifier.get().showPause(audio);
+            postPauseToEventBus();
         } else {
             audioFocusManager.requestAudioFocus();
             mediaPlayer.start();
@@ -213,6 +269,14 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
         EventBus.getDefault().post(event);
     }
+
+    private static void postPauseToEventBus() {
+        Log.d(TAG, "onPause: ColumnId = " + audio.getColumnId());
+        event.setState(AudioPlayEvent.PAUSE);
+        AudioNotifier.get().showPause(audio);
+        uploadSingleBuyAudioProgress();
+    }
+
     public static void stop() {
         if(audio == null || mediaPlayer == null || isStop){
             return;
@@ -228,8 +292,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         audioSQLiteUtil.update(AudioPlayTable.TABLE_NAME, audio, sqlWhereClause,
                 new String[]{audio.getAppId(),audio.getResourceId(), CommonUserInfo.getLoginUserIdOrAnonymousUserId()});
 
-        event.setState(AudioPlayEvent.STOP);
-        EventBus.getDefault().post(event);
+        postStopToEventBus();
         isStop = true;
     }
 
@@ -247,10 +310,12 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             mediaPlayer.release();
             mPlaySpeed = 1.0f;
             mediaPlayer = null;
+            MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+
         }
         prepared = false;
-        event.setState(AudioPlayEvent.STOP);
-        EventBus.getDefault().post(event);
+        isCompletion = false;
+        postStopToEventBus();
         isStop = true;
     }
     public static int getDuration(){
@@ -283,8 +348,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
         if(mediaPlayer.isPlaying()){
             mediaPlayer.pause();
-            event.setState(AudioPlayEvent.PAUSE);
-            AudioNotifier.get().showPause(audio);
+            postPauseToEventBus();
         }
         EventBus.getDefault().post(event);
     }
@@ -349,11 +413,31 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     }
 
+    public static boolean startCountDown(int state,int duration){
+        switch (state){
+            case COUNT_DOWN_STATE_TIME:
+                MediaPlayerCountDownHelper.INSTANCE.startCountDown(duration,countDownCallBack);
+                break;
+            case COUNT_DOWN_STATE_CURRENT:
+                MediaPlayerCountDownHelper.INSTANCE.choiceCurrentPlayFinished();
+                break;
+            case COUNT_DOWN_STATE_CLOSE:
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+            default:
+                break;
+        }
+        return true;
+    }
+
+    public static boolean startCountDown(int state){
+        return startCountDown(state,0);
+    }
+
     public static boolean changePlayerSpeed(float speed) {
         // this checks on API 23 and up
         if (!prepared)    return false;
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
+            if (speed != mPlaySpeed) {
                 try {
                     PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
                     playbackParams.setSpeed(speed);
@@ -389,6 +473,43 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         event.setProgress(currentPosition);
         EventBus.getDefault().post(event);
         mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS,500);
+    }
+
+    public static void uploadAudioProgress() {
+        try {
+            AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+            if (audio != null && 1 == audio.getHasBuy()){
+                int progress = getProgress(playEntity);
+                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(UploadLearnProgressManager
+                                .INSTANCE.isSingleBuy() ? "" : UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()
+                        ,playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void uploadSingleBuyAudioProgress() {
+
+        if (!prepared)  return;
+        try {
+            AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+            if (playEntity == null)   return;
+            if (1 == playEntity.getHasBuy() && TextUtils.isEmpty(playEntity.getColumnId())){
+                int progress = isCompletion ? 100 : getProgress(playEntity);
+                UploadLearnProgressManager.INSTANCE.addSingleItemData(playEntity.getResourceId(),
+                        ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000,true);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private static int getProgress(AudioPlayEntity playEntity) {
+        int progress = 0;
+        if (playEntity.getMaxProgress() > 0)
+            progress = playEntity.getProgress() * 100/ playEntity.getMaxProgress();
+        return progress;
     }
 
     public static AudioPlayEntity getAudio() {
@@ -439,4 +560,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         audio.setProgress(progress);
         saveAudioDB();
     }
+
+
 }

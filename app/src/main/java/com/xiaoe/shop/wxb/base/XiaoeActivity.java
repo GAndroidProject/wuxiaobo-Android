@@ -44,7 +44,7 @@ import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.NetUtils;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
-import com.xiaoe.network.NetworkStateResult;
+import com.xiaoe.common.entitys.NetworkStateResult;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.IRequest;
@@ -116,6 +116,9 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
 
     private boolean hasToast;
 
+    public void setHasToast(boolean hasToast) {
+        this.hasToast = hasToast;
+    }
 
     class XeHandler extends Handler {
 
@@ -355,23 +358,28 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
             public void run() {
                 JSONObject jsonObject = (JSONObject) entity;
                 if (success && entity != null) {
-                    if(jsonObject.getIntValue("code") == NetworkCodes.CODE_NOT_LOAING){
-                        if(!dialog.isShowing()){
-                            dialog.getTitleView().setGravity(Gravity.START);
-                            dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0 );
-                            dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                            dialog.setMessageVisibility(View.GONE);
-                            dialog.setTitleVisibility(View.VISIBLE);
-                            dialog.setCancelable(false);
-                            dialog.setHideCancelButton(true);
-                            dialog.setTitle(getString(R.string.login_invalid));
-                            dialog.setConfirmText(getString(R.string.btn_again_login));
-                            dialog.showDialog(DIALOG_TAG_LOADING);
-                            // 往回传 null 关闭加载中
-                            doResponseSuccess(null,false,entity);
+                    try {
+                        if (jsonObject.getInteger("code") == NetworkCodes.CODE_NOT_LOAING) {
+                            if (!dialog.isShowing()) {
+                                dialog.getTitleView().setGravity(Gravity.START);
+                                dialog.getTitleView().setPadding(Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0, Dp2Px2SpUtil.dp2px(XiaoeActivity.this, 22), 0);
+                                dialog.getTitleView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                                dialog.setMessageVisibility(View.GONE);
+                                dialog.setTitleVisibility(View.VISIBLE);
+                                dialog.setCancelable(false);
+                                dialog.setHideCancelButton(true);
+                                dialog.setTitle(getString(R.string.login_invalid));
+                                dialog.setConfirmText(getString(R.string.btn_again_login));
+                                dialog.showDialog(DIALOG_TAG_LOADING);
+                                // 往回传 null 关闭加载中
+                                doResponseSuccess(null, false, entity);
+                            }
+                        } else {
+                            doResponseSuccess(iRequest, true, entity);
                         }
-                    }else{
-                        doResponseSuccess(iRequest,true, entity);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast(getString(R.string.service_error_text));
                     }
                 } else {
                     if (jsonObject != null) {
@@ -515,18 +523,18 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
         return code;
     }
     //购买资源（下单）
-    public void payOrder(String resourceId, int resourceType, int paymentType, String couponId) {
+    public void payOrder(String resourceId, int resourceType, int payWay, int paymentType, String couponId) {
         if(payPresenter == null){
             payPresenter = new PayPresenter(this, this);
         }
-        payPresenter.payOrder(paymentType, resourceType, resourceId, resourceId, couponId);
+        payPresenter.payOrder(paymentType, resourceType, payWay, resourceId, resourceId, couponId);
     }
     // 购买超级会员（下单）
-    public void payOrder(String resourceId, String productId, int resourceType, int paymentType, String couponId) {
+    public void payOrder(String resourceId, String productId, int payWay, int resourceType, int paymentType, String couponId) {
         if (payPresenter == null) {
             payPresenter = new PayPresenter(this, this);
         }
-        payPresenter.payOrder(paymentType, resourceType, resourceId, productId, couponId);
+        payPresenter.payOrder(paymentType, resourceType, payWay, resourceId, productId, couponId);
     }
     //拉起微信支付
     public void pullWXPay(String appid, String partnerid, String prepayid, String noncestr, String timestamp, String packageValue, String sign){
@@ -547,9 +555,13 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
     public void onClickConfirm(View view, int tag) {
         if(tag == DIALOG_TAG_LOADING){
             SQLiteUtil liteUtil = SQLiteUtil.init(this,  new LoginSQLiteCallback());
-            liteUtil.execSQL("delete from " + LoginSQLiteCallback.TABLE_NAME_USER);
+            if(liteUtil.tabIsExist(LoginSQLiteCallback.TABLE_NAME_USER)){
+                liteUtil.execSQL("delete from " + LoginSQLiteCallback.TABLE_NAME_USER);
+            }
             SQLiteUtil lrUtil = SQLiteUtil.init(this, new LrSQLiteCallback());
-            lrUtil.execSQL("delete from " + LrSQLiteCallback.TABLE_NAME_LR);
+            if (lrUtil.tabIsExist(LrSQLiteCallback.TABLE_NAME_LR)) {
+                lrUtil.execSQL("delete from " + LrSQLiteCallback.TABLE_NAME_LR);
+            }
             CommonUserInfo.getInstance().clearUserInfo();
             CommonUserInfo.getInstance().clearLoginUserInfo();
             CommonUserInfo.setApiToken("");

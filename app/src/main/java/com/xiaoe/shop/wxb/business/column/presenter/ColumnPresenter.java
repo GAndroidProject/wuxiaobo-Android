@@ -10,9 +10,11 @@ import com.xiaoe.common.entitys.ExpandableLevel;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.ColumnListRequst;
-import com.xiaoe.network.requests.DetailRequest;
+import com.xiaoe.network.requests.CourseDetailRequest;
+import com.xiaoe.network.requests.DownloadListRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.QueryProductTypeRequest;
+import com.xiaoe.shop.wxb.adapter.download.DownLoadExpandAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,12 +37,13 @@ public class ColumnPresenter implements IBizCallback {
      * 获取购买前商品详情
      */
     public void requestDetail(String resourceId, String resourceType){
-        DetailRequest detailRequest = new DetailRequest( this);
-        detailRequest.addDataParam("goods_id",resourceId);
-        detailRequest.addDataParam("goods_type",Integer.parseInt(resourceType));
-        detailRequest.setNeedCache(true);
-        detailRequest.setCacheKey(resourceId);
-        detailRequest.sendRequest();
+        CourseDetailRequest courseDetailRequest = new CourseDetailRequest( this);
+        courseDetailRequest.addDataParam("goods_id",resourceId);
+        courseDetailRequest.addDataParam("goods_type",Integer.parseInt(resourceType));
+        courseDetailRequest.addDataParam("agent_type",2);
+        courseDetailRequest.setNeedCache(true);
+        courseDetailRequest.setCacheKey(resourceId);
+        courseDetailRequest.sendRequest();
     }
 
     public void requestColumnList(String resourceId, String resourceType, int page, int pageSize, boolean needCache, String resourceTag){
@@ -110,6 +113,43 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setColumnId(columnId);
             secondDirectoryEntity.setBigColumnId(bigColumnId);
             secondDirectoryEntity.setIsTry(jsonObject.getIntValue("is_try"));
+            secondDirectoryEntity.setIsHasBuy(hasBuy);
+
+            directoryEntityList.add(secondDirectoryEntity);
+        }
+        return directoryEntityList;
+    }
+
+    /**
+     * 格式化二级目录数据
+     * @param jsonArray
+     * @return
+     */
+    public List<ColumnSecondDirectoryEntity> formatSingleResourceEntity2(JSONArray jsonArray, String columnTitle, String columnId, String bigColumnId, int hasBuy){
+        List<ColumnSecondDirectoryEntity> directoryEntityList = new ArrayList<ColumnSecondDirectoryEntity>();
+        for (Object object : jsonArray) {
+            ColumnSecondDirectoryEntity secondDirectoryEntity = new ColumnSecondDirectoryEntity();
+            JSONObject jsonObject = (JSONObject) object;
+            int resourceType = jsonObject.getIntValue("goods_type");
+            int[] types = new int[]{1 , 2, 3};
+            if(Arrays.binarySearch(types, resourceType) < 0){
+                //过滤掉非图文音视频资源
+                continue;
+            }
+            secondDirectoryEntity.setApp_id(jsonObject.getString("app_id"));
+            secondDirectoryEntity.setResource_id(jsonObject.getString("goods_id"));
+            secondDirectoryEntity.setTitle(jsonObject.getString("title"));
+            secondDirectoryEntity.setImg_url(jsonObject.getString("img_url"));
+            secondDirectoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
+            secondDirectoryEntity.setResource_type(jsonObject.getIntValue("goods_type"));
+            secondDirectoryEntity.setAudio_length(jsonObject.getIntValue("length"));
+//            secondDirectoryEntity.setVideo_length(jsonObject.getIntValue("video_length"));
+            secondDirectoryEntity.setAudio_url(jsonObject.getString("download_url"));
+//            secondDirectoryEntity.setVideo_url(jsonObject.getString("download_url"));
+            secondDirectoryEntity.setColumnTitle(columnTitle);
+            secondDirectoryEntity.setColumnId(columnId);
+            secondDirectoryEntity.setBigColumnId(bigColumnId);
+//            secondDirectoryEntity.setIsTry(jsonObject.getIntValue("is_try"));
             secondDirectoryEntity.setIsHasBuy(hasBuy);
 
             directoryEntityList.add(secondDirectoryEntity);
@@ -219,5 +259,62 @@ public class ColumnPresenter implements IBizCallback {
         QueryProductTypeRequest productTypeRequest = new QueryProductTypeRequest(this);
         productTypeRequest.addRequestParam("product_id", productId);
         productTypeRequest.sendRequest();
+    }
+
+    /**
+     * 格式化一级目录数据
+     * @param jsonArray
+     */
+    public List<MultiItemEntity> formatDownloadExpandableEntity(JSONArray jsonArray, String bigColumnId, int hasBuy){
+        List<MultiItemEntity> directoryEntityList = new ArrayList<MultiItemEntity>();
+        for (Object object : jsonArray) {
+            ExpandableLevel directoryEntity = new ExpandableLevel();
+
+            JSONObject jsonObject = (JSONObject) object;
+            directoryEntity.setApp_id(jsonObject.getString("app_id"));
+            directoryEntity.setTitle(jsonObject.getString("title"));
+            String columnId = jsonObject.getString("resource_id");
+            directoryEntity.setImg_url(jsonObject.getString("img_url"));
+            directoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
+            directoryEntity.setResource_id(columnId);
+            directoryEntity.setBigColumnId(bigColumnId);
+            directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
+
+            //添加一条空数据，作为“加载状态”条目
+            ExpandableItem loadSecondDirectoryEntity = new ExpandableItem();
+            loadSecondDirectoryEntity.setItemType(DownLoadExpandAdapter.LOAD_STATE);
+            loadSecondDirectoryEntity.setLoadType(DownLoadExpandAdapter.LOADING);
+            directoryEntity.addSubItem(loadSecondDirectoryEntity);
+            //添加一条空数据，作为“收起”条目
+            ExpandableItem emptySecondDirectoryEntity = new ExpandableItem();
+            emptySecondDirectoryEntity.setItemType(DownLoadExpandAdapter.GROUP_BOTTOM_ITEM);
+            directoryEntity.addSubItem(emptySecondDirectoryEntity);
+
+            directoryEntityList.add(directoryEntity);
+        }
+        return directoryEntityList;
+    }
+
+    /**
+     * 请求下载列表数据
+     *
+     * @param goodsId      商品 id
+     * @param goodsType    商品类型
+     * @param pageSize     每页大小
+     * @param downloadType 下载类型
+     * @param lastId       最后一个 id（用于分页请求）
+     * @param requestTag   请求的 tag
+     */
+    public void requestDownloadList(String goodsId, int goodsType, int pageSize, int[] downloadType, String lastId, String requestTag) {
+        DownloadListRequest downloadListRequest = new DownloadListRequest(this);
+
+        downloadListRequest.addDataParam("goods_id", goodsId);
+        downloadListRequest.addDataParam("goods_type", goodsType);
+        downloadListRequest.addDataParam("download_type", downloadType);
+        downloadListRequest.addDataParam("last_id", lastId);
+        downloadListRequest.addDataParam("page_size", pageSize);
+        downloadListRequest.setRequestTag(requestTag);
+
+        downloadListRequest.sendRequest();
     }
 }

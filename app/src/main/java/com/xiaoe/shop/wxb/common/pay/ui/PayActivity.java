@@ -26,6 +26,7 @@ import com.xiaoe.shop.wxb.business.coupon.presenter.CouponPresenter;
 import com.xiaoe.shop.wxb.business.coupon.ui.CouponFragment;
 import com.xiaoe.shop.wxb.business.coupon.ui.EmptyCouponFragment;
 import com.xiaoe.shop.wxb.common.JumpDetail;
+import com.xiaoe.shop.wxb.common.pay.presenter.PayPresenter;
 import com.xiaoe.shop.wxb.interfaces.OnSelectCouponListener;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
 
@@ -55,7 +56,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
     private boolean isAdd = false;
     private int payPrice;
     private String resourceId;
-    private PayingFragment payingFragment;
+    private NewPayingFragment payingFragment;
     private List<CouponInfo> validCoupon;
     private CouponInfo useCouponInfo;
     private int resourceType;
@@ -95,7 +96,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         statusPagerView.setLoadingState(View.VISIBLE);
         statusPagerView.setBtnGoToOnClickListener(this);
 
-        showFragment(PayingFragment.class);
+        showFragment(NewPayingFragment.class);
         mCouponPresenter.requestResourceUseCoupon(resourceId ,payPrice);
     }
 
@@ -189,8 +190,8 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
     }
 
     private BaseFragment createMainFragment(Class theClass){
-        if(theClass == PayingFragment.class){
-            payingFragment = new PayingFragment();
+        if(theClass == NewPayingFragment.class){
+            payingFragment = new NewPayingFragment();
             payingFragment.setBtnSucceedPayClickListener(this);
             return payingFragment;
         }else if(theClass == CouponFragment.class){
@@ -218,13 +219,13 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.coupon_wrap:
+            case R.id.payingCouponWrap:
                 clickUseCoupon();
                 break;
             case R.id.pay_back:
                 clickBack();
                 break;
-            case R.id.btn_succeed_pay:
+            case R.id.confirmBuy:
                 buyResource();
                 break;
             case R.id.btn_go_to:
@@ -244,6 +245,14 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             return;
         }
         paying = true;
+        int payWay;
+        if (payingFragment.isAliPayWay()) { // 支付宝支付
+            payWay = PayPresenter.PAY_WAY_ALI;
+        } else if (payingFragment.isBoBiPayWay()) { // 波币支付
+            payWay = PayPresenter.PAY_WAY_VIRTUAL;
+        } else { // 微信支付
+            payWay = PayPresenter.PAY_WAY_DEFAULT;
+        }
         getDialog().showLoadDialog(false);
 //        int paymentType = (resourceType == 8 || resourceType == 6) ? 3 : 2;
         int paymentType;
@@ -256,16 +265,16 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
         }
         if (!TextUtils.isEmpty(productId)) { // productId 不为空表示为超级会员的购买
             if (useCouponInfo != null) {
-                payOrder(resourceId, productId, resourceType, paymentType, useCouponInfo.getCu_id());
+                payOrder(resourceId, productId, payWay, resourceType, paymentType, useCouponInfo.getCu_id());
             } else {
-                payOrder(resourceId, productId, resourceType, paymentType, null);
+                payOrder(resourceId, productId, payWay, resourceType, paymentType, null);
             }
             return;
         }
         if(useCouponInfo != null){
-            payOrder(resourceId, resourceType, paymentType, useCouponInfo.getCu_id());
+            payOrder(resourceId, resourceType, payWay, paymentType, useCouponInfo.getCu_id());
         }else{
-            payOrder(resourceId, resourceType, paymentType, null);
+            payOrder(resourceId, resourceType, payWay, paymentType, null);
         }
     }
 
@@ -313,7 +322,7 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             payTitle.setText(getResources().getString(R.string.paying));
             statusPagerView.setVisibility(View.GONE);
             selectCouponPager = false;
-            showFragment(PayingFragment.class);
+            showFragment(NewPayingFragment.class);
             return;
         }
         finish();

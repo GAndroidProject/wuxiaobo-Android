@@ -85,8 +85,23 @@
 
 #↓↓↓↓↓↓↓实体类↓↓↓↓↓↓↓
 -keep public class com.xiaoe.common.entitys.**{*;}
+# 版本更新模块
+-keep public class com.xiaoe.shop.wxb.business.upgrade.**{*;}
+# 极光推送
+-keep public class com.xiaoe.shop.wxb.common.jpush.**{*;}
 #↑↑↑↑↑↑↑实体类↑↑↑↑↑↑↑
 
+# webView处理，项目中没有使用到webView忽略即可
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+    public *;
+}
+-keepclassmembers class * extends android.webkit.webViewClient {
+    public void *(android.webkit.WebView, java.lang.String, android.graphics.Bitmap);
+    public boolean *(android.webkit.WebView, java.lang.String);
+}
+-keepclassmembers class * extends android.webkit.webViewClient {
+    public void *(android.webkit.webView, jav.lang.String);
+}
 
 -dontwarn com.google.android.maps.**
 -dontwarn android.webkit.WebView
@@ -116,6 +131,12 @@
 -keep class * extends cn.jpush.android.helpers.JPushMessageReceiver { *; }
 -dontwarn cn.jiguang.**
 -keep class cn.jiguang.** { *; }
+
+# 2.0.5 ~ 2.1.7 版本有引入 gson 和 protobuf，增加排除混淆的配置。（2.1.8 版本不需配置）
+#==================gson && protobuf==========================
+-dontwarn com.google.**
+#-keep class com.google.gson.** {*;}
+-keep class com.google.protobuf.** {*;}
 #↑↑↑↑↑↑↑极光↑↑↑↑↑↑↑
 
 #↓↓↓↓↓↓↓bugly↓↓↓↓↓↓↓↓
@@ -213,6 +234,9 @@
 #↑↑↑↑↑↑↑↑com.pnikosis.materialishprogress↑↑↑↑↑↑↑↑
 
 #↓↓↓↓↓↓↓↓butterknife↓↓↓↓↓↓↓↓
+-keep public class * implements butterknife.Unbinder {
+    public <init>(**, android.view.View);
+}
 -keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**
 -keep class **$$ViewBinder { *; }

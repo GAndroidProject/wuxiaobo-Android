@@ -4,6 +4,7 @@ package com.xiaoe.common.entitys;
 public class ChangeLoginIdentityEvent {
 
     private boolean changeSuccess;
+    private boolean hasBalanceChange;
 
     public ChangeLoginIdentityEvent() {
 
@@ -14,7 +15,14 @@ public class ChangeLoginIdentityEvent {
     }
 
     public boolean isChangeSuccess() {
-
         return changeSuccess;
+    }
+
+    public boolean isHasBalanceChange() {
+        return hasBalanceChange;
+    }
+
+    public void setHasBalanceChange(boolean hasBalanceChange) {
+        this.hasBalanceChange = hasBalanceChange;
     }
 }

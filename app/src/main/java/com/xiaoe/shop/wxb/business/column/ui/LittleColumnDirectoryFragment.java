@@ -1,5 +1,6 @@
 package com.xiaoe.shop.wxb.business.column.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -51,6 +52,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     private boolean isAddPlayList = false;
     private boolean isHasBuy = false;
     private String resourceId;
+    private String realSrcId;
 
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
@@ -205,6 +207,7 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
             intent.putExtra("from_type", "LittleColumnDirectoryFragment");
             intent.putExtra("resourceId", resourceId);
             intent.putExtra("resourceType", ColumnActivity.RESOURCE_TYPE_COLUMN + "");
+            intent.putExtra("down_title", ((ColumnActivity)getActivity()).title);
             startActivity(intent);
         } else {
             touristDialog.showDialog();
@@ -351,7 +354,20 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
                 JumpDetail.jumpAudio(getContext(), resourceId, 1);
             }else if(resourceType == 3){
                 //视频
-                JumpDetail.jumpVideo(getContext(), resourceId, "",false, itemData.getColumnId());
+                int index = 0;
+                List<ColumnSecondDirectoryEntity> list= directoryAdapter.getData();
+                for (int i = 0; i < list.size(); i++) {
+                    if (3 == list.get(i).getResource_type()){
+                        index++;
+                        if (resourceId == list.get(i).getResource_id())
+                            break;
+                    }
+                }
+                Activity activity = getActivity();
+                if (activity != null && activity instanceof ColumnActivity)
+                    realSrcId = ((ColumnActivity)activity).realSrcId;
+                JumpDetail.jumpVideo(getContext(), resourceId, "",false,
+                        itemData.getColumnId(),realSrcId,index);
             }else{
                 toastCustom(getString(R.string.unknown_course));
             }
@@ -398,4 +414,5 @@ public class LittleColumnDirectoryFragment extends BaseFragment implements View.
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
     }
+
 }

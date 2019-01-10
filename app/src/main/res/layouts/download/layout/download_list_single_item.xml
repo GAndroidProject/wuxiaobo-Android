@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/singleWrap"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/singleItemContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2019买房还是投资的最佳选择吗"
+            android:textSize="14sp"
+            android:textColor="@color/main_title_color"
+            android:drawableStart="@mipmap/download_tocheck"
+            android:drawablePadding="18dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="2dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:maxWidth="214dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/singleItemLength"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="14:25"
+            android:textSize="12sp"
+            android:textColor="@color/secondary_title_color"
+            android:paddingStart="1dp"
+            android:paddingEnd="20dp"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+        
+    </LinearLayout>
+
+    <View
+        android:id="@+id/singleItemLine"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/list_dotted_line"
+        android:layerType="software"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="54dp"
+        android:layout_marginEnd="20dp"/>
+    
+</FrameLayout>

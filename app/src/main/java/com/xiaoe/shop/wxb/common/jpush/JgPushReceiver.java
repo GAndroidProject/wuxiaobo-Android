@@ -10,7 +10,6 @@ import com.alibaba.fastjson.JSON;
 import com.xiaoe.shop.wxb.business.main.ui.MainActivity;
 import com.xiaoe.shop.wxb.common.JumpDetail;
 import com.xiaoe.shop.wxb.common.jpush.entity.JgPushReceiverEntity;
-import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.events.OnUnreadMsgEvent;
 
 import org.greenrobot.eventbus.EventBus;

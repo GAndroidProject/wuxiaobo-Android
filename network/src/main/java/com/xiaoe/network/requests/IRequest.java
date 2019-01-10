@@ -144,7 +144,7 @@ public abstract class IRequest {
         JSONObject jsonObject = new JSONObject();
 
         jsonObject.put("client", "6");
-        jsonObject.put("app_version", "1.0");
+        jsonObject.put("app_version", buildVersion);
         jsonObject.put("build_version", buildVersion);
         jsonObject.put("client_info", clientInfo);
 

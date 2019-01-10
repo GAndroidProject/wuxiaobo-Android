@@ -30,6 +30,7 @@ import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.LearningRecord;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.entitys.ResourceType;
 import com.xiaoe.common.utils.Base64Util;
 import com.xiaoe.common.utils.CacheDataUtil;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
@@ -37,14 +38,14 @@ import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.AddCollectionRequest;
-import com.xiaoe.network.requests.CourseITDetailRequest;
+import com.xiaoe.network.requests.CourseDetailRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.course.presenter.CourseImageTextPresenter;
 import com.xiaoe.shop.wxb.common.JumpDetail;
-import com.xiaoe.shop.wxb.common.web.BrowserActivity;
 import com.xiaoe.shop.wxb.events.MyCollectListRefreshEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
@@ -52,6 +53,7 @@ import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
 import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CommonTitleView;
 import com.xiaoe.shop.wxb.widget.PushScrollView;
@@ -167,6 +169,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
         imgUrl = transitionIntent.getStringExtra("imgUrl");
         resourceId = transitionIntent.getStringExtra("resourceId");
         columnId = transitionIntent.getStringExtra("columnId");
+//        UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(columnId));
         resourceType = "1"; // 图文的资源类型为 1
         loginList = getLoginUserList();
 
@@ -337,15 +340,22 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     public void onBackPressed() {
         // 获取学习进度
         if (hasBuy) { // 买了才需要上报
-            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-            updateLearningUtils.updateLearningProgress(realSrcId, Integer.parseInt(resourceType), 10);
-            LearningRecord lr = new LearningRecord();
-            lr.setLrId(realSrcId);
-            lr.setLrType(DecorateEntityType.IMAGE_TEXT);
-            lr.setLrTitle(collectionTitle);
-            lr.setLrImg(collectionImgUrl);
-            lr.setLrDesc(purchaseStr);
-            UpdateLearningUtils.saveLr2Local(this, lr);
+//            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+//            updateLearningUtils.updateLearningProgress(realSrcId, Integer.parseInt(resourceType), 10);
+//            LearningRecord lr = new LearningRecord();
+//            lr.setLrId(realSrcId);
+//            lr.setLrType(DecorateEntityType.IMAGE_TEXT);
+//            lr.setLrTitle(collectionTitle);
+//            lr.setLrImg(collectionImgUrl);
+//            lr.setLrDesc(purchaseStr);
+//            UpdateLearningUtils.saveLr2Local(this, lr);
+            if (UploadLearnProgressManager.INSTANCE.isSingleBuy()){
+                UploadLearnProgressManager.INSTANCE.addSingleItemData(realSrcId,
+                        ResourceType.TYPE_TEXT,100,0,true);
+            }else if (!TextUtils.isEmpty(UploadLearnProgressManager.INSTANCE.getMCurrentColumnId())){
+                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData
+                        (UploadLearnProgressManager.INSTANCE.getMCurrentColumnId(),realSrcId, ResourceType.TYPE_TEXT,100,0);
+            }
         }
         super.onBackPressed();
     }
@@ -388,10 +398,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     }
 
     private void handleData(IRequest iRequest, boolean success, JSONObject entity) {
-        JSONObject result = entity;
         if (success) {
             if (iRequest instanceof AddCollectionRequest) {
-                int code = result.getInteger("code");
+                int code = entity.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     Toast(getString(R.string.collect_succeed));
                     isCollected = !isCollected;
@@ -399,17 +408,17 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                     Toast(getString(R.string.collect_fail));
                 }
             } else if (iRequest instanceof RemoveCollectionListRequest) {
-                int code = result.getInteger("code");
+                int code = entity.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     Toast(getString(R.string.cancel_collect_succeed));
                     isCollected = !isCollected;
                 } else if (code == NetworkCodes.CODE_DELETE_COLLECT_FAILED) {
                     Toast(getString(R.string.cancel_collect_fail));
                 }
-            } else if (iRequest instanceof CourseITDetailRequest) {
-                int code = result.getInteger("code");
+            } else if (iRequest instanceof CourseDetailRequest) {
+                int code = entity.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data = (JSONObject) result.get("data");
+                    JSONObject data = (JSONObject) entity.get("data");
                     initPageData(data, false);
                 } else if (code == NetworkCodes.CODE_GOODS_GROUPS_DELETE || code == NetworkCodes.CODE_GOODS_DELETE) {
                     Log.d(TAG, "onMainThreadResponse: 商品分组已被删除");
@@ -417,6 +426,16 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 } else if (code == NetworkCodes.CODE_GOODS_NOT_FIND) {
                     Log.d(TAG, "onMainThreadResponse: 商品不存在");
                     setPagerState(1);
+                } else if (code == NetworkCodes.CODE_NO_SINGLE_SELL) {
+                    Log.e(TAG, "handleData: " + code);
+
+                    JSONObject data = (JSONObject) entity.get("data");
+                    JSONObject resourceInfo = (JSONObject) data.get("resource_info");
+                    String productId = resourceInfo.getString("resource_id");
+                    String productImgUrl = resourceInfo.getString("img_url");
+
+                    JumpDetail.jumpColumn(this, productId, productImgUrl, 3);
+                    finish();
                 }else{
                     setPagerState(1);
                 }
@@ -617,7 +636,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             itOrgContent.setWebViewClient(new WebViewClient(){
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView webView, String s) {
-                    BrowserActivity.openUrl(mContext, s, "");
+                    JumpDetail.jumpAppBrowser(mContext, s, "");
                     return true;
                 }
             });

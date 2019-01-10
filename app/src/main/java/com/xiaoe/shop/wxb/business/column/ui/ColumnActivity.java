@@ -34,7 +34,7 @@ import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.AddCollectionRequest;
 import com.xiaoe.network.requests.ColumnListRequst;
-import com.xiaoe.network.requests.DetailRequest;
+import com.xiaoe.network.requests.CourseDetailRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.QueryProductTypeRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
@@ -51,7 +51,7 @@ import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.NumberFormat;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
-import com.xiaoe.shop.wxb.utils.UpdateLearningUtils;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
 import com.xiaoe.shop.wxb.widget.ListBottomLoadMoreView;
@@ -107,12 +107,13 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     private String shareUrl = "";
     private String summary = "";
     private int price = 0;
+    protected String title;
 
     List<LoginUser> loginUserList;
     TouristDialog touristDialog;
 
 //    boolean hasBuy;
-    String realSrcId;
+    public String realSrcId;
     private MiniAudioPlayControllerLayout miniAudioPlayControllerLayout;//悬浮音频播放器
     private int resourceType;//8-大专栏，6-小专栏，5-会员
     private TextView memberExpireTime;
@@ -131,6 +132,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UploadLearnProgressManager.INSTANCE.setSingleBuy(false);
         setStatusBar();
         setContentView(R.layout.activity_column);
         mIntent = getIntent();
@@ -154,6 +156,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         resourceType = mIntent.getIntExtra("resource_type", 0);
         resourceId = mIntent.getStringExtra("resource_id");
+        UploadLearnProgressManager.INSTANCE.addColumnData(resourceId,resourceType);
+        UploadLearnProgressManager.INSTANCE.setMCurrentColumnId(resourceId);
         columnPresenter = new ColumnPresenter(this);
         EventBus.getDefault().register(this);
 
@@ -273,28 +277,29 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     public void onBackPressed() {
         if (isHasBuy) {
             Log.d(TAG, "onBackPressed: hasBuy ------- ");
-            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
-            updateLearningUtils.updateLearningProgress(realSrcId, resourceType, 10);
-            LearningRecord lr = new LearningRecord();
-            //	1-会员，2-大专栏，3-专栏
-            lr.setLrId(realSrcId);
-            switch (resourceType) {
-                case 5: // 会员
-                    lr.setLrType(DecorateEntityType.MEMBER);
-                    break;
-                case 6: // 专栏
-                    lr.setLrType(DecorateEntityType.COLUMN);
-                    break;
-                case 8: // 大专栏
-                    lr.setLrType(DecorateEntityType.TOPIC);
-                    break;
-                default:
-                    break;
-            }
-            lr.setLrTitle(collectTitle);
-            lr.setLrImg(collectImgUrl);
-            lr.setLrDesc(playNumStr);
-            UpdateLearningUtils.saveLr2Local(this, lr);
+//            UpdateLearningUtils updateLearningUtils = new UpdateLearningUtils(this);
+//            updateLearningUtils.updateLearningProgress(realSrcId, resourceType, 10);
+//            LearningRecord lr = new LearningRecord();
+//            //	1-会员，2-大专栏，3-专栏
+//            lr.setLrId(realSrcId);
+//            switch (resourceType) {
+//                case 5: // 会员
+//                    lr.setLrType(DecorateEntityType.MEMBER);
+//                    break;
+//                case 6: // 专栏
+//                    lr.setLrType(DecorateEntityType.COLUMN);
+//                    break;
+//                case 8: // 大专栏
+//                    lr.setLrType(DecorateEntityType.TOPIC);
+//                    break;
+//                default:
+//                    break;
+//            }
+//            lr.setLrTitle(collectTitle);
+//            lr.setLrImg(collectImgUrl);
+//            lr.setLrDesc(playNumStr);
+//            UpdateLearningUtils.saveLr2Local(this, lr);
+            UploadLearnProgressManager.INSTANCE.uploadLearningData(realSrcId);
         }
         super.onBackPressed();
     }
@@ -315,12 +320,22 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         int code = jsonObject.getIntValue("code");
         if(code != NetworkCodes.CODE_SUCCEED && !TOPIC_LITTLE_REQUEST_TAG.equals(iRequest.getRequestTag())){
-            if(iRequest instanceof ColumnListRequst || iRequest instanceof DetailRequest){
+            if(iRequest instanceof ColumnListRequst || iRequest instanceof CourseDetailRequest){
                 setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
             }
-            if(iRequest instanceof DetailRequest || iRequest instanceof QueryProductTypeRequest){
+            if(iRequest instanceof CourseDetailRequest || iRequest instanceof QueryProductTypeRequest){
                 if(code == NetworkCodes.CODE_GOODS_DELETE){
                     setPagerState(NetworkCodes.CODE_GOODS_DELETE);
+                } else if (code == NetworkCodes.CODE_NO_SINGLE_SELL) {
+                    Log.e(TAG, "onMainThreadResponse: " + code);
+
+                    JSONObject data = (JSONObject) jsonObject.get("data");
+                    JSONObject resourceInfo = (JSONObject) data.get("resource_info");
+                    String productId = resourceInfo.getString("resource_id");
+                    String productImgUrl = resourceInfo.getString("img_url");
+
+                    JumpDetail.jumpColumn(this, productId, productImgUrl, 3);
+                    finish();
                 }else{
                     setPagerState(1);
                 }
@@ -328,7 +343,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             return;
         }
         Object dataObject = jsonObject.get("data");
-        if(iRequest instanceof DetailRequest){
+        if(iRequest instanceof CourseDetailRequest){
             JSONObject data = (JSONObject) dataObject;
             int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
             setCollectState(hasFavorite == 1);
@@ -616,7 +631,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             isHasBuy = false;
             collectPrice = ""+price;
         }
-        String title = data.getString("title");
+        title = data.getString("title");
         //收藏内容
         collectTitle = title;
         collectImgUrl = data.getString("img_url");
@@ -761,6 +776,9 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void setColumnViewPager(int index){
+        if (columnViewPager == null) {
+            return;
+        }
         if(index == 0){
             columnViewPager.setCurrentItem(0);
             btnContentDetail.setEnabled(false);
@@ -836,6 +854,8 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        UploadLearnProgressManager.INSTANCE.setSingleBuy(true);
+        UploadLearnProgressManager.INSTANCE.setMCurrentColumnId("");
         EventBus.getDefault().unregister(this);
         UMShareAPI.get(this).release();
         if (!hasCollect) {
