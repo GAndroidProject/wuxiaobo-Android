@@ -512,7 +512,7 @@
     <string name="video_speed_play_2">1.25倍速</string>
     <string name="video_speed_play_3">1.5倍速</string>
     <string name="video_speed_play_4">2倍速</string>
-    <string name="already_was_last_video">已经是最后一集了</string>
+    <string name="already_was_last_video">已经是最后一课了</string>
     <string name="download_count">共%d节课</string>
     <string name="all_text">全部</string>
     <string name="download_group_item_icon">下载列表非单品选中图标</string>
