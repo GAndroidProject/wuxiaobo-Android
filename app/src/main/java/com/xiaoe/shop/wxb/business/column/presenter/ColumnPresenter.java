@@ -120,6 +120,43 @@ public class ColumnPresenter implements IBizCallback {
     }
 
     /**
+     * 格式化二级目录数据
+     * @param jsonArray
+     * @return
+     */
+    public List<ColumnSecondDirectoryEntity> formatSingleResourceEntity2(JSONArray jsonArray, String columnTitle, String columnId, String bigColumnId, int hasBuy){
+        List<ColumnSecondDirectoryEntity> directoryEntityList = new ArrayList<ColumnSecondDirectoryEntity>();
+        for (Object object : jsonArray) {
+            ColumnSecondDirectoryEntity secondDirectoryEntity = new ColumnSecondDirectoryEntity();
+            JSONObject jsonObject = (JSONObject) object;
+            int resourceType = jsonObject.getIntValue("goods_type");
+            int[] types = new int[]{1 , 2, 3};
+            if(Arrays.binarySearch(types, resourceType) < 0){
+                //过滤掉非图文音视频资源
+                continue;
+            }
+            secondDirectoryEntity.setApp_id(jsonObject.getString("app_id"));
+            secondDirectoryEntity.setResource_id(jsonObject.getString("goods_id"));
+            secondDirectoryEntity.setTitle(jsonObject.getString("title"));
+            secondDirectoryEntity.setImg_url(jsonObject.getString("img_url"));
+            secondDirectoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
+            secondDirectoryEntity.setResource_type(jsonObject.getIntValue("goods_type"));
+            secondDirectoryEntity.setAudio_length(jsonObject.getIntValue("length"));
+//            secondDirectoryEntity.setVideo_length(jsonObject.getIntValue("video_length"));
+            secondDirectoryEntity.setAudio_url(jsonObject.getString("download_url"));
+//            secondDirectoryEntity.setVideo_url(jsonObject.getString("download_url"));
+            secondDirectoryEntity.setColumnTitle(columnTitle);
+            secondDirectoryEntity.setColumnId(columnId);
+            secondDirectoryEntity.setBigColumnId(bigColumnId);
+//            secondDirectoryEntity.setIsTry(jsonObject.getIntValue("is_try"));
+            secondDirectoryEntity.setIsHasBuy(hasBuy);
+
+            directoryEntityList.add(secondDirectoryEntity);
+        }
+        return directoryEntityList;
+    }
+
+    /**
      * 格式化一级目录数据
      * @param jsonArray
      */

@@ -44,20 +44,27 @@ public class AudioPlayListDialog implements View.OnClickListener {
     private TextView productsTitle;
     private AlertDialog dialog;
     private LoadAudioListDataCallBack mLoadAudioListDataCallBack;
-    private int page = -1;
+    public static final String DEFAULT_LAST_ID = "-1";
+    private String lastId = DEFAULT_LAST_ID;
     private final int PAGE_SIZE = 10;
     private SmartRefreshLayout mRefreshLayout;
     private StatusPagerView mStatusPagerView;
     private Context mContext;
+//    private int page = 1;
 
-    public void setPage(int page) {
-        this.page = page;
+    public void setLastId(String lastId) {
+        this.lastId = lastId;
     }
+
+//    public void setPage(int page) {
+//        this.page = page;
+//    }
 
     public void setLoadAudioListDataCallBack(LoadAudioListDataCallBack loadAudioListDataCallBack) {
         mLoadAudioListDataCallBack = loadAudioListDataCallBack;
-        if (loadAudioListDataCallBack != null && -1 == page) {
-            page = 1;
+        if (loadAudioListDataCallBack != null && DEFAULT_LAST_ID.equals(lastId)) {
+            lastId = "";
+//            page = 1;
             loadAudioListDataCallBack.onRefresh(PAGE_SIZE);
         }
     }
@@ -75,14 +82,14 @@ public class AudioPlayListDialog implements View.OnClickListener {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 if (mLoadAudioListDataCallBack != null){
-                    mLoadAudioListDataCallBack.onLoadMoreData(page,PAGE_SIZE);
+                    mLoadAudioListDataCallBack.onLoadMoreData(lastId,PAGE_SIZE);
                 }
             }
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 if (mLoadAudioListDataCallBack != null) {
-                    page = 1;
+                    lastId = "";
                     mLoadAudioListDataCallBack.onRefresh(PAGE_SIZE);
                 }
             }
@@ -153,6 +160,9 @@ public class AudioPlayListDialog implements View.OnClickListener {
 
     private void setAudioPlayList(List<ColumnSecondDirectoryEntity> list,int isHasBuy){
         List<AudioPlayEntity> audioPlayEntities = new ArrayList<>();
+        int page = 0;
+        if (mAudioPlayListNewAdapter != null && mAudioPlayListNewAdapter.getData().size() > 0)
+            page = mAudioPlayListNewAdapter.getData().size() / PAGE_SIZE;
         int index = 10 * (page - 1);
         for (ColumnSecondDirectoryEntity entity : list) {
             if(entity.getResource_type() != 2){
@@ -185,12 +195,13 @@ public class AudioPlayListDialog implements View.OnClickListener {
     }
 
     public void addPlayListData(List<AudioPlayEntity> list,boolean isCache){
-        if (1 == page && (list == null || 0 == list.size()))
+        if ("" == lastId && (list == null || 0 == list.size()))
             mStatusPagerView.setPagerState(StatusPagerView.FAIL, mContext.getString(
                     R.string.request_fail), StatusPagerView.DETAIL_NONE);
         if (list != null){
             mRefreshLayout.finishRefresh();
-            if (1 == page) {
+
+            if ("" == lastId) {
                 mAudioPlayListNewAdapter.setNewData(list);
                 mRefreshLayout.setEnableLoadMore(list.size() > 6);
                 if (isCache && !AudioMediaPlayer.isHasMoreData) {
@@ -208,17 +219,18 @@ public class AudioPlayListDialog implements View.OnClickListener {
                     mRefreshLayout.setEnableLoadMore(false);
                 }else   AudioMediaPlayer.isHasMoreData = list.size() >= PAGE_SIZE;
             }
-            AudioMediaPlayer.mCurrentPage = page;
-            page++;
+            if (list.size() > 0)    lastId = list.get(list.size() - 1).getResourceId();
+            AudioMediaPlayer.lastId = lastId;
             AudioPlayUtil.getInstance().setAudioList(mAudioPlayListNewAdapter.getData());
             AudioPlayUtil.getInstance().setAudioList2(mAudioPlayListNewAdapter.getData());
-        }else if (page > 1){
+        }else if ("" != lastId){
             mRefreshLayout.finishRefresh();
             mRefreshLayout.finishLoadMore();
-        }else if (1 == page) {
+        }else if ("" == lastId) {
             mRefreshLayout.finishRefresh();
-            page = AudioMediaPlayer.mCurrentPage;
-            page++;
+            lastId = AudioMediaPlayer.lastId;
+//            page = AudioMediaPlayer.mCurrentPage;
+//            page++;
         }
     }
 
@@ -256,6 +268,6 @@ public class AudioPlayListDialog implements View.OnClickListener {
 
     public interface LoadAudioListDataCallBack{
         void onRefresh(int pageSize);
-        void onLoadMoreData(int page,int pageSize);
+        void onLoadMoreData(String lastId,int pageSize);
     }
 }

@@ -37,6 +37,7 @@ import java.util.List;
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CLOSE;
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_TIME;
+import static com.xiaoe.shop.wxb.business.audio.ui.AudioPlayListDialog.DEFAULT_LAST_ID;
 
 public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnCompletionListener,
@@ -53,7 +54,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     private static AudioFocusManager audioFocusManager;
     private static boolean isSaveProgress = true;
     private static CountDownTimerTool.CountDownCallBack mCountDownCallBack;
-    public static int mCurrentPage = -1;
+//    public static int mCurrentPage = -1;
+    public static String lastId = DEFAULT_LAST_ID;
     public static boolean isHasMoreData = true;
 
     public static void setCountDownCallBack(CountDownTimerTool.CountDownCallBack countDownCallBack) {
