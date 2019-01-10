@@ -60,6 +60,19 @@ class MyBoughtListActivity : XiaoeActivity() {
         initTitleBar()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (mFragments?.get(0) is RecentlyLearningFragment)
+            (mFragments?.get(0) as RecentlyLearningFragment).isCanRefresh = true
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (mFragments?.get(0) is RecentlyLearningFragment)
+            (mFragments?.get(0) as RecentlyLearningFragment).isCanRefresh = false
+    }
+
     // 沉浸式初始化
     private fun initTitleBar() {
         StatusBarUtil.setRootViewFitsSystemWindows(this, false)

@@ -352,9 +352,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             if (UploadLearnProgressManager.INSTANCE.isSingleBuy()){
                 UploadLearnProgressManager.INSTANCE.addSingleItemData(realSrcId,
                         ResourceType.TYPE_TEXT,100,0,true);
-            }else if (!TextUtils.isEmpty(AudioMediaPlayer.getmCurrentColumnId())){
-                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(AudioMediaPlayer.
-                        getmCurrentColumnId(),realSrcId, ResourceType.TYPE_TEXT,100,0);
+            }else if (!TextUtils.isEmpty(UploadLearnProgressManager.INSTANCE.getMCurrentColumnId())){
+                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData
+                        (UploadLearnProgressManager.INSTANCE.getMCurrentColumnId(),realSrcId, ResourceType.TYPE_TEXT,100,0);
             }
         }
         super.onBackPressed();

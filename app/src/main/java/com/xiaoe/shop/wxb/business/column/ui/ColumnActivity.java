@@ -157,7 +157,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         resourceType = mIntent.getIntExtra("resource_type", 0);
         resourceId = mIntent.getStringExtra("resource_id");
         UploadLearnProgressManager.INSTANCE.addColumnData(resourceId,resourceType);
-        AudioMediaPlayer.setmCurrentColumnId(resourceId);
+        UploadLearnProgressManager.INSTANCE.setMCurrentColumnId(resourceId);
         columnPresenter = new ColumnPresenter(this);
         EventBus.getDefault().register(this);
 
@@ -845,7 +845,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     protected void onDestroy() {
         super.onDestroy();
         UploadLearnProgressManager.INSTANCE.setSingleBuy(true);
-        AudioMediaPlayer.setmCurrentColumnId("");
+        UploadLearnProgressManager.INSTANCE.setMCurrentColumnId("");
         EventBus.getDefault().unregister(this);
         UMShareAPI.get(this).release();
         if (!hasCollect) {

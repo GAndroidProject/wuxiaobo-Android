@@ -44,6 +44,7 @@ import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.ColumnSecondDirectoryEntity;
 import com.xiaoe.common.entitys.HadSharedEvent;
 import com.xiaoe.common.entitys.LoginUser;
+import com.xiaoe.common.entitys.ResourceType;
 import com.xiaoe.common.entitys.ScholarshipEntity;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.common.utils.NetUtils;
@@ -53,6 +54,7 @@ import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.downloadUtil.DownloadManager;
 import com.xiaoe.network.requests.AddCollectionRequest;
 import com.xiaoe.network.requests.ColumnListRequst;
+import com.xiaoe.network.requests.DownloadListRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
 import com.xiaoe.network.requests.ScholarshipReceiveRequest;
@@ -77,6 +79,7 @@ import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickMoreMenuListener;
 import com.xiaoe.shop.wxb.interfaces.OnCustomScrollChangedListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
+import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
 import com.xiaoe.shop.wxb.utils.LogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
@@ -100,6 +103,7 @@ import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHe
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CLOSE;
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_TIME;
+import static com.xiaoe.shop.wxb.business.audio.ui.AudioPlayListDialog.DEFAULT_LAST_ID;
 
 public class AudioNewActivity extends XiaoeActivity implements View.OnClickListener, OnClickMoreMenuListener,
         OnCustomScrollChangedListener {
@@ -269,30 +273,37 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
 //            audioPlayList.addPlayData(AudioPlayUtil.getInstance().getAudioList());
 //            audioPlayList.addPlayListData(AudioPlayUtil.getInstance().getAudioList());
             mColumnPresenter = new ColumnPresenter(this);
-            final String columnId = AudioMediaPlayer.getAudio().getColumnId();
+            AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+            final String columnId = playEntity.getColumnId();
             String playingColumnId = AudioMediaPlayer.mCurrentColumnId;
-            if (!TextUtils.isEmpty(playingColumnId) && columnId == playingColumnId && AudioMediaPlayer.mCurrentPage > 0
+            if (!TextUtils.isEmpty(playingColumnId) && columnId == playingColumnId && AudioMediaPlayer.lastId != DEFAULT_LAST_ID
                     && AudioPlayUtil.getInstance().getAudioListNew().size() > 0){
-                audioPlayList.setPage(AudioMediaPlayer.mCurrentPage);
+//                audioPlayList.setPage(AudioMediaPlayer.mCurrentPage);
+                audioPlayList.setLastId(AudioMediaPlayer.lastId);
                 audioPlayList.addPlayListData(AudioPlayUtil.getInstance().getAudioListNew(),true);
-            }else   AudioMediaPlayer.mCurrentPage = -1;
+            }else   AudioMediaPlayer.lastId = DEFAULT_LAST_ID;
 
-            final String audioType = "2";
+            final int goodsType = 6;
+            final int[] downloadType = {ResourceType.TYPE_AUDIO};
             audioPlayList.setLoadAudioListDataCallBack(new AudioPlayListDialog.LoadAudioListDataCallBack() {
                 @Override
                 public void onRefresh(int pageSize) {
                     if (mColumnPresenter != null){
                         LogUtils.d("onRefresh columnId = " + columnId);
-                        mColumnPresenter.requestColumnList(columnId,audioType,1,
-                                pageSize,true,REQUEST_TAG);
+//                        mColumnPresenter.requestColumnList(columnId,audioType,1,
+//                                pageSize,true,REQUEST_TAG);
+                        mColumnPresenter.requestDownloadList(columnId,goodsType, pageSize, downloadType,
+                                "", REQUEST_TAG);
                     }
                 }
 
                 @Override
-                public void onLoadMoreData(int page, int pageSize) {
+                public void onLoadMoreData(String lastId, int pageSize) {
                     if (mColumnPresenter != null){
-                        mColumnPresenter.requestColumnList(columnId,audioType,page,
-                                pageSize,true,REQUEST_TAG);
+//                        mColumnPresenter.requestColumnList(columnId,audioType,page,
+//                                pageSize,true,REQUEST_TAG);
+                        mColumnPresenter.requestDownloadList(columnId,goodsType, pageSize, downloadType,
+                                lastId, REQUEST_TAG);
                     }
                 }
             });
@@ -399,7 +410,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     public void onMainThreadResponse(IRequest iRequest, boolean success, Object entity) {
         super.onMainThreadResponse(iRequest, success, entity);
         if (isDestroyed())  return;
-        if (iRequest instanceof ColumnListRequst){
+        if (iRequest instanceof ColumnListRequst){//音频列表加载更多老接口
             if (mColumnPresenter != null && audioPlayList != null){
                 JSONObject jsonObject = (JSONObject) entity;
                 if (!success || jsonObject == null){
@@ -414,6 +425,29 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 }
                 AudioPlayEntity audio = AudioMediaPlayer.getAudio();
                 audioPlayList.addData(mColumnPresenter.formatSingleResourceEntity(data, audio == null ?
+                                "" : audio.getTitle(), audio == null ? "" : audio.getColumnId(),
+                        "", audio == null ? 0 : audio.getHasBuy()),audio == null ? 0 : audio.getHasBuy());
+            }
+        }else if (iRequest instanceof DownloadListRequest){//音频列表加载更多新接口
+            if (mColumnPresenter != null && audioPlayList != null){
+                JSONObject jsonObject = (JSONObject) entity;
+                if (!success || jsonObject == null){
+                    audioPlayList.addPlayListData(null);
+                    Toast(getString(R.string.network_error_text));
+                    return;
+                }
+                JSONObject dataObject = jsonObject.getJSONObject("data");
+//                JSONObject data = null;
+//                if (dataObject != null && dataObject instanceof JSONObject){
+//                    data = (JSONObject) dataObject;
+//                }
+                JSONArray list = null;
+                if (dataObject != null){
+                    list = dataObject.getJSONArray("list");
+                }
+
+                AudioPlayEntity audio = AudioMediaPlayer.getAudio();
+                audioPlayList.addData(mColumnPresenter.formatSingleResourceEntity2(list, audio == null ?
                                 "" : audio.getTitle(), audio == null ? "" : audio.getColumnId(),
                         "", audio == null ? 0 : audio.getHasBuy()),audio == null ? 0 : audio.getHasBuy());
             }
@@ -976,6 +1010,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AudioMediaPlayer.uploadSingleBuyAudioProgress();
         EventBus.getDefault().unregister(this);
         if(detailContent != null){
             detailContent.destroy();

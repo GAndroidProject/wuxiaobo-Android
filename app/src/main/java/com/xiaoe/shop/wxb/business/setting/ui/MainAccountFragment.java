@@ -27,6 +27,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
+import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
 import com.xiaoe.shop.wxb.business.setting.presenter.LinearDividerDecoration;
 import com.xiaoe.shop.wxb.business.setting.presenter.SettingRecyclerAdapter;
 import com.xiaoe.shop.wxb.business.upgrade.AppUpgradeHelper;
@@ -129,6 +130,7 @@ public class MainAccountFragment extends BaseFragment implements OnItemClickWith
                         getDialog().dismissDialog();
                         AudioMediaPlayer.stop();
                         UploadLearnProgressManager.INSTANCE.clearData();
+                        MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();//关闭倒计时
                         AudioPlayUtil.getInstance().setCloseMiniPlayer(true);
                         SQLiteUtil loginUtil = SQLiteUtil.init(getActivity(), new LoginSQLiteCallback());
                         loginUtil.execSQL("delete from " + LoginSQLiteCallback.TABLE_NAME_USER);

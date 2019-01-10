@@ -21,22 +21,22 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener
 import com.xiaoe.common.entitys.GoodsListItem
 import com.xiaoe.common.entitys.ItemType.ITEM_TYPE_AUDIO
 import com.xiaoe.common.entitys.ItemType.ITEM_TYPE_DEFAULT
+import com.xiaoe.common.entitys.LearnRecordIsRefresh
 import com.xiaoe.common.entitys.RecentlyLearning
 import com.xiaoe.common.entitys.ResourceType
 import com.xiaoe.common.utils.Dp2Px2SpUtil
 import com.xiaoe.network.requests.IRequest
 import com.xiaoe.network.requests.RecentlyLearningRequest
 import com.xiaoe.shop.wxb.R
-import com.xiaoe.shop.wxb.R.id.progress
 import com.xiaoe.shop.wxb.base.BaseFragment
 import com.xiaoe.shop.wxb.business.mine_learning.presenter.MyBoughtPresenter
 import com.xiaoe.shop.wxb.business.search.presenter.SpacesItemDecoration
-import com.xiaoe.shop.wxb.utils.LogUtils
-import com.xiaoe.shop.wxb.utils.SetImageUriUtil
-import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager
-import com.xiaoe.shop.wxb.utils.jumpKnowledgeDetail
+import com.xiaoe.shop.wxb.utils.*
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager.parseUploadHistory
 import com.xiaoe.shop.wxb.widget.StatusPagerView
 import kotlinx.android.synthetic.main.fragment_recently_learning.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.lang.Exception
 
 /**
@@ -48,6 +48,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
     private val mTag = "RecentlyLearning"
     var pageIndex = 1
     val pageSize = 10
+    var isCanRefresh = false
 
     private val mAdapter: MyAdapter by lazy {
         MyAdapter(activity)
@@ -65,6 +66,20 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
         SpacesItemDecoration()
     }
 
+    @Subscribe
+    fun onEventMainThread(event : LearnRecordIsRefresh){
+        if (!isCanRefresh)  return
+        if (event != null && event.isRefresh){
+            pageIndex = 1
+            mBoughtPresenter.requestLearningData(pageIndex, pageSize)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_recently_learning, container, false)
@@ -76,6 +91,10 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
         initListener()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
     // 初始化页面数据
     private fun initView() {
         mSpacesItemDecoration.setMargin(0, Dp2Px2SpUtil.dp2px(activity, 16f),
@@ -102,7 +121,20 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
         }
         mAdapter.setOnItemClickListener { adapter, _, position ->
             val data = adapter.getItem(position) as GoodsListItem
-            jumpKnowledgeDetail(activity, data.resourceType, data.resourceId, data.info?.imgUrl)
+            data?.apply {
+                val learnProgress = UploadLearnProgressManager
+                        .parseSingleItemLearnProgress(orgLearnProgress)
+                learnProgress?.apply {
+                    val progressValue = if (process <= 0 || process >= 100) 0 else playTime * process * 10
+                    when(resourceType){
+                        ResourceType.TYPE_AUDIO -> LearnRecordPageProgressManager.audioProgress = progressValue
+                        ResourceType.TYPE_VIDEO -> LearnRecordPageProgressManager.videoProgress = progressValue
+                    }
+
+                }
+
+                jumpKnowledgeDetail(activity, resourceType, resourceId, info?.imgUrl)
+            }
         }
     }
 
@@ -123,6 +155,11 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                     val code = obj.getInteger("code") as Int
                     val dataArray = obj.getJSONArray("data") as JSONArray
                     if (0 == code && (dataArray == null || 0 == dataArray.size)){
+                        if (pageIndex > 1){
+                            learningRefresh.finishRefresh()
+                            learningRefresh.finishLoadMoreWithNoMoreData()
+                            learningRefresh.setEnableLoadMore(false)
+                        }
                         return
                     }else  loadData(entity)
                 }catch (e : Exception){
@@ -166,6 +203,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                     Toast.makeText(activity, result!!.msg, Toast.LENGTH_SHORT).show()
                 }
             }
+            if (0 == result.code)   pageIndex++
         } catch (e: Exception) {
             e.printStackTrace()
             doRequestFail()
@@ -185,7 +223,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
-        mBoughtPresenter.requestLearningData(++pageIndex, pageSize)
+        mBoughtPresenter.requestLearningData(pageIndex, pageSize)
     }
 
     class MyAdapter(val context: Context) : BaseMultiItemQuickAdapter<GoodsListItem,
@@ -202,6 +240,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                     when (itemViewType) {
                         ITEM_TYPE_DEFAULT -> {
                             setGone(R.id.learningProgress,false)
+                            setGone(R.id.itemContent,false)
                             setText(R.id.itemTitle, info?.title)
 //                            getView<SimpleDraweeView>(R.id.itemIcon).setImageURI(info?.imgUrl)
                             val itemIcon = getView<SimpleDraweeView>(R.id.itemIcon)
@@ -238,7 +277,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                     descString =context.getString(R.string.membership_due)
                                     if (1 != info.isExpire){
                                         descString = updateLearnProgress(helper!!, item!!, descString)
-                                    }
+                                    }else  setGone(R.id.itemContent,true)
                                     setText(R.id.itemContent,String.format(context
                                             .getString(R.string.stages_text), info.periodicalCount))
                                 }
@@ -290,13 +329,19 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
 
         private fun updateLearnProgress(baseViewHolder: BaseViewHolder, goodsListItem: GoodsListItem, descString: String): String {
             var descString1 = descString
-            baseViewHolder.setGone(R.id.learningProgress, true)
-            val progress = UploadLearnProgressManager.
-                    parseUploadHistory(goodsListItem.orgLearnProgress).size * 100 / goodsListItem.info?.periodicalCount
-            baseViewHolder.setProgress(R.id.learningProgress, progress)
-            descString1 = String.format(context.getString(R.string.learned_sessinos_and_total),
-                    UploadLearnProgressManager.parseUploadHistory(goodsListItem.orgLearnProgress).size
-                    , goodsListItem.info?.periodicalCount)
+
+            val hadLearnedCount = parseUploadHistory(goodsListItem.orgLearnProgress).size
+            var visible = true
+            descString1 = if (hadLearnedCount >= goodsListItem.info?.periodicalCount){
+                visible = false
+                context.getString(R.string.learned_finish)
+            }else{
+                val progress = hadLearnedCount * 100 / goodsListItem.info?.periodicalCount
+                baseViewHolder.setProgress(R.id.learningProgress, progress)
+                String.format(context.getString(R.string.learned_sessinos_and_total),
+                        hadLearnedCount, goodsListItem.info?.periodicalCount)
+            }
+            baseViewHolder.setGone(R.id.learningProgress, visible)
             return descString1
         }
     }
