@@ -19,6 +19,9 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.widget.autotextview.AutofitTextView;
 
+/**
+ * @deprecated
+ */
 public class PayingFragment extends BaseFragment {
     private static final String TAG = "PayingFragment";
     private View mRootView;

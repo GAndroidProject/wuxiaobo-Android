@@ -541,4 +541,5 @@
     <string name="confirm_money">￥ 198</string>
     <string name="confirm_ali_icon_desc">支付宝支付图标</string>
     <string name="confirm_we_chat_pay_icon">微信支付图标</string>
+    <string name="ae_empty_content">暂无交易明细记录</string>
 </resources>

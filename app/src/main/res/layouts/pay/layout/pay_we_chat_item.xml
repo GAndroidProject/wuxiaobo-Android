@@ -31,7 +31,7 @@
         android:id="@+id/weChatItemIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/download_tocheck"
+        android:src="@mipmap/download_checking"
         android:layout_gravity="center_vertical"
         android:contentDescription="@string/confirm_we_chat_pay_icon" />
 

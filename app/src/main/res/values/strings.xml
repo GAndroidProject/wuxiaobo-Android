@@ -546,4 +546,5 @@
     <string name="membership_due">已到期 点击续费</string>
     <string name="learned_sessinos_and_total">已学习%d期 / 共%d期</string>
     <string name="no_bought_record_content">暂无购买记录的内容，快去首页逛逛吧</string>
+    <string name="ae_empty_content">暂无交易明细记录</string>
 </resources>
