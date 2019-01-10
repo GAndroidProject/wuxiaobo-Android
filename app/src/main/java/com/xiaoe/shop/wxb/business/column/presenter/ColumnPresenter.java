@@ -10,7 +10,7 @@ import com.xiaoe.common.entitys.ExpandableLevel;
 import com.xiaoe.network.network_interface.IBizCallback;
 import com.xiaoe.network.network_interface.INetworkResponse;
 import com.xiaoe.network.requests.ColumnListRequst;
-import com.xiaoe.network.requests.DetailRequest;
+import com.xiaoe.network.requests.CourseDetailRequest;
 import com.xiaoe.network.requests.DownloadListRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.QueryProductTypeRequest;
@@ -37,12 +37,13 @@ public class ColumnPresenter implements IBizCallback {
      * 获取购买前商品详情
      */
     public void requestDetail(String resourceId, String resourceType){
-        DetailRequest detailRequest = new DetailRequest( this);
-        detailRequest.addDataParam("goods_id",resourceId);
-        detailRequest.addDataParam("goods_type",Integer.parseInt(resourceType));
-        detailRequest.setNeedCache(true);
-        detailRequest.setCacheKey(resourceId);
-        detailRequest.sendRequest();
+        CourseDetailRequest courseDetailRequest = new CourseDetailRequest( this);
+        courseDetailRequest.addDataParam("goods_id",resourceId);
+        courseDetailRequest.addDataParam("goods_type",Integer.parseInt(resourceType));
+        courseDetailRequest.addDataParam("agent_type",2);
+        courseDetailRequest.setNeedCache(true);
+        courseDetailRequest.setCacheKey(resourceId);
+        courseDetailRequest.sendRequest();
     }
 
     public void requestColumnList(String resourceId, String resourceType, int page, int pageSize, boolean needCache, String resourceTag){
