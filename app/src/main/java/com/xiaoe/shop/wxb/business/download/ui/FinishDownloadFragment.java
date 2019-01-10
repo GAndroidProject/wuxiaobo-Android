@@ -140,12 +140,6 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        uploadData();
-    }
-
-    @Override
     public void onDeleteBtnClick(View view, int position) {
         DownloadResourceTableInfo remove = finishDownloadListAdapter.removeData(position);
         DownloadManager.getInstance().removeDownloadFinish(remove);
@@ -165,6 +159,7 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
     @Override
     public void onDestroy() {
         super.onDestroy();
+        uploadData();
         LearnRecordPageProgressManager.INSTANCE.setAtFinishDownloadFragment(false);
         UploadLearnProgressManager.INSTANCE.setSingleBuy(true);
         UploadLearnProgressManager.INSTANCE.setMCurrentColumnId("");
