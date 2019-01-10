@@ -187,12 +187,12 @@
                 android:resource="@xml/rc_file_path" />
         </provider>
 
-        <meta-data
+        <!--<meta-data
             android:name="UMENG_APPKEY"
             android:value="${UMENG_APPKEY_VALUE}" />
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="${UMENG_CHANNEL_VALUE}" />
+            android:value="${UMENG_CHANNEL_VALUE}" />-->
 
         <activity android:name=".business.super_vip.ui.SuperVipActivity" />
 

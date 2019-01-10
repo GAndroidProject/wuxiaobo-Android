@@ -93,8 +93,8 @@ android {
                     JPUSH_CHANNEL: "developer-default-debug",
                     JPUSH_APPKEY : "f9e2c6c613da002d752e247f",
                     // 友盟
-                    UMENG_APPKEY_VALUE: "5bdac3fbf1f556303b0000ad",
-                    UMENG_CHANNEL_VALUE: "umeng-debug",
+//                    UMENG_APPKEY_VALUE: "5bdac3fbf1f556303b0000ad",
+//                    UMENG_CHANNEL_VALUE: "umeng-debug",
             ]
         }
 
@@ -152,8 +152,8 @@ android {
                     JPUSH_CHANNEL: "developer-default-release",
                     JPUSH_APPKEY : "c2e812c8b8eca83779e32711",
                     // 友盟
-                    UMENG_APPKEY_VALUE: "5bfb6135f1f55634ab000419",
-                    UMENG_CHANNEL_VALUE: "umeng-release",
+//                    UMENG_APPKEY_VALUE: "5bfb6135f1f55634ab000419",
+//                    UMENG_CHANNEL_VALUE: "umeng-release",
             ]
 
             // 修改输出文件名称

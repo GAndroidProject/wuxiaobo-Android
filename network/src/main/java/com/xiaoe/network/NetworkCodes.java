@@ -67,4 +67,8 @@ public class NetworkCodes {
 
     public static final int CODE_NO_COUPON = 4422;
     public static final int CODE_USER_NO_COUPON = 4423;
+    /**
+     * 当前资源为非单卖资源
+     */
+    public static final int CODE_NO_SINGLE_SELL = 3050;
 }

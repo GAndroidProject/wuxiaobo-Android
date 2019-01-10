@@ -34,7 +34,7 @@ import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.AddCollectionRequest;
 import com.xiaoe.network.requests.ColumnListRequst;
-import com.xiaoe.network.requests.DetailRequest;
+import com.xiaoe.network.requests.CourseDetailRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.QueryProductTypeRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
@@ -320,12 +320,22 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         int code = jsonObject.getIntValue("code");
         if(code != NetworkCodes.CODE_SUCCEED && !TOPIC_LITTLE_REQUEST_TAG.equals(iRequest.getRequestTag())){
-            if(iRequest instanceof ColumnListRequst || iRequest instanceof DetailRequest){
+            if(iRequest instanceof ColumnListRequst || iRequest instanceof CourseDetailRequest){
                 setLoadState(ListBottomLoadMoreView.STATE_LOAD_FAILED);
             }
-            if(iRequest instanceof DetailRequest || iRequest instanceof QueryProductTypeRequest){
+            if(iRequest instanceof CourseDetailRequest || iRequest instanceof QueryProductTypeRequest){
                 if(code == NetworkCodes.CODE_GOODS_DELETE){
                     setPagerState(NetworkCodes.CODE_GOODS_DELETE);
+                } else if (code == NetworkCodes.CODE_NO_SINGLE_SELL) {
+                    Log.e(TAG, "onMainThreadResponse: " + code);
+
+                    JSONObject data = (JSONObject) jsonObject.get("data");
+                    JSONObject resourceInfo = (JSONObject) data.get("resource_info");
+                    String productId = resourceInfo.getString("resource_id");
+                    String productImgUrl = resourceInfo.getString("img_url");
+
+                    JumpDetail.jumpColumn(this, productId, productImgUrl, 3);
+                    finish();
                 }else{
                     setPagerState(1);
                 }
@@ -333,7 +343,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             return;
         }
         Object dataObject = jsonObject.get("data");
-        if(iRequest instanceof DetailRequest){
+        if(iRequest instanceof CourseDetailRequest){
             JSONObject data = (JSONObject) dataObject;
             int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
             setCollectState(hasFavorite == 1);

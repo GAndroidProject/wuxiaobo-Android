@@ -3,6 +3,7 @@ package com.xiaoe.network.requests;
 import com.xiaoe.network.NetworkEngine;
 import com.xiaoe.network.network_interface.IBizCallback;
 
+@Deprecated
 public class CourseITAfterBuyRequest extends IRequest {
 
     CourseITAfterBuyRequest(String cmd, Class entityClass, IBizCallback iBizCallback) {

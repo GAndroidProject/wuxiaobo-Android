@@ -38,7 +38,7 @@ import com.xiaoe.common.utils.NetworkState;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.network.NetworkCodes;
 import com.xiaoe.network.requests.AddCollectionRequest;
-import com.xiaoe.network.requests.CourseITDetailRequest;
+import com.xiaoe.network.requests.CourseDetailRequest;
 import com.xiaoe.network.requests.IRequest;
 import com.xiaoe.network.requests.RemoveCollectionListRequest;
 import com.xiaoe.shop.wxb.R;
@@ -398,10 +398,9 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
     }
 
     private void handleData(IRequest iRequest, boolean success, JSONObject entity) {
-        JSONObject result = entity;
         if (success) {
             if (iRequest instanceof AddCollectionRequest) {
-                int code = result.getInteger("code");
+                int code = entity.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     Toast(getString(R.string.collect_succeed));
                     isCollected = !isCollected;
@@ -409,17 +408,17 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                     Toast(getString(R.string.collect_fail));
                 }
             } else if (iRequest instanceof RemoveCollectionListRequest) {
-                int code = result.getInteger("code");
+                int code = entity.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
                     Toast(getString(R.string.cancel_collect_succeed));
                     isCollected = !isCollected;
                 } else if (code == NetworkCodes.CODE_DELETE_COLLECT_FAILED) {
                     Toast(getString(R.string.cancel_collect_fail));
                 }
-            } else if (iRequest instanceof CourseITDetailRequest) {
-                int code = result.getInteger("code");
+            } else if (iRequest instanceof CourseDetailRequest) {
+                int code = entity.getInteger("code");
                 if (code == NetworkCodes.CODE_SUCCEED) {
-                    JSONObject data = (JSONObject) result.get("data");
+                    JSONObject data = (JSONObject) entity.get("data");
                     initPageData(data, false);
                 } else if (code == NetworkCodes.CODE_GOODS_GROUPS_DELETE || code == NetworkCodes.CODE_GOODS_DELETE) {
                     Log.d(TAG, "onMainThreadResponse: 商品分组已被删除");
@@ -427,6 +426,16 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
                 } else if (code == NetworkCodes.CODE_GOODS_NOT_FIND) {
                     Log.d(TAG, "onMainThreadResponse: 商品不存在");
                     setPagerState(1);
+                } else if (code == NetworkCodes.CODE_NO_SINGLE_SELL) {
+                    Log.e(TAG, "handleData: " + code);
+
+                    JSONObject data = (JSONObject) entity.get("data");
+                    JSONObject resourceInfo = (JSONObject) data.get("resource_info");
+                    String productId = resourceInfo.getString("resource_id");
+                    String productImgUrl = resourceInfo.getString("img_url");
+
+                    JumpDetail.jumpColumn(this, productId, productImgUrl, 3);
+                    finish();
                 }else{
                     setPagerState(1);
                 }
