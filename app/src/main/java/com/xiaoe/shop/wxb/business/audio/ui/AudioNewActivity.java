@@ -152,10 +152,6 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setSharedElementEnterTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.CENTER_CROP, ScalingUtils.ScaleType.CENTER_CROP));
-//            getWindow().setSharedElementReturnTransition(DraweeTransition.createTransitionSet(ScalingUtils.ScaleType.FIT_CENTER, ScalingUtils.ScaleType.CENTER_CROP));
-        }
         EventBus.getDefault().register(this);
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         setStatusBar();
@@ -174,7 +170,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 @Override
                 public void onClick(View v) {
                     touristDialog.dismissDialog();
-                    JumpDetail.jumpLogin(AudioNewActivity.this);
+                    JumpDetail.jumpLogin(mContext);
                 }
             });
         }
@@ -666,10 +662,10 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
 
             mPlaySpeedDialog = playSpeedBuilder.create();
             mPlaySpeedDialogView = LayoutInflater.from(this).inflate(R.layout.layout_speed_menu2, null, false);
-            mPlaySpeedDialogView.findViewById(R.id.btn_speed_1).setOnClickListener(AudioNewActivity.this);
-            mPlaySpeedDialogView.findViewById(R.id.btn_speed_2).setOnClickListener(AudioNewActivity.this);
-            mPlaySpeedDialogView.findViewById(R.id.btn_speed_3).setOnClickListener(AudioNewActivity.this);
-            mPlaySpeedDialogView.findViewById(R.id.btn_speed_4).setOnClickListener(AudioNewActivity.this);
+            mPlaySpeedDialogView.findViewById(R.id.btn_speed_1).setOnClickListener(this);
+            mPlaySpeedDialogView.findViewById(R.id.btn_speed_2).setOnClickListener(this);
+            mPlaySpeedDialogView.findViewById(R.id.btn_speed_3).setOnClickListener(this);
+            mPlaySpeedDialogView.findViewById(R.id.btn_speed_4).setOnClickListener(this);
             mPlaySpeedDialogView.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickEvent() {
                 @Override
                 public void singleClick(View v) {
@@ -697,12 +693,12 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
 
             mCountDownPlayDialog = countDownPlayBuilder.create();
             mCountDownPlayDialogView = LayoutInflater.from(this).inflate(R.layout.layout_audio_countdown_menu, null, false);
-            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_1).setOnClickListener(AudioNewActivity.this);
-            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_2).setOnClickListener(AudioNewActivity.this);
-            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_3).setOnClickListener(AudioNewActivity.this);
-            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_4).setOnClickListener(AudioNewActivity.this);
-            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_5).setOnClickListener(AudioNewActivity.this);
-            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_6).setOnClickListener(AudioNewActivity.this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_1).setOnClickListener(this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_2).setOnClickListener(this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_3).setOnClickListener(this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_4).setOnClickListener(this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_5).setOnClickListener(this);
+            mCountDownPlayDialogView.findViewById(R.id.btn_count_down_6).setOnClickListener(this);
             mCheckBoxes = new ArrayList<>();
             mCheckBoxes.add((CheckBox) mCountDownPlayDialogView.findViewById(R.id.checkbox1));
             mCheckBoxes.add((CheckBox) mCountDownPlayDialogView.findViewById(R.id.checkbox2));
@@ -1019,8 +1015,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         int code = playEntity.getCode();
 
         if(!playEntity.isSingleBuy() && code == 0){
-            JumpDetail.jumpColumn(this, playEntity.getProductId(), playEntity.getProductImgUrl(),
-                    playEntity.getProductType());
+            JumpDetail.jumpColumn(this, playEntity.getProductId(), playEntity.getProductImgUrl(), playEntity.getProductType());
             finish();
             return;
         }
@@ -1135,7 +1130,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
             earnSubmit.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
                 public void singleClick(View v) {
-                    JumpDetail.jumpScholarshipActivity(AudioNewActivity.this);
+                    JumpDetail.jumpScholarshipActivity(mContext);
                     dialog.dismiss();
                 }
             });
@@ -1156,7 +1151,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
             earnSubmit.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
                 @Override
                 public void singleClick(View v) {
-                    JumpDetail.jumpIntegralActivity(AudioNewActivity.this);
+                    JumpDetail.jumpIntegralActivity(mContext);
                     dialog.dismiss();
                 }
             });

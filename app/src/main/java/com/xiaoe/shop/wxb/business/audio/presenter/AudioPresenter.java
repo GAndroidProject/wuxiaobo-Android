@@ -1,6 +1,7 @@
 package com.xiaoe.shop.wxb.business.audio.presenter;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -75,9 +76,13 @@ public class AudioPresenter implements IBizCallback {
             playEntity.setPlay(false);
         }
         playEntity.setCache(cache);
-        if(!success || jsonObject.getIntValue("code") != NetworkCodes.CODE_SUCCEED ){
-            if(jsonObject.getIntValue("code") == NetworkCodes.CODE_GOODS_DELETE){
+        int code = jsonObject.getIntValue("code");
+        if(!success || code != NetworkCodes.CODE_SUCCEED ){
+            if(code == NetworkCodes.CODE_GOODS_DELETE){
                 playEntity.setCode(NetworkCodes.CODE_GOODS_DELETE);
+            } else if (code == NetworkCodes.CODE_NO_SINGLE_SELL) {
+                Log.e(TAG, "setAudioDetail: " + code);
+                playEntity.setCode(NetworkCodes.CODE_NO_SINGLE_SELL);
             }else{
                 playEntity.setCode(1);
             }

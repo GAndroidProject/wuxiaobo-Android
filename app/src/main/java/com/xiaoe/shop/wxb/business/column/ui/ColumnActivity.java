@@ -326,6 +326,16 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             if(iRequest instanceof CourseDetailRequest || iRequest instanceof QueryProductTypeRequest){
                 if(code == NetworkCodes.CODE_GOODS_DELETE){
                     setPagerState(NetworkCodes.CODE_GOODS_DELETE);
+                } else if (code == NetworkCodes.CODE_NO_SINGLE_SELL) {
+                    Log.e(TAG, "onMainThreadResponse: " + code);
+
+                    JSONObject data = (JSONObject) jsonObject.get("data");
+                    JSONObject resourceInfo = (JSONObject) data.get("resource_info");
+                    String productId = resourceInfo.getString("resource_id");
+                    String productImgUrl = resourceInfo.getString("img_url");
+
+                    JumpDetail.jumpColumn(this, productId, productImgUrl, 3);
+                    finish();
                 }else{
                     setPagerState(1);
                 }
