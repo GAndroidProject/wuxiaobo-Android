@@ -404,22 +404,25 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     public static void playLast() {
-        List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
-        int indexLast = audio.getIndex() - 1;
-        if(indexLast < 0){
-            Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_first_sing,Toast.LENGTH_SHORT).show();
-            return;
+        try{
+            List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
+            int indexLast = audio.getIndex() - 1;
+            if(indexLast < 0){
+                Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_first_sing,Toast.LENGTH_SHORT).show();
+                return;
+            }
+            audio.setPlay(false);
+            stop();
+            AudioPlayEntity lastAudio = playList.get(indexLast);
+            setAudio(lastAudio, true);
+            if(lastAudio.getCode() != 0){
+                new AudioPresenter(null).requestDetail(lastAudio.getResourceId());
+            }
+            event.setState(AudioPlayEvent.LAST);
+            EventBus.getDefault().post(event);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        audio.setPlay(false);
-        stop();
-        AudioPlayEntity lastAudio = playList.get(indexLast);
-        setAudio(lastAudio, true);
-        if(lastAudio.getCode() != 0){
-            new AudioPresenter(null).requestDetail(lastAudio.getResourceId());
-        }
-        event.setState(AudioPlayEvent.LAST);
-        EventBus.getDefault().post(event);
-
     }
 
     public static boolean startCountDown(int state,int duration){
@@ -497,25 +500,29 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
                 }else if (!TextUtils.isEmpty(playEntity.getColumnId())){
                     topParentResourceId = playEntity.getColumnId();
                 }
+                if ("-1".equals(topParentResourceId)){
+                    return;
+                }
 
+                UploadLearnProgressManager uploadManager = UploadLearnProgressManager.INSTANCE;
                 if (LearnRecordPageProgressManager.INSTANCE.isAtFinishDownloadFragment()
-                        || !UploadLearnProgressManager.INSTANCE.isSingleBuy()){//在下载列表页面数据上报,或者不是单卖的时候
-                    UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(TextUtils.isEmpty(playEntity.getColumnId())
-                                    ? "" : topParentResourceId
+                        || !uploadManager.isSingleBuy()){//在下载列表页面数据上报,或者不是单卖的时候
+                    uploadManager.addColumnSingleItemData(TextUtils.isEmpty(playEntity.getColumnId()) ? "" : topParentResourceId
                             ,playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
                 }else{//不在下载列表页面数据上报
                     if (TextUtils.isEmpty(topParentResourceId)){//单卖
-                        UploadLearnProgressManager.INSTANCE.addSingleItemData(playEntity.getResourceId(),
-                                ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000,true);
-                    }else if (!UploadLearnProgressManager.INSTANCE.isSameAudio() && UploadLearnProgressManager.INSTANCE.isSingleBuy()
-                            && UploadLearnProgressManager.INSTANCE.getMTopParentResType() > 0){//不是在专栏页面内部打开的时候
-                        if (!UploadLearnProgressManager.INSTANCE.getColumnDataIsExist(topParentResourceId)) {
-                            UploadLearnProgressManager.INSTANCE.addColumnData(topParentResourceId,
-                                    UploadLearnProgressManager.INSTANCE.getMTopParentResType());
+                        uploadManager.addSingleItemData(playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,
+                                playEntity.getMaxProgress() / 1000,true);
+                    }else if (!uploadManager.isSameAudio() && uploadManager.isSingleBuy()
+                            && uploadManager.getMTopParentResType() > 0){
+                        //不是在专栏页面内部打开的时候， 直接放专栏里面上报数据
+                        if (!uploadManager.getColumnDataIsExist(topParentResourceId)) {
+                            uploadManager.addColumnData(topParentResourceId,
+                                    uploadManager.getMTopParentResType());
                         }
-                        UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(topParentResourceId,
-                                playEntity.getResourceId(), ResourceType.TYPE_AUDIO, progress, playEntity.getMaxProgress() / 1000);
-                        UploadLearnProgressManager.INSTANCE.uploadLearningData(topParentResourceId);
+                        uploadManager.addColumnSingleItemData(topParentResourceId, playEntity.getResourceId(),
+                                ResourceType.TYPE_AUDIO, progress, playEntity.getMaxProgress() / 1000);
+                        uploadManager.uploadLearningData(topParentResourceId);
                     }
                 }
             }
