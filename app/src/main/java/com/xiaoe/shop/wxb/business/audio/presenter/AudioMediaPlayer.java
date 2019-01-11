@@ -27,6 +27,7 @@ import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
+import com.xiaoe.shop.wxb.utils.LogUtils;
 import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 
@@ -486,11 +487,37 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public static void uploadAudioProgress() {
         try {
             AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
-            if (audio != null && 1 == audio.getHasBuy()){
+            if (playEntity != null && 1 == playEntity.getHasBuy()){
+                LogUtils.d("UploadLearnProgress?22222222222uploadAudioProgress--- columnId= " + playEntity.getColumnId()
+                        + "---BigColumnId= " + playEntity.getBigColumnId());
                 int progress = getProgress(playEntity);
-                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(TextUtils.isEmpty(audio.getColumnId())
-                                ? "" : UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()
-                        ,playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
+                String topParentResourceId = "";
+                if (!TextUtils.isEmpty(playEntity.getBigColumnId())){
+                    topParentResourceId = playEntity.getBigColumnId();
+                }else if (!TextUtils.isEmpty(playEntity.getColumnId())){
+                    topParentResourceId = playEntity.getColumnId();
+                }
+
+                if (LearnRecordPageProgressManager.INSTANCE.isAtFinishDownloadFragment()
+                        || !UploadLearnProgressManager.INSTANCE.isSingleBuy()){//在下载列表页面数据上报,或者不是单卖的时候
+                    UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(TextUtils.isEmpty(playEntity.getColumnId())
+                                    ? "" : topParentResourceId
+                            ,playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
+                }else{//不在下载列表页面数据上报
+                    if (TextUtils.isEmpty(topParentResourceId)){//单卖
+                        UploadLearnProgressManager.INSTANCE.addSingleItemData(playEntity.getResourceId(),
+                                ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000,true);
+                    }else if (!UploadLearnProgressManager.INSTANCE.isSameAudio() && UploadLearnProgressManager.INSTANCE.isSingleBuy()
+                            && UploadLearnProgressManager.INSTANCE.getMTopParentResType() > 0){//不是在专栏页面内部打开的时候
+                        if (!UploadLearnProgressManager.INSTANCE.getColumnDataIsExist(topParentResourceId)) {
+                            UploadLearnProgressManager.INSTANCE.addColumnData(topParentResourceId,
+                                    UploadLearnProgressManager.INSTANCE.getMTopParentResType());
+                        }
+                        UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(topParentResourceId,
+                                playEntity.getResourceId(), ResourceType.TYPE_AUDIO, progress, playEntity.getMaxProgress() / 1000);
+                        UploadLearnProgressManager.INSTANCE.uploadLearningData(topParentResourceId);
+                    }
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -498,7 +525,6 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     public static void uploadSingleBuyAudioProgress() {
-
         if (!prepared)  return;
         try {
             AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();

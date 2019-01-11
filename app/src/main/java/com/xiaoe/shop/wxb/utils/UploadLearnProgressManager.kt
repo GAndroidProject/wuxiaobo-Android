@@ -24,6 +24,8 @@ object UploadLearnProgressManager : IBizCallback {
     var isRefreshLearnRecord = false//是否刷新最近在学页面
     var isSingleBuy = true
     var mCurrentColumnId = ""
+    var mTopParentResType = -1
+    var isSameAudio = true//播放是不是和上一次同一个
 
     private val mHandler by lazy {
         Handler()
@@ -72,11 +74,14 @@ object UploadLearnProgressManager : IBizCallback {
      * 添加非单品数据
      */
     fun addColumnData(resourceId: String,resourceType: Int){
+        LogUtils.d("$mTag--addColumnData--resourceId = $resourceId")
         if (!TextUtils.isEmpty(resourceId)) {
             val data = UploadDataParam(false, resourceId, resourceType)
             mUploadLearnData[resourceId] = data
         }
     }
+
+    fun getColumnDataIsExist(resourceId: String):Boolean = mUploadLearnData[resourceId] != null
 
     /**
      * 添加单品数据

@@ -158,6 +158,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         resourceId = mIntent.getStringExtra("resource_id");
         UploadLearnProgressManager.INSTANCE.addColumnData(resourceId,resourceType);
         UploadLearnProgressManager.INSTANCE.setMCurrentColumnId(resourceId);
+        UploadLearnProgressManager.INSTANCE.setMTopParentResType(resourceType);
         columnPresenter = new ColumnPresenter(this);
         EventBus.getDefault().register(this);
 
