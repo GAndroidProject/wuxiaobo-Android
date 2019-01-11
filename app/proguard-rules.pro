@@ -496,3 +496,6 @@
            <init>(android.view.View);
 }
 #↑↑↑↑↑↑↑↑BaseRecyclerViewAdapterHelper↑↑↑↑↑↑↑↑
+
+# kotlin防止混淆
+-keepclassmembers data class com.xiaoe.common.entitys.** { *; }

@@ -79,6 +79,24 @@ public class PayPresenter implements IBizCallback {
     }
 
     /**
+     * 呼起支付宝支付
+     */
+    public void pullAliPay(String appId, String partnerId, String prepayId, String noncestr, String timestamp, String wxPay, String sign) {
+        if (TextUtils.isEmpty(wxPay)) {
+            wxPay = "Sign=WXPay";
+        }
+        PayReq req = new PayReq();
+        req.appId = appId;
+        req.partnerId = partnerId;
+        req.prepayId = prepayId;
+        req.nonceStr = noncestr;
+        req.timeStamp = timestamp;
+        req.packageValue = wxPay;
+        req.sign = sign;
+        wxapi.sendReq(req);
+    }
+
+    /**
      * 购买超级会员
      */
     public void paySuperVip() {

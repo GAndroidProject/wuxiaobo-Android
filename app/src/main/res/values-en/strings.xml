@@ -541,4 +541,31 @@
     <string name="confirm_money">￥ 198</string>
     <string name="confirm_ali_icon_desc">支付宝支付图标</string>
     <string name="confirm_we_chat_pay_icon">微信支付图标</string>
+    <string name="balance_str">%s%s%s 波豆</string>
+    <string name="paying_way_bo_bi_desc">波豆支付图标</string>
+    <string name="paying_bo_bi_title">波豆支付</string>
+    <string name="paying_bo_bi_balance">余额：%s波豆</string>
+    <string name="paying_bo_bi_select_desc">波豆支付选择图标</string>
+    <string name="paying_ali_select_desc">支付宝支付选择图标</string>
+    <string name="paying_wechat_select_desc">微信支付选择图标</string>
+    <string name="paying_account">支付金额： %s%s%s</string>
+
+    <string name="demo_info_text">Warning: \n\nFor demonstration purpose, the assembling and signing of the request parameters are done on the client side.\nHowever, in practice, both assembling and signing MUST BE carried out on the server side.</string>
+    <string name="pay_with_alipay">Pay with Alipay</string>
+    <string name="auth_with_alipay">Authenticate with Alipay</string>
+    <string name="web_to_native">Call Alipay from Web Content</string>
+    <string name="check_sdk_version">Alipay SDK Version</string>
+    <string name="pay_success">Payment success:</string>
+    <string name="auth_failed">Authentication failed:</string>
+    <string name="permission_already_granted">Required permissions have already been granted to AlipaySDK</string>
+    <string name="permission_rejected">Missing permissions. Please grant required permissions in system settings</string>
+    <string name="permission_granted">Required permissions have been granted to AlipaySDK</string>
+    <string name="error_missing_appid_rsa_private">Error: Missing \"APPID\" or \"RSA_PRIVATE\" in PayDemoActivity.</string>
+    <string name="error_auth_missing_partner_appid_rsa_private_target_id">Error: Missing \"PARTNER\", \"APP_ID\", \"RSA_PRIVATE\", or \"TARGET_ID\" in PayDemoActivity.</string>
+    <string name="confirm">Confirm</string>
+    <string name="pay_failed">Payment failed:</string>
+    <string name="auth_success">Authentication success:</string>
+    <string name="alipay_sdk_version_is">"Alipay SDK version: "</string>
+    <string name="error_missing_h5_pay_url">Missing URL to load. Please configure in PayDemoActivity.h5Pay()</string>
+    <string name="error">Error</string>
 </resources>

@@ -544,6 +544,24 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
         payPresenter.pullWXPay(appid, partnerid, prepayid, noncestr, timestamp, packageValue, sign);
     }
 
+    /**
+     * 拉起支付宝支付
+     *
+     * @param appid
+     * @param partnerid
+     * @param prepayid
+     * @param noncestr
+     * @param timestamp
+     * @param packageValue
+     * @param sign
+     */
+    public void pullAliPay(String appid, String partnerid, String prepayid, String noncestr, String timestamp, String packageValue, String sign) {
+        if (payPresenter == null) {
+            payPresenter = new PayPresenter(this, this);
+        }
+        payPresenter.pullAliPay(appid, partnerid, prepayid, noncestr, timestamp, packageValue, sign);
+    }
+
     @Override
     public void onClickCancel(View view, int tag) {
         if(tag == CustomDialog.REQUEST_PERMISSIONS_TAG){

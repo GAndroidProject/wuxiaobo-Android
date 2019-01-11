@@ -231,7 +231,8 @@ android {
                             'src/main/res/layouts/earning',
                             'src/main/res/layouts/historymessage',
                             'src/main/res/layouts/web',
-                            'src/main/res/layouts/launch'
+                            'src/main/res/layouts/launch',
+                            'src/main/res/layouts/alipay'
                     ]
 //            manifest.srcFile 'src/main/AndroidManifest.xml'
 //            java.srcDirs = ['src']
