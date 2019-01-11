@@ -186,9 +186,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         this.isCompletion = true;
         postStopToEventBus();
         isStop = true;
-        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState() && isPlaying()){
+        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
             MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
-            play();
+            countDownCallBack.onFinish();
             return;
         }
         if(audio.getIsTry() == 1){
@@ -441,8 +441,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         // this checks on API 23 and up
         if (!prepared)    return false;
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (speed != mPlaySpeed) {
-                try {
+            try {
+                if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
                     PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
                     playbackParams.setSpeed(speed);
                     if (mediaPlayer.isPlaying()) {
@@ -452,12 +452,12 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
                         mediaPlayer.pause();
                     }
                     mPlaySpeed = speed;
-                }catch (Exception e){
-                    e.printStackTrace();
-                    return false;
                 }
+                return true;
+            }catch (Exception e){
+                e.printStackTrace();
+                return false;
             }
-            return true;
         }
         return false;
     }
