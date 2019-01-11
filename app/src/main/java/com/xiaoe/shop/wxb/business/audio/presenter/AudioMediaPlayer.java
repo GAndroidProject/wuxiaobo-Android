@@ -377,6 +377,10 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
 
     public static void playNext(boolean isShowLastOneToast) {
         try{
+            if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+                countDownCallBack.onFinish();
+            }
             List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
             int indexNext = audio.getIndex() + 1;
             if(indexNext >= playList.size()){
