@@ -494,20 +494,16 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
                 LogUtils.d("UploadLearnProgress?22222222222uploadAudioProgress--- columnId= " + playEntity.getColumnId()
                         + "---BigColumnId= " + playEntity.getBigColumnId());
                 int progress = getProgress(playEntity);
-                String topParentResourceId = "";
-                if (!TextUtils.isEmpty(playEntity.getBigColumnId())){
-                    topParentResourceId = playEntity.getBigColumnId();
-                }else if (!TextUtils.isEmpty(playEntity.getColumnId())){
-                    topParentResourceId = playEntity.getColumnId();
-                }
-                if ("-1".equals(topParentResourceId)){
+                String topParentResourceId = getTopResourceId(playEntity);
+
+                if (UploadLearnProgressManager.INSTANCE.getDefaultHistoryDataResId().equals(topParentResourceId)){//老的下载列表数据
                     return;
                 }
 
                 UploadLearnProgressManager uploadManager = UploadLearnProgressManager.INSTANCE;
                 if (LearnRecordPageProgressManager.INSTANCE.isAtFinishDownloadFragment()
                         || !uploadManager.isSingleBuy()){//在下载列表页面数据上报,或者不是单卖的时候
-                    uploadManager.addColumnSingleItemData(TextUtils.isEmpty(playEntity.getColumnId()) ? "" : topParentResourceId
+                    uploadManager.addColumnSingleItemData(TextUtils.isEmpty(topParentResourceId) ? "" : topParentResourceId
                             ,playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
                 }else{//不在下载列表页面数据上报
                     if (TextUtils.isEmpty(topParentResourceId)){//单卖
@@ -531,12 +527,24 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         }
     }
 
+    private static String getTopResourceId(AudioPlayEntity playEntity) {
+        String topParentResourceId = "";
+        if (!TextUtils.isEmpty(playEntity.getBigColumnId())){
+            topParentResourceId = playEntity.getBigColumnId();
+        }else if (!TextUtils.isEmpty(playEntity.getColumnId())){
+            topParentResourceId = playEntity.getColumnId();
+        }
+        return topParentResourceId;
+    }
+
     public static void uploadSingleBuyAudioProgress() {
         if (!prepared)  return;
         try {
             AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
             if (playEntity == null)   return;
-            if (1 == playEntity.getHasBuy() && TextUtils.isEmpty(playEntity.getColumnId())){
+            String topParentResourceId = getTopResourceId(playEntity);
+
+            if (1 == playEntity.getHasBuy() && TextUtils.isEmpty(topParentResourceId)){
                 int progress = isCompletion ? 100 : getProgress(playEntity);
                 UploadLearnProgressManager.INSTANCE.addSingleItemData(playEntity.getResourceId(),
                         ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000,true);
