@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.umeng.analytics.MobclickAgent;
-import com.xiaoe.shop.wxb.utils.Utils;
+import com.xiaoe.common.utils.CommonUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class EventReportManager {
 
     public static void onEvent(Context context, String eventID) {
         // 默认添加渠道号
-        onEvent(context, eventID, Utils.getChannel(context));
+        onEvent(context, eventID, CommonUtils.getChannel(context));
     }
 
     public static void onEvent(Context context, String eventID, String label) {
@@ -33,7 +33,7 @@ public class EventReportManager {
 
     public static void onEvent(Context context, String eventID, @NonNull Map<String, String> map) {
         // 默认添加渠道号
-        map.put(MobclickEvent.CHANNEL, Utils.getChannel(context));
+        map.put(MobclickEvent.CHANNEL, CommonUtils.getChannel(context));
         Log.d(TAG, "onEvent: eventID-> " + eventID + " , map-> " + map);
 
         MobclickAgent.onEvent(context, eventID, map);
@@ -49,7 +49,7 @@ public class EventReportManager {
     public static void onEventValue(Context context, String eventID, int duration) {
         // 默认添加渠道号
         Map<String, String> mapValue = new HashMap<>(1);
-        mapValue.put(MobclickEvent.CHANNEL, Utils.getChannel(context));
+        mapValue.put(MobclickEvent.CHANNEL, CommonUtils.getChannel(context));
         Log.d(TAG, "onEventValue: eventID-> " + eventID + " , duration-> " + duration + " , map-> " + mapValue);
 
         MobclickAgent.onEventValue(context, eventID, mapValue, duration);
