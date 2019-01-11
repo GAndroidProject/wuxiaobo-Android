@@ -20,12 +20,12 @@ public class DownloadResourceTable implements ISQLiteCallBack {
             "app_id VARCHAR(64) not null, "+
             "user_id VARCHAR(64) not null, "+
             "resource_id VARCHAR(64) not null, "+
-            "parent_id VARCHAR(64) default \"\", " +
-            "parent_type INTEGER default 0, " +
-            "top_parent_id VARCHAR(64) default \"\", " +
-            "top_parent_type INTEGER default 0, " +
+            "parent_id VARCHAR(64) default \"-1\", " +
+            "parent_type INTEGER default -1, " +
+            "top_parent_id VARCHAR(64) default \"-1\", " +
+            "top_parent_type INTEGER default -1, " +
             "title TEXT default \"\", "+
-            "descs TEXT default \"\", "+
+            "desc TEXT default \"\", "+
             "img_url TEXT default \"\", "+
             "resource_type INTEGER default 0, "+//1-音频，2-视频，3-专栏，4-大专栏
             "depth INTEGER default 0, "+//深度，大专栏-2，小专栏-1，单品-0
@@ -59,7 +59,7 @@ public class DownloadResourceTable implements ISQLiteCallBack {
         values.put("top_parent_id", tableInfo.getTopParentId());
         values.put("top_parent_type", tableInfo.getTopParentType());
         values.put("title", tableInfo.getTitle());
-        values.put("descs", tableInfo.getDesc());
+        values.put("desc", tableInfo.getDesc());
         values.put("img_url", tableInfo.getImgUrl());
         values.put("resource_type", tableInfo.getResourceType());
         values.put("depth", tableInfo.getDepth());
@@ -77,7 +77,7 @@ public class DownloadResourceTable implements ISQLiteCallBack {
         tableInfo.setTopParentId(cursor.getString(cursor.getColumnIndex("top_parent_id")));
         tableInfo.setTopParentType(cursor.getInt(cursor.getColumnIndex("top_parent_type")));
         tableInfo.setTitle(cursor.getString(cursor.getColumnIndex("title")));
-        tableInfo.setDesc(cursor.getString(cursor.getColumnIndex("descs")));
+        tableInfo.setDesc(cursor.getString(cursor.getColumnIndex("desc")));
         tableInfo.setImgUrl(cursor.getString(cursor.getColumnIndex("img_url")));
         tableInfo.setResourceType(cursor.getInt(cursor.getColumnIndex("resource_type")));
         tableInfo.setDepth(cursor.getInt(cursor.getColumnIndex("depth")));

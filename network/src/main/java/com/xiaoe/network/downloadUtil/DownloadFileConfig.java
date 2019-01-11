@@ -36,7 +36,7 @@ public class DownloadFileConfig implements ISQLiteCallBack {
     public static final String FILE_NAME= "file_name";
     public static final String FILE_DOWNLOAD_URL = "file_download_url";
     public static final String TITLE = "title";
-    public static final String DESC = "descs";
+    public static final String DESC = "desc";
     public static final String IMG_URL = "img_url";
     public static final String RESOURCE_TYPE = "resource_type";
     public static final String CREATE_AT = "create_at";
@@ -50,10 +50,10 @@ public class DownloadFileConfig implements ISQLiteCallBack {
             ID+" VARCHAR(512) not null,"+
             COLUMN_ID+" VARCHAR(64) default null,"+
             BIG_COLUMN_ID+" VARCHAR(64) default null,"+
-            PARENT_ID + " VARCHAR(64) default \"\"," +
-            PARENT_TYPE + " INTEGER default 0," +
-            TOP_PARENT_ID + " VARCHAR(64) default \"\"," +
-            TOP_PARENT_TYPE + " INTEGER default 0," +
+            PARENT_ID + " VARCHAR(64) default \"-1\"," +
+            PARENT_TYPE + " INTEGER default -1," +
+            TOP_PARENT_ID + " VARCHAR(64) default \"-1\"," +
+            TOP_PARENT_TYPE + " INTEGER default -1," +
             PROGRESS+" Long default 0,"+
             FILE_TYPE+" INTEGER default 0,"+
             TOTAL_SIZE+" Long default 0,"+
