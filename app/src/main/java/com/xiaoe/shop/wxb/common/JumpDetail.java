@@ -52,6 +52,8 @@ import com.xiaoe.shop.wxb.common.pay.ui.BoBiActivity;
 import com.xiaoe.shop.wxb.common.pay.ui.PayActivity;
 import com.xiaoe.shop.wxb.common.releaseversion.ui.ReleaseVersionActivity;
 import com.xiaoe.shop.wxb.common.web.BrowserActivity;
+import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 
 import java.io.File;
 
@@ -75,6 +77,7 @@ public class JumpDetail {
             flowId = playEntity.getFlowId();
         }
         if(!(resourceId.equals(resId) || (!TextUtils.isEmpty(flowId) && flowId.equals(resId))) || AudioPlayUtil.getInstance().isCloseMiniPlayer()){
+            UploadLearnProgressManager.INSTANCE.setSameAudio(false);
             if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
                 MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
             }
@@ -93,10 +96,20 @@ public class JumpDetail {
             DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(Constants.getAppId(), playEntity.getResourceId());
             if(download != null){
                 File file = new File(download.getLocalFilePath());
-                if(file.exists()){
+                if(file.exists()) {
                     String localAudioPath = download.getLocalFilePath();
                     playEntity.setPlayUrl(localAudioPath);
                     playEntity.setLocalResource(true);
+                    //已经下载的音频，添加是否有上级或上上级的id
+                    if (LearnRecordPageProgressManager.INSTANCE.isAtFinishDownloadFragment()) {
+                        if (!TextUtils.isEmpty(download.getTopParentId())) {
+                            playEntity.setBigColumnId(download.getTopParentId());
+                        } else if (!TextUtils.isEmpty(download.getParentId())) {
+                            playEntity.setColumnId(download.getParentId());
+                        } else {
+                            playEntity.setColumnId("");
+                        }
+                    }
                 }
             }
 
@@ -113,7 +126,7 @@ public class JumpDetail {
                     e.printStackTrace();
                 }
             }
-        }
+        }else   UploadLearnProgressManager.INSTANCE.setSameAudio(true);
         Intent intent = new Intent(context, AudioNewActivity.class);
         context.startActivity(intent);
         if (context instanceof Activity)

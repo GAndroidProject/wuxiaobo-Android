@@ -21,9 +21,13 @@ object UploadLearnProgressManager : IBizCallback {
 
     private const val mTag = "UploadLearnProgress"
 
+    val defaultHistoryDataResId = "-1"//老版本数据库的下载下来的父ID默认"-1"
+
     var isRefreshLearnRecord = false//是否刷新最近在学页面
     var isSingleBuy = true
     var mCurrentColumnId = ""
+    var mTopParentResType = -1
+    var isSameAudio = true//播放是不是和上一次同一个
 
     private val mHandler by lazy {
         Handler()
@@ -44,7 +48,7 @@ object UploadLearnProgressManager : IBizCallback {
                                 progress: Int = 10,playTime: Int = 0){
         if (TextUtils.isEmpty(columnId)){
             addSingleItemData(resourceId,resourceType,progress,playTime)
-        }else if (!TextUtils.isEmpty(resourceId) && mUploadLearnData[columnId] != null){
+        }else if (!TextUtils.isEmpty(resourceId)&& defaultHistoryDataResId != columnId && mUploadLearnData[columnId] != null){
             LogUtils.d("$mTag--addColumnSingleItemData--columnId = $columnId---progress = $progress---playTime = $playTime")
             val data = History(resourceType, progress)
             var historyData = mUploadLearnHistoryData[columnId]
@@ -72,11 +76,14 @@ object UploadLearnProgressManager : IBizCallback {
      * 添加非单品数据
      */
     fun addColumnData(resourceId: String,resourceType: Int){
-        if (!TextUtils.isEmpty(resourceId)) {
+        LogUtils.d("$mTag--addColumnData--resourceId = $resourceId")
+        if (!TextUtils.isEmpty(resourceId) && defaultHistoryDataResId != resourceId) {
             val data = UploadDataParam(false, resourceId, resourceType)
             mUploadLearnData[resourceId] = data
         }
     }
+
+    fun getColumnDataIsExist(resourceId: String):Boolean = mUploadLearnData[resourceId] != null
 
     /**
      * 添加单品数据
@@ -84,7 +91,7 @@ object UploadLearnProgressManager : IBizCallback {
     fun addSingleItemData(resourceId: String,resourceType: Int,progress: Int,playTime: Int = 0,
                           isUpload: Boolean = true){
         LogUtils.d("$mTag--addSingleItemData--progress = $progress---playTime = $playTime")
-        if (!TextUtils.isEmpty(resourceId)) {
+        if (!TextUtils.isEmpty(resourceId) && defaultHistoryDataResId != resourceId) {
             val data = UploadDataParam(true, resourceId, resourceType)
             if (progress > -1) {
                 val progressData = SingleItemLearnProgress(resourceType, playTime, progress)

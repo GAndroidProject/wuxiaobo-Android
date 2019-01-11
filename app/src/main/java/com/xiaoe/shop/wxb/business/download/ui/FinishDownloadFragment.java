@@ -111,15 +111,15 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
     private void handleParentData(DownloadResourceTableInfo download) {
 
         int topType = 0;
-        if (!TextUtils.isEmpty(download.getTopParentId()) && download.getTopParentType() > 0){
+        if (!TextUtils.isEmpty(download.getTopParentId())){
             topParentId = download.getTopParentId();
             topType = download.getTopParentType();
-        }else if (!TextUtils.isEmpty(download.getParentId()) && download.getParentType() > 0){
+        }else if (!TextUtils.isEmpty(download.getParentId())){
             topParentId = download.getTopParentId();
             topType = download.getParentType();
-        }
+        }else  topParentId = "";
         LogUtils.d("handleParentData -- topParentId = " + topParentId);
-        if (!TextUtils.isEmpty(topParentId)){
+        if (!TextUtils.isEmpty(topParentId) && !UploadLearnProgressManager.INSTANCE.getDefaultHistoryDataResId().equals(topParentId)){
             UploadLearnProgressManager.INSTANCE.addColumnData(topParentId,topType);
         }
         UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(topParentId));
@@ -133,7 +133,7 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
     }
 
     private void uploadData() {
-        if (!TextUtils.isEmpty(topParentId)){
+        if (!TextUtils.isEmpty(topParentId) && !UploadLearnProgressManager.INSTANCE.getDefaultHistoryDataResId().equals(topParentId)){
             UploadLearnProgressManager.INSTANCE.uploadLearningData(topParentId);
             topParentId = "";
         }
