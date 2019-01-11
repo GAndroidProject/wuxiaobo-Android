@@ -21,14 +21,14 @@
         android:layout_height="wrap_content" />
 
     <include
-        android:id="@+id/payAliItem"
-        layout="@layout/pay_ali_item"
+        android:id="@+id/payWeChatItem"
+        layout="@layout/pay_we_chat_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <include
-        android:id="@+id/payWeChatItem"
-        layout="@layout/pay_we_chat_item"
+        android:id="@+id/payAliItem"
+        layout="@layout/pay_ali_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

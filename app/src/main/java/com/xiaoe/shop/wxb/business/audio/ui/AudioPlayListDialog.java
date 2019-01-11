@@ -160,10 +160,9 @@ public class AudioPlayListDialog implements View.OnClickListener {
 
     private void setAudioPlayList(List<ColumnSecondDirectoryEntity> list,int isHasBuy){
         List<AudioPlayEntity> audioPlayEntities = new ArrayList<>();
-        int page = 0;
+        int index = 0;
         if (mAudioPlayListNewAdapter != null && mAudioPlayListNewAdapter.getData().size() > 0)
-            page = mAudioPlayListNewAdapter.getData().size() / PAGE_SIZE;
-        int index = 10 * (page - 1);
+            index = mAudioPlayListNewAdapter.getData().size() - 1;
         for (ColumnSecondDirectoryEntity entity : list) {
             if(entity.getResource_type() != 2){
                 continue;

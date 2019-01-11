@@ -61,6 +61,7 @@ import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
 import com.xiaoe.shop.wxb.utils.LogUtils;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -434,6 +435,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }
         playControllerView.uploadSingleBuyVideoProgress();
         playControllerView.release();
+        if (LearnRecordPageProgressManager.INSTANCE.isAtFinishDownloadFragment()){
+            UploadLearnProgressManager.INSTANCE.setMCurrentColumnId("");
+            UploadLearnProgressManager.INSTANCE.setSingleBuy(false);
+        }
         EventBus.getDefault().unregister(this);
         UMShareAPI.get(this).release();
         if (videoContentWebView != null) {
@@ -836,7 +841,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             setHasToast(true);
             isAutoPlayNext = isAuto;
             LogUtils.d("onNext = " + playNextIndex);
-            if (playNextIndex < 1 || TextUtils.isEmpty(requestNextVideoResId)){
+            if (!isAutoPlayNext && (playNextIndex < 1 || TextUtils.isEmpty(requestNextVideoResId))){
                 toastCustom(getString(R.string.already_was_last_video));
                 return;
             }

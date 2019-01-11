@@ -535,6 +535,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                 setPlayState(VideoPlayConstant.VIDEO_STATE_PAUSE);
                 if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
                     MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+                    updateCountDownText();
                 }else {
                     if (mIPlayNext != null)   mIPlayNext.onNext(true);
                 }

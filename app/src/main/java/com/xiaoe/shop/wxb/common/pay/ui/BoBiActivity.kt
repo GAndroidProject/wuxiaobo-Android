@@ -283,7 +283,7 @@ class BoBiActivity : XiaoeActivity(), OnItemClickWithAmountListener, OnRefreshLi
             } catch (e: Exception) {
                 e.printStackTrace()
                 val jsonObject = entity as JSONObject
-                Toast(jsonObject["msg"].toString())
+                Toast(jsonObject["msg"].toString() + "噢，转换有问题欸！！")
             }
             // 获取账户波豆余额
             is EarningRequest -> try {

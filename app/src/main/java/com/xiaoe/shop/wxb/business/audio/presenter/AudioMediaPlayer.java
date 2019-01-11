@@ -164,7 +164,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             mediaPlayer.seekTo(LearnRecordPageProgressManager.INSTANCE.getAudioProgress());
             LearnRecordPageProgressManager.INSTANCE.setAudioProgress(0);
         }else {
-            if (audio != null)  UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(audio.getColumnId()));
+//            if (audio != null)  UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(audio.getColumnId()));
             uploadAudioProgress();
         }
     }
@@ -186,9 +186,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         this.isCompletion = true;
         postStopToEventBus();
         isStop = true;
-        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState() && isPlaying()){
+        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
             MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
-            play();
+            countDownCallBack.onFinish();
             return;
         }
         if(audio.getIsTry() == 1){
@@ -376,22 +376,30 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     public static void playNext(boolean isShowLastOneToast) {
-        List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
-        int indexNext = audio.getIndex() + 1;
-        if(indexNext >= playList.size()){
-            if (isShowLastOneToast)
-                Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
-            return;
+        try{
+            if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+                countDownCallBack.onFinish();
+            }
+            List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
+            int indexNext = audio.getIndex() + 1;
+            if(indexNext >= playList.size()){
+                if (isShowLastOneToast)
+                    Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
+                return;
+            }
+            audio.setPlay(false);
+            stop();
+            AudioPlayEntity nextAudio = playList.get(indexNext);
+            setAudio(nextAudio, true);
+            if(nextAudio.getCode() != 0){
+                new AudioPresenter(null).requestDetail(nextAudio.getResourceId());
+            }
+            event.setState(AudioPlayEvent.NEXT);
+            EventBus.getDefault().post(event);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        audio.setPlay(false);
-        stop();
-        AudioPlayEntity nextAudio = playList.get(indexNext);
-        setAudio(nextAudio, true);
-        if(nextAudio.getCode() != 0){
-            new AudioPresenter(null).requestDetail(nextAudio.getResourceId());
-        }
-        event.setState(AudioPlayEvent.NEXT);
-        EventBus.getDefault().post(event);
     }
 
     public static void playLast() {
@@ -437,8 +445,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         // this checks on API 23 and up
         if (!prepared)    return false;
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (speed != mPlaySpeed) {
-                try {
+            try {
+                if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
                     PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
                     playbackParams.setSpeed(speed);
                     if (mediaPlayer.isPlaying()) {
@@ -448,12 +456,12 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
                         mediaPlayer.pause();
                     }
                     mPlaySpeed = speed;
-                }catch (Exception e){
-                    e.printStackTrace();
-                    return false;
                 }
+                return true;
+            }catch (Exception e){
+                e.printStackTrace();
+                return false;
             }
-            return true;
         }
         return false;
     }
@@ -480,8 +488,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
             if (audio != null && 1 == audio.getHasBuy()){
                 int progress = getProgress(playEntity);
-                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(UploadLearnProgressManager
-                                .INSTANCE.isSingleBuy() ? "" : UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()
+                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(TextUtils.isEmpty(audio.getColumnId())
+                                ? "" : UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()
                         ,playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
             }
         }catch (Exception e){

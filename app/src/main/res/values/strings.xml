@@ -512,7 +512,7 @@
     <string name="video_speed_play_2">1.25倍速</string>
     <string name="video_speed_play_3">1.5倍速</string>
     <string name="video_speed_play_4">2倍速</string>
-    <string name="already_was_last_video">已经是最后一集了</string>
+    <string name="already_was_last_video">已经是最后一课了</string>
     <string name="download_count">共%d节课</string>
     <string name="all_text">全部</string>
     <string name="download_group_item_icon">下载列表非单品选中图标</string>
@@ -546,6 +546,7 @@
     <string name="membership_due">已到期 点击续费</string>
     <string name="learned_sessinos_and_total">已学习%d期 / 共%d期</string>
     <string name="no_bought_record_content">暂无购买记录的内容，快去首页逛逛吧</string>
+    <string name="ae_empty_content">暂无交易明细记录</string>
 
     <string name="demo_info_text">重要说明: \n\n本 Demo 为了方便向商户展示支付宝的支付流程，所以订单信息的加签过程放在客户端完成。\n在商户的真实App内，为了防止商户私密数据泄露，引发资金损失和身份冒用等各种安全风险，商户私钥 RSA_PRIVATE 等数据严禁放在客户端，订单信息的加签过程也务必放在服务端完成。\n若商户接入时不遵照此说明而造成损失，需自行承担。</string>
     <string name="pay_with_alipay">支付宝支付 Demo</string>

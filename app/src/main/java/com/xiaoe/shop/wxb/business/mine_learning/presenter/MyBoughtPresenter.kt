@@ -14,7 +14,7 @@ class MyBoughtPresenter(private val inr: INetworkResponse) : IBizCallback {
 
     // 获取正在学习列表
     fun requestLearningData(pageIndex: Int, pageSize: Int) {
-        LogUtils.d("requestLearningData")
+        LogUtils.d("requestLearningData pageIndex = $pageIndex")
         val recentlyLearningRequest = RecentlyLearningRequest(this)
 
         recentlyLearningRequest.addDataParam("page_size", pageSize)
