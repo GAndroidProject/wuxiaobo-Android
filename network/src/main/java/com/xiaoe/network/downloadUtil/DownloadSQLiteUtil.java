@@ -179,64 +179,91 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
         for(Map.Entry<String ,ISQLiteCallBack> entry : sqlCallBack.entrySet() ){
 //            entry.getValue().onUpgrade(sqLiteDatabase, oldVersion, newVersion);
         }
-        if (oldVersion == 1) { // 数据库版本为 1 的数据版本
+
+        if (oldVersion >= 1) { // 数据库版本为 1 的数据版本
             try {
-                sqLiteDatabase.beginTransaction();
-                // 将表名改为临时表
-                String downloadFile = "ALTER TABLE download_file RENAME TO download_file_temp";
-                sqLiteDatabase.execSQL(downloadFile);
-
-                // 创建新表
-                // 新下载文件表创建
-                String createNewDFTable = "CREATE TABLE download_file (" +
-                        "app_id VARCHAR(64) not null, " +
-                        "user_id VARCHAR(64) not null, " +
-                        "resource_id VARCHAR(64) not null, " +
-                        "id VARCHAR(512) not null, " +
-                        "column_id VARCHAR(64) default null, " +
-                        "big_column_id VARCHAR(64) default null, " +
-                        "parent_id VARCHAR(64) default \"\", " +
-                        "parent_type INTEGER default 0, " +
-                        "top_parent_id VARCHAR(64) default \"\"," +
-                        "top_parent_type INTEGER default 0," +
-                        "progress Long default 0," +
-                        "file_type INTEGER default 0," +
-                        "total_size Long default 0," +
-                        "local_file_path VARCHAR(512) default \"\"," +
-                        "file_name VARCHAR(512) default \"\"," +
-                        "file_download_url VARCHAR(512) default \"\"," +
-                        "download_state INTEGER default 0," +
-                        "title TEXT default \"\", " +
-                        "descs TEXT default \"\", " +
-                        "img_url TEXT default \"\", " +
-                        "resource_type INTEGER default 0, " +//1-音频，2-视频，3-专栏，4-大专栏
-                        "create_at DATETIME default '0000-00-00 00:00:00'," +
-                        "update_at DATETIME default '0000-00-00 00:00:00'," +
-                        "primary key (app_id, user_id, id))";
-                sqLiteDatabase.execSQL(createNewDFTable);
-
-                Cursor cursor = sqLiteDatabase.rawQuery("select * from download_file_temp", null);
-
-                if (cursor.moveToFirst()) {
-                    // 有数据则导入数据
-                    String insertDFSql = "INSERT INTO download_file (app_id,user_id,resource_id,id) " +
-                            "SELECT app_id,user_id,resource_id,id from download_file_temp";
-                    sqLiteDatabase.execSQL(insertDFSql);
-                    cursor.close();
+                if (isTableExit(sqLiteDatabase, "download_file")) {
+                    // 单纯新增字段的更新方式
+                    updateDataByAdd(sqLiteDatabase);
+                } else {
+                    onCreate(sqLiteDatabase);
                 }
-
-                // 删除临时表
-                String deleteDFSql = "DROP TABLE download_file_temp";
-                sqLiteDatabase.execSQL(deleteDFSql);
-
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                if (sqLiteDatabase != null) {
-                    sqLiteDatabase.endTransaction();
-                }
             }
         }
+    }
+
+    /**
+     * 数据库升级，新增字段并进行数据迁移
+     *
+     * 新增字段为 parent_id、parent_type、top_parent_id、top_parent_type
+     * @param sqLiteDatabase
+     */
+    private void updateDataByMigration(SQLiteDatabase sqLiteDatabase) {
+        // 将表名改为临时表
+        String downloadFile = "ALTER TABLE download_file RENAME TO download_file_temp";
+        sqLiteDatabase.execSQL(downloadFile);
+
+        // 创建新表
+        // 新下载文件表创建
+        String createNewDFTable = "CREATE TABLE download_file (" +
+                "app_id VARCHAR(64) not null, " +
+                "user_id VARCHAR(64) not null, " +
+                "resource_id VARCHAR(64) not null, " +
+                "id VARCHAR(512) not null, " +
+                "column_id VARCHAR(64) default null, " +
+                "big_column_id VARCHAR(64) default null, " +
+                "parent_id VARCHAR(64) default \"-1\", " +
+                "parent_type INTEGER default -1, " +
+                "top_parent_id VARCHAR(64) default \"-1\"," +
+                "top_parent_type INTEGER default -1," +
+                "progress Long default 0," +
+                "file_type INTEGER default 0," +
+                "total_size Long default 0," +
+                "local_file_path VARCHAR(512) default \"\"," +
+                "file_name VARCHAR(512) default \"\"," +
+                "file_download_url VARCHAR(512) default \"\"," +
+                "download_state INTEGER default 0," +
+                "title TEXT default \"\", " +
+                "desc TEXT default \"\", " +
+                "img_url TEXT default \"\", " +
+                "resource_type INTEGER default 0, " +//1-音频，2-视频，3-专栏，4-大专栏
+                "create_at DATETIME default '0000-00-00 00:00:00'," +
+                "update_at DATETIME default '0000-00-00 00:00:00'," +
+                "primary key (app_id, user_id, id))";
+        sqLiteDatabase.execSQL(createNewDFTable);
+
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from download_file_temp", null);
+
+        if (cursor.moveToFirst()) {
+            // 有数据则导入数据
+            String insertDFSql = "INSERT INTO download_file (app_id,user_id,resource_id,id,column_id,big_column_id,progress,file_type,total_size,local_file_path,file_name,file_download_url,download_state,title,desc,img_url,resource_type,create_at,update_at) " +
+                    "SELECT app_id,user_id,resource_id,id,column_id,big_column_id,progress,file_type,total_size,local_file_path,file_name,file_download_url,download_state,title,desc,img_url,resource_type,create_at,update_at from download_file_temp";
+            sqLiteDatabase.execSQL(insertDFSql);
+            cursor.close();
+        }
+
+        // 删除临时表
+        String deleteDFSql = "DROP TABLE download_file_temp";
+        sqLiteDatabase.execSQL(deleteDFSql);
+    }
+
+    /**
+     * 数据库升级，单纯添加字段形式
+     *
+     * 新增字段为 parent_id、parent_type、top_parent_id、top_parent_type
+     * @param sqLiteDatabase
+     */
+    private void updateDataByAdd(SQLiteDatabase sqLiteDatabase) {
+        String addParentIdColumn = "ALTER TABLE download_file ADD COLUMN parent_id VARCHAR(64) default \"-1\"";
+        String addParentTypeColumn = "ALTER TABLE download_file ADD COLUMN parent_type INTEGER default -1";
+        String addTopParentIdColumn = "ALTER TABLE download_file ADD COLUMN top_parent_id VARCHAR(64) default \"-1\"";
+        String addTopParentTypeColumn = "ALTER TABLE download_file ADD COLUMN top_parent_type INTEGER default -1";
+        sqLiteDatabase.execSQL(addParentIdColumn);
+        sqLiteDatabase.execSQL(addParentTypeColumn);
+        sqLiteDatabase.execSQL(addTopParentIdColumn);
+        sqLiteDatabase.execSQL(addTopParentTypeColumn);
     }
 
     public boolean tabIsExist(String tabName){
@@ -284,5 +311,33 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
 
     public void insertDownloadInfo(DownloadTableInfo downloadTableInfo){
         insert(DownloadFileConfig.TABLE_NAME, downloadTableInfo);
+    }
+
+    /**
+     * 判断 tableName 是否存在，sqlite_master 是 sqlite 数据库默认产生的表，可以在里面查询
+     * @param db
+     * @param tableName
+     * @return
+     */
+    private boolean isTableExit(SQLiteDatabase db, String tableName) {
+        try (Cursor cursor = db.rawQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?", new String[]{tableName})) {
+            boolean hasNext = cursor.moveToNext();
+            return hasNext && cursor.getInt(0) > 0;
+        }
+    }
+
+    /**
+     * 判断列名是否存在
+     * @param db
+     * @param tableName
+     * @param columnName
+     * @return
+     */
+    private boolean isColumnExist(SQLiteDatabase db, String tableName, String columnName) {
+        try (Cursor cursor = db.rawQuery("SELECT count(*) FROM sqlite_master WHERE tbl_name = ? AND (sql LIKE ? OR sql LIKE ?);",
+                new String[]{tableName, "%(" + columnName + "%", "%, " + columnName + " %"})) {
+            boolean hasNext = cursor.moveToNext();
+            return hasNext && cursor.getInt(0) > 0;
+        }
     }
 }

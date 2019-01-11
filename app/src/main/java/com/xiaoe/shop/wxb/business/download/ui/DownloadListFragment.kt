@@ -365,6 +365,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         if (result.data.list == null) {
             // TODO: 没有单品的情况下，页面的显示
         } else {
+            downloadTitleCount.text = String.format(getString(R.string.download_count), result.data.goodsInfo.downloadCount)
             for (item in result.data.list!!) {
                 val commonDownloadBean = CommonDownloadBean()
                 commonDownloadBean.appId = Constants.getAppId()
