@@ -182,6 +182,10 @@ public class FinishDownloadFragment extends BaseFragment implements IonSlidingVi
             downloadResourceTableInfo.setDepth(0);
             downloadResourceTableInfo.setLocalFilePath(downloadInfo.getLocalFilePath());
             downloadResourceTableInfo.setFileUrl(downloadInfo.getFileDownloadUrl());
+            downloadResourceTableInfo.setParentId(downloadInfo.getParentId());
+            downloadResourceTableInfo.setParentType(downloadInfo.getParentType());
+            downloadResourceTableInfo.setTopParentId(downloadInfo.getTopParentId());
+            downloadResourceTableInfo.setTopParentType(downloadInfo.getTopParentType());
             finishDownloadListAdapter.addData(downloadResourceTableInfo);
             setStatePager(View.GONE);
         }
