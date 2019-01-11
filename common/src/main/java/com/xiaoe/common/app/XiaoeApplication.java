@@ -18,6 +18,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
+import com.xiaoe.common.utils.CommonUtils;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.common.widget.CommonRefreshHeader;
 
@@ -129,7 +130,7 @@ public class XiaoeApplication extends MultiDexApplication {
             public void run() {
                 //↓↓↓↓↓↓↓友盟集成初始化↓↓↓↓↓↓↓
                 UMConfigure.setLogEnabled(true);
-                UMConfigure.init(mContext, Constants.getUMAppId() ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"");
+                UMConfigure.init(mContext, Constants.getUMAppId(), CommonUtils.getChannel(XiaoeApplication.applicationContext), UMConfigure.DEVICE_TYPE_PHONE, "");
                 PlatformConfig.setWeixin(Constants.getWXAppId(), Constants.getWxSecret());
                 // 初始化 SharedPreference
                 SharedPreferencesUtil.getInstance(mContext, SharedPreferencesUtil.FILE_NAME);
