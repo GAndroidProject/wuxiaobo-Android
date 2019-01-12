@@ -87,8 +87,10 @@ class NewPayingFragment : BaseFragment() {
         }
         if (isVipBuy) {
             payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
+            confirmBuy.background = ContextCompat.getDrawable(context, R.drawable.vip_high_button)
         } else {
             payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+            confirmBuy.background = ContextCompat.getDrawable(context, R.drawable.high_button)
         }
     }
 
@@ -203,7 +205,11 @@ class NewPayingFragment : BaseFragment() {
             isBoBiPayWay = true
             isAliPayWay = false
             isWeChatPayWay = false
-            payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+            if (isVipBuy) {
+                payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
+            } else {
+                payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+            }
             payingAliSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
             payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
         } else { // 否则默认微信支付
@@ -212,7 +218,11 @@ class NewPayingFragment : BaseFragment() {
             isWeChatPayWay = true
             payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
             payingAliSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
-            payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+            if (isVipBuy) {
+                payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
+            } else {
+                payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+            }
         }
         val moneyText = "¥" + showPrice / 100f
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -239,7 +249,11 @@ class NewPayingFragment : BaseFragment() {
                 val balanceStr = String.format("%1.2f", balance.toFloat() / 100)
                 if (balance >= resPrice) { // 波豆余额大等于资源价格，可以购买，所以显示选中 icon
                     payingBoBiSelect.visibility = View.VISIBLE
-                    payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+                    if (isVipBuy) {
+                        payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
+                    } else {
+                        payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+                    }
                     payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
                     payingBoBiTopUp.visibility = View.GONE
                     isBoBiPayWay = true
@@ -249,7 +263,11 @@ class NewPayingFragment : BaseFragment() {
                     payingBoBiSelect.visibility = View.GONE
                     payingBoBiTopUp.visibility = View.VISIBLE
                     payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
-                    payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+                    if (isVipBuy) {
+                        payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
+                    } else {
+                        payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+                    }
                     isBoBiPayWay = false
                     isAliPayWay = false
                     isWeChatPayWay = true
