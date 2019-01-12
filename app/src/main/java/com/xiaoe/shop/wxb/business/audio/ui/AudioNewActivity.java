@@ -83,6 +83,7 @@ import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
 import com.xiaoe.shop.wxb.utils.LogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.StatusBarUtil;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.CustomScrollView;
@@ -840,6 +841,14 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
             download.setResource_type(2);
             download.setImg_url(audioPlayEntity.getImgUrl());
             download.setAudio_url(audioPlayEntity.getPlayUrl());
+            download.setParentId(audioPlayEntity.getColumnId());
+            if (!TextUtils.isEmpty(audioPlayEntity.getColumnId())) {
+                download.setParentType(UploadLearnProgressManager.INSTANCE.getMTopParentResType());
+            }
+            download.setTopParentId(audioPlayEntity.getBigColumnId());
+            if (!TextUtils.isEmpty(audioPlayEntity.getBigColumnId())) {
+                download.setTopParentType(UploadLearnProgressManager.INSTANCE.getMTopParentResType());
+            }
             DownloadManager.getInstance().addDownload(null, null, download);
         }
         toastCustom(getString(R.string.add_download_list));
