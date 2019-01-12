@@ -525,10 +525,11 @@ public class JumpDetail {
      * @param context   上下文
      * @param groupId   分组 id
      */
-    public static void jumpCourseMore(Context context, String groupId) {
+    public static void jumpCourseMore(Context context, String groupId, String title) {
         Intent intent = new Intent(context, CourseMoreActivity.class);
 
         intent.putExtra("groupId", groupId);
+        intent.putExtra("title", title);
 
         context.startActivity(intent);
     }
