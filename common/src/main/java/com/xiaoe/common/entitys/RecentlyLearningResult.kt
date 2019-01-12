@@ -18,8 +18,9 @@ data class GoodsListItem(@SerializedName("resource_type")
                          val lastLearnTime: String = "",
                          @SerializedName("info")
                          val info: Info): MultiItemEntity {
-    override fun getItemType(): Int
-            = if(2 == resourceType) ItemType.ITEM_TYPE_AUDIO else ItemType.ITEM_TYPE_DEFAULT
+//    override fun getItemType(): Int
+//            = if(2 == resourceType) ItemType.ITEM_TYPE_AUDIO else ItemType.ITEM_TYPE_DEFAULT
+    override fun getItemType(): Int = ItemType.ITEM_TYPE_DEFAULT
 }
 
 
