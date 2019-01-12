@@ -253,7 +253,7 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             @Override
             public void singleClick(View v) {
                 if (loginList.size() == 1) {
-                    umShare(collectionTitle, collectionImgUrlCompressed == null ? collectionImgUrl : collectionImgUrlCompressed, shareUrl, "");
+                    umShare(collectionTitle, collectionImgUrlCompressed == null ? collectionImgUrl : collectionImgUrlCompressed, shareUrl, " ");
                 } else {
                     touristDialog.showDialog();
                 }

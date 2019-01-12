@@ -330,7 +330,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 }
                 break;
             case R.id.btn_share:
-                umShare(collectTitle, TextUtils.isEmpty(collectImgUrlCompressed) ? collectImgUrl : collectImgUrlCompressed, shareUrl, "");
+                umShare(collectTitle, TextUtils.isEmpty(collectImgUrlCompressed) ? collectImgUrl : collectImgUrlCompressed, shareUrl, " ");
                 break;
             case R.id.btn_back:
                 finish();
