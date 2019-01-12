@@ -507,6 +507,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             case DecorateEntityType.RECENT_UPDATE_STR: // 频道
                 // 初始化频道数据
                 JSONArray recentList = (JSONArray) itemObj.get("list");
+                String recentTopTitle = itemObj.getString("title");
+                boolean isShowTitle = itemObj.getInteger("show_title") == 1;
                 for (Object listItem : recentList) {
                     ComponentInfo component_recent = new ComponentInfo();
                     component_recent.setType(DecorateEntityType.RECENT_UPDATE_STR);
@@ -520,7 +522,9 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     int updateCount = jsonItem.getInteger("resource_count") == null ? 0 : jsonItem.getInteger("resource_count");
                     String updateCountStr = String.format(getString(R.string.updated_to_issue), updateCount);
                     String srcType = jsonItem.getString("src_type");
-                    component_recent.setTitle(recentTitle);
+                    component_recent.setJoinedDesc(recentTopTitle); // 使用 joinedDesc 字段表示组件的 top title
+                    component_recent.setTitle(recentTitle); // 组件内 title
+                    component_recent.setHideTitle(!isShowTitle);
                     String imgUrl;
                     if ("appe0MEs6qX8480".equals(Constants.getAppId()) || "app38itOR341547".equals(Constants.getAppId())) { // 吴晓波 app，头像换成他的头像
                         imgUrl = "res:///" + R.mipmap.wu_logo;
@@ -560,7 +564,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                         componentInfo_know_list.setHideTitle(true);
                     } else if (showTitle == 1) {
                         componentInfo_know_list.setHideTitle(false);
-                        String title = itemObj.getString("title") == null ? getString(R.string.learn_manage_wealth) : itemObj.getString("type_title");
+                        String title = itemObj.getString("title") == null ? getString(R.string.learn_manage_wealth) : itemObj.getString("title");
                         componentInfo_know_list.setTitle(title);
                         if (showCheckAll) {
                             componentInfo_know_list.setDesc(getString(R.string.see_more));

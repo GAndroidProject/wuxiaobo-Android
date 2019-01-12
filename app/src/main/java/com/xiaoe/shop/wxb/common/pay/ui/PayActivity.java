@@ -109,8 +109,10 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             int code = getWXPayCode(true);
             Log.d(TAG, "onResume: -------- code "+code);
             if(code == 0){
-                setPagerState(PAY_SUCCEED);
-                hideFragment(payingFragment);
+                if (payingFragment.isWeChatPayWay()) {
+                    setPagerState(PAY_SUCCEED);
+                    hideFragment(payingFragment);
+                }
             }else {
                 SharedPreferencesUtil.putData(SharedPreferencesUtil.KEY_WX_PLAY_CODE, -100);
             }
@@ -250,8 +252,14 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             payWay = PayPresenter.PAY_WAY_ALI;
         } else if (payingFragment.isBoBiPayWay()) { // 波币支付
             payWay = PayPresenter.PAY_WAY_VIRTUAL;
-        } else { // 微信支付
+        } else if (payingFragment.isWeChatPayWay()) { // 微信支付
             payWay = PayPresenter.PAY_WAY_DEFAULT;
+        } else {
+            payWay = -1;
+        }
+        if (payWay == -1) {
+            Toast("支付方式选择错误");
+            return;
         }
         getDialog().showLoadDialog(false);
 //        int paymentType = (resourceType == 8 || resourceType == 6) ? 3 : 2;
@@ -294,9 +302,15 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             setPagerState(PAY_SUCCEED);
             hideFragment(payingFragment);
         }else{
-            JSONObject payConfig = dataObject.getJSONObject("payConfig");
-            pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
-                    payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
+            // TODO: 根据结果调起支付方式
+            if (payingFragment.isAliPayWay()) {
+                Toast("支付宝支付");
+                getDialog().dismissDialog();
+            } else if (payingFragment.isWeChatPayWay()) {
+                JSONObject payConfig = dataObject.getJSONObject("payConfig");
+                pullWXPay(payConfig.getString("appid"), payConfig.getString("partnerid"), payConfig.getString("prepayid"),
+                        payConfig.getString("noncestr"), payConfig.getString("timestamp"), payConfig.getString("package"), payConfig.getString("sign"));
+            }
         }
 
     }

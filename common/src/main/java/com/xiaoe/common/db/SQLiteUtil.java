@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class SQLiteUtil extends SQLiteOpenHelper {
 
     private final String TAG = "SQLiteUtil";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     private static final  String DATABASE_NAME = "xiaoeshop.db";
     private static SQLiteUtil INSTANCE;
     private java.util.concurrent.Semaphore semaphoreTransaction = new java.util.concurrent.Semaphore(1);
@@ -188,54 +188,84 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
         if(newVersion > oldVersion && newVersion == AudioPlayTable.DATABASE_VERSION){
             //列如，对音频表新增字段操作
         }
-        if (oldVersion == 1) { // 数据库版本为 1 的数据版本
+
+        if (oldVersion >= 1) { // 数据库版本为 1 的数据版本
             try {
-                sqLiteDatabase.beginTransaction();
-                // 将表名改为临时表
-                String downloadResource = "ALTER TABLE download_resource RENAME TO download_resource_temp";
-                sqLiteDatabase.execSQL(downloadResource);
-
-                // 创建新表
-                // 新下载资源表创建
-                String createNewDRTable = "CREATE TABLE download_resource (" +
-                        "app_id VARCHAR(64) not null, " +
-                        "user_id VARCHAR(64) not null, " +
-                        "resource_id VARCHAR(64) not null, " +
-                        "parent_id VARCHAR(64) default \"\", " +
-                        "parent_type INTEGER default 0, " +
-                        "top_parent_id VARCHAR(64) default \"\", " +
-                        "top_parent_type INTEGER default 0, " +
-                        "title TEXT default \"\", " +
-                        "descs TEXT default \"\", " +
-                        "img_url TEXT default \"\", " +
-                        "resource_type INTEGER default 0, " +//1-音频，2-视频，3-专栏，4-大专栏
-                        "depth INTEGER default 0, " +//深度，大专栏-2，小专栏-1，单品-0
-                        "create_at DATETIME default '0000-00-00 00:00:00', " +
-                        "update_at DATETIME default '0000-00-00 00:00:00', " +
-                        "primary key (app_id, user_id, resource_id))";
-                sqLiteDatabase.execSQL(createNewDRTable);
-
-                Cursor cursor = sqLiteDatabase.rawQuery("select * from download_resource_temp", null);
-
-                if (cursor.moveToFirst()) {
-                    // 有数据则导入数据
-                    String insertDRSql = "INSERT INTO download_resource (app_id,user_id,resource_id) " +
-                            "SELECT app_id,user_id,resource_id from download_resource_temp";
-                    sqLiteDatabase.execSQL(insertDRSql);
-                    cursor.close();
+                // 此处需要注意不要使用 sqLiteDatabase.beginTransaction(); 这个方法是用于独立一个 sqLiteDatabase 对象来处理事务，完成后全局使用的 sqLiteDatabase 不能感知到变化
+                if (isTableExit(sqLiteDatabase, "download_resource")) {
+                    // 单纯新增字段的更新方式
+                    updateDataByAdd(sqLiteDatabase);
+                } else {
+                    onCreate(sqLiteDatabase);
                 }
-
-                // 删除临时表
-                String deleteDRSql = "DROP TABLE download_resource_temp";
-                sqLiteDatabase.execSQL(deleteDRSql);
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                if (sqLiteDatabase != null) {
-                    sqLiteDatabase.endTransaction();
-                }
             }
         }
+    }
+
+    /**
+     * 新增字段并进行数据迁移
+     *
+     * 新增字段为 parent_id、parent_type、top_parent_id、top_parent_type
+     * @param sqLiteDatabase
+     */
+    private void updateDataByMigration(SQLiteDatabase sqLiteDatabase) {
+        // 将表名改为临时表
+        String downloadResource = "ALTER TABLE download_resource RENAME TO download_resource_temp";
+        sqLiteDatabase.execSQL(downloadResource);
+
+        // 创建新表
+        // 新下载资源表创建
+        String createNewDRTable = "CREATE TABLE download_resource (" +
+                "app_id VARCHAR(64) not null, " +
+                "user_id VARCHAR(64) not null, " +
+                "resource_id VARCHAR(64) not null, " +
+                "parent_id VARCHAR(64) default \"-1\", " +
+                "parent_type INTEGER default -1, " +
+                "top_parent_id VARCHAR(64) default \"-1\", " +
+                "top_parent_type INTEGER default -1, " +
+                "title TEXT default \"\", " +
+                "desc TEXT default \"\", " +
+                "img_url TEXT default \"\", " +
+                "resource_type INTEGER default 0, " +//1-音频，2-视频，3-专栏，4-大专栏
+                "depth INTEGER default 0, " +//深度，大专栏-2，小专栏-1，单品-0
+                "create_at DATETIME default '0000-00-00 00:00:00', " +
+                "update_at DATETIME default '0000-00-00 00:00:00', " +
+                "primary key (app_id, user_id, resource_id))";
+        sqLiteDatabase.execSQL(createNewDRTable);
+
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from download_resource_temp", null);
+
+        if (cursor.moveToFirst()) {
+            // 有数据则导入数据
+            String insertDRSql = "INSERT INTO download_resource (app_id,user_id,resource_id,title,desc,img_url,resource_type,depth,create_at,update_at) " +
+                    "SELECT app_id,user_id,resource_id,title,desc,img_url,resource_type,depth,create_at,update_at from download_resource_temp";
+            sqLiteDatabase.execSQL(insertDRSql);
+            cursor.close();
+        }
+
+        // 删除临时表
+        String deleteDRSql = "DROP TABLE download_resource_temp";
+        sqLiteDatabase.execSQL(deleteDRSql);
+    }
+
+    /**
+     * 数据库升级，单纯加字段模式
+     *
+     * 新增字段为 parent_id、parent_type、top_parent_id、top_parent_type
+     * @param sqLiteDatabase
+     */
+    private void updateDataByAdd(SQLiteDatabase sqLiteDatabase) {
+        // 添加字段的方式
+        String addParentIdColumn = "ALTER TABLE download_resource ADD COLUMN parent_id VARCHAR(64) default \"-1\"";
+        String addParentTypeColumn = "ALTER TABLE download_resource ADD COLUMN parent_type INTEGER default -1";
+        String addTopParentIdColumn = "ALTER TABLE download_resource ADD COLUMN top_parent_id VARCHAR(64) default \"-1\"";
+        String addTopParentTypeColumn = "ALTER TABLE download_resource ADD COLUMN top_parent_type INTEGER default -1";
+        sqLiteDatabase.execSQL(addParentIdColumn);
+        sqLiteDatabase.execSQL(addParentTypeColumn);
+        sqLiteDatabase.execSQL(addTopParentIdColumn);
+        sqLiteDatabase.execSQL(addTopParentTypeColumn);
     }
 
     public boolean tabIsExist(String tabName){
@@ -263,5 +293,33 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
             closeSQLiteDatabase();
         }
         return result;
+    }
+
+    /**
+     * 判断 tableName 是否存在，sqlite_master 是 sqlite 数据库默认产生的表，可以在里面查询
+     * @param db
+     * @param tableName
+     * @return
+     */
+    private boolean isTableExit(SQLiteDatabase db, String tableName) {
+        try (Cursor cursor = db.rawQuery("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?", new String[]{tableName})) {
+            boolean hasNext = cursor.moveToNext();
+            return hasNext && cursor.getInt(0) > 0;
+        }
+    }
+
+    /**
+     * 判断列名是否存在
+     * @param db
+     * @param tableName
+     * @param columnName
+     * @return
+     */
+    private boolean isColumnExist(SQLiteDatabase db, String tableName, String columnName) {
+        try (Cursor cursor = db.rawQuery("SELECT count(*) FROM sqlite_master WHERE tbl_name = ? AND (sql LIKE ? OR sql LIKE ?);",
+                new String[]{tableName, "%(" + columnName + "%", "%, " + columnName + " %"})) {
+            boolean hasNext = cursor.moveToNext();
+            return hasNext && cursor.getInt(0) > 0;
+        }
     }
 }

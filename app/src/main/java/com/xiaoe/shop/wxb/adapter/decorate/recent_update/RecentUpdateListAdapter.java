@@ -35,6 +35,7 @@ import com.xiaoe.shop.wxb.common.datareport.MobclickEvent;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.LoginDialogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 /**
@@ -148,6 +149,12 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                         if (itemResourceType != null) {
                             switch (itemResourceType) {
                                 case DecorateEntityType.AUDIO:
+                                    try{
+                                        UploadLearnProgressManager.INSTANCE.setMTopParentResType(Integer.parseInt(columnType));
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                        UploadLearnProgressManager.INSTANCE.setMTopParentResType(-1);
+                                    }
                                     if (!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())) {
                                         AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);
                                         AudioPlayUtil.getInstance().setAudioList(getAudioPlayList(mItemList));
@@ -233,6 +240,12 @@ public class RecentUpdateListAdapter extends BaseAdapter {
                             default:
                                 break;
                         }
+                    }
+                    try{
+                        UploadLearnProgressManager.INSTANCE.setMTopParentResType(Integer.parseInt(columnType));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        UploadLearnProgressManager.INSTANCE.setMTopParentResType(-1);
                     }
                     if(!DecorateEntityType.RECENT_UPDATE_STR.equals(AudioPlayUtil.getInstance().getFromTag())){
                         AudioPlayUtil.getInstance().setFromTag(DecorateEntityType.RECENT_UPDATE_STR);

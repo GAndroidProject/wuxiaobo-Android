@@ -51,6 +51,7 @@ public class CourseMoreActivity extends XiaoeActivity {
 
     Intent intent;
     String groupId; // 分组 id
+    String title; // 分组 title
     int pageNum = 1; // 页码
     int pageSize = 10; // 页数
     String lastId; // 上次请求最后一个的 id
@@ -71,7 +72,8 @@ public class CourseMoreActivity extends XiaoeActivity {
 
         intent = getIntent();
         groupId = intent.getStringExtra("groupId");
-
+        title = intent.getStringExtra("title") == null? getString(R.string.course_more_title) : intent.getStringExtra("title");
+        courseMoreTitle.setText(title);
         CourseMorePresenter courseMorePresenter = new CourseMorePresenter(this);
         // 第一次请求 lastId 为 ""
         courseMorePresenter.requestData(groupId, pageNum, pageSize, lastId);

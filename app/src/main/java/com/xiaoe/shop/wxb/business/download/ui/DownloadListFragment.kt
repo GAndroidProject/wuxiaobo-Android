@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -347,8 +348,14 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
      * @param entity 返回的数据对象
      */
     private fun initDownloadSingleData(entity: Any) {
+        var tempTopParentId = ""
+        var tempTopParentType = -1
         if (downloadSingleList.size > 0) {
             if (!isMainLoadMore) {
+                if (downloadSingleList[0].topParentType == downloadMember.toInt() || downloadSingleList[0].topParentType == downloadTopic.toInt()) { // 顶级是会员或大专栏，记录一下
+                    tempTopParentId = downloadSingleList[0].topParentId
+                    tempTopParentType = downloadSingleList[0].topParentType
+                }
                 downloadSingleList.clear()
             } else {
                 downloadSingleList[downloadSingleList.size - 1].isLastItem = false
@@ -357,7 +364,13 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         val result = Gson().fromJson(entity.toString(), NewDownloadBean::class.java)
         if (result.data.list == null) {
             // TODO: 没有单品的情况下，页面的显示
+            downloadSingleList.clear()
+            downloadSingleAdapter.notifyDataSetChanged()
+            downloadLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.service_error_text), R.mipmap.ic_network_error)
+            downloadRefresh.setEnableLoadMore(false)
+            downloadTitleCount.text = ""
         } else {
+            downloadTitleCount.text = String.format(getString(R.string.download_count), result.data.goodsInfo.downloadCount)
             for (item in result.data.list!!) {
                 val commonDownloadBean = CommonDownloadBean()
                 commonDownloadBean.appId = Constants.getAppId()
@@ -369,8 +382,13 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 commonDownloadBean.imgUrl = item.imgUrl
                 commonDownloadBean.parentId = item.productInfo.goodsId
                 commonDownloadBean.parentType = item.productInfo.goodsType
-                commonDownloadBean.topParentId = result.data.goodsInfo.goodsId
-                commonDownloadBean.topParentType = result.data.goodsInfo.goodsType
+                if (tempTopParentId != "" && tempTopParentType != -1) {
+                    commonDownloadBean.topParentId = tempTopParentId
+                    commonDownloadBean.topParentType = tempTopParentType
+                } else {
+                    commonDownloadBean.topParentId = result.data.goodsInfo.goodsId
+                    commonDownloadBean.topParentType = result.data.goodsInfo.goodsType
+                }
                 if (item.goodsType == downloadAudio) {
                     commonDownloadBean.audioUrl = item.downloadUrl
                     commonDownloadBean.audioLength = item.length

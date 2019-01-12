@@ -61,6 +61,7 @@ import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
 import com.xiaoe.shop.wxb.utils.CollectionUtils;
 import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
 import com.xiaoe.shop.wxb.utils.LogUtils;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 import com.xiaoe.shop.wxb.widget.CommonBuyView;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import com.xiaoe.shop.wxb.widget.StatusPagerView;
@@ -72,6 +73,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.util.List;
 
+import static com.xiaoe.common.entitys.ResourceType.TYPE_BIG_COLUMN;
+import static com.xiaoe.common.entitys.ResourceType.TYPE_COLUMN;
+import static com.xiaoe.common.entitys.ResourceType.TYPE_MEMBER;
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
 
 public class VideoActivity extends XiaoeActivity implements View.OnClickListener, OnClickVideoButtonListener,
@@ -326,7 +330,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 }
                 break;
             case R.id.btn_share:
-                umShare(collectTitle, TextUtils.isEmpty(collectImgUrlCompressed) ? collectImgUrl : collectImgUrlCompressed, shareUrl, "");
+                umShare(collectTitle, TextUtils.isEmpty(collectImgUrlCompressed) ? collectImgUrl : collectImgUrlCompressed, shareUrl, " ");
                 break;
             case R.id.btn_back:
                 finish();
@@ -434,6 +438,10 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         }
         playControllerView.uploadSingleBuyVideoProgress();
         playControllerView.release();
+        if (LearnRecordPageProgressManager.INSTANCE.isAtFinishDownloadFragment()){
+            UploadLearnProgressManager.INSTANCE.setMCurrentColumnId("");
+            UploadLearnProgressManager.INSTANCE.setSingleBuy(false);
+        }
         EventBus.getDefault().unregister(this);
         UMShareAPI.get(this).release();
         if (videoContentWebView != null) {
@@ -498,6 +506,21 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             download.setResource_type(3);
             download.setImg_url(collectImgUrl);
             download.setVideo_url(mVideoUrl);
+            String id = UploadLearnProgressManager.INSTANCE.getMCurrentColumnId();
+            int type = UploadLearnProgressManager.INSTANCE.getMTopParentResType();
+            if (!TextUtils.isEmpty(id) && type > 0){
+                switch (type) {
+                    case TYPE_MEMBER:
+                    case TYPE_BIG_COLUMN:
+                        download.setTopParentId(id);
+                        download.setTopParentType(type);
+                        break;
+                    case TYPE_COLUMN:
+                        download.setParentId(id);
+                        download.setParentType(type);
+                        break;
+                }
+            }
             DownloadManager.getInstance().addDownload(null, null, download);
         }
         playControllerView.setDownloadState(1);
@@ -836,7 +859,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             setHasToast(true);
             isAutoPlayNext = isAuto;
             LogUtils.d("onNext = " + playNextIndex);
-            if (playNextIndex < 1 || TextUtils.isEmpty(requestNextVideoResId)){
+            if (!isAutoPlayNext && (playNextIndex < 1 || TextUtils.isEmpty(requestNextVideoResId))){
                 toastCustom(getString(R.string.already_was_last_video));
                 return;
             }

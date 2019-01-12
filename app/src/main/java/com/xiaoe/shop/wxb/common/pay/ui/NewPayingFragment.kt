@@ -43,6 +43,7 @@ class NewPayingFragment : BaseFragment() {
     private val moneyStart = "<font color='#BCA16B'><big>"
     private val moneyEnd = "</big></font>"
     private var balance: Int = 0 // 服务器返回波豆的价格
+    private var needRefreshAccount: Boolean = false // 是否需要刷新波豆余额
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return if (inflater != null) {
@@ -86,8 +87,10 @@ class NewPayingFragment : BaseFragment() {
         }
         if (isVipBuy) {
             payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
+            confirmBuy.background = ContextCompat.getDrawable(context, R.drawable.vip_high_button)
         } else {
             payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+            confirmBuy.background = ContextCompat.getDrawable(context, R.drawable.high_button)
         }
     }
 
@@ -142,6 +145,7 @@ class NewPayingFragment : BaseFragment() {
         }
 
         payingBoBiTopUp.setOnClickListener {
+            needRefreshAccount = true
             JumpDetail.jumpBobi(context)
         }
 
@@ -201,22 +205,38 @@ class NewPayingFragment : BaseFragment() {
             isBoBiPayWay = true
             isAliPayWay = false
             isWeChatPayWay = false
-            payingBoBiSelect.visibility = View.VISIBLE
-            payingAliSelect.visibility = View.GONE
-            payingWeChatSelect.visibility = View.GONE
+            if (isVipBuy) {
+                payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
+            } else {
+                payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+            }
+            payingAliSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
+            payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
         } else { // 否则默认微信支付
             isBoBiPayWay = false
             isAliPayWay = false
             isWeChatPayWay = true
-            payingBoBiSelect.visibility = View.GONE
-            payingAliSelect.visibility = View.GONE
-            payingWeChatSelect.visibility = View.VISIBLE
+            payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
+            payingAliSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
+            if (isVipBuy) {
+                payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
+            } else {
+                payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+            }
         }
         val moneyText = "¥" + showPrice / 100f
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             payingMoney.text = Html.fromHtml(String.format(getString(R.string.paying_account), moneyStart, moneyText, moneyEnd), Html.FROM_HTML_MODE_COMPACT)
         } else {
             payingMoney.text = Html.fromHtml(String.format(getString(R.string.paying_account), moneyStart, moneyText, moneyEnd))
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (needRefreshAccount) {
+            needRefreshAccount = false
+            earningPresenter.requestAccountBalance()
         }
     }
 
@@ -229,11 +249,28 @@ class NewPayingFragment : BaseFragment() {
                 val balanceStr = String.format("%1.2f", balance.toFloat() / 100)
                 if (balance >= resPrice) { // 波豆余额大等于资源价格，可以购买，所以显示选中 icon
                     payingBoBiSelect.visibility = View.VISIBLE
+                    if (isVipBuy) {
+                        payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
+                    } else {
+                        payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+                    }
+                    payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
                     payingBoBiTopUp.visibility = View.GONE
+                    isBoBiPayWay = true
+                    isAliPayWay = false
+                    isWeChatPayWay = false
                 } else {
                     payingBoBiSelect.visibility = View.GONE
                     payingBoBiTopUp.visibility = View.VISIBLE
-                    payingWeChatSelect.visibility = View.VISIBLE
+                    payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_tocheck))
+                    if (isVipBuy) {
+                        payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
+                    } else {
+                        payingWeChatSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.download_checking))
+                    }
+                    isBoBiPayWay = false
+                    isAliPayWay = false
+                    isWeChatPayWay = true
                 }
                 payingBoBiBalance.text = String.format(getString(R.string.paying_bo_bi_balance), balanceStr)
             } catch (e: Exception) {

@@ -34,8 +34,9 @@ data class DataItem(@SerializedName("resource_type")
                     @SerializedName("app_id")
                     val appId: String = ""): MultiItemEntity {
 
-    override fun getItemType(): Int
-            = if(2 == resourceType) ITEM_TYPE_AUDIO else ITEM_TYPE_DEFAULT
+//    override fun getItemType(): Int
+//            = if(2 == resourceType) ITEM_TYPE_AUDIO else ITEM_TYPE_DEFAULT
+    override fun getItemType(): Int = ITEM_TYPE_DEFAULT
 }
 
 

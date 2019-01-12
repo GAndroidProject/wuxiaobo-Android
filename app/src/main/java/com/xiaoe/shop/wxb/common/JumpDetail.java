@@ -52,6 +52,8 @@ import com.xiaoe.shop.wxb.common.pay.ui.BoBiActivity;
 import com.xiaoe.shop.wxb.common.pay.ui.PayActivity;
 import com.xiaoe.shop.wxb.common.releaseversion.ui.ReleaseVersionActivity;
 import com.xiaoe.shop.wxb.common.web.BrowserActivity;
+import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
+import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 
 import java.io.File;
 
@@ -68,6 +70,7 @@ public class JumpDetail {
      */
     public static void jumpAudio(Context context, String resId, int hasBuy){
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        AudioPresenter audioPresenter = new AudioPresenter(null);
         String resourceId = "";
         String flowId = "";
         if(playEntity != null){
@@ -75,6 +78,7 @@ public class JumpDetail {
             flowId = playEntity.getFlowId();
         }
         if(!(resourceId.equals(resId) || (!TextUtils.isEmpty(flowId) && flowId.equals(resId))) || AudioPlayUtil.getInstance().isCloseMiniPlayer()){
+            UploadLearnProgressManager.INSTANCE.setSameAudio(false);
             if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
                 MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
             }
@@ -93,17 +97,26 @@ public class JumpDetail {
             DownloadResourceTableInfo download = DownloadManager.getInstance().getDownloadFinish(Constants.getAppId(), playEntity.getResourceId());
             if(download != null){
                 File file = new File(download.getLocalFilePath());
-                if(file.exists()){
+                if(file.exists()) {
                     String localAudioPath = download.getLocalFilePath();
                     playEntity.setPlayUrl(localAudioPath);
                     playEntity.setLocalResource(true);
+                    //已经下载的音频，添加是否有上级或上上级的id
+                    if (LearnRecordPageProgressManager.INSTANCE.isAtFinishDownloadFragment()) {
+                        if (!TextUtils.isEmpty(download.getTopParentId())) {
+                            playEntity.setBigColumnId(download.getTopParentId());
+                        } else if (!TextUtils.isEmpty(download.getParentId())) {
+                            playEntity.setColumnId(download.getParentId());
+                        } else {
+                            playEntity.setColumnId("");
+                        }
+                    }
                 }
             }
 
             AudioMediaPlayer.setAudio(playEntity, false);
 
             AudioPlayUtil.getInstance().refreshAudio(playEntity);
-            AudioPresenter audioPresenter = new AudioPresenter(null);
             audioPresenter.requestDetail(resId);
             if (context instanceof XiaoeActivity){
                 try {
@@ -112,6 +125,12 @@ public class JumpDetail {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+            }
+        }else{
+            UploadLearnProgressManager.INSTANCE.setSameAudio(true);
+            if (playEntity!= null && !playEntity.isPlaying()) {
+                // 需要更新数据
+                audioPresenter.requestDetail(resId);
             }
         }
         Intent intent = new Intent(context, AudioNewActivity.class);
@@ -506,10 +525,11 @@ public class JumpDetail {
      * @param context   上下文
      * @param groupId   分组 id
      */
-    public static void jumpCourseMore(Context context, String groupId) {
+    public static void jumpCourseMore(Context context, String groupId, String title) {
         Intent intent = new Intent(context, CourseMoreActivity.class);
 
         intent.putExtra("groupId", groupId);
+        intent.putExtra("title", title);
 
         context.startActivity(intent);
     }

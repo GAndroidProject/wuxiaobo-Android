@@ -495,7 +495,8 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
     private void uploadVideoProgress(){
         try {
-            if (playSeekBar == null || mVideoPlayer == null)
+            if (playSeekBar == null || mVideoPlayer == null || UploadLearnProgressManager.INSTANCE.getDefaultHistoryDataResId()
+                    .equals(UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()))
                 return;
             int progress = playSeekBar.getProgress();
             int totalTime = mVideoPlayer.getDuration() / 1000;
@@ -535,6 +536,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                 setPlayState(VideoPlayConstant.VIDEO_STATE_PAUSE);
                 if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
                     MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+                    updateCountDownText();
                 }else {
                     if (mIPlayNext != null)   mIPlayNext.onNext(true);
                 }

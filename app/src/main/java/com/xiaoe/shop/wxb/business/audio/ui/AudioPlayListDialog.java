@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -159,11 +160,20 @@ public class AudioPlayListDialog implements View.OnClickListener {
     }
 
     private void setAudioPlayList(List<ColumnSecondDirectoryEntity> list,int isHasBuy){
+        String columnId = "";
+        String bigColumnId = "";
+        if (!AudioPlayUtil.getInstance().getAudioList().isEmpty()){
+            AudioPlayEntity entity = AudioPlayUtil.getInstance().getAudioList().get(0);
+            if (entity != null){
+                columnId = entity.getColumnId();
+                bigColumnId = entity.getBigColumnId();
+            }
+        }
         List<AudioPlayEntity> audioPlayEntities = new ArrayList<>();
-        int page = 0;
-        if (mAudioPlayListNewAdapter != null && mAudioPlayListNewAdapter.getData().size() > 0)
-            page = mAudioPlayListNewAdapter.getData().size() / PAGE_SIZE;
-        int index = 10 * (page - 1);
+        int index = 0;
+        if ("" != lastId && DEFAULT_LAST_ID != lastId && mAudioPlayListNewAdapter != null
+                && mAudioPlayListNewAdapter.getData().size() > 0)
+            index = mAudioPlayListNewAdapter.getData().size();
         for (ColumnSecondDirectoryEntity entity : list) {
             if(entity.getResource_type() != 2){
                 continue;
@@ -179,8 +189,16 @@ public class AudioPlayListDialog implements View.OnClickListener {
             playEntity.setPlayUrl(entity.getAudio_url());
             playEntity.setCode(-1);
             playEntity.setHasBuy(isHasBuy);
-            playEntity.setColumnId(entity.getColumnId());
-            playEntity.setBigColumnId(entity.getBigColumnId());
+            if (!TextUtils.isEmpty(columnId)){
+                playEntity.setColumnId(columnId);
+            }else {
+                playEntity.setColumnId(entity.getColumnId());
+            }
+            if (!TextUtils.isEmpty(bigColumnId)){
+                playEntity.setBigColumnId(bigColumnId);
+            }else {
+                playEntity.setBigColumnId(entity.getBigColumnId());
+            }
             playEntity.setTotalDuration(entity.getAudio_length());
             playEntity.setProductsTitle(entity.getColumnTitle());
             playEntity.setIsTry(entity.getIsTry());

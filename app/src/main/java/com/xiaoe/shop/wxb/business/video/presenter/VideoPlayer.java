@@ -90,8 +90,8 @@ public class VideoPlayer{
     public boolean changeSpeedPlay(float speed){
         // this checks on API 23 and up
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (speed != mPlaySpeed) {
-                try {
+            try {
+                if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
                     PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
                     playbackParams.setSpeed(speed);
                     if (isPlaying()) {
@@ -100,12 +100,12 @@ public class VideoPlayer{
                         mediaPlayer.setPlaybackParams(playbackParams);
                     }
                     mPlaySpeed = speed;
-                }catch (Exception e){
-                    e.printStackTrace();
-                    return false;
                 }
+                return true;
+            }catch (Exception e){
+                e.printStackTrace();
+                return false;
             }
-            return true;
         }
         return false;
     }

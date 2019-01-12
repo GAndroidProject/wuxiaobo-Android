@@ -27,6 +27,7 @@ import com.xiaoe.common.utils.SharedPreferencesUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.events.AudioPlayEvent;
 import com.xiaoe.shop.wxb.utils.LearnRecordPageProgressManager;
+import com.xiaoe.shop.wxb.utils.LogUtils;
 import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
 
@@ -164,7 +165,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             mediaPlayer.seekTo(LearnRecordPageProgressManager.INSTANCE.getAudioProgress());
             LearnRecordPageProgressManager.INSTANCE.setAudioProgress(0);
         }else {
-            if (audio != null)  UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(audio.getColumnId()));
+//            if (audio != null)  UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(audio.getColumnId()));
             uploadAudioProgress();
         }
     }
@@ -186,9 +187,9 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         this.isCompletion = true;
         postStopToEventBus();
         isStop = true;
-        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState() && isPlaying()){
+        if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
             MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
-            play();
+            countDownCallBack.onFinish();
             return;
         }
         if(audio.getIsTry() == 1){
@@ -376,41 +377,52 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     }
 
     public static void playNext(boolean isShowLastOneToast) {
-        List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
-        int indexNext = audio.getIndex() + 1;
-        if(indexNext >= playList.size()){
-            if (isShowLastOneToast)
-                Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
-            return;
+        try{
+            if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
+                MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+                countDownCallBack.onFinish();
+            }
+            List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
+            int indexNext = audio.getIndex() + 1;
+            if(indexNext >= playList.size()){
+                if (isShowLastOneToast)
+                    Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
+                return;
+            }
+            audio.setPlay(false);
+            stop();
+            AudioPlayEntity nextAudio = playList.get(indexNext);
+            setAudio(nextAudio, true);
+            if(nextAudio.getCode() != 0){
+                new AudioPresenter(null).requestDetail(nextAudio.getResourceId());
+            }
+            event.setState(AudioPlayEvent.NEXT);
+            EventBus.getDefault().post(event);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        audio.setPlay(false);
-        stop();
-        AudioPlayEntity nextAudio = playList.get(indexNext);
-        setAudio(nextAudio, true);
-        if(nextAudio.getCode() != 0){
-            new AudioPresenter(null).requestDetail(nextAudio.getResourceId());
-        }
-        event.setState(AudioPlayEvent.NEXT);
-        EventBus.getDefault().post(event);
     }
 
     public static void playLast() {
-        List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
-        int indexLast = audio.getIndex() - 1;
-        if(indexLast < 0){
-            Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_first_sing,Toast.LENGTH_SHORT).show();
-            return;
+        try{
+            List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
+            int indexLast = audio.getIndex() - 1;
+            if(indexLast < 0){
+                Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_first_sing,Toast.LENGTH_SHORT).show();
+                return;
+            }
+            audio.setPlay(false);
+            stop();
+            AudioPlayEntity lastAudio = playList.get(indexLast);
+            setAudio(lastAudio, true);
+            if(lastAudio.getCode() != 0){
+                new AudioPresenter(null).requestDetail(lastAudio.getResourceId());
+            }
+            event.setState(AudioPlayEvent.LAST);
+            EventBus.getDefault().post(event);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        audio.setPlay(false);
-        stop();
-        AudioPlayEntity lastAudio = playList.get(indexLast);
-        setAudio(lastAudio, true);
-        if(lastAudio.getCode() != 0){
-            new AudioPresenter(null).requestDetail(lastAudio.getResourceId());
-        }
-        event.setState(AudioPlayEvent.LAST);
-        EventBus.getDefault().post(event);
-
     }
 
     public static boolean startCountDown(int state,int duration){
@@ -437,8 +449,8 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
         // this checks on API 23 and up
         if (!prepared)    return false;
         if (mediaPlayer != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (speed != mPlaySpeed) {
-                try {
+            try {
+                if (speed != mediaPlayer.getPlaybackParams().getSpeed()) {
                     PlaybackParams playbackParams = mediaPlayer.getPlaybackParams();
                     playbackParams.setSpeed(speed);
                     if (mediaPlayer.isPlaying()) {
@@ -448,12 +460,12 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
                         mediaPlayer.pause();
                     }
                     mPlaySpeed = speed;
-                }catch (Exception e){
-                    e.printStackTrace();
-                    return false;
                 }
+                return true;
+            }catch (Exception e){
+                e.printStackTrace();
+                return false;
             }
-            return true;
         }
         return false;
     }
@@ -478,24 +490,61 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public static void uploadAudioProgress() {
         try {
             AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
-            if (audio != null && 1 == audio.getHasBuy()){
+            if (playEntity != null && 1 == playEntity.getHasBuy()){
+                LogUtils.d("UploadLearnProgress?22222222222uploadAudioProgress--- columnId= " + playEntity.getColumnId()
+                        + "---BigColumnId= " + playEntity.getBigColumnId());
                 int progress = getProgress(playEntity);
-                UploadLearnProgressManager.INSTANCE.addColumnSingleItemData(UploadLearnProgressManager
-                                .INSTANCE.isSingleBuy() ? "" : UploadLearnProgressManager.INSTANCE.getMCurrentColumnId()
-                        ,playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
+                String topParentResourceId = getTopResourceId(playEntity);
+
+                if (UploadLearnProgressManager.INSTANCE.getDefaultHistoryDataResId().equals(topParentResourceId)){//老的下载列表数据
+                    return;
+                }
+
+                UploadLearnProgressManager uploadManager = UploadLearnProgressManager.INSTANCE;
+                if (LearnRecordPageProgressManager.INSTANCE.isAtFinishDownloadFragment()
+                        || !uploadManager.isSingleBuy()){//在下载列表页面数据上报,或者不是单卖的时候
+                    uploadManager.addColumnSingleItemData(TextUtils.isEmpty(topParentResourceId) ? "" : topParentResourceId
+                            ,playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000);
+                }else{//不在下载列表页面数据上报
+                    if (TextUtils.isEmpty(topParentResourceId)){//单卖
+                        uploadManager.addSingleItemData(playEntity.getResourceId(), ResourceType.TYPE_AUDIO,progress,
+                                playEntity.getMaxProgress() / 1000,true);
+                    }else if (!uploadManager.isSameAudio() && uploadManager.isSingleBuy()
+                            && uploadManager.getMTopParentResType() > 0){
+                        //不是在专栏页面内部打开的时候， 直接放专栏里面上报数据
+                        if (!uploadManager.getColumnDataIsExist(topParentResourceId)) {
+                            uploadManager.addColumnData(topParentResourceId,
+                                    uploadManager.getMTopParentResType());
+                        }
+                        uploadManager.addColumnSingleItemData(topParentResourceId, playEntity.getResourceId(),
+                                ResourceType.TYPE_AUDIO, progress, playEntity.getMaxProgress() / 1000);
+                        uploadManager.uploadLearningData(topParentResourceId);
+                    }
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public static void uploadSingleBuyAudioProgress() {
+    private static String getTopResourceId(AudioPlayEntity playEntity) {
+        String topParentResourceId = "";
+        if (!TextUtils.isEmpty(playEntity.getBigColumnId())){
+            topParentResourceId = playEntity.getBigColumnId();
+        }else if (!TextUtils.isEmpty(playEntity.getColumnId())){
+            topParentResourceId = playEntity.getColumnId();
+        }
+        return topParentResourceId;
+    }
 
+    public static void uploadSingleBuyAudioProgress() {
         if (!prepared)  return;
         try {
             AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
             if (playEntity == null)   return;
-            if (1 == playEntity.getHasBuy() && TextUtils.isEmpty(playEntity.getColumnId())){
+            String topParentResourceId = getTopResourceId(playEntity);
+
+            if (1 == playEntity.getHasBuy() && TextUtils.isEmpty(topParentResourceId)){
                 int progress = isCompletion ? 100 : getProgress(playEntity);
                 UploadLearnProgressManager.INSTANCE.addSingleItemData(playEntity.getResourceId(),
                         ResourceType.TYPE_AUDIO,progress,playEntity.getMaxProgress() / 1000,true);
