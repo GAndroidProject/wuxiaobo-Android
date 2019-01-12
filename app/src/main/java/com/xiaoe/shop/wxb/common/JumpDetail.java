@@ -70,6 +70,7 @@ public class JumpDetail {
      */
     public static void jumpAudio(Context context, String resId, int hasBuy){
         AudioPlayEntity playEntity = AudioMediaPlayer.getAudio();
+        AudioPresenter audioPresenter = new AudioPresenter(null);
         String resourceId = "";
         String flowId = "";
         if(playEntity != null){
@@ -116,7 +117,6 @@ public class JumpDetail {
             AudioMediaPlayer.setAudio(playEntity, false);
 
             AudioPlayUtil.getInstance().refreshAudio(playEntity);
-            AudioPresenter audioPresenter = new AudioPresenter(null);
             audioPresenter.requestDetail(resId);
             if (context instanceof XiaoeActivity){
                 try {
@@ -126,7 +126,13 @@ public class JumpDetail {
                     e.printStackTrace();
                 }
             }
-        }else   UploadLearnProgressManager.INSTANCE.setSameAudio(true);
+        }else{
+            UploadLearnProgressManager.INSTANCE.setSameAudio(true);
+            if (playEntity!= null && !playEntity.isPlaying()) {
+                // 需要更新数据
+                audioPresenter.requestDetail(resId);
+            }
+        }
         Intent intent = new Intent(context, AudioNewActivity.class);
         context.startActivity(intent);
         if (context instanceof Activity)
@@ -519,10 +525,11 @@ public class JumpDetail {
      * @param context   上下文
      * @param groupId   分组 id
      */
-    public static void jumpCourseMore(Context context, String groupId) {
+    public static void jumpCourseMore(Context context, String groupId, String title) {
         Intent intent = new Intent(context, CourseMoreActivity.class);
 
         intent.putExtra("groupId", groupId);
+        intent.putExtra("title", title);
 
         context.startActivity(intent);
     }

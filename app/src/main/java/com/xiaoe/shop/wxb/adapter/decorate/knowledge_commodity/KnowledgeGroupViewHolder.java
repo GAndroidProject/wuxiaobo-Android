@@ -78,7 +78,7 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
                             Log.d(TAG, "singleClick: 没有 groupId");
                             return;
                         }
-                        JumpDetail.jumpCourseMore(mContext, groupId);
+                        JumpDetail.jumpCourseMore(mContext, groupId, currentBindComponent.getTitle());
                     } else {
                         // do nothing
                         Log.d(TAG, "singleClick: 扩展位置");

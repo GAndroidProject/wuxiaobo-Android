@@ -564,7 +564,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                         componentInfo_know_list.setHideTitle(true);
                     } else if (showTitle == 1) {
                         componentInfo_know_list.setHideTitle(false);
-                        String title = itemObj.getString("title") == null ? getString(R.string.learn_manage_wealth) : itemObj.getString("type_title");
+                        String title = itemObj.getString("title") == null ? getString(R.string.learn_manage_wealth) : itemObj.getString("title");
                         componentInfo_know_list.setTitle(title);
                         if (showCheckAll) {
                             componentInfo_know_list.setDesc(getString(R.string.see_more));

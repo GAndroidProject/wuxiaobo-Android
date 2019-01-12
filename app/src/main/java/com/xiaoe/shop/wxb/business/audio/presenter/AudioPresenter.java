@@ -129,7 +129,7 @@ public class AudioPresenter implements IBizCallback {
         int isFree = resourceInfo.getInteger("is_free") == null ? 0 : resourceInfo.getInteger("is_free");
         playEntity.setFree(isFree != 0);
         if(available){
-            if(!playEntity.isLocalResource()){
+            if(!playEntity.isLocalResource() && !cache){
                 //没有下载过，没有本地资源
                 playEntity.setPlayUrl(resourceInfo.getString("audio_url"));
             }

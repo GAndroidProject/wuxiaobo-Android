@@ -87,7 +87,7 @@ public class KnowledgeListViewHolder extends BaseViewHolder {
                                 Log.d(TAG, "singleClick: 没有 groupId");
                                 return;
                             }
-                            JumpDetail.jumpCourseMore(mContext, groupId);
+                            JumpDetail.jumpCourseMore(mContext, groupId, currentBindComponent.getTitle());
                         } else { // 默认跳转到搜索更多页面
                             JumpDetail.jumpSearchMore(mContext, currentBindComponent.getJoinedDesc(), currentBindComponent.getSearchType());
                         }

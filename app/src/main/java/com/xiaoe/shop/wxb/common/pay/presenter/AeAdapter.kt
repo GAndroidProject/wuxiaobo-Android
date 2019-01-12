@@ -43,7 +43,7 @@ class AeAdapter(context: Context, private var aeDataItem: MutableList<AeDataItem
         aeViewHolder.itemTitle.text = aeDataItem[position].remark
         aeViewHolder.itemTime.text = aeDataItem[position].createdAt
         aeViewHolder.itemDesc.visibility = View.GONE
-        val price = "￥" + String.format("%1.2f", aeDataItem[position].amount.toFloat() / 100)
+        val price = String.format("%1.2f", aeDataItem[position].amount.toFloat() / 100) + "波豆"
         var finalPrice = ""
         if (aeDataItem[position].flowType == 1) { // 充值
             finalPrice = "+$price"

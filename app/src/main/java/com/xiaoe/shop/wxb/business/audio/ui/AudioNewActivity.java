@@ -614,11 +614,11 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
                 if(audioPlayEntity != null){
                     String imgUrl = TextUtils.isEmpty(audioPlayEntity.getImgUrlCompressed()) ? audioPlayEntity.getImgUrl() :  audioPlayEntity.getImgUrlCompressed();
-                    umShare(audioPlayEntity.getTitle(), imgUrl, audioPlayEntity.getShareUrl(), "");
+                    umShare(audioPlayEntity.getTitle(), imgUrl, audioPlayEntity.getShareUrl(), " ");
                 }
                 break;
             case R.id.audio_count_down:
-                showCountDownPlayDialog();
+                if (AudioMediaPlayer.prepared)      showCountDownPlayDialog();
                 break;
             case R.id.btn_count_down_1:
                 countDown(COUNT_DOWN_STATE_CLOSE,0,0);
