@@ -618,7 +618,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 }
                 break;
             case R.id.audio_count_down:
-                showCountDownPlayDialog();
+                if (AudioMediaPlayer.prepared)      showCountDownPlayDialog();
                 break;
             case R.id.btn_count_down_1:
                 countDown(COUNT_DOWN_STATE_CLOSE,0,0);
