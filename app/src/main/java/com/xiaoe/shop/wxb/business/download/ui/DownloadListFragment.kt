@@ -364,6 +364,11 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         val result = Gson().fromJson(entity.toString(), NewDownloadBean::class.java)
         if (result.data.list == null) {
             // TODO: 没有单品的情况下，页面的显示
+            downloadSingleList.clear()
+            downloadSingleAdapter.notifyDataSetChanged()
+            downloadLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.service_error_text), R.mipmap.ic_network_error)
+            downloadRefresh.setEnableLoadMore(false)
+            downloadTitleCount.text = ""
         } else {
             downloadTitleCount.text = String.format(getString(R.string.download_count), result.data.goodsInfo.downloadCount)
             for (item in result.data.list!!) {

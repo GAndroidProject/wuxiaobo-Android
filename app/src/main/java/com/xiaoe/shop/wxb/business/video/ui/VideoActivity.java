@@ -73,6 +73,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.util.List;
 
+import static com.xiaoe.common.entitys.ResourceType.TYPE_BIG_COLUMN;
+import static com.xiaoe.common.entitys.ResourceType.TYPE_COLUMN;
+import static com.xiaoe.common.entitys.ResourceType.TYPE_MEMBER;
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CURRENT;
 
 public class VideoActivity extends XiaoeActivity implements View.OnClickListener, OnClickVideoButtonListener,
@@ -503,6 +506,21 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             download.setResource_type(3);
             download.setImg_url(collectImgUrl);
             download.setVideo_url(mVideoUrl);
+            String id = UploadLearnProgressManager.INSTANCE.getMCurrentColumnId();
+            int type = UploadLearnProgressManager.INSTANCE.getMTopParentResType();
+            if (!TextUtils.isEmpty(id) && type > 0){
+                switch (type) {
+                    case TYPE_MEMBER:
+                    case TYPE_BIG_COLUMN:
+                        download.setTopParentId(id);
+                        download.setTopParentType(type);
+                        break;
+                    case TYPE_COLUMN:
+                        download.setParentId(id);
+                        download.setParentType(type);
+                        break;
+                }
+            }
             DownloadManager.getInstance().addDownload(null, null, download);
         }
         playControllerView.setDownloadState(1);

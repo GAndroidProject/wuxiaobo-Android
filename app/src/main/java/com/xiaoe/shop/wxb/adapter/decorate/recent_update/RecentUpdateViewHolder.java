@@ -32,6 +32,8 @@ import butterknife.ButterKnife;
  */
 public class RecentUpdateViewHolder extends BaseViewHolder {
 
+    @BindView(R.id.recent_update_title)
+    TextView recentUpdateTitle;
     @BindView(R.id.recent_update_sub_list)
     ListView recentUpdateListView;
     @BindView(R.id.recent_update_avatar)
@@ -63,6 +65,12 @@ public class RecentUpdateViewHolder extends BaseViewHolder {
 
     public void initViewHolder(ComponentInfo currentBindComponent, int currentBindPos, SparseArray<RecentUpdateListAdapter> recentUpdateListAdapterArr) {
         SetImageUriUtil.setImgURI(recentUpdateAvatar, currentBindComponent.getImgUrl(), Dp2Px2SpUtil.dp2px(mContext, 72), Dp2Px2SpUtil.dp2px(mContext, 72));
+        recentUpdateTitle.setText(currentBindComponent.getJoinedDesc());
+        if (currentBindComponent.isHideTitle()) {
+            recentUpdateTitle.setVisibility(View.GONE);
+        } else {
+            recentUpdateTitle.setVisibility(View.VISIBLE);
+        }
         recentUpdateSubTitle.setText(currentBindComponent.getTitle());
         recentUpdateSubDesc.setText(currentBindComponent.getDesc());
         // 加载 ListView 的数据
