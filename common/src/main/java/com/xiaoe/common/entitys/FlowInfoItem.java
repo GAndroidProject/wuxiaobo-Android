@@ -1,5 +1,7 @@
 package com.xiaoe.common.entitys;
 
+import java.util.List;
+
 public class FlowInfoItem {
 
     // item 类型
@@ -20,6 +22,12 @@ public class FlowInfoItem {
     private String itemJoinedDesc;
     // item 价格
     private String itemPrice;
+    // item 标签集合
+    private List<LabelItemEntity> labelList;
+    // item 划线价
+    private String linePrice;
+    // item 是否免费
+    private boolean itemIsFree;
 
     public FlowInfoItem() { }
 
@@ -93,5 +101,29 @@ public class FlowInfoItem {
 
     public void setItemTag(String itemTag) {
         this.itemTag = itemTag;
+    }
+
+    public List<LabelItemEntity> getLabelList() {
+        return labelList;
+    }
+
+    public void setLabelList(List<LabelItemEntity> labelList) {
+        this.labelList = labelList;
+    }
+
+    public String getLinePrice() {
+        return linePrice;
+    }
+
+    public void setLinePrice(String linePrice) {
+        this.linePrice = linePrice;
+    }
+
+    public boolean getItemIsFree() {
+        return itemIsFree;
+    }
+
+    public void setItemIsFree(boolean itemIsFree) {
+        this.itemIsFree = itemIsFree;
     }
 }

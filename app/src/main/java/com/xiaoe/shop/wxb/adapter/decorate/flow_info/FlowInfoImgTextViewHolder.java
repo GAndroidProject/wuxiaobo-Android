@@ -3,6 +3,7 @@ package com.xiaoe.shop.wxb.adapter.decorate.flow_info;
 import android.content.Context;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -23,14 +24,15 @@ import butterknife.ButterKnife;
 import butterknife.internal.DebouncingOnClickListener;
 
 /**
- * 图文 ViewHolder
+ * 图文 ViewHolder 已废弃,使用 FlowInfoItemViewHolder
+ * @deprecated
  */
 public class FlowInfoImgTextViewHolder extends BaseViewHolder {
 
     private Context mContext;
 
     @BindView(R.id.flow_info_img_text_wrap)
-    public FrameLayout flowInfoWrap;
+    public LinearLayout flowInfoWrap;
     @BindView(R.id.flow_info_img_text_bg)
     public SimpleDraweeView flowInfoBg;
     @BindView(R.id.flow_info_img_text_tag)
