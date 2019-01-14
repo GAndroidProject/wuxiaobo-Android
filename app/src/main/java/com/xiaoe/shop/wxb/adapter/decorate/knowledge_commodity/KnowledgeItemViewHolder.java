@@ -102,7 +102,7 @@ class KnowledgeItemViewHolder extends BaseViewHolder {
             if (DecorateEntityType.IMAGE_TEXT.equals(item.getSrcType()) || DecorateEntityType.AUDIO.equals(item.getSrcType()) || DecorateEntityType.VIDEO.equals(item.getSrcType())) {
                 priceStr = item.getItemPrice();
             } else if (DecorateEntityType.COLUMN.equals(item.getSrcType()) || DecorateEntityType.TOPIC.equals(item.getSrcType()) || DecorateEntityType.MEMBER.equals(item.getSrcType())) {
-                priceStr = item.getResourceCount() + "期/" + item.getItemPrice() + mContext.getString(R.string.wxb_virtual_unit);
+                priceStr = item.getResourceCount() + "期/" + item.getItemPrice();
             }
             itemPrice.setText(priceStr);
             itemPrice.setTextColor(ContextCompat.getColor(mContext, R.color.price_color));

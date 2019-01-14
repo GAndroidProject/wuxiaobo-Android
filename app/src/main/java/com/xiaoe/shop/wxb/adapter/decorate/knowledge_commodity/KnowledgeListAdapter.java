@@ -107,7 +107,7 @@ public class KnowledgeListAdapter extends BaseAdapter {
             if (DecorateEntityType.IMAGE_TEXT.equals(item.getSrcType()) || DecorateEntityType.AUDIO.equals(item.getSrcType()) || DecorateEntityType.VIDEO.equals(item.getSrcType())) {
                 price = item.getItemPrice();
             } else if (DecorateEntityType.COLUMN.equals(item.getSrcType()) || DecorateEntityType.TOPIC.equals(item.getSrcType()) || DecorateEntityType.MEMBER.equals(item.getSrcType())) {
-                price = item.getResourceCount() + "期/" + item.getItemPrice() + mContext.getString(R.string.wxb_virtual_unit);
+                price = item.getResourceCount() + "期/" + item.getItemPrice();
             }
             viewHolder.itemPrice.setText(price);
         }
