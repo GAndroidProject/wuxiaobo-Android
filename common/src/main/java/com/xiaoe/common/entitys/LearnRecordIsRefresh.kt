@@ -6,3 +6,5 @@ package com.xiaoe.common.entitys
  * Description:
  */
 data class LearnRecordIsRefresh(val isRefresh: Boolean)
+
+data class AudioListLoadMoreEvent(val isLoadMore: Boolean)
