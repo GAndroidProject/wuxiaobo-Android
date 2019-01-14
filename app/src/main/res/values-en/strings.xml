@@ -241,6 +241,7 @@
 
     <!--页面请求状态提示 start-->
     <string name="request_fail">页面还没找到，刷新试试吧</string>
+    <string name="request_fail2">页面还没找到，点击刷新试试吧</string>
     <!--页面请求状态提示 end-->
 
     <string name="action_sheet_man">男</string>
@@ -542,4 +543,6 @@
     <string name="confirm_ali_icon_desc">支付宝支付图标</string>
     <string name="confirm_we_chat_pay_icon">微信支付图标</string>
     <string name="ae_empty_content">暂无交易明细记录</string>
+    <string name="has_buy_desc">已购</string>
+    <string name="wxb_virtual_unit">波豆</string>
 </resources>

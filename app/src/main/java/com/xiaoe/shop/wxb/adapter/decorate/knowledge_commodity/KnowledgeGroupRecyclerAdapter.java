@@ -42,25 +42,49 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view;
-        if (TYPE_AUDIO == viewType)
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_audio_group_item, null);
-        else   view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group_item, null);
-        return new KnowledgeItemViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_new_group_item, null);
+//        if (TYPE_AUDIO == viewType)
+//            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_audio_group_item, null);
+//        else   view = LayoutInflater.from(parent.getContext()).inflate(R.layout.knowledge_commodity_group_item, null);
+        return new KnowledgeItemViewHolder(mContext, view);
     }
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        int bindPos = holder.getAdapterPosition();
+        KnowledgeCommodityItem knowledgeCommodityItem = mItemList.get(bindPos);
         KnowledgeItemViewHolder knowledgeItemViewHolder = (KnowledgeItemViewHolder) holder;
+        knowledgeItemViewHolder.initViewHolder(knowledgeCommodityItem, onItemClickWithKnowledgeListener);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mItemList == null ? 0 : mItemList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+//        if (DecorateEntityType.AUDIO.equals(mItemList.get(position).getSrcType()))
+//            return TYPE_AUDIO;
+//        return TYPE_OTHER;
+        return super.getItemViewType(position);
+    }
+
+    /**
+     * @deprecated 二期更新需求后，废弃
+     * @param knowledgeItemViewHolder
+     * @param position
+     */
+    private void initViewHolder(KnowledgeItemViewHolder knowledgeItemViewHolder, int position) {
         // 当前下标
         final int currentPos = knowledgeItemViewHolder.getAdapterPosition();
         // 当前元素
         final KnowledgeCommodityItem currentItem = mItemList.get(currentPos);
         if (TYPE_AUDIO == getItemViewType(position)){
-            knowledgeItemViewHolder.itemIconBg.setVisibility(View.VISIBLE);
-            SetImageUriUtil.setImgURI(knowledgeItemViewHolder.itemIconBg, "res:///" +
-                            R.mipmap.audio_list_bg , Dp2Px2SpUtil.dp2px(mContext, 160),
-                    Dp2Px2SpUtil.dp2px(mContext, 120));
+//            knowledgeItemViewHolder.itemIconBg.setVisibility(View.VISIBLE);
+//            SetImageUriUtil.setImgURI(knowledgeItemViewHolder.itemIconBg, "res:///" +
+//                            R.mipmap.audio_list_bg , Dp2Px2SpUtil.dp2px(mContext, 160),
+//                    Dp2Px2SpUtil.dp2px(mContext, 120));
             String url = TextUtils.isEmpty(mItemList.get(position).getItemImg()) ? "res:///" +
                     R.mipmap.detail_disk : mItemList.get(position).getItemImg();
             int imageWidthDp = 84;
@@ -71,7 +95,7 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
                 SetImageUriUtil.setRoundAsCircle(knowledgeItemViewHolder.itemIcon, Uri.parse(url));
             }
         }else {
-            knowledgeItemViewHolder.itemIconBg.setVisibility(View.GONE);
+//            knowledgeItemViewHolder.itemIconBg.setVisibility(View.GONE);
             knowledgeItemViewHolder.itemIcon.setImageURI(currentItem.getItemImg());
         }
         // 如果是专栏的话需要有两行标题，其他单品就显示一行标题和一行描述
@@ -96,12 +120,12 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
 //            knowledgeItemViewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
 //            knowledgeItemViewHolder.itemDesc.setText(currentItem.getItemDesc());
             // 无价格，将 desc 文案设置在左边的 textView 中，右边的 textView 内容置空
-            knowledgeItemViewHolder.itemDesc.setText("");
+//            knowledgeItemViewHolder.itemDesc.setText("");
             knowledgeItemViewHolder.itemPrice.setText(currentItem.getItemDesc());
             knowledgeItemViewHolder.itemPrice.setTextColor(mContext.getResources().getColor(R.color.knowledge_item_desc_color));
         } else { // 没买
             knowledgeItemViewHolder.itemPrice.setText(currentItem.getItemPrice());
-            knowledgeItemViewHolder.itemDesc.setText(currentItem.getItemDesc());
+//            knowledgeItemViewHolder.itemDesc.setText(currentItem.getItemDesc());
         }
         // 判断如果 item 是专栏的话就显示一行标题一行描述，其他单品的话就显示两行标题
         knowledgeItemViewHolder.itemWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
@@ -110,17 +134,5 @@ public class KnowledgeGroupRecyclerAdapter extends RecyclerView.Adapter<BaseView
                 onItemClickWithKnowledgeListener.onKnowledgeItemClick(v, currentItem);
             }
         });
-    }
-
-    @Override
-    public int getItemCount() {
-        return mItemList == null ? 0 : mItemList.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (DecorateEntityType.AUDIO.equals(mItemList.get(position).getSrcType()))
-            return TYPE_AUDIO;
-        return TYPE_OTHER;
     }
 }

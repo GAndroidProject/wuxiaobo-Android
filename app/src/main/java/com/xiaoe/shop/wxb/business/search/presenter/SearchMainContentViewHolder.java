@@ -12,7 +12,7 @@ import com.xiaoe.shop.wxb.base.BaseViewHolder;
 public class SearchMainContentViewHolder extends BaseViewHolder {
 
     @BindView(R.id.search_main_item)
-    TextView content;
+    public TextView content;
 
     public SearchMainContentViewHolder(View itemView) {
         super(itemView);
