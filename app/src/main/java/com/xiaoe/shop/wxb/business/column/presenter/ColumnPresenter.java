@@ -127,6 +127,7 @@ public class ColumnPresenter implements IBizCallback {
      */
     public List<ColumnSecondDirectoryEntity> formatSingleResourceEntity2(JSONArray jsonArray, String columnTitle, String columnId, String bigColumnId, int hasBuy){
         List<ColumnSecondDirectoryEntity> directoryEntityList = new ArrayList<ColumnSecondDirectoryEntity>();
+        if (jsonArray == null)  return directoryEntityList;
         for (Object object : jsonArray) {
             ColumnSecondDirectoryEntity secondDirectoryEntity = new ColumnSecondDirectoryEntity();
             JSONObject jsonObject = (JSONObject) object;

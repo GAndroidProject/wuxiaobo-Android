@@ -241,6 +241,7 @@
 
     <!--页面请求状态提示 start-->
     <string name="request_fail">页面还没找到，刷新试试吧</string>
+    <string name="request_fail2">页面还没找到，点击刷新试试吧</string>
     <!--页面请求状态提示 end-->
 
     <string name="action_sheet_man">男</string>
