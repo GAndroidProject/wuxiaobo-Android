@@ -21,6 +21,7 @@ import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
 import com.xiaoe.shop.wxb.R;
 
+@Deprecated
 public class H5PayDemoActivity extends Activity {
 
     private WebView mWebView;

@@ -33,6 +33,7 @@ import java.util.Map;
  * 在真实 App 中，私钥（如 RSA_PRIVATE 等）数据严禁放在客户端，同时加签过程务必要放在服务端完成，
  * 否则可能造成商户私密数据泄露或被盗用，造成不必要的资金损失，面临各种安全风险。
  */
+@Deprecated
 public class PayDemoActivity extends AppCompatActivity {
 
     /**
