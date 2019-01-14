@@ -36,6 +36,7 @@ import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.FlowInfoItem;
 import com.xiaoe.common.entitys.GraphicNavItem;
 import com.xiaoe.common.entitys.KnowledgeCommodityItem;
+import com.xiaoe.common.entitys.LabelItemEntity;
 import com.xiaoe.common.entitys.RecentUpdateListItem;
 import com.xiaoe.common.entitys.ShufflingItem;
 import com.xiaoe.common.utils.CacheDataUtil;
@@ -110,6 +111,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
     StatusPagerView microPageLoading;
     // @BindView(R.id.micro_page_logo)
     // ImageView microPageLogo;
+//    @BindView(R.id.bottom_wrap)
+//    LinearLayout microPageBottom;
 
     List<ComponentInfo> microPageList;
 
@@ -357,6 +360,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
 //        microPageContent.addItemDecoration(spacesItemDecoration);
         // 初始化适配器
         microPageAdapter = new DecorateRecyclerAdapter(mContext, microPageList);
+        if (isMain) {
+            microPageAdapter.showLastItem(true);
+        } else {
+            microPageAdapter.showLastItem(false);
+        }
         microPageContent.setAdapter(microPageAdapter);
         if (decorateType == NETWORK_DECORATE) {
             networkDecorate = true;
@@ -773,8 +781,30 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 String title = flowInfo.getString("title");
                 String desc = flowInfo.getString("summary");
                 String imgUrl = flowInfo.getString("img_url");
-                String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : "￥" + flowInfo.getString("show_price");
-                boolean hasBuy = TextUtils.isEmpty(showPrice) || "￥0.00".equals(showPrice);
+                String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : flowInfo.getString("show_price") + "波豆";
+                String linePrice = TextUtils.isEmpty(flowInfo.getString("line_price")) ? "" : flowInfo.getString("line_price") + " 波豆";
+                int paymentType = flowInfo.getInteger("payment_type") == null ? -1 : flowInfo.getInteger("payment_type");
+                JSONArray infoLabels = flowInfo.getJSONArray("info_label");
+                if (infoLabels != null) {
+                    List<LabelItemEntity> labelItemEntityList = new ArrayList<>();
+                    for (Object labelItem : infoLabels) {
+                        JSONObject labelItemJson = (JSONObject) labelItem;
+                        LabelItemEntity labelItemEntity = new LabelItemEntity();
+                        labelItemEntity.setLabelContent(labelItemJson.getString("content"));
+                        labelItemEntity.setLabelBackground(labelItemJson.getString("background_color"));
+                        labelItemEntity.setLabelFontColor(labelItemJson.getString("font_color"));
+                        labelItemEntityList.add(labelItemEntity);
+                    }
+                    fii.setLabelList(labelItemEntityList);
+                }
+                boolean isPriceExist = TextUtils.isEmpty(showPrice) || "￥0.00".equals(showPrice);
+                boolean hasBuy = false;
+                boolean isFree = false;
+                if (isPriceExist && paymentType == 1) { // 免费
+                    isFree = true;
+                } else if (isPriceExist && paymentType == 2) { // 已购
+                    hasBuy = true;
+                }
 
                 fii.setItemType(resourceType);
                 fii.setItemId(resourceId);
@@ -782,12 +812,14 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 fii.setItemTitle(title);
                 fii.setItemDesc(desc);
                 fii.setItemPrice(showPrice);
+                fii.setLinePrice(linePrice);
 //                if (isRelated) { // 关联售卖，则不显示价格
 //                    hasBuy = true; // 仅仅是将价格隐藏，不是真的已购
 //                } else {
 //                    fii.setItemPrice(showPrice);
 //                }
                 fii.setItemHasBuy(hasBuy);
+                fii.setItemIsFree(isFree);
                 fii.setItemImg(imgUrl);
 
                 dataList.add(fii);
@@ -955,6 +987,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
      */
     private void newUpdateToolbar() {
         if (!isMain) {
+//            microPageBottom.setVisibility(View.GONE);
             if (getScrollYDistance() > maxAlpha) {
                 if (microPageToolbarTitle.getVisibility() != View.VISIBLE) {
                     microPageToolbarTitle.setVisibility(View.VISIBLE);
@@ -979,6 +1012,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             }
         } else {
             mStatusBarBlank.setVisibility(View.GONE);
+//            if (!microPageContent.canScrollVertically(1)) { // 滑到底部
+//                microPageBottom.setVisibility(View.VISIBLE);
+//            } else {
+//                microPageBottom.setVisibility(View.GONE);
+//            }
         }
     }
 

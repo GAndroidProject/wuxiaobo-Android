@@ -22,6 +22,11 @@ import java.util.List;
 
 import butterknife.internal.DebouncingOnClickListener;
 
+/**
+ * 老的信息流适配器
+ *
+ * @deprecated 已废弃,使用 NewFlowInfoRecyclerAdapter
+ */
 public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     private static final String TAG = "FlowInfoRecyclerAdapter";

@@ -26,6 +26,7 @@ import java.util.HashMap;
 
 /**
  * 音频 ViewHolder
+ * @deprecated 已废弃，使用 FlowInfoItemViewHolder
  */
 public class FlowInfoAudioViewHolder extends BaseViewHolder {
 
