@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:nestedScrollingEnabled="false"
             android:overScrollMode="never"
-            android:scrollbars="none" />
+            android:scrollbars="none"/>
 
         <!--<ImageView-->
             <!--android:id="@+id/micro_page_logo"-->
@@ -95,6 +95,15 @@
             android:id="@+id/micro_page_loading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+
+        <!--<include-->
+            <!--layout="@layout/common_bottom_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="64dp"-->
+            <!--android:layout_marginBottom="22dp"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:visibility="gone"/>-->
 
     </FrameLayout>
 

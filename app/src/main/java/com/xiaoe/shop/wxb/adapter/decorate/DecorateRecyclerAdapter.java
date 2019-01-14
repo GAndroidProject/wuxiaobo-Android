@@ -14,7 +14,7 @@ import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
-import com.xiaoe.shop.wxb.adapter.decorate.flow_info.FlowInfoRecyclerAdapter;
+import com.xiaoe.shop.wxb.adapter.decorate.flow_info.NewFlowInfoRecyclerAdapter;
 import com.xiaoe.shop.wxb.adapter.decorate.flow_info.FlowInfoViewHolder;
 import com.xiaoe.shop.wxb.adapter.decorate.graphic_navigation.GraphicNavRecyclerAdapter;
 import com.xiaoe.shop.wxb.adapter.decorate.graphic_navigation.GraphicNavViewHolder;
@@ -45,7 +45,7 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     private List<ComponentInfo> mComponentList;
 
     // 信息流
-    private SparseArray<FlowInfoRecyclerAdapter> flowInfoRecyclerAdapterArr;
+    private SparseArray<NewFlowInfoRecyclerAdapter> flowInfoRecyclerAdapterArr;
     // 知识商品（列表）
     private SparseArray<KnowledgeListAdapter> knowledgeListAdapterArr;
     // 知识商品（宫格）
@@ -61,6 +61,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     private List<RecyclerView> knowledgeGroupRecyclerList;
 
     boolean isSearch = false;
+
+    private final int BASE_ITEM_TYPE_FOOTER = 10002;
+    private boolean isShowLastItem = true;
 
     public DecorateRecyclerAdapter(Context context, List<ComponentInfo> componentList) {
         this.mContext = context;
@@ -148,6 +151,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
                 return new SearchViewHolder(mContext, view);
+            case BASE_ITEM_TYPE_FOOTER:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.common_bottom_layout, null);
+                return new BottomLineViewHolder(mContext, view);
             default:
                 return null;
         }
@@ -156,6 +162,10 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         int currentBindPos = holder.getAdapterPosition();
+        if (currentBindPos == mComponentList.size()) { // 最后一个 item
+            ((BottomLineViewHolder) holder).initViewHolder(isShowLastItem);
+            return;
+        }
         int itemType = getItemViewType(currentBindPos);
         final ComponentInfo currentBindComponent = mComponentList.get(currentBindPos);
         if (itemType == -1) {
@@ -202,11 +212,14 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public int getItemCount() {
-        return mComponentList.size();
+        return mComponentList == null ? 0 : mComponentList.size() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
+        if (position == mComponentList.size()) { // 表示最后一个元素
+            return BASE_ITEM_TYPE_FOOTER;
+        }
         // 当前 item
         ComponentInfo currentComponent = mComponentList.get(position);
         String type = currentComponent.getType();
@@ -248,5 +261,9 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             // title 也需要刷新
             notifyItemChanged(key);
         }
+    }
+
+    public void showLastItem(boolean isShow) {
+        isShowLastItem = isShow;
     }
 }
