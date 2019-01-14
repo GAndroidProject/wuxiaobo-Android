@@ -308,6 +308,7 @@ public class NavigateDetailActivity extends XiaoeActivity {
         } else {
             pageDataList.add(listComponentInfo);
             decorateRecyclerAdapter = new DecorateRecyclerAdapter(this, pageDataList);
+            decorateRecyclerAdapter.showLastItem(false);
             LinearLayoutManager llm = new LinearLayoutManager(this);
             llm.setOrientation(LinearLayoutManager.VERTICAL);
             navigateContent.setLayoutManager(llm);

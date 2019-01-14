@@ -668,9 +668,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             item.setItemTitleColumn(listSubItemObj.getString("summary"));
             item.setItemImg(listSubItemObj.getString("img_url_compressed_larger"));
 //            item.setItemImg(listSubItemObj.getString("img_url"));
-            String price = listSubItemObj.getString("show_price") + "波豆";
-            String linePrice = listSubItemObj.getString("line_price") + "波豆";
-            boolean isPriceEmpty = "波豆".equals(price) || "0.00波豆".equals(price) || "null波豆".equals(price);
+            String price = listSubItemObj.getString("show_price") + getContext().getString(R.string.wxb_virtual_unit);
+            String linePrice = listSubItemObj.getString("line_price") + getContext().getString(R.string.wxb_virtual_unit);
+            boolean isPriceEmpty = getContext().getString(R.string.wxb_virtual_unit).equals(price) ||
+                    ("0.00" + getContext().getString(R.string.wxb_virtual_unit)).equals(price) ||
+                    ("null" + getContext().getString(R.string.wxb_virtual_unit)).equals(price);
             if (isPriceEmpty) {
                 boolean hasBuy = false;
                 boolean isFree = false;
@@ -795,10 +797,10 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 String title = flowInfo.getString("title");
                 String desc = flowInfo.getString("summary");
                 String imgUrl = flowInfo.getString("img_url");
-                String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : flowInfo.getString("show_price") + "波豆";
-                String linePrice = TextUtils.isEmpty(flowInfo.getString("line_price")) ? "" : flowInfo.getString("line_price") + " 波豆";
+                String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : flowInfo.getString("show_price") + getContext().getString(R.string.wxb_virtual_unit);
+                String linePrice = TextUtils.isEmpty(flowInfo.getString("line_price")) ? "" : flowInfo.getString("line_price") + " " + getContext().getString(R.string.wxb_virtual_unit);
                 int paymentType = flowInfo.getInteger("payment_type") == null ? -1 : flowInfo.getInteger("payment_type");
-                boolean isPriceExist = TextUtils.isEmpty(showPrice) || "0.00波豆".equals(showPrice);
+                boolean isPriceExist = TextUtils.isEmpty(showPrice) || ("0.00" + getContext().getString(R.string.wxb_virtual_unit)).equals(showPrice);
                 boolean hasBuy = false;
                 boolean isFree = false;
                 if (isPriceExist && paymentType == 1) { // 免费

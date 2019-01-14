@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -118,7 +119,6 @@ public class CourseMoreActivity extends XiaoeActivity {
     private void initPageData(JSONObject component) {
         // 0 列表形式，2 宫格形式(默认)
         int showStyle = component.getInteger("list_style") == null ? 2 : component.getInteger("list_style");
-        // 知识商品假数据 -- 分组形式
         ComponentInfo componentInfo_knowledge = new ComponentInfo();
         componentInfo_knowledge.setType(DecorateEntityType.KNOWLEDGE_COMMODITY_STR);
         if (showStyle == 0) {
@@ -139,25 +139,32 @@ public class CourseMoreActivity extends XiaoeActivity {
             item.setItemTitleColumn(listSubItemObj.getString("summary"));
             item.setItemImg(listSubItemObj.getString("img_url_compressed_larger"));
 //            item.setItemImg(listSubItemObj.getString("img_url"));
-            String price = "￥" + listSubItemObj.getString("show_price");
-            if (price.equals("￥")) { // 表示买了，所以没有价格
-                item.setItemPrice(null);
-                item.setHasBuy(true);
-            } else {
-                item.setItemPrice(price);
-                item.setHasBuy(false);
+            String price = listSubItemObj.getString("show_price") + getString(R.string.wxb_virtual_unit);
+            int paymentType = listSubItemObj.getInteger("payment_type") == null ? -1 : listSubItemObj.getInteger("payment_type");
+            boolean hasBuy = false;
+            boolean isFree = false;
+            if (price.equals(getString(R.string.wxb_virtual_unit)) && paymentType == 1) { // 免费
+                price = "";
+                isFree = true;
+            } else if (price.equals(getString(R.string.wxb_virtual_unit)) && paymentType == 2) { // 已购
+                price = "";
+                hasBuy = true;
             }
+            item.setItemPrice(price);
+            item.setHasBuy(hasBuy);
+            item.setFree(isFree);
             String srcType = listSubItemObj.getString("src_type");
             String srcId = listSubItemObj.getString("src_id");
-            int viewCount = listSubItemObj.getInteger("view_count") == null ? 0 : listSubItemObj.getInteger("view_count");
-            int purchaseCount = listSubItemObj.getInteger("purchase_count") == null ? 0 : listSubItemObj.getInteger("purchase_count");
+            String viewCount = TextUtils.isEmpty(listSubItemObj.getString("view_count")) ? "" : listSubItemObj.getString("view_count");
+            String resourceCount = TextUtils.isEmpty(listSubItemObj.getString("resource_count")) ? "" : listSubItemObj.getString("resource_count");
             item.setSrcType(srcType);
             item.setResourceId(srcId);
             // 专栏或者大专栏订阅量就是 purchaseCount
             if (srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.TOPIC)) {
-                viewCount = purchaseCount;
+                viewCount = resourceCount;
             }
             String viewDesc = obtainViewCountDesc(srcType, viewCount);
+            item.setResourceCount(resourceCount);
             item.setItemDesc(viewDesc);
             itemListObj.add(item);
         }
@@ -167,19 +174,18 @@ public class CourseMoreActivity extends XiaoeActivity {
     }
 
     // 根据子类型获取浏览字段
-    private String obtainViewCountDesc (String srcType, int viewCount) {
-        if (viewCount == 0) {
+    private String obtainViewCountDesc (String srcType, String viewCount) {
+        if (TextUtils.isEmpty(viewCount)) {
             return "";
         }
         switch (srcType) {
             case DecorateEntityType.IMAGE_TEXT: // 图文
-                return String.format(getString(R.string.second_reading),viewCount);
             case DecorateEntityType.AUDIO: // 音频
             case DecorateEntityType.VIDEO: // 视频
-                return String.format(getString(R.string.time_play), viewCount);
+                return String.format(getString(R.string.learn_count_str), viewCount);
             case DecorateEntityType.TOPIC: // 大专栏
             case DecorateEntityType.COLUMN: // 专栏
-                return String.format(getString(R.string.stages_text), viewCount);
+                return String.format(getString(R.string.stages_text_str), viewCount);
             default:
                 return "";
         }
@@ -192,6 +198,7 @@ public class CourseMoreActivity extends XiaoeActivity {
         courseMoreContent.setLayoutManager(llm);
 
         DecorateRecyclerAdapter adapter = new DecorateRecyclerAdapter(this, dataList);
+        adapter.showLastItem(false);
         courseMoreContent.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
