@@ -89,7 +89,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 FlowInfoImgTextViewHolder columnViewHolder = (FlowInfoImgTextViewHolder) holder;
                 columnViewHolder.initViewHolder(bindItem, bindItem.getItemType(), position);
                 break;
-            case DecorateEntityType.FLOW_INFO_TOPIC: // 大专栏
+            case DecorateEntityType.FLOW_INFO_TOPIC: // 大专栏 / 会员
                 FlowInfoImgTextViewHolder topicViewHolder = (FlowInfoImgTextViewHolder) holder;
                 topicViewHolder.initViewHolder(bindItem, bindItem.getItemType(), position);
                 break;
@@ -125,6 +125,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.COLUMN:
                 return DecorateEntityType.FLOW_INFO_COLUMN;
             case DecorateEntityType.TOPIC:
+            case DecorateEntityType.MEMBER:
                 return DecorateEntityType.FLOW_INFO_TOPIC;
             default:
                 return -1;
@@ -147,6 +148,7 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.COLUMN:
                 return DecorateEntityType.FLOW_INFO_COLUMN;
             case DecorateEntityType.TOPIC:
+            case DecorateEntityType.MEMBER:
                 return DecorateEntityType.FLOW_INFO_TOPIC;
             default:
                 return -1;
