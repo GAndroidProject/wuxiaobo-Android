@@ -63,7 +63,7 @@ public class NewFlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHol
             case DecorateEntityType.AUDIO: // 音频
             case DecorateEntityType.VIDEO: // 视频
                 FlowInfoItemViewHolder mediaViewHolder = (FlowInfoItemViewHolder) holder;
-                mediaViewHolder.initViewHolder(bindItem, position);
+                mediaViewHolder.initViewHolder(bindItem, bindPos);
                 break;
             default:
                 break;

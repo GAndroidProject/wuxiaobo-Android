@@ -46,8 +46,6 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
     TextView flowInfoTitle;
     @BindView(R.id.flow_info_item_desc)
     TextView flowInfoDesc;
-    @BindView(R.id.flow_info_item_price)
-    TextView flowInfoPrice;
     @BindView(R.id.flow_info_type)
     TextView flowInfoType;
     @BindView(R.id.flow_info_item_label)
@@ -63,22 +61,6 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
 
     public void initViewHolder(FlowInfoItem bindItem, int position) {
         setItemBgAndTag(bindItem);
-        // 有划线价就显示划线价，否则显示真实价格，若二者都没有，隐藏价格位置
-        if (TextUtils.isEmpty(bindItem.getLinePrice())) {
-            if (TextUtils.isEmpty(bindItem.getItemPrice())) {
-                flowInfoPrice.setVisibility(View.GONE);
-            } else {
-                flowInfoPrice.setVisibility(View.VISIBLE);
-                flowInfoPrice.setText(bindItem.getItemPrice());
-                flowInfoPrice.setTextColor(ContextCompat.getColor(mContext, R.color.price_color));
-                flowInfoPrice.getPaint().setFlags(0);  // 取消设置的的划线
-            }
-        } else {
-            flowInfoPrice.setVisibility(View.VISIBLE);
-            flowInfoPrice.setText(bindItem.getLinePrice());
-            flowInfoPrice.setTextColor(ContextCompat.getColor(mContext, R.color.knowledge_item_desc_color));
-            flowInfoPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG); // 设置中划线并加清晰
-        }
         // 标签初始化
         if (bindItem.getLabelList() == null || bindItem.getLabelList().size() == 0) {
             flowInfoBottomRecycler.setVisibility(View.GONE);
@@ -92,14 +74,9 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
             autoLineFeedLayoutManager.setScrollEnabled(false);
             autoLineFeedLayoutManager.setStackFromEnd(true); // 软件盘弹出，recyclerView 随之上移
             SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
-            int left = Dp2Px2SpUtil.dp2px(mContext, 8);
             int top = Dp2Px2SpUtil.dp2px(mContext, 14);
             int right = Dp2Px2SpUtil.dp2px(mContext, 8);
-            if (flowInfoPrice.getVisibility() == View.VISIBLE) { // 有价格在的时候
-                spacesItemDecoration.setMargin(left, top, 0, 0);
-            } else { // 没有价格在的时候
-                spacesItemDecoration.setMargin(0, top, right, 0);
-            }
+            spacesItemDecoration.setMargin(0, top, right, 0);
             FlowInfoLabelAdapter flowInfoLabelAdapter = new FlowInfoLabelAdapter(mContext, bindItem.getLabelList());
             flowInfoBottomRecycler.setLayoutManager(autoLineFeedLayoutManager);
             flowInfoBottomRecycler.addItemDecoration(spacesItemDecoration);
@@ -118,18 +95,16 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
         }
         // 基本信息初始化
         flowInfoTitle.setText(bindItem.getItemTitle());
-        flowInfoDesc.setText(bindItem.getItemDesc());
-        if (!"".equals(bindItem.getItemTag())) {
+        if (TextUtils.isEmpty(bindItem.getItemDesc())) {
+            flowInfoDesc.setVisibility(View.GONE);
+        } else {
+            flowInfoDesc.setText(bindItem.getItemDesc());
+        }
+        if (!TextUtils.isEmpty(bindItem.getItemTag())) {
             flowInfoTag.setText(bindItem.getItemTag());
             flowInfoTag.setVisibility(View.VISIBLE);
         } else {
             flowInfoTag.setVisibility(View.GONE);
-        }
-        if (bindItem.isItemHasBuy() || bindItem.getItemIsFree()) {
-            flowInfoPrice.setVisibility(View.GONE);
-        } else {
-            flowInfoPrice.setVisibility(View.VISIBLE);
-            flowInfoPrice.setText(bindItem.getItemPrice());
         }
         flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
             @Override

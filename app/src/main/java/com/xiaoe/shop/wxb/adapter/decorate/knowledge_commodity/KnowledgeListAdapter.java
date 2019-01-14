@@ -3,6 +3,7 @@ package com.xiaoe.shop.wxb.adapter.decorate.knowledge_commodity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,9 @@ import com.xiaoe.shop.wxb.utils.ToastUtils;
 import com.xiaoe.shop.wxb.widget.CustomDialog;
 import java.util.List;
 
+/**
+ * 列表数据
+ */
 public class KnowledgeListAdapter extends BaseAdapter {
 
     private static final String TAG = "KnowledgeListAdapter";
@@ -54,19 +58,134 @@ public class KnowledgeListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final KnowledgeHolder viewHolder;
+        final NewKnowledgeHolder viewHolder;
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.knowledge_commodity_list_item, parent, false);
-            viewHolder = new KnowledgeHolder(convertView);
+            convertView = mInflater.inflate(R.layout.knowledge_new_list_item, parent, false);
+            viewHolder = new NewKnowledgeHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (KnowledgeHolder) convertView.getTag();
+            viewHolder = (NewKnowledgeHolder) convertView.getTag();
         }
-        updateView(position, viewHolder);
-
+        newUpdateView(position, viewHolder);
         return convertView;
     }
 
+    /**
+     * 更新视图
+     * @param position   当前 item 位置
+     * @param viewHolder 当前 item 对应的视图
+     */
+    private void newUpdateView(int position, NewKnowledgeHolder viewHolder){
+        if (viewHolder == null || mItemList.get(position) == null) {
+            return;
+        }
+        KnowledgeCommodityItem item = mItemList.get(position);
+        String srcType = item.getSrcType();
+        SetImageUriUtil.setImgURI(viewHolder.itemIcon, item.getItemImg(), Dp2Px2SpUtil.dp2px(mContext, 160),
+                Dp2Px2SpUtil.dp2px(mContext, 100));
+        viewHolder.itemTitle.setEllipsize(TextUtils.TruncateAt.END);
+        viewHolder.itemDesc.setEllipsize(TextUtils.TruncateAt.END);
+        if (DecorateEntityType.IMAGE_TEXT.equals(srcType) || DecorateEntityType.AUDIO.equals(srcType) || DecorateEntityType.VIDEO.equals(srcType)) { // 单品，标题两行，没有描述
+            viewHolder.itemTitle.setMaxLines(2);
+            viewHolder.itemDesc.setVisibility(View.GONE);
+        } else if (DecorateEntityType.COLUMN.equals(srcType) || DecorateEntityType.TOPIC.equals(srcType) || DecorateEntityType.MEMBER.equals(srcType)) { // 非单品，标题一行，描述一行
+            viewHolder.itemTitle.setMaxLines(1);
+            viewHolder.itemDesc.setVisibility(View.VISIBLE);
+            viewHolder.itemDesc.setMaxLines(1);
+        } else { // 未兼容类型，显示展示与单品一致
+            viewHolder.itemTitle.setMaxLines(2);
+            viewHolder.itemDesc.setVisibility(View.GONE);
+        }
+        viewHolder.itemTitle.setText(item.getItemTitle());
+        viewHolder.itemDesc.setText(item.getItemTitleColumn());
+        viewHolder.itemLearn.setText(item.getItemDesc());
+        if ("".equals(item.getItemPrice())) { // 没有价格
+            viewHolder.itemPrice.setVisibility(View.GONE);
+        } else {
+            viewHolder.itemPrice.setVisibility(View.VISIBLE);
+            String price = "";
+            if (DecorateEntityType.IMAGE_TEXT.equals(item.getSrcType()) || DecorateEntityType.AUDIO.equals(item.getSrcType()) || DecorateEntityType.VIDEO.equals(item.getSrcType())) {
+                price = item.getItemPrice();
+            } else if (DecorateEntityType.COLUMN.equals(item.getSrcType()) || DecorateEntityType.TOPIC.equals(item.getSrcType()) || DecorateEntityType.MEMBER.equals(item.getSrcType())) {
+                price = item.getResourceCount() + "期/" + item.getItemPrice() + mContext.getString(R.string.wxb_virtual_unit);
+            }
+            viewHolder.itemPrice.setText(price);
+        }
+        viewHolder.itemWrap.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
+            @Override
+            public void singleClick(View v) {
+                if (mItemList.get(position).getSrcType() == null) {
+                    Toast.makeText(mContext, "正在处理", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                switch (mItemList.get(position).getSrcType()) {
+                    case DecorateEntityType.IMAGE_TEXT:
+                        JumpDetail.jumpImageText(mContext, item.getResourceId(), item.getItemImg(), "");
+                        break;
+                    case DecorateEntityType.AUDIO:
+                        JumpDetail.jumpAudio(mContext, item.getResourceId(),0);
+                        break;
+                    case DecorateEntityType.VIDEO:
+                        JumpDetail.jumpVideo(mContext, item.getResourceId(), "", false, "");
+                        break;
+                    case DecorateEntityType.COLUMN:
+                        JumpDetail.jumpColumn(mContext, item.getResourceId(), item.getItemImg(), 6);
+                        break;
+                    case DecorateEntityType.TOPIC:
+                        JumpDetail.jumpColumn(mContext, item.getResourceId(), item.getItemImg(), 8);
+                        break;
+                    case DecorateEntityType.MEMBER:
+                        JumpDetail.jumpColumn(mContext, item.getResourceId(), item.getItemImg(), 5);
+                        break;
+                    case DecorateEntityType.SUPER_VIP:
+                        if (CommonUserInfo.isIsSuperVipAvailable()) {
+                            JumpDetail.jumpSuperVip(mContext);
+                        } else {
+                            ToastUtils.show(mContext, "app 暂不支持非一年规格的会员购买");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        if (item.isCollectionList()) {
+            viewHolder.itemWrap.setOnLongClickListener(v -> {
+                CustomDialog customDialog = new CustomDialog(mContext);
+                customDialog.setMessageVisibility(View.GONE);
+                customDialog.setTitle(mContext.getString(R.string.are_delete_favorites));
+                customDialog.setOnCustomDialogListener(new OnCustomDialogListener() {
+                    @Override
+                    public void onClickCancel(View view, int tag) {
+                    }
+
+                    @Override
+                    public void onClickConfirm(View view, int tag) {
+                        CollectionUtils collectionUtils = new CollectionUtils();
+                        String type = convertItemType(item.getSrcType());
+                        collectionUtils.requestRemoveCollection(item.getResourceId(), type);
+                        mItemList.remove(item);
+                        notifyDataSetChanged();
+                        ToastUtils.show(mContext, R.string.successfully_delete);
+                    }
+
+                    @Override
+                    public void onDialogDismiss(DialogInterface dialog, int tag, boolean backKey) {
+                    }
+                });
+                customDialog.showDialog(0);
+                return false;
+            });
+        }
+    }
+
+    /**
+     * 原兼容音频的更新视图方法
+     *
+     * @deprecated 已废弃，使用 newUpdateView 方法替代
+     * @param position
+     * @param viewHolder
+     */
     private void updateView(int position, KnowledgeHolder viewHolder) {
         if (viewHolder == null || mItemList.get(position) == null)  return;
         // 如果是专栏的话需要有两行标题，其他单品就显示一行标题和一行描述

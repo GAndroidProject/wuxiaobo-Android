@@ -20,6 +20,12 @@ public class KnowledgeCommodityItem {
     private String resourceId;
     // 是否为收藏列表
     private boolean isCollectionList;
+    // 是否免费
+    private boolean isFree;
+    // 商品划线价
+    private String linePrice;
+    // 非单品更新期数
+    private String resourceCount;
 
     public KnowledgeCommodityItem() {}
 
@@ -93,5 +99,29 @@ public class KnowledgeCommodityItem {
 
     public void setCollectionList(boolean collectionList) {
         isCollectionList = collectionList;
+    }
+
+    public boolean isFree() {
+        return isFree;
+    }
+
+    public void setFree(boolean free) {
+        isFree = free;
+    }
+
+    public String getLinePrice() {
+        return linePrice;
+    }
+
+    public void setLinePrice(String linePrice) {
+        this.linePrice = linePrice;
+    }
+
+    public String getResourceCount() {
+        return resourceCount;
+    }
+
+    public void setResourceCount(String resourceCount) {
+        this.resourceCount = resourceCount;
     }
 }
