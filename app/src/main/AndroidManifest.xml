@@ -196,10 +196,6 @@
 
         <activity android:name=".business.super_vip.ui.SuperVipActivity" />
 
-        <!--<meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="guanwang" />-->
-
         <activity
             android:name=".business.bought_list.ui.BoughtListActivity"
             android:screenOrientation="portrait"/>
