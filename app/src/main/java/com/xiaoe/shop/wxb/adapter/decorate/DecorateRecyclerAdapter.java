@@ -127,8 +127,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     bannerArr = new SparseArray<>();
                 }
                 return new ShufflingFigureViewHolder(mContext, view);
-            case DecorateEntityType.BOOKCASE: // 书架的 case 本次不做
-                return null;
             case DecorateEntityType.GRAPHIC_NAVIGATION:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.graphic_navigation, null);
                 layoutParams.gravity = Gravity.CENTER;
@@ -185,8 +183,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 ShufflingFigureViewHolder shufflingFigureViewHolder = (ShufflingFigureViewHolder) holder;
                 shufflingFigureViewHolder.initViewHolder(currentBindComponent, currentBindPos, bannerArr);
                 break;
-            case DecorateEntityType.BOOKCASE:
-                break;
             case DecorateEntityType.GRAPHIC_NAVIGATION:
                 GraphicNavViewHolder graphicNavViewHolder = (GraphicNavViewHolder) holder;
                 graphicNavViewHolder.initViewHolder(currentBindComponent, currentBindPos, graphicNavRecyclerAdapterArr);
@@ -226,8 +222,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 }
             case DecorateEntityType.SHUFFLING_FIGURE_STR:
                 return DecorateEntityType.SHUFFLING_FIGURE;
-            case DecorateEntityType.BOOKCASE_STR:
-                return DecorateEntityType.BOOKCASE;
             case DecorateEntityType.GRAPHIC_NAVIGATION_STR:
                 return DecorateEntityType.GRAPHIC_NAVIGATION;
             case DecorateEntityType.SEARCH_STR:
