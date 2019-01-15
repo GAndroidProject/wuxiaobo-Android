@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoe.common.entitys.ChangeLoginIdentityEvent;
 import com.xiaoe.common.entitys.CouponInfo;
 import com.xiaoe.common.entitys.GetSuperMemberSuccessEvent;
 import com.xiaoe.common.utils.SharedPreferencesUtil;
@@ -396,6 +397,11 @@ public class PayActivity extends XiaoeActivity implements View.OnClickListener, 
             if (!TextUtils.isEmpty(productId)) { // 购买会员，发送需要更新的事件
                 GetSuperMemberSuccessEvent getSuperMemberSuccessEvent = new GetSuperMemberSuccessEvent(true);
                 EventBus.getDefault().post(getSuperMemberSuccessEvent);
+            }
+            if (payingFragment.isBoBiPayWay()) { // 波豆支付，需要发送刷新波豆余额事件
+                ChangeLoginIdentityEvent changeLoginIdentityEvent = new ChangeLoginIdentityEvent();
+                changeLoginIdentityEvent.setHasBalanceChange(true);
+                EventBus.getDefault().post(changeLoginIdentityEvent);
             }
         }
     }

@@ -26,6 +26,8 @@ public class KnowledgeCommodityItem {
     private String linePrice;
     // 非单品更新期数
     private String resourceCount;
+    // item 的显示样式
+    private int itemStyle;
 
     public KnowledgeCommodityItem() {}
 

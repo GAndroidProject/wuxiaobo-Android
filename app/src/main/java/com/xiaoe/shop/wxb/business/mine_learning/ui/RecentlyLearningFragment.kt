@@ -49,7 +49,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
     var pageIndex = 1
     val pageSize = 10
     var isCanRefresh = false
-    var isRequesting = false
+    private var isRequesting = false
 
     private val mAdapter: MyAdapter by lazy {
         MyAdapter(activity)
@@ -149,7 +149,6 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
     private fun handleData(success: Boolean, entity: Any?, iRequest: IRequest?) {
         if (success && entity != null) {
             if (iRequest is RecentlyLearningRequest) {
-                isRequesting = false
                 mStatusPagerView.setPagerState(StatusPagerView.FAIL,
                         getString(R.string.no_learning_content), R.mipmap.collection_none)
                 try {//没有数据的时候data返回数组类型，但是有数据又返回object类型
@@ -169,11 +168,14 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                 }catch (e : Exception){
                     e.printStackTrace()
                     loadData(entity)
+                }finally {
+                    isRequesting = false
                 }
             }
         } else {
             doRequestFail()
         }
+        isRequesting = false
     }
 
     private fun loadData(entity: Any?) {
@@ -224,8 +226,10 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
     }
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
-        pageIndex = 1
-        requestData()
+        if (!isRequesting) {
+            pageIndex = 1
+            requestData()
+        }
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
@@ -276,7 +280,8 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                         val time = playTime - playTime * process / 100
                                         descString = when{
                                             0 == time && playTime > 0 -> context.getString(R.string.learned_finish)
-                                            time > 0 && playTime > 0 -> String.format("剩余%d分%d秒",time/60,time % 60)
+                                            time > 0 && playTime > 0 -> String.format(
+                                                    context.getString(R.string.remain_time),time/60,time % 60)
                                             else -> ""
                                         }
                                     }
@@ -287,7 +292,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                 ResourceType.TYPE_MEMBER ->{// 会员
                                     descString =context.getString(R.string.membership_due)
                                     if (1 != info.isExpire){
-                                        descString = updateLearnProgress(helper!!, item!!, descString)
+                                        descString = updateLearnProgress(helper!!, item!!)
                                     }else  setGone(R.id.itemContent,true)
                                     setText(R.id.itemContent,String.format(context
                                             .getString(R.string.stages_text), info.periodicalCount))
@@ -296,7 +301,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                 ResourceType.TYPE_BIG_COLUMN ->{// 专栏 、大专栏
                                     descString = context.getString(R.string.learned_finish)
                                     if (1 != isFinish){
-                                        descString = updateLearnProgress(helper!!, item!!, descString)
+                                        descString = updateLearnProgress(helper!!, item!!)
                                     }
                                 }
 //                                ResourceType.TYPE_BIG_COLUMN ->{
@@ -327,7 +332,8 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                 val time = playTime - playTime * process / 100
                                 descString = when{
                                     0 == time && playTime > 0 -> context.getString(R.string.learned_finish)
-                                    time > 0 && playTime > 0 -> String.format("剩余%d分%d秒",time/60,time % 60)
+                                    time > 0 && playTime > 0 -> String.format(
+                                            context.getString(R.string.remain_time),time/60,time % 60)
                                     else -> ""
                                 }
                             }
@@ -338,8 +344,8 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
             }
         }
 
-        private fun updateLearnProgress(baseViewHolder: BaseViewHolder, goodsListItem: GoodsListItem, descString: String): String {
-            var descString1 = descString
+        private fun updateLearnProgress(baseViewHolder: BaseViewHolder, goodsListItem: GoodsListItem): String {
+            var descString1: String
 
             val hadLearnedCount = parseUploadHistory(goodsListItem.orgLearnProgress).size
             var visible = true

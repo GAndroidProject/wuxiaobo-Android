@@ -377,7 +377,9 @@
     <string name="series_courses">系列课程</string>
     <string name="item_course">单品课程</string>
     <string name="second_reading">%d次阅读</string>
+    <string name="second_reading_str">%s次阅读</string>
     <string name="time_play">%d次播放</string>
+    <string name="time_play_str">%s次播放</string>
     <string name="stages_text">已更新%d期</string>
     <string name="stages_text_str">已更新%s期</string>
     <string name="purchase_text">购买¥</string>
@@ -552,6 +554,7 @@
     <string name="wxb_virtual_unit">波豆</string>
     <string name="close_count_down">关闭定时</string>
     <string name="after_stop_play_video">后视频停止播放</string>
+    <string name="remain_time">剩余%d分%d秒</string>
 
     <string name="demo_info_text">重要说明: \n\n本 Demo 为了方便向商户展示支付宝的支付流程，所以订单信息的加签过程放在客户端完成。\n在商户的真实App内，为了防止商户私密数据泄露，引发资金损失和身份冒用等各种安全风险，商户私钥 RSA_PRIVATE 等数据严禁放在客户端，订单信息的加签过程也务必放在服务端完成。\n若商户接入时不遵照此说明而造成损失，需自行承担。</string>
     <string name="pay_with_alipay">支付宝支付 Demo</string>

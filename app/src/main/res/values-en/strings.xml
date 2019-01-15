@@ -380,7 +380,9 @@
     <string name="series_courses">系列课程</string>
     <string name="item_course">单品课程</string>
     <string name="second_reading">%d次阅读</string>
+    <string name="second_reading_str">%s次阅读</string>
     <string name="time_play">%d次播放</string>
+    <string name="time_play_str">%s次播放</string>
     <string name="stages_text">已更新%d期</string>
     <string name="stages_text_str">已更新%s期</string>
     <string name="purchase_text">购买￥</string>
@@ -555,6 +557,7 @@
     <string name="wxb_virtual_unit">波豆</string>
     <string name="close_count_down">关闭定时</string>
     <string name="after_stop_play_video">后视频停止播放</string>
+    <string name="remain_time">剩余%d分%d秒</string>
 
     <string name="demo_info_text">Warning: \n\nFor demonstration purpose, the assembling and signing of the request parameters are done on the client side.\nHowever, in practice, both assembling and signing MUST BE carried out on the server side.</string>
     <string name="pay_with_alipay">Pay with Alipay</string>
