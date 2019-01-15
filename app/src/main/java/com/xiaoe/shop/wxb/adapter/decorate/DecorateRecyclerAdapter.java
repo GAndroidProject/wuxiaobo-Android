@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
@@ -78,9 +79,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public BaseViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-        if (viewType == -1) {
-            return null;
-        }
         View view;
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         // 为了兼容 .9 图而分别设置 margin
@@ -132,8 +130,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                     bannerArr = new SparseArray<>();
                 }
                 return new ShufflingFigureViewHolder(mContext, view);
-            case DecorateEntityType.BOOKCASE: // 书架的 case 本次不做
-                return null;
             case DecorateEntityType.GRAPHIC_NAVIGATION:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.graphic_navigation, null);
                 layoutParams.gravity = Gravity.CENTER;
@@ -154,8 +150,10 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case BASE_ITEM_TYPE_FOOTER:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.common_bottom_layout, null);
                 return new BottomLineViewHolder(mContext, view);
-            default:
-                return null;
+            default: // 若出现不兼容类型，返回一个空的 view
+                view = new TextView(mContext);
+                view.setVisibility(View.GONE);
+                return new BaseViewHolder(view);
         }
     }
 
@@ -194,8 +192,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
             case DecorateEntityType.SHUFFLING_FIGURE:
                 ShufflingFigureViewHolder shufflingFigureViewHolder = (ShufflingFigureViewHolder) holder;
                 shufflingFigureViewHolder.initViewHolder(currentBindComponent, currentBindPos, bannerArr);
-                break;
-            case DecorateEntityType.BOOKCASE:
                 break;
             case DecorateEntityType.GRAPHIC_NAVIGATION:
                 GraphicNavViewHolder graphicNavViewHolder = (GraphicNavViewHolder) holder;
@@ -239,8 +235,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 }
             case DecorateEntityType.SHUFFLING_FIGURE_STR:
                 return DecorateEntityType.SHUFFLING_FIGURE;
-            case DecorateEntityType.BOOKCASE_STR:
-                return DecorateEntityType.BOOKCASE;
             case DecorateEntityType.GRAPHIC_NAVIGATION_STR:
                 return DecorateEntityType.GRAPHIC_NAVIGATION;
             case DecorateEntityType.SEARCH_STR:

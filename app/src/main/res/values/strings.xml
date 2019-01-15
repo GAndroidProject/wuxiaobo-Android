@@ -377,7 +377,9 @@
     <string name="series_courses">系列课程</string>
     <string name="item_course">单品课程</string>
     <string name="second_reading">%d次阅读</string>
+    <string name="second_reading_str">%s次阅读</string>
     <string name="time_play">%d次播放</string>
+    <string name="time_play_str">%s次播放</string>
     <string name="stages_text">已更新%d期</string>
     <string name="stages_text_str">已更新%s期</string>
     <string name="purchase_text">购买¥</string>
