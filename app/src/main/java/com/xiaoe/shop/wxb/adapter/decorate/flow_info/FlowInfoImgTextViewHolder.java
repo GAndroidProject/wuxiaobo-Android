@@ -118,7 +118,20 @@ public class FlowInfoImgTextViewHolder extends BaseViewHolder {
                     }
                 });
                 break;
+            case DecorateEntityType.MEMBER:
+                flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
+                    @Override
+                    public void doClick(View v) {
+                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemImg(), 5);
+
+                        HashMap<String, String> map = new HashMap<>(1);
+                        map.put(MobclickEvent.INDEX, position + "");
+                        EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
+                    }
+                });
+                break;
             default:
+                // do nothing
                 break;
         }
     }
