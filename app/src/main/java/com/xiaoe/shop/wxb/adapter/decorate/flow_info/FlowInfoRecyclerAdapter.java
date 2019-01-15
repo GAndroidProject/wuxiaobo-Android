@@ -36,10 +36,6 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == -1) {
-            Log.d(TAG, "onCreateViewHolder: flow_info component viewType get -1");
-            return null;
-        }
         View view = null;
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0,0,0,30);
@@ -65,10 +61,11 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_video, null);
                 view.setLayoutParams(layoutParams);
                 return new FlowInfoVideoViewHolder(mContext, view);
-            default:
-                break;
+            default: // 临时处理，后续废弃
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_img_text, null);
+                view.setLayoutParams(layoutParams);
+                return new FlowInfoImgTextViewHolder(mContext, view);
         }
-        return null;
     }
 
     @Override
