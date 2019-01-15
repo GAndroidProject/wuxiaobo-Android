@@ -71,7 +71,7 @@ android {
 //            buildConfigField("boolean", "LOG_DEBUG", "true")
 
             applicationIdSuffix ".debug"
-            versionNameSuffix "-debug"
+            versionNameSuffix "-beta"
 
             //启用代码混淆
             minifyEnabled false
