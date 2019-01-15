@@ -297,7 +297,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
                 if (collectionPrice == 0) {
                     item.setItemPrice("");
                 } else {
-                    item.setItemPrice("￥" + priceStr);
+                    item.setItemPrice(priceStr + getString(R.string.wxb_virtual_unit));
                 }
                 itemList.add(item);
             }
@@ -315,6 +315,7 @@ public class MineLearningActivity extends XiaoeActivity implements OnRefreshList
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             learningList.setLayoutManager(layoutManager);
             decorateRecyclerAdapter = new DecorateRecyclerAdapter(this, pageList);
+            decorateRecyclerAdapter.showLastItem(false);
             learningList.setAdapter(decorateRecyclerAdapter);
             spacesItemDecoration.setMargin(
                     Dp2Px2SpUtil.dp2px(this, 0),

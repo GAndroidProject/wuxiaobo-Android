@@ -1,6 +1,8 @@
 package com.xiaoe.shop.wxb.business.search.presenter;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import com.xiaoe.common.interfaces.OnItemClickWithPosListener;
+import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
 import com.xiaoe.shop.wxb.events.OnClickEvent;
@@ -43,6 +46,9 @@ public class RecommendRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolde
         Log.d(TAG, "onBindViewHolder: position ---- " + position);
         String content = recommendList.get(position);
         searchMainContentViewHolder.content.setText(content);
+        GradientDrawable drawable = (GradientDrawable) searchMainContentViewHolder.content.getBackground();
+        drawable.setStroke(Dp2Px2SpUtil.dp2px(mContext, 1), ContextCompat.getColor(mContext, R.color.text_border)); // 将原来的 drawable 的边框置为透明
+        drawable.setColor(ContextCompat.getColor(mContext, R.color.white));
         final int tempPos = searchMainContentViewHolder.getAdapterPosition();
         searchMainContentViewHolder.content.setOnClickListener(new OnClickEvent(OnClickEvent.DEFAULT_SECOND) {
             @Override
