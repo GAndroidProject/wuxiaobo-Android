@@ -205,6 +205,10 @@ class NewPayingFragment : BaseFragment() {
             isBoBiPayWay = true
             isAliPayWay = false
             isWeChatPayWay = false
+            if (payingBoBiTopUp.visibility == View.VISIBLE) {
+                payingBoBiTopUp.visibility = View.GONE
+            }
+            payingBoBiSelect.visibility = View.VISIBLE
             if (isVipBuy) {
                 payingBoBiSelect.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.vip_buy_confirm))
             } else {
