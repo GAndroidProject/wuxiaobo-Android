@@ -276,7 +276,8 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                         val time = playTime - playTime * process / 100
                                         descString = when{
                                             0 == time && playTime > 0 -> context.getString(R.string.learned_finish)
-                                            time > 0 && playTime > 0 -> String.format("剩余%d分%d秒",time/60,time % 60)
+                                            time > 0 && playTime > 0 -> String.format(
+                                                    context.getString(R.string.remain_time),time/60,time % 60)
                                             else -> ""
                                         }
                                     }
@@ -287,7 +288,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                 ResourceType.TYPE_MEMBER ->{// 会员
                                     descString =context.getString(R.string.membership_due)
                                     if (1 != info.isExpire){
-                                        descString = updateLearnProgress(helper!!, item!!, descString)
+                                        descString = updateLearnProgress(helper!!, item!!)
                                     }else  setGone(R.id.itemContent,true)
                                     setText(R.id.itemContent,String.format(context
                                             .getString(R.string.stages_text), info.periodicalCount))
@@ -296,7 +297,7 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                 ResourceType.TYPE_BIG_COLUMN ->{// 专栏 、大专栏
                                     descString = context.getString(R.string.learned_finish)
                                     if (1 != isFinish){
-                                        descString = updateLearnProgress(helper!!, item!!, descString)
+                                        descString = updateLearnProgress(helper!!, item!!)
                                     }
                                 }
 //                                ResourceType.TYPE_BIG_COLUMN ->{
@@ -327,7 +328,8 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
                                 val time = playTime - playTime * process / 100
                                 descString = when{
                                     0 == time && playTime > 0 -> context.getString(R.string.learned_finish)
-                                    time > 0 && playTime > 0 -> String.format("剩余%d分%d秒",time/60,time % 60)
+                                    time > 0 && playTime > 0 -> String.format(
+                                            context.getString(R.string.remain_time),time/60,time % 60)
                                     else -> ""
                                 }
                             }
@@ -338,8 +340,8 @@ class RecentlyLearningFragment : BaseFragment(), OnRefreshListener, OnLoadMoreLi
             }
         }
 
-        private fun updateLearnProgress(baseViewHolder: BaseViewHolder, goodsListItem: GoodsListItem, descString: String): String {
-            var descString1 = descString
+        private fun updateLearnProgress(baseViewHolder: BaseViewHolder, goodsListItem: GoodsListItem): String {
+            var descString1: String
 
             val hadLearnedCount = parseUploadHistory(goodsListItem.orgLearnProgress).size
             var visible = true

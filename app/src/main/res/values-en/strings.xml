@@ -555,4 +555,5 @@
     <string name="wxb_virtual_unit">波豆</string>
     <string name="close_count_down">关闭定时</string>
     <string name="after_stop_play_video">后视频停止播放</string>
+    <string name="remain_time">剩余%d分%d秒</string>
 </resources>
