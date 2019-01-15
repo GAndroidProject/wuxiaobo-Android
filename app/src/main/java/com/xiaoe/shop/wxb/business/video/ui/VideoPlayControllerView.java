@@ -77,15 +77,10 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private ImageView btnDownload;
     private PowerManager.WakeLock mWakeLock;
     private boolean hasBuy;
-    private String columnId;
     private String realSrcId;
 
     public void setRealSrcId(String realSrcId) {
         this.realSrcId = realSrcId;
-    }
-
-    public void setColumnId(String columnId) {
-        this.columnId = columnId;
     }
 
     public void setHasBuy(boolean hasBuy) {
