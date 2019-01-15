@@ -130,7 +130,7 @@ public class XiaoeApplication extends MultiDexApplication {
             public void run() {
                 //↓↓↓↓↓↓↓友盟集成初始化↓↓↓↓↓↓↓
                 UMConfigure.setLogEnabled(true);
-                UMConfigure.init(mContext, Constants.getUMAppId(), CommonUtils.getChannel(XiaoeApplication.applicationContext), UMConfigure.DEVICE_TYPE_PHONE, "");
+                UMConfigure.init(mContext, Constants.getUMAppId(), CommonUtils.getChannel(getApplicationContext()), UMConfigure.DEVICE_TYPE_PHONE, "");
                 PlatformConfig.setWeixin(Constants.getWXAppId(), Constants.getWxSecret());
                 // 初始化 SharedPreference
                 SharedPreferencesUtil.getInstance(mContext, SharedPreferencesUtil.FILE_NAME);

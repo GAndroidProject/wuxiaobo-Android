@@ -27,6 +27,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 知识商品 ViewHolder
+ */
 public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemClickWithKnowledgeListener {
 
     private static final String TAG = "KnowledgeGroupVh";

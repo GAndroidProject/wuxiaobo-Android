@@ -502,7 +502,7 @@ public class NewColumnDirectoryFragment extends BaseFragment implements View.OnC
                 if (activity != null && activity instanceof ColumnActivity)
                     realSrcId = ((ColumnActivity)activity).realSrcId;
                 JumpDetail.jumpVideo(getContext(), resourceId, "",false,
-                        itemData.getColumnId(),realSrcId,index);
+                        itemData.getColumnId(),itemData.getColumnId(),index);
             }else{
                 toastCustom(getString(R.string.unknown_course));
             }

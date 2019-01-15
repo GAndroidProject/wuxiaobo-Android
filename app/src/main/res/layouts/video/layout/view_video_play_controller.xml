@@ -290,5 +290,9 @@
                 android:text="@string/video_speed_play_4"/>
         </LinearLayout>
     </RelativeLayout>
+    <FrameLayout
+        android:id="@+id/timer_tips_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

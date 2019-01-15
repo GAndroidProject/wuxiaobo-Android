@@ -637,6 +637,7 @@ public class XiaoeActivity extends SwipeBackActivity implements INetworkResponse
         if (mShareDialog == null) {
             mShareDialog = new ShareDialog(this, this);
         }
+        shareUrl = shareUrl.replace(" ", "");
         mShareDialog.showSharePanel(shareTitle, imgUrl, shareUrl, desc);
     }
 

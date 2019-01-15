@@ -41,6 +41,7 @@ import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.adapter.main.MainFragmentStatePagerAdapter;
 import com.xiaoe.shop.wxb.base.BaseFragment;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioListLoadMoreHelper;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.ui.MiniAudioPlayControllerLayout;
 import com.xiaoe.shop.wxb.business.launch.presenter.CouponHandlePresenter;
@@ -149,6 +150,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
 
         //启动应用时自动检测版本更新
         AppUpgradeHelper.getInstance().registerEventBus();
+        AudioListLoadMoreHelper.INSTANCE.registerEventBus();
         if (AppUpgradeHelper.getInstance().isShouldCheckUpgrade()) {//只有启动应用时候才检查更新
             AppUpgradeHelper.getInstance().checkUpgrade(false, this);
             AppUpgradeHelper.getInstance().setShouldCheckUpgrade(false);
@@ -202,6 +204,7 @@ public class MainActivity extends XiaoeActivity implements OnBottomTabSelectList
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         AppUpgradeHelper.getInstance().unregisterEventBus();
+        AudioListLoadMoreHelper.INSTANCE.unregisterEventBus();
 //        DownloadFileConfig.getInstance().dbClose();
     }
 

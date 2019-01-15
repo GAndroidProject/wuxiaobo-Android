@@ -239,6 +239,7 @@
 
     <!--页面请求状态提示 start-->
     <string name="request_fail">页面还没找到，刷新试试吧</string>
+    <string name="request_fail2">页面还没找到，点击刷新试试吧</string>
     <string name="resource_sold_out">该课程已下架，快去别处看看吧</string>
     <string name="resource_sale_stop">该课程已暂停销售，快去别处看看吧</string>
     <string name="resource_delete">该课程已删除，快去别处看看吧</string>
@@ -547,6 +548,10 @@
     <string name="learned_sessinos_and_total">已学习%d期 / 共%d期</string>
     <string name="no_bought_record_content">暂无购买记录的内容，快去首页逛逛吧</string>
     <string name="ae_empty_content">暂无交易明细记录</string>
+    <string name="has_buy_desc">已购</string>
+    <string name="wxb_virtual_unit">波豆</string>
+    <string name="close_count_down">关闭定时</string>
+    <string name="after_stop_play_video">后视频停止播放</string>
 
     <string name="demo_info_text">重要说明: \n\n本 Demo 为了方便向商户展示支付宝的支付流程，所以订单信息的加签过程放在客户端完成。\n在商户的真实App内，为了防止商户私密数据泄露，引发资金损失和身份冒用等各种安全风险，商户私钥 RSA_PRIVATE 等数据严禁放在客户端，订单信息的加签过程也务必放在服务端完成。\n若商户接入时不遵照此说明而造成损失，需自行承担。</string>
     <string name="pay_with_alipay">支付宝支付 Demo</string>

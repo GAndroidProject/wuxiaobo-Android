@@ -10,7 +10,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.xiaoe.shop.wxb.R;
 
-// 商品分组 ListView 每个 item 的 ViewHolder
+/**
+ * 商品分组 ListView 每个 item 的 ViewHolder
+ *
+ * @deprecated 已废弃，使用 NewKnowledgeHolder
+ */
 class KnowledgeHolder {
 
     @BindView(R.id.knowledge_list_item_wrap)
