@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.xiaoe.common.entitys.ComponentInfo;
 import com.xiaoe.common.entitys.DecorateEntityType;
@@ -75,9 +76,6 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public BaseViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-        if (viewType == -1) {
-            return null;
-        }
         View view;
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         // 为了兼容 .9 图而分别设置 margin
@@ -148,8 +146,10 @@ public class DecorateRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                         Dp2Px2SpUtil.dp2px(mContext, 20), 0);
                 view.setLayoutParams(layoutParams);
                 return new SearchViewHolder(mContext, view);
-            default:
-                return null;
+            default: // 若出现不兼容类型，返回一个空的 view
+                view = new TextView(mContext);
+                view.setVisibility(View.GONE);
+                return new BaseViewHolder(view);
         }
     }
 
