@@ -13,7 +13,7 @@ walle {
     apkOutputFolder = new File("${project.buildDir}/outputs/channels")
     // 定制渠道包的APK的文件名称
 //    apkFileNameFormat = '${appName}-${packageName}-${channel}-${buildType}-v${versionName}-${versionCode}-${buildTime}.apk'
-    apkFileNameFormat = 'xiaoe_wxb-${channel}-v${versionName}-${versionCode}-${buildTime}.apk'
+    apkFileNameFormat = 'xiaoe_wxb-${channel}-${buildType}-v${versionName}-${versionCode}-${buildTime}.apk'
     // 渠道配置文件
     channelFile = new File("${project.getProjectDir()}/channel")
 }
@@ -274,7 +274,6 @@ dependencies {
     androidTestImplementation("com.android.support:support-annotations:$sdk_version") {
         force = true
     }
-//    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation project(':common')
     implementation project(':network')
     //  butterKnife

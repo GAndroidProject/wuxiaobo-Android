@@ -663,17 +663,29 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
         for (Object subItem : knowledgeListSubList) {
             JSONObject listSubItemObj = (JSONObject) subItem;
             KnowledgeCommodityItem item = new KnowledgeCommodityItem();
+            int paymentType = listSubItemObj.getInteger("payment_type") == null ? -1 : listSubItemObj.getInteger("payment_type");
             item.setItemTitle(listSubItemObj.getString("title"));
             item.setItemTitleColumn(listSubItemObj.getString("summary"));
             item.setItemImg(listSubItemObj.getString("img_url_compressed_larger"));
 //            item.setItemImg(listSubItemObj.getString("img_url"));
-            String price = "￥" + listSubItemObj.getString("show_price");
-            if ("￥".equals(price) || "￥0.00".equals(price) || "￥null".equals(price)) { // 表示买了，所以没有价格
+            String price = listSubItemObj.getString("show_price") + "波豆";
+            String linePrice = listSubItemObj.getString("line_price") + "波豆";
+            boolean isPriceEmpty = "波豆".equals(price) || "0.00波豆".equals(price) || "null波豆".equals(price);
+            if (isPriceEmpty) {
+                boolean hasBuy = false;
+                boolean isFree = false;
                 item.setItemPrice("");
-                item.setHasBuy(true);
+                if (paymentType == 1) { // 免费
+                    isFree = true;
+                } else if (paymentType == 2) { // 已购
+                    hasBuy = true;
+                }
+                item.setHasBuy(hasBuy);
+                item.setFree(isFree);
             } else {
                 item.setItemPrice(price);
                 item.setHasBuy(false);
+                item.setFree(false);
             }
             String srcType = listSubItemObj.getString("src_type");
             String srcId = listSubItemObj.getString("src_id");
@@ -682,6 +694,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             String resourceCount = TextUtils.isEmpty(listSubItemObj.getString("resource_count")) ? "" : listSubItemObj.getString("resource_count");
             item.setSrcType(srcType);
             item.setResourceId(srcId);
+            item.setLinePrice(linePrice);
+            item.setResourceCount(resourceCount);
             // 专栏或者大专栏订阅量就是 purchaseCount
             if (srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.TOPIC)) {
                 viewCount = resourceCount;
@@ -784,9 +798,32 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : flowInfo.getString("show_price") + "波豆";
                 String linePrice = TextUtils.isEmpty(flowInfo.getString("line_price")) ? "" : flowInfo.getString("line_price") + " 波豆";
                 int paymentType = flowInfo.getInteger("payment_type") == null ? -1 : flowInfo.getInteger("payment_type");
+                boolean isPriceExist = TextUtils.isEmpty(showPrice) || "0.00波豆".equals(showPrice);
+                boolean hasBuy = false;
+                boolean isFree = false;
+                if (isPriceExist && paymentType == 1) { // 免费
+                    isFree = true;
+                } else if (isPriceExist && paymentType == 2) { // 已购
+                    hasBuy = true;
+                }
                 JSONArray infoLabels = flowInfo.getJSONArray("info_label");
                 if (infoLabels != null) {
                     List<LabelItemEntity> labelItemEntityList = new ArrayList<>();
+                    LabelItemEntity headItem = new LabelItemEntity();
+                    // 使用 labelBackground、labelFontColor 表示第一个元素是显示价格还是划线价格
+                    if (TextUtils.isEmpty(linePrice)) {
+                        if (isPriceExist) {
+                            headItem.setLabelContent(showPrice);
+                            headItem.setLabelBackground("showPrice");
+                            headItem.setLabelFontColor("showPrice");
+                            labelItemEntityList.add(headItem);
+                        }
+                    } else {
+                        headItem.setLabelContent(linePrice);
+                        headItem.setLabelBackground("linePrice");
+                        headItem.setLabelFontColor("linePrice");
+                        labelItemEntityList.add(headItem);
+                    }
                     for (Object labelItem : infoLabels) {
                         JSONObject labelItemJson = (JSONObject) labelItem;
                         LabelItemEntity labelItemEntity = new LabelItemEntity();
@@ -796,14 +833,6 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                         labelItemEntityList.add(labelItemEntity);
                     }
                     fii.setLabelList(labelItemEntityList);
-                }
-                boolean isPriceExist = TextUtils.isEmpty(showPrice) || "￥0.00".equals(showPrice);
-                boolean hasBuy = false;
-                boolean isFree = false;
-                if (isPriceExist && paymentType == 1) { // 免费
-                    isFree = true;
-                } else if (isPriceExist && paymentType == 2) { // 已购
-                    hasBuy = true;
                 }
 
                 fii.setItemType(resourceType);

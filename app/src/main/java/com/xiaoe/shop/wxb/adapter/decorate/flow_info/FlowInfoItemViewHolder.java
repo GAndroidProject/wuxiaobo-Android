@@ -16,6 +16,7 @@ import com.xiaoe.common.entitys.FlowInfoItem;
 import com.xiaoe.common.utils.Dp2Px2SpUtil;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.base.BaseViewHolder;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.search.presenter.AutoLineFeedLayoutManager;
 import com.xiaoe.shop.wxb.business.search.presenter.SpacesItemDecoration;
 import com.xiaoe.shop.wxb.common.JumpDetail;
@@ -46,8 +47,6 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
     TextView flowInfoTitle;
     @BindView(R.id.flow_info_item_desc)
     TextView flowInfoDesc;
-    @BindView(R.id.flow_info_item_price)
-    TextView flowInfoPrice;
     @BindView(R.id.flow_info_type)
     TextView flowInfoType;
     @BindView(R.id.flow_info_item_label)
@@ -63,22 +62,6 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
 
     public void initViewHolder(FlowInfoItem bindItem, int position) {
         setItemBgAndTag(bindItem);
-        // 有划线价就显示划线价，否则显示真实价格，若二者都没有，隐藏价格位置
-        if (TextUtils.isEmpty(bindItem.getLinePrice())) {
-            if (TextUtils.isEmpty(bindItem.getItemPrice())) {
-                flowInfoPrice.setVisibility(View.GONE);
-            } else {
-                flowInfoPrice.setVisibility(View.VISIBLE);
-                flowInfoPrice.setText(bindItem.getItemPrice());
-                flowInfoPrice.setTextColor(ContextCompat.getColor(mContext, R.color.price_color));
-                flowInfoPrice.getPaint().setFlags(0);  // 取消设置的的划线
-            }
-        } else {
-            flowInfoPrice.setVisibility(View.VISIBLE);
-            flowInfoPrice.setText(bindItem.getLinePrice());
-            flowInfoPrice.setTextColor(ContextCompat.getColor(mContext, R.color.knowledge_item_desc_color));
-            flowInfoPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG); // 设置中划线并加清晰
-        }
         // 标签初始化
         if (bindItem.getLabelList() == null || bindItem.getLabelList().size() == 0) {
             flowInfoBottomRecycler.setVisibility(View.GONE);
@@ -92,14 +75,9 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
             autoLineFeedLayoutManager.setScrollEnabled(false);
             autoLineFeedLayoutManager.setStackFromEnd(true); // 软件盘弹出，recyclerView 随之上移
             SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration();
-            int left = Dp2Px2SpUtil.dp2px(mContext, 8);
             int top = Dp2Px2SpUtil.dp2px(mContext, 14);
             int right = Dp2Px2SpUtil.dp2px(mContext, 8);
-            if (flowInfoPrice.getVisibility() == View.VISIBLE) { // 有价格在的时候
-                spacesItemDecoration.setMargin(left, top, 0, 0);
-            } else { // 没有价格在的时候
-                spacesItemDecoration.setMargin(0, top, right, 0);
-            }
+            spacesItemDecoration.setMargin(0, top, right, 0);
             FlowInfoLabelAdapter flowInfoLabelAdapter = new FlowInfoLabelAdapter(mContext, bindItem.getLabelList());
             flowInfoBottomRecycler.setLayoutManager(autoLineFeedLayoutManager);
             flowInfoBottomRecycler.addItemDecoration(spacesItemDecoration);
@@ -118,36 +96,90 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
         }
         // 基本信息初始化
         flowInfoTitle.setText(bindItem.getItemTitle());
-        flowInfoDesc.setText(bindItem.getItemDesc());
-        if (!"".equals(bindItem.getItemTag())) {
+        if (TextUtils.isEmpty(bindItem.getItemDesc())) {
+            flowInfoDesc.setVisibility(View.GONE);
+        } else {
+            flowInfoDesc.setText(bindItem.getItemDesc());
+        }
+        if (!TextUtils.isEmpty(bindItem.getItemTag())) {
             flowInfoTag.setText(bindItem.getItemTag());
             flowInfoTag.setVisibility(View.VISIBLE);
         } else {
             flowInfoTag.setVisibility(View.GONE);
         }
-        if (bindItem.isItemHasBuy() || bindItem.getItemIsFree()) {
-            flowInfoPrice.setVisibility(View.GONE);
-        } else {
-            flowInfoPrice.setVisibility(View.VISIBLE);
-            flowInfoPrice.setText(bindItem.getItemPrice());
-        }
-        flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
-            @Override
-            public void doClick(View v) {
-            // TODO: 转场动画
-//            ActivityOptions options =
-//                    ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
-//                            Pair.create(((View) videoViewHolder.flowInfoBg), "share_video_preview"));
-//            Intent videoIntent = new Intent(mContext, VideoActivity.class);
-//            videoIntent.putExtra("videoImageUrl", videoImageUrl);
-//            mContext.startActivity(videoIntent, options.toBundle());
-            JumpDetail.jumpVideo(mContext, bindItem.getItemId(), bindItem.getItemImg(), false, "");
 
-                HashMap<String, String> map = new HashMap<>(1);
-                map.put(MobclickEvent.INDEX, position + "");
-                EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
-            }
-        });
+        switch (bindItem.getItemType()) {
+            case DecorateEntityType.IMAGE_TEXT:
+                flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
+                    @Override
+                    public void doClick(View v) {
+                        JumpDetail.jumpImageText(mContext, bindItem.getItemId(), "", "");
+                        HashMap<String, String> map = new HashMap<>(1);
+                        map.put(MobclickEvent.INDEX, position + "");
+                        EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
+                    }
+                });
+                break;
+            case DecorateEntityType.AUDIO:
+                flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
+                    @Override
+                    public void doClick(View v) {
+                        // TODO: 转场动画
+                        AudioPlayUtil.getInstance().setFromTag("flowInfo");
+                        JumpDetail.jumpAudio(mContext, bindItem.getItemId(), bindItem.isItemHasBuy() ? 1 : 0 );
+                        HashMap<String, String> map = new HashMap<>(1);
+                        map.put(MobclickEvent.INDEX, position + "");
+                        EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
+                    }
+                });
+                break;
+            case DecorateEntityType.VIDEO:
+                flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
+                    @Override
+                    public void doClick(View v) {
+                        JumpDetail.jumpVideo(mContext, bindItem.getItemId(), bindItem.getItemImg(), false, "");
+                        HashMap<String, String> map = new HashMap<>(1);
+                        map.put(MobclickEvent.INDEX, position + "");
+                        EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
+                    }
+                });
+                break;
+            case DecorateEntityType.COLUMN:
+                flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
+                    @Override
+                    public void doClick(View v) {
+                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemImg(), 6);
+                        HashMap<String, String> map = new HashMap<>(1);
+                        map.put(MobclickEvent.INDEX, position + "");
+                        EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
+                    }
+                });
+                break;
+            case DecorateEntityType.TOPIC:
+                flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
+                    @Override
+                    public void doClick(View v) {
+                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemImg(), 8);
+                        HashMap<String, String> map = new HashMap<>(1);
+                        map.put(MobclickEvent.INDEX, position + "");
+                        EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
+                    }
+                });
+                break;
+            case DecorateEntityType.MEMBER:
+                flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {
+                    @Override
+                    public void doClick(View v) {
+                        JumpDetail.jumpColumn(mContext, bindItem.getItemId(), bindItem.getItemImg(), 5);
+                        HashMap<String, String> map = new HashMap<>(1);
+                        map.put(MobclickEvent.INDEX, position + "");
+                        EventReportManager.onEvent(mContext, MobclickEvent.TODAY_LIST_ITEM_CLICK, map);
+                    }
+                });
+                break;
+            default:
+                break;
+        }
     }
 
     /**

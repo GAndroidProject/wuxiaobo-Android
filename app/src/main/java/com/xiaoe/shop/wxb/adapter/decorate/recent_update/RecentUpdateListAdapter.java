@@ -9,18 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.facebook.drawee.view.SimpleDraweeView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.DecorateEntityType;
 import com.xiaoe.common.entitys.RecentUpdateListItem;
@@ -36,7 +27,6 @@ import com.xiaoe.shop.wxb.events.OnClickEvent;
 import com.xiaoe.shop.wxb.utils.LoginDialogUtils;
 import com.xiaoe.shop.wxb.utils.SetImageUriUtil;
 import com.xiaoe.shop.wxb.utils.UploadLearnProgressManager;
-import com.xiaoe.shop.wxb.widget.TouristDialog;
 
 /**
  * 最近更新列表适配器
@@ -381,14 +371,21 @@ public class RecentUpdateListAdapter extends BaseAdapter {
 
     // 播放第一条音频
     private void playFirstAudio(boolean needStop) {
-        if (needStop) {
-            AudioMediaPlayer.stop();
+        try{
+            if (needStop) {
+                AudioMediaPlayer.stop();
+            }
+            AudioPlayEntity playEntity = null;
+            if (AudioPlayUtil.getInstance().getAudioList().size() > 0)
+                playEntity = AudioPlayUtil.getInstance().getAudioList().get(0);
+            if (playEntity == null)   return;
+            playEntity.setPlay(true);
+            AudioMediaPlayer.setAudio(playEntity, true);
+            AudioMediaPlayer.getAudio().setPlaying(true);
+            new AudioPresenter(null).requestDetail(playEntity.getResourceId());
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        AudioPlayEntity playEntity = AudioPlayUtil.getInstance().getAudioList().get(0);
-        playEntity.setPlay(true);
-        AudioMediaPlayer.setAudio(playEntity, true);
-        AudioMediaPlayer.getAudio().setPlaying(true);
-        new AudioPresenter(null).requestDetail(playEntity.getResourceId());
     }
 
     public void stopPlayAll() {
