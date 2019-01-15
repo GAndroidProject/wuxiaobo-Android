@@ -247,7 +247,6 @@
             android:name=".common.pay.ui.BoBiActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".common.pay.ui.AccountDetailActivity" />
-        <activity android:name=".common.pay.ui.AccountDetailActivity" />
         <!-- 支付宝支付 start -->
         <activity
             android:name=".common.alipay.PayDemoActivity"
