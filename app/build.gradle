@@ -15,7 +15,7 @@ walle {
     apkOutputFolder = new File("${project.buildDir}/outputs/channels")
     // 定制渠道包的APK的文件名称
 //    apkFileNameFormat = '${appName}-${packageName}-${channel}-${buildType}-v${versionName}-${versionCode}-${buildTime}.apk'
-    apkFileNameFormat = 'xiaoe_wxb-${channel}-v${versionName}-${versionCode}-${buildTime}.apk'
+    apkFileNameFormat = 'xiaoe_wxb-${channel}-${buildType}-v${versionName}-${versionCode}-${buildTime}.apk'
     // 渠道配置文件
     channelFile = new File("${project.getProjectDir()}/channel")
 }
@@ -32,7 +32,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 7
-        versionName "1.1.0" // 测试：1.1.0   内灰：1.0.10f   吴晓波：1.0.12
+        versionName "1.1.1" // 测试：1.0.16d   内灰：1.0.10f   吴晓波：1.0.12
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -276,7 +276,6 @@ dependencies {
     androidTestImplementation("com.android.support:support-annotations:$sdk_version") {
         force = true
     }
-//    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation project(':common')
     implementation project(':network')
     //  butterKnife

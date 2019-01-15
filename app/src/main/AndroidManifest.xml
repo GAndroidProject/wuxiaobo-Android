@@ -187,18 +187,7 @@
                 android:resource="@xml/rc_file_path" />
         </provider>
 
-        <!--<meta-data
-            android:name="UMENG_APPKEY"
-            android:value="${UMENG_APPKEY_VALUE}" />
-        <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="${UMENG_CHANNEL_VALUE}" />-->
-
         <activity android:name=".business.super_vip.ui.SuperVipActivity" />
-
-        <!--<meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="guanwang" />-->
 
         <activity
             android:name=".business.bought_list.ui.BoughtListActivity"
@@ -257,7 +246,7 @@
         <activity
             android:name=".common.pay.ui.BoBiActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".common.pay.ui.AccountDetailActivity"></activity>
+        <activity android:name=".common.pay.ui.AccountDetailActivity" />
     </application>
 
 </manifest>

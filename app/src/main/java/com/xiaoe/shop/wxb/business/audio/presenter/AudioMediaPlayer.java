@@ -19,6 +19,7 @@ import com.xiaoe.common.app.CommonUserInfo;
 import com.xiaoe.common.app.Constants;
 import com.xiaoe.common.app.XiaoeApplication;
 import com.xiaoe.common.db.SQLiteUtil;
+import com.xiaoe.common.entitys.AudioListLoadMoreEvent;
 import com.xiaoe.common.entitys.AudioPlayEntity;
 import com.xiaoe.common.entitys.AudioPlayTable;
 import com.xiaoe.common.entitys.ResourceType;
@@ -385,6 +386,10 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             List<AudioPlayEntity> playList = AudioPlayUtil.getInstance().getAudioList();
             int indexNext = audio.getIndex() + 1;
             if(indexNext >= playList.size()){
+                if (AudioMediaPlayer.isHasMoreData){
+                    EventBus.getDefault().post(new AudioListLoadMoreEvent(true));
+                    return;
+                }
                 if (isShowLastOneToast)
                     Toast.makeText(XiaoeApplication.getmContext(),R.string.play_has_last_sing,Toast.LENGTH_SHORT).show();
                 return;

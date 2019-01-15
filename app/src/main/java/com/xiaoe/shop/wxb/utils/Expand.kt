@@ -3,7 +3,9 @@ package zqx.rj.com.mvvm.common
 import android.content.Context
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_COMPACT
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
@@ -43,6 +45,9 @@ fun String.toHtml(): String {
 fun Context.showShortToast(msg: String) = Toast.makeText(this,msg,Toast.LENGTH_SHORT).show()
 
 fun Context.showLongToast(msg: String) = Toast.makeText(this,msg,Toast.LENGTH_LONG).show()
+
+fun Context.layoutInflater(resourceId: Int,root: ViewGroup?= null): View
+        = LayoutInflater.from(this).inflate(resourceId,root)
 
 //fun ImageView.loadUrl(context: Context, url: String) {
 //

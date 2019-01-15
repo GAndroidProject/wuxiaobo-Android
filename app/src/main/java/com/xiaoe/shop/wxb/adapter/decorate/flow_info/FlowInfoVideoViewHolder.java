@@ -23,6 +23,8 @@ import butterknife.internal.DebouncingOnClickListener;
 
 /**
  * 视频 ViewHolder
+ *
+ * @deprecated 已废弃,使用 FlowInfoItemViewHolder
  */
 public class FlowInfoVideoViewHolder extends BaseViewHolder {
 

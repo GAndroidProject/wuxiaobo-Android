@@ -239,6 +239,7 @@
 
     <!--页面请求状态提示 start-->
     <string name="request_fail">页面还没找到，刷新试试吧</string>
+    <string name="request_fail2">页面还没找到，点击刷新试试吧</string>
     <string name="resource_sold_out">该课程已下架，快去别处看看吧</string>
     <string name="resource_sale_stop">该课程已暂停销售，快去别处看看吧</string>
     <string name="resource_delete">该课程已删除，快去别处看看吧</string>
@@ -547,4 +548,9 @@
     <string name="learned_sessinos_and_total">已学习%d期 / 共%d期</string>
     <string name="no_bought_record_content">暂无购买记录的内容，快去首页逛逛吧</string>
     <string name="ae_empty_content">暂无交易明细记录</string>
+    <string name="has_buy_desc">已购</string>
+    <string name="wxb_virtual_unit">波豆</string>
+    <string name="close_count_down">关闭定时</string>
+    <string name="after_stop_play_video">后视频停止播放</string>
+    <string name="remain_time">剩余%d分%d秒</string>
 </resources>

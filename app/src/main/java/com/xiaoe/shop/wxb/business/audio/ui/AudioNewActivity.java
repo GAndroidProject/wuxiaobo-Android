@@ -18,6 +18,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -62,6 +63,7 @@ import com.xiaoe.network.requests.ScholarshipSubmitRequest;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.anim.ViewAnim;
 import com.xiaoe.shop.wxb.base.XiaoeActivity;
+import com.xiaoe.shop.wxb.business.audio.presenter.AudioListLoadMoreHelper;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPlayUtil;
 import com.xiaoe.shop.wxb.business.audio.presenter.AudioPresenter;
@@ -96,6 +98,9 @@ import org.greenrobot.eventbus.Subscribe;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_10;
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_20;
@@ -204,6 +209,13 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         if(AudioMediaPlayer.isPlaying()){
             setDiskRotateAnimator(true);
         }
+        Log.d(TAG, "onStart: ");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
     }
 
     @Override
@@ -291,6 +303,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
 //                                pageSize,true,REQUEST_TAG);
                         mColumnPresenter.requestDownloadList(columnId,goodsType, pageSize, downloadType,
                                 "", REQUEST_TAG);
+                        AudioListLoadMoreHelper.INSTANCE.initConfigData(columnId,goodsType,pageSize,downloadType);
                     }
                 }
 
@@ -302,6 +315,13 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                         mColumnPresenter.requestDownloadList(columnId,goodsType, pageSize, downloadType,
                                 lastId, REQUEST_TAG);
                     }
+                }
+            });
+            AudioListLoadMoreHelper.INSTANCE.setLoadMordSuccessListener(new Function1<JSONArray, Unit>() {
+                @Override
+                public Unit invoke(JSONArray objects) {
+                    loadData(objects);
+                    return null;
                 }
             });
         }
@@ -443,10 +463,7 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                     list = dataObject.getJSONArray("list");
                 }
 
-                AudioPlayEntity audio = AudioMediaPlayer.getAudio();
-                audioPlayList.addData(mColumnPresenter.formatSingleResourceEntity2(list, audio == null ?
-                                "" : audio.getTitle(), audio == null ? "" : audio.getColumnId(),
-                        "", audio == null ? 0 : audio.getHasBuy()),audio == null ? 0 : audio.getHasBuy());
+                loadData(list);
             }
         }
         if(entity == null || !success){
@@ -470,6 +487,13 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
             JSONObject result = (JSONObject) jsonObject.get("data");
             obtainReceiveStatus(result);
         }
+    }
+
+    private void loadData(JSONArray list) {
+        AudioPlayEntity audio = AudioMediaPlayer.getAudio();
+        audioPlayList.addData(mColumnPresenter.formatSingleResourceEntity2(list, audio == null ?
+                        "" : audio.getTitle(), audio == null ? "" : audio.getColumnId(),
+                "", audio == null ? 0 : audio.getHasBuy()),audio == null ? 0 : audio.getHasBuy());
     }
 
     // 处理查询结果
@@ -614,11 +638,11 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
                 if(audioPlayEntity != null){
                     String imgUrl = TextUtils.isEmpty(audioPlayEntity.getImgUrlCompressed()) ? audioPlayEntity.getImgUrl() :  audioPlayEntity.getImgUrlCompressed();
-                    umShare(audioPlayEntity.getTitle(), imgUrl, audioPlayEntity.getShareUrl(), "");
+                    umShare(audioPlayEntity.getTitle(), imgUrl, audioPlayEntity.getShareUrl(), " ");
                 }
                 break;
             case R.id.audio_count_down:
-                showCountDownPlayDialog();
+                if (AudioMediaPlayer.prepared)      showCountDownPlayDialog();
                 break;
             case R.id.btn_count_down_1:
                 countDown(COUNT_DOWN_STATE_CLOSE,0,0);
@@ -1033,6 +1057,8 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         if (handler != null && runnable != null) {
             handler.removeCallbacks(runnable);
         }
+        if (isFinishing())
+            AudioListLoadMoreHelper.INSTANCE.setLoadMordSuccessListener(null);
     }
 
     @Override

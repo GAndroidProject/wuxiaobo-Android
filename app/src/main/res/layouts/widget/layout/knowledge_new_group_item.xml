@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/knowledge_new_group_item_wrap"
+    android:orientation="vertical"
+    android:layout_width="160dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/corners_bg_with_border">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="118dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/knowledge_new_group_item_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            fresco:roundedCornerRadius="@dimen/corner_border_radius_size"
+            fresco:roundingBorderWidth="0.5dp"
+            fresco:roundBottomRight="false"
+            fresco:roundBottomLeft="false"/>
+
+        <TextView
+            android:id="@+id/knowledge_new_group_item_learn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="sssssss"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:paddingStart="10dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="4dp"
+            android:background="@color/transparent_black"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/knowledge_new_group_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ssssssssssssssssssss"
+        android:textSize="14sp"
+        android:textColor="@color/main_title_color"
+        android:textStyle="bold"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/knowledge_new_group_item_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="aaaaaaaaaaaaaaaaaaaa"
+        android:textSize="12sp"
+        android:textColor="@color/secondary_title_color"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/knowledge_new_group_item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ssssss"
+        android:textSize="12sp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"/>
+
+</LinearLayout>

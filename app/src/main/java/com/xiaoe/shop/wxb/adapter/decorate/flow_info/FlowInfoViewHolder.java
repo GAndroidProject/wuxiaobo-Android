@@ -52,7 +52,7 @@ public class FlowInfoViewHolder extends BaseViewHolder {
     }
 
     // 初始化 viewHolder
-    public void initViewHolder(ComponentInfo currentBindComponent, int currentBindPos, SparseArray<FlowInfoRecyclerAdapter> flowInfoRecyclerAdapterArr) {
+    public void initViewHolder(ComponentInfo currentBindComponent, int currentBindPos, SparseArray<NewFlowInfoRecyclerAdapter> flowInfoRecyclerAdapterArr) {
         flowInfoTitle.setText(currentBindComponent.getTitle());
         if (currentBindComponent.getImgUrl() != null) {
             SetImageUriUtil.setImgURI(flowInfoIcon, currentBindComponent.getImgUrl(), Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 20));
@@ -66,14 +66,14 @@ public class FlowInfoViewHolder extends BaseViewHolder {
             flowInfoRecycler.setLayoutManager(llm);
         }
         // 信息流适配器
-        FlowInfoRecyclerAdapter flowInfoRecyclerAdapter;
+        NewFlowInfoRecyclerAdapter newFlowInfoRecyclerAdapter;
         if (flowInfoRecyclerAdapterArr.get(currentBindPos) == null) { // 防止重复 new
-            flowInfoRecyclerAdapter = new FlowInfoRecyclerAdapter(mContext, currentBindComponent.getFlowInfoItemList());
-            flowInfoRecyclerAdapterArr.put(currentBindPos, flowInfoRecyclerAdapter);
+            newFlowInfoRecyclerAdapter = new NewFlowInfoRecyclerAdapter(mContext, currentBindComponent.getFlowInfoItemList());
+            flowInfoRecyclerAdapterArr.put(currentBindPos, newFlowInfoRecyclerAdapter);
         } else {
-            flowInfoRecyclerAdapter = flowInfoRecyclerAdapterArr.get(currentBindPos);
+            newFlowInfoRecyclerAdapter = flowInfoRecyclerAdapterArr.get(currentBindPos);
         }
-        flowInfoRecycler.setAdapter(flowInfoRecyclerAdapter);
+        flowInfoRecycler.setAdapter(newFlowInfoRecyclerAdapter);
         flowInfoLearnWrap.setOnClickListener(new DebouncingOnClickListener() {
             @Override
             public void doClick(View v) {

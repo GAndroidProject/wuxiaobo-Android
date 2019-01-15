@@ -27,6 +27,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 知识商品 ViewHolder
+ */
 public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemClickWithKnowledgeListener {
 
     private static final String TAG = "KnowledgeGroupVh";
@@ -78,7 +81,7 @@ public class KnowledgeGroupViewHolder extends BaseViewHolder implements OnItemCl
                             Log.d(TAG, "singleClick: 没有 groupId");
                             return;
                         }
-                        JumpDetail.jumpCourseMore(mContext, groupId);
+                        JumpDetail.jumpCourseMore(mContext, groupId, currentBindComponent.getTitle());
                     } else {
                         // do nothing
                         Log.d(TAG, "singleClick: 扩展位置");

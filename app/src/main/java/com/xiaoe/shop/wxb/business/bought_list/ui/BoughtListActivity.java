@@ -207,7 +207,7 @@ public class BoughtListActivity extends XiaoeActivity implements OnItemClickWith
 
     @Override
     public void onBoughtListItemClick(View view, BoughtListItem boughtListItem) {
-        umShare(boughtListItem.getItemTitle(), boughtListItem.getItemIcon(), boughtListItem.getItemShareLink(), "");
+        umShare(boughtListItem.getItemTitle(), boughtListItem.getItemIcon(), boughtListItem.getItemShareLink(), " ");
         resourceId = boughtListItem.getItemResourceId();
         resourceType = boughtListItem.getItemResourceType();
     }
