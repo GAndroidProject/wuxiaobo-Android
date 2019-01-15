@@ -73,10 +73,6 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         int bindPos = holder.getAdapterPosition();
         final FlowInfoItem bindItem = mItemList.get(bindPos);
         int itemType = covertStr2Int(bindItem.getItemType());
-        if (itemType == -1) {
-            Log.d(TAG, "onBindViewHolder: flow_info component viewType get -1");
-            return;
-        }
         switch (itemType) {
             case DecorateEntityType.FLOW_INFO_IMG_TEXT: // 图文
                 FlowInfoImgTextViewHolder itViewHolder = (FlowInfoImgTextViewHolder) holder;
@@ -99,6 +95,8 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 videoViewHolder.initViewHolder(bindItem, position);
                 break;
             default:
+                FlowInfoImgTextViewHolder defaultViewHolder = (FlowInfoImgTextViewHolder) holder;
+                defaultViewHolder.initViewHolder(bindItem, bindItem.getItemType(), position);
                 break;
         }
     }
