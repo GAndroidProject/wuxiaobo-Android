@@ -17,7 +17,7 @@ import java.util.List;
 
 public class NewFlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
-    private static final String TAG = "NewFlowInfoRecyclerAdapter";
+    private static final String TAG = "NewFlowInfoRecycler";
 
     private Context mContext;
     private List<FlowInfoItem> mItemList;
