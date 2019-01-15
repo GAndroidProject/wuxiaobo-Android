@@ -94,8 +94,8 @@ public class VersionLogAdapter extends BaseAdapter {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 32) {
-                    ToastUtils.show(context, "不能超过32个字符");
+                if (s.length() > 100) {
+                    ToastUtils.show(context, "不能超过100个字符");
                 } else {
                     lists.get(position).setContent(s.toString());
 

@@ -41,10 +41,6 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == -1) {
-            Log.d(TAG, "onCreateViewHolder: flow_info component viewType get -1");
-            return null;
-        }
         View view = null;
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0,0,0,30);
@@ -70,10 +66,11 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_video, null);
                 view.setLayoutParams(layoutParams);
                 return new FlowInfoVideoViewHolder(mContext, view);
-            default:
-                break;
+            default: // 临时处理，后续废弃
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.flow_info_img_text, null);
+                view.setLayoutParams(layoutParams);
+                return new FlowInfoImgTextViewHolder(mContext, view);
         }
-        return null;
     }
 
     @Override
@@ -81,10 +78,6 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
         int bindPos = holder.getAdapterPosition();
         final FlowInfoItem bindItem = mItemList.get(bindPos);
         int itemType = covertStr2Int(bindItem.getItemType());
-        if (itemType == -1) {
-            Log.d(TAG, "onBindViewHolder: flow_info component viewType get -1");
-            return;
-        }
         switch (itemType) {
             case DecorateEntityType.FLOW_INFO_IMG_TEXT: // 图文
                 FlowInfoImgTextViewHolder itViewHolder = (FlowInfoImgTextViewHolder) holder;
@@ -107,6 +100,8 @@ public class FlowInfoRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder
                 videoViewHolder.initViewHolder(bindItem, position);
                 break;
             default:
+                FlowInfoImgTextViewHolder defaultViewHolder = (FlowInfoImgTextViewHolder) holder;
+                defaultViewHolder.initViewHolder(bindItem, bindItem.getItemType(), position);
                 break;
         }
     }
