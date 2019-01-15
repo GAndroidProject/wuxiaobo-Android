@@ -201,8 +201,6 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 //        String videoImageUrl = mIntent.getStringExtra("videoImageUrl");
 
         playControllerView = (VideoPlayControllerView) findViewById(R.id.video_play_controller);
-        playControllerView.setColumnId(columnId);
-        playControllerView.setRealSrcId(mResourceId);
         playControllerView.setIPlayNext(this);
         playControllerView.setPlayProgressWidgetVisibility(View.GONE);
         playControllerView.setOnClickVideoBackListener(this);
@@ -562,9 +560,9 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             if (playControllerView != null) {
                 playControllerView.retSet();
             }
-            mResourceId = ((JSONObject)data.get(0)).getString("resource_id");
+            realSrcId = ((JSONObject)data.get(0)).getString("resource_id");
             if (playControllerView != null)
-                playControllerView.setRealSrcId(mResourceId);
+                playControllerView.setRealSrcId(realSrcId);
             initDatas();
         }
 
@@ -615,6 +613,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
                     JSONObject resourceInfo = (JSONObject) data.get("resource_info");
                     String productId = resourceInfo.getString("resource_id");
+                    if (playControllerView != null)
+                        playControllerView.setRealSrcId(productId);
                     String productImgUrl = resourceInfo.getString("img_url");
 
                     JumpDetail.jumpColumn(this, productId, productImgUrl, 3);
@@ -741,6 +741,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
 
             collectImgUrl = data.getString("img_url");
             realSrcId = data.getString("resource_id");
+            if (playControllerView != null)
+                playControllerView.setRealSrcId(realSrcId);
         }else{
             if(!TextUtils.isEmpty(mLocalVideoUrl)){
                 playControllerView.setPlayUrl(mLocalVideoUrl);
