@@ -329,20 +329,27 @@ public class NavigateDetailActivity extends XiaoeActivity {
             item.setItemTitle(listSubItemObj.getString("title"));
             item.setItemTitleColumn(listSubItemObj.getString("summary"));
             item.setItemImg(listSubItemObj.getString("img_url_compressed_larger"));
-            String price = "￥" + listSubItemObj.getString("show_price");
-            if (price.equals("￥")) { // 表示买了，所以没有价格
-                item.setItemPrice(null);
-                item.setHasBuy(true);
-            } else {
-                item.setItemPrice(price);
-                item.setHasBuy(false);
+            String price = listSubItemObj.getString("show_price") + getString(R.string.wxb_virtual_unit);
+            int paymentType = listSubItemObj.getInteger("payment_type") == null ? -1 : listSubItemObj.getInteger("payment_type");
+            boolean hasBuy = false;
+            boolean isFree = false;
+            if (getString(R.string.wxb_virtual_unit).equals(price) && paymentType == 1) { // 免费
+                price = "";
+                isFree = true;
+            } else if (getString(R.string.wxb_virtual_unit).equals(price) && paymentType == 2) { // 已购
+                price = "";
+                hasBuy = true;
             }
+            item.setItemPrice(price);
+            item.setHasBuy(hasBuy);
+            item.setFree(isFree);
             String srcType = listSubItemObj.getString("src_type");
             String srcId = listSubItemObj.getString("src_id");
             String viewCount = TextUtils.isEmpty(listSubItemObj.getString("view_count"))  ? "0" : listSubItemObj.getString("view_count");
             String resourceCount = TextUtils.isEmpty(listSubItemObj.getString("resource_count"))  ? "0" : listSubItemObj.getString("resource_count");
             item.setSrcType(srcType);
             item.setResourceId(srcId);
+            item.setResourceCount(resourceCount);
             // 专栏或者大专栏订阅量就是 resourceCount
             if (srcType.equals(DecorateEntityType.COLUMN) || srcType.equals(DecorateEntityType.TOPIC)) {
                 viewCount = resourceCount;

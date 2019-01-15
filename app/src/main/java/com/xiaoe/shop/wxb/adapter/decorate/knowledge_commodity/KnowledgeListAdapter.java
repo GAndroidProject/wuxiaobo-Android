@@ -107,9 +107,17 @@ public class KnowledgeListAdapter extends BaseAdapter {
             if (DecorateEntityType.IMAGE_TEXT.equals(item.getSrcType()) || DecorateEntityType.AUDIO.equals(item.getSrcType()) || DecorateEntityType.VIDEO.equals(item.getSrcType())) {
                 price = item.getItemPrice();
             } else if (DecorateEntityType.COLUMN.equals(item.getSrcType()) || DecorateEntityType.TOPIC.equals(item.getSrcType())) {
-                price = item.getResourceCount() + "期/" + item.getItemPrice();
+                if (TextUtils.isEmpty(item.getResourceCount())) {
+                    price = item.getItemPrice();
+                } else {
+                    price = item.getResourceCount() + "期/" + item.getItemPrice();
+                }
             } else if (DecorateEntityType.MEMBER.equals(item.getSrcType())) {
-                price = item.getResourceCount() + "期/" + item.getItemPrice().split("/")[0] + mContext.getString(R.string.wxb_virtual_unit) + "/" + item.getItemPrice().split("/")[1];
+                if (TextUtils.isEmpty(item.getResourceCount())) {
+                    price = item.getItemPrice().split("/")[0] + mContext.getString(R.string.wxb_virtual_unit) + "/" + item.getItemPrice().split("/")[1];
+                } else {
+                    price = item.getResourceCount() + "期/" + item.getItemPrice().split("/")[0] + mContext.getString(R.string.wxb_virtual_unit) + "/" + item.getItemPrice().split("/")[1];
+                }
                 price = price.split("/年")[0];
             }
             viewHolder.itemPrice.setText(price);

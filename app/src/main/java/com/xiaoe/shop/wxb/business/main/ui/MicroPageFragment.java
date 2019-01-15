@@ -557,6 +557,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     }
                     // 先把频道组件存起来，等网络请求的回调回来后再操作
                     microPageList.add(component_recent);
+                    break; // 只取第一个
                 }
                 break;
             case DecorateEntityType.KNOWLEDGE_COMMODITY_STR: // 知识商品
@@ -800,7 +801,8 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : flowInfo.getString("show_price") + getContext().getString(R.string.wxb_virtual_unit);
                 String linePrice = TextUtils.isEmpty(flowInfo.getString("line_price")) ? "" : flowInfo.getString("line_price") + " " + getContext().getString(R.string.wxb_virtual_unit);
                 int paymentType = flowInfo.getInteger("payment_type") == null ? -1 : flowInfo.getInteger("payment_type");
-                boolean isPriceExist = TextUtils.isEmpty(showPrice) || ("0.00" + getContext().getString(R.string.wxb_virtual_unit)).equals(showPrice);
+                boolean isPriceExist = !TextUtils.isEmpty(showPrice) && !("0.00" + getContext().getString(R.string.wxb_virtual_unit)).equals(showPrice) &&
+                        !getContext().getString(R.string.wxb_virtual_unit).equals(showPrice);
                 boolean hasBuy = false;
                 boolean isFree = false;
                 if (isPriceExist && paymentType == 1) { // 免费
