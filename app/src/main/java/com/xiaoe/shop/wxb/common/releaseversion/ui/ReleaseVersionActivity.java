@@ -339,7 +339,9 @@ public class ReleaseVersionActivity extends XiaoeActivity implements Handler.Cal
         releaseVersionReq.setAudit_version(etAuditVersion.getText().toString().trim());
         List<String> messages = new ArrayList<>();
         for (VersionLog log : msgItemList) {
-            messages.add(log.getContent());
+            if (!TextUtils.isEmpty(log.getContent())) {
+                messages.add(log.getContent());
+            }
         }
         releaseVersionReq.setMsg(messages);
 

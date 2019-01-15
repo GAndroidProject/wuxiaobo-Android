@@ -20,7 +20,7 @@
             android:layout_toStartOf="@+id/rv_delete_item_vote"
             android:background="@null"
             android:inputType="text"
-            android:maxLength="32"
+            android:maxLength="100"
             android:minHeight="36dp"
             android:paddingLeft="8dp"
             android:paddingTop="12dp"
