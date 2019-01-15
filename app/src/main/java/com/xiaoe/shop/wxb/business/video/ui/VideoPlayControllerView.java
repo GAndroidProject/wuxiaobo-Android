@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -28,7 +27,6 @@ import com.xiaoe.network.utils.ThreadPoolUtils;
 import com.xiaoe.shop.wxb.R;
 import com.xiaoe.shop.wxb.business.audio.presenter.CountDownTimerTool;
 import com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper;
-import com.xiaoe.shop.wxb.business.audio.presenter.AudioMediaPlayer;
 import com.xiaoe.shop.wxb.business.video.presenter.VideoPlayer;
 import com.xiaoe.shop.wxb.events.VideoPlayEvent;
 import com.xiaoe.shop.wxb.interfaces.OnClickVideoButtonListener;
@@ -40,6 +38,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_30;
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_DURATION_60;
 import static com.xiaoe.shop.wxb.business.audio.presenter.MediaPlayerCountDownHelper.COUNT_DOWN_STATE_CLOSE;
@@ -95,6 +97,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
     private float mSpeedPlay = 1.0f;
     private int mSpeedPlayPosition = 1;
     private IPlayNext mIPlayNext;
+    private VideoTimerTipsViewHelper mVideoTimerTipsViewHelper;
 
     public void retSet() {
         if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
@@ -158,6 +161,14 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         btnPlay.setOnClickListener(this);
         btnBack = (ImageView) rootView.findViewById(R.id.id_btn_come_back);
         btnBack.setOnClickListener(this);
+
+        View timerTipsView = rootView.findViewById(R.id.timer_tips_layout);
+        mVideoTimerTipsViewHelper = new VideoTimerTipsViewHelper(context,timerTipsView);
+        mVideoTimerTipsViewHelper.setCloseButtonClick(unit -> {
+            MediaPlayerCountDownHelper.INSTANCE.closeCountDownTimer();
+            updateCountDownText();
+            return null;
+        });
 
         btnProgressPlay = (ImageView) findViewById(R.id.id_video_progress_play);
         btnProgressPlay.setOnClickListener(this);
@@ -235,6 +246,11 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
 
     }
 
+    public void dismissTimerTips(){
+        if (mVideoTimerTipsViewHelper != null)
+            mVideoTimerTipsViewHelper.dismissTimerTips();
+    }
+
     private void countDown(int state, int duration) {
         if (mCountDownView != null && VISIBLE == mCountDownView.getVisibility())
             mCountDownView.setVisibility(GONE);
@@ -258,12 +274,18 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             if (mCountDownView != null && VISIBLE == mCountDownView.getVisibility()){
                 updateCountDownText();
             }
+            int tipsCountDownTime = 10;
+            if (tipsCountDownTime * 1000 < millisUntilFinished && millisUntilFinished <=
+                    (tipsCountDownTime + 1) * 1000 && mVideoPlayer.isPlaying())
+                mVideoTimerTipsViewHelper.showTimerTips();
+            mVideoTimerTipsViewHelper.updateTimeValue(millisUntilFinished / 1000);
         }
 
         @Override
         public void onFinish() {
             pause();
             updateCountDownText();
+            mVideoTimerTipsViewHelper.dismissTimerTips();
         }
     };
 

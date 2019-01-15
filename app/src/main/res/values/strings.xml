@@ -550,4 +550,6 @@
     <string name="ae_empty_content">暂无交易明细记录</string>
     <string name="has_buy_desc">已购</string>
     <string name="wxb_virtual_unit">波豆</string>
+    <string name="close_count_down">关闭定时</string>
+    <string name="after_stop_play_video">后视频停止播放</string>
 </resources>

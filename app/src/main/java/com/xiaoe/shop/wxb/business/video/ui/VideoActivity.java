@@ -554,6 +554,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             JSONArray data = jsonObject.getJSONArray("data");
             if (data == null || data.size() == 0){
                 playNextIndex = -1;
+                dismissTimerTips();
                 if (!isAutoPlayNext)
                     toastCustom(getString(R.string.already_was_last_video));
                 return;
@@ -567,6 +568,11 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             initDatas();
         }
 
+    }
+
+    public void dismissTimerTips(){
+        if (playControllerView != null)
+            playControllerView.dismissTimerTips();
     }
 
     /**
@@ -858,9 +864,12 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         if (isEnableNext){
             setHasToast(true);
             isAutoPlayNext = isAuto;
-            LogUtils.d("onNext = " + playNextIndex);
-            if (!isAutoPlayNext && (playNextIndex < 1 || TextUtils.isEmpty(requestNextVideoResId))){
-                toastCustom(getString(R.string.already_was_last_video));
+            LogUtils.d("onNext = " + playNextIndex + "--- requestNextVideoResId = " + requestNextVideoResId);
+
+            if (playNextIndex < 1 || TextUtils.isEmpty(requestNextVideoResId)){
+                dismissTimerTips();
+                if (!isAutoPlayNext)
+                    toastCustom(getString(R.string.already_was_last_video));
                 return;
             }
 

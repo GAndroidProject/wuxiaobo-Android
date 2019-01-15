@@ -542,7 +542,17 @@
     <string name="confirm_money">￥ 198</string>
     <string name="confirm_ali_icon_desc">支付宝支付图标</string>
     <string name="confirm_we_chat_pay_icon">微信支付图标</string>
+    <string name="balance_str">%s%s%s 波豆</string>
+    <string name="paying_way_bo_bi_desc">波豆支付图标</string>
+    <string name="paying_bo_bi_title">波豆支付</string>
+    <string name="paying_bo_bi_balance">余额：%s波豆</string>
+    <string name="paying_bo_bi_select_desc">波豆支付选择图标</string>
+    <string name="paying_ali_select_desc">支付宝支付选择图标</string>
+    <string name="paying_wechat_select_desc">微信支付选择图标</string>
+    <string name="paying_account">支付金额： %s%s%s</string>
     <string name="ae_empty_content">暂无交易明细记录</string>
     <string name="has_buy_desc">已购</string>
     <string name="wxb_virtual_unit">波豆</string>
+    <string name="close_count_down">关闭定时</string>
+    <string name="after_stop_play_video">后视频停止播放</string>
 </resources>
