@@ -82,7 +82,18 @@ public class AudioPresenter implements IBizCallback {
                 playEntity.setCode(NetworkCodes.CODE_GOODS_DELETE);
             } else if (code == NetworkCodes.CODE_NO_SINGLE_SELL) {
                 Log.e(TAG, "setAudioDetail: " + code);
-                playEntity.setCode(NetworkCodes.CODE_NO_SINGLE_SELL);
+
+                JSONObject data = (JSONObject) jsonObject.get("data");
+                JSONObject resourceInfo = (JSONObject) data.get("resource_info");
+                String productId = resourceInfo.getString("resource_id");
+                String productImgUrl = resourceInfo.getString("img_url");
+
+                AudioPlayEntity playEntity1 = new AudioPlayEntity();
+                playEntity1.setProductId(productId);
+                playEntity1.setProductImgUrl(productImgUrl);
+                playEntity1.setCode(NetworkCodes.CODE_NO_SINGLE_SELL);
+
+                EventBus.getDefault().post(playEntity1);
             }else{
                 playEntity.setCode(1);
             }
