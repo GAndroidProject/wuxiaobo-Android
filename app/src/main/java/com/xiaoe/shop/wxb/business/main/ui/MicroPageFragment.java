@@ -384,6 +384,9 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             String title = dataJsonItem.getString("title");
             // 频道组件如果 playState 传空的话会隐藏播放 icon
             String resourceType = convertInt2Str(dataJsonItem.getInteger("resource_type"));
+            if (TextUtils.isEmpty(resourceType)) {
+                continue;
+            }
             String resourceId = dataJsonItem.getString("resource_id");
             recentUpdateListItem.setListTitle(title);
             recentUpdateListItem.setColumnTitle(mColumnTitle);
@@ -694,6 +697,12 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 item.setFree(false);
             }
             String srcType = listSubItemObj.getString("src_type");
+            // 过滤暂时不兼容的类型
+            if (!DecorateEntityType.IMAGE_TEXT.equals(srcType) && !DecorateEntityType.AUDIO.equals(srcType)
+                    && !DecorateEntityType.VIDEO.equals(srcType) && !DecorateEntityType.COLUMN.equals(srcType)
+                    && !DecorateEntityType.TOPIC.equals(srcType) && !DecorateEntityType.MEMBER.equals(srcType)) {
+                continue;
+            }
             String srcId = listSubItemObj.getString("src_id");
             // view_count -- 浏览次数 / resource_count -- 更新期数 / purchase_count -- 订阅数
             String viewCount = TextUtils.isEmpty(listSubItemObj.getString("view_count")) ? "" : listSubItemObj.getString("view_count");
