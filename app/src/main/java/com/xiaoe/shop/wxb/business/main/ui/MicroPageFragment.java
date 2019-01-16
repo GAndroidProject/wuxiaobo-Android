@@ -398,9 +398,12 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             recentUpdateListItem.setAppId(dataJsonItem.getString("app_id"));
             recentUpdateListItem.setImgUrl(dataJsonItem.getString("img_url"));
             recentUpdateListItem.setImgUrlCompress(dataJsonItem.getString("img_url_compress"));
-            recentUpdateListItem.setResourceType(dataJsonItem.getIntValue("resource_type"));
-            recentUpdateListItem.setAudioLength(dataJsonItem.getIntValue("audio_length"));
-            recentUpdateListItem.setVideoLength(dataJsonItem.getIntValue("video_length"));
+            int rt = dataJsonItem.getInteger("resource_type") == null ? 0 : dataJsonItem.getInteger("resource_type");
+            recentUpdateListItem.setResourceType(rt);
+            int al = dataJsonItem.getInteger("audio_length") == null ? 0 : dataJsonItem.getInteger("audio_length");
+            recentUpdateListItem.setAudioLength(al);
+            int vl = dataJsonItem.getInteger("video_length") == null ? 0 : dataJsonItem.getInteger("video_length");
+            recentUpdateListItem.setVideoLength(vl);
             recentUpdateListItem.setAudioUrl(dataJsonItem.getString("audio_url"));
             recentUpdateListItem.setColumnId(columnId);
             recentUpdateListItem.setBigColumnId("");

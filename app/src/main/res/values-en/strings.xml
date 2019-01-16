@@ -541,7 +541,7 @@
     <string name="bo_bi_content_desc">账户明细</string>
     <string name="confirm_pay">确认支付</string>
     <string name="ali_pay_title">支付宝支付</string>
-    <string name="confirm_money">￥ 198</string>
+    <string name="confirm_money">%s%d%s 波豆</string>
     <string name="confirm_ali_icon_desc">支付宝支付图标</string>
     <string name="confirm_we_chat_pay_icon">微信支付图标</string>
     <string name="balance_str">%s%s%s 波豆</string>
@@ -558,4 +558,5 @@
     <string name="close_count_down">关闭定时</string>
     <string name="after_stop_play_video">后视频停止播放</string>
     <string name="remain_time">剩余%d分%d秒</string>
+    <string name="empty_column">专栏暂无课程</string>
 </resources>

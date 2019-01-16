@@ -484,7 +484,8 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
             initData(data, cache);
         } else { // 未购
             //1-免费,2-单卖，3-非单卖
-            if(resourceInfo.getIntValue("is_related") == 1){
+            int isRelated = resourceInfo.getInteger("is_related") == null ? 0 : resourceInfo.getInteger("is_related");
+            if(isRelated == 1){
                 //如果是仅关联售卖，则把缓存中的数据清除
                 SQLiteUtil sqLiteUtil = SQLiteUtil.init(XiaoeApplication.getmContext(), new CacheDataUtil());
                 sqLiteUtil.delete(CacheDataUtil.TABLE_NAME, "app_id=? and resource_id=? and user_id=?", new String[]{Constants.getAppId(), resourceId, CommonUserInfo.getLoginUserIdOrAnonymousUserId()});
@@ -596,15 +597,15 @@ public class CourseImageTextActivity extends XiaoeActivity implements PushScroll
      */
     private void resourceState(JSONObject data, boolean available){
         //是否免费0：否，1：是
-        int isFree = data.getIntValue("is_free");
+        int isFree = data.getInteger("is_free") == null ? -1 : data.getInteger("is_free");
         //0-正常, 1-隐藏, 2-删除
-        int detailState = data.getIntValue("state");
+        int detailState = data.getInteger("state") == null ? -1 : data.getInteger("state");
         //0-上架,1-下架
-        int saleStatus = data.getIntValue("sale_status");
+        int saleStatus = data.getInteger("sale_status") == null ? -1 : data.getInteger("sale_status");
         //是否停售 0:否，1：是
-        int isStopSell = data.getIntValue("is_stop_sell");
+        int isStopSell = data.getInteger("is_stop_sell") == null ? -1 : data.getInteger("is_stop_sell");
         //离待上线时间，如有则是待上架
-        int timeLeft = data.getIntValue("time_left");
+        int timeLeft = data.getInteger("time_left") == null ? -1 : data.getInteger("time_left");
 
         if(available && detailState != 2){
             //删除状态优秀级最高，available=true是除了删除状态显示删除页面外，其他的均可查看详情

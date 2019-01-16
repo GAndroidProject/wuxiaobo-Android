@@ -944,8 +944,9 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     }
 
     private void collect() {
-        hasCollect = !hasCollect;
         AudioPlayEntity audioPlayEntity = AudioMediaPlayer.getAudio();
+        if (audioPlayEntity == null)    return;
+        hasCollect = !hasCollect;
         if(hasCollect){
             setCollectState(true);
             //添加收藏

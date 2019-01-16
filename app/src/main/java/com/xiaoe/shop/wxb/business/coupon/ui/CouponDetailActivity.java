@@ -96,17 +96,18 @@ public class CouponDetailActivity extends XiaoeActivity implements View.OnClickL
                 JSONObject itemData = (JSONObject) itemObject;
                 KnowledgeCommodityItem knowledgeCommodityItem = new KnowledgeCommodityItem();
                 String price = "¥" + itemData.getString("price");
-                if(itemData.getIntValue("type") == 1){
+                int type = itemData.getInteger("type") == null ? 0 : itemData.getInteger("type");
+                if(type == 1){
                     knowledgeCommodityItem.setSrcType(DecorateEntityType.IMAGE_TEXT);
-                }else if(itemData.getIntValue("type") == 2){
+                }else if(type == 2){
                     knowledgeCommodityItem.setSrcType(DecorateEntityType.AUDIO);
-                }else if(itemData.getIntValue("type") == 3){
+                }else if(type == 3){
                     knowledgeCommodityItem.setSrcType(DecorateEntityType.VIDEO);
-                }else if(itemData.getIntValue("type") == 5 || itemData.getIntValue("type") == 6){
+                }else if(type == 5 || type == 6){
                     knowledgeCommodityItem.setSrcType(DecorateEntityType.COLUMN);
-                }else if(itemData.getIntValue("type") == 8){
+                }else if(type == 8){
                     knowledgeCommodityItem.setSrcType(DecorateEntityType.TOPIC);
-                } else if (itemData.getIntValue("type") == 23) {
+                } else if (type == 23) {
                     knowledgeCommodityItem.setSrcType(DecorateEntityType.SUPER_VIP);
                     price = price + "/年";
                 }
