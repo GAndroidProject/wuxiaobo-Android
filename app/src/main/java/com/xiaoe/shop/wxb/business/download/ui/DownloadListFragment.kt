@@ -70,11 +70,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
     private lateinit var resourceId: String
     private lateinit var resourceType: String
     private lateinit var downTitle: String
-    private var pageIndex: Int = 1
     private var pageSize: Int = 20
-    private var isMainContent: Boolean = true
-    private var refreshData: Boolean = false
-    private var showDataByDB: Boolean = false
     private lateinit var downloadSingleAdapter: DownLoadListAdapter
     private lateinit var downloadGroupAdapter: DownLoadListAdapter
     private lateinit var downloadSingleList: MutableList<CommonDownloadBean>
@@ -106,34 +102,30 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
      */
     fun initData() {
         val intent = activity.intent
-        val intentRt = intent.getStringExtra("resourceType")
+        resourceType = intent.getStringExtra("resourceType")
         resourceId = intent.getStringExtra("resourceId")
         downTitle = intent.getStringExtra("down_title")
-        if (intentRt.isNotEmpty()) {
-            resourceType = when (intentRt) {
-                downloadMember -> downloadMember
-                downloadColumn -> downloadColumn
-                downloadTopic -> downloadTopic
-                else -> downloadAll
+        if (resourceType.isNotEmpty()) {
+            // 大专栏和会员需要请求专栏列表和全部数据
+            when (resourceType) {
+                downloadTopic -> {
+                    isMainLoadMore = false
+                    columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
+                    columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
+                }
+                downloadMember -> {
+                    isMainLoadMore = false
+                    columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
+                    columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
+                }
+                downloadColumn -> {
+                    isMainLoadMore = false
+                    columnPresenter.requestDownloadList(resourceId, downloadColumn.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
+                }
+                else -> toastCustom("资源类型有误..")
             }
-        }
-        // 大专栏和会员需要请求专栏列表和全部数据
-        when (resourceType) {
-            downloadTopic -> {
-                isMainLoadMore = false
-                columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
-                columnPresenter.requestDownloadList(resourceId, downloadTopic.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
-            }
-            downloadMember -> {
-                isMainLoadMore = false
-                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
-                columnPresenter.requestDownloadList(resourceId, downloadMember.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
-            }
-            downloadColumn -> {
-                isMainLoadMore = false
-                columnPresenter.requestDownloadList(resourceId, downloadColumn.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
-            }
-            else -> toastCustom("资源类型有误..")
+        } else {
+            return
         }
         downloadSingleList = mutableListOf()
         downloadSingleAdapter = DownLoadListAdapter(context)

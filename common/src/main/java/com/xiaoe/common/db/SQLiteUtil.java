@@ -188,19 +188,25 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
         if(newVersion > oldVersion && newVersion == AudioPlayTable.DATABASE_VERSION){
             //列如，对音频表新增字段操作
         }
-
-        if (oldVersion >= 1) { // 数据库版本为 1 的数据版本
-            try {
-                // 此处需要注意不要使用 sqLiteDatabase.beginTransaction(); 这个方法是用于独立一个 sqLiteDatabase 对象来处理事务，完成后全局使用的 sqLiteDatabase 不能感知到变化
-                if (isTableExit(sqLiteDatabase, "download_resource")) {
-                    // 单纯新增字段的更新方式
-                    updateDataByAdd(sqLiteDatabase);
-                } else {
-                    onCreate(sqLiteDatabase);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            switch (oldVersion) {
+                // 数据库版本为 1 的数据版本（wxb 二期迭代，已上线版本为 1，二期迭代上线后版本为 3）
+                case 1:
+                case 2:
+                case 3:
+                    // 此处需要注意不要使用 sqLiteDatabase.beginTransaction(); 这个方法是用于独立一个 sqLiteDatabase 对象来处理事务，完成后全局使用的 sqLiteDatabase 不能感知到变化
+                    if (isTableExit(sqLiteDatabase, "download_resource")) {
+                        // 单纯新增字段的更新方式
+                        updateDataByAdd(sqLiteDatabase);
+                    } else {
+                        onCreate(sqLiteDatabase);
+                    }
+                    break;
+                default:
+                    break;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -254,18 +260,26 @@ public final class SQLiteUtil extends SQLiteOpenHelper {
      * 数据库升级，单纯加字段模式
      *
      * 新增字段为 parent_id、parent_type、top_parent_id、top_parent_type
-     * @param sqLiteDatabase
+     * @param sqLiteDatabase sqLiteDatabase
      */
     private void updateDataByAdd(SQLiteDatabase sqLiteDatabase) {
         // 添加字段的方式
-        String addParentIdColumn = "ALTER TABLE download_resource ADD COLUMN parent_id VARCHAR(64) default \"-1\"";
-        String addParentTypeColumn = "ALTER TABLE download_resource ADD COLUMN parent_type INTEGER default -1";
-        String addTopParentIdColumn = "ALTER TABLE download_resource ADD COLUMN top_parent_id VARCHAR(64) default \"-1\"";
-        String addTopParentTypeColumn = "ALTER TABLE download_resource ADD COLUMN top_parent_type INTEGER default -1";
-        sqLiteDatabase.execSQL(addParentIdColumn);
-        sqLiteDatabase.execSQL(addParentTypeColumn);
-        sqLiteDatabase.execSQL(addTopParentIdColumn);
-        sqLiteDatabase.execSQL(addTopParentTypeColumn);
+        if (!isColumnExist(sqLiteDatabase, "download_resource", "parent_id")) {
+            String addParentIdColumn = "ALTER TABLE download_resource ADD COLUMN parent_id VARCHAR(64) default \"-1\"";
+            sqLiteDatabase.execSQL(addParentIdColumn);
+        }
+        if (!isColumnExist(sqLiteDatabase, "download_resource", "parent_type")) {
+            String addParentTypeColumn = "ALTER TABLE download_resource ADD COLUMN parent_type INTEGER default -1";
+            sqLiteDatabase.execSQL(addParentTypeColumn);
+        }
+        if (!isColumnExist(sqLiteDatabase, "download_resource", "top_parent_id")) {
+            String addTopParentIdColumn = "ALTER TABLE download_resource ADD COLUMN top_parent_id VARCHAR(64) default \"-1\"";
+            sqLiteDatabase.execSQL(addTopParentIdColumn);
+        }
+        if (!isColumnExist(sqLiteDatabase, "download_resource", "top_parent_type")) {
+            String addTopParentTypeColumn = "ALTER TABLE download_resource ADD COLUMN top_parent_type INTEGER default -1";
+            sqLiteDatabase.execSQL(addTopParentTypeColumn);
+        }
     }
 
     public boolean tabIsExist(String tabName){
