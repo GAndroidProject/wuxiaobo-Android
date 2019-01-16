@@ -1009,7 +1009,6 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 break;
             case AudioPlayEvent.REFRESH_PAGER:
                 refreshPager();
-
                 break;
             case AudioPlayEvent.NEXT:
             case AudioPlayEvent.LAST:
@@ -1018,6 +1017,14 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 break;
             default:
                 break;
+        }
+    }
+
+    @Subscribe
+    public void onEventMainThread(AudioPlayEntity audioPlayEntity) {
+        if (NetworkCodes.CODE_NO_SINGLE_SELL == audioPlayEntity.getCode()) {
+            JumpDetail.jumpColumn(this, audioPlayEntity.getProductId(), audioPlayEntity.getProductImgUrl(), 3);
+            finish();
         }
     }
 

@@ -82,7 +82,21 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
         } else {
             flowInfoDesc.setText(bindItem.getItemDesc());
         }
-        if (!itemHasDecorate) {
+        // 描述合标签都不在
+        if (flowInfoDesc.getVisibility() == View.GONE && flowInfoBottomRecycler.getVisibility() == View.GONE) {
+            LinearLayout.LayoutParams wrapLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (DecorateEntityType.IMAGE_TEXT.equals(bindItem.getItemType()) ||
+                    DecorateEntityType.COLUMN.equals(bindItem.getItemType()) ||
+                    DecorateEntityType.TOPIC.equals(bindItem.getItemType()) ||
+                    DecorateEntityType.MEMBER.equals(bindItem.getItemType())) {
+                wrapLayoutParams.height = Dp2Px2SpUtil.dp2px(mContext, 370);
+            } else if (DecorateEntityType.AUDIO.equals(bindItem.getItemType()) ||
+                    DecorateEntityType.VIDEO.equals(bindItem.getItemType())) {
+                wrapLayoutParams.height = Dp2Px2SpUtil.dp2px(mContext, 310);
+            }
+            flowInfoWrap.setLayoutParams(wrapLayoutParams);
+        }
+        if (!itemHasDecorate && flowInfoBottomRecycler.getVisibility() == View.VISIBLE) {
             AutoLineFeedLayoutManager autoLineFeedLayoutManager = new AutoLineFeedLayoutManager(mContext);
             autoLineFeedLayoutManager.setScrollEnabled(false);
             autoLineFeedLayoutManager.setStackFromEnd(true); // 软件盘弹出，recyclerView 随之上移
