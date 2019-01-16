@@ -250,7 +250,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
         }
         mCommentCount++;
         commentCountView.setText(String.format(getString(R.string.comments_on_count), mCommentCount));
-        int commentId = data.getIntValue("comment_id");
+        int commentId = data.getInteger("comment_id") == null ? 0 : data.getInteger("comment_id");
         sendComment.setComment_id(commentId);
         commentAdapter.addPosition(sendComment, 0);
         commentAdapter.notifyDataSetChanged();
@@ -264,7 +264,7 @@ public class CommentActivity extends XiaoeActivity implements View.OnClickListen
     }
 
     private void commentListRequest(JSONObject dataObject) {
-        int count = dataObject.getIntValue("total_count");
+        int count = dataObject.getInteger("total_count") == null ? 0 : dataObject.getInteger("total_count");
         if(count <= 0){
             isCommentFinished = true;
             commentAdapter.setLoadMoreState(ListBottomLoadMoreView.STATE_ALL_FINISH);

@@ -69,8 +69,20 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
         } else {
             flowInfoBottomRecycler.setVisibility(View.VISIBLE);
         }
+        // 基本信息初始化
+        flowInfoTitle.setText(bindItem.getItemTitle());
+        if (!TextUtils.isEmpty(bindItem.getItemTag())) {
+            flowInfoTag.setText(bindItem.getItemTag());
+            flowInfoTag.setVisibility(View.VISIBLE);
+        } else {
+            flowInfoTag.setVisibility(View.GONE);
+        }
+        if (TextUtils.isEmpty(bindItem.getItemDesc())) {
+            flowInfoDesc.setVisibility(View.GONE);
+        } else {
+            flowInfoDesc.setText(bindItem.getItemDesc());
+        }
         if (!itemHasDecorate) {
-            itemHasDecorate = true;
             AutoLineFeedLayoutManager autoLineFeedLayoutManager = new AutoLineFeedLayoutManager(mContext);
             autoLineFeedLayoutManager.setScrollEnabled(false);
             autoLineFeedLayoutManager.setStackFromEnd(true); // 软件盘弹出，recyclerView 随之上移
@@ -84,30 +96,6 @@ public class FlowInfoItemViewHolder extends BaseViewHolder {
             flowInfoBottomRecycler.setAdapter(flowInfoLabelAdapter);
             flowInfoBottomRecycler.setNestedScrollingEnabled(false);
         }
-        LinearLayout.LayoutParams descLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (flowInfoBottomRecycler.getVisibility() == View.VISIBLE) { // 标签在，简介则不需要简介不需要 marginBottom
-            descLayoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 12),
-                    Dp2Px2SpUtil.dp2px(mContext, 20), 0);
-            flowInfoDesc.setLayoutParams(descLayoutParams);
-        } else {
-            descLayoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 12),
-                    Dp2Px2SpUtil.dp2px(mContext, 20), Dp2Px2SpUtil.dp2px(mContext, 14));
-            flowInfoDesc.setLayoutParams(descLayoutParams);
-        }
-        // 基本信息初始化
-        flowInfoTitle.setText(bindItem.getItemTitle());
-        if (TextUtils.isEmpty(bindItem.getItemDesc())) {
-            flowInfoDesc.setVisibility(View.GONE);
-        } else {
-            flowInfoDesc.setText(bindItem.getItemDesc());
-        }
-        if (!TextUtils.isEmpty(bindItem.getItemTag())) {
-            flowInfoTag.setText(bindItem.getItemTag());
-            flowInfoTag.setVisibility(View.VISIBLE);
-        } else {
-            flowInfoTag.setVisibility(View.GONE);
-        }
-
         switch (bindItem.getItemType()) {
             case DecorateEntityType.IMAGE_TEXT:
                 flowInfoWrap.setOnClickListener(new DebouncingOnClickListener() {

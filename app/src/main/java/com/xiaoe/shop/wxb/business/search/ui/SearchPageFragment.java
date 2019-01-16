@@ -151,7 +151,9 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         historyContentView = (SearchContentView) viewWrap.findViewById(R.id.history_content);
         recommendContentView = (SearchContentView) viewWrap.findViewById(R.id.recommend_content);
 
-        initHistoryView(historyContentView);
+        if (historyList != null) {
+            initHistoryView(historyContentView);
+        }
         initRecommendView(recommendContentView);
     }
 
@@ -293,7 +295,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             if (price == 0) {
                 priceStr = "";
             } else {
-                priceStr = "￥" + price;
+                priceStr = price + mContext.getString(R.string.wxb_virtual_unit);
             }
             commodityItem.setItemTitle(title);
             commodityItem.setItemImg(imgUrl);
@@ -411,7 +413,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
             if (price == 0) {
                 priceStr = "";
             } else {
-                priceStr = "￥" + price;
+                priceStr = price + mContext.getString(R.string.wxb_virtual_unit);
             }
             commodityItem.setItemTitle(title);
             commodityItem.setItemImg(imgUrl);
@@ -439,6 +441,7 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         searchResultRecycler.setLayoutManager(layoutManager);
         decorateRecyclerAdapter = new DecorateRecyclerAdapter(mContext, itemComponentList,true);
+        decorateRecyclerAdapter.showLastItem(false);
         searchResultRecycler.setAdapter(decorateRecyclerAdapter);
         decorateRecyclerAdapter.notifyDataSetChanged();
         searchActivity.hasDecorate = true;

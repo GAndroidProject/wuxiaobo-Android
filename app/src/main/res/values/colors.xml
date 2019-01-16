@@ -97,4 +97,5 @@
 
     <color name="top_up_bg">#1A1E59F6</color>
     <color name="flow_info_type_text_color">#9AA1B6</color>
+    <color name="text_border">#FFEDF0F5</color>
 </resources>
