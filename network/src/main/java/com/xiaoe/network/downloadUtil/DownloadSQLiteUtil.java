@@ -184,7 +184,6 @@ public final class DownloadSQLiteUtil extends SQLiteOpenHelper {
                 // 数据库版本为 1 的数据版本（wxb 二期迭代，已上线版本为 1，二期迭代上线后版本为 3）
                 case 1:
                 case 2:
-                case 3:
                     // 此处需要注意不要使用 sqLiteDatabase.beginTransaction(); 这个方法是用于独立一个 sqLiteDatabase 对象来处理事务，完成后全局使用的 sqLiteDatabase 不能感知到变化
                     if (isTableExit(sqLiteDatabase, "download_file")) {
                         // 单纯新增字段的更新方式

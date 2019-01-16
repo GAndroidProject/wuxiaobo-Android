@@ -555,4 +555,5 @@
     <string name="close_count_down">关闭定时</string>
     <string name="after_stop_play_video">后视频停止播放</string>
     <string name="remain_time">剩余%d分%d秒</string>
+    <string name="empty_column">专栏暂无课程</string>
 </resources>

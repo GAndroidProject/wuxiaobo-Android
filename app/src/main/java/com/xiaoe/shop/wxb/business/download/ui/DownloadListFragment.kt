@@ -32,6 +32,7 @@ import com.xiaoe.shop.wxb.adapter.download.DownLoadListAdapter
 
 import com.xiaoe.shop.wxb.base.BaseFragment
 import com.xiaoe.shop.wxb.business.column.presenter.ColumnPresenter
+import com.xiaoe.shop.wxb.utils.LogUtils
 import com.xiaoe.shop.wxb.widget.CustomDialog
 import com.xiaoe.shop.wxb.widget.StatusPagerView
 import kotlinx.android.synthetic.main.download_list_bottom.*
@@ -122,7 +123,7 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                     isMainLoadMore = false
                     columnPresenter.requestDownloadList(resourceId, downloadColumn.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
                 }
-                else -> toastCustom("资源类型有误..")
+                else -> LogUtils.d("资源类型有误..")
             }
         } else {
             return
@@ -243,9 +244,10 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 columnPresenter.requestDownloadList(resourceId, resourceType.toInt(), pageSize, downloadTypeSingle, lastSingleId, requestSingleTag)
             }
             downloadSecondRefresh -> {
+                isMainLoadMore = false
                 columnPresenter.requestDownloadList(resourceId, resourceType.toInt(), pageSize, downloadTypeGroup, lastGroupId, requestGroupTag)
             }
-            else -> toastCustom("上拉未知错误")
+            else -> LogUtils.d("上拉未知错误")
         }
     }
 
@@ -269,7 +271,6 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
                 downloadTitleCount.text = ""
                 return
             }
-            downloadLoading.setLoadingFinish()
             try {
                 if (iRequest.requestTag == requestSingleTag) { // 请求单品的数据
                     initDownloadSingleData(entity)
@@ -302,11 +303,13 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         }
         downloadTitleCount.text = String.format(getString(R.string.download_count), result.data.goodsInfo.downloadCount)
         if (result.data.list == null) { // 没有子专栏的情况，直接显示其父级的信息
-            downloadTitleName.text = downTitle
-            downloadTitleName.setPadding(0, 0, 0, 0)
-            downloadTitleName.background = null
-            downloadTitleName.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
-            hasSubColumn = false
+            if (downloadGroupList.size <= 0) { // 没有已请求的数据
+                downloadTitleName.text = downTitle
+                downloadTitleName.setPadding(0, 0, 0, 0)
+                downloadTitleName.background = null
+                downloadTitleName.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+                hasSubColumn = false
+            }
             downloadSecondRefresh.setEnableLoadMore(false)
         } else {
             if (downloadGroupList.size > 0 && result.data.list!!.isNotEmpty()) {
@@ -355,13 +358,13 @@ class DownloadListFragment : BaseFragment(), OnLoadMoreListener, OnItemClickWith
         }
         val result = Gson().fromJson(entity.toString(), NewDownloadBean::class.java)
         if (result.data.list == null) {
-            // TODO: 没有单品的情况下，页面的显示
             downloadSingleList.clear()
             downloadSingleAdapter.notifyDataSetChanged()
-            downloadLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.service_error_text), R.mipmap.ic_network_error)
+            downloadLoading.setPagerState(StatusPagerView.FAIL, getString(R.string.empty_column), R.mipmap.ic_network_error)
             downloadRefresh.setEnableLoadMore(false)
             downloadTitleCount.text = ""
         } else {
+            downloadLoading.setLoadingFinish()
             downloadTitleCount.text = String.format(getString(R.string.download_count), result.data.goodsInfo.downloadCount)
             for (item in result.data.list!!) {
                 val commonDownloadBean = CommonDownloadBean()
