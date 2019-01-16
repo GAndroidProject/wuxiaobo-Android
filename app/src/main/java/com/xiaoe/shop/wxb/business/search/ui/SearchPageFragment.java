@@ -151,7 +151,9 @@ public class SearchPageFragment extends BaseFragment implements OnItemClickWithP
         historyContentView = (SearchContentView) viewWrap.findViewById(R.id.history_content);
         recommendContentView = (SearchContentView) viewWrap.findViewById(R.id.recommend_content);
 
-        initHistoryView(historyContentView);
+        if (historyList != null) {
+            initHistoryView(historyContentView);
+        }
         initRecommendView(recommendContentView);
     }
 

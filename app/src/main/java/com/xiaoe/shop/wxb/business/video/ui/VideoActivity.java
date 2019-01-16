@@ -638,7 +638,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                 JSONObject resourceInfo = data.getJSONObject("resource_info");
                 int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
                 setCollectState(hasFavorite == 1);
-                if(resourceInfo.getIntValue("is_related") == 1){
+                int isRelated = resourceInfo.getInteger("is_related") == null ? 0 : resourceInfo.getInteger("is_related");
+                if(isRelated == 1){
                     //1-免费,2-单卖，3-非单卖
                     //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                     //如果是仅关联售卖，则把缓存中的数据清除
@@ -667,7 +668,8 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
                     finish();
                     return;
                 }else{
-                    if(resourceInfo.getIntValue("sale_status") == 1){
+                    int saleStatus = resourceInfo.getInteger("sale_status") == null ? 0 : resourceInfo.getInteger("sale_status");
+                    if(saleStatus == 1){
                         playControllerView.setVisibility(View.GONE);
                         setPagerState(2);
                     }else{
@@ -758,7 +760,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
             } else {
                 buyView.setVipBtnVisibility(View.GONE);
             }
-            int price = data.getIntValue("price");
+            int price = data.getInteger("price") == null ? 0 : data.getInteger("price");
             resPrice = price;
             collectPrice = ""+price;
             buyView.setBuyPrice(price);
@@ -781,15 +783,16 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
      */
     private boolean resourceState(JSONObject data, boolean available){
         //是否免费0：否，1：是
-        int isFree = data.getIntValue("is_free");
+        int isFree = data.getInteger("is_free") == null ? -1 : data.getInteger("is_free");
         //0-正常, 1-隐藏, 2-删除
-        int detailState = data.getIntValue("state");
+        int detailState = data.getInteger("state") == null ? -1 : data.getInteger("state");
         //0-上架,1-下架
-        int saleStatus = data.getIntValue("sale_status");
+        int saleStatus = data.getInteger("sale_status") == null ? -1 : data.getInteger("sale_status");
         //是否停售 0:否，1：是
-        int isStopSell = data.getIntValue("is_stop_sell");
+        int isStopSell = data.getInteger("is_stop_sell") == null ? -1 : data.getInteger("is_stop_sell");
         //离待上线时间，如有则是待上架
-        int timeLeft = data.getIntValue("time_left");
+        int timeLeft = data.getInteger("time_left") == null ? -1 : data.getInteger("time_left");
+
         if(available && detailState != 2){
             //删除状态优秀级最高，available=true是除了删除状态显示删除页面外，其他的均可查看详情
             setPagerState(0);

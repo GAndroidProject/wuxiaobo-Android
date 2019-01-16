@@ -74,7 +74,8 @@ public class ColumnPresenter implements IBizCallback {
             directoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
             directoryEntity.setResource_id(columnId);
             directoryEntity.setBigColumnId(bigColumnId);
-            directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
+            int rt = jsonObject.getInteger("resource_type") == null ? 0 : jsonObject.getInteger("resource_type");
+            directoryEntity.setResource_type(rt);
             List<ColumnSecondDirectoryEntity> childList = formatSingleResourceEntity(jsonObject.getJSONArray("resource_list"), directoryEntity.getTitle(), columnId , bigColumnId, hasBuy);
             directoryEntity.setResource_list(childList);
             directoryEntityList.add(directoryEntity);
@@ -93,7 +94,7 @@ public class ColumnPresenter implements IBizCallback {
         for (Object object : jsonArray) {
             ColumnSecondDirectoryEntity secondDirectoryEntity = new ColumnSecondDirectoryEntity();
             JSONObject jsonObject = (JSONObject) object;
-            int resourceType = jsonObject.getIntValue("resource_type");
+            int resourceType = jsonObject.getInteger("resource_type") == null ? 0 : jsonObject.getInteger("resource_type");
             int[] types = new int[]{1 , 2, 3};
             if(Arrays.binarySearch(types, resourceType) < 0){
                 //过滤掉非图文音视频资源
@@ -104,15 +105,19 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setTitle(jsonObject.getString("title"));
             secondDirectoryEntity.setImg_url(jsonObject.getString("img_url"));
             secondDirectoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
-            secondDirectoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
-            secondDirectoryEntity.setAudio_length(jsonObject.getIntValue("audio_length"));
-            secondDirectoryEntity.setVideo_length(jsonObject.getIntValue("video_length"));
+            int rt = jsonObject.getInteger("resource_type") == null ? 0 : jsonObject.getInteger("resource_type");
+            secondDirectoryEntity.setResource_type(rt);
+            int al = jsonObject.getInteger("audio_length") == null ? 0 : jsonObject.getInteger("audio_length");
+            secondDirectoryEntity.setAudio_length(al);
+            int vl = jsonObject.getInteger("video_length") == null ? 0 : jsonObject.getInteger("video_length");
+            secondDirectoryEntity.setVideo_length(vl);
             secondDirectoryEntity.setAudio_url(jsonObject.getString("audio_url"));
             secondDirectoryEntity.setVideo_url(jsonObject.getString("video_url"));
             secondDirectoryEntity.setColumnTitle(columnTitle);
             secondDirectoryEntity.setColumnId(columnId);
             secondDirectoryEntity.setBigColumnId(bigColumnId);
-            secondDirectoryEntity.setIsTry(jsonObject.getIntValue("is_try"));
+            int isTry = jsonObject.getInteger("is_try") == null ? 0 : jsonObject.getInteger("is_try");
+            secondDirectoryEntity.setIsTry(isTry);
             secondDirectoryEntity.setIsHasBuy(hasBuy);
 
             directoryEntityList.add(secondDirectoryEntity);
@@ -131,7 +136,7 @@ public class ColumnPresenter implements IBizCallback {
         for (Object object : jsonArray) {
             ColumnSecondDirectoryEntity secondDirectoryEntity = new ColumnSecondDirectoryEntity();
             JSONObject jsonObject = (JSONObject) object;
-            int resourceType = jsonObject.getIntValue("goods_type");
+            int resourceType = jsonObject.getInteger("goods_type") == null ? 0 : jsonObject.getInteger("goods_type");
             int[] types = new int[]{1 , 2, 3};
             if(Arrays.binarySearch(types, resourceType) < 0){
                 //过滤掉非图文音视频资源
@@ -142,8 +147,10 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setTitle(jsonObject.getString("title"));
             secondDirectoryEntity.setImg_url(jsonObject.getString("img_url"));
             secondDirectoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
-            secondDirectoryEntity.setResource_type(jsonObject.getIntValue("goods_type"));
-            secondDirectoryEntity.setAudio_length(jsonObject.getIntValue("length"));
+            int rt = jsonObject.getInteger("goods_type") == null ? 0 : jsonObject.getInteger("goods_type");
+            secondDirectoryEntity.setResource_type(rt);
+            int al = jsonObject.getInteger("length") == null ? 0 : jsonObject.getInteger("length");
+            secondDirectoryEntity.setAudio_length(al);
 //            secondDirectoryEntity.setVideo_length(jsonObject.getIntValue("video_length"));
             secondDirectoryEntity.setAudio_url(jsonObject.getString("download_url"));
 //            secondDirectoryEntity.setVideo_url(jsonObject.getString("download_url"));
@@ -175,7 +182,8 @@ public class ColumnPresenter implements IBizCallback {
             directoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
             directoryEntity.setResource_id(columnId);
             directoryEntity.setBigColumnId(bigColumnId);
-            directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
+            int rt = jsonObject.getInteger("resource_type") == null ? 0 : jsonObject.getInteger("resource_type");
+            directoryEntity.setResource_type(rt);
 
 //            List<MultiItemEntity> MultiItemEntitychildList = formatExpandableChildEntity(jsonObject.getJSONArray("resource_list"), directoryEntity.getTitle(), columnId , bigColumnId, hasBuy, directoryEntity);
 //            List<MultiItemEntity> childList = new ArrayList<MultiItemEntity>();
@@ -206,7 +214,7 @@ public class ColumnPresenter implements IBizCallback {
         for (Object object : jsonArray) {
             ExpandableItem secondDirectoryEntity = new ExpandableItem();
             JSONObject jsonObject = (JSONObject) object;
-            int resourceType = jsonObject.getIntValue("resource_type");
+            int resourceType = jsonObject.getInteger("resource_type") == null ? 0 : jsonObject.getInteger("resource_type");
             int[] types = new int[]{1 , 2, 3};
             if(Arrays.binarySearch(types, resourceType) < 0){
                 //过滤掉非图文音视频资源
@@ -217,15 +225,19 @@ public class ColumnPresenter implements IBizCallback {
             secondDirectoryEntity.setTitle(jsonObject.getString("title"));
             secondDirectoryEntity.setImg_url(jsonObject.getString("img_url"));
             secondDirectoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
-            secondDirectoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
-            secondDirectoryEntity.setAudio_length(jsonObject.getIntValue("audio_length"));
-            secondDirectoryEntity.setVideo_length(jsonObject.getIntValue("video_length"));
+            int rt = jsonObject.getInteger("resource_type") == null ? 0 : jsonObject.getInteger("resource_type");
+            secondDirectoryEntity.setResource_type(rt);
+            int al = jsonObject.getInteger("audio_length") == null ? 0 : jsonObject.getInteger("audio_length");
+            secondDirectoryEntity.setAudio_length(al);
+            int vl = jsonObject.getInteger("video_length") == null ? 0 : jsonObject.getInteger("video_length");
+            secondDirectoryEntity.setVideo_length(vl);
             secondDirectoryEntity.setAudio_url(jsonObject.getString("audio_url"));
             secondDirectoryEntity.setVideo_url(jsonObject.getString("video_url"));
             secondDirectoryEntity.setColumnTitle(columnTitle);
             secondDirectoryEntity.setColumnId(columnId);
             secondDirectoryEntity.setBigColumnId(bigColumnId);
-            secondDirectoryEntity.setIsTry(jsonObject.getIntValue("is_try"));
+            int isTry = jsonObject.getInteger("is_try") == null ? 0 : jsonObject.getInteger("is_try");
+            secondDirectoryEntity.setIsTry(isTry);
             secondDirectoryEntity.setIsHasBuy(hasBuy);
             secondDirectoryEntity.setLoadType(1);
 
@@ -279,7 +291,8 @@ public class ColumnPresenter implements IBizCallback {
             directoryEntity.setImg_url_compress(jsonObject.getString("img_url_compress"));
             directoryEntity.setResource_id(columnId);
             directoryEntity.setBigColumnId(bigColumnId);
-            directoryEntity.setResource_type(jsonObject.getIntValue("resource_type"));
+            int rt = jsonObject.getInteger("resource_type") == null ? 0 : jsonObject.getInteger("resource_type");
+            directoryEntity.setResource_type(rt);
 
             //添加一条空数据，作为“加载状态”条目
             ExpandableItem loadSecondDirectoryEntity = new ExpandableItem();

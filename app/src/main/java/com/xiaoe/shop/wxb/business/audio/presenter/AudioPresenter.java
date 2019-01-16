@@ -100,7 +100,8 @@ public class AudioPresenter implements IBizCallback {
             resourceInfo = data.getJSONObject("resource_info");
             int hasFavorite = ((JSONObject) data.get("favorites_info")).getInteger("is_favorite");
             playEntity.setHasFavorite(hasFavorite);
-            playEntity.setPrice(resourceInfo.getIntValue("price"));
+            int price = resourceInfo.getInteger("price") == null ? 0 : resourceInfo.getInteger("price");
+            playEntity.setPrice(price);
         }
 
         JSONObject shareInfo = data.getJSONObject("share_info");
@@ -137,7 +138,8 @@ public class AudioPresenter implements IBizCallback {
             playEntity.setCode(0);
             playAudio(playEntity.isPlay());
         }else{
-            if(resourceInfo.getIntValue("is_related") == 1){
+            int isRelated = resourceInfo.getInteger("is_related") == null ? 0 : resourceInfo.getInteger("is_related");
+            if(isRelated == 1){
                 //是否仅关联售卖，0-否，1-是
                 //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
                 JSONArray productList = data.getJSONObject("product_info").getJSONArray("product_list");
@@ -195,15 +197,16 @@ public class AudioPresenter implements IBizCallback {
      */
     private void resourceState(JSONObject data, boolean hasBuy, AudioPlayEntity playEntity){
         //是否免费0：否，1：是
-        int isFree = data.getIntValue("is_free");
+        int isFree = data.getInteger("is_free") == null ? -1 : data.getInteger("is_free");
         //0-正常, 1-隐藏, 2-删除
-        int detailState = data.getIntValue("state");
+        int detailState = data.getInteger("state") == null ? -1 : data.getInteger("state");
         //0-上架,1-下架
-        int saleStatus = data.getIntValue("sale_status");
+        int saleStatus = data.getInteger("sale_status") == null ? -1 : data.getInteger("sale_status");
         //是否停售 0:否，1：是
-        int isStopSell = data.getIntValue("is_stop_sell");
+        int isStopSell = data.getInteger("is_stop_sell") == null ? -1 : data.getInteger("is_stop_sell");
         //离待上线时间，如有则是待上架
-        int timeLeft = data.getIntValue("time_left");
+        int timeLeft = data.getInteger("time_left") == null ? -1 : data.getInteger("time_left");
+
         if(hasBuy && detailState != 2){
             //删除状态优秀级最高，available=true是除了删除状态显示删除页面外，其他的均可查看详情
             playEntity.setResourceStateCode(0);
