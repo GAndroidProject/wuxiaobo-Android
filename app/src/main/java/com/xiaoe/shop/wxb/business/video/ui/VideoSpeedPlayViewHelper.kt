@@ -86,6 +86,8 @@ class VideoSpeedPlayViewHelper(val context: Context, private val parentView: Vie
                 speedClickBlock?.invoke(4)
             }
         }
+
+        
     }
 }
 
