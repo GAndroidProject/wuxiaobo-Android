@@ -43,31 +43,30 @@ class FlowInfoLabelAdapter(private val mContext: Context, private val labelItemE
                 searchMainContentViewHolder.content.text = labelItemEntity.labelContent
             }
             // 有划线价就显示划线价，否则显示真实价格，若二者都没有，隐藏价格位置（第一个 item 是原价或划线价）
+            val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             val labelTextColor: Int = when {
                 labelItemEntity.labelFontColor == "showPrice" -> {
                     searchMainContentViewHolder.content.paint.flags = 0  // 取消设置的的划线
                     if (searchMainContentViewHolder.content.visibility == View.GONE) {
                         searchMainContentViewHolder.content.setPadding(0, 0, 0, 0)
-                        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                         layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, -8f), 0, 0, 0)
-                        searchMainContentViewHolder.content.layoutParams = layoutParams
                     } else {
                         searchMainContentViewHolder.content.setPadding(0, Dp2Px2SpUtil.dp2px(mContext, 4f),
                                 0, Dp2Px2SpUtil.dp2px(mContext, 4f))
                     }
+                    searchMainContentViewHolder.content.layoutParams = layoutParams
                     ContextCompat.getColor(mContext, R.color.price_color)
                 }
                 labelItemEntity.labelFontColor == "linePrice" -> {
                     searchMainContentViewHolder.content.paint.flags = Paint.STRIKE_THRU_TEXT_FLAG + Paint.ANTI_ALIAS_FLAG // 设置中划线并加清晰
                     if (searchMainContentViewHolder.content.visibility == View.GONE) {
                         searchMainContentViewHolder.content.setPadding(0, 0, 0, 0)
-                        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                         layoutParams.setMargins(Dp2Px2SpUtil.dp2px(mContext, -8f), 0, 0, 0)
-                        searchMainContentViewHolder.content.layoutParams = layoutParams
                     } else {
                         searchMainContentViewHolder.content.setPadding(0, Dp2Px2SpUtil.dp2px(mContext, 4f),
                                 0, Dp2Px2SpUtil.dp2px(mContext, 4f))
                     }
+                    searchMainContentViewHolder.content.layoutParams = layoutParams
                     ContextCompat.getColor(mContext, R.color.knowledge_item_desc_color)
                 }
                 labelItemEntity.labelFontColor.length == 4 -> { // #fff 这种情况

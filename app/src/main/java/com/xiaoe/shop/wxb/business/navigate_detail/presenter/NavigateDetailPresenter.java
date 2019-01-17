@@ -32,7 +32,7 @@ public class NavigateDetailPresenter implements IBizCallback {
         commodityGroupRequest.addDataParam("page_num", pageIndex);
         commodityGroupRequest.addDataParam("page_size", pageSize);
         commodityGroupRequest.addDataParam("last_id", lastId);
-        commodityGroupRequest.addDataParam("client", "1");
+        commodityGroupRequest.addDataParam("client", "6");
         commodityGroupRequest.addDataParam("agent_type", 1);
         commodityGroupRequest.addDataParam("agent_version", "1");
 

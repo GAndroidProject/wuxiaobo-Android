@@ -156,9 +156,6 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         }
         resourceType = mIntent.getIntExtra("resource_type", 0);
         resourceId = mIntent.getStringExtra("resource_id");
-        UploadLearnProgressManager.INSTANCE.addColumnData(resourceId,resourceType);
-        UploadLearnProgressManager.INSTANCE.setMCurrentColumnId(resourceId);
-        UploadLearnProgressManager.INSTANCE.setMTopParentResType(resourceType);
         columnPresenter = new ColumnPresenter(this);
         EventBus.getDefault().register(this);
 
@@ -368,7 +365,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             removeCollectionRequest(jsonObject);
         }else if(iRequest instanceof QueryProductTypeRequest){
             JSONObject data = (JSONObject) dataObject;
-            int type = data.getIntValue("type");
+            int type = data.getInteger("type") == null ? 0 : data.getInteger("type");
             //	1-会员，2-大专栏，3-专栏
             if(type == 1){
                 resourceType = 5;
@@ -560,7 +557,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
     }
 
     private void detailRequest(JSONObject data, JSONObject productInfo, boolean available, boolean cache) {
-        int isRelated  = data.getIntValue("is_related");
+        int isRelated  = data.getInteger("is_related") == null ? 0 : data.getInteger("is_related");
         if(isRelated == 1 && !available && productInfo != null){
             //是否只关联售卖 0-不是, 1-仅关联
             //非单卖需要跳转到所属专栏，如果所属专栏多个，只跳转第一个
@@ -573,7 +570,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
                 return;
             }
             JSONObject product = productList.getJSONObject(0);
-            int productType = product.getIntValue("product_type");
+            int productType = product.getInteger("product_type") == null ? 0 : product.getInteger("product_type");
             String productId = product.getString("id");
             String productImgUrl = product.getString("img_url");
             //1-专栏, 2-会员, 3-大专栏
@@ -604,13 +601,16 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
             setLoadState(ListBottomLoadMoreView.STATE_NOT_LOAD);
         }
         realSrcId = data.getString("resource_id");
+        UploadLearnProgressManager.INSTANCE.addColumnData(realSrcId,resourceType);
+        UploadLearnProgressManager.INSTANCE.setMCurrentColumnId(realSrcId);
+        UploadLearnProgressManager.INSTANCE.setMTopParentResType(resourceType);
         if(available){
             buyView.setVisibility(View.GONE);
             setMiniPlayerPosition(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             isHasBuy = true;
             collectPrice = "";
         }else{
-            price = data.getIntValue("price");
+            price = data.getInteger("price") == null ? 0 : data.getInteger("price");
             buyView.setVisibility(cache ? View.GONE : View.VISIBLE);
             if(cache){
                 //显示缓存数据，会先隐藏购买按钮，所以间悬浮播放器置底
@@ -643,7 +643,7 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
         columnTitle.setText(title);
         barTitle.setText(title);
         columnImage.setImageURI(collectImgUrl);
-        int purchaseCount = data.getIntValue("purchase_count");
+        int purchaseCount = data.getInteger("purchase_count") == null ? 0 : data.getInteger("purchase_count");
         int periodicalCount = data.getInteger("periodical_count") == null ? 0 : data.getInteger("periodical_count");
         if (periodicalCount > 0) {
             playNumStr = String.format(getString(R.string.stages_text), periodicalCount);
@@ -671,15 +671,15 @@ public class ColumnActivity extends XiaoeActivity implements View.OnClickListene
      */
     private void resourceState(JSONObject data, boolean available){
         //是否免费0：否，1：是
-        int isFree = data.getIntValue("is_free");
+        int isFree = data.getInteger("is_free") == null ? -1 : data.getInteger("is_free");
         //0-正常, 1-隐藏, 2-删除
-        int detailState = data.getIntValue("state");
+        int detailState = data.getInteger("state") == null ? -1 : data.getInteger("state");
         //0-上架,1-下架
-        int saleStatus = data.getIntValue("sale_status");
+        int saleStatus = data.getInteger("sale_status") == null ? -1 : data.getInteger("sale_status");
         //是否停售 0:否，1：是
-        int isStopSell = data.getIntValue("is_stop_sell");
+        int isStopSell = data.getInteger("is_stop_sell") == null ? -1 : data.getInteger("is_stop_sell");
         //离待上线时间，如有则是待上架
-        int timeLeft = data.getInteger("time_left");
+        int timeLeft = data.getInteger("time_left") == null ? -1 : data.getInteger("time_left");
         if(available && detailState != 2){
             //删除状态优秀级最高，available=true是除了删除状态显示删除页面外，其他的均可查看详情
             setPagerState(0);

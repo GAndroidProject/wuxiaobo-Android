@@ -9,6 +9,5 @@ public class CourseDetailRequest extends IRequest {
      */
     public CourseDetailRequest(IBizCallback iBizCallback) {
         super(NetworkEngine.API_THIRD_BASE_URL + "xe.goods.detail.get/1.0.1", iBizCallback);
-//        super(NetworkEngine.API_THIRD_BASE_URL + "xe.goods.detail.get/1.0.0", iBizCallback);
     }
 }

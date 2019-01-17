@@ -384,6 +384,9 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             String title = dataJsonItem.getString("title");
             // 频道组件如果 playState 传空的话会隐藏播放 icon
             String resourceType = convertInt2Str(dataJsonItem.getInteger("resource_type"));
+            if (TextUtils.isEmpty(resourceType)) {
+                continue;
+            }
             String resourceId = dataJsonItem.getString("resource_id");
             recentUpdateListItem.setListTitle(title);
             recentUpdateListItem.setColumnTitle(mColumnTitle);
@@ -398,9 +401,12 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             recentUpdateListItem.setAppId(dataJsonItem.getString("app_id"));
             recentUpdateListItem.setImgUrl(dataJsonItem.getString("img_url"));
             recentUpdateListItem.setImgUrlCompress(dataJsonItem.getString("img_url_compress"));
-            recentUpdateListItem.setResourceType(dataJsonItem.getIntValue("resource_type"));
-            recentUpdateListItem.setAudioLength(dataJsonItem.getIntValue("audio_length"));
-            recentUpdateListItem.setVideoLength(dataJsonItem.getIntValue("video_length"));
+            int rt = dataJsonItem.getInteger("resource_type") == null ? 0 : dataJsonItem.getInteger("resource_type");
+            recentUpdateListItem.setResourceType(rt);
+            int al = dataJsonItem.getInteger("audio_length") == null ? 0 : dataJsonItem.getInteger("audio_length");
+            recentUpdateListItem.setAudioLength(al);
+            int vl = dataJsonItem.getInteger("video_length") == null ? 0 : dataJsonItem.getInteger("video_length");
+            recentUpdateListItem.setVideoLength(vl);
             recentUpdateListItem.setAudioUrl(dataJsonItem.getString("audio_url"));
             recentUpdateListItem.setColumnId(columnId);
             recentUpdateListItem.setBigColumnId("");
@@ -557,6 +563,7 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                     }
                     // 先把频道组件存起来，等网络请求的回调回来后再操作
                     microPageList.add(component_recent);
+                    break; // 只取第一个
                 }
                 break;
             case DecorateEntityType.KNOWLEDGE_COMMODITY_STR: // 知识商品
@@ -668,9 +675,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             item.setItemTitleColumn(listSubItemObj.getString("summary"));
             item.setItemImg(listSubItemObj.getString("img_url_compressed_larger"));
 //            item.setItemImg(listSubItemObj.getString("img_url"));
-            String price = listSubItemObj.getString("show_price") + "波豆";
-            String linePrice = listSubItemObj.getString("line_price") + "波豆";
-            boolean isPriceEmpty = "波豆".equals(price) || "0.00波豆".equals(price) || "null波豆".equals(price);
+            String price = listSubItemObj.getString("show_price") + getContext().getString(R.string.wxb_virtual_unit);
+            String linePrice = listSubItemObj.getString("line_price") + getContext().getString(R.string.wxb_virtual_unit);
+            boolean isPriceEmpty = getContext().getString(R.string.wxb_virtual_unit).equals(price) ||
+                    ("0.00" + getContext().getString(R.string.wxb_virtual_unit)).equals(price) ||
+                    ("null" + getContext().getString(R.string.wxb_virtual_unit)).equals(price);
             if (isPriceEmpty) {
                 boolean hasBuy = false;
                 boolean isFree = false;
@@ -688,6 +697,12 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 item.setFree(false);
             }
             String srcType = listSubItemObj.getString("src_type");
+            // 过滤暂时不兼容的类型
+            if (!DecorateEntityType.IMAGE_TEXT.equals(srcType) && !DecorateEntityType.AUDIO.equals(srcType)
+                    && !DecorateEntityType.VIDEO.equals(srcType) && !DecorateEntityType.COLUMN.equals(srcType)
+                    && !DecorateEntityType.TOPIC.equals(srcType) && !DecorateEntityType.MEMBER.equals(srcType)) {
+                continue;
+            }
             String srcId = listSubItemObj.getString("src_id");
             // view_count -- 浏览次数 / resource_count -- 更新期数 / purchase_count -- 订阅数
             String viewCount = TextUtils.isEmpty(listSubItemObj.getString("view_count")) ? "" : listSubItemObj.getString("view_count");
@@ -795,10 +810,11 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 String title = flowInfo.getString("title");
                 String desc = flowInfo.getString("summary");
                 String imgUrl = flowInfo.getString("img_url");
-                String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : flowInfo.getString("show_price") + "波豆";
-                String linePrice = TextUtils.isEmpty(flowInfo.getString("line_price")) ? "" : flowInfo.getString("line_price") + " 波豆";
+                String showPrice = TextUtils.isEmpty(flowInfo.getString("show_price")) ? "" : flowInfo.getString("show_price") + getContext().getString(R.string.wxb_virtual_unit);
+                String linePrice = TextUtils.isEmpty(flowInfo.getString("line_price")) ? "" : flowInfo.getString("line_price") + " " + getContext().getString(R.string.wxb_virtual_unit);
                 int paymentType = flowInfo.getInteger("payment_type") == null ? -1 : flowInfo.getInteger("payment_type");
-                boolean isPriceExist = TextUtils.isEmpty(showPrice) || "0.00波豆".equals(showPrice);
+                boolean isPriceExist = !TextUtils.isEmpty(showPrice) && !("0.00" + getContext().getString(R.string.wxb_virtual_unit)).equals(showPrice) &&
+                        !getContext().getString(R.string.wxb_virtual_unit).equals(showPrice);
                 boolean hasBuy = false;
                 boolean isFree = false;
                 if (isPriceExist && paymentType == 1) { // 免费
