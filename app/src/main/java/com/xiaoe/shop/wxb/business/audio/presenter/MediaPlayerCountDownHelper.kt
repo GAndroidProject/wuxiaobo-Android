@@ -15,10 +15,10 @@ object MediaPlayerCountDownHelper{
     const val COUNT_DOWN_STATE_TIME = 2
     const val COUNT_DOWN_STATE_CURRENT = 3
 
-    const val COUNT_DOWN_DURATION_10 = 1
-    const val COUNT_DOWN_DURATION_20 = 1
-    const val COUNT_DOWN_DURATION_30 = 1
-    const val COUNT_DOWN_DURATION_60 = 1
+    const val COUNT_DOWN_DURATION_10 = 10
+    const val COUNT_DOWN_DURATION_20 = 20
+    const val COUNT_DOWN_DURATION_30 = 30
+    const val COUNT_DOWN_DURATION_60 = 60
 
     private var mCurrentTime = -1
     var mCurrentState = COUNT_DOWN_STATE_CLOSE
