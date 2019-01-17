@@ -9,6 +9,7 @@ import com.xiaoe.shop.wxb.utils.LogUtils
  * Description: 倒计时工具
  */
 class CountDownTimerTool{
+    val mTag = "CountDownTimerTool"
 
     private val any = Any()
 
@@ -18,6 +19,7 @@ class CountDownTimerTool{
 
     private var mCountDownTimer : CountDownTimer ?= null
     var mCountDownCallBack : CountDownCallBack ?= null
+    var isRunning = false
 
     fun countDown(time: Int,callBack: CountDownCallBack ?= null,interval: Long = defaultInterval){
         countDown((time * 60 * 1000).toLong(),callBack,interval)
@@ -25,26 +27,36 @@ class CountDownTimerTool{
     fun countDown(millisTime: Long,callBack: CountDownCallBack ?= null,interval: Long = defaultInterval){
         release()
         mCountDownCallBack = callBack
-        mCountDownTimer = object : CountDownTimer(millisTime, interval){
+        start(millisTime, interval)
+    }
+
+    private fun start(millisTime: Long, interval: Long = defaultInterval) {
+        mCountDownTimer = object : CountDownTimer(millisTime, interval) {
 
             override fun onFinish() {
+                LogUtils.d("$mTag--onFinish---  millisUntilFinished = $mMillisUntilFinished")
+                isRunning = false
                 mCountDownCallBack?.onFinish()
             }
 
             override fun onTick(millisUntilFinished: Long) {
+                LogUtils.d("$mTag--onTick---  millisUntilFinished = $millisUntilFinished")
+                isRunning = true
                 mMillisUntilFinished = millisUntilFinished
                 mCountDownCallBack?.onTick(millisUntilFinished)
             }
         }.apply { start() }
+        isRunning = true
     }
 
-    fun release() {
+    fun release(isPause: Boolean = false) {
         synchronized(any){
             mCountDownTimer?.apply {
-                mCountDownCallBack = null
-                mMillisUntilFinished = -1
+                if (!isPause)    mCountDownCallBack = null
+//                mMillisUntilFinished = -1
                 cancel()
                 mCountDownTimer = null
+                isRunning = false
             }
             LogUtils.d("release mCountDownTimer = $mCountDownTimer" )
 

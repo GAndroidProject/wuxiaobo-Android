@@ -62,8 +62,12 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
     public static boolean isHasMoreData = true;
     static boolean isCompletion = false;
 
-    public static void setCountDownCallBack(CountDownTimerTool.CountDownCallBack countDownCallBack) {
-        mCountDownCallBack = countDownCallBack;
+    public static void setCountDownCallBack(CountDownTimerTool.CountDownCallBack countDownCallBack2) {
+        mCountDownCallBack = countDownCallBack2;
+        setCallBackToCountDownHelper();
+    }
+
+    private static void setCallBackToCountDownHelper() {
         if (countDownCallBack != null && MediaPlayerCountDownHelper.INSTANCE.getMCountDownCallBack() == null){
             MediaPlayerCountDownHelper.INSTANCE.setMCountDownCallBack(countDownCallBack);
         }
@@ -268,6 +272,7 @@ public class AudioMediaPlayer extends Service implements MediaPlayer.OnPreparedL
             mHandler.sendEmptyMessageDelayed(MSG_PLAY_PROGRESS, 100);
             AudioNotifier.get().showPlay(audio);
             changePlayerSpeed(mPlaySpeed);
+            setCallBackToCountDownHelper();
         }
         EventBus.getDefault().post(event);
     }

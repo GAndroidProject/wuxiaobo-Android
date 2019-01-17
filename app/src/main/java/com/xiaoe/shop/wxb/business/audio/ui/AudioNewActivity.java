@@ -201,6 +201,8 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
                 updateCountDownText();
             }
         });
+        MediaPlayerCountDownHelper.INSTANCE.setAtAudioNewActivity(true);
+        MediaPlayerCountDownHelper.INSTANCE.resumeCountDownTimer();
     }
 
     @Override
@@ -1047,7 +1049,6 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        AudioMediaPlayer.uploadSingleBuyAudioProgress();
         EventBus.getDefault().unregister(this);
         if(detailContent != null){
             detailContent.destroy();
@@ -1056,7 +1057,6 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         if (!hasCollect)
             EventBus.getDefault().post(new MyCollectListRefreshEvent(true,AudioMediaPlayer
                     .getAudio() == null ? "" : AudioMediaPlayer.getAudio().getResourceId()));
-        AudioMediaPlayer.setCountDownCallBack(null);
     }
 
     @Override
@@ -1065,8 +1065,13 @@ public class AudioNewActivity extends XiaoeActivity implements View.OnClickListe
         if (handler != null && runnable != null) {
             handler.removeCallbacks(runnable);
         }
-        if (isFinishing())
+        if (isFinishing()) {
+            AudioMediaPlayer.uploadSingleBuyAudioProgress();
             AudioListLoadMoreHelper.INSTANCE.setLoadMordSuccessListener(null);
+            AudioMediaPlayer.setCountDownCallBack(null);
+            MediaPlayerCountDownHelper.INSTANCE.setAtAudioNewActivity(false);
+            MediaPlayerCountDownHelper.INSTANCE.pauseCountDownTimer();
+        }
     }
 
     @Override

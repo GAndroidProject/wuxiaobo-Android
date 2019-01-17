@@ -164,6 +164,7 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
         playNextIndex = mIntent.getIntExtra("videoIndex",-1);
         requestNextVideoResId = mIntent.getStringExtra("requestNextVideoResId");
 //        UploadLearnProgressManager.INSTANCE.setSingleBuy(TextUtils.isEmpty(columnId));
+        MediaPlayerCountDownHelper.INSTANCE.resumeCountDownTimer();
         initViews();
         initDatas();
     }
@@ -424,6 +425,9 @@ public class VideoActivity extends XiaoeActivity implements View.OnClickListener
     protected void onPause() {
         super.onPause();
         playControllerView.pause();
+        if (isFinishing()){
+            MediaPlayerCountDownHelper.INSTANCE.pauseCountDownTimer();
+        }
     }
 
     @Override
