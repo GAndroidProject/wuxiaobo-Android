@@ -75,7 +75,7 @@ public class XiaoeApplication extends MultiDexApplication {
             return;
         }
         Global.g().setApplication(this);
-        isFormalCondition = true;
+        isFormalCondition = false;
         mContext = getApplicationContext();
         applicationContext = getApplicationContext();
         applicationHandler = new Handler(applicationContext.getMainLooper());
