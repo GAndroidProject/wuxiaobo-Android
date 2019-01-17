@@ -74,11 +74,11 @@ android {
             versionNameSuffix "-debug"
 
             //启用代码混淆
-            minifyEnabled true
+            minifyEnabled false
             // 不开启ZipAlign优化
-            zipAlignEnabled true
+            zipAlignEnabled false
             // 去掉不用资源
-            shrinkResources true
+            shrinkResources false
 
             //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
