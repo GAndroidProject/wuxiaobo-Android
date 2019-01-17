@@ -174,6 +174,9 @@ public class SearchActivity extends XiaoeActivity {
                                 ((SearchPageFragment) currentFragment).historyData.remove(((SearchPageFragment) currentFragment).historyData.size() - 1);
                             } else if (((SearchPageFragment) currentFragment).historyData.size() < 5)  { // 否则直接添加
                                 ((SearchPageFragment) currentFragment).historyData.add(0, searchHistory);
+                                if (((SearchPageFragment) currentFragment).historyData.size() == 6) { // 加完之后有 5 个则删一个
+                                    ((SearchPageFragment) currentFragment).historyData.remove(((SearchPageFragment) currentFragment).historyData.size() - 1);
+                                }
                             }
                             ((SearchPageFragment) currentFragment).historyAdapter.notifyDataSetChanged();
                         }
@@ -358,7 +361,7 @@ public class SearchActivity extends XiaoeActivity {
         String sql = "select * from " + SearchSQLiteCallback.TABLE_NAME_CONTENT + " where " + SearchHistoryEntity.COLUMN_NAME_CONTENT + " = ? and user_id=?";
         List<SearchHistory> lists = sqLiteUtil.query(SearchSQLiteCallback.TABLE_NAME_CONTENT, sql, new String[]{tempContent, CommonUserInfo.getLoginUserIdOrAnonymousUserId()});
         // 已经有一条数据的话就不用再插入
-        return lists.size() == 1;
+        return lists != null && lists.size() == 1;
     }
 
     // 查询最新创建的五条数据

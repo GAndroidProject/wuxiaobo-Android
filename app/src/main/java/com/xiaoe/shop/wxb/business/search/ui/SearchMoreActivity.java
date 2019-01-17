@@ -203,7 +203,7 @@ public class SearchMoreActivity extends XiaoeActivity {
             if (price == 0) {
                 priceStr = "";
             } else {
-                priceStr = "￥" + price;
+                priceStr = price + getString(R.string.wxb_virtual_unit);
             }
 
             commodityItem.setItemTitle(title);
@@ -240,6 +240,7 @@ public class SearchMoreActivity extends XiaoeActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         searchMoreRecycler.setLayoutManager(linearLayoutManager);
         decorateRecyclerAdapter = new DecorateRecyclerAdapter(this, pageList,true);
+        decorateRecyclerAdapter.showLastItem(false);
         searchMoreRecycler.setAdapter(decorateRecyclerAdapter);
         decorateRecyclerAdapter.notifyDataSetChanged();
         hasDecorate = true;

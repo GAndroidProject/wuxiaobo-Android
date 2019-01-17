@@ -530,7 +530,7 @@
     <string name="bo_bi_content_desc">账户明细</string>
     <string name="confirm_pay">确认支付</string>
     <string name="ali_pay_title">支付宝支付</string>
-    <string name="confirm_money">￥ %s%d%s</string>
+    <string name="confirm_money">%s%d%s 波豆</string>
     <string name="confirm_ali_icon_desc">支付宝支付图标</string>
     <string name="confirm_we_chat_pay_icon">微信支付图标</string>
     <string name="balance_str">%s%s%s 波豆</string>
@@ -555,6 +555,7 @@
     <string name="close_count_down">关闭定时</string>
     <string name="after_stop_play_video">后视频停止播放</string>
     <string name="remain_time">剩余%d分%d秒</string>
+    <string name="empty_column">专栏暂无课程</string>
 
     <string name="demo_info_text">重要说明: \n\n本 Demo 为了方便向商户展示支付宝的支付流程，所以订单信息的加签过程放在客户端完成。\n在商户的真实App内，为了防止商户私密数据泄露，引发资金损失和身份冒用等各种安全风险，商户私钥 RSA_PRIVATE 等数据严禁放在客户端，订单信息的加签过程也务必放在服务端完成。\n若商户接入时不遵照此说明而造成损失，需自行承担。</string>
     <string name="pay_with_alipay">支付宝支付 Demo</string>

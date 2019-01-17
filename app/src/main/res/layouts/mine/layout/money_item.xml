@@ -11,20 +11,20 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
-            android:id="@+id/money_item_title2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text="￥"
-            android:textColor="@color/recent_update_btn_pressed"/>
-        <TextView
             android:id="@+id/money_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:layout_marginLeft="3dp"
             android:textStyle="bold"
             android:textColor="@color/recent_update_btn_pressed"/>
+        <TextView
+            android:id="@+id/money_item_title2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@string/wxb_virtual_unit"
+            android:textColor="@color/recent_update_btn_pressed"
+            android:layout_marginStart="3dp"/>
     </LinearLayout>
     <TextView
         android:id="@+id/money_item_desc"

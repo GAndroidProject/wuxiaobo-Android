@@ -384,6 +384,9 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             String title = dataJsonItem.getString("title");
             // 频道组件如果 playState 传空的话会隐藏播放 icon
             String resourceType = convertInt2Str(dataJsonItem.getInteger("resource_type"));
+            if (TextUtils.isEmpty(resourceType)) {
+                continue;
+            }
             String resourceId = dataJsonItem.getString("resource_id");
             recentUpdateListItem.setListTitle(title);
             recentUpdateListItem.setColumnTitle(mColumnTitle);
@@ -398,9 +401,12 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
             recentUpdateListItem.setAppId(dataJsonItem.getString("app_id"));
             recentUpdateListItem.setImgUrl(dataJsonItem.getString("img_url"));
             recentUpdateListItem.setImgUrlCompress(dataJsonItem.getString("img_url_compress"));
-            recentUpdateListItem.setResourceType(dataJsonItem.getIntValue("resource_type"));
-            recentUpdateListItem.setAudioLength(dataJsonItem.getIntValue("audio_length"));
-            recentUpdateListItem.setVideoLength(dataJsonItem.getIntValue("video_length"));
+            int rt = dataJsonItem.getInteger("resource_type") == null ? 0 : dataJsonItem.getInteger("resource_type");
+            recentUpdateListItem.setResourceType(rt);
+            int al = dataJsonItem.getInteger("audio_length") == null ? 0 : dataJsonItem.getInteger("audio_length");
+            recentUpdateListItem.setAudioLength(al);
+            int vl = dataJsonItem.getInteger("video_length") == null ? 0 : dataJsonItem.getInteger("video_length");
+            recentUpdateListItem.setVideoLength(vl);
             recentUpdateListItem.setAudioUrl(dataJsonItem.getString("audio_url"));
             recentUpdateListItem.setColumnId(columnId);
             recentUpdateListItem.setBigColumnId("");
@@ -691,6 +697,12 @@ public class MicroPageFragment extends BaseFragment implements OnRefreshListener
                 item.setFree(false);
             }
             String srcType = listSubItemObj.getString("src_type");
+            // 过滤暂时不兼容的类型
+            if (!DecorateEntityType.IMAGE_TEXT.equals(srcType) && !DecorateEntityType.AUDIO.equals(srcType)
+                    && !DecorateEntityType.VIDEO.equals(srcType) && !DecorateEntityType.COLUMN.equals(srcType)
+                    && !DecorateEntityType.TOPIC.equals(srcType) && !DecorateEntityType.MEMBER.equals(srcType)) {
+                continue;
+            }
             String srcId = listSubItemObj.getString("src_id");
             // view_count -- 浏览次数 / resource_count -- 更新期数 / purchase_count -- 订阅数
             String viewCount = TextUtils.isEmpty(listSubItemObj.getString("view_count")) ? "" : listSubItemObj.getString("view_count");
