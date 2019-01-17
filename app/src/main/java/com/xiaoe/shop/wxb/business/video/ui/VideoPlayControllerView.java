@@ -92,12 +92,13 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         this.hasBuy = hasBuy;
     }
 
-    private View mCountDownView,mSpeedPlayView;
+    private View mCountDownView;
     private List<TextView> mCountDownTexts,mSpeedPlayTexts;
     private float mSpeedPlay = 1.0f;
     private int mSpeedPlayPosition = 1;
     private IPlayNext mIPlayNext;
-    private VideoTimerTipsViewHelper mVideoTimerTipsViewHelper;
+    private VideoTimerTipsViewHelper mVideoTimerTipsViewHelper ;
+    private VideoSpeedPlayViewHelper mVideoSpeedPlayViewHelper ;
 
     public void retSet() {
         if (COUNT_DOWN_STATE_CURRENT == MediaPlayerCountDownHelper.INSTANCE.getMCurrentState()){
@@ -170,6 +171,39 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             return null;
         });
 
+        View speedPlayView = rootView.findViewById(R.id.speed_play_layout);
+        mVideoSpeedPlayViewHelper = new VideoSpeedPlayViewHelper(context,speedPlayView);
+        mVideoSpeedPlayViewHelper.setSpeedClickBlock(type -> {
+            switch (type) {
+                case 0:
+                    mSpeedPlay = 0.75f;
+                    mSpeedPlayPosition = 0;
+                    changeSpeedPlay();
+                    break;
+                case 1:
+                    mSpeedPlay = 1.00f;
+                    mSpeedPlayPosition = 1;
+                    changeSpeedPlay();
+                    break;
+                case 2:
+                    mSpeedPlay = 1.25f;
+                    mSpeedPlayPosition = 2;
+                    changeSpeedPlay();
+                    break;
+                case 3:
+                    mSpeedPlay = 1.50f;
+                    mSpeedPlayPosition = 3;
+                    changeSpeedPlay();
+                    break;
+                case 4:
+                    mSpeedPlay = 2.0f;
+                    mSpeedPlayPosition = 4;
+                    changeSpeedPlay();
+                    break;
+            }
+            return null;
+        });
+
         btnProgressPlay = (ImageView) findViewById(R.id.id_video_progress_play);
         btnProgressPlay.setOnClickListener(this);
         findViewById(R.id.id_video_play_next).setOnClickListener(this);
@@ -194,19 +228,6 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
         findViewById(R.id.btn_countdown).setOnClickListener(this);
         findViewById(R.id.btn_speed).setOnClickListener(this);
 
-        mSpeedPlayView = rootView.findViewById(R.id.speed_play_view);
-        mSpeedPlayView.setOnClickListener(this);
-        if (mSpeedPlayTexts == null){
-            mSpeedPlayTexts = new ArrayList<>();
-            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_0));
-            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_1));
-            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_2));
-            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_3));
-            mSpeedPlayTexts.add((TextView) rootView.findViewById(R.id.btn_speed_play_4));
-        }
-        for (int i = 0; i < mSpeedPlayTexts.size(); i++) {
-            mSpeedPlayTexts.get(i).setOnClickListener(this);
-        }
         updateSpeedPlayTexts();
 
         mCountDownView = rootView.findViewById(R.id.count_down_view);
@@ -243,7 +264,6 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                 }
             });
         }
-
     }
 
     public void dismissTimerTips(){
@@ -331,7 +351,7 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
                 break;
             case R.id.btn_speed:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mSpeedPlayView.setVisibility(VISIBLE);
+                    mVideoSpeedPlayViewHelper.showSpeedPlayView();
                     updateSpeedPlayTexts();
                 }else  Toast.makeText(mContext,mContext.getString(R.string.speed_play_not_support),
                         Toast.LENGTH_SHORT).show();
@@ -340,48 +360,19 @@ public class VideoPlayControllerView extends FrameLayout implements View.OnClick
             case R.id.btn_countdown:
                 mCountDownView.setVisibility(VISIBLE);
                 updateCountDownText();
-
                 MediaPlayerCountDownHelper.INSTANCE.setMCountDownCallBack(mCountDownCallBack);
                 break;
             case R.id.count_down_view:
                 mCountDownView.setVisibility(GONE);
                 break;
             case R.id.speed_play_view:
-                mSpeedPlayView.setVisibility(GONE);
+                mVideoSpeedPlayViewHelper.hiddenSpeedPlayView();
                 break;
-            case R.id.btn_speed_play_0:
-                mSpeedPlay = 0.75f;
-                mSpeedPlayPosition = 0;
-                changeSpeedPlay();
-                break;
-            case R.id.btn_speed_play_1:
-                mSpeedPlay = 1.0f;
-                mSpeedPlayPosition = 1;
-                changeSpeedPlay();
-                break;
-            case R.id.btn_speed_play_2:
-                mSpeedPlay = 1.25f;
-                mSpeedPlayPosition = 2;
-                changeSpeedPlay();
-                break;
-            case R.id.btn_speed_play_3:
-                mSpeedPlay = 1.5f;
-                mSpeedPlayPosition = 3;
-                changeSpeedPlay();
-                break;
-            case R.id.btn_speed_play_4:
-                mSpeedPlay = 2.0f;
-                mSpeedPlayPosition = 4;
-                changeSpeedPlay();
-                break;
-            default:
-                break;
+
         }
     }
 
     private void changeSpeedPlay() {
-        if (mSpeedPlayView != null && VISIBLE == mSpeedPlayView.getVisibility())
-            mSpeedPlayView.setVisibility(GONE);
         if (mVideoPlayer == null || !isPrepareMedia)   return;
         boolean isChange = mVideoPlayer.changeSpeedPlay(mSpeedPlay);
         if (!isChange) {
