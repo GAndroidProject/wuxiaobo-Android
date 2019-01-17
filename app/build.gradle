@@ -32,7 +32,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 7
-        versionName "1.1.1" // 测试：1.0.16d   内灰：1.0.10f   吴晓波：1.0.12
+        versionName "1.1.1.01" // 测试：1.0.16d   内灰：1.0.10f   吴晓波：1.0.12
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -74,11 +74,11 @@ android {
             versionNameSuffix "-beta"
 
             //启用代码混淆
-            minifyEnabled false
+            minifyEnabled true
             // 不开启ZipAlign优化
-            zipAlignEnabled false
+            zipAlignEnabled true
             // 去掉不用资源
-            shrinkResources false
+            shrinkResources true
 
             //混淆规则配置文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
