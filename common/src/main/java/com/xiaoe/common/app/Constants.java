@@ -11,6 +11,8 @@ public class Constants {
     private static final String testAppid = "appiOW1KfWe9943";
     //应用appid 正式环境 (内灰环境【体验店铺（标准版）】)
     private static final String formalAppid = "app38itOR341547";
+    //应用appid 正式环境 (准线网环境【体验店铺（标准版）】)
+//    private static final String formalAppid = "apprnDA0ZDw4581";
     //应用appid 正式环境 (吴晓波家)
 //    private static final String formalAppid = "appe0MEs6qX8480";
 
@@ -23,6 +25,11 @@ public class Constants {
     private static final String wxAppIdFormal = "wx764341f522a6c929";
     //微信开放平台SECRET  正式 (内灰环境【体验店铺（标准版）】)
     private static final String WX_SECRET_FORMAL = "3232dcd861af17be187ca219d535323e";
+
+    //微信正式环境 (准线网环境【体验店铺（标准版）】)
+//    private static final String wxAppIdFormal = "wx764341f522a6c929";
+//    //微信开放平台SECRET  正式 (内灰环境【体验店铺（标准版）】)
+//    private static final String WX_SECRET_FORMAL = "3232dcd861af17be187ca219d535323e";
 
     //微信正式环境 (吴晓波家)
 //    private static final String wxAppIdFormal = "wx01cd419cdc78f413";
