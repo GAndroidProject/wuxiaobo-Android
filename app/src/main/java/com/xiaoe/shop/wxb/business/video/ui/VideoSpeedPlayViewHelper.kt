@@ -67,7 +67,7 @@ class VideoSpeedPlayViewHelper(val context: Context, private val parentView: Vie
     override fun onClick(v: View?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         when(v?.id){
-            R.id.timer_tips_view->{
+            R.id.speed_play_view->{
                 speedClickBlock?.invoke(-1)
             }
             R.id.btn_speed_play_0->{
